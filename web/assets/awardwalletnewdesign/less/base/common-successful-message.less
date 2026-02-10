@@ -1,0 +1,17 @@
+@import '../helpers/mixins';
+@import '../helpers/variables';
+@import '../helpers/flexbox';
+
+.successful-message{
+  span{
+    display: inline-block;
+    vertical-align: middle;
+    max-width: 85%;
+    margin-left: 15px;
+    font-size: 13px;
+    .mode({color: #00a67c},{color: @_dark-green-color});
+    &.black{
+      .mode({color: @text-gray},{color: @white-color});
+    }
+  }
+}

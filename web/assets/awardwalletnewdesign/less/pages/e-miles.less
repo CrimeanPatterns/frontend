@@ -1,0 +1,266 @@
+@import '../helpers/mixins';
+@import '../helpers/variables';
+
+
+@import '../partials/main-form';
+
+.e-miles{
+	width: 100%;
+	padding: 0 50px;
+	margin:50px auto;
+	box-sizing:border-box;
+	-webkit-box-sizing:border-box;
+	-moz-box-sizing:border-box;
+	*{
+		box-sizing:border-box;
+		-webkit-box-sizing:border-box;
+		-moz-box-sizing:border-box;
+		margin:0;
+		font-family: helvetica, arial;
+		padding: 0;
+	}
+	.e-miles-item{
+		border:1px solid #9a9a9a;
+		position: relative;
+		.gradient(#e6e7e8,#e6e7e8,#e6e7e8);
+		padding: 10px;
+		width: 100%;
+		min-width: 900px;
+		font-size: 0;
+        margin-bottom: 5px;
+	}
+	.e-miles-info{
+		padding: 15px;
+		display: inline-block;
+		vertical-align: top;
+		width: 50%;
+		h3{
+			font-size: 35px;
+			font-weight: normal;
+			line-height: 1.2;
+			color: #186db6;
+			margin-top: 30px;
+			text-shadow:0 1px @white-color;
+		}
+	}
+	h4{
+		font-weight: normal;
+		color: #186db6;
+		margin-top: 15px;
+		// .font-bold;
+		font-weight: bold;
+		font-size: 14px;
+		line-height: 1.2;
+		text-shadow:0 1px @white-color;
+	}
+	p{
+		line-height: 1.2;
+		color: #3e3e3e;
+		text-shadow:0 1px @white-color;
+		font-size: 12px;
+		margin-top: 15px;
+	}
+	.block{
+		margin:30px 0;
+		ol{
+			margin-top:5px;
+		}
+	}
+	.e-miles-logo{
+		display: block;
+		.size(151px,34px);
+		background: url('@{default-folder}e-miles.png') no-repeat;
+	}
+	.blue-count{
+		counter-reset:li;
+		list-style: none;
+		li{
+			display: block;
+			padding-left: 25px;
+			position: relative;
+			font-size: 14px;
+			white-space: nowrap;
+			height: 20px;
+			line-height: 20px;
+			margin-top: 8px;
+			p{
+				display: inline-block;
+				font-size: 14px;
+				color: #3e3e3e;
+				line-height: 1.5;
+				margin-top: 0;
+				text-shadow:0 1px @white-color;
+			}
+			&:after{
+				position: absolute;
+				content:counter(li);
+				counter-increment:li;
+				left: 0;
+				top:0;
+				color: @white-color;
+				font-size: 13px;
+				background: #186db6;
+				border:1px solid #145b98;
+				.size(18px,18px);
+				text-align: center;
+				line-height: 18px;
+			}
+		}
+	}
+	.main-form{
+		width: 50%;
+		display: inline-block;
+		background: @white-background;
+		border:1px solid #a6aab3;
+		label{
+			text-align: right;
+			width: 30%;
+		}
+		.main-form-item{
+			padding: 10px 5px;
+		}
+		.title{
+			height: 50px;
+			line-height: 50px;
+			background: #f9f9fa;
+			border-bottom: 1px solid #d6dae6;
+			padding-left: 20px;
+			h3{
+				display: inline-block;
+				vertical-align: middle;
+				margin-left: 20px;
+				color: #5c6373;
+				font-size: 16px;
+				font-weight: normal;
+			}
+		}
+		.row .row-item > .input{
+			padding-top: 4px;
+		}
+		.row .row-item > label {
+			padding-top: 12px;
+		}
+		.row .info .info-description {
+			padding-top: 0px;
+			padding-right: 10px;
+			padding-bottom: 4px;
+		}
+		.checkbox-row{
+			padding: 20px 20px 0 20px;
+			.flag-item{
+				width: 10%;
+			}
+			.input{
+				padding: 15px 10px !important;
+			}
+			label{
+				font-size: 12px;
+				color: #5c6373;
+				width: auto;
+				padding-left: 25px;
+				text-align: left;
+				line-height: 1.5;
+				a{
+					font-size: 12px;
+					color: @blue-color;
+					&:hover{
+						text-decoration: none;
+					}
+				}
+				span{
+					display: block;
+					padding-top: 10px;
+					&:nth-child(1){
+						padding-top: 0;
+					}
+				}
+			}
+		}
+	}
+	a.blue-link{
+		// .font-bold;
+		font-weight: bold;
+		font-size: 12px;
+	}
+}
+
+.btn-blue{
+	display: inline-block;
+	text-align: center;
+	text-decoration: none;
+	font-size: 13px;
+	border:none;
+	outline: none;
+	background: @blue-dark-color;
+	min-width: 110px;
+	padding: 0 28px;
+	height: 32px;
+	line-height: 32px;
+	color: @white-color !important;
+	&:hover{
+		cursor: pointer;
+	}
+	span{
+		display: inline-block;
+		vertical-align: middle;
+		margin-left: 8px;
+	}
+	&.loader{
+		position: relative;
+		width: auto;
+		color: @blue-color;
+		&:after{
+			position: absolute;
+			content: "";
+			left: 5px;
+			top:5px;
+			.size(20px,20px);
+			background: url('@{default-folder}spinner-blue.gif') no-repeat;
+		}
+		&:hover{
+			background: @blue-dark-color;
+		}
+	}
+	&.small{
+		height: 24px;
+		line-height: 22px;
+		font-size: 13px;
+	}
+	&:hover:not(:disabled),
+	&:focus:not(:disabled){
+		background: #3189cc;
+		color: @white-color !important;
+		text-decoration: none !important;
+	}
+	&:disabled{
+		background: #528FCC !important;
+		color: #3674B3 !important;
+		&:hover{
+			cursor: default !important;
+		}
+	}
+	&::-moz-focus-inner {
+		border: none;
+	}
+	&:focus{
+		border:none;
+	}
+}
+.icon-silver-arrow-down{
+	display: inline-block;
+	text-align: center;
+	text-decoration: none;
+	vertical-align: middle;
+	.size(9px,6px);
+	background-position: -13px -66px;
+	.mode({.sprite('light')},{.sprite('dark')});
+}
+
+.ui-datepicker-trigger {
+	position: absolute;
+	right: 10px;
+	top: 9px;
+	&:hover{
+		cursor: pointer;
+	}
+}

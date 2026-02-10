@@ -1,0 +1,90 @@
+.corona{
+	background: #4684c4;
+	background: -moz-radial-gradient(center, ellipse cover, #4684c4 0%, #125da3 100%);
+	background: -webkit-radial-gradient(center, ellipse cover, #4684c4 0%,#125da3 100%);
+	background: radial-gradient(ellipse at center, #4684c4 0%,#125da3 100%);
+	@media (max-width: 768px){
+		margin-bottom: 85px;
+	}
+	&__item{
+		max-width: 1000px;
+		margin: 0 auto;
+		padding: 90px 180px;
+		position: relative;
+		min-height: 60vh;
+		@media (max-width: 768px){
+			padding: 40px 15px;
+			min-height: 1px;
+		}
+		@media (min-width: 768px){
+			&:before{
+				position: absolute;
+				content: '';
+				.size(95px,105px);
+				.at2x('@{default-folder}corona/plus-airline.png', 95px,105px);
+				left: 30px;
+				top: 50%;
+				transform: translateY(-60%);
+			}
+			&:after{
+				position: absolute;
+				content: '';
+				.size(375px,110px);
+				.at2x('@{default-folder}corona/plus-wallets.png', 375px,110px);
+				bottom: 0;
+				left: 50%;
+				transform: translateX(-50%);
+			}
+		}
+	}
+	&__logo{
+		.size(320px,30px);
+		margin: 0 auto;
+		.at2x('@{default-folder}corona/plus-awardwallet.png', 320px,30px);
+		@media (max-width: 340px){
+			.size(260px,24px);
+			background-size: cover !important;
+		}
+	}
+	&__list{
+		width: 50px;
+		display: flex;
+		justify-content: center;
+		margin-top: 50px;
+		width: 100%;
+		@media (max-width: 768px){
+			margin-top: 40px;
+		}
+		span{
+			width: 50px;
+			min-width: 50px;
+			height: 50px;
+			display: inline-block;
+			margin: 0 10px;
+		}
+	}
+	p{
+		color: #fff;
+		font-size: 16px;
+		line-height: 1.6;
+		max-width: 650px;
+		width: 100%;
+		margin: 50px auto 0;
+		padding: 0;
+		@media (max-width: 768px){
+			margin-top: 40px;
+		}
+	}
+	&__icon-1{
+		.at2x('@{default-folder}corona/plus-5x.png', 50px,50px);
+	}
+	&__icon-2{
+		.at2x('@{default-folder}corona/plus-property.png', 50px,50px);
+	}
+	&__icon-3{
+		.at2x('@{default-folder}corona/plus-expire.png', 50px,50px);
+	}
+	&__icon-4{
+		.at2x('@{default-folder}corona/plus-flights.png', 50px,50px);
+	}
+}

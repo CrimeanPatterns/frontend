@@ -1,0 +1,61 @@
+
+.loading-s{
+	margin:0 auto;
+	.size(24px,24px);
+	.at2x('@{default-folder}spinner-splash.gif', 24px, 24px);
+	background-repeat: no-repeat;
+}
+:not(.btn-blue).loading{
+	.size(22px,22px);
+	margin:0 auto;
+	.at2x('@{default-folder}spinner.gif', 22px, 22px);
+	background-repeat: no-repeat;
+	&.splash{
+		.transform-translate(-50%,-50%);
+		position: absolute;
+		top:50%;
+		z-index: 9999;
+		left: 50%;
+	}
+}
+
+.loader{
+	text-align: center;
+	.size(100%,50px);
+	background: @white-color;
+	position: absolute;
+	top:0;
+	left: 0;
+	padding: 8px 0;
+	z-index: 97;
+	p{
+		font-size: 12px;
+		color: #5c6373;
+		margin-top: 5px;
+	}
+	i.icon-update-arrow{
+		.transform-rotate(0deg);
+		.transition(300ms cubic-bezier(0.215, 0.61, 0.355, 1));
+	}
+	.loading{
+		margin-top: 6px;
+		display: none;
+	}
+	&.touch{
+		i.icon-update-arrow{
+			.transform-rotate(-180deg);
+			.transition(300ms cubic-bezier(0.215, 0.61, 0.355, 1));
+		}
+	}
+	&.active{
+		position: relative;
+		top:auto;
+		left: auto;
+		*{
+			display: none;
+		}
+		.loading{
+			display: block;
+		}
+	}
+}

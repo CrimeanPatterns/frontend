@@ -1,0 +1,67 @@
+@font-face {
+    font-family: 'Optimist';
+    src: url('../../font/capitalone/Optimist_W_Rg.woff2') format('woff2');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+
+.provider-capitalcards{
+	.main-blk{
+		position: relative;
+		&:before{
+			content: '';
+			display: block;
+			position: absolute;
+			right: 25px;
+			top: 21px;
+			z-index: 2;
+			.size(102px,36px);
+			.mode({
+				background-image: url('@{default-folder}capitalone-sprite@2x.png');
+				background-size: 500px 200px;
+				background-repeat: no-repeat;
+			},{
+				background-image: url('@{default-folder}capitalone-sprite-dark@2x.png');
+				background-size: 500px 200px;
+				background-repeat: no-repeat;
+			});
+		}
+	}
+	.icon-red-error-b,
+	.icon-green-check-b{
+		.mode({
+			background-image: url('@{default-folder}capitalone-sprite@2x.png');
+			background-size: 500px 200px;
+			background-repeat: no-repeat;
+		},{
+			background-image: url('@{default-folder}capitalone-sprite-dark@2x.png');
+			background-size: 500px 200px;
+			background-repeat: no-repeat;
+		});
+	}
+	.icon-green-check-b{
+		background-position: 0 -175px;
+	}
+	.icon-red-error-b{
+		background-position: -40px -175px;
+	}
+	.add-oauth-button,
+	.revoke-oauth-button{
+		font-family: 'Optimist';
+		font-weight: normal;
+	    font-style: normal;
+	    font-size: 20px;
+	    background: #013D5B !important;
+	    border-radius: 4px;
+	    color: #fff !important;
+	    height: 48px;
+	    line-height: 48px;
+		display: block;
+		width: 100%;
+		margin-top: 20px;
+		&:hover{
+			background: #255F82 !important;
+		}
+	}
+}

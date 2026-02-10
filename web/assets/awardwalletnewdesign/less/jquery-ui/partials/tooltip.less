@@ -1,0 +1,80 @@
+// Tooltip styles
+
+.ui-tooltip {
+	position: absolute;
+	z-index: 1999;
+	text-align: center;
+	min-width: 70px;
+	line-height: 1.2;
+	padding: 5px;
+	.border-radius(1px);
+	background: rgba(0, 0, 0, 0.7);
+	border: 1px solid @white-color;
+	.box-shadow(0px 1px 2px rgba(0, 0, 0, 0.3));
+	&.custom-tooltip-styling{
+		max-width: 190px;
+	}
+	.ui-tooltip-content{
+		font-size: 11px;
+		color: @white-color;
+	}
+	// Arrow position
+	.bottom{
+		&:after,
+		&:before{
+			position: absolute;
+			content: "";
+			bottom: -8px;
+			border-left: 7px solid transparent;
+			border-right: 7px solid transparent;
+		}
+		&:before{
+			border-top: 7px solid @white-color;
+		}
+		&:after{
+			border-top: 7px solid rgba(0, 0, 0, 0.7);
+			z-index: 99;
+			bottom: -7px;
+		}
+	}
+	.top{
+		&:after,
+		&:before{
+			position: absolute;
+			content: "";
+			top: -8px;
+			border-left: 7px solid transparent;
+			border-right: 7px solid transparent;
+		}
+		&:before{
+			border-bottom: 7px solid @white-color;
+		}
+		&:after{
+			border-bottom: 7px solid rgba(0, 0, 0, 0.7);
+			z-index: 99;
+			top: -7px;
+		}
+	}
+	.top,
+	.bottom{
+		&.left{
+			&:before,
+			&:after{
+				left: 21px;
+			}
+		}
+		&.right{
+			&:before,
+			&:after{
+				right:21px;
+			}
+		}
+		&.center{
+			&:before,
+			&:after{
+				left: 50%;
+				margin-left: -7px;
+			}
+		}
+	}
+}

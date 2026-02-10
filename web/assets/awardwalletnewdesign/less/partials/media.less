@@ -1,0 +1,835 @@
+.logo-square{
+	.size(150px,67px);
+	display: inline-block;
+	.at2x('@{default-folder}media/logo_square.png', 150px,67px);
+}
+
+.logo-regular{
+	.size(190px,23px);
+	margin-top: 20px;
+	display: inline-block;
+	.at2x('@{default-folder}media/logo_regular.png', 190px,23px);
+}
+
+.logo-just{
+	.size(100px,100px);
+	display: inline-block;
+	.at2x('@{default-folder}media/logo_just.png', 100px,100px);
+}
+
+.banner-regular{
+	.size(168px,126px);
+	display: inline-block;
+	.at2x('@{default-folder}media/@{en}/Site/banner_rectangular.png', 168px,126px);
+}
+
+.banner-square{
+	.size(150px,150px);
+	display: inline-block;
+	.at2x('@{default-folder}media/@{en}/Site/banner_square.png', 150px,150px);
+}
+
+[class^="screenshot-"],
+[class*=" screenshot-"]{
+	display: inline-block;
+	text-decoration: none;
+	vertical-align: middle;
+	.size(120px,120px);
+}
+
+.screenshot-list-accounts-desktop{
+	.at2x('@{default-folder}media/@{en}/Site/website_1.png', 120px,120px);
+}
+
+.screenshot-list-accounts-mobile{
+	.at2x('@{default-folder}media/@{en}/Site/mobile_1.png', 120px,120px);
+}
+
+.screenshot-account-details-desktop{
+	.at2x('@{default-folder}media/@{en}/Site/website_2.png', 120px,120px);
+}
+
+.screenshot-account-details-mobile{
+	.at2x('@{default-folder}media/@{en}/Site/mobile_2.png', 120px,120px);
+}
+
+.screenshot-timeline-desktop{
+	.at2x('@{default-folder}media/@{en}/Site/website_3.png', 120px,120px);
+}
+
+.screenshot-timeline-mobile{
+	.at2x('@{default-folder}media/@{en}/Site/mobile_3.png', 120px,120px);
+}
+
+.screenshot-reservation-details-desktop{
+	.at2x('@{default-folder}media/@{en}/Site/website_4.png', 120px,120px);
+}
+
+.screenshot-reservation-changes-desktop{
+    .at2x('@{default-folder}media/@{en}/Site/website_8.png', 120px,120px);
+}
+
+.screenshot-group-into-trip-desktop{
+  .at2x('@{default-folder}media/@{en}/Site/website_9.png', 120px,120px);
+}
+
+.screenshot-share-trip-desktop{
+  .at2x('@{default-folder}media/@{en}/Site/website_10.png', 120px,120px);
+}
+
+.screenshot-reservation-detials-mobile{
+	.at2x('@{default-folder}media/@{en}/Site/mobile_4.png', 120px,120px);
+}
+
+.screenshot-spend-analysis-desktop{
+	.at2x('@{default-folder}media/@{en}/Site/website_5.png', 120px,120px);
+}
+
+.screenshot-spend-analysis-mobile{
+	.at2x('@{default-folder}media/@{en}/Site/mobile_5.png', 120px,120px);
+}
+
+.screenshot-merchant-desktop{
+	.at2x('@{default-folder}media/@{en}/Site/website_6.png', 120px,120px);
+}
+
+.screenshot-merchant-mobile{
+	.at2x('@{default-folder}media/@{en}/Site/mobile_6.png', 120px,120px);
+}
+
+.screenshot-transaction-analyzer-desktop{
+	.at2x('@{default-folder}media/@{en}/Site/website_7.png', 120px,120px);
+}
+
+.screenshot-merchant-reverse-mobile{
+	.at2x('@{default-folder}media/@{en}/Site/mobile_7.png', 120px,120px);
+}
+
+.screenshot-push-message-details-mobile{
+	.at2x('@{default-folder}media/@{en}/Site/mobile_8.png', 120px,120px);
+}
+
+.screenshot-push-message-mobile{
+	.at2x('@{default-folder}media/@{en}/Site/mobile_9.png', 120px,120px);
+}
+
+.download-list{
+	width: 230px;
+	position: relative;
+	.col{
+		display: block;
+		text-align: left;
+		font-size: 13px;
+		padding: 6px 0;
+		.mode({color: #5c6373},{color: @white-color});
+	}
+	a{
+		text-decoration: none;
+		display: inline-block;
+		border-bottom: 1px solid transparent;
+		.mode({color: #797b80},{color: @white-color});
+		&:hover{
+			.mode({border-bottom-color: #797b80},{border-bottom-color: @white-color});
+		}
+	}
+	.icon-download{
+		position: absolute;
+		right: 0;
+		top: 50%;
+		margin-top: -7px;
+	}
+}
+
+.logos-list{
+	margin: -20px -15px;
+	.title-note{
+		h3{
+			padding: 20px 30px;
+			border-bottom: 0;
+			margin: 0;
+		}
+	}
+	.container{
+		border-top: 1px solid;
+		border-bottom: 1px solid;
+		padding: 10px 15px 25px;
+		.mode({
+			border-top-color: #d6dae6;
+			border-bottom-color: #d6dae6;
+			background: #f9f9fa;
+		},{
+			border-top-color: @_dark-gray;
+			border-bottom-color: @_dark-gray;
+			background: @_dark-bg;
+		});
+		&:last-child{
+			border-bottom: 0;
+		}
+	}
+	.row{
+		border: 1px solid;
+		padding: 30px;
+		min-height: 170px;
+		.mode({
+			border-color: #d6dae6;
+			background: @white-color;
+		},{
+			border-color: @_dark-gray;
+			background: @_dark-bg-light;
+		});
+		.flex-display;
+		.flex-flow(row nowrap);
+		.align-items(center);
+		&.second{
+			border: 0;
+			background: transparent;
+			padding: 0;
+			.flex-flow(row wrap);
+			margin: -5px;
+			.thumb{
+				width: 100%;
+			}
+			.col{
+				text-decoration: none;
+				.flex-display(inline-flex);
+				.flex-flow(column nowrap);
+				.align-items(center);
+				border: 1px solid;
+				padding: 15px;
+				text-align: center;
+				margin: 5px;
+				font-size: 13px;
+				width: ~'calc(33.33% - 10px)';
+				.mode({
+					border-color: #d6dae6;
+					background: @white-color;
+					color: #5c6373;
+				},{
+					border-color: @_dark-gray;
+					background: @_dark-bg-light;
+					color: @white-color;
+				});
+			}
+			.details{
+				margin-top: 20px;
+				span{
+					display: block;
+					margin-bottom: 10px;
+				}
+			}
+		}
+		&.desktop{
+			.col{
+				&:nth-child(-n+4){
+					width: ~'calc(25% - 10px)'; 
+				}
+			}
+		}
+	}
+	.thumb{
+		text-align: center;
+		width: ~'calc(100% - 230px)';
+	}
+}
+
+html:lang(@{ru}){
+	.banner-regular{
+		.at2x('@{default-folder}media/@{ru}/Site/banner_rectangular.png', 168px,126px);
+	}
+
+	.banner-square{
+		.at2x('@{default-folder}media/@{ru}/Site/banner_square.png', 150px,150px);
+	}
+
+	.screenshot-list-accounts-desktop{
+		.at2x('@{default-folder}media/@{ru}/Site/website_1.png', 120px,120px);
+	}
+
+	.screenshot-list-accounts-mobile{
+		.at2x('@{default-folder}media/@{ru}/Site/mobile_1.png', 120px,120px);
+	}
+
+	.screenshot-account-details-desktop{
+		.at2x('@{default-folder}media/@{ru}/Site/website_2.png', 120px,120px);
+	}
+
+	.screenshot-account-details-mobile{
+		.at2x('@{default-folder}media/@{ru}/Site/mobile_2.png', 120px,120px);
+	}
+
+	.screenshot-timeline-desktop{
+		.at2x('@{default-folder}media/@{ru}/Site/website_3.png', 120px,120px);
+	}
+
+	.screenshot-timeline-mobile{
+		.at2x('@{default-folder}media/@{ru}/Site/mobile_3.png', 120px,120px);
+	}
+
+	.screenshot-reservation-details-desktop{
+		.at2x('@{default-folder}media/@{ru}/Site/website_4.png', 120px,120px);
+	}
+
+    .screenshot-reservation-changes-desktop{
+        .at2x('@{default-folder}media/@{ru}/Site/website_8.png', 120px,120px);
+    }
+
+    .screenshot-group-into-trip-desktop{
+        .at2x('@{default-folder}media/@{ru}/Site/website_9.png', 120px,120px);
+    }
+
+    .screenshot-share-trip-desktop{
+        .at2x('@{default-folder}media/@{ru}/Site/website_10.png', 120px,120px);
+    }
+
+	.screenshot-reservation-detials-mobile{
+		.at2x('@{default-folder}media/@{ru}/Site/mobile_4.png', 120px,120px);
+	}
+
+	.screenshot-spend-analysis-desktop{
+		.at2x('@{default-folder}media/@{ru}/Site/website_5.png', 120px,120px);
+	}
+
+	.screenshot-spend-analysis-mobile{
+		.at2x('@{default-folder}media/@{ru}/Site/mobile_5.png', 120px,120px);
+	}
+
+	.screenshot-merchant-desktop{
+		.at2x('@{default-folder}media/@{ru}/Site/website_6.png', 120px,120px);
+	}
+
+	.screenshot-merchant-mobile{
+		.at2x('@{default-folder}media/@{ru}/Site/mobile_6.png', 120px,120px);
+	}
+
+	.screenshot-transaction-analyzer-desktop{
+		.at2x('@{default-folder}media/@{ru}/Site/website_7.png', 120px,120px);
+	}
+
+	.screenshot-merchant-reverse-mobile{
+		.at2x('@{default-folder}media/@{ru}/Site/mobile_7.png', 120px,120px);
+	}
+
+	.screenshot-push-message-details-mobile{
+		.at2x('@{default-folder}media/@{ru}/Site/mobile_8.png', 120px,120px);
+	}
+
+	.screenshot-push-message-mobile{
+		.at2x('@{default-folder}media/@{ru}/Site/mobile_9.png', 120px,120px);
+	}
+}
+
+html:lang(@{de}){
+	.banner-regular{
+		.at2x('@{default-folder}media/@{de}/Site/banner_rectangular.png', 168px,126px);
+	}
+
+	.banner-square{
+		.at2x('@{default-folder}media/@{de}/Site/banner_square.png', 150px,150px);
+	}
+
+	.screenshot-list-accounts-desktop{
+		.at2x('@{default-folder}media/@{de}/Site/website_1.png', 120px,120px);
+	}
+
+	.screenshot-list-accounts-mobile{
+		.at2x('@{default-folder}media/@{de}/Site/mobile_1.png', 120px,120px);
+	}
+
+	.screenshot-account-details-desktop{
+		.at2x('@{default-folder}media/@{de}/Site/website_2.png', 120px,120px);
+	}
+
+	.screenshot-account-details-mobile{
+		.at2x('@{default-folder}media/@{de}/Site/mobile_2.png', 120px,120px);
+	}
+
+	.screenshot-timeline-desktop{
+		.at2x('@{default-folder}media/@{de}/Site/website_3.png', 120px,120px);
+	}
+
+	.screenshot-timeline-mobile{
+		.at2x('@{default-folder}media/@{de}/Site/mobile_3.png', 120px,120px);
+	}
+
+	.screenshot-reservation-details-desktop{
+		.at2x('@{default-folder}media/@{de}/Site/website_4.png', 120px,120px);
+	}
+
+    .screenshot-reservation-changes-desktop{
+        .at2x('@{default-folder}media/@{de}/Site/website_8.png', 120px,120px);
+    }
+
+    .screenshot-group-into-trip-desktop{
+        .at2x('@{default-folder}media/@{de}/Site/website_9.png', 120px,120px);
+    }
+
+    .screenshot-share-trip-desktop{
+        .at2x('@{default-folder}media/@{de}/Site/website_10.png', 120px,120px);
+    }
+
+	.screenshot-reservation-detials-mobile{
+		.at2x('@{default-folder}media/@{de}/Site/mobile_4.png', 120px,120px);
+	}
+
+	.screenshot-spend-analysis-desktop{
+		.at2x('@{default-folder}media/@{de}/Site/website_5.png', 120px,120px);
+	}
+
+	.screenshot-spend-analysis-mobile{
+		.at2x('@{default-folder}media/@{de}/Site/mobile_5.png', 120px,120px);
+	}
+
+	.screenshot-merchant-desktop{
+		.at2x('@{default-folder}media/@{de}/Site/website_6.png', 120px,120px);
+	}
+
+	.screenshot-merchant-mobile{
+		.at2x('@{default-folder}media/@{de}/Site/mobile_6.png', 120px,120px);
+	}
+
+	.screenshot-transaction-analyzer-desktop{
+		.at2x('@{default-folder}media/@{de}/Site/website_7.png', 120px,120px);
+	}
+
+	.screenshot-merchant-reverse-mobile{
+		.at2x('@{default-folder}media/@{de}/Site/mobile_7.png', 120px,120px);
+	}
+
+	.screenshot-push-message-details-mobile{
+		.at2x('@{default-folder}media/@{de}/Site/mobile_8.png', 120px,120px);
+	}
+
+	.screenshot-push-message-mobile{
+		.at2x('@{default-folder}media/@{de}/Site/mobile_9.png', 120px,120px);
+	}
+}
+
+html:lang(@{es}){
+	.banner-regular{
+		.at2x('@{default-folder}media/@{es}/Site/banner_rectangular.png', 168px,126px);
+	}
+
+	.banner-square{
+		.at2x('@{default-folder}media/@{es}/Site/banner_square.png', 150px,150px);
+	}
+
+	.screenshot-list-accounts-desktop{
+		.at2x('@{default-folder}media/@{es}/Site/website_1.png', 120px,120px);
+	}
+
+	.screenshot-list-accounts-mobile{
+		.at2x('@{default-folder}media/@{es}/Site/mobile_1.png', 120px,120px);
+	}
+
+	.screenshot-account-details-desktop{
+		.at2x('@{default-folder}media/@{es}/Site/website_2.png', 120px,120px);
+	}
+
+	.screenshot-account-details-mobile{
+		.at2x('@{default-folder}media/@{es}/Site/mobile_2.png', 120px,120px);
+	}
+
+	.screenshot-timeline-desktop{
+		.at2x('@{default-folder}media/@{es}/Site/website_3.png', 120px,120px);
+	}
+
+	.screenshot-timeline-mobile{
+		.at2x('@{default-folder}media/@{es}/Site/mobile_3.png', 120px,120px);
+	}
+
+	.screenshot-reservation-details-desktop{
+		.at2x('@{default-folder}media/@{es}/Site/website_4.png', 120px,120px);
+	}
+
+    .screenshot-reservation-changes-desktop{
+        .at2x('@{default-folder}media/@{es}/Site/website_8.png', 120px,120px);
+    }
+
+    .screenshot-group-into-trip-desktop{
+        .at2x('@{default-folder}media/@{es}/Site/website_9.png', 120px,120px);
+    }
+
+    .screenshot-share-trip-desktop{
+        .at2x('@{default-folder}media/@{es}/Site/website_10.png', 120px,120px);
+    }
+
+	.screenshot-reservation-detials-mobile{
+		.at2x('@{default-folder}media/@{es}/Site/mobile_4.png', 120px,120px);
+	}
+
+	.screenshot-spend-analysis-desktop{
+		.at2x('@{default-folder}media/@{es}/Site/website_5.png', 120px,120px);
+	}
+
+	.screenshot-spend-analysis-mobile{
+		.at2x('@{default-folder}media/@{es}/Site/mobile_5.png', 120px,120px);
+	}
+
+	.screenshot-merchant-desktop{
+		.at2x('@{default-folder}media/@{es}/Site/website_6.png', 120px,120px);
+	}
+
+	.screenshot-merchant-mobile{
+		.at2x('@{default-folder}media/@{es}/Site/mobile_6.png', 120px,120px);
+	}
+
+	.screenshot-transaction-analyzer-desktop{
+		.at2x('@{default-folder}media/@{es}/Site/website_7.png', 120px,120px);
+	}
+
+	.screenshot-merchant-reverse-mobile{
+		.at2x('@{default-folder}media/@{es}/Site/mobile_7.png', 120px,120px);
+	}
+
+	.screenshot-push-message-details-mobile{
+		.at2x('@{default-folder}media/@{es}/Site/mobile_8.png', 120px,120px);
+	}
+
+	.screenshot-push-message-mobile{
+		.at2x('@{default-folder}media/@{es}/Site/mobile_9.png', 120px,120px);
+	}
+}
+
+html:lang(@{pt}){
+	.banner-regular{
+		.at2x('@{default-folder}media/@{pt}/Site/banner_rectangular.png', 168px,126px);
+	}
+
+	.banner-square{
+		.at2x('@{default-folder}media/@{pt}/Site/banner_square.png', 150px,150px);
+	}
+
+	.screenshot-list-accounts-desktop{
+		.at2x('@{default-folder}media/@{pt}/Site/website_1.png', 120px,120px);
+	}
+
+	.screenshot-list-accounts-mobile{
+		.at2x('@{default-folder}media/@{pt}/Site/mobile_1.png', 120px,120px);
+	}
+
+	.screenshot-account-details-desktop{
+		.at2x('@{default-folder}media/@{pt}/Site/website_2.png', 120px,120px);
+	}
+
+	.screenshot-account-details-mobile{
+		.at2x('@{default-folder}media/@{pt}/Site/mobile_2.png', 120px,120px);
+	}
+
+	.screenshot-timeline-desktop{
+		.at2x('@{default-folder}media/@{pt}/Site/website_3.png', 120px,120px);
+	}
+
+	.screenshot-timeline-mobile{
+		.at2x('@{default-folder}media/@{pt}/Site/mobile_3.png', 120px,120px);
+	}
+
+	.screenshot-reservation-details-desktop{
+		.at2x('@{default-folder}media/@{pt}/Site/website_4.png', 120px,120px);
+	}
+
+    .screenshot-reservation-changes-desktop{
+        .at2x('@{default-folder}media/@{pt}/Site/website_8.png', 120px,120px);
+    }
+
+    .screenshot-group-into-trip-desktop{
+        .at2x('@{default-folder}media/@{pt}/Site/website_9.png', 120px,120px);
+    }
+
+    .screenshot-share-trip-desktop{
+        .at2x('@{default-folder}media/@{pt}/Site/website_10.png', 120px,120px);
+    }
+
+	.screenshot-reservation-detials-mobile{
+		.at2x('@{default-folder}media/@{pt}/Site/mobile_4.png', 120px,120px);
+	}
+
+	.screenshot-spend-analysis-desktop{
+		.at2x('@{default-folder}media/@{pt}/Site/website_5.png', 120px,120px);
+	}
+
+	.screenshot-spend-analysis-mobile{
+		.at2x('@{default-folder}media/@{pt}/Site/mobile_5.png', 120px,120px);
+	}
+
+	.screenshot-merchant-desktop{
+		.at2x('@{default-folder}media/@{pt}/Site/website_6.png', 120px,120px);
+	}
+
+	.screenshot-merchant-mobile{
+		.at2x('@{default-folder}media/@{pt}/Site/mobile_6.png', 120px,120px);
+	}
+
+	.screenshot-transaction-analyzer-desktop{
+		.at2x('@{default-folder}media/@{pt}/Site/website_7.png', 120px,120px);
+	}
+
+	.screenshot-merchant-reverse-mobile{
+		.at2x('@{default-folder}media/@{pt}/Site/mobile_7.png', 120px,120px);
+	}
+
+	.screenshot-push-message-details-mobile{
+		.at2x('@{default-folder}media/@{pt}/Site/mobile_8.png', 120px,120px);
+	}
+
+	.screenshot-push-message-mobile{
+		.at2x('@{default-folder}media/@{pt}/Site/mobile_9.png', 120px,120px);
+	}
+}
+
+html:lang(@{fr}){
+	.banner-regular{
+		.at2x('@{default-folder}media/@{fr}/Site/banner_rectangular.png', 168px,126px);
+	}
+
+	.banner-square{
+		.at2x('@{default-folder}media/@{fr}/Site/banner_square.png', 150px,150px);
+	}
+
+	.screenshot-list-accounts-desktop{
+		.at2x('@{default-folder}media/@{fr}/Site/website_1.png', 120px,120px);
+	}
+
+	.screenshot-list-accounts-mobile{
+		.at2x('@{default-folder}media/@{fr}/Site/mobile_1.png', 120px,120px);
+	}
+
+	.screenshot-account-details-desktop{
+		.at2x('@{default-folder}media/@{fr}/Site/website_2.png', 120px,120px);
+	}
+
+	.screenshot-account-details-mobile{
+		.at2x('@{default-folder}media/@{fr}/Site/mobile_2.png', 120px,120px);
+	}
+
+	.screenshot-timeline-desktop{
+		.at2x('@{default-folder}media/@{fr}/Site/website_3.png', 120px,120px);
+	}
+
+	.screenshot-timeline-mobile{
+		.at2x('@{default-folder}media/@{fr}/Site/mobile_3.png', 120px,120px);
+	}
+
+	.screenshot-reservation-details-desktop{
+		.at2x('@{default-folder}media/@{fr}/Site/website_4.png', 120px,120px);
+	}
+
+    .screenshot-reservation-changes-desktop{
+        .at2x('@{default-folder}media/@{fr}/Site/website_8.png', 120px,120px);
+    }
+
+    .screenshot-group-into-trip-desktop{
+        .at2x('@{default-folder}media/@{fr}/Site/website_9.png', 120px,120px);
+    }
+
+    .screenshot-share-trip-desktop{
+        .at2x('@{default-folder}media/@{fr}/Site/website_10.png', 120px,120px);
+    }
+
+	.screenshot-reservation-detials-mobile{
+		.at2x('@{default-folder}media/@{fr}/Site/mobile_4.png', 120px,120px);
+	}
+
+	.screenshot-spend-analysis-desktop{
+		.at2x('@{default-folder}media/@{fr}/Site/website_5.png', 120px,120px);
+	}
+
+	.screenshot-spend-analysis-mobile{
+		.at2x('@{default-folder}media/@{fr}/Site/mobile_5.png', 120px,120px);
+	}
+
+	.screenshot-merchant-desktop{
+		.at2x('@{default-folder}media/@{fr}/Site/website_6.png', 120px,120px);
+	}
+
+	.screenshot-merchant-mobile{
+		.at2x('@{default-folder}media/@{fr}/Site/mobile_6.png', 120px,120px);
+	}
+
+	.screenshot-transaction-analyzer-desktop{
+		.at2x('@{default-folder}media/@{fr}/Site/website_7.png', 120px,120px);
+	}
+
+	.screenshot-merchant-reverse-mobile{
+		.at2x('@{default-folder}media/@{fr}/Site/mobile_7.png', 120px,120px);
+	}
+
+	.screenshot-push-message-details-mobile{
+		.at2x('@{default-folder}media/@{fr}/Site/mobile_8.png', 120px,120px);
+	}
+
+	.screenshot-push-message-mobile{
+		.at2x('@{default-folder}media/@{fr}/Site/mobile_9.png', 120px,120px);
+	}
+}
+
+html:lang(@{zh_cn}){
+	.banner-regular{
+		.at2x('@{default-folder}media/@{zh_cn}/Site/banner_rectangular.png', 168px,126px);
+	}
+
+	.banner-square{
+		.at2x('@{default-folder}media/@{zh_cn}/Site/banner_square.png', 150px,150px);
+	}
+
+	.screenshot-list-accounts-desktop{
+		.at2x('@{default-folder}media/@{zh_cn}/Site/website_1.png', 120px,120px);
+	}
+
+	.screenshot-list-accounts-mobile{
+		.at2x('@{default-folder}media/@{zh_cn}/Site/mobile_1.png', 120px,120px);
+	}
+
+	.screenshot-account-details-desktop{
+		.at2x('@{default-folder}media/@{zh_cn}/Site/website_2.png', 120px,120px);
+	}
+
+	.screenshot-account-details-mobile{
+		.at2x('@{default-folder}media/@{zh_cn}/Site/mobile_2.png', 120px,120px);
+	}
+
+	.screenshot-timeline-desktop{
+		.at2x('@{default-folder}media/@{zh_cn}/Site/website_3.png', 120px,120px);
+	}
+
+	.screenshot-timeline-mobile{
+		.at2x('@{default-folder}media/@{zh_cn}/Site/mobile_3.png', 120px,120px);
+	}
+
+	.screenshot-reservation-details-desktop{
+		.at2x('@{default-folder}media/@{zh_cn}/Site/website_4.png', 120px,120px);
+	}
+
+    .screenshot-reservation-changes-desktop{
+        .at2x('@{default-folder}media/@{zh_cn}/Site/website_8.png', 120px,120px);
+    }
+
+    .screenshot-group-into-trip-desktop{
+        .at2x('@{default-folder}media/@{zh_cn}/Site/website_9.png', 120px,120px);
+    }
+
+    .screenshot-share-trip-desktop{
+        .at2x('@{default-folder}media/@{zh_cn}/Site/website_10.png', 120px,120px);
+    }
+
+	.screenshot-reservation-detials-mobile{
+		.at2x('@{default-folder}media/@{zh_cn}/Site/mobile_4.png', 120px,120px);
+	}
+
+	.screenshot-spend-analysis-desktop{
+		.at2x('@{default-folder}media/@{zh_cn}/Site/website_5.png', 120px,120px);
+	}
+
+	.screenshot-spend-analysis-mobile{
+		.at2x('@{default-folder}media/@{zh_cn}/Site/mobile_5.png', 120px,120px);
+	}
+
+	.screenshot-merchant-desktop{
+		.at2x('@{default-folder}media/@{zh_cn}/Site/website_6.png', 120px,120px);
+	}
+
+	.screenshot-merchant-mobile{
+		.at2x('@{default-folder}media/@{zh_cn}/Site/mobile_6.png', 120px,120px);
+	}
+
+	.screenshot-transaction-analyzer-desktop{
+		.at2x('@{default-folder}media/@{zh_cn}/Site/website_7.png', 120px,120px);
+	}
+
+	.screenshot-merchant-reverse-mobile{
+		.at2x('@{default-folder}media/@{zh_cn}/Site/mobile_7.png', 120px,120px);
+	}
+
+	.screenshot-push-message-details-mobile{
+		.at2x('@{default-folder}media/@{zh_cn}/Site/mobile_8.png', 120px,120px);
+	}
+
+	.screenshot-push-message-mobile{
+		.at2x('@{default-folder}media/@{zh_cn}/Site/mobile_9.png', 120px,120px);
+	}
+}
+
+html:lang(@{zh_tw}){
+	.banner-regular{
+		.at2x('@{default-folder}media/@{zh_tw}/Site/banner_rectangular.png', 168px,126px);
+	}
+
+	.banner-square{
+		.at2x('@{default-folder}media/@{zh_tw}/Site/banner_square.png', 150px,150px);
+	}
+
+	.screenshot-list-accounts-desktop{
+		.at2x('@{default-folder}media/@{zh_tw}/Site/website_1.png', 120px,120px);
+	}
+
+	.screenshot-list-accounts-mobile{
+		.at2x('@{default-folder}media/@{zh_tw}/Site/mobile_1.png', 120px,120px);
+	}
+
+	.screenshot-account-details-desktop{
+		.at2x('@{default-folder}media/@{zh_tw}/Site/website_2.png', 120px,120px);
+	}
+
+	.screenshot-account-details-mobile{
+		.at2x('@{default-folder}media/@{zh_tw}/Site/mobile_2.png', 120px,120px);
+	}
+
+	.screenshot-timeline-desktop{
+		.at2x('@{default-folder}media/@{zh_tw}/Site/website_3.png', 120px,120px);
+	}
+
+	.screenshot-timeline-mobile{
+		.at2x('@{default-folder}media/@{zh_tw}/Site/mobile_3.png', 120px,120px);
+	}
+
+	.screenshot-reservation-details-desktop{
+		.at2x('@{default-folder}media/@{zh_tw}/Site/website_4.png', 120px,120px);
+	}
+
+    .screenshot-reservation-changes-desktop{
+        .at2x('@{default-folder}media/@{zh_tw}/Site/website_8.png', 120px,120px);
+    }
+
+    .screenshot-group-into-trip-desktop{
+        .at2x('@{default-folder}media/@{zh_tw}/Site/website_9.png', 120px,120px);
+    }
+
+    .screenshot-share-trip-desktop{
+        .at2x('@{default-folder}media/@{zh_tw}/Site/website_10.png', 120px,120px);
+    }
+
+	.screenshot-reservation-detials-mobile{
+		.at2x('@{default-folder}media/@{zh_tw}/Site/mobile_4.png', 120px,120px);
+	}
+
+	.screenshot-spend-analysis-desktop{
+		.at2x('@{default-folder}media/@{zh_tw}/Site/website_5.png', 120px,120px);
+	}
+
+	.screenshot-spend-analysis-mobile{
+		.at2x('@{default-folder}media/@{zh_tw}/Site/mobile_5.png', 120px,120px);
+	}
+
+	.screenshot-merchant-desktop{
+		.at2x('@{default-folder}media/@{zh_tw}/Site/website_6.png', 120px,120px);
+	}
+
+	.screenshot-merchant-mobile{
+		.at2x('@{default-folder}media/@{zh_tw}/Site/mobile_6.png', 120px,120px);
+	}
+
+	.screenshot-transaction-analyzer-desktop{
+		.at2x('@{default-folder}media/@{zh_tw}/Site/website_7.png', 120px,120px);
+	}
+
+	.screenshot-merchant-reverse-mobile{
+		.at2x('@{default-folder}media/@{zh_tw}/Site/mobile_7.png', 120px,120px);
+	}
+
+	.screenshot-push-message-details-mobile{
+		.at2x('@{default-folder}media/@{zh_tw}/Site/mobile_8.png', 120px,120px);
+	}
+
+	.screenshot-push-message-mobile{
+		.at2x('@{default-folder}media/@{zh_tw}/Site/mobile_9.png', 120px,120px);
+	}
+}

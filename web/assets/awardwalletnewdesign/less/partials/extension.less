@@ -1,0 +1,269 @@
+.extension-row{
+	margin-top: 40px;
+	&.silver{
+		border-top: 1px solid;
+		border-bottom: 1px solid;
+		padding: 20px 15px;
+		margin-left: -15px;
+		margin-right: -15px;
+		.mode({
+			background: #f9f9fa;
+			border-top-color: #d6dae6;
+			border-bottom-color: #d6dae6;
+		},{
+			background: @_dark-bg-light;
+			border-top-color: @_dark-gray;
+			border-bottom-color: @_dark-gray;
+		});
+		.extension-info{
+			margin-top: 20px;
+		}
+	}
+	.btn-blue{
+		margin-top: 10px;
+		.font-regular;
+	}
+}
+
+.extension-details{
+	margin-top: 20px;
+}
+
+.extension-list{
+	.row-submit{
+		width: auto;
+		margin: 30px -15px -20px;
+	}
+}
+
+.extension-silver{
+	display: inline-block;
+	border: 1px solid;
+	padding: 5px;
+	margin: 8px -5px;
+	.mode({
+		background: @white-color;
+		border-color: #d6dae6;
+	},{
+		background: @_dark-bg;
+		border-color: @_dark-gray;
+	});
+}
+
+.extension-text{
+	.blue-blk,
+	.gray-blk{
+		display: inline-block;
+		height: 15px;
+		margin-left: 0;
+		line-height: 15px;
+		vertical-align: middle;
+		padding: 0 4px;
+		.font-bold;
+		color: @white-color;
+	}
+	.blue-blk{
+		.mode({background: @blue-color},{background: @_dark-blue-color});
+	}
+	.gray-blk{
+		margin-left: 20px;
+		.mode({background: #b0b4bf},{background: @_dark-green-color});
+	}
+	.green-blk,
+	.blue-blk,
+	.gray-blk{
+		font-size: 12px;
+		display: inline-block;
+		vertical-align: top;
+	}
+	p{
+		display: inline-block;
+		vertical-align: top;
+		max-width: 95%;
+		padding-top: 0;
+		margin-left: 5px;
+	}
+	.blue-link{
+		display: inline-block;
+	}
+}
+
+.extension-info{
+	border-top: 2px solid;
+	padding-top: 10px;
+	.mode({border-top-color: @border-gray},{border-top-color: @_dark-gray});
+	p{
+		display: inline-block;
+		vertical-align: top;
+		max-width: 95%;
+		padding-top: 0;
+		margin-left: 5px;
+		.mode({color: #5c6373},{color: @white-color});
+	}
+}
+
+.extension-extended{
+	display: none;
+	.extension-row{
+		margin-top: 15px;
+	}
+	.extension-details{
+		margin-top: 5px;
+	}
+}
+
+// Opera
+.extension-opera1{
+	.size(725px,388px);
+	.at2x('@{default-folder}extension/opera/opera-1.png@{version}', 725px,388px);
+	margin-left:-5px;
+}
+
+.extension-opera2{
+	.size(725px,460px);
+	.at2x('@{default-folder}extension/opera/opera-2.png@{version}', 725px,460px);
+	margin-left:-5px;
+}
+
+.extension-opera3{
+	.size(725px,262px);
+	.at2x('@{default-folder}extension/opera/opera-3.png@{version}', 725px,262px);
+	margin-left:-5px;
+}
+
+.extension-opera4{
+	.size(725px,427px);
+	.at2x('@{default-folder}extension/opera/opera-4.png@{version}', 725px,427px);
+	margin-left:-5px;
+	margin-top: 25px;
+}
+
+.extension-opera5{
+	.size(725px,271px);
+	.at2x('@{default-folder}extension/opera/opera-5.png@{version}', 725px,271px);
+	margin-left:-5px;
+}
+
+.extension-opera6{
+	.size(725px,255px);
+	.at2x('@{default-folder}extension/opera/opera-6.png@{version}', 725px,255px);
+	margin-left:-5px;
+}
+
+// Chrome
+.extension-chrome1{
+	.size(382px,251px);
+	.at2x('@{default-folder}extension/chrome/chrome-1.png@{version}', 382px,251px);
+	margin-left:-5px;
+}
+
+.extension-chrome2{
+	.size(725px,496px);
+	.at2x('@{default-folder}extension/chrome/chrome-2.png@{version}', 725px,496px);
+	margin-left:-5px;
+}
+
+.extension-chrome3{
+	.size(725px,283px);
+	.at2x('@{default-folder}extension/chrome/chrome-3.png@{version}', 725px,283px);
+	margin-left:-5px;
+}
+
+// Safari
+.extension-safari1{
+	.size(725px,416px);
+	.at2x('@{default-folder}extension/safari/safari-1.png@{version}', 725px,416px);
+	margin-left:-5px;
+}
+
+.extension-safari2{
+	.size(725px,416px);
+	.at2x('@{default-folder}extension/safari/safari-2.png@{version}', 725px,416px);
+	margin-left:-5px;
+}
+
+
+// IE
+.extension-ie1{
+	.size(725px,57px);
+	.at2x('@{default-folder}extension/ie/ie-1.png@{version}', 725px,57px);
+	margin-left:-5px;
+}
+
+.extension-ie2{
+	.size(475px,267px);
+	.at2x('@{default-folder}extension/ie/ie-2.png@{version}', 475px,267px);
+	margin-left:-5px;
+}
+
+.extension-ie3{
+	.size(522px,409px);
+	.at2x('@{default-folder}extension/ie/ie-3.png@{version}', 522px,409px);
+	margin-left:-5px;
+}
+.extension-ie4{
+	.size(498px,181px);
+	.at2x('@{default-folder}extension/ie/ie-4.png@{version}', 498px,181px);
+	margin-left:-5px;
+}
+
+.extension-ie5{
+	.size(725px,56px);
+	.at2x('@{default-folder}extension/ie/ie-5.png@{version}', 725px,56px);
+	margin-left:-5px;
+}
+
+.extension-ie6{
+	.size(725px,370px);
+	.at2x('@{default-folder}extension/ie/ie-6.png@{version}', 725px,370px);
+	margin-left:-5px;
+}
+
+.extension-ie7{
+	.size(428px,525px);
+	.at2x('@{default-folder}extension/ie/ie-7.png@{version}', 428px,525px);
+	margin-left:-5px;
+}
+
+.extension-edge-1{
+	.size(725px,522px);
+	.at2x('@{default-folder}extension/ie/edge-1.png', 725px,522px);
+	margin: -10px -5px;
+}
+
+.extension-edge-2{
+	.size(725px,522px);
+	.at2x('@{default-folder}extension/ie/edge-2.png', 725px,522px);
+	margin: -10px -5px;
+}
+
+.extension-edge-3{
+	.size(374px,278px);
+	.at2x('@{default-folder}extension/ie/edge-3.png', 374px,278px);
+	margin: -10px -5px;
+}
+
+// Firefox
+.extension-firefox1{
+	.size(725px,258px);
+	.at2x('@{default-folder}extension/firefox/firefox-1.png@{version}', 725px,258px);
+	margin-left:-5px;
+}
+
+.extension-firefox2{
+	.size(725px,258px);
+	.at2x('@{default-folder}extension/firefox/firefox-2.png@{version}', 725px,258px);
+	margin-left:-5px;
+}
+
+.extension-firefox3{
+	.size(725px,258px);
+	.at2x('@{default-folder}extension/firefox/firefox-3.png@{version}', 725px,258px);
+	margin-left:-5px;
+}
+
+.extension-firefox4{
+	.size(725px,238px);
+	.at2x('@{default-folder}extension/firefox/firefox-4.png@{version}', 725px,238px);
+	margin-left:-5px;
+}

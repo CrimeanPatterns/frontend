@@ -1,0 +1,208 @@
+@import '../helpers/mixins';
+@import '../helpers/variables';
+
+.auto-login{
+	padding: 5px;
+	height: 100%;
+	min-width: @default-width;
+	.mode({background: #f0f1f2},{background: @_dark-bg});
+	.main-blk{
+		.mode({background: #f0f1f2},{background: @_dark-bg-light});
+	}
+	.item{
+		min-height: 100%;
+		position: relative;
+	}
+	.program{
+		display: inline-block;
+	}
+	.auto-login-advertising{
+		width: @default-width;
+		margin: 0 auto;
+		position: relative;
+		padding: 30px 0;
+	}
+	.main-blk{
+		margin:0;
+		text-align: center;
+	}
+	.title-note{
+		display: block;
+		h3{
+			font-size: 18px;
+			padding: 15px 20px 15px 50px;
+			border-bottom: 1px dotted;
+			.mode({border-bottom-color: #8e9199},{border-bottom-color: @_dark-gray});
+			&:before{
+				left: 15px;
+			}
+		}
+	}
+	.progress-row{
+		padding: 10px 0;
+		&:after{
+			.clearfix(both);
+		}
+	}
+	.progress{
+		text-align: left;
+		padding: 8px 20px 0 10px;
+		font-size: 0;
+		float: left;
+		p{
+			display: inline-block;
+			vertical-align: middle;
+			margin-left: 20px;
+			padding-top: 0;
+		}
+	}
+	.advertising-info{
+		font-size: 10px;
+		height: 35px;
+		padding-top: 5px;
+		text-align: center;
+		line-height: 1.2;
+		margin: -30px -5px 0;
+		border-top: 1px solid;
+		.mode({
+			background: @white-color;
+			border-top-color: #d6dae6;
+			color: #828999;
+		},{
+			background: @_dark-bg-light;
+			border-top-color: @_dark-gray;
+			color: @white-color;
+		});
+	}
+	.readmore{
+		text-decoration: none;
+		display: inline-block;
+		height: 30px;
+		line-height: 30px;
+		color: @white-color;
+		font-size: 13px;
+		padding: 0 15px;
+		margin-top: 20px;
+		.mode({background: @blue-color},{background: @_dark-blue-color});
+	}
+}
+
+
+// Booking advertising
+
+.booking-advertising{
+	padding-left: 350px;
+	.thumb{
+		position: absolute;
+		top:100px;
+		z-index: 9;
+		left: 0;
+	}
+	.title{
+		font-size: 27px;
+		line-height: 16px;
+		.mode({color: #8e9199},{color: @white-color});
+		.big{
+			font-size: 250px;
+			position: relative;
+			left: -200px;
+			line-height: 230px;
+		}
+		.dark{
+			.mode({color: #5c6373},{color: @white-color});
+		}
+		.silver{
+			color: #e4e4e7;
+		}
+		.middle{
+			font-size: 100px;
+			line-height: 1px;
+			position: relative;
+			left: -10px;
+		}
+	}
+	.silver-block{
+		font-size: 13px;
+		color: @white-color;
+		padding: 5px 10px;
+		margin-top: 25px;
+		display: inline-block;
+		.mode({background: #8e9199},{background: @_dark-gray});
+	}
+	.description-row{
+		margin-top: 10px;
+		padding-top: 10px;
+		display: inline-block;
+		border-top: 1px dotted;
+		.mode({border-top-color: #8e9199},{border-top-color: @_dark-gray});
+		p{
+			font-size: 17px;
+			.mode({color: #5c6373},{color: @white-color});
+		}
+		ul{
+			margin-top: 5px;
+			li{
+				list-style: none;
+				display: block;
+				position: relative;
+				line-height: 1.5;
+				font-size: 13px;
+				.mode({color: @blue-color},{color: @_dark-blue-color});
+				&:before{
+					position: absolute;
+					content: "";
+					.size(12px,12px);
+					left: -20px;
+					top:3px;
+					background: url('@{default-folder}blue-check.jpg') no-repeat;
+				}
+			}
+		}
+	}
+}
+
+// Onecard advertising
+
+.onecard-advertising{
+	padding-left: 430px;
+	padding-top: 30px;
+	.thumb{
+		position: absolute;
+		z-index: 9;
+		top:130px;
+		left: 0;
+	}
+	.title{
+		font-size: 27px;
+		.mode({color: #8e9199},{color: @white-color});
+		.big{
+			font-size: 150px;
+			position: relative;
+			left: -10px;
+		}
+		.first{
+			position: relative;
+			left: -250px;
+		}
+		.silver-block{
+			font-size: 27px;
+			color: @white-color;
+			height: 35px;
+			line-height: 33px;
+			padding: 0 5px;
+			display: inline-block;
+			.mode({background: #8e9199},{background: @_dark-gray});
+		}
+		.dark{
+			line-height: 1.3;
+			.mode({color: #5c6373},{color: @white-color});
+		}
+		.blue{
+			line-height: 1.3;
+			.mode({color: @blue-color},{color: @_dark-blue-color});
+		}
+	}
+	.readmore{
+		margin-top: 100px;
+	}
+}

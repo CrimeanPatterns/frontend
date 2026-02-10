@@ -1,0 +1,66 @@
+@import '../helpers/mixins';
+@import '../helpers/variables';
+
+.one-card{
+	display: inline-block;
+	table.main-table{
+		table-layout: auto;
+		td{
+			text-align: center;
+			&.select{
+				width: 80px;
+			}
+			&.owner{
+				text-align: left;
+			}
+			&.select-all{
+				text-align: left;
+				padding-left: 39px;
+			}
+		}
+		th{
+			&.owner{
+				text-align: left;
+			}
+		}
+	}
+	.one-card-row{
+		width: 500px;
+		position: relative;
+		padding-bottom: 75px;
+		form{
+			min-height: 210px;
+		}
+		.row-submit{
+			width: 485px;
+			position: absolute;
+			left: 0;
+			bottom: 0;
+			border-right: 1px solid;
+			.mode({border-right-color: #d6dae6},{border-right-color: @_dark-gray});
+		}
+	}
+	.main-blk.small{
+		margin: 20px 15px 10px 0;
+	}
+	.summary-cards{
+		min-width: 200px;
+		.row{
+			width: 100%;
+			position: relative;
+			padding-bottom: 10px;
+			font-size: 13px;
+			line-height: 25px;
+			.mode({color: #8e9199},{color: @white-color});
+			&:last-child{
+				border-top: 1px dotted;
+				padding-top: 10px;
+				padding-bottom: 0;
+				.mode({border-top-color: #8e9199},{border-top-color: @_dark-gray});
+			}
+			&:after{
+				.clearfix(both);
+			}
+		}
+	}
+}

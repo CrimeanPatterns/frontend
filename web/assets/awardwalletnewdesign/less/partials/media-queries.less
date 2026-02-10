@@ -1,0 +1,448 @@
+@media screen and (max-width: 1023px) {
+	.top-prev{
+		left: -22px !important;
+	}
+	.header-site{
+		height: 55px;
+		.header-area:after{
+			background: transparent;
+		}
+		.user-top-buttons,
+		.user-menu {
+			margin-top: 15px;
+		}
+		.user-top-buttons li{
+			margin-left: 5px;
+			&:first-child{
+				margin-left: 0;
+			}
+		}
+		.credit-card{
+			.item{
+				padding-top: 19px !important;
+			}
+			.info{
+				margin-top: 20px !important;
+			}
+		}
+		.switcher{
+			margin-top: 15px;
+		}
+	}
+	.user-blk {
+		left: -235px;
+	}
+	.nav-row.active{
+		top:55px;
+		// margin-left: 22px;
+		min-width: 980px;
+	}
+	.menu-close {
+		left: 2px;
+	}
+	.content {
+		padding-left: 1px;
+	}
+	.page{
+		padding-top: 61px;
+	}
+	.persons,
+	.onecard,
+	.default {
+		li.active {
+			&:after,
+			&:before {
+				display: none;
+			}
+		}
+	}
+}
+
+@media screen and (min-width: 1024px){
+	.main-body.hide-menu{
+		.account-list .expire a,
+		.account-list .expire p,
+		.account-list .expire span{
+			max-width: 82% !important;
+		}
+		.account-list.show-owner{
+			.account-row-block > div.owner,
+			.account-title-row > div.owner {
+				display: inline-block;
+				width: @column-owner;
+			}
+			.account-row-block > div.account,
+			.account-title-row > div.account {
+				display: inline-block;
+				width: @column-account - 3%;
+			}
+			.account-row-block > div.program,
+			.account-title-row > div.program {
+				width: @column-program - 3%;
+			}
+			div.expire,
+			div.expire {
+				width: @column-expire - 3%;
+			}
+			.coupon .account{
+				width: @column-account + 18% !important;
+			}
+			 + div + div + .account-totals{
+				 .title {
+					width: calc(@column-program + 10%) !important;
+				 }
+				 .account {
+					width: calc(@column-account + 6% - 15px) !important;
+				 }
+				 .balance {
+					 width: calc(@column-balance - 5px) !important;
+					 &.cash {
+						 width: calc(8% - 3px) !important;
+					 }
+				 }
+			}
+			.update{
+				width: @column-updater-row - 9% !important;
+			}
+			.sub-account-row-block{
+				&.row-unhideable {
+					.program{
+						width: @column-program  + 36% !important;
+					}
+				}
+				.program{
+					width: @column-program  + 30% !important;
+				}
+				&.coupon-sub{
+					.program{
+						width: @column-program - 3% !important;
+					}
+					.account{
+						width: @column-account + 10% !important;
+					}
+				}
+			}
+			// .sub-account-row-block .update{
+			// 	width: 35% !important;
+			// }
+		}
+		.account-list.retrieve-accounts .update{
+			width: @column-updater-row - 9% !important;
+		}
+	}
+}
+
+@media screen and (max-width: 1130px) {
+	.main-body.business .user-menu{
+		.mode({border-left: 1px solid #aaadb3 !important},{border-color: @_dark-gray !important});
+	}
+	.main-body.business .user-menu li:nth-child(1),
+	.main-body.business .user-menu li:nth-child(5){
+		display: inline-block !important;
+	}
+	.icon-android-app{
+		.size(31px,31px);
+		background-position: -436px -289px;
+	}
+	.icon-iphone-app{
+		.size(31px,31px);
+		background-position: -477px -289px;
+	}
+	.footer-site{
+		padding: 0 120px;
+	}
+}
+
+@media screen and (min-width: 1130px) and (max-width: 1219px) {
+	.user-menu{
+		span{
+			display: none !important;
+		}
+	}
+}
+
+@media screen and (max-width: 1220px){
+	.user-menu span,
+	.content .last-update {
+		display: none !important;
+	}
+}
+
+@media screen and (max-width: 1250px) {
+	.main-body:not(.hide-menu){
+		.main-blk.shortened + .faq{
+			display: none;
+		}
+	}
+	.footer-menu{
+		>ul{
+			> li{
+				&:first-child:nth-last-child(7),
+				&:first-child:nth-last-child(8),
+				&:first-child:nth-last-child(7) ~ li:nth-child(4):after,
+				&:first-child:nth-last-child(8) ~ li:nth-child(4):after{
+					content: "\A ";
+					white-space: pre;
+				}
+				&:first-child:nth-last-child(7),
+				&:first-child:nth-last-child(8),
+				&:first-child:nth-last-child(7) ~ li:nth-child(4) a,
+				&:first-child:nth-last-child(8) ~ li:nth-child(4) a{
+					border-right: none;
+				}
+				&:first-child:nth-last-child(9),
+				&:first-child:nth-last-child(10),
+				&:first-child:nth-last-child(9) ~ li:nth-child(5):after,
+				&:first-child:nth-last-child(10) ~ li:nth-child(5):after{
+					content: "\A ";
+					white-space: pre;
+				}
+				&:first-child:nth-last-child(9),
+				&:first-child:nth-last-child(10),
+				&:first-child:nth-last-child(9) ~ li:nth-child(5) a,
+				&:first-child:nth-last-child(10) ~ li:nth-child(5) a{
+					border-right: none;
+				}
+				&:first-child:nth-last-child(11),
+				&:first-child:nth-last-child(12),
+				&:first-child:nth-last-child(11) ~ li:nth-child(6):after,
+				&:first-child:nth-last-child(12) ~ li:nth-child(6):after{
+					content: "\A ";
+					white-space: pre;
+				}
+				&:first-child:nth-last-child(11),
+				&:first-child:nth-last-child(12),
+				&:first-child:nth-last-child(11) ~ li:nth-child(6) a,
+				&:first-child:nth-last-child(12) ~ li:nth-child(6) a{
+					border-right: none;
+				}
+			}
+		}
+	}
+}
+
+@media screen and (min-width: 1250px) {
+	.main-body.hide-menu{
+		.account-list.show-owner{
+			.sub-account-row-block{
+				&.coupon-sub{
+					.program{
+						width: @column-program + 10% !important;
+					}
+					.account{
+						width: @column-account - 3% !important;
+					}
+				}
+			}
+		}
+	}
+	.account-list .account-row-block > div.program,
+	.account-list .account-title-row > div.program{
+		width: 29%;
+	}
+	.account-list .program-title{
+		width: 80% !important;
+	}
+	.account-list .sub-account-row-block .program{
+		width: @column-program + 24% !important;
+	}
+	.account-list .expire a,
+	.account-list .expire p,
+	.account-list .expire span{
+		max-width: 83% !important;
+	}
+	.account-list.show-owner{
+		.account-row-block > div.owner,
+		.account-title-row > div.owner {
+			display: inline-block;
+			width: @column-owner;
+		}
+		.account-row-block > div.account,
+		.account-title-row > div.account {
+			display: inline-block;
+			width: @column-account - 3%;
+		}
+		.account-row-block > div.program,
+		.account-title-row > div.program {
+			width: @column-program - 3%;
+		}
+		div.expire,
+		div.expire {
+			width: @column-expire - 3%;
+		}
+		.coupon .account{
+			width: @column-account + 18% !important;
+		}
+		 + div + div + .account-totals{
+			.title {
+				width: calc(@column-program + 10% - 9px) !important;
+			}
+		}
+		.update{
+			width: @column-updater-row !important;
+		}
+		.sub-account-row-block{
+			&.row-unhideable {
+				.program{
+					width: @column-program  + 36% !important;
+				}
+			}
+			.program{
+				width: @column-program  + 30% !important;
+			}
+			&.coupon-sub{
+				.program{
+					width: @column-program + 10% !important;
+				}
+				.account{
+					width: @column-account - 3% !important;
+				}
+			}
+			.update {
+				float: right;
+				width: @column-updater-row - 10% !important;
+			}
+		}
+	}
+
+	.account-list.retrieve-accounts .update{
+		width: @column-updater-row - 9% !important;
+	}
+	.account-list .account p.long{
+		font-size: 13px !important;
+	}
+	.account-list .account p.long.email{
+		font-size: 12px !important;
+	}
+
+	.account-totals {
+		.title {
+			width: @column-program + @column-owner - 3% !important;
+		}
+		.account {
+			width: @column-account + @column-status - 3% !important;
+		}
+		&.account-totals-highlight {
+			.title {
+				width: calc(@column-program + @column-owner - 3% - 10px) !important;
+			}
+			.cash {
+				width: calc(@column-cash - 2px) !important;
+			}
+		}
+	}
+	.business .account-totals {
+		.title {
+			width: @column-program + @column-owner + 1% !important;
+		}
+		.account {
+			width: @column-account + 3% !important;
+		}
+	}
+}
+
+
+@media screen and (min-width: 1350px) {
+	.account-list .account p{
+		line-height: 1.2 !important;
+	}
+	.silver-blk{
+		&.update-account,
+		&.update-account-advertise{
+			float: left;
+			.size(50%,340px);
+			overflow: hidden;
+			.advertise{
+				display: table;
+				width: 100%;
+				.card{
+					margin-top: 30px;
+					overflow: visible;
+					height: 288px !important;
+					text-align: center;
+					&.wide{
+						text-align: left;
+					}
+				}
+			}
+		}
+		&.update-account-advertise{
+			border-left: none;
+			border-top: 1px solid !important;
+			.mode({border-top-color: #d6dae6 !important},{border-top-color: @_dark-gray !important});
+		}
+	}
+}
+
+@media screen and (min-width: 1480px) {
+	.account-list {
+		.account-title-row {
+			.cash br {
+				display: none;
+			}
+		}
+	}
+}
+@media screen and (min-width: 1650px) {
+	.account-list {
+		.account-title-row {
+			.cash i {
+				display: inline-block !important;
+			}
+		}
+	}
+}
+
+@media screen and (max-width: 1900px){
+	.header-site{
+		.credit-card{
+			display: none !important;
+		}
+	}
+	
+}
+@media screen and (min-width: 1650px){
+	.account-row-block > div.lastupdate,
+	.account-title-row > div.lastupdate{
+		display: inline-block !important;
+	}
+	.row-filter > div.lastupdate {
+		display: inline-block !important;
+	}
+	.account-list .expire{
+		width: 10% !important;
+	}
+	.account-list.show-owner .update{
+		width:37% !important;
+	}
+	.account-list.business .row-account .update{
+		width:33% !important;
+	}
+}
+@media screen and (min-width: 1900px){
+	.header-site{
+		&.business + .page{
+			.nav-row{
+				right: 0;
+				margin-right: 10px;
+			}
+		}
+	}
+	.nav-row{
+		//margin-right: 0;
+		//right: 520px;
+		&.scrolled{
+			right: 20px;
+			margin-right: -6px;
+		}
+		&.active{
+			margin-right: 0 !important;
+		}
+	}
+	.last-update {
+		//right: 520px;
+		&.scrolled{
+			right: 20px;
+		}
+	}
+}

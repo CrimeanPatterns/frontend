@@ -1,0 +1,308 @@
+@import '../helpers/mixins';
+@import '../helpers/variables';
+
+.account-list-ie{
+	border-collapse: collapse;
+	border-spacing: 0;
+	width: 100%;
+	table-layout: fixed;
+	border-top: 2px solid @border-gray;
+	border-bottom: 1px dotted #8e9199;
+	margin-bottom:25px;
+	col.check{
+		width: 28px;
+	}
+	col.account-details{
+		width: 29px;
+	}
+	col.program{
+		width: 25%;
+	}
+	col.owner{
+		width: 15%;
+	}
+	col.account{
+		width: 20%;
+	}
+	col.status{
+		width: 15%;
+	}
+	col.balance{
+		width: 70px;
+	}
+	col.expire{
+		width: 15%;
+	}
+	col.actions{
+		width: 60px;
+	}
+	thead{
+		th{
+			color: #8e9199;
+			font-size: 0;
+			text-align: left;
+			font-weight: normal;
+			font-size: 12px;
+			padding:5px 0 5px 15px;
+			a{
+				text-decoration: none;
+				color: #8e9199;
+				display: inline-block;
+				vertical-align: middle;
+				font-size: 12px;
+			}
+			[class^="icon-"],
+			[class*=" icon-"]{
+				margin-left: 5px;
+			}
+			&.balance{
+				padding:5px 0;
+				text-align: right;
+			}
+		}
+		tr:hover{
+			th{
+				a{
+					text-decoration: none !important;
+					color: #8e9199 !important;
+				}
+			}
+		}
+	}
+	td{
+		border-top: 1px dotted #8e9199;
+		height: 36px;
+		vertical-align: middle;
+		&.check{
+			text-align: right;
+			.row-action{
+				position: relative;
+			}
+			.icon-increased,
+			.icon-decreased,
+			.icon-errored,
+			.icon-disabled{
+				position: absolute;
+				z-index: 9;
+				top: -8px;
+				left: -7px;
+			}
+		}
+		&.account-details{
+			text-align: right;
+		}
+		&.program{
+			padding-left: 15px;
+			padding-right: 40px;
+			a,p,span{
+				text-decoration: none;
+				font-size: 13px;
+				color: @text-gray;
+				line-height: 1.2;
+			}
+			.alliance{
+				float: right;
+				display: inline-block;
+			}
+		}
+		&.account{
+			padding-left: 15px;
+			p{
+				display: block;
+				padding: 2px 0;
+				white-space: nowrap;
+				overflow: hidden;
+				text-overflow:ellipsis;
+			}
+			p.number{
+				font-size: 13px;
+				color: @text-gray;
+			}
+			p.email{
+				font-size: 13px;
+				color: #929399;
+			}
+		}
+		&.status,
+		&.owner{
+			padding-left: 15px;
+			white-space: nowrap;
+			overflow: hidden;
+			text-overflow:ellipsis;
+			font-size: 13px;
+			color: @text-gray
+		}
+		&.balance{
+			text-align: right;
+			// padding-right: 0;
+			font-size: 15px;
+			color: @text-gray;
+		}
+		&.expire{
+			padding-left: 15px;
+			font-size: 0;
+			p,a,span{
+				text-decoration: none;
+				display: inline-block;
+				margin-left: 5px;
+				max-width: 80%;
+				vertical-align: middle;
+				font-size: 13px;
+				color: @text-gray;
+				line-height: 1;
+			}
+		}
+		&.actions{
+			text-align: right;
+			ul{
+				font-size: 0;
+			}
+			li{
+				height: 13px;
+				line-height: 1;
+				display: inline-block;
+				vertical-align: middle;
+				padding: 0 6px;
+				border-left: 1px solid @gray;
+				&:first-child{
+					border-left: none;
+				}
+			}
+		}
+		&.update{
+			padding-left: 15px;
+			text-align: right;
+			.loader {
+				margin: 0 20px;
+			}
+			p{
+				display: inline-block;
+				vertical-align: middle;
+				font-size: 13px;
+				max-width: 65%;
+				color: @text-gray;
+				line-height: 1.2;
+				span{
+					display: block;
+					text-align: right;
+					font-size: 11px;
+					background: transparent!important;
+				}
+			}
+			.btn-blue{
+				min-width: 45px;
+				padding: 0 10px;
+			}
+			[class^="icon-"],
+			[class*=" icon-"] {
+				margin: 0 10px;
+			}
+		}
+	}
+	tr{
+		&:hover{
+			td{
+				border-top: 1px solid #8e9199;
+			}
+			+ tr{
+				td{
+					border-top: 1px solid #8e9199;
+				}
+			}
+			.program a,
+			.expire a{
+				color: @blue-color;
+				text-decoration: underline;
+				&:hover{
+					text-decoration: none;
+				}
+			}
+			&:last-child{
+				td{
+					border-bottom: 1px solid #8e9199;
+				}
+			}
+		}
+		&:last-child{
+			td{
+				border-bottom: 1px dotted #8e9199;
+			}
+			&:hover{
+				td{
+					border-top: 1px solid #8e9199;
+				}
+			}
+		}
+	}
+	tr.row-kind-user{
+		padding: 2px 0;
+		.user-item{
+			position: relative;
+			background:@gray-light;
+			padding: 6px 0;
+		}
+		.user-icon{
+			display: inline-block;
+			vertical-align: middle;
+			position: relative;
+			padding-left: 16px;
+		}
+		.user-icon{
+			display: inline-block;
+			position: relative;
+			&:after{
+				position: absolute;
+				content: "";
+				border-top: 8px solid @white-color;
+				border-left: 8px solid transparent;
+				border-right: 8px solid transparent;
+				bottom: -17px;
+				left: 13px;
+			}
+			&:before{
+				position: absolute;
+				content: "";
+				border-top: 8px solid #8e9199;
+				border-left: 8px solid transparent;
+				border-right: 8px solid transparent;
+				bottom: -18px;
+				left: 13px;
+			}
+		}
+		h3{
+			display: inline-block;
+			vertical-align: middle;
+			margin-left: 12px;
+			font-size: 13px;
+			text-transform: uppercase;
+			color: @border-gray;
+		}
+		&:hover{
+			td{
+				border-top:1px dotted #8e9199;
+			}
+			+ tr td{
+				border-top:1px dotted #8e9199;
+			}
+		}
+	}
+	tr.row-kind{
+		position: relative;
+		&:first-child td{
+			padding-top: 0;
+		}
+		td{
+			padding-top: 20px;
+			border-top: 1px dotted #8e9199;
+		}
+		h3{
+			border-bottom: none;
+			margin-top: 0;
+		}
+		&:hover{
+			+ tr td{
+				border-top: 1px dotted #8e9199;
+			}
+		}
+	}
+}

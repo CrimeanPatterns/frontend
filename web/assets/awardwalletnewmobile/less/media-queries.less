@@ -1,0 +1,162 @@
+@media screen and (max-width: 480px) {
+	.icon-login-stick{
+		top: -30px;
+		right: -35px;
+	}
+	.icon-login-key{
+		top:-10px;
+		position: absolute;
+		right: 0;
+	}
+	.create-account{
+		margin-left: 0px !important;
+	}
+}
+@media screen and (min-width: 481px) {
+	.wrapper{
+		&.error{
+			.logo{
+				top:-0 !important;
+			}
+		}
+		.top-menu{
+			.back{
+				h1{
+					max-width: 100%;
+				}
+			}
+		}
+		.logo{
+			margin:75px auto 0;
+		}
+		.login-in{
+			width: 350px;
+			margin:75px auto 0;
+			.create-account{
+				display: block;
+				margin: 30px auto 0;
+			}
+		}
+	}
+	.icon-login-key{
+		margin:45px auto 0;
+	}
+	.icon-login-stick{
+		right: -40px;
+	}
+}
+@media screen and (min-width: 767px){
+	.wrapper{
+		.account,
+		.sub-account{
+			table{
+				border-collapse: collapse;
+				td{
+					font-size: 17px;
+					h3{
+						font-size: 17px;
+					}
+					&.title{
+						width: 33%;
+					}
+					&.expiration-row{
+						display: table-cell;
+						width: 16%;
+					}
+					&.status-row{
+						display: table-cell;
+						width: 13%;
+					}
+					&.balance{
+						width: 16%;
+					}
+					
+				}
+			}
+		}
+		.title-list{
+			display: block;
+		}
+	}
+	.ng-modal#ngmodal_pincodePopup{
+		.pin-code{
+			display: block;
+			width: 250px;
+			position: absolute;
+			top:50%;
+			left: 50%;
+			min-height: 1px;
+			height: auto;
+			.transform-translate(-50%,-50%);
+			.col,
+			.row{
+				display: block;
+				height: auto !important;
+			}
+			.top-row{
+				padding: 60px 0;
+			}
+		}
+	}
+}
+@media screen and (min-width: 980px){
+	.wrapper{
+		.account,
+		.sub-account{
+			table{
+				td{
+					p.email{
+						display: none !important;
+					}
+					&.account-row{
+						display: table-cell;
+						width: 20%;
+					}
+				}
+			}
+		}
+		.title-list{
+			table{
+				td.account-row{
+					display: table-cell;
+				}
+			}
+		}
+	}
+}
+@media screen and (min-height:980px){
+	.wrapper{
+		.logo{
+			margin:65px auto 0;
+		}
+		.login-in{
+			margin:95px auto 0;
+			.create-account{
+				display: block;
+				margin: 45px auto 0;
+			}
+		}
+	}
+	.icon-login-knob{
+		margin:60px auto 0;
+		display: block;
+	}
+	.icon-login-key{
+		margin:15px auto 0;
+	}
+	.icon-login-stick{
+		right: -40px;
+	}
+}
+
+
+@media  only screen and (-webkit-min-device-pixel-ratio: 3) and (min-width: 768px),
+		only screen and (min--moz-device-pixel-ratio: 3) and (min-width: 768px),
+		only screen and (-o-min-device-pixel-ratio: 3/1) and (min-width: 768px),
+		only screen and (min-device-pixel-ratio: 3) and (min-width: 768px),
+		only screen and (min-resolution: 3dppx){
+	// .logo{
+	// 	background-image:url('../img/logo@3x.png');
+	// 	background-size: 180px 58px;
+	// }
+}

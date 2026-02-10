@@ -1,0 +1,27 @@
+@import '../helpers/mixins';
+@import '../helpers/variables';
+@import '../helpers/flexbox';
+
+.or-block {
+  text-transform: uppercase;
+  font-size: 13px;
+  position: relative;
+  line-height: 20px;
+  margin: 0 21px;
+  text-align: center;
+  .mode({color: @text-gray},{color: @white-color});
+  &:before,
+  &:after {
+    position: absolute;
+    content: "";
+    .size(150px, 1px);
+    top: 11px;
+    .mode({background: #a6aab3},{background: @white-color});
+  }
+  &:before{
+    left: 0px;
+  }
+  &:after{
+    right: 0px;
+  }
+}
