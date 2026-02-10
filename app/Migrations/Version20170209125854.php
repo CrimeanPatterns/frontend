@@ -1,0 +1,22 @@
+<?php
+
+namespace AwardWallet\MainBundle\Migrations;
+
+use Doctrine\DBAL\Schema\Schema;
+use Doctrine\Migrations\AbstractMigration;
+
+/**
+ * Auto-generated Migration: Please modify to your needs!
+ */
+class Version20170209125854 extends AbstractMigration
+{
+    public function up(Schema $schema): void
+    {
+        $this->addSql("ALTER TABLE Account ADD HistoryState MEDIUMTEXT NULL COMMENT 'Состояние истории, используется для incremental запросов истории' AFTER HistoryVersion");
+    }
+
+    public function down(Schema $schema): void
+    {
+        $this->addSql("ALTER TABLE Account DROP HistoryState");
+    }
+}
