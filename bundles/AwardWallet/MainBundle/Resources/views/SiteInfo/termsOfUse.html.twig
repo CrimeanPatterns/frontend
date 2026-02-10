@@ -1,0 +1,420 @@
+	<div class="main-blk">
+		{% if heading is defined %}{{ heading|raw }} {% endif %}
+		<!-- mobile native app style -->
+		<style>
+        {% if is_granted('SITE_MOBILE_AREA') %}
+			@font-face {
+	            font-family: 'Open Sans', sans-serif;
+	            src: url('https://awardwallet.com/assets/awardwalletnewdesign/font/opensans-regular-webfont.eot?v=2');
+	            src: url('https://awardwallet.com/assets/awardwalletnewdesign/font/opensans-regular-webfont.eot?#iefix') format('embedded-opentype'),
+	                 url('https://awardwallet.com/assets/awardwalletnewdesign/font/opensans-regular-webfont.woff?v=2') format('woff'),
+	                 url('https://awardwallet.com/assets/awardwalletnewdesign/font/opensans-regular-webfont.ttf?v=2') format('truetype');
+	            font-weight: normal;
+	            font-style: normal;
+	        }
+
+	        @font-face {
+	            font-family: 'Open Sans', sans-serif;
+	            src: url('https://awardwallet.com/assets/awardwalletnewdesign/font/opensans-bold-webfont.eot?v=2');
+	            src: url('https://awardwallet.com/assets/awardwalletnewdesign/font/opensans-bold-webfont.eot?#iefix') format('embedded-opentype'),
+	                 url('https://awardwallet.com/assets/awardwalletnewdesign/font/opensans-bold-webfont.woff?v=2') format('woff'),
+	                 url('https://awardwallet.com/assets/awardwalletnewdesign/font/opensans-bold-webfont.ttf?v=2') format('truetype');
+	            font-weight: 700;
+	            font-style: normal;
+	        }
+
+	        body,html{
+	            margin: 0;
+	            padding: 0;
+	            font-family: 'Open Sans', sans-serif;
+	        }
+
+	        * {
+	            margin:0;
+	            padding: 0;
+	            box-sizing: border-box;
+	        }
+
+	        .main-blk {
+	            font-family: 'Open Sans', sans-serif;
+	        }
+
+	        .main-blk h1,
+	        .main-blk h2,
+	        .main-blk h3,
+	        .main-blk h4{
+	            font-weight: normal;
+	        }
+
+	        .main-blk .bold,
+	        .main-blk strong {
+	            font-weight: bold;
+	        }
+
+	        .main-blk p {
+	            font-size: 16px;
+	            color: #535457;
+	            padding-top: 20px;
+	            line-height: 1.625;
+	        }
+
+	        .main-blk p:empty {
+	            display: none
+	        }
+
+	        .main-blk p span.red {
+	            color: #cc3d5e;
+	            font-weight: 700
+	        }
+
+	        .main-blk p:first-child {
+	            padding-top: 0
+	        }
+
+	        .main-blk h2 {
+	            display: block;
+	            margin: -15px -15px 0;
+	            padding: 15px;
+	            background: #f8f9fa;
+	            position: relative;
+	            font-size: 20px;
+	            color: #5c6373;
+	            text-align: center;
+	            border-bottom: 1px solid #dfe1e6
+	        }
+
+	        .main-blk h3 {
+	            display: block;
+	            margin: 10px -15px 0;
+	            padding: 30px 15px 10px;
+	            background: #fff;
+	            position: relative;
+	            font-size: 20px;
+	            color: #5c6373;
+	            border-bottom: 2px solid #bec2cc;
+	            border-top: 1px solid #dfe1e6
+	        }
+
+	        .main-blk h4 {
+	            font-size: 20px;
+	            line-height: 1.3;
+	            color: #535457
+	        }
+
+	        .main-blk section {
+	            padding-top: 30px
+	        }
+
+	        .main-blk section:first-child {
+	            padding-top: 0
+	        }
+
+	        .main-blk .row-blk {
+	            margin-top: 45px
+	        }
+
+	        .main-blk .row-blk:first-child {
+	            margin-top: 25px
+	        }
+
+	        .main-blk .row-blk:last-child {
+	            margin-bottom: 5px
+	        }
+
+	        .main-blk .row-blk .title {
+	            height: auto!important
+	        }
+
+	        .main-blk .row-blk .prev {
+	            margin-bottom: 20px
+	        }
+
+	        .main-blk .row-blk .prev img {
+	            width: 100px;
+	            vertical-align: top
+	        }
+
+	        .main-blk .row-blk h4 {
+	            font-size: 20px;
+	            color: #5c6373
+	        }
+
+	        .main-blk .row-blk span.red {
+	            font-size: 20px;
+	            color: #cc3d5e;
+	            margin-top: 5px;
+	            display: block
+	        }
+
+	        .main-blk {
+	            background: #f8f9fa;
+	            padding: 15px
+	        }
+
+	        .main-blk ul {
+	            background: #fff;
+	            margin: 0 -15px -15px;
+	            padding: 15px 15px 20px
+	        }
+
+	        .main-blk ul li {
+	            display: block;
+	            position: relative;
+	            padding-left: 15px;
+	            color: #535457;
+	            font-size: 16px;
+	            margin-top: 10px;
+	            line-height: 1.625;
+	        }
+
+	        .main-blk ul li:after {
+	            position: absolute;
+	            content: "";
+	            left: 0;
+	            top: 11px;
+	            width: 6px;
+	            height: 6px;
+	            border-radius: 50%;
+	            -webkit-border-radius: 50%;
+	            -moz-border-radius: 50%;
+	            background: #535457
+	        }
+
+	        .main-blk ul li:first-child {
+	            margin-top: 0
+	        }
+
+	        .main-blk .number-list li {
+	            font-size: 16px;
+	            margin-top: 10px;
+	            line-height: 1.625;
+	            padding-left: 20px
+	        }
+
+	        .main-blk .main-table {
+	            border-spacing: 0;
+	            border-collapse: separate;
+	            width: 100%;
+	            margin-top: 20px;
+	            border-top: 2px solid #bec2cc
+	        }
+
+	        .main-blk .main-table th {
+	            font-size: 16px;
+	            color: #8e9199;
+	            text-align: left;
+	            font-weight: 400;
+	            padding: 8px 12px;
+	            border-bottom: 1px dotted #8e9199
+	        }
+
+	        .main-blk .main-table td {
+	            font-size: 16px;
+	            line-height: 1.5
+	        }
+
+	        .main-blk.white {
+	            background: #fff;
+	            border-top: 1px solid #dfe1e6
+	        }
+
+	        .main-blk.white p:first-child {
+	            padding-top: 15px
+	        }
+
+	        .main-blk a {
+	            font-weight: 700;
+	            font-size: 16px;
+	            text-decoration: none;
+	            color: #4684c4
+	        }
+
+	        .main-blk a:active {
+	            text-decoration: underline
+	        }
+
+	        .main-blk .privacy-table {
+	            display: block
+	        }
+
+	        .main-blk .privacy-table th {
+	            display: none
+	        }
+
+	        .main-blk .privacy-table tr {
+	            display: block;
+	            border-top: 2px solid #bec2cc;
+	            margin-top: -1px
+	        }
+
+	        .main-blk .privacy-table tr:first-child {
+	            border-top: 0
+	        }
+
+	        .main-blk .privacy-table td {
+	            display: flex;
+	            flex-direction: row;
+	            flex-wrap: nowrap;
+	            align-items: center;
+	            padding-left: 0;
+	            padding-right: 0
+	        }
+
+	        .main-blk .privacy-table td span {
+	            width: calc(0)
+	        }
+
+	        .main-blk .privacy-table td:before {
+	            content: attr(data-title);
+	            font-size: 13px;
+	            color: #8e9199;
+	            display: block;
+	            width: 100px;
+	            padding-right: 10px
+	        }
+
+	        .account-blk .prev,
+	        .account-blk .title {
+	            display: inline-block;
+	            vertical-align: middle
+	        }
+
+	        .main-blk p.silver {
+	            text-align: center;
+	            font-size: 12px;
+	            color: #a6a9b3;
+	            margin: -10px 0
+	        }
+
+	        /*dark mode*/
+
+	        .dark-mode body,
+	        .dark-mode .main-blk,
+	        .dark-mode .main-blk h2{
+	            background: #1c1c1e;
+	        }
+
+	        .dark-mode .main-blk ul,
+	        .dark-mode .main-blk.white,
+	        .dark-mode .main-blk h3{
+	            background: #141414;
+	        }
+
+	        .dark-mode .main-blk ul li:after{
+	            background: #fff;
+	        }
+
+	        .dark-mode .main-blk p,
+	        .dark-mode .main-blk ul li,
+	        .dark-mode .main-blk h3,
+	        .dark-mode .main-blk h2,
+	        .dark-mode .main-blk .row-blk h4,
+	        .dark-mode .main-blk h4,
+	        .dark-mode .main-blk .number-list li:before,
+	        .dark-mode .main-blk .privacy-table td:before,
+	        .dark-mode .main-blk .main-table td{
+	            color: #fff;
+	        }
+
+	        .dark-mode .main-blk p span.red,
+	        .dark-mode .main-blk .row-blk span.red{
+	            color: #0984FF;
+	        }
+
+	        .dark-mode .main-blk h2,
+	        .dark-mode .main-blk h3,
+	        .dark-mode .main-blk .privacy-table tr,
+	        .dark-mode .main-blk.white,
+	        .dark-mode .main-blk .main-table,
+	        .dark-mode .main-blk .main-table th {
+	            border-color: #5a5a5f;
+	        }
+
+	        .dark-mode .main-blk p.silver{
+	            color: #8e8e93;
+	        }
+
+	        .dark-mode .main-blk .scroll-links a[data-href],
+	        .dark-mode .main-blk .scroll-links span[data-href],
+	        .dark-mode .main-blk a {
+	            color: #0984FF;
+	        }
+        {% endif %}
+		</style>
+		<!-- end -->
+		<div class="main-blk-content">
+			<p class="silver">Last Updated on January 11, 2021</p>
+			<p class="bold">1.&nbsp;Agreement</p>
+			<p><span class="bold">1.1.</span>&nbsp;This Service Agreement ("Agreement") is a contract between AwardWallet LLC., a Delaware corporation ("AwardWallet", “AW”, "we", "us") and the user designated by the registration data provided at the time of registration with AwardWallet (“User”, “you”).</p>
+			<p><span class="bold">1.2.</span>&nbsp;The User enters into this Agreement, and agrees to be bound by it, by clicking on acceptance button on the AwardWallet Website or otherwise as part of the registration process. This should serve as an electronic signature. Alternatively, in case the User was not presented with the explicit electronic acceptance mechanism, any use of AwardWallet Service by User shall be also deemed to constitute acceptance by User of the Agreement.</p>
+			<p><span class="bold">1.3.</span>&nbsp;AwardWallet shall have the right, in its sole discretion, at any time and without prior notice, to modify this Agreement and any terms thereof. Such modifications shall be effective immediately upon AwardWallet publishing the modified Agreement on its Website, or otherwise informing the User about the modification. In the event User does not receive the notification, or does not explicitly acknowledge the acceptance of the modified Agreement, for whatever reason, the modified Agreement will still take effect immediately upon its publication by AwardWallet, as stated in this section. Furthermore, any use of AwardWallet Service by User, after the date of such publication, shall be also deemed to constitute acceptance by User of the modified Agreement.</p>
+			<p class="bold">2.&nbsp;Service</p>
+			<p><span class="bold">2.1.</span>&nbsp;AwardWallet will provide one or more of the following services (“Service” or “Services”):</p>
+			<p><span class="bold">a)</span>&nbsp;Use of AwardWallet.com website and its subdomains ("Website" or “AW Website”) and any functionality available on the Website. The term Website shall include any written communications (email) that AwardWallet may send to the User.</p>
+			<p><span class="bold">b)</span>&nbsp;Use of AwardWallet mobile applications and any functionality available within them (“Apps” or “AW Apps”).</p>
+			<p><span class="bold">c)</span>&nbsp;Provision of plastic cards with programmed magnetic strip containing loyalty program information (“OneCard”).</p>
+			<p><span class="bold">d)</span>&nbsp;Jointly with a third-party BookYourAward, provision of personalized booking service, assisting User with booking of airfares using their loyalty program benefits and miles (“BookYourAward”).</p>
+			<p><span class="bold">e)</span>&nbsp;Use of AwardWallet’s Application Programming Interface (“API” or “AW API”) protocols in order to receive or transmit data with AwardWallet’s back-end server system (“AW System”). API functionality may include web page or email parsing for loyalty program or travel itinerary information, as well as other functions made available by AwardWallet at its own discretion.</p>
+			<p><span class="bold">f)</span>&nbsp;Access to data and information which may be text, audio, video, graphics, web links, or of other nature, which has been developed by AwardWallet itself, or sourced from other third parties (“AwardWallet Content”, “AW Content”).</p>
+			<p><span class="bold">2.2.</span>&nbsp;AwardWallet shall have the right, in its sole discretion, at any time and without prior notice, to modify the Services or any part thereof. Any modified portion of the Services shall be subject to this Agreement.</p>
+			<p class="bold">3.&nbsp;Charges and Consideration</p>
+			<p><span class="bold">3.1.</span>&nbsp;AwardWallet publishes the prices for Services, effective at any point in time. AwardWallet reserves the right to change its pricing policy at any time, in its sole discretion.</p>
+			<p><span class="bold">3.2.</span>&nbsp;The parties agree that, if there is no monetary compensation paid by the User to AwardWallet by virtue of User having a free account on AwardWallet Website, then their business relationship represents full consideration for this Agreement, and that there shall be no monetary compensation required from either party to the other for fulfilling obligations under this Agreement.</p>
+			<p><span class="bold">3.3.</span>&nbsp;Users that register for AwardWallet Plus membership and pay membership fee per pricing policy effective at the time of registration, will have access to premium features of AwardWallet Website. In case of termination of this Agreement by the User for any reason and at any time, User will not be eligible for any refund. In case of termination by AwardWallet for any reason and at any time, User will not be eligible for any refund, however AwardWallet may, in its sole discretion, issue a partial refund to the User, prorated by the amount of time that Services were actually provided relative to the full subscription period.</p>
+			<p><span class="bold">3.4.</span>&nbsp;Users that order OneCard and pay shipping and handling fee per pricing policy effective at the time of the order, will be eligible for 30-day satisfaction guarantee as stated in this paragraph. If the User notifies AwardWallet in writing, within 30 days from placing the order, that they are not completely satisfied with OneCard, then AwardWallet, in its sole discretion, will issue a replacement card at no cost to User, or refund the corresponding fee back to the User.</p>
+			<p><span class="bold">3.5.</span>&nbsp;Users that use our Award Booking Service, will be eligible for a 10-day satisfaction guarantee as stated in this paragraph. If the User notifies AwardWallet in writing, within 10 days from placing the order, that the Award Booking Service has not been performed to their satisfaction, then AwardWallet will refund the corresponding services fee collected by AwardWallet back to the User. In no event however shall AwardWallet be liable for refunding any taxes and government fees, or cost of airline tickets in form of cash or miles.</p>
+			<p><span class="bold">3.6.</span>&nbsp;Users that purchase API Services directly from AwardWallet, will pay for Services to AwardWallet at the pricing and via the method agreed between the parties at the time of purchase. Users that purchase API Services through a third party distributor (such as MASHAPE or others), will pay for Services through the distributor in accordance with the distributor’s policies and practices. </p>
+			<p><span class="bold">3.7.</span>&nbsp;AwardWallet shall have the right to correct billing errors at any time. User must notify AwardWallet within 6 months about any errors in billing. User releases AwardWallet from all liability and claims of loss resulting from any error that User does not report to AwardWallet within 6 months after the error appears on User’s credit card statement.</p>
+			<p class="bold">4.&nbsp;Content and Proprietary Rights</p>
+			<p><span class="bold">4.1.</span>&nbsp;For the purposes of this Agreement, “AwardWallet Content” shall mean data and information which may be text, audio, video, graphics, web links, or of other nature, which had been developed by AwardWallet itself, or sourced from other third parties. AwardWallet obtains AwardWallet Content from multiple sources. Some of the AwardWallet Content is owned by AwardWallet, and some may be owned by other third party providers or other users of the Service. All AwardWallet Content is the sole property of AwardWallet or a third party provider as the case may be, and is protected by United States and international copyright laws. User may not post, display, publicly perform, distribute, sell, reproduce, create derivative works of, or otherwise exploit in any way any AwardWallet Content without obtaining the prior written consent of AwardWallet or the owner or holder of property rights to the particular element of AwardWallet Content. Nothing in this Agreement, or otherwise between AwardWallet and User, should be construed as granting any license to AwardWallet Content to the User.</p>
+			<p><span class="bold">4.2.</span>&nbsp;For the purposes of this Agreement, “User Content” shall mean any data and information which may be text, audio, video, graphics, web links, or of other nature, which had been provided to AwardWallet by User, by any means including AwardWallet Website or AW System API. User shall not submit User Content which is harassing, defamatory, abusive, threatening, harmful, vulgar, obscene or otherwise objectionable to a reasonable person. User agrees not to submit to AwardWallet any User Content without first obtaining the prior written consent of the owner or holder of property rights to any particular elements of the User Content which may be owned by third parties other than User.</p>
+			<p><span class="bold">4.3.</span>&nbsp;AwardWallet shall have the right, at any time, with our without notice, in its sole discretion, to monitor User Content, and reject, modify, or delete any User Content. Notwithstanding the foregoing, User acknowledges that AwardWallet is not required to moderate content submitted by other users, and that User may be exposed to inappropriate content, which shall not cause any liability to AwardWallet. </p>
+			<p class="bold">5.&nbsp;User Representations</p>
+			<p><span class="bold">5.1.</span>&nbsp;User represents and warrants that:</p>
+			<p><span class="bold">a)</span>&nbsp;User is a natural person who is at least 18 years old, or a duly registered incorporated business entity.</p>
+			<p><span class="bold">b)</span>&nbsp;User has the right and power to enter into this Agreement.</p>
+			<p><span class="bold">c)</span>&nbsp;User provided the registration information that is true, accurate, current and complete, and will make timely updates to keep it current at all times.</p>
+			<p><span class="bold">d)</span>&nbsp;User must evaluate, and bear all risks associated with, the use of any content and data, including any reliance on the accuracy, completeness, or usefulness of such content. </p>
+			<p><span class="bold">e)</span>&nbsp;The right to use AwardWallet.com is personal to User and is not transferable to any other person or entity. User is responsible for all use of User's Account and for ensuring that all use of User's Account complies fully with the provisions of this Agreement. User shall be responsible for protecting the confidentiality of User's password. User shall not duplicate, reproduce, redistribute, sell, or exploit for any commercial purposes, any of the AwardWallet Service or AwardWallet Content to any third party.</p>
+			<p><span class="bold">f)</span>&nbsp;User will not use the Service in any way that would lead to a breach of a law, order or regulation.</p>
+			<p><span class="bold">g)</span>&nbsp;User will not use the Service in any way that would lead to infringement of any patent, trademark, trade secret, copyright or other proprietary rights of any party.</p>
+			<p><span class="bold">h)</span>&nbsp;User will not use the Service in any way that would lead to a breach any terms of service, terms of use, or other similar agreement with any third party, that the User may have agreed to be bound by.</p>
+			<p><span class="bold">5.2.</span>&nbsp;USER HEREBY EXPRESSLY APPROVES AWARDWALLET TO ACT AS ITS AGENT AND TO LOG INTO THIRD-PARTY WEBSITES USING USER’S SIGN-ON CREDENTIALS IN ORDER TO RETRIEVE INFORMATION ASSOCIATED WITH USER’S ACCOUNT WITH SUCH THIRD-PARTY WEBSITES. User agrees to comply with the terms, conditions and rules of the third parties that User has accounts with.</p>
+			<p><span class="bold">5.3.</span>&nbsp;User agrees that AwardWallet will provide all notices, disclosures, agreements, and other communications electronically (by e-mail or by posting notices on AwardWallet Website), and it will satisfy any legal requirement that such communications be in writing.</p>
+			<p class="bold">6.&nbsp;AwardWallet Representations</p>
+			<p><span class="bold">6.1.</span>&nbsp;THE AWARDWALLET SERVICE AND AWARDWALLET CONTENT ARE PROVIDED “AS IS” AND "AS AVAILABLE". AWARDWALLET MAKES NO WARRANTY THAT: SERVICE WILL MEET USER’S REQUIREMENTS; SERVICE WILL BE UNINTERRUPTED, TIMELY, SECURE, OR ERROR-FREE; THE RESULTS THAT MAY BE OBTAINED FROM THE USE OF THE SERVICE WILL BE ACCURATE OR RELIABLE.</p>
+			<p><span class="bold">6.2.</span>&nbsp;AWARDWALLET SHALL NOT BE LIABLE FOR ANY ERRORS IN THE AWARDWALLET CONTENT, OR FOR ANY ACTIONS TAKEN BY USER OR OTHERS IN RELIANCE THEREON. ANY USE OF THE AWARDWALLET SERVICE AND AWARDWALLET IS AT USERS SOLE AND ABSOLUTE RISK.</p>
+			<p><span class="bold">6.3.</span>&nbsp;AWARDWALLET MAKES NO REPRESENTATIONS AND GRANTS, NO WARRANTIES, EXPRESS OR IMPLIED, EITHER IN FACT OR BY OPERATION OF LAW, BY STATUTE OR OTHERWISE, AND SPECIFICALLY DISCLAIMS ANY OTHER WARRANTIES, WHETHER WRITTEN OR ORAL, OR EXPRESS OR IMPLIED, INCLUDING THE IMPLIED WARRANTIES OF MERCHANTABILITY, NONINFRINGEMENT, AND FITNESS FOR A PARTICULAR PURPOSE. AWARDWALLET DOES NOT WARRANT THAT WEBSITE OR CONTENT ARE FREE OF VIRUSES OR OTHER HARMFUL COMPONENTS.</p>
+			<p><span class="bold">6.4.</span>&nbsp;AwardWallet is under no obligation to operate, maintain, or repair AwardWallet Service or provide AwardWallet Content. AwardWallet has no responsibility or liability for the deletion or failure to store any User Content and other data maintained or transmitted by the AwardWallet Service.</p>
+			<p><span class="bold">6.5.</span>&nbsp;AwardWallet may display advertising and provide links to external websites. AwardWallet may have business relationships with some of the advertisers on AwardWallet Website, and may receive financial or other compensation when a user chooses to engage in business dealings with such advertisers. AwardWallet is not responsible for examining or evaluating the websites or offerings of the advertisers. User’s dealings with advertisers found on or through AwardWallet Website, including payment and delivery of related goods or services, and any other terms, conditions, warranties or representations associated with such dealings, are solely between User and such advertiser. AwardWallet shall not be responsible or liable for any loss or damage of any sort incurred by User as the result of any such dealings, even if AwardWallet assisted in billing for the third-party offering.</p>
+			<p><span class="bold">6.6.</span>&nbsp;AwardWallet reserves the right to access User’s account and User’s Content, monitor User’s activity with the Service, and use the resulting information about the User to order to enhance, configure and customize AwardWallet Service, or other operational and business purposes. </p>
+			<p class="bold">7.&nbsp;Liability</p>
+			<p><span class="bold">7.1.</span>&nbsp;IN NO EVENT SHALL AWARDWALLET BE LIABLE TO THE USER OR THIRD PARTIES FOR ANY LOSS OF PROFITS, LOSS OF USE, BUSINESS INTERRUPTION, LOSS OF DATA, DISCLOSURE OF DATA, LOSS OF REPUTATION, DEFAMATION, COPYRIGHT OR PATENT INFRINGEMENT, OR CLAIMS BY THIRD PARTIES, OR FOR OTHER COSTS OR CLAIMS, OR ANY FORM OF SPECIAL, INCIDENTAL OR CONSEQUENTIAL DAMAGES OF ANY KIND WHATSOEVER ARISING OUT OF OR RELATING TO PERFORMANCE UNDER THIS AGREEMENT, EVEN IF AWARDWALLET HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES, AND EVEN IF SUCH DAMAGES ARE CAUSED WHOLLY OR IN PART BY THE NEGLIGENCE, ERROR, OR OMISSION OF AWARDWALLET, ITS EMPLOYEES, SUBCONTRACTORS, AND THEIR RESPECTIVE AGENTS.</p>
+			<p><span class="bold">7.2.</span>&nbsp;THE TOTAL CUMULATIVE LIABILITY OF AWARDWALLET IN CONNECTION WITH THIS AGREEMENT, WHETHER IN CONTRACT, TORT, STATUTE OR OTHERWISE, SHALL NOT EXCEED THE AGGREGATE AMOUNT OF FEES PAID BY USER TO AWARDWALLET FOR THREE (3) MONTH PERIOD PRECEDING THE OCCURRENCE OF LIABILITY, OR $100, WHICHEVER IS LESS.</p>
+			<p><span class="bold">7.3.</span>&nbsp;The limitations on and exclusions of liability for damages in this Agreement apply regardless of the form of action, regardless of whether any remedy has failed its essential purpose, and regardless of whether the liability is based on breach of contract, tort (including negligence), strict liability, breach of warranty, or any other legal theory.</p>
+			<p><span class="bold">7.4.</span>&nbsp;Without limiting the foregoing, User expressly agrees that:</p>
+			<p><span class="bold">a)</span>&nbsp;While AwardWallet may provide award expiration dates it is user’s responsibility to verify expiration dates directly with the provider of miles / points and in case if any rewards are lost as a result of inaccurate expiration date reported by AwardWallet or any other reason, AwardWallet is not liable for such loss in any way.</p>
+			<p><span class="bold">b)</span>&nbsp;While AwardWallet gathers user itineraries and notifies users of flight departure times AwardWallet is not responsible for missed flights due to inaccurately reported dates or times of such flights. Users are responsible to verify itinerary details directly with the providers such as airlines, hotels, rental cars, etc.</p>
+			<p><span class="bold">c)</span>&nbsp;AwardWallet is not responsible or liable for modification or cancellation of User’s reservations by the corresponding third party travel providers. </p>
+			<p class="bold">8.&nbsp;Indemnification</p>
+			<p><span class="bold">8.1.</span>&nbsp;User will indemnify, defend and hold harmless AwardWallet, and AwardWallet’s officers, shareholders, directors, employees, agents (collectively, the “AwardWallet Indemnified Parties”), from and against all liabilities, obligations, causes of action, losses, damages, deficiencies, penalties, taxes, levies, fines, judgments, settlements, expenses (including attorneys’ and accountants’ fees and disbursements) including without limitation, damage to property or bodily injury, and costs arising from a claim, demand, proceeding, suit or action by a third party (“Third Party Claims”), incurred by or asserted against any of the AwardWallet Indemnified Parties to the extent such Third Party Claims relate to, arise out of or result from User’s use of AwardWallet Service and AwardWallet Content, including but not limited to: (i) any willfully or intentionally wrongful, or negligent, act or omission of the User or any of its employee, agent or subcontractor, relating to this Agreement; (ii) User’s failure to perform or improper performance under this Agreement, or breach of or inaccuracy in any of User’s representations or warranties contained in this Agreement; (iii) any actual or alleged infringement or misappropriation of any intellectual property right by User; (iv) User’s failure to comply with any laws. This indemnity shall survive termination of this Agreement.</p>
+			<p class="bold">9.&nbsp;Term and Termination</p>
+			<p><span class="bold">9.1.</span>&nbsp;The effective date of this Agreement is the date of acceptance of this Agreement by the User, by means of a clicking on acceptance button on the AwardWallet Website or otherwise as part of the registration process with AwardWallet, or the day of the first use of AwardWallet Service by User, whichever is earliest.</p>
+			<p><span class="bold">9.2.</span>&nbsp;AwardWallet shall have the right, in its sole discretion, at any time and without prior notice, to</p>
+			<p><span class="bold">a)</span>&nbsp;restrict, suspend, or terminate User’s access to all or any part of the AwardWallet Service.</p>
+			<p><span class="bold">b)</span>&nbsp;delete User Content, User data, User account, or any other information associated with the User.</p>
+			<p><span class="bold">c)</span>&nbsp;terminate this Agreement.</p>
+			<p><span class="bold">9.3.</span>&nbsp;When AwardWallet terminates this Agreement, it will make a reasonable effort to notify the User about such termination and the effective date thereof, though lack of such notice shall not be constructed as a limitation of AwardWallet’s ability to terminate without notice.</p>
+			<p><span class="bold">9.4.</span>&nbsp;User shall have the right to terminate this Agreement at any time, by terminating User’s account with AwardWallet by electronic means provided by AwardWallet Website. For avoidance of doubt, not using AwardWallet Service by the User for any period of time does not construe termination of this Agreement.</p>
+			<p class="bold">10&nbsp;Miscellaneous</p>
+			<p><span class="bold">10.1.</span>&nbsp;This agreement contains the entire understanding of the parties hereto relating to the subject matter hereof. Modifications and amendments to this Agreement shall be valid and enforceable only if they are in writing and are published by AwardWallet as described herein or otherwise communicated by AwardWallet to User, or are signed by authorized representatives of both parties.</p>
+			<p><span class="bold">10.2.</span>&nbsp;A waiver by either party of any term or condition of this Agreement in any instance shall not be deemed or construed as a waiver of such term or condition for the future, or of any subsequent breach thereof. All remedies, rights, undertakings, obligations and agreements contained in this Agreement shall be cumulative and none of them shall be in limitation of any other remedy, right, undertaking, obligation or agreement of either party.</p>
+			<p><span class="bold">10.3.</span>&nbsp;If any term, covenant, condition or provision of this Agreement or the application thereof to any person or circumstance shall at any time or to any extent be determined to be invalid or unenforceable under any provision of applicable law, then such provision shall be replaced by a valid provision which comes closest to the intentions of the parties to this Agreement.  The invalidity or unenforceability of any provision hereof shall not affect the validity or enforceability of any other provision of this Agreement.</p>
+			<p><span class="bold">10.4.</span>&nbsp;AwardWallet may assign this Agreement, in whole or in part, at any time with or without notice. User shall neither assign nor delegate its rights or obligations hereunder in whole or in part to any person..</p>
+			<p><span class="bold">10.5.</span>&nbsp;This Agreement, and all matters or issues collateral hereto, shall be governed by and construed and interpreted in accordance with the laws of the State of Delaware, without regard to any principles of choice or conflicts of law.</p>
+			<p><span class="bold">10.6.</span>&nbsp;User agrees that breach of this Agreement by User will cause irreparable harm to AwardWallet, for which monetary damage would be difficult to ascertain or insufficient to remedy, thereby entitling AwardWallet to immediate, injunctive relief without the requirement of posting bond or paying costs.</p>
+			<p><span class="bold">10.7.</span>&nbsp;Any dispute relating to this Agreement shall be submitted to arbitration in Buffalo, NY. Arbitration under this Agreement shall be conducted under the rules then prevailing of the American Arbitration Association. The arbitrator's award shall be binding and may be entered as a judgment in any court of competent jurisdiction.</p>
+			<p><span class="bold">10.8.</span>&nbsp;In any action to enforce any right or remedy under this Agreement or to interpret any provision of this Agreement, the prevailing party will be entitled to recover its costs, including attorneys’ fees.</p>
+			<p><span class="bold">10.9.</span>&nbsp;Any provision of this Agreement that contemplates performance or observance subsequent to any termination or expiration of this Agreement will survive this Agreement for the period of such performance or observance.</p>
+		</div>
+	</div>

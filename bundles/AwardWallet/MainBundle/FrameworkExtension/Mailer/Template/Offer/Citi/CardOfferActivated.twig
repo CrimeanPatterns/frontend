@@ -1,0 +1,15 @@
+{% extends '@MailTemplate/Layout/base.twig' %}
+{% trans_default_domain "email" %}
+
+{% block subject %}{% apply spaceless %}{% autoescape false %}
+    Citi Card Offer Activated
+{% endautoescape %}{% endapply %}{% endblock subject %}
+
+{% block content %}
+    {% import '@MailTemplate/CommonMacro.twig' as commonMacro %}
+
+    {{ commonMacro.hello(user.firstname, _context) }}
+
+    We've automatically detected an offer email from City with the following subject line: "<b>{{ offerSubject }}</b>" and activated this offer for you. Please see the original email for offer details.
+
+{% endblock content %}

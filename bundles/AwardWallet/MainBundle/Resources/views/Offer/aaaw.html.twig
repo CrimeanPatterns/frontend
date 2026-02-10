@@ -1,0 +1,77 @@
+{# Issue #6756 #}
+
+{% extends "@AwardWalletMain/Offer/standard.html.twig" %}
+{% import '@AwardWalletMain/Offer/offerMacros.html.twig' as offerMacros %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    {{ encore_entry_link_tags('offer') }}
+    {{ encore_entry_link_tags('offers/aaaw') }}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        {{ offerMacros.jsOfferNo(_context, Code, OfferUserID, defaultRedirectLocation) }}
+        function offerYes() {
+            {% autoescape false %}
+            {% if (preview != 1) and (src != 1) %}
+            {% if vars.isLocalProd == false %}
+            _gaq = _gaq || [];
+            _gaq.push(['_trackEvent', 'offer-{{ Code }}', 'Agreed']);
+            {% endif %}
+            $.post(
+                    "{{ url('aw_offer_agree', { 'offerUserId': OfferUserID, 'agreed': '1' }) }}",
+                    function () {
+                        {% if vars.isLocalProd == false %}
+                        _gaq.push(function () {
+                            window.location = '{{ app.request.getBaseURL() }}/account/edit.php?ProviderID=1&ID=0&UserAgentID=0';
+                        });
+                        {% endif %}
+                        window.setTimeout(function () {
+                            window.location = '{{ app.request.getBaseURL() }}/account/edit.php?ProviderID=1&ID=0&UserAgentID=0';
+                        }, 1000);
+                    }
+            );
+            {% endif %}
+            window.setTimeout(function () {
+                window.location = '{{ app.request.getBaseURL() }}/account/edit.php?ProviderID=1&ID=0&UserAgentID=0';
+            }, 1000);
+            {% endautoescape %}
+        }
+    </script>
+{% endblock %}
+
+{% block content %}
+    <div id="offer_wrap">
+        <div id="offer_bg" class="aaaw_bg">
+            <div id="aaaw_logo">
+            </div>
+            <div id="aaaw_aw">
+            </div>
+            <div class="offer_title aaaw_title">
+                Hi {{ Name }},
+            </div>
+            <div id="aaaw_description">
+                We have some good news to share.<br/>
+                Today we are announcing that American Airlines<br/>
+                is now fully supported on AwardWallet!
+            </div>
+            <div id="aaaw_toread">
+                To read the full press release, please follow this link:<br/>
+                <a id="aaaw_link" target="_blank" href="{{ ApplyURL }}">{{ ApplyURL }}</a>
+            </div>
+            <div class="offer_btn aaaw_btn" onclick="offerYes();">
+                Add American Airlines account to my profile
+            </div>
+            <div id="aaaw_plane">
+            </div>
+        </div>
+        <div class="offer_declinekind" onclick="offerNo();">
+            Never show this ad again
+        </div>
+        <div class="offer_toaccount aaaw_toaccount" onclick="window.location = '{{ defaultRedirectLocation }}'">
+            Proceed to my account
+        </div>
+    </div>
+{% endblock %}

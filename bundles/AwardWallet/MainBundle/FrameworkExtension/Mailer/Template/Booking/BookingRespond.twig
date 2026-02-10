@@ -1,0 +1,68 @@
+{% extends '@MailTemplate/Layout/booking.twig' %}
+{% trans_default_domain "email" %}
+
+{% block subject %}{% apply spaceless %}{% autoescape false %}
+    {{ 'abrequest.subject'|trans({
+        '%requestId%': request.AbRequestID
+    }, 'email', lang)|desc('Award Booking Request #%requestId%') }}
+{% endautoescape %}{% endapply %}{% endblock subject %}
+
+{% block content %}
+    {% import '@MailTemplate/CommonMacro.twig' as commonMacro %}
+    {% import _self as macro %}
+
+    {% if toBooker %}
+        {% set name = request.contactname %}
+    {% else %}
+        {% set name = request.booker.bookerInfo.ServiceName %}
+    {% endif %}
+
+    {% if type == constant('\\AwardWallet\\MainBundle\\FrameworkExtension\\Mailer\\Template\\Booking\\BookingRespond::TYPE_BASIC') %}
+        {{ commonMacro.paragraph(
+            'abrequest.respond.booker-responded'|trans({
+                '%booker%': name|htmlencode,
+                '%bold_on%': '<b>',
+                '%bold_off%': '</b>'
+            }, 'email', lang)|desc('%bold_on% %booker% %bold_off% responded to your booking request.') ~ " " ~
+            'abrequest.respond.do-not-reply'|trans({}, 'email', lang)|desc('Please do not reply to this email, instead you should go to your request and respond there:'),
+        _context, {escape: false}) }}
+    {% elseif type == constant('\\AwardWallet\\MainBundle\\FrameworkExtension\\Mailer\\Template\\Booking\\BookingRespond::TYPE_INCLUDE') %}
+        {{ commonMacro.paragraph(
+            'abrequest.respond.booker-responded-following'|trans({
+                '%booker%': name|htmlencode,
+                '%bold_on%': '<b>',
+                '%bold_off%': '</b>',
+            }, 'email', lang)|desc('%bold_on% %booker% %bold_off% responded to your booking request with the following:'),
+        _context, {escape: false}) }}
+
+        {{ macro.drawPost(message.Post) }}
+
+        {{ commonMacro.paragraph(
+            'abrequest.respond.do-not-reply'|trans({}, 'email', lang)|desc('Please do not reply to this email, instead you should go to your request and respond there:'),
+            _context, {},
+            {
+                'margin-top': '20px'
+            }
+        ) }}
+    {% endif %}
+
+    {% set query = {'id': request.AbRequestID} %}
+    {% if confirm %}
+        {% set query = query|merge({'conf': request.confirmationCode}) %}
+    {% endif %}
+    {% set view_link = baseUrl ~ path('aw_booking_view_index', query) ~ "#message_" ~ message.AbMessageID %}
+    {{ commonMacro.dottedLink(view_link, view_link, _context) }}
+
+{% endblock content %}
+
+{% macro drawPost(post) %}{% trim %}
+    {% import '@MailTemplate/CommonMacro.twig' as commonMacro %}
+
+    <table width="100%" cellpadding="0" border="0" cellspacing="0" style="border-top:1px dotted #8e9199;border-bottom:1px dotted #8e9199; margin-top:15px;line-height:24px;color:#535457;font-size:16px;">
+        <tr>
+            <td valign="top" style="padding:10px 0 10px 10px; color:#535457;" class="note-text">
+                {{ commonMacro.updateLinks(post, {"font-size": "inherit"})|raw }}
+            </td>
+        </tr>
+    </table>
+{% endtrim %}{% endmacro %}

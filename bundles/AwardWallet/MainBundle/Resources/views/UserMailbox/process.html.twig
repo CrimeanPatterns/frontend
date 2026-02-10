@@ -1,0 +1,366 @@
+{% extends "@AwardWalletMain/Layout/common.html.twig" %}
+{% import '@AwardWalletMain/TwigMacros/common.html.twig' as interfaceMacros %}
+{% import _self as self %}
+
+{% macro separator() %}
+    <div class="separator">&nbsp;</div>
+{% endmacro %}
+
+
+{% block title %}{{ 'mailbox.scanning.title' | trans | desc('Mailbox scanning results') }}{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" type="text/css" href="{{ asset('/design/booking.css?v='~constant('FILE_VERSION')) }}"/>
+    <link rel="stylesheet" type="text/css" href="{{ asset('/assets/awardwalletmain/css/progress-bar.css') }}"/>
+{% endblock %}
+
+{% block styles %}
+    {{ parent() }}
+    #scan_header, #scan_status {
+        text-align: center;
+        font-size: inherit;
+    }
+    #progress_bar_container {
+        margin: 0;
+        width: 98%;
+        padding: 0;
+        background-color: #F7F7F7;
+        border: #D0D0D0 solid 1px;
+        border-radius: 5px;
+    }
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="{{ asset('design/bundles/awardwalletmain/js/progressBar.js') }}" language="javascript"></script>
+    <script type="text/javascript">
+
+        function resultsList() {
+            this.accounts = [];
+            this.progress = 0;
+            this.running = false;
+            this.run = function() {
+                if (this.running)
+                    return;
+                var t = this;
+                t.running = true;
+                setTimeout(function(){t.check(true);}, 1000);
+            };
+            this.stop = function() {
+                if (!this.running)
+                    return;
+                alert('stop');
+                this.running = false;
+            };
+            this.setStatus = function(status) {
+                $('div#status').text(status);
+            };
+            this.setData = function(data) {
+                $('div#data').text(data);
+            };
+            this.setError = function(error) {
+                $('div#error').text(error);
+            };
+            this.check = function(keep) {
+                var t = this;
+                $.ajax({
+                    url: '{{ path('userMailbox', {'action' : 'checkProgress', 'provider' : provider.providerid}) }}',
+                    type: 'POST',
+                    dataType: 'json',
+                    data: {id: {{ id }}},
+                    success: function(data) {
+                        t.setData(JSON.stringify(data));
+                        switch(data.Status) {
+                            case 'active':
+                                t.setStatus('running');
+                                if (keep && t.running) {
+                                    setTimeout(function(){t.check(true)}, 1000);
+                                }
+                                else {
+                                    t.stop();
+                                }
+                               break;
+                            case 'done':
+                                t.setStatus('done');
+                                t.stop();
+                                break;
+                            default:
+                        }
+                    },
+                    error: function() {
+                        t.stop();
+                        t.setError('AJAX error');
+                    }
+
+                });
+            };
+        }
+
+
+
+        var rtable = $('table#results_table');
+        var interval = 1500;
+        var time = 0;
+        var agents = {
+        {% for agent in agents %}
+        "{{ agent.ID }}" : "{{ agent.Name }}"{% if agent != agents|last %},{% endif %}
+        {% endfor %}
+        };
+        var newAgents = [];
+        var progress = 1;
+        var pI;
+        function moveProgress() {
+            if (progress && progress < 25) {
+                progressBarSetPosition('progress-bar', progress);
+                progress++;
+            }
+            else
+                clearInterval(pI);
+        }
+        function showButtonProgress(button) {
+            var objWidth = $(button).width();
+            var objHeight = $(button).height();
+            var objPaddingLeft = parseFloat($(button).css('padding-left').replace(/px/,''));
+            var objPaddingRight = parseFloat($(button).css('padding-right').replace(/px/,''));
+            var imageLeft = (objWidth+objPaddingLeft+objPaddingRight)/2 - 8;
+            var imageTop = objHeight/2 - 8;
+            $(button).find('input').attr('disabled','disabled');
+            $(button).append('<img id="progress_'+$(button).id+'" class="progressImage" src="/lib/images/progressCircle.gif" style="left:'+imageLeft+'px; top:'+imageTop+'px" />');
+        }
+        function submitResults() {
+            showButtonProgress($('#finished_container .overallButton'));
+            var rows = $('.new_row');
+            var submit = [];
+            for (var i = 0; i < rows.length; i++) {
+                var row = $(rows.get(i));
+                var account = row.attr('data-id');
+                var ua = row.find('.select_agent').val();
+                var name = row.find('.select_agent option[value="' + ua + '"]').text();
+                submit[i] = {
+                    accid: account,
+                    uaid: ua,
+                    name: name
+                };
+            }
+            if (rows.length > 0)
+            {# TODO: please, use routes #}
+                $.ajax({
+                    url: '/userMailbox/submit/{{ provider.providerid }}?id={{ id }}',
+                    dataType: 'json',
+                    type: 'POST',
+                    data: {submit: JSON.stringify(submit)},
+                    complete: function() {
+                        {# TODO: please, use routes #}
+                        document.location.href = "/userMailbox/view/{{ provider.providerid }}";
+                    }
+                });
+            else
+                {# TODO: please, use routes #}
+                document.location.href = "/userMailbox/view/{{ provider.providerid }}";
+        }
+        function checkProgress() {
+            $.ajax({
+                url:        '{{ path('aw_usermailbox_index', {'action' : 'checkProgress', 'provider' : provider.providerid}) }}?id={{ id }}',
+                dataType:   'json',
+                type:       'GET',
+                success: function(json) {
+                    if (json.status == 'active') {
+                        $('#scan_status b').text(json.current);
+                        setTimeout(checkProgress, interval);
+                    }
+                    if (typeof(json.accounts) != 'undefined' && json.accounts.length > 0)
+                        drawTable(json.accounts);
+                    else
+                        if (json.status == 'done') {
+                            $('#finished_container p').text('');
+                            $('#finished_container strong').text('');
+                        }
+                    if (json.status == 'done') {
+                        $('#scan_status b').text("");
+                        $('#scan_status').text('Scanning process done');
+                        $('#scan_header').hide();
+                        $('#finished_container').show();
+                        if (json.notFound) {
+                            $('#not_found b').text(json.notFound);
+                            $('#not_found').show();
+                        }
+                    }
+                    if (json.status == 'error')
+                        showError(json.textError);
+                    if (typeof(json.accounts) != 'undefined' && json.accounts.length > 0)
+                        drawTable(json.accounts);
+                    if (typeof(json.progress) != 'undefined' && json.progress > 1) {
+                        progressBarSetPosition('progress-bar', json.progress);
+                        clearInterval(pI);
+                    }
+                },
+                error: function() {
+                    showError();
+                }
+            });
+        }
+        function showError(message) {
+            $('#finished_container p').text('');
+            $('#finished_container strong').text('');
+            $('#finished_container').show();
+            if (!message)
+                message = 'Looks like we encountered some kind of error';
+            $('#error_table td.message').text(message);
+            $('#progress_bar_container').hide();
+            $('#error_table').show();
+        }
+        function addRow(account) {
+            var row = rtable.find('tr.results_row').clone().appendTo(rtable).removeAttr('class').addClass('new_row')
+                    .attr('data-id', account.ID).show();
+            row.find('.provider').text(account.Provider);
+            row.find('.number').text(account.Number);
+            row.find('.balance').text(account.Balance);
+            row.find('.owner .select_agent').val(account.UserAgentID);
+            row.find('input.new_agent').blur(function() {
+                var text = $(this);
+                var ua = checkName(text);
+                switch (ua) {
+                    case false:
+                        text.css('border-color', '#e5454b');
+                        break;
+                    case true:
+                        ua = newAgents.length;
+                        var name = $.trim($(this).val());
+                        newAgents[ua] = name;
+                        $('tr.results_row option:first-child').clone().appendTo($('select.select_agent'))
+                                .val('new_'+ua)
+                                .text(name);
+                        ua = 'new_'+ua;
+                    default:
+                        $('#finished_container .overallButton input').removeAttr('disabled');
+                        text.css('border-color', '');
+                        $(this).hide();
+                        $(this).parent('td').find('select').val(ua).show();
+                        break;
+                }
+            });
+            row.find('.owner .select_agent').change(function() {
+                var select = $(this);
+                if (select.val() == -2) {
+                    $('#finished_container .overallButton input').attr('disabled', 'disabled');
+                    select.hide();
+                    $(this).parent('td').find('input.new_agent').show().focus();
+                }
+            });
+            row.find('.powner').text(account.OwnerName);
+            row.find('.note').text();
+        }
+        function drawTable(accounts) {
+            rtable = $('table#results_table');
+            rtable.find('tr.new_row').remove();
+            for (var i in accounts)
+                addRow(accounts[i]);
+            if (accounts.length > 0)
+                $('#results_container').show();
+        }
+        function checkName(text) {
+            var name = $.trim($(text).val());
+            if (name == "")
+                return false;
+            for (var i in agents)
+                if (agents[i].toLowerCase() == name.toLowerCase() && i >= 0)
+                    return i;
+            for (var i in newAgents)
+                if (newAgents[i].toLowerCase() == name.toLowerCase())
+                    return 'new_' + i;
+            if (!/^[\S]{1,10}(\s[\S]{1,10})+$/.exec(name))
+                return false;
+            return true;
+        }
+    var rl = new resultsList();
+    </script>
+{% endblock %}
+
+{% block readyScripts %}
+//    setTimeout(checkProgress, 500);
+//    pI = setInterval(moveProgress, 1000);
+//    $('div.ok_button input').click(submitResults);
+    rl.run();
+{% endblock %}
+
+{% block mainContent %}
+    {{ interfaceMacros.DrawTableTitle('mailbox.scanning.title' | trans) }}
+
+    <div id='status'></div>
+    <div id='data'></div>
+    <div id='error'></div>
+
+
+    <div id='container'>
+        <div id='progress_bar_container' class='progres'>
+            <h4 id='scan_header'>{{ 'award.mailbox.scan-header'|trans|desc('Please wait while we are scanning your mailbox for valid statements') }}</h4>
+            <div class="progress-bar" id="progress-bar">
+                <span style="width:1%;"><p style="margin: 0; padding-top: 1px;">0%</p></span>
+            </div>
+            <h4 id='scan_status'>{{ 'award.mailbox.scan-status'|trans|desc('Looking for valid statements from') }} <b></b>...</h4>
+        </div>
+        <table class="formTable" id="error_table" cellspacing="0" cellpadding="5" border="0" style="width: 98%; display: none">
+            <tr class="text error">
+                <td class="row rowLeft">
+                    <div>
+                    </div>
+                </td>
+                <td class="row message" style="padding: 15px; text-align: center;">
+                    {{ 'award.mailbox.error-message'|trans|desc('Looks like we encountered some kind of error') }}
+                </td>
+                <td class="row rowRight">
+                    <div>
+                    </div>
+                </td>
+            </tr>
+        </table>
+        <div id='results_container' style="display: none;">
+            <p class='results_text'>
+                {{ 'award.mailbox.result-text'|trans|desc('We found the following accounts in your mailbox') }}:
+            </p>
+            <div>
+                <table class="awTable" cellspacing="0" cellpadding="0" width="98%" id="results_table">
+                    <tr class="caption">
+                        <td class="bothBorder">{{ 'award.account.provider' | trans | desc('Provider') }}</td>
+                        <td class="rightBorder">{{ 'award.account.perceived-owner' | trans | desc('Perceived owner') }}</td>
+                        <td class="rightBorder">{{ 'award.account.owner' | trans }}</td>
+                        <td class="rightBorder">{{ 'award.account.number' | trans }}</td>
+                        <td class="rightBorder">{{ 'award.account.balance' | trans | desc('Balance') }}</td>
+                        <!--<td class="rightBorder">{{ 'award.account.note' | trans | desc('Note') }}</td>-->
+                    </tr>
+                    <tr class='results_row' style="/*display: none;*/">
+                        <td class="bothBorder provider"></td>
+                        <td class="rightBorder powner"></td>
+                        <td class="rightBorder owner">
+                            <select class='select_agent' style="width: 80%;">
+                                {% for agent in agents %}
+                                    <option value='{{ agent.ID }}'>{{ agent.Name }}</option>
+                                {% endfor %}
+                                    <option value='-2'>{{ 'award.mailbox.options.new-name'|trans|desc('New name') }}</option>
+                            </select>
+                            <input type='text' value='' class='new_agent' style='display:none; width: 80%;'>
+                        </td>
+                        <td class="rightBorder number"></td>
+                        <td class="rightBorder balance"></td>
+                        <!--<td class="rightBorder note"></td>-->
+                    </tr>
+                </table>
+            </div>
+        </div>
+        <div id='finished_container' style="display: none;">
+            <p><strong>{{ 'award.mailbox.finish'|trans|desc('They have been added to your profile and will be automatically updated the next time your statement is sent to you.') }}</strong></p>
+            <p>{{ 'awars.mailbox.finish-setup'|trans|desc('Please click OK to finish the set up') }}</p>
+            <div class="buttons ok_button">
+                {{ interfaceMacros.DrawButton('button.ok' | trans | desc('OK'), 'align="center" style="float: none;"', 0, '') }}
+            </div>
+        </div>
+        <div id='not_found' style="display: none;">
+            <div style="height: 1px; margin-top: 20px; background-image: url('/images/hDots.png'); background-repeat: repeat-x; background-position: 0 50%;"></div>
+            <p>
+                {{ 'qwqrd.mailbox.not-found'|trans|desc('We did not find any valid <b></b> statements in your profile, but don\'t worry if a valid statement is sent to this mailbox it will be recognized and added to your AwardWallet profile automatically. Also, as you receive new statements the balances for these accounts on AwardWallet will be updated automatically. If you wish to link another mailbox you will be able to do this on the next screen') }}
+            </p>
+        </div>
+    </div>
+
+{% endblock %}

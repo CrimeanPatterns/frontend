@@ -1,0 +1,97 @@
+{% macro showMileValue(dataListName = 'datas') %}
+    <div class="point-mile-values__block ng-cloak" ng-cloak data-ng-repeat="(type, list) in {{ dataListName }}" ng-class="{notFound: 0 === filtered.length, notFlights: !list.flights }">
+        <div class="title-note">
+            <h3 ng-bind-html="getHead(list)|unsafe"></h3>
+        </div>
+        <div class="table-scroll-container">
+            <table class="main-table point-values no-border">
+                <thead>
+                <tr>
+                    <th class="col-sort col-type" ng-click="sort.do('DisplayName')">
+                        {{ 'loyalty-program'|trans }}
+                        <i class="icon-invisible" ng-class="{'icon-arrow-down-silver':sort.reverse, 'icon-arrow-up-silver':!sort.reverse, 'icon-visible': sort.fieldName === 'DisplayName'}"></i>
+                    </th>
+                    <th class="col-avg col-sort" ng-click="sort.do('show.AvgPointValue')"
+                        data-tip title="[[ 'transfers' == type ? '{{ "estimate-transferable-points-partners"|trans|desc("To estimate the value of transferable points, we’ve combined the value of each program’s airline partners into a single, weighted average. This calculation includes only the programs displayed in the Airline Miles table below. Other transfer partners are not included.") }}' : '' ]]">
+                        {{ 'average-value'|trans|desc('Average Value') }} <i class="icon-invisible" ng-class="{'icon-arrow-down-silver':sort.reverse, 'icon-arrow-up-silver':!sort.reverse, 'icon-visible': sort.fieldName === 'show.AvgPointValue'}"></i>
+                    </th>
+                    <th ng-show="list.flights">
+                        {{ 'regional'|trans|desc('Regional') }} <br><span class="silver-text">({{ 'short-haul-flights-5-hours'|trans|desc('short-haul flights, generally under 5 hours') }})</span>
+                        <div class="row">
+                            <div class="col col-sort" ng-click="sort.do('show.RegionalEconomyMileValue')">{{ 'economy'|trans|desc('Economy') }} / <br>{{ 'premium-economy'|trans|desc('Premium Economy') }} <i class="icon-invisible" ng-class="{'icon-arrow-down-silver':sort.reverse, 'icon-arrow-up-silver':!sort.reverse, 'icon-visible': sort.fieldName === 'show.RegionalEconomyMileValue'}"></i></div>
+                            <div class="col col-sort" ng-click="sort.do('show.RegionalBusinessMileValue')">{{ 'notification.devices.business'|trans }} / <br>{{ 'new_abrequest.cabin.first_class'|trans([], 'email') }} <i class="icon-invisible" ng-class="{'icon-arrow-down-silver':sort.reverse, 'icon-arrow-up-silver':!sort.reverse, 'icon-visible': sort.fieldName === 'show.RegionalBusinessMileValue'}"></i></div>
+                        </div>
+                    </th>
+                    <th ng-show="list.flights">
+                        {{ 'global'|trans|desc('Global') }} <br><span class="silver-text">({{ 'long-haul-int-flights'|trans|desc('long-haul international flights') }})</span>
+                        <div class="row">
+                            <div class="col col-sort" ng-click="sort.do('show.GlobalEconomyMileValue')">{{ 'economy'|trans }} / <br>{{ 'premium-economy'|trans }} <i class="icon-invisible" ng-class="{'icon-arrow-down-silver':sort.reverse, 'icon-arrow-up-silver':!sort.reverse, 'icon-visible': sort.fieldName === 'show.GlobalEconomyMileValue'}"></i></div>
+                            <div class="col col-sort" ng-click="sort.do('show.GlobalBusinessMileValue')">{{ 'notification.devices.business'|trans }} / <br>{{ 'new_abrequest.cabin.first_class'|trans([], 'email') }} <i class="icon-invisible" ng-class="{'icon-arrow-down-silver':sort.reverse, 'icon-arrow-up-silver':!sort.reverse, 'icon-visible': sort.fieldName === 'show.GlobalBusinessMileValue'}"></i></div>
+                        </div>
+                    </th>
+                    <th ng-show="!list.flights"></th>
+                </tr>
+                </thead>
+                <tbody data-ng-repeat="item in filtered = (list.data | filter:filterVal.providerName | orderBy:sort.fieldSet)" ng-class="{'tbody-expand': item.subBrands}">
+                <tr data-id="[[ item.ProviderID ]]" data-aid="[[ item.AccountID ]]" data-ng-class="{'userset': item.user, 'editable': item.edit, 'status-inprogress': {{ constant('\\AwardWallet\\MainBundle\\Entity\\ProviderMileValue::STATUS_IN_PROGRESS') }} == item.status}">
+                    <td class="col-name">
+                        <div ng-class="{'parent-brand': item.subBrands}">
+                            <span>
+                                <i class="icon-arrow-right-dark" ng-if="item.subBrands"></i>
+                                <span data-ng-bind-html="item.DisplayName|highlight:filterVal.providerName:false:'green'|unsafe"></span>
+                                <span class="point-values-login" ng-if="item.Login" data-ng-bind="' (' + item.Login + ')'"></span>
+                            </span>
+                            <a class="userset-remove" href="#" ng-show="item.user" ng-click="removeValue($event, item)" title="{{ 'button.delete'|trans }}" data-tip><i class="icon-delete"></i></a>
+                        </div>
+                    </td>
+                    <td class="col-avg">
+                        <div class="avr-value" ng-show="item.edit === false">
+                            <div>
+                                <span class="col avgvalue-main" data-ng-bind-html="getValue('AvgPointValue', item, true)|unsafe" title="[[getTitle('AvgPointValue', item, true)]]" data-tip></span>
+                                <span class="avgvalue-sec silver-text" data-ng-bind-html="getValue('AvgPointValue', item, false)|unsafe" title="[[getTitle('AvgPointValue', item, false)]]" data-tip></span>
+                            </div>
+                            <a ng-click="changeValue($event, 'AvgPointValue', item)" class="userset-edit" href="#" title="[[getEditTitle(item)]]" data-tip><i class="icon-edit"></i></a>
+                        </div>
+                        <div class="avr-value userset-field" ng-show="item.edit == true">
+                            <div class="curr-block">
+                                <input type="text" value="" ng-keypress="digitFilter($event, item)">
+                                <div class="curr-block__val">¢</div>
+                            </div>
+                            <a class="btn-blue" href="#" ng-click="updateValue($event, 'AvgPointValue', item)"><i class="icon-white-check-b"></i></a>
+                        </div>
+                    </td>
+                    <td ng-show="list.flights">
+                        <div class="row">
+                            <div class="col" title="[[getTitle('RegionalEconomyMileValue', item)]]" data-tip><span data-ng-bind-html="getValue('RegionalEconomyMileValue', item)|unsafe"></span></div>
+                            <div class="col" title="[[getTitle('RegionalBusinessMileValue', item)]]" data-tip><span data-ng-bind-html="getValue('RegionalBusinessMileValue', item)|unsafe"></span></div>
+                        </div>
+                    </td>
+                    <td ng-show="list.flights">
+                        <div class="row">
+                            <div class="col" title="[[getTitle('GlobalEconomyMileValue', item)]]" data-tip><span data-ng-bind-html="getValue('GlobalEconomyMileValue', item)|unsafe"></span></div>
+                            <div class="col" title="[[getTitle('GlobalBusinessMileValue', item)]]" data-tip><span data-ng-bind-html="getValue('GlobalBusinessMileValue', item)|unsafe"></span></div>
+                        </div>
+                    </td>
+                    <td ng-show="!list.flights"></td>
+                </tr>
+                <tr class="point-values-subbrand" ng-repeat="brand in item.subBrands">
+                    <td class="col-name">
+                        <div>
+                            <i class="icon-arrow-right-dark" ng-if="brand.subBrands"></i>
+                            <span data-ng-bind-html="brand.DisplayName|highlight:filterVal.providerName:false:'green'|unsafe"></span>
+                        </div>
+                    </td>
+                    <td class="col-avg">
+                        <div class="avr-value">
+                            <div>
+                                <span class="col avgvalue-main" data-ng-bind-html="getValue('AvgPointValue', brand, true)|unsafe" title="[[getTitle('AvgPointValue', brand, true)]]" data-tip></span>
+                            </div>
+                        </div>
+                    </td>
+                    <td></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+{% endmacro %}

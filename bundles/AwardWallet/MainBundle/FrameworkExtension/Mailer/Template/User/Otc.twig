@@ -1,0 +1,38 @@
+{% extends '@MailTemplate/Layout/base.twig' %}
+{% trans_default_domain "email" %}
+
+{% block subject %}{% apply spaceless %}{% autoescape false %}
+    {{ 'otc.access_security_code'|trans({}, 'email', lang)|desc('AwardWallet Access Security Code') }}
+{% endautoescape %}{% endapply %}{% endblock subject %}
+
+{% block content %}
+    {% import '@MailTemplate/CommonMacro.twig' as commonMacro %}
+
+    {{ commonMacro.hello(user.firstname, _context) }}
+
+    {{ commonMacro.paragraph(
+        'otc.message'|trans({
+            '%lastIp%': lastIp|htmlencode,
+            '%lastLocation%': lastLocation|htmlencode,
+            '%currentIp%': currentIp|htmlencode,
+            '%currentLocation%': currentLocation|htmlencode,
+            '%bold_on%': '<b style="color:#3d424d;">',
+            '%bold_off%': '</b>'
+        }, 'email', lang)|desc('
+            We\'ve noticed that you are logging in from a different location, your previous ip address
+            was: %bold_on% %lastIp% %bold_off% (location: %bold_on%%lastLocation%%bold_off%) and the new login attempt
+            came from %bold_on% %currentIp% %bold_off% (location: %bold_on%%currentLocation%%bold_off%) for that reason
+            in order to make sure this is not fraud please use the code below to login to your account.
+        ')|preg_replace('/(\\s+(?=<b\\b))|((?<=<\\/b>)\\s+)/', '&nbsp;<wbr>'),
+        _context, {escape: false}
+    ) }}
+
+    {{ commonMacro.info(
+        'otc.code'|trans({
+            '%code%': code.code,
+            '%bold2_on%': '<b style="color:#3d424d;">',
+            '%bold2_off%': '</b>'
+        }, 'email', lang)|desc('AwardWallet One Time Access Code: %bold2_on% %code% %bold2_off%'),
+        _context, {escape: false}
+    ) }}
+{% endblock content %}

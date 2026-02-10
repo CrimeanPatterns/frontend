@@ -1,0 +1,14 @@
+<ul {% if ulclass is defined %} class="{{ ulclass }} {% endif %}">
+    {% for item in items %}
+        <li {% if item.active_class is defined %} class="{{ item.active_class }}" {% endif %}>
+            {% apply spaceless %}
+                <a href="{{ item.href }}"
+                {% if item.attributes is defined and item.attributes|length %}
+                    {% for attr, value in item.attributes %}
+                        {{ " "~attr }}="{{ value }}"
+                    {% endfor %}
+                {% endif %}>{{ item.label|trans }}</a>
+            {% endapply %}
+        </li>
+    {% endfor %}
+</ul>

@@ -1,0 +1,70 @@
+{% set MOBILE_NAV = true %}
+{% set MAIN_BODY_CLASSES = {
+    'manual-hidden': true,
+    'responsive': true
+}|merge(MAIN_BODY_CLASSES|default({})) %}
+{% extends app.user is not null ? "@AwardWalletMain/Layout/common.html.twig" : "@AwardWalletMain/Layout/not_logged.html.twig" %}
+{% import "@AwardWalletMain/TwigMacros/new.html.twig" as macros %}
+
+{% set providersTabs = [
+    {name: "track.group.all"|trans},
+    {name: "track.group.card"|trans, kind: constant('PROVIDER_KIND_CREDITCARD')},
+    {name: "track.group.airline"|trans, kind: constant('PROVIDER_KIND_AIRLINE')},
+    {name: "track.group.hotel"|trans, kind: constant('PROVIDER_KIND_HOTEL')},
+    {name: "track.group.rent"|trans, kind: constant('PROVIDER_KIND_CAR_RENTAL')},
+    {name: "track.group.train"|trans, kind: constant('PROVIDER_KIND_TRAIN')},
+    {name: "track.group.cruise"|trans, kind: constant('PROVIDER_KIND_CRUISES')},
+    {name: "track.group.shop"|trans, kind: constant('PROVIDER_KIND_SHOPPING')},
+    {name: "track.group.dining"|trans, kind: constant('PROVIDER_KIND_DINING')},
+    {name: "track.group.survey"|trans, kind: constant('PROVIDER_KIND_SURVEY')},
+    {name: "track.group.parking"|trans, kind: constant('PROVIDER_KIND_PARKING')},
+    {name: "track.group.other"|trans, kind: constant('PROVIDER_KIND_OTHER')},
+    {name: "track.group.bus"|trans, kind: constant('AwardWallet\\MainBundle\\Controller\\EmailSupportedController::EMAIL_FORMAT_KIND_BUS')},
+    {name: "track.group.transfer"|trans, kind: constant('AwardWallet\\MainBundle\\Controller\\EmailSupportedController::EMAIL_FORMAT_KIND_TRANSFER')},
+    {name: "track.group.event"|trans, kind: constant('AwardWallet\\MainBundle\\Controller\\EmailSupportedController::EMAIL_FORMAT_KIND_EVENT')},
+    {name: "track.group.ferry"|trans, kind: constant('AwardWallet\\MainBundle\\Controller\\EmailSupportedController::EMAIL_FORMAT_KIND_FERRY')},
+    {name: "track.group.agency"|trans, kind: constant('AwardWallet\\MainBundle\\Controller\\EmailSupportedController::EMAIL_FORMAT_KIND_AGENCY')},
+] %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        window.providersTabsData = {{ providersTabs|json_encode|raw }};
+        window.business = {% if is_granted('SITE_BUSINESS_AREA') %}true{% else %}false{% endif %};
+        window.providersData = {{ providers|json_encode|raw }};
+
+        require([
+            'pages/addAccount/main',
+            'lib/design'
+        ], function () {
+        });
+    </script>
+{% endblock %}
+
+{% block title %}{{ 'supported.programs'|trans|desc('Supported Programs | AwardWallet') }}{% endblock %}
+
+{% block meta %}
+    {{ parent() }}
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0, viewport-fit=cover">
+    <meta name="description" content="{{ 'see-all-programs-can-track'|trans|desc('Here is a list of all the loyalty programs you can track on AwardWallet. From this page, you can learn more about each program by reading the reviews that AwardWallet members left.') }}">
+{% endblock %}
+
+{% block content %}
+    {{ macros.drawSplashScreen() }}
+    <div data-ng-cloak>
+        <div class="heading">
+            <h1>{{ 'list-supported-programs'|trans|desc("List of Supported Loyalty Programs") }}</h1>
+        </div>
+        <div class="tabs-content">
+            {% include('@AwardWalletMain/Account/Add/_providersList.html.twig') %}
+        </div>
+    </div>
+    <noscript>
+        {{ render(controller('AwardWallet\\MainBundle\\Controller\\SupportedProgramsController::indexAction'))|raw }}
+        <style>
+            .ajax-loader {
+                display: none!important;
+            }
+        </style>
+    </noscript>
+{% endblock %}

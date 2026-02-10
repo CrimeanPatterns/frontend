@@ -1,0 +1,256 @@
+{% set title = "FlightInfo statistics" %}
+{% extends '@AwardWalletMain/Manager/layout.html.twig' %}
+{% import _self as macros %}
+
+{% block content %}
+    <style type="text/css">
+        table {
+            border-collapse: collapse;
+        }
+        table td {
+            border: lightgray solid 1px;
+            padding: 7px;
+        }
+        thead td {
+            font-weight: bold;
+        }
+        .navigation {
+            padding: 20px 0 0 0;
+        }
+    </style>
+    <script>
+        $(function() {
+            $(document).on('click', '.js-update', function (e) {
+                e.preventDefault();
+                var $this = $(this);
+                $this.before('<span>updating</span>');
+                $this.hide();
+
+                $.get($this.attr('href') + '&ajax=1', function(data) {
+                    if (typeof(data.success) != 'undefined') {
+                        $this.prev('span').remove();
+                        $this.before('<span>refresh page</span>');
+                    }
+                }).fail(function () {
+                    $this.prev('span').remove();
+                    $this.show();
+                });
+            });
+
+            $(document).on('click', '.js-relink', function (e) {
+                e.preventDefault();
+                var $this = $(this);
+                $this.before('<span>relinking</span>');
+                $this.hide();
+
+                $.get($this.attr('href') + '&ajax=1', function(data) {
+                    if (typeof(data.success) != 'undefined') {
+                        $this.prev('span').remove();
+                        $this.before('<span>refresh page</span>');
+                    }
+                }).fail(function () {
+                    $this.prev('span').remove();
+                    $this.show();
+                });
+            });
+
+            $(document).on('change', '.js-select-airline', function (e) {
+                var $this = $(this);
+                var url = $this.find(':selected').data('url');
+                if (url) {
+                    window.location = url;
+                }
+            })
+        })
+    </script>
+
+    <a href="{{ url('aw_manager_flightinfo_index', {year: year, month: month, day: day, level: level}) }}">Dashboard</a>
+
+    <hr size="2"/>
+
+    <h1>
+        Statistics for {{ airlineName }} / {{ headerDate }}
+        {% if state is not same as(false) and state != 'all' %}
+            / FlightInfo State
+            {% if state == 0 %}New
+            {% elseif state == 1 %}Checked
+            {% elseif state == 2 %}Done
+            {% elseif state == 3 %}Error
+            {% else %}Unknown
+            {% endif %}
+        {% endif %}
+        ({{ data|length }})
+    </h1>
+
+    {{ macros.navigation(year, month, day, level, airline, state, type, days, minYear, maxYear, airlines) }}
+
+    {% if data|length %}
+        <hr size="1"><br/>
+
+        <ul>
+        {% for configRule in config %}
+            {% if configRule.debug and configRule.enable %}
+                <li><a href="{{ url('aw_manager_flightinfo_update', {ids: ids, rule: configRule.name }) }}">Update with <b>{{ configRule.name }}</b> </a></li>
+            {% endif %}
+        {% endfor %}
+        </ul>
+        <br/>
+    {% endif %}
+
+    <hr size="1"><br/>
+
+    {% if data|length %}
+        <table>
+            <thead>
+            <tr>
+                <td>Date</td><td>IATA<br/>Code</td><td>Flight<br/>Number</td><td>Departure</td><td>Arrival</td>
+                <td>Status</td><td>Flight<br/>Status</td>
+                <td>Create<br/>Date</td><td>Update<br/>Date</td>
+                <td>Check<br/>count</td><td>Subscribe<br/>count</td><td>Update<br/>count</td><td>Error<br/>count</td>
+                <td>Segments<br/>count</td>
+                <td>Diff</td>
+                <td>Equal</td>
+                <td></td>
+            </tr>
+            </thead>
+            <tbody>
+            {% for row in data %}
+                <tr>
+                    <td>{{ row.departureDate }}</td>
+                    <td>{{ row.flightinfoAirline }}</td>
+                    <td>{{ row.flightinfoFlight }}</td>
+                    <td>{{ row.flightinfoDeparture }}</td>
+                    <td>{{ row.flightinfoArrival }}</td>
+                    <td>{% if row.flightinfoState == 0 %}New
+                        {% elseif row.flightinfoState == 1 %}Checked
+                        {% elseif row.flightinfoState == 2 %}Done
+                        {% elseif row.flightinfoState == 3 %}Error
+                        {% else %}Unknown
+                        {% endif %}
+                    </td>
+                    <td>{% if row.flightinfoFlightState == 0 %}Unknown
+                        {% elseif row.flightinfoFlightState == 1 %}Schedule
+                        {% elseif row.flightinfoFlightState == 2 %}Depart
+                        {% elseif row.flightinfoFlightState == 3 %}Arrive
+                        {% elseif row.flightinfoFlightState == 4 %}Cancel
+                        {% elseif row.flightinfoFlightState == 11 %}Error:Airline
+                        {% elseif row.flightinfoFlightState == 12 %}Error:Number
+                        {% elseif row.flightinfoFlightState == 13 %}Error:Departure
+                        {% elseif row.flightinfoFlightState == 14 %}Error:Arrival
+                        {% elseif row.flightinfoFlightState == 15 %}Error:Not Found
+                        {% elseif row.flightinfoFlightState == 16 %}Error:Not Exists
+                        {% elseif row.flightinfoFlightState == 21 %}Error:Other
+                        {% else %}Unknown
+                        {% endif %}
+                    </td>
+                    <td>{{ row.flightinfoCreate }}</td>
+                    <td>{% if row.flightinfoUpdate %}{{ row.flightinfoUpdate }}{% endif %}</td>
+                    <td>{{ row.flightinfoChecks }}</td>
+                    <td>{{ row.flightinfoSubscribes }}</td>
+                    <td>{{ row.flightinfoUpdates }}</td>
+                    <td>{{ row.flightinfoErrors }}</td>
+                    <td>{{ row.segmentsCount }}</td>
+                    <td>{{ row.diff }}</td>
+                    <td>{{ row.same }}</td>
+                    <td><nobr>
+                            <a href="{{ url('aw_manager_flightinfo_view', {id: row.flightinfoId}) }}">view</a>
+                        </nobr></td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    {% endif %}
+
+    <br/><hr size="1">
+
+    {{ macros.navigation(year, month, day, level, airline, state, type, days, minYear, maxYear, airlines) }}
+
+    {% macro navigation(year, month, day, level, airline, state, type, days, minYear, maxYear, airlines)%}
+        {% set calendarOther = '&level=' ~ level ~ '&airline=' ~ airline ~ '&state=' ~ state ~ '&type=' ~ type %}
+        {% set airlineOther  = '&year=' ~ year ~ '&month=' ~ month ~ '&day=' ~ day ~ '&level=' ~ level ~ '&state=' ~ state ~ '&type=' ~ type %}
+        {% set levelOther    = '&year=' ~ year ~ '&month=' ~ month ~ '&day=' ~ day ~ '&airline=' ~ airline ~ '&state=' ~ state ~ '&type=' ~ type %}
+        {% set stateOther    = '&year=' ~ year ~ '&month=' ~ month ~ '&day=' ~ day ~ '&level=' ~ level ~ '&airline=' ~ airline ~ '&type=' ~ type %}
+        {% set typeOther     = '&year=' ~ year ~ '&month=' ~ month ~ '&day=' ~ day ~ '&level=' ~ level ~ '&airline=' ~ airline ~ '&state=' ~ state %}
+        <br/>
+        <table>
+            <tbody>
+            <tr>
+                <td bgcolor="gray"></td>
+                <td>
+                    <a href="?level={{ level }}">Today</a>
+                </td>
+            </tr>
+            <tr>
+                <td bgcolor="gray">Year</td>
+                <td>
+                    {% for y in minYear .. maxYear %}{% if y == year %}<b>{{ y }}</b>{% else %}<a href="?year={{ y }}&month=1{{ calendarOther }}">{{ y }}</a>{% endif %} {% if not loop.last %}&middot;{% endif %} {% endfor %}
+                </td>
+            </tr>
+            <tr>
+                <td bgcolor="gray">Month</td>
+                <td>
+                    {% if not month %}<b>All</b>{% else %}<a href="?year={{ year }}&month=0{{ calendarOther }}">All</a>{% endif %} &middot;
+                    {% for m in 1..12 %}{% if m == month %}<b>{{ m }}</b>{% else %}<a href="?year={{ year }}&month={{ m }}{{ calendarOther }}">{{ m }}</a>{% endif %} {% if not loop.last %}&middot;{% endif %} {% endfor %}
+                </td>
+            </tr>
+            <tr>
+                <td bgcolor="gray">Day</td>
+                <td>
+                    {% if not day %}<b>All</b>{% else %}<a href="?year={{ year }}&month={{ month }}&day={{ 0 }}{{ calendarOther }}">All</a>{% endif %} &middot;
+                    {% for d in 1..days %}{% if d == day %}<b>{{ d }}</b>{% else %}<a href="?year={{ year }}&month={{ month }}&day={{ d }}{{ calendarOther }}">{{ d }}</a>{% endif %} {% if not loop.last %}&middot;{% endif %} {% endfor %}
+                </td>
+            </tr>
+            <tr>
+                <td bgcolor="gray">Airlines</td>
+                <td>
+                    {% if airline == 'all' %}<b>All</b>       {% else %}<a href="?airline=all{{ airlineOther }}">All</a>             {% endif %}
+                    {% if airlines|length > 10 %}
+                        &middot;
+                        <select class="js-select-airline">
+                            <option {% if airline == 'all' %}selected{% endif %}>-- Select Airline --</option>
+                            {% for a in airlines %}
+                                <option {% if airline == a.code %}selected{% endif %}  data-url="?airline={{ a.code }}{{ airlineOther }}">{{ a.name }}</option>
+                            {% endfor %}
+                        </select>
+                    {% else %}
+                        {% for a in airlines %}
+                            &middot;
+                            {% if airline == a.code %}<b>{{ a.name }}</b>{% else %}<a href="?airline={{ a.code }}{{ airlineOther }}">{{ a.name }}</a>{% endif %}
+                        {% endfor %}
+                    {% endif %}
+                </td>
+            </tr>
+            <tr>
+                <td bgcolor="gray">Segment Type</td>
+                <td>
+                    {% if not type              %}<b>All</b>       {% else %}<a href="?type=0{{ typeOther }}"      >All</a>          {% endif %} &middot;
+                    {% if type == 'flights'     %}<b>Normal</b>    {% else %}<a href="?type=flights{{ typeOther }}">Normal</a>       {% endif %} &middot;
+                    {% if type == 'hidden'      %}<b>Deleted</b>   {% else %}<a href="?type=hidden{{ typeOther }}">Deleted</a>       {% endif %} &middot;
+                    {% if type == 'cancelled'   %}<b>Cancelled</b> {% else %}<a href="?type=cancelled{{ typeOther }}">Cancelled</a>  {% endif %} &middot;
+                    {% if type == 'broken'      %}<b>Broken</b>    {% else %}<a href="?type=broken{{ typeOther }}">Broken</a>        {% endif %} &middot;
+                    {% if type == 'nonflights'  %}<b>Non-flight</b>{% else %}<a href="?type=nonflights{{ typeOther }}">Non-flight</a>{% endif %}
+                </td>
+            </tr>
+            <tr>
+                <td bgcolor="gray">FlightInfo State</td>
+                <td>
+                    {% if state == 'all' %}<b>All</b>            {% else %}<a href="?state=all{{ stateOther }}">All</a>            {% endif %} &middot;
+                    {% if state == '0'   %}<b>New</b>            {% else %}<a href="?state=0{{ stateOther }}"  >New</a>            {% endif %} &middot;
+                    {% if state == '1'   %}<b>Checked</b>        {% else %}<a href="?state=1{{ stateOther }}"  >Checked</a>        {% endif %} &middot;
+                    {% if state == '2'   %}<b>Done</b>           {% else %}<a href="?state=2{{ stateOther }}"  >Done</a>           {% endif %} &middot;
+                    {% if state == '3'   %}<b>Error</b>          {% else %}<a href="?state=3{{ stateOther }}"  >Error</a>          {% endif %}
+                </td>
+            </tr>
+            <tr>
+                <td bgcolor="gray">User Level</td>
+                <td>
+                    {% if not level    %}<b>All</b>       {% else %}<a href="?level=0{{ levelOther }}">All</a>     {% endif %} &middot;
+                    {% if level == '1' %}<b>Regular</b>   {% else %}<a href="?level=1{{ levelOther }}">Regular</a> {% endif %} &middot;
+                    {% if level == '2' %}<b>AWPlus</b>    {% else %}<a href="?level=2{{ levelOther }}">AWPlus</a>  {% endif %}
+                </td>
+            </tr>
+            </tbody>
+        </table>
+        <br/>
+    {% endmacro %}
+{% endblock %}

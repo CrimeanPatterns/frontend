@@ -1,0 +1,168 @@
+{% set title = 'Email Viewer' %}
+{% extends "@AwardWalletMain/Manager/layout.html.twig" %}
+
+{% block content %}
+    <p id="flash-message" style="display: none; color: white; background-color: green; padding: 15px; font-size: 13px">The email was sent successfully</p>
+
+    <form name="email-viewer" action="" method="post">
+        <table cellpadding="0" cellspacing="2" border="0" style="margin: 5px;">
+            <tr>
+                <td id="viewer-form" valign="top" style="width: 600px;">
+
+                </td>
+
+                <td id="viewer-data" valign="top">
+
+                </td>
+            </tr>
+        </table>
+    </form>
+
+    <script>
+        var form = $('form[name="email-viewer"]');
+        var preview = null,
+            help = null,
+            error = null;
+        var clean = function() {
+            $('#viewer-data').empty();
+            if (preview != null && !preview.closed) {
+                preview.close();
+            }
+            if (help != null && !help.closed) {
+                help.close();
+            }
+        };
+        var upCkeditor = function() {
+            if (typeof CKEDITOR != "undefined") {
+                for (instance in CKEDITOR.instances) {
+                    CKEDITOR.instances[instance].updateElement();
+                }
+            }
+        };
+        var handleErrors = function(data) {
+            var errors = [];
+            if (typeof(data['error']) == 'undefined') return;
+            $.each(data['details'], function(index, value){
+                errors.push(value.errorText);
+            });
+            alert(errors.join(", "));
+        };
+        var handleServerError = function(jqXHR) {
+            preview = window.open("", jqXHR.statusText, "toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=yes, resizable=yes, width=1024, height=600");
+            preview.document.write(jqXHR.responseText);
+            preview.focus();
+        };
+        var loadForm = function(id, success) {
+            var data = {};
+            success = success || $.noop;
+            if (typeof(form.find('#form_lang').val()) != 'undefined') data.lang = form.find('#form_lang').val();
+            if (typeof(form.find('#form_address').val()) != 'undefined') data.address = form.find('#form_address').val();
+            if (typeof(form.find('#form_locale').val()) != 'undefined') data.locale = form.find('#form_locale').val();
+            if (typeof(form.find('#form_stat_period').val()) != 'undefined') data.stat_period = form.find('#form_stat_period').val();
+
+            return $('#viewer-form').load('{{ path('aw_manager_emailviewer', {action: 'form'}) }}?id='+(id||""), data, function() {
+                clean();
+                success();
+
+                $('select').each(function() {
+                    var option = $(this);
+                    option.select2(
+                        $.extend({
+                            width: '100%',
+                            sorter: function(data) {
+                              return data.sort(function(a, b) {
+                                  if (b.id === "") {
+                                      return 1;
+                                  } else if (a.id === "") {
+                                      return -1;
+                                  }
+
+                                  return a.text.localeCompare(b.text, undefined, {numeric: true, sensitivity: 'base'});
+                              });
+                            },
+                            matcher: function(search, text, elem) {
+                                const keywords = $(elem).data('keywords');
+
+                                if ($.trim(search) === '') {
+                                    return text;
+                                }
+
+                                if (text.toUpperCase().indexOf(search.toUpperCase()) >= 0) {
+                                    return text;
+                                }
+
+                                if (keywords && keywords.length > 0) {
+                                    for (let keyword of keywords) {
+                                        if (keyword.toUpperCase().indexOf(search.toUpperCase()) >= 0) {
+                                            return text;
+                                        }
+                                    }
+                                }
+
+                                // Return `null` if the term should not be displayed
+                                return null;
+                            }
+                        }, eval("(" + option.attr('data-select2-opt') + ")"))
+                    );
+                });
+            });
+        };
+        $(function(){
+            {% if app.request.query.has('id') %}
+                loadForm('{{ app.request.query.get('id') }}', function() {
+                    $('button[name="form[show]"]').trigger('click');
+                });
+            {% else %}
+                loadForm();
+            {% endif %}
+            $(document)
+                .on('change', '[name="form[kind]"]', function() {
+                    $(this).closest('form').find('button').attr('disabled', 'disabled');
+                    loadForm($(this).val());
+                })
+                .on('click', 'button[name="form[show]"]', function(e){
+                    e.preventDefault();
+                    clean();
+                    upCkeditor();
+                    $.post("{{ path('aw_manager_emailviewer', {action: 'preview'}) }}?id="+$('#form_kind').val(), form.serialize(), function(data) {
+                        handleErrors(data);
+                        if (typeof(data.success) != 'undefined') {
+                            $('#viewer-data').html(data.stat);
+                            preview = window.open("", "Preview", "toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=yes, resizable=yes, width=650, height=400");
+                            preview.document.write(data.preview);
+                            $(preview.document).find('title').text(data.subject);
+                            preview.focus();
+                        }
+                    }).fail(handleServerError);
+                }).on('click', 'button[name="form[send]"]', function(e){
+                    e.preventDefault();
+                    clean();
+                    upCkeditor();
+                    $.post("{{ path('aw_manager_emailviewer', {action: 'send'}) }}?id="+$('#form_kind').val(), form.serialize(), function(data) {
+                        handleErrors(data);
+                        if (typeof(data.success) != 'undefined') {
+                            $('#viewer-data').html(data.stat);
+                            $('#flash-message').slideDown("slow", function() {
+                                setTimeout(function() {
+                                    $('#flash-message').slideUp("slow");
+                                }, 5000);
+                            });
+                        }
+                    }).fail(handleServerError);
+                }).on('click', '#macroHelp', function(e){
+                    e.preventDefault();
+                    clean();
+                    $.get("{{ path('aw_manager_emailviewer', {action: 'help'}) }}", function(data) {
+                        handleErrors(data);
+                        if (typeof(data.success) != 'undefined') {
+                            help = window.open("", "Macro Help", "toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=yes, resizable=yes, width=1000, height=500");
+                            help.document.write(data.help);
+                            $(help.document).find('title').text(data.title);
+                            help.focus();
+                        }
+                    }).fail(handleServerError);
+                });
+        });
+    </script>
+{% endblock %}
+

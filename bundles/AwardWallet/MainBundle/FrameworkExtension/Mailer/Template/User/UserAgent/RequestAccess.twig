@@ -1,0 +1,50 @@
+{% extends '@MailTemplate/Layout/base.twig' %}
+{% trans_default_domain "email" %}
+
+{% block subject %}{% apply spaceless %}{% autoescape false %}
+    {{ 'request_access.subject'|trans({
+        '%company%': agent.fullName,
+    }, 'email', lang)|desc('%company% Account Sharing Request') }}
+{% endautoescape %}{% endapply %}{% endblock subject %}
+
+{% block content %}
+    {% import '@MailTemplate/CommonMacro.twig' as commonMacro %}
+
+    {{ commonMacro.hello(user.fullname, _context, {
+        'padding-left': '0'
+    }) }}
+
+    {% if full %}
+        {% set text = 'request_access.introduction.full'|trans({
+            '%company%': agent.fullName,
+            '%awardwallet%': 'AwardWallet'
+        }, 'email', lang)|desc('%company% is requesting full access to all of the accounts you currently have in your %awardwallet% profile. If you follow the link below the following accounts will be shared with %company%, giving them full control over these accounts.') %}
+        {% set follow = 'request_access.link.full'|trans({
+            '%company%': agent.fullName
+        }, 'email', lang)|desc('If you agree to give %company% full control over your accounts, please follow this link:') %}
+    {% else %}
+        {% set text = 'request_access.introduction.readonly'|trans({
+            '%company%': agent.fullName,
+            '%awardwallet%': 'AwardWallet'
+        }, 'email', lang)|desc('%company% is requesting read-only access to all of the accounts you currently have in your %awardwallet% profile. If you follow the link below the following accounts will be shared with %company%, giving them read-only control over these accounts.') %}
+        {% set follow = 'request_access.link.readonly'|trans({
+            '%company%': agent.fullName
+        }, 'email', lang)|desc('If you agree to give %company% read-only control over your accounts, please follow this link:') %}
+    {% endif %}
+    {{ commonMacro.paragraph(text, _context) }}
+
+    {% if accounts|length > 0 %}
+        {{ commonMacro.accountList(accounts, _context) }}
+    {% endif %}
+
+    {{ commonMacro.paragraph(
+        follow,
+        _context, {},
+        {
+            'margin-top': '20px'
+        }
+    ) }}
+
+    {% set link = baseUrl ~ path('aw_share_all', {'code': code}) %}
+    {{ commonMacro.dottedLink(link, link, _context) }}
+{% endblock content %}

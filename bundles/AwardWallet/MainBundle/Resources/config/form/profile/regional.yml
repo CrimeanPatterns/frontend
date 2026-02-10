@@ -1,0 +1,75 @@
+services:
+    _defaults:
+        public: true
+
+    # Types
+
+    AwardWallet\MainBundle\Form\Type\ProfileRegionalType:
+        public: true
+        autowire: true
+        bind:
+            $transformer: "@aw.form.transformer.generic.profile_regional"
+        tags:
+            - { name: form.type }
+
+    AwardWallet\MainBundle\Form\Type\Mobile\Profile\RegionalType:
+        public: true
+        autowire: true
+        bind:
+            $transformer: "@aw.form.transformer.generic.profile_regional"
+        tags:
+            - { name: form.type }
+
+    aw.form.type.profile_traveler:
+        public: true
+        class: AwardWallet\MainBundle\Form\Type\TravelerProfileType
+        arguments:
+        - '@AwardWallet\MainBundle\Globals\Localizer\LocalizeService'
+        - "@aw.form.transformer.generic.traveler_profile"
+        - "@doctrine.orm.entity_manager"
+        tags:
+        - { name: form.type }
+
+    # Transformers
+
+    aw.form.transformer.generic.profile_regional:
+        public: true
+        class: AwardWallet\MainBundle\Form\Transformer\Profile\RegionalTransformer
+
+    aw.form.transformer.generic.traveler_profile:
+        public: true
+        class: AwardWallet\MainBundle\Form\Transformer\Profile\TravelerProfileTransformer
+
+    # Helpers
+
+    AwardWallet\MainBundle\Form\Type\Helpers\Profile\RegionalHelper:
+        public: true
+        autowire: true
+        bind:
+            $locales: '%locales%'
+
+    # Subscribers
+
+    aw.form.profile_regional.subscriber.generic:
+        public: true
+        class: AwardWallet\MainBundle\Form\Handler\Subscriber\Profile\RegionalGeneric
+        arguments: ["@doctrine.orm.entity_manager", "@security.authorization_checker"]
+
+    # Handlers
+
+    aw.form.profile_regional.handler.desktop:
+        public: true
+        parent: aw.form.generic_request_handler
+        calls:
+            - [setChannels, ["form.generic.profile_regional"]]
+            - [addHandlerSubscriber, ["@aw.form.profile_regional.subscriber.generic"]]
+
+    aw.form.profile_regional.handler.mobile:
+        public: true
+        parent: aw.form.generic_request_handler
+        calls:
+            - [setChannels, ["form.mobile", "form.generic.profile_regional"]]
+            - [addHandlerSubscriber, ["@aw.form.profile_regional.subscriber.generic"]]
+            - [addHandlerSubscriber, ["@aw.form.subscriber.mobile.request_data_transformer"]]
+
+

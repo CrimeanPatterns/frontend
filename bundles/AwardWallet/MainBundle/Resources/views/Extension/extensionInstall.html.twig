@@ -1,0 +1,34 @@
+{% extends "@AwardWalletMain/Layout/common.html.twig" %}
+{% import '@AwardWalletMain/TwigMacros/extension.html.twig' as extension %}
+
+{% set extension_id = 'elbkchakmaiinadjpnmdgpflpjogpgmb' %}
+
+{% block title %}{{ 'extension.required'|trans()|desc('Browser extension required') }}{% endblock %}
+
+{% block stylesheets %}
+	{{ parent() }}
+
+	{{ encore_entry_link_tags('global-loader') }}
+	{{ encore_entry_link_tags('new-pages') }}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+
+    <script>
+        window.extension_id = '{{ extension_id }}';
+    </script>
+
+    {{ encore_entry_script_tags('trans/' ~ app.request.locale) }}
+
+    {{ encore_entry_script_tags('new-pages', null, '_default', {'defer': true}) }}
+{% endblock %}
+
+{% block content %}
+    {% include '@AwardWalletMain/Layout/global-loader.html.twig' %}
+
+    <main id="content">
+
+    </main>
+    {{ extension.load() }}
+{% endblock %}

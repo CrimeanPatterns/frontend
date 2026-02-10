@@ -1,0 +1,500 @@
+{% extends "@AwardWalletMain/Layout/common.html.twig" %}
+{% import '@AwardWalletMain/Business/Members/_searchBox.html.twig' as searchbox %}
+
+{% block meta %}
+    {{ parent() }}
+    <base href="{{ path('aw_spent_analysis_index') }}">
+{% endblock %}
+
+{% block title %}
+    {{ 'credit-card.ccsa_title'|trans }}
+{% endblock %}
+
+{% block body_left_widgets %}
+    {{ widget_render('left_top') }}
+    {{ widget_render('credit_card_tools_zone') }}
+    {{ widget_render('left_bottom') }}
+{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    {{ encore_entry_link_tags('account') }}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        require(['jquery-boot', 'angular-boot', 'oldscripts', 'pages/spentAnalysis/main'],
+            function($, angular) {
+                angular.module('spentAnalysisApp').constant('user', {{ user|json_encode|default('{}')|raw }});
+                angular.module('spentAnalysisApp').constant('cards', {{ cards|json_encode|default('{}')|raw }});
+                angular.module('spentAnalysisApp').constant('data', {{ data|json_encode|default('{}')|raw }});
+
+                $(function() {
+                    angular.bootstrap($('body').get(), ['spentAnalysisApp']);
+                });
+            });
+    </script>
+{% endblock %}
+
+{% block content %}
+    <div class="main-blk main-head-flex main-head-flex--border2 ng-scope" style="max-width: 1900px">
+        <h1>{{ 'credit-card.ccsa_title'|trans }}</h1>
+        <div class="disclaimer-calculated-box">
+            {{ 'rewards-values-calculated-aw'|trans({
+                '%link1_on%': '<a href="/blog/awardwallet-mile-valuations/" target="_blank">',
+                '%link1_off%': '</a>',
+                '%link2_on%': '<a href="/blog/advertiser-disclosure/" target="_blank">',
+                '%link2_off%': '</a>',
+            })|raw }}
+        </div>
+    </div>
+
+    {% if not data.lastSuccessCheck or data.onlyOldTransactions %}
+        <div class="tabs-content spend-content">
+            {# start #}
+            <div class="not-found no-border t-left">
+            {% if data.onlyOldTransactions %}
+                <i class="icon-warning-small"></i>
+                <p>{{ 'analysis.stub.no-analytics'|trans({}, 'mobile-native') }}</p>
+            {% else %}
+                <p>{{ 'analysis.stub.add-accounts'|trans({}, 'mobile-native') }}</p>
+            {% endif %}
+            </div>
+            <div class="search-content has-border">
+                {% for provider in providers %}
+                <a href="{{ url('aw_account_add', {providerId: provider.id, backTo: path('aw_spent_analysis_index')}) }}">
+                    <div class="row">
+                        <div class="name">
+                            <h3>{{ provider.displayName }}</h3>
+                        </div>
+                        <div class="result">
+                        {% if provider.accountsCounter > 0 %}
+                            <i class="icon-green-check"></i>
+                            <span class="added">{{ 'accounts.n'|trans({'%count%': provider.accountsCounter, '%accounts%': provider.accountsCounter}) }}</span>
+                        {% else %}
+                            <i class="icon-silver-error"></i>
+                            <span class="not-added">No accounts</span>
+                        {% endif %}
+                        </div>
+                    </div>
+                </a>
+                {% endfor %}
+            </div>
+            <p class="small-silver-text">{{ 'analysis.stub.come-back'|trans({}, 'mobile-native') }}</p>
+            {# end #}
+            {# dublicated #}
+            <div class="title-silver">
+                <div class="title-silver__item">
+                    <a target="_blank" href="{{ url('aw_merchant_lookup') }}" class="blue-link">{{ 'credit-card.merchant.which-credit-card-use-rewards'|trans|desc('Trying to figure out which credit card to use with a specific merchant to maximize your rewards? Try our new merchant category lookup tool!') }}</a>
+                    <a target="_blank" href="{{ url('aw_merchant_lookup') }}" class="btn-blue"><i class="icon-double-arrow-right-white"></i></a>
+                </div>
+            </div>
+        </div>
+
+    {% else %}
+    <div id="spentContent" class="tabs-content spend-content" data-ng-controller="SpentAnalysisCtrl as spentAnalysis" style="max-width: 1900px">
+
+        <div class="ajax-loader">
+            <div class="loading"></div>
+        </div>
+
+        <table class="main-table analysis-actions" ng-show="initialized" ng-cloak>
+            <tbody>
+            <tr>
+                <td>{{ 'label.owner'|trans }}:</td>
+                <td>
+                    <div class="styled-select">
+                        <div>
+                            <select id="spentOwner" name="spent[owner]" ng-disabled="selectAllOwners" style="[[selectAllOwners ? 'opacity: 0.4;' : '']]">
+                                <option value="[[owner.userAgentId]]"
+                                    data-uid="[[owner.userId]]"
+                                    data-ng-repeat="owner in ownersList"
+                                    {% if is_granted('SITE_BUSINESS_AREA') %}
+                                        ng-selected="owner.userAgentId === user.selectedAgent"
+                                    {% else %}
+                                        ng-selected="$first"
+                                    {% endif %}
+                                    data-ng-bind="owner.name"
+                                ></option>
+                        </select>
+                        </div>
+                    </div>
+                    {% if is_granted('SITE_BUSINESS_AREA') %}
+                        <div style="margin-top: 5px;">
+                            <input type="checkbox" class="checkbox" id="select_all_owners" data-ng-model="selectAllOwners"/>
+                            <label class="label" for="select_all_owners">
+                                <strong>Combine All Users</strong>
+                            </label>
+                        </div>
+                    {% endif %}
+                </td>
+            </tr>
+            <tr>
+                <td>{{ 'date-range'|trans|desc('Date Range') }}:</td>
+                <td>
+                    <div class="styled-select">
+                        <div>
+                            <select id="spentDateRange">
+                                <option value="[[dateRange.value]]" data-ng-repeat="dateRange in dateRanges" ng-selected="2 == dateRange.value">[[dateRange.name]]</option>
+                            </select>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+            <tr data-ng-if="cards.length > 0">
+                <td>{{ 'track.group.card'|trans }}:</td>
+                <td>
+                    <ul id="spentCreditCards">
+                        <li class="js-spent-card[[card.subAccountId]]" data-ng-repeat="card in cards">
+                            <input type="checkbox" class="checkbox" id="spentcard[[card.subAccountId]]" ng-checked="(!card.noTransactions)" value="[[card.subAccountId]]">
+                            <label for="spentcard[[card.subAccountId]]" class="label">
+                                <span class="spent-2disabled-show">[[card.creditCardName]] &nbsp; ({{ 'credit-card.transactions.not-found-date-range'|trans|desc('no transactions found for the selected date range') }}) <a href="[[card.historyPage]]" target="history[[card.subAccountId]]" class="blue-link"><i class="icon-double-arrow-right-blue"></i></a></span>
+                                {% if is_granted('SITE_BUSINESS_AREA') %}
+                                    <a href="[[card.historyPage]]" target="history[[card.subAccountId]]" class="blue-link">[[card.creditCardName]] <i class="icon-double-arrow-right-blue"></i></a>
+                                {% else %}
+                                    <a href="[[card.transactionsPage]]" target="history[[card.subAccountId]]" class="blue-link">[[card.creditCardName]] <i class="icon-double-arrow-right-blue"></i></a>
+                                {% endif %}
+                            </label>
+                        </li>
+                    </ul>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+        <div class="cardspend-error" hidden>
+            <div class="chart__container">
+                <div class="chart__message">
+                    <i class="icon-warning-small"></i>
+                    <p ng-bind-html="errorText|unsafe"></p>
+                </div>
+            </div>
+        </div>
+        <div class="cardspend-data" hidden>
+            <div id="cardUsed" class="analysis-cards">
+                <div class="analysis-cards__head" data-ng-click="spentAnalysis.cardUsed.toggleBox($event)">
+                    <span data-ng-click="spentAnalysis.cardUsed.toggleBox($event)">{{ 'credit-card.make-recommendation'|trans|desc('Cards Used to Make Recommendations') }}</span>
+                    <span ng-if="undefined !== allCardSelected && false === allCardSelected" class="analysis-cards-used-all">
+                        <i class="icon-warning-small"></i>
+                        Not all credit cards are being considered. <a class="blue-link" href="#" data-ng-click="spentAnalysis.cardUsed.markCard($event, 'all')">Click here</a> to turn them all on.
+                    </span>
+                </div>
+                <div class="analysis-cards__content">
+                    <div class="analysis-cards__block actions">
+                        <ul class="dropdown-menu">
+                            <li>
+                                <div class="btn-silver-w rel-this" data-ng-click="spentAnalysis.cardUsed.markCard($event)">
+                                    <input id="cardUsedMark" type="checkbox" class="checkbox js-change-ignore">
+                                    <label for="cardUsedMark" class="label minus"></label>
+                                    <a href="#"><i class="icon-arrow-bottom-dark"></i></a>
+                                </div>
+                                <ul class="dropdown-submenu" style="top: 32px">
+                                    <li>
+                                        <a href="#" data-ng-click="spentAnalysis.cardUsed.markCard($event, 'all')">
+                                            <span class="dropdown-submenu__icon"><i class="icon-checkbox"></i></span>
+                                            <span>{{ 'select-all'|trans|desc('Select all') }}</span>
+                                        </a>
+                                    </li>
+                                    <li ng-if="spentAnalysis.isExistsCardType('personal')">
+                                        <a href="#" data-ng-click="spentAnalysis.cardUsed.markCard($event, 'icon-personal-card')">
+                                            <span class="dropdown-submenu__icon"><i class="icon-personal-card"></i></span>
+                                            <span>{{ 'credit-card.select-personal-cards'|trans|desc('Select only personal cards') }}</span>
+                                        </a>
+                                    </li>
+                                    <li ng-if="spentAnalysis.isExistsCardType('business')">
+                                        <a href="#" data-ng-click="spentAnalysis.cardUsed.markCard($event, 'icon-business-card')">
+                                            <span class="dropdown-submenu__icon"><i class="icon-business-card"></i></span>
+                                            <span>{{ 'credit-card.select-business-cards'|trans|desc('Select only business cards') }}</span>
+                                        </a>
+                                    </li>
+                                    <li ng-if="spentAnalysis.isExistsCardType('have')">
+                                        <a href="#" data-ng-click="spentAnalysis.cardUsed.markCard($event, 'icon-have-card')">
+                                            <span class="dropdown-submenu__icon"><i class="icon-have-card"></i></span>
+                                            <span>{{ 'credit-card.select-cards-i-have'|trans|desc('Select only the cards that I have') }}</span>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="analysis-cards__block" data-ng-repeat="(row, item) in offerCardFilter track by row">
+                        <div class="analysis-cards__caption">
+                            <input type="checkbox" class="checkbox js-groupProvider" id="groupProviderId[[item.providerId]]" data-ng-click="toggleGroupProvider($event)">
+                            <label data-ng for="groupProviderId[[item.providerId]]" class="label js-cardId-label">
+                                [[item.displayName]]:
+                            </label>
+                        </div>
+                        <div class="analysis-cards__details">
+                            <div class="analysis-cards__details-block" data-ng-repeat="(cardRow, cardItem) in item.cardsList track by cardRow">
+                                <input type="checkbox" class="checkbox js-cardId" id="cardId[[cardItem.creditCardId]]" name="cardId[]" value="[[cardItem.creditCardId]]" ng-model="cardItem.checked">
+                                <label for="cardId[[cardItem.creditCardId]]" class="label js-cardId-label">
+                                    <strong>[[cardItem.creditCardName]]
+                                        <i data-ng-class="{'icon-personal-card': !cardItem.isBusiness, 'icon-business-card': cardItem.isBusiness}" title="[[cardItem.isBusiness == true ? 'Business card' : 'Personal card']]" data-role="tooltip" data-tip></i>
+                                        <i data-ng-class="{'icon-have-card': cardItem.existedCard}" ng-hide="cardItem.existedCard == false" title="I have this card" data-role="tooltip" data-tip></i>
+                                        {#<i data-ng-class="{'icon-bonus-spend': cardItem.bonusSpend}" ng-hide="cardItem.bonusSpend == false" title="Bonus spend limit reached" data-role="tooltip" data-tip></i>#}
+                                    </strong>
+                                    <span class="silver" ng-hide="cardItem.description == null">[[cardItem.description]]</span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="title-silver">
+                <h3>[[merchantTitle]]</h3>
+                <div class="title-silver__info">
+                    <i class="icon-warning-small"></i>
+                    <p ng-bind-html="merchantTitleSign|unsafe"></p>
+                </div>
+            </div>
+            <div class="chart__container">
+                <div id="spentChart">
+                    <canvas id="spentChartCanvas" width="100%" height="50px"></canvas>
+                </div>
+                <div style="clear:both;"></div>
+            </div>
+            <mile-value-box
+                init-data="user.mileValue"
+                change-action="spentAnalysis.forceFetchReport()"
+                data-ng-if="true"
+            >
+            </mile-value-box>
+            <div class="chart__container">
+                {% if is_granted('ROLE_STAFF') %}
+                    <style>
+                        .debug-avg {display:none;outline: dotted 1px red;padding: 2px;}
+                        .red .debug-avg {outline-color: #fff;}
+                        .debug-avg span, .main-table.transaction .spent-potential .debug-avg span.silver-text {display: inline !important;}
+                    </style>
+                    <div id="devMenu" class="devMenu">
+                        <menu>
+                            <div><a id="debugAvg" onclick="debugData();return false;" href="#"> debug data</a></div>
+                        </menu>
+                    </div>
+                    <script>
+                        function debugData() {
+                            let state = $('#debugAvg').data('checked');
+                            if (undefined === state || !!state) {
+                                $('div.debug-avg').show();
+                            } else {
+                                $('div.debug-avg').hide();
+                            }
+                            $('#debugAvg').data('checked', !state);
+                        }
+                    </script>
+                {% endif %}
+                <table class="main-table analysis transaction">
+                    <thead>
+                    <tr>
+                        <th></th>
+                        <th>{{ 'merchant'|trans|desc('Merchant') }}</th>
+                        <th>{{ 'spend'|trans|desc('Spend') }}</th>
+                        <th>{{ 'credit-card.transactions.serial'|trans|desc('# of transactions') }}</th>
+                        <th>{{ 'coupon.category'|trans }}</th>
+                        <th>{{ 'points-earned'|trans|desc('Points Earned') }}</th>
+                        <th class="balance focused miles-range-cell">{{ 'earning-potential'|trans|desc('Earning Potential') }}</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr data-ng-repeat="(row, item) in reportItems track by row" data-ng-class="{ 'bold': $last, 'row-other' : 0 == item.merchantId}"
+                        ng-init="isPositiveMiles = (item.offerData.milesRaw > 0 || item.offerData.milesValue > 0)">
+                        <td>
+                            <div class="account-details" ng-if="item.merchantId">
+                                <a href="" class="show-details"
+                                   data-ng-click="spentAnalysis.popup.open($event, item, true); $event.preventDefault(); $event.stopPropagation();"
+                                   data-ng-mouseenter="spentAnalysis.popup.open($event, item, false, 500)"
+                                   data-ng-mouseleave="spentAnalysis.popup.cancelOpen(); spentAnalysis.popup.close(false, 350)">
+                                    <i class="icon-add-silver-b"></i>
+                                </a>
+                            </div>
+                        </td>
+                        <td>[[item.offerData.merchantName]]</td>
+                        <td>[[item.offerData.amount]]</td>
+                        <td>[[item.transactions]]</td>
+                        <td>[[item.offerData.category]]</td>
+                        <td class="points-cell balance-cell miles-range-cell">
+                            <div class="spent-potential">
+                                <span>
+                                    <span data-ng-if="item.offerData.milesRaw > 0">[[item.formatted.miles]]</span>
+                                    <div class="miles-avgvalue">
+                                        <span ng-class="{'silver-text': item.offerData.milesRaw > 0}" data-ng-bind="item.formatted.milesValue"></span>
+                                    </div>
+                                    {% if is_granted('ROLE_STAFF') %}<div class="debug-avg">avg: <span data-ng-bind="item.formatted.milesValue"></span></div>{% endif %}
+                                </span>
+                                <div class="up-block">
+                                    <div class="up-counter">[[item.offerData.multiplier]]x</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td
+                            data-ng-class="{
+                                'transp-like': item.isProfit,
+                                'pointer': !item.isProfit,
+                                'potential-cell': !item.isProfit,
+                                [item.offerData.earningPotentialColor]: !!item.offerData.earningPotentialColor,
+                                'miles-range-cell': !item.isProfit,
+                            }"
+                            data-ng-click="transactionOfferData(item)"
+                        >
+                            <div class="inner" data-ng-if="item.isProfit && isPositiveMiles">
+                                <i class="icon-like"></i>
+                                {% if is_granted('ROLE_STAFF') %}
+                                    <div class="debug-avg">
+                                        <span>[[item.formatted.potentialMiles]]</span>
+                                        <div class="miles-avgvalue">
+                                            <span class="silver-text" data-ng-bind="item.formatted.potentialMilesValue"></span>
+                                        </div>
+                                        <div>avg: <span class="silver-text" data-ng-bind="item.formatted.potentialMilesValue"></span> | [[item.offerData.potential]]x</div>
+                                    </div>
+                                {% endif %}
+                            </div>
+                            <div class="spent-potential" data-ng-if="!item.isProfit && isPositiveMiles">
+                                <span>
+                                    <span>[[item.formatted.potentialMiles]]</span>
+                                    <div class="miles-avgvalue">
+                                        <span class="silver-text" data-ng-bind="item.formatted.potentialMilesValue"></span>
+                                    </div>
+                                    {% if is_granted('ROLE_STAFF') %}<div class="debug-avg">avg: <span class="silver-text" data-ng-bind="item.formatted.potentialMilesValue"></span></div>{% endif %}
+                                </span>
+                                <div class="up-block">
+                                    <div class="up-counter">[[item.offerData.potential]]x</div>
+                                </div>
+                            </div>
+                            <div class="arrow" data-ng-if="item.offerData.potential"><i class="icon-double-arrow-right-white"></i></div>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="title-silver">
+                <div class="title-silver__item">
+                    <a target="_blank" href="{{ url('aw_merchant_lookup') }}" class="blue-link">{{ 'credit-card.merchant.which-credit-card-use-rewards'|trans|desc('Trying to figure out which credit card to use with a specific merchant to maximize your rewards? Try our new merchant category lookup tool!') }}</a>
+                    <a target="_blank" href="{{ url('aw_merchant_lookup') }}" class="btn-blue"><i class="icon-double-arrow-right-white"></i></a>
+                </div>
+            </div>
+        </div>
+        <div data-ng-cloak2>
+            <dialog id="credit-card-offer-popup" data-auto-open="false" data-modal="true" data-width="700">
+                <div data-ng-show="!SpentAnalysis.state.offerLoading" data-ng-bind-html="spentAnalysis.offerDialogContent | unsafe"></div>
+                <div class="ajax-loader" data-ng-show="SpentAnalysis.state.offerLoading">
+                    <div class="loading"></div>
+                </div>
+            </dialog>
+        </div>
+
+        <div id="analysisPopup" class="ui-dialog account-popup analysis-popup"
+             data-ng-mouseenter="spentAnalysis.popup.cancelClose()"
+             data-ng-mouseleave="spentAnalysis.popup.close(false, 750)">
+
+            <div class="arrow-popup"></div>
+            <div class="ajax-loader" data-show-element="spentAnalysis.popup.loading">
+                <div class="loading"></div>
+            </div>
+            <div class="content-popup" data-show-element="!spentAnalysis.popup.loading">
+                <div class="title">
+                    <div class="title-row f-left">
+                        <i class="icon-silver-arrow-down"></i>
+                        <h3>[[ merchantTitleItems.name ]]<span> [[ merchantTitleItems.category ]]</span></h3>
+                    </div>
+                    <div class="clear"></div>
+                </div>
+
+                <div class="merchant-content">
+                    <div class="history-box-list">
+                        <div class="not-found inside" data-ng-hide="merchantItems.length">
+                            <div class="item-block">
+                                <i class="icon-warning-small"></i>
+                                <p>{{ 'error.award.account.other.title'|trans }}</p>
+                            </div>
+                        </div>
+                        <table class="main-table analysis transaction" data-ng-show="merchantItems.length">
+                            <thead>
+                            <tr>
+                                <th class="date-cell">{{ 'date'|trans|desc('Date') }}</th>
+                                <th class="card-used-cell">{{ 'card-used'|trans|desc('Card Used') }}</th>
+                                <th class="owner-cell">{{ 'label.owner'|trans }}</th>
+                                <th class="balance focused amount-cell">{{ 'business.transactions.amount'|trans }}</th>
+                                <th class="balance focused points-cell">{{ 'points'|trans|desc('Points') }}</th>
+                                <th class="balance focused earning-potential-cell">{{ 'earning-potential'|trans }}</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr data-ng-repeat="(row, item) in merchantItems track by row"
+                                ng-init="isPositiveMiles = (item.offerData.milesRaw > 0 || item.offerData.milesValue > 0)">
+                                <td class="date-cell">[[item.postingDate]]</td>
+                                <td class="card-used-cell">[[item.creditCardName]]</td>
+                                <td class="owner-cell">[[getSubAccountOwner(item.subAccountId)]]</td>
+                                <td class="points-cell balance-cell amount-cell">[[item.offerData.amount]]</td>
+                                <td class="points-cell balance-cell miles-range-cell">
+                                    <div class="spent-potential">
+                                        <span>
+                                            <span data-ng-if="item.offerData.milesRaw > 0">[[item.formatted.miles]]</span>
+                                            <div class="miles-avgvalue">
+                                                <span ng-class="{'silver-text': item.offerData.milesRaw > 0}" data-ng-bind="item.formatted.milesValue"></span>
+                                            </div>
+                                            {% if is_granted('ROLE_STAFF') %}<div class="debug-avg">avg: <span data-ng-bind="item.formatted.milesValue"></span></div>{% endif %}
+                                        </span>
+                                        <div class="up-block">
+                                            <div class="up-counter">[[item.offerData.multiplier]]x</div>
+                                        </div>
+                                    </div>
+                                </td>
+
+                                <td data-ng-class="{
+                                        'transp-like': item.isProfit,
+                                        'pointer': !item.isProfit,
+                                        'potential-cell': !item.isProfit,
+                                        [item.offerData.earningPotentialColor]: !!item.offerData.earningPotentialColor,
+                                        'miles-range-cell': !item.isProfit,
+                                        'earning-potential-cell': true,
+                                    }"
+                                    data-ng-click="spentAnalysis.popup.hold=true;transactionOfferData(item)"
+                                >
+                                    <div class="inner" data-ng-if="item.isProfit && isPositiveMiles">
+                                        <i class="icon-like"></i>
+                                        {% if is_granted('ROLE_STAFF') %}
+                                            <div class="debug-avg">
+                                                <span>[[item.formatted.potentialMiles]]</span>
+                                                <div ng-if="item.offerData.potentialMinValue > 0" class="miles-range">
+                                                    <span class="silver-text">[[item.formatted.potentialMinValue]] - [[item.formatted.potentialMaxValue]]</span>
+                                                </div>
+                                                <div ng-if="item.offerData.potentialMinValue <= 0" class="miles-avgvalue">
+                                                    <span class="silver-text" data-ng-bind="item.formatted.potentialMilesValue"></span>
+                                                </div>
+                                                <div>avg: <span class="silver-text" data-ng-bind="item.formatted.potentialMilesValue"></span> | [[item.offerData.potential]]x</div>
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                    <div class="spent-potential" data-ng-if="!item.isProfit && isPositiveMiles">
+                                        <span>
+                                            <span>[[item.formatted.potentialMiles]]</span>
+                                            <div class="miles-avgvalue">
+                                                <span class="silver-text" data-ng-bind="item.formatted.potentialMilesValue"></span>
+                                            </div>
+                                            {% if is_granted('ROLE_STAFF') %}<div class="debug-avg">avg: <span class="silver-text" data-ng-bind="item.formatted.potentialMilesValue"></span></div>{% endif %}
+                                        </span>
+                                        <div class="up-block">
+                                            <div class="up-counter">[[item.offerData.potential]]x</div>
+                                        </div>
+                                    </div>
+                                    <div class="arrow" data-ng-if="item.offerData.potential"><i class="icon-double-arrow-right-white"></i></div>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="overlay detailsFader"
+             data-ng-click="spentAnalysis.popup.close(true)"
+             data-ng-show="spentAnalysis.popup.show && spentAnalysis.popup.hold">
+        </div>
+
+    </div>
+
+    <script type="text/ng-template" id="/mileValueBox">
+        {% include "@AwardWalletMain/SpentAnalysis/mileValueBox.html.twig" %}
+    </script>
+    {% endif %}
+{% endblock %}

@@ -1,0 +1,5 @@
+<td>
+    {% if object.user is not empty %}
+        <a href="/manager/list.php?UserID={{ object.user.userid }}&Schema=UserAdmin">{{ object.user.fullName }}</a>
+    {% endif %}
+</td>

@@ -1,0 +1,54 @@
+{# Issue #7731 #}
+
+{% extends "@AwardWalletMain/Offer/standard.html.twig" %}
+{% import '@AwardWalletMain/Offer/offerMacros.html.twig' as offerMacros %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    {{ encore_entry_link_tags('offer') }}
+    {{ encore_entry_link_tags('offers/marriott') }}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        {{ offerMacros.jsOfferYes(_context, ApplyURL, Code, OfferUserID, defaultRedirectLocation) }}
+        {{ offerMacros.jsOfferNo(_context, Code, OfferUserID, defaultRedirectLocation) }}
+    </script>
+{% endblock %}
+
+{% block content %}
+    <div id="offer_wrap">
+        <div id="marriott_bg">
+            <div class="offer_title marriott_title">
+                14 locations across Canada:<br/>
+                Earn up to 5,000 points
+            </div>
+            <div id="marriott_ul">
+                Warm up to winter with this exceptional offer for Marriott Rewards members. Earn 1,000 bonus points per night at participating hotels in Canada.<br/>
+                <br/>
+                From <strong>January 25 - April 19, 2014,</strong> stay any night and our offer includes:
+                <div id="mar_ul">
+                    <ul class="offer_list mar_list">
+                        <li>Accommodation in deluxe guest room or suite
+                        <li>1,000 Marriott Rewards bonus points per night (maximum of 5,000 bonus points per stay)
+                    </ul>
+                </div>
+                Whether travelling for business or pleasure, enjoy luxurious accommodation, thoughtful amenities and world-class service at Marriott Hotels of Canada.
+                <div id="mar_hurry">
+                    Hurry - limited rooms are available.<br/>
+                    Book today!
+                </div>
+            </div>
+            <div class="offer_btn marriott_btn" onclick="offerYes();">
+                Learn more
+            </div>
+        </div>
+        <div class="offer_declinekind" onclick="offerNo();">
+            Never show this ad again
+        </div>
+        <div class="offer_toaccount marriott_toaccount" onclick="window.location = '{{ defaultRedirectLocation }}'">
+            Proceed to my account
+        </div>
+    </div>
+{% endblock %}

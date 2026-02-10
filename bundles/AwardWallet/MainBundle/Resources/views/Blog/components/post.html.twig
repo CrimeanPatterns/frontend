@@ -1,0 +1,310 @@
+{% macro renderPost(post, size, additionalBlock) %}
+    {% import '@AwardWalletMain/Blog/components/icons.html.twig' as icons %}
+
+    {% set bookmarkModifiers = [] %}
+    {% set learnTooltipModifiers = [] %}
+    {% set favoriteTooltipModifiers = [] %}
+    {% if post.isFavorite %}
+        {% set bookmarkModifiers = ['checked'] %}
+    {% endif %}
+    {% if size != 'small' %}
+        {% set learnTooltipModifiers = ['learn'] %}
+        {% set favoriteTooltipModifiers = ['favorite'] %}
+    {% endif %}
+    
+    
+    <div href="{{ post.link }}" class="{{ bem('post', null, [
+        additionalBlock ? 'addition' : (size == 'large' ? 'large' : 'small')
+    ]) }}" data-post-id="{{ post.id }}">
+        <a href="{{ post.link }}" class="{{ bem('post', 'link') }}"></a>
+        <button type="button" aria-label="Add to favorite" class="{{ bem('post', 'bookmark', bookmarkModifiers) }}" data-post-id="{{ post.id }}">
+            <div class="{{ bem('post', 'action-tooltip', favoriteTooltipModifiers) }}">
+                {% if post.isFavorite is defined and post.isFavorite %}
+                    Remove from "Favorites"
+                {% else %}
+                    Add to "Favorites"
+                {% endif %}
+            </div>
+            {{ icons.bookmarkIcon(post.isFavorite) }}
+        </button>
+        <button type="button" aria-label="Add to learned" class="{{ bem('post', 'learned-button', [post.isLearned is defined and post.isLearned ? 'undo' : null]) }}" data-post-id="{{ post.id }}">
+            <div class="{{ bem('post', 'action-tooltip', learnTooltipModifiers) }}">
+                {% if post.isLearned is defined and post.isLearned %}
+                    Remove from "Learned"
+                {% else %}
+                    Mark as "Learned"
+                {% endif %}
+            </div>
+
+            {{ icons.doubleCheckIcon() }}
+            
+        </button>
+
+        <img src="{{ post.thumbnail }}" alt="{{ post.title }}" class="{{ bem('post', 'preview', [size == 'small' ? 'small' : '']) }}" loading="lazy" />
+
+        <h3 class="{{ bem('post', 'title', [
+            size == 'small' ? 'small' : null
+        ]) }}">
+            {{ post.title }}
+        </h3>
+
+        <div class="{{ bem('post', 'meta-info', [size == 'small' ? 'small' : '']) }}">
+            <div class="{{ bem('post', 'release-date', ['desktop']) }}">
+                {{ icons.calendarIcon() }}      
+                {{ post.pubDate }}
+            </div>
+            {% if post.dateAgo is defined %}
+                <span class="{{ bem('post', 'release-date', [size == 'small' ? 'small-mobile' : 'mobile']) }}">{{ post.dateAgo }}</span>
+            {% endif %}
+            <div class="{{ bem('post', 'author-names-wrapper', [size == 'small' ? 'small' : 'large']) }}">
+                <div class="{{ bem('post', 'author-names') }}" data-authors='{{ post.authors.list|json_encode|e('html_attr')|raw }}'>
+                    <span class="{{ bem('post', 'author-description') }}">by </span>
+                    {% for author in post.authors.list %}
+                        <a href="{{ author.link }}" class="{{ bem('post', 'author-link') }}">
+                            {{ author.name }}
+                        </a>
+                    {% endfor %}
+                </div>
+            </div>
+            <div class="{{ bem('post', 'comments') }}">
+                {{ icons.commentsIcon() }}
+                {{ post.commentsCount }}
+            </div>
+            <div class="{{ bem('post', 'social-links') }}">
+                <a href="https://facebook.com/sharer/sharer.php?u={{ post.link|url_encode }}" class="{{ bem('post', 'social-link') }}" rel="noopener noreferrer">
+                    {{ icons.facebookIcon() }}
+                </a>
+                <a href="https://twitter.com/sharer/sharer.php?u={{ post.link|url_encode }}" class="{{ bem('post', 'social-link') }}" rel="noopener noreferrer">
+                    {{ icons.twitterIcon() }}
+                </a>
+            </div>
+        </div>
+
+        <div class="{{ bem('post', 'authors', [size == 'small' ? 'small' : '']) }}">
+            <div class="{{ bem('post', 'authors-img-block') }}">
+                {% for author in post.authors.list %}
+                    <span style="z-index: {{ post.authors.list|length - loop.index }}"
+                          class="{{ bem('post', 'authors-img-wrapper') }}">
+                        <img src="{{ author.avatar }}" class="{{ bem('post', 'author-img') }}" alt="{{ author.name }}" loading="lazy" >
+                    </span>
+                {% endfor %}
+            </div>
+            
+            <div class="{{ bem('post', 'author-names-wrapper') }}">
+                <div class="{{ bem('post', 'author-names') }}" data-authors='{{ post.authors.list|json_encode|e('html_attr')|raw }}'>
+                    <span class="{{ bem('post', 'author-description') }}">by </span>
+                    {% for author in post.authors.list %}
+                        <a href="{{ author.link }}" class="{{ bem('post', 'author-link') }}">
+                            {{ author.name }}
+                        </a>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
+        <div class="{{ bem('post', 'reviewer-wrapper', [
+        additionalBlock ? 'addition' : null]) }}">
+            {% if post.reviewed.name is defined and post.reviewed.avatar is defined and post.reviewed.link is defined %}
+                <div class="{{ bem('post', 'reviewer') }}">
+                    <div class="{{ bem('post', 'img-block') }}">
+                        <img src="{{ post.reviewed.avatar }}" class="{{ bem('post', 'reviewer-img') }}" alt="{{ post.reviewed.name }}" loading="lazy" >
+                        <span class="{{ bem('post', 'reviewer-img-icon') }}">
+                            {{ icons.reviewBadgeIcon() }}
+                        </span>
+                    </div>
+                    <div class="{{ bem('post', 'reviewer-text-block') }}">
+                        <div class="{{ bem('post', 'reviewer-description') }}">
+                            {{ 'reviewed-by'|trans|raw }}
+                        </div>
+                        <a href="{{ post.reviewed.link }}" class="{{ bem('post', 'reviewer-name') }}" >
+                            {{ post.reviewed.name }}
+                        </a>
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+
+        <div class="{{ bem('post', 'mobile-menu') }}">
+            <button class="{{ bem('post', 'mobile-menu-button') }}">
+                <div></div>
+                <div></div>
+                <div></div>
+            </button>
+            <ul class="{{ bem('post', 'mobile-menu-list') }}" data-post-id="{{ post.id }}" data-post-link="{{ post.link }}">
+                <li class="{{ bem('post', 'mobile-menu-item') }}">
+                    <button class="{{ bem('post', 'mobile-menu-item-button', ['share']) }}" data-post-title="{{ post.title }}">
+                        {{ icons.shareIcon() }}
+                        Share Post
+                    </button>
+                </li>
+                <li class="{{ bem('post', 'mobile-menu-item') }}">
+                    <button class="{{ bem('post', 'mobile-menu-item-button', ['favorite', post.isFavorite is defined and post.isFavorite ? 'active' : null]) }}">
+                        {{ icons.bookmarkIcon(post.isFavorite) }}
+                        <span>
+                            {% if post.isFavorite is defined and post.isFavorite %}
+                                Remove from "Favorites"
+                            {% else %}
+                                Save to "Favorites"
+                            {% endif %}
+                        </span>
+                    </button>
+                </li>
+                <li class="{{ bem('post', 'mobile-menu-item') }}">
+                    <button class="{{ bem('post', 'mobile-menu-item-button', ['learned', post.isLearned is defined and post.isLearned ? 'active' : null]) }}">
+                        {{ icons.doubleCheckIcon(post.isLearned is defined and post.isLearned) }}
+                        <span>
+                            {% if post.isLearned is defined and post.isLearned %}
+                                Remove from "Learned"
+                            {% else %}
+                                Mark as "Learned"
+                            {% endif %}
+                        </span>
+                    </button> 
+                </li>
+                <li class="{{ bem('post', 'mobile-menu-item') }}">
+                    <button class="{{ bem('post', 'mobile-menu-item-button', ['copy-link']) }}">
+                        {{ icons.copyIcon() }}
+                        Copy Link
+                    </button>
+                </li>
+                <li class="{{ bem('post', 'mobile-menu-item') }}">
+                    <a href="https://facebook.com/sharer/sharer.php?u={{ post.link|url_encode }}" rel="noopener noreferrer" class="{{ bem('post', 'mobile-menu-item-link') }}">
+                        {{ icons.facebookIcon() }}
+                        Share on Facebook
+                    </a>
+                </li>
+                <li class="{{ bem('post', 'mobile-menu-item') }}">
+                    <a href="https://twitter.com/sharer/sharer.php?u={{ post.link|url_encode }}" rel="noopener noreferrer" class="{{ bem('post', 'mobile-menu-item-link') }}">
+                        {{ icons.twitterIcon() }}
+                        Share on X
+                    </a>
+                </li>
+            </ul>
+        </div>
+
+        {% if additionalBlock %}
+            <div class="{{ bem('post', 'additional-block') }}">
+                {{ additionalBlock|raw }}
+            </div>
+        {% endif %}
+    </div>
+{% endmacro %}
+
+{% macro renderAdditionalBlock(post) %}
+    {% if post.meta.expiring is defined %}
+        {{ _self.renderExpiringAccounts(post.meta.expiring)}}
+    {% endif %}
+
+    {% if post.meta.subAccount is defined %}
+        {{ _self.renderCreditCardAccounts(post.meta.subAccount)}}
+    {% endif %}
+
+
+    {% if post.supporting is defined %}
+        {{ _self.renderConnectedInfo(
+            post.supporting, 
+            post.account is defined ? post.account : null, 
+            post.provider is defined ? post.provider : null
+        )}}
+    {% endif %}
+    
+
+{% endmacro %}
+
+{% macro renderExpiringAccounts(accounts) %}
+    {% for account in accounts %}
+        {{ _self.renderExpiringAccount(account) }}
+    {% endfor %}
+{% endmacro %}
+
+{% macro renderExpiringAccount(account) %}
+    {% import '@AwardWalletMain/Blog/components/icons.html.twig' as icons %}
+
+    <a href="{{ account.link }}" class="{{ bem('expiring-account') }}">
+        <img {{ image_src(account.logo,'/') }} class="{{ bem('expiring-account', 'logo') }}" alt="provider logo"/>
+        <span class="{{ bem('expiring-account', 'owner') }}">{{ account.owner }}</span>
+        <span class="{{ bem('expiring-account', 'balance') }}">{{ account.balance }}</span>
+        <div class="{{ bem('expiring-account', 'status-block', [account.expirationState]) }}">
+            <span class="{{ bem('expiring-account', 'status-icon') }}">
+                {{ icons.statusIcon() }}
+            </span>
+            <span class="{{ bem('expiring-account', 'expiration-date', ['desktop']) }}">{{ account.expirationDate }}</span>
+            <span class="{{ bem('expiring-account', 'expiration-date', ['mobile']) }}">{{ account.expirationDateShort }}</span>
+        </div>
+        <span class="{{ bem('expiring-account', 'arrow-icon') }}">
+            {{ icons.arrowRight() }}
+        </span>
+    </a>
+{% endmacro %}
+
+{% macro renderCreditCardAccounts(accounts) %}
+    {% for account in accounts %}
+        {{ _self.renderCreditCardAccount(account) }}
+    {% endfor %}
+{% endmacro %}
+
+{% macro renderCreditCardAccount(account) %}
+    {% import '@AwardWalletMain/Blog/components/icons.html.twig' as icons %}
+
+    <a href="{{ account.link }}" class="{{ bem('credit-card-account') }}">
+        <img {{ image_src(account.logo,'/') }} class="{{ bem('credit-card-account', 'logo') }}" alt="provider logo"/>
+        <span class="{{ bem('credit-card-account', 'name') }}">{{ account.displayName }}</span>
+        <span class="{{ bem('credit-card-account', 'owner') }}">{{ account.owner }}</span>
+        <span class="{{ bem('credit-card-account', 'balance') }}">{{ account.balance }}</span>
+        <div class="{{ bem('credit-card-account', 'status-block', [account.expirationState]) }}">
+            <span class="{{ bem('credit-card-account', 'status-icon') }}">
+                {{ icons.statusIcon() }}
+            </span>
+            <span class="{{ bem('credit-card-account', 'expiration-date', ['desktop']) }}">{{ account.expirationDate }}</span>
+            <span class="{{ bem('credit-card-account', 'expiration-date', ['mobile']) }}">{{ account.expirationDateShort }}</span>
+        </div>
+        <span class="{{ bem('credit-card-account', 'arrow-icon') }}">
+            {{ icons.arrowRight() }}
+        </span>
+    </a>
+{% endmacro %}
+
+
+{% macro renderConnectedInfo(supporting, account, provider) %}
+    {% if account is defined and account is not null %}
+        {{ _self.renderExpiringAccount(account) }}
+    {% elseif provider is defined and provider is not null %}
+        {{ _self.renderConnectedProvider(provider) }}
+    {% endif %}
+
+    {{ _self.renderConnectedPosts(supporting) }}
+{% endmacro %}
+
+{% macro renderConnectedProvider(provider) %}
+    <div class="{{ bem('connected-provider') }}">
+        <img {{ image_src(provider.logo,'/') }} class="{{ bem('connected-provider', 'logo') }}" />
+        <h4 class="{{ bem('connected-provider', 'name') }}">{{ provider.displayName }}</h4>
+        <a href="{{ provider.connectLink }}" class="{{ bem('button', null,['medium']) }} {{ bem('connected-provider', 'button') }}">Connect Account</a>
+    </div>
+{% endmacro %}
+
+{% macro renderConnectedPosts(supporting) %}
+    <ul class="{{ bem('post', 'connected-posts') }}">
+        {% for post in supporting %}
+            {{ _self.renderConnectedPost(post) }}
+        {% endfor %}
+    </ul>
+{% endmacro %}
+
+{% macro renderConnectedPost(post) %}
+        <li class="{{ bem('connected-post', 'item') }}">
+            <div class="{{ bem('connected-post', 'header') }}">
+                <button class="{{ bem('connected-post', 'plus') }}"></button>
+                <h3 class="{{ bem('connected-post', 'title') }}">
+                    <a href="{{ post.link }}" class="{{ bem('connected-post', 'link') }}">
+                        {{ post.title }}
+                    </a>
+                </h3>
+            </div>
+            <div class="{{ bem('connected-post', 'content') }}">
+                <a href="{{ post.link }}" class="{{ bem('connected-post', 'link') }}">
+                    {{ post.description }}
+                </a>
+            </div>
+        </li>
+{% endmacro %}

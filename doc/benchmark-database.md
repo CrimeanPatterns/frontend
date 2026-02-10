@@ -1,0 +1,6 @@
+- включить general_log
+- накопить записей
+- выключить general_log
+- сдампить его
+- обработать скриптом util/prepare-sql-benchmark-from-general-log.py чтобы выбрать только select-ы
+- результат прогнать  через time mysql .. < out.sql >out.log , можно в несколько тредов, подготовив файлы shuf

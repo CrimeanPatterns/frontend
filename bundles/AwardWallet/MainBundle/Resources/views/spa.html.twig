@@ -1,0 +1,329 @@
+{% if extendProfile is defined and extendProfile %}
+		{% set layout = "@AwardWalletMain/Layout/profile.html.twig"%}
+{% elseif extendDefault is defined and extendDefault %}
+		{% set layout = "@AwardWalletMain/Layout/default.html.twig"%}
+{% elseif renderDefaultHeader is defined and renderDefaultHeader %}
+		{% if app.user is not null %}
+					{% set layout = "@AwardWalletMain/Layout/hidden_left_menu.html.twig"%}
+		{% else %}
+					{% set layout = "@AwardWalletMain/Layout/not_logged.html.twig"%}
+		{% endif %}
+{% else %}
+		{% set layout = "@AwardWalletMain/Layout/main.html.twig"%}
+{% endif %}
+
+{% extends layout %}
+{% import "@AwardWalletMain/TwigMacros/environment.html.twig" as environmentMacros %}
+
+{% import _self as macro %}
+
+{% set isExtendedMain = not extendProfile|default(false) and not extendDefault|default(false) and not renderDefaultHeader|default(false) %}
+
+{% block meta %}
+	{{ parent() }}
+	<meta
+		name="viewport"
+		content="width=device-width, initial-scale=1.0, minimum-scale=1, maximum-scale=5, viewport-fit=cover">
+{% endblock %}
+
+{% block body_left_widgets %}
+
+	{% if renderDefaultWidgets is defined and renderDefaultWidgets %}
+		{{ widget_render('left_top') }}
+		{{ widget_render('credit_card_tools_zone') }}
+		{{ widget_render('accounts') }}
+		{{ widget_render('left_bottom') }}
+	{% else %}
+		{{ parent() }}
+	{% endif %}
+{% endblock %}
+
+{% block stylesheets %}
+	{{ parent() }}
+
+	{{ encore_entry_link_tags(entrypoint) }}
+	{{ encore_entry_link_tags('global-loader') }}
+{% endblock %}
+
+{% block content %}
+	{% if not isExtendedMain %}
+		{{macro.content(data, renderSimpleHeader|default(false), renderLandingFooter|default(false))}}
+	{% endif %}
+{% endblock %}
+
+{% block body %}
+	{% if isExtendedMain %}
+		{{macro.content(data, renderSimpleHeader|default(false), renderLandingFooter|default(false))}}
+	{% else %}
+		{{ parent() }}
+	{% endif %}
+{% endblock %}
+
+{% block javascripts %}
+	{{ parent() }}
+
+	{{ encore_entry_script_tags('trans/' ~ app.request.locale) }}
+
+	{{ encore_entry_script_tags(entrypoint, null, '_default', {'defer': true}) }}
+
+{% endblock %}
+
+{% macro footer_link(text, href) %}
+	{% apply spaceless %}
+	<a
+		href="{{ href }}" target="_self"
+		class="{{ bem('footer', 'link') }}">
+		{{ text }}</a>
+	{% endapply %}
+{% endmacro %}
+
+{% macro social_media(icon, label, href) %}
+	{% apply spaceless %}
+	<a
+		class="{{ bem('button-platform', null, ['size_small', 'social-network']) }}" aria-label="{{ label }}" target="_blank"
+		href="{{ href }}" rel="noopener noreferrer">
+		<b
+			class="{{ bem('icon-platform', null, [icon]) }}"></b>
+	</a>
+	{% endapply %}
+{% endmacro %}
+
+{% macro platform_appstore_button(block, modifiers) %}
+	{% apply spaceless %}
+	<a
+		class="{{ bem(block, null, modifiers) }}" href="http://itunes.apple.com/us/app/awardwallet/id388442727?mt=8"
+		aria-label="appstore"
+		target="_blank"
+		rel="noopener noreferrer">
+		<img
+			{{ image_src('page-landing/app-store-button.svg') }} width="133"
+			height="36"
+			alt="App Store">
+	</a>
+	{% endapply %}
+{% endmacro %}
+
+{% macro platform_google_play_button(block, modifiers) %}
+	{% apply spaceless %}
+	<a
+		class="{{ bem(block, null, modifiers) }}" href="https://play.google.com/store/apps/details?id=com.itlogy.awardwallet"
+		aria-label="google play"
+		target="_blank"
+		rel="noopener noreferrer">
+		<img
+			{{ image_src('page-landing/google-play-button.svg') }} width="136"
+			height="34"
+			alt="Google Play">
+	</a>
+	{% endapply %}
+{% endmacro %}
+
+{% macro platform_appstore_link(block, modifiers) %}
+	{% apply spaceless %}
+	<a
+		class="{{ bem(block, null, modifiers) }}" href="http://itunes.apple.com/us/app/awardwallet/id388442727?mt=8"
+		aria-label="appstore"
+		target="_blank"
+		rel="noopener noreferrer">
+		<b
+			class="{{ bem('icon-platform', null, ['ios']) }}"></b>
+	</a>
+	{% endapply %}
+{% endmacro %}
+
+{% macro platform_google_play_link(block, modifiers) %}
+	{% apply spaceless %}
+	<a
+		class="{{ bem(block, null, modifiers) }}" href="https://play.google.com/store/apps/details?id=com.itlogy.awardwallet"
+		aria-label="google play"
+		target="_blank"
+		rel="noopener noreferrer">
+		<b
+			class="{{ bem('icon-platform', null, ['google-play']) }}"></b>
+	</a>
+	{% endapply %}
+{% endmacro %}
+
+{% macro content(data, renderSimpleHeader, renderLandingFooter) %}
+    {% include '@AwardWalletMain/Layout/global-loader.html.twig' %}
+	
+	{% if renderSimpleHeader is defined and renderSimpleHeader %}
+		<header
+			class="{{ bem('simple-header', null, ['small', 'sticky']) }}">
+			<div
+				class="{{ bem('simple-header', 'wrapper') }}">
+				<div
+					class="{{ bem('logo') }}">
+					<a
+						href="{{ urlLocale('aw_home_locale') }}">
+						<picture
+							class="{{ bem('logo', 'light') }}">
+							<img
+								{{ image_src('logo/logo.svg') }} width="150"
+								height="12"
+								alt="logo">
+						</picture>
+						<picture
+							class="{{ bem('logo', 'dark') }}">
+							<img
+								{{ image_src('logo/logo--dark.svg') }} width="150"
+								height="12"
+								alt="logo">
+						</picture>
+					</a>
+				</div>
+
+				{% if is_granted('ROLE_USER') %}
+					{% set avatarSrc = userAvatar(app.user) %}
+
+					<a
+						href="{{ urlLocale('aw_home_locale') }}" class="{{ bem('simple-header', 'user-block') }}">
+						{% if avatarSrc %}
+							<img
+								src="{{ avatarSrc }}" class="{{ bem('simple-header', 'user-avatar') }}" alt="User avatar image">
+						{% else %}
+							<img
+								{{ image_src('simple-header/user-icon.svg') }} class="{{ bem('simple-header', 'user-avatar', ['fallback']) }} {{ bem('simple-header', 'user-block-fallback-img-light') }}" alt="User fallback image">
+							<img
+								{{ image_src('simple-header/user-icon--dark.svg') }} class="{{ bem('simple-header', 'user-avatar', ['fallback']) }} {{ bem('simple-header', 'user-block-fallback-img-dark') }}" alt="User fallback image">
+						{% endif %}
+						<span
+							class="{{ bem('simple-header', 'user-name') }}">
+							{{ app.user.firstname }}
+							{{ app.user.lastname }}
+						</span>
+					</a>
+				{% else %}
+					<div
+						class="{{ bem('simple-header', 'buttons-container') }}">
+						<a
+							href="{{ path('aw_login') }}" class="{{ bem('button', null, ['type_login', 'transparent-bg']) }}">{{ 'log-in.btn'|trans({}, 'landing')|desc('Log In') }}</a>
+						<a
+							href="{{ path('aw_register') }}" class="{{ bem('button') }}">{{ 'sign-up.btn'|trans({}, 'landing')|desc('Sign Up') }}</a>
+					</div>
+					<div
+						class="{{ bem('simple-header', 'platform-buttons-container') }}">
+						{% if is_ios() %}
+							{{ macro.platform_appstore_button('button', ['type_platform', 'align_left', 'arrow']) }}
+						{% elseif is_android() %}
+							{{ macro.platform_google_play_button('button', ['type_platform', 'align_left', 'arrow']) }}
+						{% else %}
+							{{ macro.platform_appstore_link('button-platform', ['size_medium']) }}
+							{{ macro.platform_google_play_link('button-platform', ['size_medium']) }}
+						{% endif %}
+					</div>
+				{% endif %}
+			</div>
+		</header>
+	{% endif %}
+	<div
+		id="content"
+		{{ environmentMacros.dataAttr(data) }}></div>
+
+	{% if renderLandingFooter is defined and renderLandingFooter %}
+		<footer
+			class="{{ bem('footer') }}">
+			<div
+				class="{{ bem('footer', 'container') }}">
+				<div
+					class="{{ bem('footer', 'list') }}">
+					<div
+						class="{{ bem('footer', 'links') }}">
+						<div
+							class="{{ bem('footer', 'links-list') }}">
+							{{ macro.footer_link('menu.privacy-notice'|trans({}, 'menu'), url('aw_page_index_locale', {'page': 'privacy', '_locale': app.request.locale})) }}
+							{{ macro.footer_link('menu.terms-of-use'|trans({}, 'menu'), url('aw_page_index_locale', {'page': 'terms', '_locale': app.request.locale})) }}
+							{{ macro.footer_link('menu.about-us'|trans({}, 'menu'), url('aw_page_index_locale', {'page': 'about', '_locale': app.request.locale})) }}
+							{{ macro.footer_link('menu.media'|trans({}, 'menu'), url('aw_pressrelease_index_locale', {'_locale': app.request.locale})) }}
+							{{ macro.footer_link('menu.credit-card-offers'|trans({}, 'menu'), 'https://awardwallet.com/blog/credit-cards/') }}
+							{{ macro.footer_link('menu.promos'|trans({}, 'menu'), url('aw_promotions_index_locale', {'_locale': app.request.locale})) }}
+						</div>
+						<div
+							class="{{ bem('footer', 'links-list') }}">
+							{{ macro.footer_link('menu.supported'|trans({}, 'menu'), url('aw_supported_locale', {'_locale': app.request.locale})) }}
+							{{ macro.footer_link('menu.faqs'|trans({}, 'menu'), url('aw_faq_index_locale', {'_locale': app.request.locale})) }}
+							{{ macro.footer_link('APIs', url('aw_api_doc_locale', {'_locale': app.request.locale})) }}
+							{{ macro.footer_link('award-booking-service'|trans({}, 'menu'), url('aw_booking_add_index_locale', {'_locale': app.request.locale})) }}
+							{{ macro.footer_link('menu.contact-us'|trans({}, 'menu'), url('aw_contactus_index_locale', {'_locale': app.request.locale})) }}
+							{{ macro.footer_link('menu.aw-blog'|trans({}, 'menu')|desc('AwardWallet Blog'), 'https://awardwallet.com/blog/') }}
+						</div>
+					</div>
+					<div
+						class="{{ bem('footer', 'locales') }}">
+						<div
+							class="{{ bem('footer', 'links-list') }}">
+							{% for locale in locales|slice(0, 4) %}
+								{{ macro.footer_link(('language.' ~ locale)|trans({}, 'menu'), path('aw_set_locale', {'_locale': locale})) }}
+							{% endfor %}
+						</div>
+						<div
+							class="{{ bem('footer', 'links-list') }}">
+							{% for locale in locales|slice(4) %}
+								{{ macro.footer_link(('language.' ~ locale)|trans({}, 'menu'), path('aw_set_locale', {'_locale': locale})) }}
+							{% endfor %}
+						</div>
+					</div>
+					<div
+						class="{{ bem('footer', 'mobile-apps') }}">
+						{% if is_ios() %}
+							{{ macro.platform_appstore_button('button', ['type_platform', 'align_left']) }}
+						{% elseif is_android() %}
+							{{ macro.platform_google_play_button('button', ['type_platform', 'align_left']) }}
+						{% else %}
+							{{ macro.platform_appstore_button('button', ['type_platform', 'align_left']) }}
+							{{ macro.platform_google_play_button('button', ['type_platform', 'align_left']) }}
+						{% endif %}
+					</div>
+					<div
+						class="{{ bem('footer', 'mobile-apps-compact') }}">
+						{% if is_ios() %}
+							{{ macro.platform_appstore_button('button', ['type_platform', 'align_left', 'wide', 'arrow']) }}
+						{% elseif is_android() %}
+							{{ macro.platform_google_play_button('button', ['type_platform', 'align_left', 'wide', 'arrow']) }}
+						{% else %}
+							{{ macro.platform_appstore_button('button', ['type_platform', 'align_left', 'wide', 'arrow']) }}
+							{{ macro.platform_google_play_button('button', ['type_platform', 'align_left', 'wide', 'arrow']) }}
+						{% endif %}
+					</div>
+				</div>
+
+				<div
+					class="{{ bem('footer', 'border') }}"></div>
+
+				<div
+					class="{{ bem('footer', 'copyright-section') }}">
+					<div
+						class="{{ bem('footer', 'copyright') }}">
+						<div
+							class="{{ bem('logo', null, ['small']) }}">
+							<picture
+								class="{{ bem('logo', 'light') }}">
+								<img
+									{{ image_src('logo/logo.svg') }} width="178"
+									height="21"
+									alt="logo">
+							</picture>
+							<picture
+								class="{{ bem('logo', 'dark') }}">
+								<img
+									{{ image_src('logo/logo--dark.svg') }} width="178"
+									height="21"
+									alt="logo">
+							</picture>
+						</div>
+						<div>© 2004 -
+							{{ "now"|date('Y') }}
+							AwardWallet LLC.</div>
+					</div>
+					<div
+						class="{{ bem('footer', 'social-media') }}">
+						{{ macro.social_media('twitter', 'Twitter', 'https://twitter.com/AwardWallet') }}
+						{{ macro.social_media('facebook', 'Facebook', 'https://www.facebook.com/groups/awardtravel101/') }}
+						{{ macro.social_media('youtube', 'YouTube', 'https://www.youtube.com/channel/UCOBfnZ9yioR331pId7FyrNA') }}
+						{{ macro.social_media('instagram', 'Instagram', 'https://www.instagram.com/awardwallet/') }}
+						{{ macro.social_media('linkedin', 'LinkedIn', 'https://www.linkedin.com/company/awardwallet/about/') }}
+					</div>
+				</div>
+			</footer>
+		{% endif %}
+	{% endmacro %}

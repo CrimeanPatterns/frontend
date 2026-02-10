@@ -1,0 +1,12 @@
+#!/bin/bash
+
+useradd --shell /bin/bash -u $LOCAL_USER_ID --no-create-home -G sudo -o -c "" user
+export HOME=/home/user
+chown -R user:user /run/php
+
+sudo chown user:user /home/user
+if [ -d /home/user/.composer ]; then
+    sudo chown user:user /home/user/.composer
+fi
+
+exec /usr/local/bin/gosu user /usr/bin/php "$@"

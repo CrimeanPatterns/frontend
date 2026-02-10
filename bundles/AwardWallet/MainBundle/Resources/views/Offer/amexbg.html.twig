@@ -1,0 +1,57 @@
+{% extends "@AwardWalletMain/Offer/standard.html.twig" %}
+{% import '@AwardWalletMain/Offer/offerMacros.html.twig' as offerMacros %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    {{ encore_entry_link_tags('offer') }}
+    {{ encore_entry_link_tags('offers/amexbg') }}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        {{ offerMacros.jsOfferYes(_context, ApplyURL, Code, OfferUserID, defaultRedirectLocation) }}
+        {{ offerMacros.jsOfferNo(_context, Code, OfferUserID, defaultRedirectLocation) }}
+    </script>
+{% endblock %}
+
+{% block content %}
+    <div id="offer_wrap">
+        <div id="offer_bg">
+            <div class="amexbg_medal">
+            </div>
+            <div class="amexbg_star">
+            </div>
+            <div class="amexbg_card">
+            </div>
+            <div class="offer_title amexbg_title">
+                This card is advertised by the bloggers
+                as one of the best business cards<br />
+                you can get from Amex,<br />
+                please consider this card<br />
+                if you are running a business!
+            </div>
+            <div class="amexbg_ul">
+                <ul class="amexbg_list">
+                    <li class="amexbg_moved">Earn <span class="amexbg_big">50,000</span> Membership Rewards® points after you spend $5,000 in purchases on the Card in the first 3 months of Card membership.<br />
+                        Built with business-sized purchasing power and fast rewards.
+                    <li class="amexbg_moved"><span class="amexbg_big">3X</span> points on airfare purchased from airlines. 2X points on US purchases for advertising in select media, shipping and at gas stations.
+                    <li class="amexbg_moved"><span class="amexbg_big">2X</span> points on US purchases made directly from select computer hardware and software providers.
+                    <li class="amexbg_static">Up to $100,000 in each category per year, then 1 point.
+                    <li class="amexbg_static">Terms and limitations apply.
+                    <li class="amexbg_moved"><span class="amexbg_big">$0</span> introductory annual fee for the first year, then $175.
+                    <li class="amexbg_static">Apply online to qualify for this offer. See offer terms for details.
+                </ul>
+            </div>
+            <div class="offer_btn amexbg_btn" onclick="offerYes();">
+                Yes, I want to get 50,000 points, apply now
+            </div>
+        </div>
+        <div class="offer_declinekind" onclick="offerNo();">
+            Never show this ad again
+        </div>
+        <div class="offer_toaccount amexrpg_toaccount" onclick="window.location = '{{ defaultRedirectLocation }}'">
+            Proceed to my account
+        </div>
+    </div>
+{% endblock %}

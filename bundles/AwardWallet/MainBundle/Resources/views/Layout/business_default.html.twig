@@ -1,0 +1,71 @@
+{% set MAIN_BODY_CLASSES = {
+    'from-app': false,
+    'responsive': false,
+    'business': true,
+    'manual-hidden': true,
+    'hide-menu': true
+}|merge(MAIN_BODY_CLASSES|default({})) %}
+
+{% extends "@AwardWalletMain/Layout/main.html.twig" %}
+{% import "@AwardWalletMain/TwigMacros/environment.html.twig" as environmentMacros %}
+
+{% block javascripts %}
+    {{ parent() }}
+    {% if not webpack|default(false) %}
+        <script type="text/javascript">
+            require(["jquery-boot", "lib/customizer", 'pages/business/insufficientBalance', "lib/design"], function ($, customizer) {
+                $(function () {
+                    customizer.initDropdowns($('body'));
+                })
+            });
+        </script>
+    {% else %}
+         {{ encore_entry_script_tags('business-default', null, '_default', {'defer': true}) }}
+    {% endif %}
+{% endblock %}
+
+{% block body %}
+    <body id="body" {{ environmentMacros.globalDataAttr(_context) }}>
+    {% include '@AwardWalletMain/Layout/vendor_body-top.html.twig' %}
+    {% block popup %}{% endblock %}
+    <div class="{{ html_classes(MAIN_BODY_CLASSES) }}">
+        <!-- header -->
+        <header id="headerSite" class="header-site business">
+            {% block body_header_widgets %}
+                {{ widget_render('logo') }}
+                {{ widget_render('business_header') }}
+            {% endblock %}
+        </header>
+        <!-- end -->
+
+        <div class="page">
+            <div class="item">
+                <div class="content">
+                    {% block content %}
+                    {% endblock %}
+                    {% block mainContent %} {# for old business pages #}
+                    {% endblock %}
+                </div>
+            </div>
+            {% block left_menu %}
+
+            {% endblock %}
+        </div>
+        {% block popups %}
+            {% if app.user is not null and two_fact.isNeedTwoFactorAuth(app.user) %}
+                {{ include('@AwardWalletMain/Users/_needTwoFactorAuthenticationPopup.html.twig') }}
+            {% endif %}
+        {% endblock %}
+    </div>
+    {% block footer %}
+        <!-- footer -->
+        <footer class="footer-site">
+            {{ widget_render('footer') }}
+        </footer>
+        <!-- end -->
+        {% if is_granted('SITE_MOBILE_BROWSER') and not is_granted('SITE_MOBILE_AREA') %}
+            <a href="{{ path('aw_home_mobile') }}" class="switch-container">{{ 'switch-to-mobile-version'|trans }}</a>
+        {% endif %}
+    {% endblock %}
+    </body>
+{% endblock %}

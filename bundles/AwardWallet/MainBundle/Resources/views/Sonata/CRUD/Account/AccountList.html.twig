@@ -1,0 +1,19 @@
+{% extends '@SonataAdmin/CRUD/list.html.twig' %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style type="text/css">
+        .sonata-ba-list-field-header-integer {
+            width: 70px;
+            max-width: 70px;
+        }
+
+        .sonata-ba-list-field-boolean .label-danger {
+            background-color: #00a65a !important;
+        }
+
+        .sonata-ba-list-field-boolean .label-success {
+            background-color: #dd4b39 !important;
+        }
+    </style>
+{% endblock %}

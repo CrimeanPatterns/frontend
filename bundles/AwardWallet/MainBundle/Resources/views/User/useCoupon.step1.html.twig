@@ -1,0 +1,110 @@
+{% form_theme form with ['@AwardWalletMain/FormTheme/fields.html.twig'] %}
+{% extends '@AwardWalletMain/User/useCoupon.html.twig' %}
+
+{% block content %}
+    {% import "@AwardWalletMain/Cart/macros.html.twig" as macro %}
+    {% if success == false %}
+        <div class="add-coupon">
+            <div class="main-blk shortened">
+                <h1>{{ 'user.coupon.form.title'|trans|desc('Upgrade or get AwardWallet OneCard credits using coupon') }}</h1>
+
+                <form action="" method="post" class="main-form">
+                    <div class="main-form-item">
+                        <p>{{ 'user.coupon.form.please-enter'|trans|desc('Please enter a coupon code to upgrade your account to AwardWallet Plus or to get Awardwallet OneCard credits') }}:</p>
+                        {{ form_row(form.coupon) }}
+                        {% if cause is not null %}
+                            <div class="title-p"><p>{{ 'coupon.about-account'|trans }}:</p></div>
+                            <table class="main-table coupon-table">
+                                <tr>
+                                    <td>{{ 'coupon.current-account-status'|trans }}:</td>
+                                    <td>
+                                        <strong>{{ cause['status'] }}</strong>
+                                        {% if cause['expires'] is defined %}
+                                            <p>{{ cause['expires'] }}</p>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>{{ 'coupon.last-upgrade-via'|trans }}:</td>
+                                    <td>{{ cause['upgradeVia'] }}</td>
+                                </tr>
+                                <tr>
+                                    <td>{{ 'coupon.last-upgrade-on'|trans }}:</td>
+                                    <td>{{ cause['upgradeOn'] }}</td>
+                                </tr>
+                            </table>
+                            <p>{{ 'coupon.used-first-time-notice'|trans({'%bold_on%': '<b>', '%bold_off%': '</b>'})|raw }}</p>
+                        {% endif %}
+                    </div>
+                    <div class="row-submit">
+                        <button type="submit" class="btn-blue">{{ 'user.coupon.form.submit'|trans|desc('Apply Coupon') }}</button>
+                    </div>
+                    {{ form_rest(form) }}
+                </form>
+            </div>
+        </div>
+    {% else %}
+        <div class="add-account">
+            <div class="main-blk">
+                {% if cart.hasItemsByType([constant('\\AwardWallet\\MainBundle\\Entity\\CartItem\\AwPlus::TYPE'), constant('\\AwardWallet\\MainBundle\\Entity\\CartItem\\AwPlus1Year::TYPE')]) %}
+                    <h1>{{ 'user.coupon.title.free-upgrade'|trans|desc('Free upgrade confirmation') }}</h1>
+                {% else %}
+                    <h1>{{ 'user.coupon.title.coupon-used'|trans|desc('Coupon was successfully used') }}</h1>
+                {% endif %}
+
+                {% if cart.coupon.isInviteBonus(app.user) %}
+                    <div class="main-blk-content">
+                        <p>{{ 'user.coupon.invite.thank-you'|trans|desc("
+                        Thank you for inviting people to AwardWallet.com, you made the right choice when
+                        recommended our service! In return we promise to do everything possible to impress
+                        you and the people you’ve invited with the best service possible.
+                        We also offer you our six month AwardWallet Plus service for free for each
+                        <span class=\"green-blk\">five</span>
+                        new members that you bring to our website.
+                    ")|raw }}</p>
+                    </div>
+
+                {% else %}
+                    <div class="main-blk-content">
+                        {{ macro.drawCart(cart) }}
+                    </div>
+                {% endif %}
+
+                <div class="row-submit">
+                    {% if backLink != '' %}
+                        <button onclick="document.location.href='{{ backLink }}'" type="submit" class="btn-blue">{{ 'user.coupon.button.continue'|trans|desc('Continue') }}</button>
+                    {% else %}
+                        {% if cart.hasItemsByType([constant('\\AwardWallet\\MainBundle\\Entity\\CartItem\\OneCard::TYPE')]) %}
+                            <button onclick="document.location.href='/new-onecard'" type="submit" class="btn-blue">{{ 'user.coupon.button.onecard-continue'|trans|desc('Continue to OneCard selection') }}</button>
+                        {% else %}
+                            <button onclick="document.location.href='{{ path('aw_account_list') }}'" type="submit" class="btn-blue">{{ 'user.coupon.button.continue'|trans|desc('Continue') }}</button>
+                        {% endif %}
+                    {% endif %}
+                </div>
+            </div>
+            {% if cart.hasItemsByType([constant('\\AwardWallet\\MainBundle\\Entity\\CartItem\\OneCard::TYPE')]) == false %}
+                <div class="faq">
+                    <div class="faq-blk">
+                        <div class="heading">
+                            <i class="icon-info-small"></i>
+                            <p>
+                                {{ 'user.coupon.aw-plus.note.v2'|trans({
+                                    '%link_on%': '<a href="' ~ path('aw_pricing') ~ '" target="_blank">',
+                                    '%link_off%': '</a>'
+                                })|desc("
+                            Please note that while we upgraded your account to AwardWallet Plus
+                        it does not mean that you won't be able to use the service in 6 months
+                        (after this coupon expires). AwardWallet's free service gives you all
+                        you need to manage your account including receiving account expiration
+                        notifications and more. In fact, about 90% of our users do not pay for
+                        the Plus membership. %link_on%Click here%link_off% to better understand
+                            the difference between a regular and AwardWallet Plus accounts.
+                        ")|raw }}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+    {% endif %}
+{% endblock %}

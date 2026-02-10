@@ -1,0 +1,90 @@
+{% extends "@AwardWalletMain/Layout/booking.html.twig" %}
+{% import '@AwardWalletMain/Booking/macros.html.twig' as macros %}
+{% import '@AwardWalletMain/TwigMacros/assets.html.twig' as assets %}
+
+{% block title %} {{ 'booking.request'|trans({}, 'booking') }} #{{ request.abrequestid }} {% endblock %}
+
+{% block mainContent %}
+    <div class="booker">
+        <!-- PAGE NOT DONE YET -->
+        {% if customPrograms|length %}
+            <blockquote>
+                <div class="prev-icon"><i class="old-icon-warning"></i></div>
+                <p>{{ 'booking.share.not_done'|trans({}, 'booking')|desc('<strong>You are not done yet, </strong>you have the following accounts to share')|raw }}:</p>
+            </blockquote>
+            <table class="main">
+                <thead>
+                <tr>
+                    <th></th>
+                    <th>{{ 'booking.display.name'|trans({}, 'booking') }}</th>
+                    <th class="sharing-balance">{{ 'booking.balance'|trans({}, 'booking') }}</th>
+                    <th style="width: 400px;">{{ 'booking.owner'|trans({}, 'booking') }}</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% include '@AwardWalletMain/Booking/Share/lp-share-table.html.twig' %}
+                </tbody>
+            </table>
+            <div class="pull-right">
+                <a class="btn wide light" href="{{ path('aw_booking_view_index', {id: request.AbRequestID }) }}">{{ 'buttons.back'|trans({}, 'mobile') }}</a>
+            </div>
+            <!-- END -->
+        {% else %}
+            <!-- PAGE ALL DONE -->
+            <table class="main">
+                <thead>
+                <tr>
+                    <th></th>
+                    <th>{{ 'booking.display.name'|trans({}, 'booking') }}</th>
+                    <th style="width: 400px;">{{ 'booking.owner'|trans({}, 'booking') }}</th>
+                    <th class="sharing-balance">{{ 'booking.balance'|trans({}, 'booking') }}</th>
+                </tr>
+                </thead>
+                <tbody>
+                    {% include '@AwardWalletMain/Booking/Share/lp-share-table.html.twig' %}
+                </tbody>
+            </table>
+            <!-- PAGE ALL DONE -->
+            <blockquote>
+                <div class="prev-icon"><i class="old-icon-check"></i></div>
+                <p>{{ 'booking.share.done'|trans({'%link%': path('aw_booking_share_deny', {id: request.abrequestid}), '%booker%': request.booker.bookerinfo.ServiceName |htmlencode }, 'booking')|desc('<strong>You are all done.</strong> Accounts listed above (with passwords) have been shared with %booker%. If you want to undo this, follow this <a href="%link%">link</a>')|raw }}.</p>
+            </blockquote>
+            <div class="pull-right">
+                <a class="btn spec wide" href="{{ path('aw_booking_view_index', {id: request.AbRequestID }) }}">{{ 'button.ok'|trans({}, 'messages') }}</a>
+            </div>
+            <!-- END -->
+        {% endif %}
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    {% form_theme passwordForm with ['@AwardWalletMain/FormTheme/fields.html.twig'] %}
+    <script type="text/javascript">
+    require([
+        'jquery-boot', 'translator-boot',
+        // assets_form
+        'select2',
+        'lib/dialog',
+        'awardwalletmain/js/select2_colored',
+        // bookingJs
+        'awardwalletmain/js/booking/common',
+        'awardwalletmain/js/booking/autocomplete',
+        // page
+        'pages/booking/share',
+        'awardwalletmain/js/formInputs'
+    ], function(){
+        {% if savePasswords|length > 0 %}
+            $(function(){
+                $(document).trigger('save_local_passwords', ['{{ savePasswords|join(',') }}', '<form class="main-form">{{ form_row(passwordForm.password)|replace({"\n":"", "'":"\\'"})|raw }}</form>']);
+            });
+        {% endif %}
+    });
+    </script>
+{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    {{ assets.assets_form('css') }}
+    {{ encore_entry_link_tags('booking') }}
+{% endblock %}

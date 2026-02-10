@@ -1,0 +1,28 @@
+{% macro globalDataAttr(context) %}{% trim %}
+    {% import _self as macro %}
+    {{ macro.dataAttr({
+        'load-external-scripts': load_external_scripts,
+        'debug': not is_granted("SITE_PROD_MODE"),
+        'lang': app.request.locale,
+        'locale': localizerLocale(),
+        'authorized': is_granted('ROLE_USER'),
+        'aw-plus': is_granted('USER_AWPLUS'),
+        'impersonated': is_granted('ROLE_IMPERSONATED'),
+        'business': is_granted('SITE_BUSINESS_AREA'),
+        'booking': is_granted('SITE_BOOKING_AREA'),
+        'enable-trans-helper': is_granted('USER_ENABLE_TRANSHELPER'),
+        'role-translator': is_granted('ROLE_TRANSLATOR'),
+        'theme': theme.currentTheme
+    }) }}
+{% endtrim %}{% endmacro %}
+
+{% macro dataAttr(attr) %}{% trim %}
+    {%- for attrname, attrvalue in attr -%}
+        {{- " " -}}
+        {%- if attrvalue is typeof('string') -%}
+            data-{{- attrname }}="{{ attrvalue|e('html_attr') }}"
+        {%- elseif attrvalue is not same as(false) and attrvalue is not null -%}
+            data-{{- attrname }}="{{ attrvalue|json_encode|e('html_attr') }}"
+        {%- endif -%}
+    {%- endfor -%}
+{% endtrim %}{% endmacro %}

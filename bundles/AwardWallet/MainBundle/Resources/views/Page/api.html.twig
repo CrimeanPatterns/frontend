@@ -1,0 +1,149 @@
+{% set MOBILE_NAV = true %}
+{% set HIDE_NAV = true %}
+{% set MAIN_BODY_CLASSES = {
+    'manual-hidden': true,
+    'responsive': true,
+    'hide-menu': true
+}|merge(MAIN_BODY_CLASSES|default({})) %}
+
+{% extends app.user is not null ? "@AwardWalletMain/Layout/common.html.twig" : "@AwardWalletMain/Layout/not_logged.html.twig" %}
+
+{% block title %}Travel & Loyalty Data APIs: Email Parsing, Web Parsing, Account Access{% endblock %}
+
+{% block meta %}
+    {{ parent() }}
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0, viewport-fit=cover">
+    <meta name="description" content="Email Parsing API extracts travel reservations from booking confirmation emails in a structured format (JSON)">
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        require([
+            'lib/design'
+        ], function(){});
+    </script>
+{% endblock %}
+
+{% block content %}
+    {% include '@AwardWalletMain/Page/_apiNav.html.twig' %}
+    <div class="api-container has-additionl-menu">
+        <div class="title-wrap">
+            <div class="title">
+                <h1>AwardWallet APIs: <span>Email Parsing and Web Parsing</span></h1>
+                <h3>The Answer to Extracting Travel and Loyalty Data</h3>
+            </div>
+        </div>
+        <div class="top-container">
+            <div class="container-wrap">
+                <h3>What Are Email Parsing and Web Parsing APIs?</h3>
+                <h4>What Is an Email Parsing API?</h4>
+                <p>The AwardWallet Email Parsing API is designed to solve one simple problem: extracting travel reservation data from a travel confirmation email. We can parse any travel confirmation email from any travel provider even if the travel itinerary is attached to the email in a pdf format. All of our APIs are REST APIs and we pay close attention to each attribute of an itinerary, be that pricing details or cancellation policy of a hotel reservation. In many cases, we augment the data that we find in the email with data from third-party databases and services. For example, even if the airport codes are not present in the email you still get them in our API response.</p>
+                <h4>What Is a Web Parsing API?</h4>
+                <p>Our Web Parsing API utilizes user credentials for any loyalty account and is able to return user's loyalty information, such as how many miles or points the user has, point expiration date, elite status, and other important pieces of a user's loyalty account. It can also return the user's travel reservations, as well as their entire account history as shown on the user's online account.</p>
+                <div class="separator"></div>
+                <p class="t-center">We currently have the following APIs available for consumption for our business partners:</p>
+                <ul class="list-apis">
+                    <li class="blue"><a href="#email-parsing-api">AwardWallet<span>Email Parsing API</span></a></li>
+                    <li class="green"><a href="#web-parsing-api">AwardWallet<span>Web Parsing API</span></a></li>
+                    <li class="red"><a href="#account-access-api">AwardWallet<span>Account Access API</span></a></li>
+                </ul>
+                <div class="arrow-down"></div>
+            </div>
+        </div>
+        <div class="apis-list">
+            <div class="container has-pane" id="email-parsing-api">
+                <div class="item">
+                    <div class="item-row">
+                        <h3>Awardwallet Email Parsing API</h3>
+                        <div class="details">
+                            <div class="thumb">
+                                <div class="picture">
+                                    <img class="picture__light" src="{{ asset('assets/awardwalletnewdesign/img/email-parsing.png') }}" srcset="{{ asset('assets/awardwalletnewdesign/img/email-parsing@2x.png') }} 2x" alt="Email Parsing API">
+                                    <img class="picture__dark" src="{{ asset('assets/awardwalletnewdesign/img/email-parsing-dark.png') }}" srcset="{{ asset('assets/awardwalletnewdesign/img/email-parsing-dark@2x.png') }} 2x" alt="Email Parsing API">
+                                </div>
+                            </div>
+                            <div class="description">
+                                <p>The AwardWallet Email Parsing API is designed to extract travel reservation information from travel confirmation emails. You can submit any travel confirmation email to the API, including those with itinerary details in an attachment, and it will automatically parse the email and return the reservation data in a structured JSON format. This process takes just a few seconds. Instead of requiring you to send travel confirmation emails to us, we can access the raw emails from a designated mailbox or connect directly to your end users' mailboxes to monitor and retrieve any travel confirmation emails.</p>
+                                <p>For pricing information or if you wish to set up an account to test the API, please <a href="{{ path('aw_contactus_index') }}?API" class="blue-link">contact us</a>.</p>
+                                <div class="buttons">
+                                    <a href="{{ path('aw_api_doc', {'item': 'email'}) }}" class="btn-blue">Email Parsing API Documentation <i class="icon-double-arrow-right-white"></i></a>
+                                    <a href="{{ url('aw_emailTestParse') }}" class="btn-silver btn-blue-border">Test API</a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="more">
+                            <a href="/email-parsing-api" class="blue-link">Learn More about Email Parsing API <i class="icon-double-arrow-right-blue"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="container has-pane" id="web-parsing-api">
+                <div class="item">
+                    <div class="item-row">
+                        <h3>AwardWallet Web Parsing API</h3>
+                        <div class="details">
+                            <div class="thumb">
+                                <div class="picture">
+                                    <img class="picture__light" src="{{ asset('assets/awardwalletnewdesign/img/web-parsing.png') }}" srcset="{{ asset('assets/awardwalletnewdesign/img/web-parsing@2x.png') }} 2x" alt="Email Parsing API">
+                                    <img class="picture__dark" src="{{ asset('assets/awardwalletnewdesign/img/web-parsing-dark.png') }}" srcset="{{ asset('assets/awardwalletnewdesign/img/web-parsing-dark@2x.png') }} 2x" alt="Web Parsing API">
+                                </div>
+                            </div>
+                            <div class="description">
+                                <p>The AwardWallet Web Parsing API supports the retrieval of the following information from online loyalty accounts:</p>
+                                <ul>
+                                    <li>Loyalty information (e.g.  account balance, expiration, elite level, etc.) </li>
+                                    <li>Travel itineraries listed under user’s profile</li>
+                                    <li>Account activity history</li>
+                                </ul>
+                                <p>Use of this API is transparent to your users. Simply provide credentials of a loyalty account to the API and it returns account details in a structured format. AwardWallet does not store user account information or credentials, using them only to process the request. Currently, we support over 600 loyalty programs using this API.</p>
+                                <p>For pricing information or if you wish to set up an account to test the API, please <a href="{{ path('aw_contactus_index') }}?API" class="blue-link">contact us</a>.</p>
+                                <a href="/api/loyalty" class="btn-blue" rel="nofollow">Web Parsing API Documentation <i class="icon-double-arrow-right-white"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="container has-pane" id="account-access-api">
+                <div class="item">
+                    <div class="item-row">
+                        <h3>AwardWallet Account Access API</h3>
+                        <div class="details">
+                            <div class="thumb">
+                                <div class="picture">
+                                    <img class="picture__light" src="{{ asset('assets/awardwalletnewdesign/img/account-access.png') }}" srcset="{{ asset('assets/awardwalletnewdesign/img/account-access@2x.png') }} 2x" alt="Email Parsing API">
+                                    <img class="picture__dark" src="{{ asset('assets/awardwalletnewdesign/img/account-access-dark.png') }}" srcset="{{ asset('assets/awardwalletnewdesign/img/account-access-dark@2x.png') }} 2x" alt="Account Access API">
+                                </div>
+                            </div>
+                            <div class="description">
+                                <p>The AwardWallet Account Access API provides access to an AwardWallet account. If authorized by the end user, the API provides access to the accounts that the user shared with the authenticating account. The API uses the <a href="#" class="blue-link">oAuth2</a> protocol for authentication. Data is returned in a structured JSON format for easy integration of a user’s loyalty information into your application. This API is provided free of charge.</p>
+                                <a href="/api/account" class="btn-blue">Account Access API Documentation <i class="icon-double-arrow-right-white"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="bottom-container">
+            <div class="container-wrap">
+                <h2>AwardWallet APIs Are Used by Online Travel Management and Itinerary Management Companies</h2>
+                <h4>Discover the Simple Cost-effective Solution to Email & Web Parsing with AwardWallet</h4>
+                <p>AwardWallet’s email and web parsing services are used by all types of companies from small start-ups to larger corporations. Due to the large costs associated with building and maintaining a bespoke parsing API, AwardWallet can deliver a simple and cost-efficient alternative.</p>
+                <h4>Carbon Footprint Offsetting</h4>
+                <p>The services are of use to a variety of industries. One of the fastest-growing areas of the economy are green companies, and AwardWallet has the perfect solution for carbon offsetting. Companies can use our email parsing API to extract travel data from clients’ travel reservation emails. This allows them to work out the exact amount needed for the customer to offset their carbon footprint for the trip.</p>
+                <h4>Flight Delay Compensation</h4>
+                <p>Another area of growth is travel delay compensation. Companies that make a claim on behalf of delayed passengers can use our email parsing service to extricate the information they need without clients needing to spend time filling in forms. It can even be used to uncover new claims that the customer was not aware of.</p>
+                <h4>Expense And Travel Management</h4>
+                <p>Expense and travel management companies are the traditional areas where our email parsing can make a difference. With AwardWallet’s attention to detail of every element of travel bookings, all the data that you need for your business can easily be obtained almost instantaneously. The data is equally useful for companies that focus on business or leisure travel, as itinerary management apps become increasingly popular with both groups of travelers. Email parsing is also perfect for use with event management and sports & team travel companies.</p>
+                <p>There are many other uses for travel reservation data and AwardWallet can help build an Email Parsing API suitable for your companies specific needs.</p>
+                <p>Our Web Parsing API is a unique service for companies that want to offer clients the ability to track loyalty points and miles as part of their offering. The Web Parsing API doesn't even require your customers to have an AwardWallet account. For example, if your product offers the ability to earn loyalty points, you could offer a service to monitor points as an added benefit. Today, our service is used by some of the largest travel apps in the world.</p>
+                <div class="separator"></div>
+                <h2>Contact Us Now to Find out More about <br> AwardWallet’s Services</h2>
+                <p>Ask our support team about our flexible pricing as well as the ongoing development and support for our API technology.  Request your test credentials and try our service for yourself!</p>
+                <div class="btn-wrap">
+                    <a href="{{ path('aw_contactus_index') }}?API" class="btn-blue">Contact Us <i class="icon-double-arrow-right-white"></i></a>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

@@ -1,0 +1,100 @@
+{#
+Parameters passed to this page:
+preview, src, OfferUserID, ApplyURL, FirstName, Description, PicturePath, Params
+#}
+
+{% extends preview ? '@AwardWalletMain/Layout/common.html.twig':'@AwardWalletMain/Offer/ajaxLayout.html.twig' %}
+
+{% block permanent %}
+
+{% import '@AwardWalletMain/TwigMacros/common.html.twig' as menuMacros %}
+
+{% block title %}
+    {{ 'about-site.text' | trans({'%site_name%': vars.SiteName}) | raw }}
+{% endblock %}
+
+{% block styles %}
+	{{ parent() }}
+{% endblock %}
+
+{% block readyScripts %}
+	{{ parent() }}
+	(function (){
+{#		var fader = document.getElementById('fader');
+		fader.onclick = function(){}; #}
+{#		document.onkeypress = function(e){
+			if(e.keyCode == "27")
+				cancelPopup();
+		}; #}
+	})();
+	showPopupWindow(document.getElementById('offer'), true)
+{% endblock %}
+
+{% block loadScripts %}
+	{{ parent() }}
+{% endblock %}
+
+{% endblock %}
+
+{% block stylesheets %}
+	{{ parent() }}
+	<link rel="stylesheet" type="text/css" href="{{ asset('/design/bundles/awardwalletmain/css/offer.css') }}"/>
+	<script>
+		$('document').keypress(function (e){
+			alert('wtf');
+			if(e.keyCode == '27')
+				cancelPopup();
+		});
+
+		function offerYes(){
+			{% autoescape false %}
+			{% if (preview != 1) and (src != 1) %}
+			$.post("{{ url('aw_offer_agree', { 'offerUserId': OfferUserID, 'agreed': '1' } ) }}");
+			{% endif %}
+			window.open('{{ ApplyURL }}');
+			{% endautoescape %}
+			cancelPopup();
+		}
+
+		function offerNo(){
+			{% if (preview != 1) and (src != 1) %}
+			{% autoescape false %}
+			$.post("{{ url('aw_offer_agree', { 'offerUserId': OfferUserID, 'agreed': '0' } ) }}");
+			{% endautoescape %}
+			{% endif %}
+			cancelPopup();
+		}
+	</script>
+{% endblock %}
+	
+{% block popups %}
+	<div>
+		<table>
+		<tr>
+			<td align = "justify">
+				<div id = "offer_title">{{ DescTitle|raw }}
+				</div>
+			{{ Description|raw }}
+			</td>
+			<td><img id = "offer_card" src = "http://{{ app.request.host }}{{ PicturePath }}">
+			</td>
+		</tr>
+		</table>
+	</div>
+	<div id = "offer_afterdesc">Thank you and we hope you enjoy the custom suggestions and offers we create just for you! We think you will benefit greatly from this card and if you use the links that we provide we will also get a commission from this referral, thus you are helping AwardWallet, which is much appreciated by our entire team and enables us to grow and make the service better for you. Here is a <a href = "http://{{ app.request.host }}/cards.php">list of all the credit card offers</a> that we have on AwardWallet.
+	<br />
+	</div>
+	<div>Thank you,<br />
+	The AwardWallet team
+		<div id = "offer_hr">
+		</div>
+	</div>
+	<table id = "offer_bottom"><tr>
+		<td width = 46%>Do you want to apply?</td>
+		<td width = 22%>{{ menuMacros.DrawButton('button.yes' | trans | desc('Yes'), "onclick='offerYes()'", 120, '', '', 'offer-rightbtn') }}</td>
+		<td>{{ menuMacros.DrawButton('button.no' | trans | desc('No'), "onclick='offerNo()' style = 'float: right; margin-right: 0px'", 80, '', '',  'offer-rightbtn') }}</td>
+		<td>{{ menuMacros.DrawButton('button.remind-me-later' | trans | desc('Remind me later'), "onclick='cancelPopup()' style = 'float: right; margin-right: 0px' ", 140, '', '',  'offer-rightbtn') }}</td>
+	</tr></table>
+	</div>
+	{{ menuMacros.DrawEndBox() }}
+{% endblock %}

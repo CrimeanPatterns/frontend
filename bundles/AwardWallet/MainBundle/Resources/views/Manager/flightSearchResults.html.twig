@@ -1,0 +1,182 @@
+{% extends '@AwardWalletMain/Manager/layout.html.twig' %}
+{% form_theme form with ['form_table_layout.html.twig'] %}
+
+{% block content %}
+    <div id="form">
+        <h2>Search Flights</h2>
+        {{ form(form) }}
+    </div>
+
+    {% if channel is not null %}
+        <h2>Results</h2>
+        <div id="logs">
+            <div style="padding-bottom: 10px;">
+                Table sorted by price, you can sort it by clicking on a column header.<br/>
+                Trips with duration 20% greater than specified - excluded from the results.<br/>
+                First row will be used for the mile value.
+            </div>
+            <div>Loading..</div>
+        </div>
+        <table id="results">
+            <tr>
+                <th>Source</th>
+                <th>Price</th>
+                <th>Price Adjustment</th>
+                <th>Duration</th>
+                <th>Lowcoster</th>
+                <th>Routes</th>
+                <th>Raw Data</th>
+            </tr>
+        </table>
+
+        <style>
+            #form {
+                float: left;
+                width: 400px;
+            }
+            #logs {
+                margin-top: 10px;
+            }
+            #results {
+                margin-top: 10px;
+                border-collapse: collapse;
+            }
+            #results thead th {
+                font-weight: bold;
+                cursor: pointer;
+            }
+            #results td, #results th {
+                padding: 3px;
+                border: 1px solid gray;
+                vertical-align: top;
+            }
+            #results .raw {
+                white-space: pre;
+                max-width: 800px;
+            }
+            #results .hidden {
+                display: none;
+            }
+            .raw .key {
+                color: navy;
+            }
+            .raw .number {
+                color: blue;
+            }
+            .raw .string {
+                color: green;
+            }
+            .raw .null {
+                color: grey;
+            }
+        </style>
+
+        <script>
+
+            require(['centrifuge'], function(Centrifuge) {
+
+                function formatRoutes(routes)
+                {
+                    return routes.map(route => {
+                        var depDate = new Date(route.depDate * 1000);
+                        var result = (depDate.getUTCHours() + '').padStart(2, '0') + ':' +(depDate.getUTCMinutes() + '').padStart(2, '0') + ' ' + route.airline + ' ' + route.flightNumber + ' ' + route.depCode + '-' + route.arrCode;
+                        if (route.classOfService) {
+                            result = result + ' ' + route.classOfService;
+                        }
+                        return result;
+                    }).join("<br/>");
+                }
+
+                function syntaxHighlight(json) {
+                    if (typeof json != 'string') {
+                         json = JSON.stringify(json, undefined, 2);
+                    }
+                    json = json.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+                    return json.replace(/("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?)/g, function (match) {
+                        var cls = 'number';
+                        if (/^"/.test(match)) {
+                            if (/:$/.test(match)) {
+                                cls = 'key';
+                            } else {
+                                cls = 'string';
+                            }
+                        } else if (/true|false/.test(match)) {
+                            cls = 'boolean';
+                        } else if (/null/.test(match)) {
+                            cls = 'null';
+                        }
+                        return '<span class="' + cls + '">' + match + '</span>';
+                    });
+                }
+
+                const client = new Centrifuge({{ centrifuge_config | json_encode | raw }});
+                client.on('connect', function () {
+                    console.log('centrifuge connected');
+
+                    const onMessage = function onMessage(message) {
+                        console.log(message.data);
+                        var data = message.data;
+
+                        if (data.type === 'log') {
+                            $('#logs').append("<div>" + data.message + "</div>");
+                            return;
+                        }
+
+                        if (data.type === 'results') {
+                            data.results.forEach(row => {
+                                $('#results').append("<tr>"
+                                        + "<td>" + row.price.source + "</td>"
+                                        + "<td>" + row.price.price + "</td>"
+                                        + "<td>" + row.price.priceAdjustment + "</td>"
+                                        + "<td>" + Math.round(row.duration / 3600) + "</td>"
+                                        + "<td>" + row.lowCoster + "</td>"
+                                        + "<td>" + formatRoutes(row.price.routes) + " </td>"
+                                        + "<td><a href='#' class='show-link'>show</a><div class='hidden raw'>" + syntaxHighlight(row.price.rawData) + "</div></td>"
+                                        + "</tr>");
+                            })
+                            return;
+                        }
+
+                        console.log('UNKNOWN MESSAGE TYPE');
+                    };
+
+                    var subscription = client.subscribe({{ channel | json_encode | raw }}, onMessage);
+                    subscription.history().then(function (message) {
+                        console.log('history messages received', message);
+                        $.each(message.data.reverse(), function (index, value) {
+                            onMessage(value);
+                        });
+                    }, function (err) {
+                        console.log('history call failed', err);
+                    });
+                });
+                client.connect();
+
+                $('#results').on('click', '.show-link', function(event) {
+                    event.preventDefault();
+                    $(this).parent().find('.raw').toggleClass('hidden');
+                });
+
+                // sorting
+                const getCellValue = (tr, idx) => tr.children[idx].innerText || tr.children[idx].textContent;
+
+                const comparer = (idx, asc) => (a, b) => ((v1, v2) =>
+                    v1 !== '' && v2 !== '' && !isNaN(v1) && !isNaN(v2) ? v1 - v2 : v1.toString().localeCompare(v2)
+                    )(getCellValue(asc ? a : b, idx), getCellValue(asc ? b : a, idx));
+
+                document.querySelectorAll('#results th').forEach(th => th.addEventListener('click', (() => {
+                    const table = th.closest('table');
+                    Array.from(table.querySelectorAll('tr:nth-child(n+2)'))
+                        .sort(comparer(Array.from(th.parentNode.children).indexOf(th), this.asc = !this.asc))
+                        .forEach(tr => table.appendChild(tr) );
+                })));
+
+            });
+
+        </script>
+
+    {% endif %}
+
+{% endblock %}
+
+

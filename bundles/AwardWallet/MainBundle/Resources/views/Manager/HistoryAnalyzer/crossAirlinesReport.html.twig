@@ -1,0 +1,117 @@
+{% extends "@AwardWalletMain/Manager/layout.html.twig" %}
+{% set title = 'Cross Airlines Report for ' ~ sourceProviderNames %}
+
+{% block content %}
+<h1>{{ title }}</h1>
+
+<div>
+    {% if withLinks %}
+        <a href="?links=off">Turn off links</a>
+    {% else %}
+        <a href="?links=on">Turn on links</a>
+    {% endif %}
+</div>
+
+<style>
+    .data-table{
+        border-collapse: collapse;
+    }
+    .data-table td{
+        padding: 2px;
+        border: 1px solid grey;
+    }
+    .data-table thead td{
+        font-weight: bold;
+    }
+    .data-table tr.excluded td{
+        text-decoration: line-through;
+        color: grey;
+    }
+    .data-table td.last{
+        border-right: 2px solid black;
+    }
+    .data-table td.first{
+        border-left: 2px solid black;
+    }
+</style>
+
+<table class="data-table" cellpadding="0" cellspacing="0">
+    <thead>
+        <tr>
+            <td rowspan="4">Primary Account Member Unique ID</td>
+            <td rowspan="4">Supplementary Account Member Unique ID</td>
+            {% for provider in targetProviders %}
+                <td colspan="10" style="background-color: black; color: white;">{{ provider|raw }}</td>
+            {% endfor %}
+        </tr>
+        <tr style="background-color: yellow;">
+            {% for provider in targetProviders %}
+                <td colspan="10" class="first last">ALL POINTS Last 12 Months</td>
+            {% endfor %}
+        </tr>
+        <tr style="background-color: yellow; writing-mode: tb-rl;">
+            {% for provider in targetProviders %}
+                <td colspan="2" class="first">Volume of Points</td>
+                <td colspan="2">Transaction Frequency</td>
+                <td colspan="2">Transaction Recency</td>
+                <td rowspan="2">Balance</td>
+                <td rowspan="2">Last Updated</td>
+                <td rowspan="2">Can Update</td>
+                <td rowspan="2" class="last">Excluded</td>
+            {% endfor %}
+        </tr>
+        <tr style="background-color: yellow; writing-mode: tb-rl;">
+            {% for provider in targetProviders %}
+                <td class="first">Flights</td>
+                <td>Other</td>
+                <td>Flights</td>
+                <td>Other</td>
+                <td>Flights</td>
+                <td>Other</td>
+            {% endfor %}
+        </tr>
+        <tr>
+        </tr>
+    </thead>
+    <tbody>
+        {% for row in rows %}
+        <tr>
+            <td>{{ row['UserID'] }}</td>
+            <td>{{ row['UserAgentID'] }}</td>
+            {% for providerId, displayName in targetProviders %}
+                {% if row['Provider_' ~ providerId] is defined %}
+                    {% if withLinks %}
+                        {% set href_on = '<a href="' ~ url('aw_manager_history_analyzer_account', {'id': row['Provider_' ~ providerId]['AccountID']}) ~ '" target="_blank">' %}
+                        {% set href_off = '</a>' %}
+                    {% else %}
+                        {% set href_on = '' %}
+                        {% set href_off = '' %}
+                    {% endif %}
+                    <td class="first">{{ href_on|raw }}{{ row['Provider_' ~ providerId]['Response'].volumeOfPoints.flights }}{{ href_off|raw }}</td>
+                    <td>{{ href_on|raw }}{{ row['Provider_' ~ providerId]['Response'].volumeOfPoints.other }}{{ href_off|raw }}</td>
+                    <td>{{ href_on|raw }}{{ row['Provider_' ~ providerId]['Response'].transactionFrequency.flights }}{{ href_off|raw }}</td>
+                    <td>{{ href_on|raw }}{{ row['Provider_' ~ providerId]['Response'].transactionFrequency.other }}{{ href_off|raw }}</td>
+                    <td>{{ href_on|raw }}{{ row['Provider_' ~ providerId]['Response'].transactionRecency.flights }}{{ href_off|raw }}</td>
+                    <td>{{ href_on|raw }}{{ row['Provider_' ~ providerId]['Response'].transactionRecency.other }}{{ href_off|raw }}</td>
+                    <td>{{ href_on|raw }}{{ row['Provider_' ~ providerId]['TotalBalance'] }}{{ href_off|raw }}</td>
+                    <td>{{ href_on|raw }}{{ row['Provider_' ~ providerId]['SuccessCheckDate'] }}{{ href_off|raw }}</td>
+                    <td>{{ href_on|raw }}{{ row['Provider_' ~ providerId]['CanUpdate'] }}{{ href_off|raw }}</td>
+                    <td class="last">{{ href_on|raw }}{{ row['Provider_' ~ providerId]['Response'].excluded }}{{ href_off|raw }}</td>
+                {% else %}
+                    <td class="first"></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td class="last"></td>
+                {% endif %}
+            {% endfor %}
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

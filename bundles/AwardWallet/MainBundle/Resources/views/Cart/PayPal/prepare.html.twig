@@ -1,0 +1,40 @@
+{% extends "@AwardWalletMain/Layout/hidden_left_menu.html.twig" %}
+{% import "@AwardWalletMain/TwigMacros/new.html.twig" as macro %}
+
+{% block title %}
+    {{ 'cart.paypal.prepare.title'|trans|desc('You are being redirected to PayPal.com') }}
+{% endblock %}
+
+{% block header_metatags %}
+    {% include '@AwardWalletMain/Utility/scalableViewport.html.twig' %}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script type="text/javascript">
+        require(["jquery-boot", "lib/dialog", "translator-boot"], function($, dialog){
+            $.post("{{ path('aw_cart_paypal_process') }}", function(data) {
+                if (data.status == 'ok') {
+                    window.location.href = data.url;
+                } else if (data.error) {
+                    dialog.alert(
+                        data.error,
+                        Translator.trans('alerts.error')
+                    );
+                }
+            });
+        });
+    </script>
+{% endblock %}
+
+{% block content %}
+    <div class="main-blk shortened">
+        <h1>{{ 'cart.paypal.prepare.title'|trans }}</h1>
+        <div class="main-blk-content t-center">
+            <p>{{ 'cart.paypal.prepare.desc'|trans|desc("You are being redirected to PayPal.com so that you can authenticate with PayPal and complete this transaction.")|raw }}</p>
+            <div class="ajax-loader">
+                <div class="loading"></div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

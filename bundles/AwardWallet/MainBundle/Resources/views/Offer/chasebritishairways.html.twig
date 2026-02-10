@@ -1,0 +1,35 @@
+{# Issue #11547 #}
+
+{% extends popup is defined and popup ? "@AwardWalletMain/Offer/_offerPopup.html.twig" : "@AwardWalletMain/Offer/standard.html.twig" %}
+{% import '@AwardWalletMain/Offer/offerMacros.html.twig' as offerMacros %}
+{% import '@AwardWalletMain/TwigMacros/assets.html.twig' as assets %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    {{ encore_entry_link_tags('offer') }}
+    {{ encore_entry_link_tags('offers/chasebritishairways') }}
+    {% if popup is not defined %}
+        {{ assets.assets_form('css') }}
+    {% endif %}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        {{ offerMacros.jsOfferYes(_context, ApplyURL, Code, OfferUserID, ApplyURL) }}
+        {{ offerMacros.jsOfferNo(_context, Code, OfferUserID, defaultRedirectLocation) }}
+    </script>
+{% endblock %}
+
+{% block content %}
+    <div id="offer_wrap" class="offer-block">
+        <div class="chase-british-airways">
+            <p>For a limited time there’s a <br><a onclick="offerYes(false); return false;" href="#">big change to the offer</a> on <br>one of the top airline travel <br>cards. </p>
+            <p>One-way flights start at <br>4,500 miles, so you can get <br>over 20 flights through this <br>offer! </p>
+            <p>See our <a onclick="offerYes(false); return false;" href="#">post</a> for more details <br>on the new offer, and how <br>you can maximize these <br>miles.</p>
+            <a onclick="offerYes(false); return false;" href="#" class="btn-blue-offer">Learn More</a>
+            <a onclick="offerYes(false); return false;" href="#" class="thumb"></a>
+        </div>
+        {{ offerMacros.offerButtons(_context) }}
+    </div>
+{% endblock %}

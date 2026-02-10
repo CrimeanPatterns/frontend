@@ -1,0 +1,52 @@
+{% extends '@MailTemplate/Layout/base.twig' %}
+{% trans_default_domain "email" %}
+
+{% block subject %}{% apply spaceless %}{% autoescape false %}
+    {{ 'parse-email-error.subject'|trans({}, 'email', lang)|desc('There was a problem recognizing your submission') }}
+{% endautoescape %}{% endapply %}{% endblock subject %}
+
+{% block content %}
+    {% import '@MailTemplate/CommonMacro.twig' as commonMacro %}
+
+    {{ commonMacro.hello(user.firstname, _context) }}
+
+    {{ commonMacro.paragraph(
+        'parse-email-error.received'|trans({
+            '%address%': fromEmail|htmlencode|disableEmailLink,
+            '%awAddress%': toEmail|htmlencode|disableEmailLink,
+            '%subject%': subject|htmlencode,
+            '%bold_on%': '<b>',
+            '%bold_off%': '</b>',
+            '%bold2_on%': '<b style="color:#3d424d">',
+            '%bold2_off%': '</b>'
+        }, 'email', lang)|desc('A new email from %bold2_on%%address%%bold2_off% with the following subject: %bold2_on%"%subject%"%bold2_off% was received in your personal mailbox at AwardWallet: %bold_on%%awAddress%%bold_off%.'),
+        _context, {escape: false}
+    ) }}
+
+    {{ commonMacro.smallWarning(
+        'parse-email-error.not-recognize'|trans({}, 'email', lang)|desc('Unfortunately, we didn\'t recognize the content of this email. If it was a travel reservation please note that we are analyzing these emails and will be adding support for more reservations in the near future. Please note that you are not able to access your personal AwardWallet mailbox by design.'),
+        _context
+    ) }}
+
+    {% if hasMailbox == false %}
+        {{ commonMacro.infoWithButton(
+            'parse-email-error.mailbox_offer'|trans({}, 'email', lang)|desc('Are you tired of forwarding emails to us? The best way to import all of your travel plans (as well as Delta, United, and Southwest account statements) is to link your mailbox to AwardWallet!'),
+            'link_mailbox_now.btn'|trans({}, 'email', lang)|desc('Link My Mailbox Now'),
+            personalHost ~ path('aw_usermailbox_view', {utm_source: 'automatedEmails', utm_medium: 'email', utm_campaign: 'EmailNotRecognized'}),
+            _context,
+            {}, {}, {},
+            {
+                width: 12,
+                height: 7,
+                imgPath: baseImagesPath ~ '/double-arrow-w.png'
+            }
+        ) }}
+    {% else %}
+        {{ commonMacro.paragraph(
+            'parse-email-error.confirmation'|trans({}, 'email', lang)|desc('Also, if you are trying to add a new reservation to your AwardWallet travel plans, please note that you may be able to do that by using your loyalty account or by grabbing it via confirmation number from this page:'),
+            _context
+        ) }}
+        {% set link = baseUrl ~ path('aw_trips_add') %}
+        {{ commonMacro.dottedLink(link, link, _context) }}
+    {% endif %}
+{% endblock content %}

@@ -1,0 +1,153 @@
+{% extends '@AwardWalletMain/Manager/layout.html.twig' %}
+{% form_theme form '@AwardWalletMain/FormTheme/form_table_layout.html.twig' %}
+
+{% block content %}
+    <script>
+        $('document').ready(function () {
+            $('#form_Operation').on('change', function (e) {
+                if ($(e.target).val() === 'checkProviderZB')
+                    $('.dates').show();
+                else
+                    $('.dates').hide();
+            });
+        });
+    </script>
+    </br>
+    <style>
+        #form {
+            padding-left: 10px;
+        }
+
+        #form tr.select select{
+            width: 400px;
+        }
+
+        #form input.checkBoxRight {
+            margin-left: 0px;
+        }
+
+        #form tr > td {
+            width: 80px;
+            padding-top: 8px;
+        }
+
+        #form .button {
+            text-align: center;
+        }
+
+        #form_Execute {
+            margin-top: 25px;
+        }
+    </style>
+    <div id="form">
+        {{ form(form) }}
+    </div>
+    <br>
+    {{ queueInformation | raw }}
+
+    {% if channel is not null %}
+        <script>
+            $('#form_Execute').attr('disabled','disabled');
+            $('select').change(function(){
+                $('#form_Execute').removeAttr('disabled');
+            });
+        </script>
+        <h1 style="width:85%;">{{ action }}</h1>
+        <br/>
+        <div id="progress">
+            <div>In Progress...</div>
+        </div>
+        <div id="logs" style="width:85%;">
+        </div>
+
+        <style>
+            #progress {
+                margin-top: 10px;
+            }
+            #logs {
+                margin-top: 10px;
+            }
+        </style>
+
+        <script>
+
+            require(['centrifuge'], function (Centrifuge) {
+
+                const client = new Centrifuge({{ centrifuge_config | json_encode | raw }});
+                client.on('connect', function () {
+                    console.log('centrifuge connected');
+
+                    const onMessage = function onMessage(message) {
+                        console.log(message.data);
+                        var data = message.data;
+
+                        if ($('#progress').length > 0) {
+                            $('#progress').remove();
+                        }
+                        if (data.type === 'logs') {
+                            var pos = data.message.indexOf('\n');
+                            if (pos !== -1) {
+                                searchText = data.message.slice(0, pos);
+                                console.log(searchText);
+                            } else {
+                                pos = data.message.indexOf('<');
+                                if (pos !== -1)
+                                    searchText = data.message.substring(0, pos);
+                                else
+                                    searchText = data.message;
+                            }
+                            var xpath = "//div[starts-with(text(),\"" + searchText + "\")]";
+                            var matchingElement = document.evaluate(xpath, document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
+                            if (!matchingElement) {
+                                $('#logs').append("<div date-time=\""
+                                    + data.dateTime
+                                    + "\">"
+                                    + data.message + "</div>");
+                                $('div[date-time]').sort(function (a, b) {
+                                    return Date.parse($(a).attr('date-time')) < Date.parse($(b).attr('date-time')) ? -1: 1;
+                                }).appendTo('div#logs');
+                            }
+                            return;
+                        }
+                        if (data.type === 'log' && data.message==='done'){
+                            $('#form_Execute').removeAttr('disabled');
+                        }
+                        if (data.type !== 'log')
+                            console.log('UNKNOWN MESSAGE TYPE');
+                    };
+
+                    let historyLockResolver = null;
+                    const historyLock = new Promise((resolve) => {
+                        historyLockResolver = resolve;
+                    });
+                    const subscription = client.subscribe({{ channel | json_encode | raw }}, function (message) {
+                        historyLock.then(() => onMessage(message));
+                    });
+                    subscription.history().then(function (message) {
+                        console.log('history messages received', message);
+                        $.each(message.data.reverse(), function (index, value) {
+                            onMessage(value);
+                        });
+                        console.log('history messages processed', message);
+                        historyLockResolver();
+                    }, function (err) {
+                        console.log('history call failed', err);
+                        if ($('#progress').length > 0) {
+                            $('#progress').remove();
+                        }
+                        if (typeof (err.error) != 'undefined') {
+                            $('#logs').append("<div>[Centrifuge]" + err.error + ". History call failed</div>");
+                        } else {
+                            $('#logs').append("<div>[Centrifuge] Something went wrong. History call failed</div>");
+                        }
+                    });
+                });
+                client.connect();
+
+            });
+
+        </script>
+
+    {% endif %}
+
+{% endblock %}

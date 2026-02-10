@@ -1,0 +1,47 @@
+{% extends '@MailTemplate/User/UserAgent/InvitationToOwnership.twig' %}
+{% trans_default_domain "email" %}
+
+{% block subject %}{% apply spaceless %}{% autoescape false %}
+    {{ 'invitation-claim-ownership.subject-v2'|trans(
+        {'%count%': accounts|length}, 'email', lang
+    )|desc('{0} Invitation to AwardWallet.com|[1,Inf[ Invitation to claim ownership of your reward programs') }}
+{% endautoescape %}{% endapply %}{% endblock subject %}
+
+{% block content %}
+    {% import '@MailTemplate/CommonMacro.twig' as commonMacro %}
+
+    {{ commonMacro.hello(user.fullname, _context) }}
+
+    {% set link = commonMacro.link('mailto:' ~ invitee.email, '$$')|split('$$') %}
+    {{ commonMacro.paragraph(
+        'uninvite-ownership.message'|trans({
+            '%inviteeName%': invitee.fullname|htmlencode,
+            '%bold_on%': '<b style="color:#3d424d;">',
+            '%bold_off%': '</b>',
+            '%link_on%': link[0],
+            '%link_off%': link[1],
+            '%link%': invitee.email|htmlencode,
+            '%awardwallet%': 'AwardWallet'
+        }, 'email', lang)|desc('You\'ve just invited %bold_on% %inviteeName% %bold_off% (%link_on%%link%%link_off%) to register on %bold_on%%awardwallet%%bold_off%. Once that happens, %bold_on% %inviteeName% %bold_off% will become the owner of all the reward programs that were associated with his or her name.'),
+        _context, {escape: false}
+    ) }}
+
+    {% if accounts|length > 0 %}
+        {{ commonMacro.paragraph(
+            'uninvite-ownership.list-programs'|trans({}, 'email', lang)|desc('Here is a list of all the reward programs that will be transferred:'),
+            _context
+        ) }}
+        {{ commonMacro.accountList(accounts, _context) }}
+    {% endif %}
+
+    {{ commonMacro.paragraph(
+        'uninvite-ownership.link'|trans({}, 'email', lang)|desc('If you changed your mind you can un-invite this person right here:'),
+        _context, {},
+        {
+            'margin-top': '20px'
+        }
+    ) }}
+
+    {% set shareAccountsLink = personalHost ~ path('aw_user_connections') %}
+    {{ commonMacro.dottedLink(shareAccountsLink, shareAccountsLink, _context) }}
+{% endblock content %}

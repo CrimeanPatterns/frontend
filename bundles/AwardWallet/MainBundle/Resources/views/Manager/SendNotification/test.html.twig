@@ -1,0 +1,103 @@
+{% set title = "Send Notifications" %}
+{% extends '@AwardWalletMain/Manager/layout.html.twig' %}
+{% form_theme testForm with ['form_table_layout.html.twig'] %}
+
+{% block content %}
+    <style type="text/css">
+        table {
+            border-collapse: collapse;
+        }
+        table td {
+            border: lightgray solid 1px;
+            padding: 7px;
+        }
+        thead td {
+            font-weight: bold;
+        }
+        table tr.separator td  {
+            border-top: lightgray solid 3px;
+        }
+    </style>
+
+    <a href="{{ url('aw_manager_sendnotification_index') }}">List of push notifications</a> |
+    <a href="{{ url('aw_manager_sendnotification_view', {id: notification.notificationTemplateID }) }}">{{ notification.title }}</a>
+
+    <hr size="2"/>
+
+    <h1>
+        Notification Testing {{ notification.title }}
+        {% if notification.state < 2 %}
+            <small> &nbsp; <a href="{{ url('aw_manager_sendnotification_edit', {id: notification.notificationTemplateID}) }}">Edit</a></small>
+            <small> &nbsp; <a href="{{ url('aw_manager_sendnotification_delete', {id: notification.notificationTemplateID}) }}">Delete</a></small>
+        {% endif %}
+    </h1>
+
+    <br/>
+    {% if tested|length %}
+        <br/>
+        <table>
+            <thead>
+            <tr>
+                <td>User</td><td>ID</td><td>Login</td><td>Email</td><td>Name</td>
+                <td>Result</td>
+            </tr>
+            </thead>
+            <tbody>
+            {% for row in tested %}
+                <tr>
+                    <td>{{ row.userId }}</td>
+                    <td>{{ row.user ? row.user.userId : '-' }}</td>
+                    <td>{{ row.user ? row.user.login : '-' }}</td>
+                    <td>{{ row.user ? row.user.email : '-' }}</td>
+                    <td>{{ row.user ? row.user.fullName : '-' }}</td>
+                    <td>{{ row.result }}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        no users
+    {% endif %}
+
+    <br/>
+    <hr size="1"/>
+
+    <h1>Testing</h1>
+
+    <br/>
+
+    <form name="edit" method="post" action="{{ url('aw_manager_sendnotification_test', {id: notification.notificationTemplateID}) }}" autocomplete="off">
+        <input name="form[type]" value="staff" type="hidden">
+        <input class="buttonBg" value="Send notification to Staff users" type="submit"> all users from group <b>staff:marketing</b>
+    </form>
+    <form name="edit" method="post" action="{{ url('aw_manager_sendnotification_test', {id: notification.notificationTemplateID}) }}" autocomplete="off">
+        <input name="form[type]" value="self" type="hidden">
+        <input class="buttonBg" value="Send notification to Self Registered User" type="submit"> all devices of user <b>{{ user.login }}</b>
+    </form>
+
+    <form name="edit" method="post" action="{{ url('aw_manager_sendnotification_test', {id: notification.notificationTemplateID}) }}" autocomplete="off">
+        <input name="form[type]" value="self_anon" type="hidden">
+        <input class="buttonBg" value="Send notification to Self Anonymous User" type="submit"> last registered browser with IP <b>{{ ip }}</b>
+    </form>
+
+    <br/><br/>
+    {% set jenkinsLink = 'https://jenkins.awardwallet.com/job/Frontend/job/send-notification/parambuild?' ~ ({'notificationId': notification.notificationTemplateID, 'title': notification.title} | url_encode) %}
+    <p>To start, open link:<br>
+        <a href="{{ jenkinsLink }}" target="_blank">{{ jenkinsLink }}</a>
+    </p>
+    <br/>
+
+    <hr size="1"/>
+
+    <br/>
+    <form name="edit" method="post" action="{{ url('aw_manager_sendnotification_test', {id: notification.notificationTemplateID}) }}" autocomplete="off">
+        Send Notification to:<br>
+        <b>User ID or Email or Login or IP</b>, one user per line<br>
+        <input name="form[type]" value="custom" type="hidden">
+        {{ form_widget(testForm.users) }}
+        <br/>
+        <input class="buttonBg" value="Test" type="submit">
+    </form>
+
+{% endblock %}
+

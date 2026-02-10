@@ -1,0 +1,11 @@
+{% trans_default_domain "contactus" %}
+{% apply spaceless %}
+    <div class="result-item" style="padding-bottom: 10px;">
+    {% if kind == 'delete_profile' %}
+        {{ 'delete-account-note'|trans({
+            '%link_on%': '<a target="_blank" href="' ~ path('aw_user_delete') ~ '">',
+            '%link_off%': '</a>',
+        })|desc('If you wish to delete your AwardWallet account, please note that AwardWallet support is not able to do that for you, but you can do it yourself via %link_on%this page%link_off%')|raw }}
+    {% endif %}
+    </div>
+{% endapply %}

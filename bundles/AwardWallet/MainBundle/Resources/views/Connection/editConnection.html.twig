@@ -1,0 +1,277 @@
+{% form_theme form with ['@AwardWalletMain/FormTheme/fields.html.twig', '@AwardWalletMain/FormTheme/sharingTimelines.html.twig'] %}
+{% extends "@AwardWalletMain/Layout/edit_connections.html.twig" %}
+
+{% set agentName = userAgent.agentId.isBusiness ? userAgent.agentId.getCompany : userAgent.agentid.getFullName %}
+
+{% block header_metatags %}
+    {% include '@AwardWalletMain/Utility/scalableViewport.html.twig' %}
+{% endblock %}
+
+{% block title %}{{ 'connection.edit.title'|trans({
+    '%name%': agentName
+})|desc('Edit relationship with %name%') }}{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        require([
+            'jquery-boot',
+            'lib/dialog',
+            'jqueryui',
+            'routing',
+            'common/alerts',
+            'translator-boot'
+        ], function ($, dialog) {
+
+            var content = $('#deleteModal');
+
+            var deleteModal = dialog.createNamed('deleteConnection', content, {
+                width: 450,
+                height: 200,
+                autoOpen: false,
+                modal: true,
+                buttons: [
+                    {
+                        text: Translator.trans('alerts.btn.cancel'),
+                        click: function () {
+                            $(this).dialog("close");
+                        },
+                        'class': 'btn-silver'
+                    },
+                    {
+                        text: Translator.trans('alerts.btn.ok'),
+                        click: function (e) {
+                            var self = this;
+                            $(e.target).addClass('loader');
+                            // todo fail!
+                            $.ajax({
+                                url: Routing.generate('aw_members_deny', {'userAgentId': {{ userAgent.useragentid }}}),
+                                type: 'POST',
+                                success: function (data) {
+                                    if (data.success) {
+                                        window.location = Routing.generate('aw_user_connections');
+                                    } else {
+                                        $(self).dialog("close");
+                                        dialog.alert(
+                                            data.error || 'Unknown error occurred',
+                                            Translator.trans('alerts.error')
+                                        );
+                                    }
+                                }
+                            });
+                        },
+                        'class': 'btn-blue'
+                    }
+                ]
+            });
+
+            $('#deleteConnection').on('click', function () {
+                deleteModal.open();
+            });
+
+            $('td.check>input').change(function (e) {
+                $(this).closest('tr').toggleClass('focused');
+            });
+
+            var grantAccess = function (accessType) {
+                $.ajax({
+                    //url: '/members/grant-access/' + {{ userAgent.useragentid }} + '/read-only',
+                    url: Routing.generate('aw_member_grant_access_action', {'userAgentId': {{ userAgent.useragentid }}, 'accessType': accessType}),
+                    type: 'POST',
+                    success: function (result) {
+                        {% if accessGiven.accountTotal == 0 %}
+                            window.location.reload();
+                        {% else %}
+                            window.location.href = result.redirect;
+                        {% endif %}
+                    }
+                });
+            };
+
+            $('#give-read-only-button').on('click', function () {
+                grantAccess('readonly');
+            });
+            $('#give-full-control-button').on('click', function () {
+                grantAccess('full');
+            });
+
+            {% if not userAgent.popupShown %}
+
+            var shareModalContent = $('#shareModal');
+
+            var shareModal = dialog.createNamed('shareInfo', shareModalContent, {
+                width: 600,
+                height: 300,
+                autoOpen: false,
+                modal: true,
+                buttons: [
+                    {
+                        text: '{{ 'give.access.choose-later'|trans()|desc('Nothing, I will hand pick the accounts I want to share later') }}',
+                        click: function () {
+                            var modal = this;
+                            $.ajax({
+                                url: Routing.generate('aw_member_never_show_request_action', {'userAgentId': {{ userAgent.useragentid }} }),
+                                type: 'POST',
+                                success: function () {
+                                    $(modal).dialog("close");
+                                }
+                            });
+                        },
+                        'class': 'btn-silver btn-wide'
+                    },
+                    {
+                        text: '{{ 'give.read-only.access.to'|trans({'%agent_fullname%': userAgent.agentid.fullName})|desc('Give %agent_fullname% read-only access to all of my accounts and trips') }}',
+                        click: function (e) {
+                            grantAccess('readonly');
+                        },
+                        'class': 'btn-silver btn-wide'
+                    },
+                    {
+                        text: '{{ 'give.full.access.to'|trans({'%agent_fullname%': userAgent.agentid.fullName})|desc('Give %agent_fullname% full control over all of my accounts and trips') }}',
+                        click: function (e) {
+                            grantAccess('full');
+                        },
+                        'class': 'btn-blue btn-wide'
+                    }
+                ]
+            });
+
+            shareModal.open();
+
+            {% endif %}
+        });
+    </script>
+{% endblock %}
+
+{% block content %}
+    <div class="main-blk shortened">
+        <h1>{{ 'edit.relationship.with'|trans({
+                '%agent_fullname%': userAgent.agentid.fullName
+            })|desc('Edit relationship with %agent_fullname%') }}</h1>
+
+        {% if app.session.flashbag.has('notice') %}
+            {% for flash_message in app.session.flashbag.get('notice') %}
+                <div class="success-title">
+                    <i class="icon-white-check-b"></i>
+                    <span>{{ flash_message }}</span>
+                </div>
+            {% endfor %}
+        {% endif %}
+
+        <form class="main-form spinnerable"
+              action="{{ path('aw_user_connection_edit', {'userAgentId': userAgent.UserAgentId}) }}"
+              method="post"
+              autocomplete="off"
+        >
+            {{ form_widget(form._token) }}
+            <div class="main-form-item">
+                <div class="title-note">
+                    <h3>
+                        {{ 'award.sharing.with'|trans({
+                            '%agent_fullname%': userAgent.agentid.fullName
+                        })|desc('Award Sharing Options with %agent_fullname%') }}
+                    </h3>
+                </div>
+
+                {{ form_row(form.sharebydefault) }}
+                {{ form_row(form.accesslevel) }}
+
+                <div class="form-caption">
+                    Currently you are sharing <strong>{{ accessGiven.accountShared }} out of {{ accessGiven.accountTotal }}</strong> accounts
+                    {% if accessGiven.accountShared > 0 %}
+
+                        {% set route = 'aw_account_list' %}
+
+                        (<a href="{{ url(route, {sharedWith: userAgent.UserAgentId}) }}" class="blue-link">{{ 'access_level.granted.account_view'|trans|desc("Click to view them") }}</a>)
+                    {% endif %}
+                </div>
+
+                <div class="details-row">
+                    <div class="details-text">
+                        <i class="icon-info-small"></i>
+                        <p>
+                            {{ 'trip.sharing.goto-account-list'|trans({
+                                '%link_start%': '<a href="/account/list" class="blue-link">',
+                                '%link_end%': '</a>'
+                            })|desc('If you would like to share accounts, please %link_start%open the account list%link_end%, select the ones you want to share, and chose “Share accounts” under the ”Actions” menu:') | raw }}
+                            </p>
+                    </div>
+                    <div class="actions-block"></div>
+                </div>
+
+                <div class="buttons-row">
+                    <p>Alternatively, you can do this with one click:</p>
+                    <a id="give-read-only-button" class="btn-silver">
+                        {{ 'trip.sharing.give-read-only'|trans({
+                            '%agent_fullname%': userAgent.agentid.fullName | e
+                        })|desc('Give %agent_fullname% <strong>read-only</strong> access to all of my accounts and trips') | raw }}
+                    </a>
+                    <a id="give-full-control-button" class="btn-silver">
+                        {{ 'trip.sharing.give-full-control'|trans({
+                            '%agent_fullname%': userAgent.agentid.fullName | e
+                        })|desc('Give %agent_fullname% <strong>full-control</strong> over all of my accounts and trips') | raw }}
+                    </a>
+                </div>
+
+                <div class="title-note">
+                    <h3>
+                        {{ 'trip.sharing.with'|trans({
+                            '%agent_fullname%': userAgent.agentid.fullName
+                        })|desc('Trip Sharing Options with %agent_fullname%') }}
+                    </h3>
+                </div>
+
+                {{ form_row(form.tripsharebydefault) }}
+                {{ form_row(form.tripAccessLevel) }}
+                {{ form_row(form.sharedTimelines) }}
+
+            </div>
+            <div class="row-submit t-right">
+                <a class="btn-silver" id="deleteConnection">
+                    {{ 'connection.disconnect.from'|trans({
+                        '%agent_fullname%': userAgent.agentid.fullName
+                    })|desc('Disconnect from %agent_fullname%') }}
+                </a>
+                <button class="btn-blue" type="submit">{{ 'save-information'|trans|desc('Save information') }}</button>
+            </div>
+        </form>
+    </div>
+
+    <div class="faq">
+        <div class="faq-blk">
+            <div class="heading">
+                <i class="icon-blue-info"></i>
+                <p>
+                    {{ 'connection.edit.faq'|trans({
+                        '%agent_fullname%': userAgent.agentid.fullName | e,
+                        '%strong_on%': '<strong>',
+                        '%strong_off%': '</strong>'
+                    })|desc('On this page you can control what %strong_on%%agent_fullname%%strong_off% sees, in regards to your travel plans or award balances.') | raw }}
+                </p>
+            </div>
+        </div>
+    </div>
+
+    {% if not accessGranted.isBusinessAgent %}
+        {% include '@AwardWalletMain/Business/Members/_accessGrantedBlock.html.twig' with accessGranted %}
+    {% endif %}
+
+    <div id="deleteModal" style="display: none;" title="{{ 'delete.connection'|trans }}">
+        {{ 'connections.popup.delete.content'|trans }}
+    </div>
+    <div id="shareModal" style="display: none;" title="{{ 'please-choose'|trans|desc('Please choose') }}">
+        <div class="beta-preview">
+            <p>
+                {{ 'after.share.accounts.modal.content'|trans({
+                    '%agent_fullname%': userAgent.agentid.fullName
+                })|desc('You approved a connection with %agent_fullname%, now please choose what should %agent_fullname% be able to see under your account:') }}
+            </p>
+        </div>
+    </div>
+    <style>
+        .btn-wide{
+            width: 100%!important;
+            margin-left: 0!important;
+        }
+    </style>
+{% endblock %}

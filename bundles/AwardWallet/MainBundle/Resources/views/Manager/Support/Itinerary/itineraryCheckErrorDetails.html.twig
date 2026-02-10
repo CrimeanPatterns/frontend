@@ -1,0 +1,698 @@
+{% set title = data.main.Code~" - Itinerary Check Error" %}
+{% set contentTitle = "" %}
+{% use '@AwardWalletMain/FormTheme/oldFields.html.twig' %}
+{% extends '@AwardWalletMain/Manager/layout.html.twig' %}
+{% block content %}
+    <table>
+        <tr>
+            <td><a href="{{ back }}">BACK</a></td>
+            <td style="padding-left: 10px;"><h1 style="font-size: medium; margin: 0px;">Itinerary Check Error</h1></td>
+        </tr>
+    </table>
+    <script src="/lib/scripts/scw.js"></script>
+    <script type="text/javascript">
+        function saveChanges(id, comment, all) {
+                $.ajax({
+                    url: "{{ path('aw_manager_itineraryCheckError_details_comment') }}",
+                    type: "POST",
+                    dataType: "json",
+                    data: {
+                        id: id,
+                        comment: comment,
+                        all: all
+                    },
+                    async: true,
+                    success: function (data) {
+                        if (data.Status == 'OK') {
+                            if (data.Message){
+                                $.each(data.Message, function (index, value) {
+                                    var str = value;
+                                    var regex = /\n/g;
+                                    $('td#comment'.concat(index)).html(str.replace(regex,'<br>'));
+                                    $('td#status'.concat(index)).html('Resolved');
+                                });
+                            }
+                        }
+                    }
+                });
+        }
+        function dateChange(date, providerId) {
+                $.ajax({
+                    url: "{{ path('aw_manager_itineraryCheckError_check_data') }}",
+                    type: "POST",
+                    dataType: "json",
+                    data: {
+                        date: date,
+                        providerId: providerId
+                    },
+                    async: true,
+                    success: function (data) {
+                        if (data.Status == 'OK') {
+                            $('#main_form').submit();
+                        } else {
+                            alert('empty request');
+                        }
+                    }
+                });
+        }
+        function setAssignee(providerId, date, type, cell) {
+            cell = $(cell);
+            $.ajax({
+                url: "{{ path('aw_manager_itineraryCheckError_assignee') }}",
+                type: "POST",
+                dataType: "json",
+                data: {
+                    providerId: providerId,
+                    detectionDate: date,
+                    type: type
+                },
+                async: true,
+                success: function (data) {
+                    if (data.Status == 'OK') {
+                        var answer = (data.output == 'null' ? '' : 'Assignee: '+data.output);
+                        $('div.assignee> span:first').empty();
+                        $('div.assignee>span:first').html(answer);
+                        var textLink = '';
+                        if (data.type == 1)
+                            textLink = 'Not me anymore';
+                        else if (data.type == 2)
+                            textLink = 'Reset assignee';
+                        else textLink = 'Assign me';
+
+                        cell.find('a').attr('onclick', 'return setAssignee(' + providerId + ', \'' + date + '\', ' + data.type + ', this.parentNode);');
+                        cell.find('a').text(textLink);
+                    }
+                }
+            });
+        }
+        function loadErrors(limit){
+            $.ajax({
+                url: "{{ path('aw_manager_itineraryCheckError_loadErrors') }}",
+                type: "POST",
+                data: {
+                    providerId: {{ data.main.ProviderID }},
+                    date: '{{ data.main.DetectionDate }}',
+                    back: '{{ back }}',
+                    limit: limit
+                },
+                async: true,
+                success: function (data) {
+                    $('table#Errors').empty();
+                    $('table#Errors').html(data);
+                }
+            });
+        }
+        function load(limit, type, fromCache){
+            var dataTable = $('table#' + type);
+            dataTable.empty();
+            dataTable.parent().find('button:contains("Get Logs")').hide();
+            $.ajax({
+                url: "{{ path('aw_manager_itineraryCheckError_loadList') }}",
+                type: "POST",
+                data: {
+                    providerId: {{ data.main.ProviderID }},
+                    limit1: limit,
+                    type: type,
+                    fromCache: fromCache
+                },
+                async: true,
+                success: function (data) {
+                    dataTable.parent().find('button:contains("Get Logs")').show();
+                    dataTable.html(data);
+                    if (dataTable.find('td[data-field]').length > 0) {
+                        dataTable.parent().find('button:contains("Get Logs")').show();
+                    }
+                    $('#progress'+type).progressbar({value:0});
+                    if (typeof $.cookie('ice_getlogs_{{ data.main.Code }}' + '_' + type) !== 'undefined'){
+                        $('div#progress' + type).prev().click();
+                    }
+                }
+            });
+        }
+        function getLog(id, data, progressId) {
+            try {
+                $.ajax({
+                    url: "{{ path('aw_manager_itineraryCheckError_getLog') }}",
+                    type: "POST",
+                    data: {
+                        info: data
+                    },
+                    async: true,
+                    success: function (data) {
+                        $('#' + id).empty();
+                        $('#' + id).attr("title", data.title);
+                        $('#' + id).html(data.html);
+                        progressBarSetValue(progressId);
+                    }
+                });
+            } catch (ex) {
+                console.log(ex.message);
+                $('#' + id).empty();
+                $('#' + id).attr("title", 'look at console');
+                $('#' + id).html("error");
+                progressBarSetValue(progressId);
+            }
+        }
+        function getLogs(data) {
+            data = JSON.parse(data);
+            $.each(data, function (uu, value) {
+                try {
+                    $.ajax({
+                        url: "{{ path('aw_manager_itineraryCheckError_getLogs') }}",
+                        type: "POST",
+                        data: {
+                            info: value
+                        },
+                        async: true,
+                        success: function (data) {
+                            $.each(data, function(index, item){
+                                $('#log' + index).empty();
+                                $('#log' + index).attr("title", item.title);
+                                $('#log' + index).html(item.html);
+                            });
+                        }
+                    });
+                } catch (ex) {
+                    console.error(ex.message);
+                }
+            });
+        }
+        function progressBarSetValue(id){
+            var all = $('#' + id).find('td[data-field]').length;
+            var emp = $('#' + id).find('td[data-field]:empty').length;
+            var percent = (all - emp) / all * 100;
+            $('#progress'+id).progressbar({value:percent});
+        }
+        function loadLogs(id) {
+            $('#progress'+id).progressbar({value:0});
+            $('#' + id).find('td[data-field]').each(function () {
+                getLog($(this).attr('data-field'), $(this).attr('data-data'), id);
+            });
+            var provider = $('td:contains("Provider Code:")').find('span').text();
+            var expDate = new Date();
+            expDate.setTime(expDate.getTime() + (5 * 60 * 1000)); // add 5 minutes
+            $.cookie('ice_getlogs_' + provider + '_' + id, 1, {path: '/', expires: expDate});
+        }
+        function copy(e) {
+            var text = e.previousElementSibling.innerText;
+            var input = document.createElement('input');
+            document.body.appendChild(input);
+            input.value = text;
+            input.select();
+            document.execCommand("copy");
+            document.body.removeChild(input);
+        }
+        function colored(flag, type) {
+            switch (type) {
+                case 'ext':
+                    color = 'lightcyan';
+                    // TODO: remove block later (when it'sonly v3)
+                    //==> start block
+                    if (!flag)
+                        color = 'inherit';
+                    part = '-check-'; // old version
+                    $('a[href*="' + part + '"]').parent().css('background-color', color);
+                    //<== end block
+                    part = 'extension'; // v3
+                    break;
+                case 'conf':
+                    color = 'lightblue';
+                    part = 'checkconfirmation';
+                    break;
+                case 'acc':
+                    color = 'pink';
+                    part = 'checkaccount';
+                    break;
+                default:
+                    return;
+            }
+            if (!flag)
+                color = 'inherit';
+            $('a[href*="' + part + '"]').parent().css('background-color', color);
+        }
+        $('document').ready(function() {
+            loadErrors(20);
+            var targetNode = document.getElementById('scw');
+            var observer = new MutationObserver(function(){
+                if(targetNode.style.visibility === 'hidden'){
+                    var pos = $('#scwdateDetectionPickTable').position().left - 5;
+                    var str = targetNode.style.left;
+                    var number = str.match( /^(\d+)/);
+                    if (null !== number){
+                        number = number[0];
+                        if (number > pos){
+                            dateChange($('input#dateDetectionPickId').val(),{{ data.main.ProviderID }}); return false;
+                        }
+                    }
+                }
+            });
+            observer.observe(targetNode, { attributes: true, childList: true });
+            var typeTable = ['Its','WithoutIts','NoIts'];
+            typeTable.forEach(function (item) {
+                load(10, item, true);
+            });
+
+        });
+    </script>
+    <style>
+
+        #icon-ext {
+            display: inline-block;
+            text-align: left;
+            text-decoration: none;
+            /*vertical-align: top;*/
+            background-image: url({{ asset('assets/awardwalletnewdesign/img/sprite.png') }}?v=2);
+            background-repeat: no-repeat;
+
+            width: 11px;
+            height: 9px;
+            background-position: -129px -65px;
+            /*margin-top: 5px;*/
+            /*margin-left: -4px;*/
+            /*margin-right: -2px;*/
+        }
+
+        button.gray {
+            padding: 0;
+            padding-right: 2px;
+            background: none;
+            border: none;
+            color: gray;
+            cursor: pointer;
+        }
+        .nowrap {
+            white-space: nowrap;
+        }
+        .pagination a {
+            padding: 4px 7px;
+        }
+        td.iced input {
+            width: 97%;
+        }
+        th, th * {
+            font-weight: bold !important;
+            text-align: center !important;
+            white-space: nowrap;
+        }
+        td.iced, th.iced {
+            background-color: white;
+            border-bottom: #D0D0D0 1px solid;
+            color: #4D4D4D;
+            font-size: 12px;
+            height: 22px;
+            padding: 1px 4px 1px 4px;
+            text-align: center;
+            text-shadow: 0 1px 0 white;
+        }
+        th.iced h4 {
+            margin: 0px;
+        }
+        table .Comment, table .stType, table .stStatus {
+            text-align: left;
+        }
+        table#Errors .Comment {
+            font-size: x-small;
+            width: 200px;
+        }
+        table .stType {
+            width: 185px;
+        }
+        table#Errors .stType select {
+            width: 87%;
+            margin-left: 3px;
+        }
+        table#Errors .stStatus select{
+            width: 90%;
+            margin-left: 3px;
+        }
+        table#Errors .commit {
+            text-align: center;
+            white-space: nowrap;
+            width: 130px;
+        }
+        table#Errors .commit button {
+            /*font-size: x-small;*/
+            /*width: 80%;*/
+        }
+        table#Errors .commit input {
+            /*font-size: x-small;*/
+            width: 85%;
+        }
+        table.iced {
+            table-layout: fixed;
+            border-width: 0 !important;
+            /*margin: 5px;*/
+            width: 100%;
+        }
+        table.iced .iced.bothBorder {
+            border-left: #D0D0D0 1px solid;
+            border-right: #D0D0D0 1px solid;
+        }
+        table.iced .iced.leftBorder {
+            border-left: #D0D0D0 1px solid;
+        }
+        table.iced .iced.rightBorder {
+            border-right: #D0D0D0 1px solid;
+        }
+        table.iced .iced.topBorder {
+            border-top: #D0D0D0 1px solid;
+        }
+
+        /* tooltip */
+        ._tt {
+            border-bottom: 1px dotted #000000;
+            color: #000000;
+            outline: none;
+            cursor: help;
+            text-decoration: none;
+            position: relative;
+        }
+
+        ._tt table {
+            margin-left: -999em;
+            position: absolute;
+        }
+
+        ._tt:hover table {
+            position: absolute;
+            left: -8em;
+            top: -7em;
+            z-index: 99;
+            margin-left: 0;
+            width: 100px;
+        }
+        ._tt table .border {
+            border: #D0D0D0 1px solid;
+            padding: 4px;
+        }
+
+        table.iced .stDate {
+            /*width: 145px;*/
+            width: 31%;
+        }
+        table.iced#Errors .stDate {
+            width: 145px;
+        }
+        table.iced .short {
+            width: 12%;
+        }
+        table.iced#Errors .short {
+            width: 75px;
+        }
+        table.iced .account {
+            width: 26%;
+            text-align: right;
+        }
+        table#Errors .account {
+            width: 112px;
+            /*text-align: right;*/
+        }
+        table.iced th.stStatus{
+            white-space: inherit;
+        }
+        table.iced .middle {
+            width: 18%;
+        }
+        table.iced#Errors .middle {
+            width: 108px;
+        }
+        table.iced .middle2 {
+            width: 13%;
+        }
+        table.iced#Errors .middle2 {
+            width: 75px;
+        }
+
+        i[class^="icon-"], i[class*=" icon-"] {
+            display: inline-block;
+            text-align: center;
+            text-decoration: none;
+            vertical-align: middle;
+            background-image: url({{ asset('assets/awardwalletnewdesign/img/sprite.png?v=2') }});
+            background-repeat: no-repeat;
+        }
+        .icon-blue-info {
+            width: 13px;
+            height: 13px;
+            background-position: -111px -99px;
+        }
+
+        .icon-refresh {
+            width: 13px;
+            height: 13px;
+            background-position: -94px -18px;
+            margin-bottom: 5px;
+        }
+
+
+        #prompt-form {
+            display: inline-block;
+            padding: 5px 5px 5px 50px;
+            width: 30%;
+            height: 75pt;
+            border: 1px solid black;
+            background: white no-repeat left 5px;
+            vertical-align: middle;
+            background-color: rgba(133, 176, 255, 0.98);
+        }
+
+        #prompt-form-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 9999;
+            width: 100%;
+            height: 100%;
+            text-align: center;
+        }
+
+        #prompt-form-container:before {
+            display: inline-block;
+            height: 100%;
+            content: '';
+            vertical-align: middle;
+        }
+
+        #prompt-form textarea[name="text"] {
+            display: block;
+            margin: 5px;
+            width: 90%;
+            height: 40%;
+            background-color: rgba(255, 251, 233, 0.98);
+        }
+    </style>
+    <script>
+        function showCover() {
+            var coverDiv = document.createElement('div');
+            coverDiv.id = 'cover-div';
+            document.body.appendChild(coverDiv);
+        }
+
+        function hideCover() {
+            document.body.removeChild(document.getElementById('cover-div'));
+        }
+
+        function showPrompt(text, callback) {
+            showCover();
+            var form = document.getElementById('prompt-form');
+            var container = document.getElementById('prompt-form-container');
+            document.getElementById('prompt-message').innerHTML = text;
+            form.elements.text.value = '';
+
+            function complete(value, all) {
+                hideCover();
+                container.style.display = 'none';
+                document.onkeydown = null;
+                callback(value, all);
+                return false;
+            }
+
+            form.onsubmit = function() {
+                var value = form.elements.text.value;
+                if (value == '') {
+                    alert('can\'t change status without setting comment');
+                    return false;
+                } // игнорировать пустой submit
+                var all = form.elements.all.checked;
+                complete(value, all);
+                return false;
+            };
+
+            form.elements.cancel.onclick = function() {
+                complete(null);
+            };
+
+            document.onkeydown = function(e) {
+                if (e.keyCode == 27) { // escape
+                    complete(null);
+                }
+            };
+
+            var lastElem = form.elements[form.elements.length - 1];
+            var firstElem = form.elements[0];
+
+            lastElem.onkeydown = function(e) {
+                if (e.keyCode == 9 && !e.shiftKey) {
+                    firstElem.focus();
+                    return false;
+                }
+            };
+
+            firstElem.onkeydown = function(e) {
+                if (e.keyCode == 9 && e.shiftKey) {
+                    lastElem.focus();
+                    return false;
+                }
+            };
+
+            container.style.display = 'block';
+            form.elements.text.focus();
+        }
+    </script>
+
+    <div id="prompt-form-container" style="display: none;">
+        <form id="prompt-form" _lpchecked="1">
+            <div id="prompt-message">Enter comments</div>
+            <textarea name="text" rows="3" cols="50"></textarea>
+            <label style="float: left" title="for all error types on one log">for all
+                <input style="float: left" name="all" type="checkbox">
+            </label>
+            <input type="submit" value="Ok">
+            <input type="button" name="cancel" value="Cancel">
+        </form>
+    </div>
+    <table style="margin-bottom: 5px;">
+        <tr>
+            <td style="padding-right: 60px;">
+                Provider ID: <span style="font-weight: bold">{{ data.main.ProviderID }}</span>
+                <span style="display: none">{{ url('aw_manager_itineraryCheckError_details', {'providerId': data.main.ProviderID}) }}</span>
+                <button class="gray" title="Copy link to this page (date = today|default)"
+                        onclick="copy(this)">&nbsp;❒ Copy
+                </button>
+            </td>
+            <td style="padding-right: 60px;">{{ data.main.extCheckIndicator|raw }}
+                Provider Code: <a href="/manager/list.php?Schema=Provider&ProviderID={{ data.main.ProviderID }}" target="_blank"><span style="font-weight: bold">{{ data.main.Code }}</span></a>
+            </td>
+            <td style="padding-right: 60px;">
+                Provider Name: <span style="font-weight: bold">{{ data.main.DisplayName|raw }}</span>
+            </td>
+            <td style="padding-right: 60px; width: 175px;">
+                <span style="color: cadetblue; font-style: italic;">{{ attribute(arProviderState, data.main.ProviderState) }}</span>
+            </td>
+            <td  style="padding-right: 60px;">
+                <form method='GET' id='main_form'>
+                <table>
+                    <tr>
+                            <input type='hidden' name='back' id='back' value='{{ back }}'>
+                            <input type='hidden' name='providerId' id='providerId' value='{{ data.main.ProviderID }}'>
+                            <td>To Date:</td>
+                            <td>
+                                {% set widget = 'single_text' %}
+                                {% set attr = { } %}
+                                {% set name = 'dateDetectionPick' %}
+                                {% set value = data.main.DetectionDate %}
+                                {% set id = 'dateDetectionPickId' %}
+                                {% set full_name = 'date' %}
+                                {% set required = false %}
+                                {% set pattern = '' %}
+                                {{ block('date_widget') }}
+                            </td>
+                            <td>
+                                <span style="display: none" data-url="{{ url('aw_manager_itineraryCheckError_details', {'providerId': data.main.ProviderID}) }}&date=">
+                                </span>
+                                <button class="gray" title="Copy link to this page (date = checked To Date)"
+                                        onclick="$(this).prev().text($(this).prev().attr('data-url')+$('#dateDetectionPickId').val()); copy(this); return false;">&nbsp;❒ Copy
+                                </button>
+                            </td>
+                    </tr>
+                </table>
+                </form>
+            </td>
+            <td>
+                <table>
+                    <tr>
+                        <td><a href="https://kibana.awardwallet.com/app/kibana#/discover?_g=(refreshInterval:(display:Off,pause:!f,value:0),time:(from:now-7d,mode:quick,to:now))&_a=(columns:!(extra.provider,extra.userData,message,extra.requestId),index:'logstash-*',interval:auto,query:(query_string:(analyze_wildcard:!t,query:'extra.app:%20loyalty%20AND%20(context.component:%20parser%20OR%20context.component:%20ItineraryHelper)%20AND%20level:NOTICE%20AND%20extra.provider:%20{{ data.main.Code }}')),sort:!('@timestamp',desc))" target="_blank">Kibana (parsing errors)</a></td>
+                    </tr>
+                    <tr>
+                        <td colspan="5">
+                            <div class="assignee nowrap">
+                                {% if data.main.Assignee %}
+                                    {% if data.main.Assignee == currentUser %}
+                                        {% set type = 1 %}
+                                        {% set text = 'Not me anymore' %}
+
+                                    {% else %}
+                                        {% set type = 2 %}
+                                        {% set text = 'Reset assignee' %}
+                                    {% endif %}
+                                {% else %}
+                                    {% set type = 0 %}
+                                    {% set text = 'Assign me' %}
+                                {% endif %}
+                                <span style="color:indianred; font-weight: bold">{% if data.main.Assignee %}Assignee: {{ data.main.AssigneeLogin }}{% else %}{% endif %}</span>
+                                <a href='#' id='assignee{{ data.main.ProviderID }}'
+                                   onclick="return setAssignee({{ data.main.ProviderID }}, '{{ data.main.DetectionDate }}', {{ type }}, this.parentNode);">{{ text }}</a>
+                            </div>
+                        </td>
+                    </tr>
+
+                </table>
+            </td>
+        </tr>
+    </table>
+
+    <table style="width: 1500px;" cellspacing="0" cellpadding="0">
+        <tr>
+            <td><h2 style="float: left; margin: 0px;font-size: medium;">Provider Errors History</h2></td>
+            <td style="text-align: center">
+                <a href='#' style='margin-left: 100px; float: right;' class='_tt'>Colors?
+                    <table class="_table" cellspacing="0" cellpadding="0">
+                        <tr style="background-color: lightcyan">
+                            <td class='border'>Extension</td>
+                        </tr>
+                        <tr style="background-color: pink">
+                            <td class='border'>Check Account</td>
+                        </tr>
+                        <tr style="background-color: lightblue" class="nowrap">
+                            <td class='border'>Check Confirmation</td>
+                        </tr>
+                    </table>
+                </a>
+                <label style="float:right" title="highlight check confirmation links"><input type="checkbox" onclick="flag=$(this).prop('checked');colored(flag,'conf');" title="">Conf</label>
+                <label style="float:right" title="highlight check account links"><input type="checkbox" onclick="flag=$(this).prop('checked');colored(flag,'acc');" title="">Acc</label>
+                <label style="float:right" title="highlight extension links"><input type="checkbox" onclick="flag=$(this).prop('checked');colored(flag,'ext');" title="">Ext</label>
+                <table class="pagination">
+                    <tr>
+                        <td><a href="#" onclick="loadErrors(10);">10</a></td>
+                        <td><a href="#" onclick="loadErrors(20);">20</a></td>
+                        <td><a href="#" onclick="loadErrors(50);">50</a></td>
+                        <td><a href="#" onclick="loadErrors(100);">100</a></td>
+                        <td><a href="#" onclick="loadErrors(200);">200</a></td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+
+    <table class="iced" id="Errors" style="width: 1500px;" cellspacing="0" cellpadding="0">
+    </table>
+
+    <table style="width: 1500px;">
+        <tr>
+            <td style="vertical-align: top;">
+                <h2 style="display: inline-block">Accounts with Itineraries</h2>&nbsp;&nbsp;&nbsp;<span style="cursor: pointer;" onclick="load(10, 'Its', false);"><i class='icon-refresh'></i></span>&nbsp;&nbsp;&nbsp;<button class="gray" style='display:none;margin-top: 20px;' onclick="loadLogs('Its');$(this).css('outline','none');" title="get logs">Get Logs</button><div id="progressIts" style="height: 1px;"></div>
+                <table class="iced" id="Its" cellspacing="0" cellpadding="0"></table>
+            </td>
+            <td style="vertical-align: top;">
+                <h2 style="display: inline-block">Accounts without Itineraries</h2>&nbsp;&nbsp;&nbsp;<span style="cursor: pointer;" onclick="load(10, 'WithoutIts', false);"><i class='icon-refresh'></i></span>&nbsp;&nbsp;&nbsp;<button class="gray" style='display:none;margin-top: 20px;' onclick="loadLogs('WithoutIts');$(this).css('outline','none');" title="get logs">Get Logs</button><div id="progressWithoutIts" style="height: 1px;"></div>
+                <table class="iced" id="WithoutIts" cellspacing="0" cellpadding="0"></table>
+            </td>
+            <td style="vertical-align: top;">
+                <h2 style="display: inline-block">Accounts with noItineraries</h2>&nbsp;&nbsp;&nbsp;<span style="cursor: pointer;" onclick="load(10, 'NoIts', false);"><i class='icon-refresh'></i></span>&nbsp;&nbsp;&nbsp;<button class="gray" style='display:none;margin-top: 20px;' onclick="loadLogs('NoIts');$(this).css('outline','none');" title="get logs">Get Logs</button><div id="progressNoIts" style="height: 1px;"></div>
+                <table class="iced" id="NoIts" cellspacing="0" cellpadding="0"></table>
+            </td>
+        </tr>
+    </table>
+    <br><br>
+
+{% endblock %}

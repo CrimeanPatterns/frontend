@@ -1,0 +1,22 @@
+--- a/vendor/paypal/sdk-core-php/lib/PayPal/Core/PPUtils.php	2024-07-31 17:27:12.743545291 +0000
++++ b/vendor/paypal/sdk-core-php/lib/PayPal/Core/PPUtils.php	2024-07-31 17:27:12.740130499 +0000
+@@ -121,7 +121,7 @@
+                 $child = $children->item($i);
+                 if ($child !== null) {
+                     if ($child->childNodes->item(0) instanceof \DOMText) {
+-                        $result[$i]['name'] = $child->nodeName;
++                        $result[$i]['name'] = $child->localName;
+                         $result[$i]['text'] = $child->childNodes->item(0)->nodeValue;
+                         if ($child->hasAttributes()) {
+                             foreach ($child->attributes as $k => $v) {
+@@ -130,8 +130,8 @@
+                                 }
+                             }
+                         }
+-                    } else if (!in_array($child->nodeName, $result)) {
+-                        $result[$i]['name']     = $child->nodeName;
++                    } else if (!in_array($child->localName, $result)) {
++                        $result[$i]['name']     = $child->localName;
+                         $result[$i]['children'] = PPUtils::xmlNodeToArray($child);
+
+                         if ($child->hasAttributes()) {

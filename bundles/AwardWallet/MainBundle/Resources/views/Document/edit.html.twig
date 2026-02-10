@@ -1,0 +1,98 @@
+{% form_theme form with ['@AwardWalletMain/FormTheme/sharingOptions.html.twig', '@AwardWalletMain/FormTheme/fields.html.twig'] %}
+{% extends app.request.attributes.has('ngtemplate') ? "@AwardWalletMain/Layout/ngtemplate.html.twig" : (is_granted('SITE_BUSINESS_AREA') ? "@AwardWalletMain/Layout/business_default.html.twig" : "@AwardWalletMain/Layout/accounts.html.twig") %}
+
+{% block javascripts %}
+    {{ parent() }}
+
+    <script>
+        require(['jquery-boot', 'lib/utils', 'pages/accounts/desktopForm', 'lib/accountSharing', 'jqueryui', 'select2', 'lib/customizer', 'routing', 'lib/accountAutocomplete', 'browserext', 'pages/coupon/edit'], function ($, utils, desktopForm) {
+            $(function () {
+                $('form[name=add]').find('input:visible').first().focus();
+                $('form[name=add] div.error').find('input:visible').first().focus();
+                
+                $('#document_form_owner').change(function() {
+                    $(window).trigger('person.activate', $(this).val());
+                });
+
+                {% if form.vars.javascripts is not empty %}
+                {% for javascript in form.vars.javascripts %}
+                (function() {
+                    // form logic customizations
+                    {{ javascript | raw }}
+                    desktopForm.init(addFormExtension, {formFieldPrefix: 'document_form', 'formSelector': '.main-form'});
+                })();
+                {% endfor %}
+                {% endif %}
+            });
+        });
+    </script>
+{% endblock %}
+
+
+{% block content %}
+    <div class="add-account">
+        <div class="main-blk">
+           <h1>
+           {% if type == constant('\AwardWallet\\MainBundle\\Entity\\Providercoupon::KEY_TYPE_PASSPORT') %}
+               {% if edit %}
+                   {{ 'track.type.document.passport-title-edit' | trans() | desc('Edit Passport or a Travel Document') }}
+               {% else %}
+                   {{ 'track.type.document.passport-title' | trans() | desc('Add a Passport or a Travel Document') }}
+               {% endif %}
+           {% elseif type == constant('\AwardWallet\\MainBundle\\Entity\\Providercoupon::KEY_TYPE_VACCINE_CARD') %}
+               {% if edit %}
+                   {{ 'edit-vaccine-card'|trans|desc('Edit Vaccine Card') }}
+               {% else %}
+                   {{ 'add-vaccine-card'|trans|desc('Add a Vaccine Card') }}
+               {% endif %}
+           {% elseif type == constant('\AwardWallet\\MainBundle\\Entity\\Providercoupon::KEY_TYPE_INSURANCE_CARD') %}
+               {% if edit %}
+                   {{ 'edit-insurance-card'|trans|desc('Edit Insurance Card') }}
+               {% else %}
+                   {{ 'add-insurance-card'|trans|desc('Add an Insurance Card') }}
+               {% endif %}
+           {% elseif type == constant('\AwardWallet\\MainBundle\\Entity\\Providercoupon::KEY_TYPE_VISA') %}
+               {% if edit %}
+                   {{ 'edit-visa'|trans|desc('Edit Visa') }}
+               {% else %}
+                   {{ 'add-visa'|trans|desc('Add a Visa') }}
+               {% endif %}
+           {% elseif type == constant('\AwardWallet\\MainBundle\\Entity\\Providercoupon::KEY_TYPE_DRIVERS_LICENSE') %}
+               {% if edit %}
+                   {{ 'edit-drivers-license'|trans|desc('Edit Drivers License') }}
+               {% else %}
+                   {{ 'add-drivers-license'|trans|desc('Add a Drivers License') }}
+               {% endif %}
+           {% elseif type == constant('\AwardWallet\\MainBundle\\Entity\\Providercoupon::KEY_TYPE_PRIORITY_PASS') %}
+               {% if edit %}
+                   {{ 'edit-priority-pass'|trans|desc('Edit Priority Pass') }}
+               {% else %}
+                   {{ 'add-priority-pass'|trans|desc('Add a Priority Pass') }}
+               {% endif %}
+           {% else %}
+               {% if edit %}
+                   {{ 'track.type.document.traveler-number-title-edit' | trans() | desc('Edit Known Traveler Number') }}
+               {% else %}
+                   {{ 'track.type.document.traveler-number-title' | trans() | desc('Add Known Traveler Number') }}
+               {% endif %}
+           {% endif %}
+           </h1>
+            {% set backTo = app.request.query.has('backTo') ? {backTo: app.request.query.get('backTo')} : {} %}
+            <form name="add" class="main-form"
+                  action="{{ document.providercouponid ? path('aw_document_edit', {documentId: document.providercouponid}|merge(backTo)) : path('aw_document_add', {type: type}) }}"
+                  method="post" autocomplete="off">
+                <div class="main-form-item">
+                    {{ form_widget(form, {'noSubmit':true}) }}
+                </div>
+                <div class="row-submit">
+                    <div class="row-submit-item">
+                        <div class="submit">
+                            <button type="submit"
+                                    class="btn-blue">{{ document.providercouponid ? 'coupon.buttons.update'|trans|desc('Update') : 'coupon.buttons.add'|trans|desc('Add') }}</button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+{% endblock %}

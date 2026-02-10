@@ -1,0 +1,28 @@
+{% extends '@MailTemplate/Layout/booking.twig' %}
+{% trans_default_domain "email" %}
+
+{% block subject %}{% apply spaceless %}{% autoescape false %}
+    {{ 'abrequest.subject'|trans({
+        '%requestId%': request.AbRequestID
+    }, 'email', lang)|desc('Award Booking Request #%requestId%') }}
+{% endautoescape %}{% endapply %}{% endblock subject %}
+
+{% block content %}
+    {% import '@MailTemplate/CommonMacro.twig' as commonMacro %}
+
+    {% if checkSent %}
+        {% set text = 'abrequest.invoice_accept.check_sent'|trans({
+            '%requestId%': request.AbRequestID
+        }, 'email', lang)|desc('Check has been sent for booking request #%requestId%:') %}
+    {% else %}
+        {% set text = 'abrequest.invoice_accept.payment'|trans({
+            '%requestId%': request.AbRequestID
+        }, 'email', lang)|desc('Payment has been received for booking request #%requestId%:') %}
+    {% endif %}
+
+    {{ commonMacro.paragraph(text, _context) }}
+
+    {% set view_link = baseUrl ~ path('aw_booking_view_index', {'id': request.AbRequestID}) ~ "#message_" ~ invoice.Message.AbMessageID %}
+    {{ commonMacro.dottedLink(view_link, view_link, _context, {}, {'margin-top': '20px'}) }}
+
+{% endblock content %}

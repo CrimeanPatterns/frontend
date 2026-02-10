@@ -1,0 +1,44 @@
+{# Issue #7731 #}
+
+{% extends "@AwardWalletMain/Offer/standard.html.twig" %}
+{% import '@AwardWalletMain/Offer/offerMacros.html.twig' as offerMacros %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    {{ encore_entry_link_tags('offer') }}
+    {{ encore_entry_link_tags('offers/hilton') }}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        {{ offerMacros.jsOfferYes(_context, ApplyURL, Code, OfferUserID, defaultRedirectLocation) }}
+        {{ offerMacros.jsOfferNo(_context, Code, OfferUserID, defaultRedirectLocation) }}
+    </script>
+{% endblock %}
+
+{% block content %}
+    <div id="offer_wrap">
+        <div id="hilton_bg">
+            <div class="offer_title hilton_title">
+                Your next trip<br/>
+                could be twice<br/>
+                as rewarding with the<br/>
+                <span class="hilton_title_str">2X Points Package</span>
+            </div>
+            <div id="hilton_ul">
+                when you book your stay at participating Hilton Hotels & Resorts<br>
+                or any other participating hotel within the Hilton HHonors™ portfolio.
+            </div>
+            <div class="offer_btn hilton_btn" onclick="offerYes();">
+                Learn more
+            </div>
+        </div>
+        <div class="offer_declinekind" onclick="offerNo();">
+            Never show this ad again
+        </div>
+        <div class="offer_toaccount hilton_toaccount" onclick="window.location = '{{ defaultRedirectLocation }}'">
+            Proceed to my account
+        </div>
+    </div>
+{% endblock %}

@@ -1,0 +1,20 @@
+{% block resetDisabledState %}
+    {% if reset is not null %}
+        'Disabled' state was reset, accounts affected:{{ reset }}
+    {% else %}
+            ProviderID is not found!<br/>
+    {% endif %}
+{% endblock %}
+
+{% block resetExpDate %}
+    {% if reset is not null %}
+        Expiration Date was reset, accounts affected: {{ reset }}<br/>
+    {% else %}
+        ProviderID is not found!<br/>
+    {% endif %}
+{% endblock %}
+
+{% block resetHistoryCache %}
+    <p class='providerStatus'><b>If history columns have been changed</b> then you should also <a target='_blank' href='/manager/cache/' style='text-decoration: none;'>reset provider cache</a> (Tag: <b>TAG_PROVIDERS</b>)</p>
+    update started. cache will be reset in 1 minute<br/>
+{% endblock %}

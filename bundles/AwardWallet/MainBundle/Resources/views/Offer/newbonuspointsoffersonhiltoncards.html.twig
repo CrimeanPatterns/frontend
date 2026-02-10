@@ -1,0 +1,32 @@
+{% extends popup is defined and popup ? "@AwardWalletMain/Offer/_offerPopup.html.twig" : "@AwardWalletMain/Offer/standard.html.twig" %}
+{% import '@AwardWalletMain/Offer/offerMacros.html.twig' as offerMacros %}
+{% import '@AwardWalletMain/TwigMacros/assets.html.twig' as assets %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    {{ encore_entry_link_tags('offer') }}
+    {{ encore_entry_link_tags('offers/newbonuspointsoffersonhiltoncards') }}
+    {% if popup is not defined %}
+        {{ assets.assets_form('css') }}
+    {% endif %}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        {{ offerMacros.jsOfferYes(_context, ApplyURL, Code, OfferUserID, ApplyURL) }}
+        {{ offerMacros.jsOfferNo(_context, Code, OfferUserID, defaultRedirectLocation) }}
+    </script>
+{% endblock %}
+
+{% block content %}
+    <div id="offer_wrap" class="offer-block">
+        <div class="bonus-points">
+            <h3>NEW 100,000 and 75,000 <br>Bonus Points Offers <br>on These Hilton Cards!</h3>
+            <p>These <a href="#" onclick="offerYes(false, 'https://awardwallet.com/blog/hotel/'); return false;">Hilton rewards cards</a> have new offers <br>of 75,000 and 100,000 points - <br>the highest bonus we’ve seen on both cards! </p>
+            <p>Learn more about these limited time offers <br>and how to redeem Hilton points <a href="#" onclick="offerYes(false); return false;">here</a>.</p>
+            <a href="#" onclick="offerYes(false); return false;" class="btn-blue">Learn More</a>
+        </div>
+        {{ offerMacros.offerButtons(_context) }}
+    </div>
+{% endblock %}

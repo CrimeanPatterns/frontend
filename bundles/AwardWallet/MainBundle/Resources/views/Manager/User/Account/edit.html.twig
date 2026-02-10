@@ -1,0 +1,84 @@
+{% set title = "User accounts" %}
+{% extends '@AwardWalletMain/Manager/layout.html.twig' %}
+
+{% block content %}
+    <link rel="stylesheet" type="text/css" href="/assets/common/vendors/jqueryui/themes/base/jquery.ui.all.css">
+    <h2>Edit account - {{ account.accountNumber }}</h2><br>
+
+    <form method="post">
+        <table class="detailsTable">
+            <tr>
+                <td>Disable Update Limit Until</td>
+                <td><input name="UpdateLimitDisabledUntil" type="date" value="{% if account.UpdateLimitDisabledUntil is instanceof('\DateTime') %}{{ account.UpdateLimitDisabledUntil|date('Y-m-d') }}{% endif %}"></td>
+            </tr>
+            {% if isAllowBalanceWatch %}
+                <tr>
+                    <td>Enable Balance Watch</td>
+                    <td>
+                        <input id="balanceWatchToggle" name="balanceWatch" type="checkbox" {% if balanceWatchRequired is not empty %} disabled="disabled"{% endif %}>
+                        {% if balanceWatchRequired is not empty %}
+                            <ul>
+                                {% for bw in balanceWatchRequired %}
+                                <li>{{ bw }}</li>
+                                {% endfor %}
+                            </ul>
+                        {% endif %}
+                    </td>
+                </tr>
+            {% endif %}
+        </table>
+
+        {% if isAllowBalanceWatch %}
+            <br>
+            <table id="balanceWatchModel" class="detailsTable" style="display: none">
+                <tr>
+                    <td>Points Source</td>
+                    <td>
+                        <select name="PointsSource">
+                            <option value="" selected></option>
+                            {% for i, val in constant('AwardWallet\\MainBundle\\Entity\\BalanceWatch::POINTS_SOURCES') %}
+                                <option value="{{ i }}">{{ val }}</option>
+                            {% endfor %}
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td>ProviderID for transfer</td>
+                    <td><input name="TransferFromProvider" type="number"></td>
+                </tr>
+                <tr>
+                    <td>Expected number</td>
+                    <td><input name="ExpectedPoints" type="text" value=""></td>
+                </tr>
+                <tr>
+                    <td>Transfer request</td>
+                    <td>
+                        <select name="TransferRequestDate">
+                            {% for i, row in balanceWatch.requestDateOptions %}
+                                <option value="{{ i }}">{{ row }}</option>
+                            {% endfor %}
+                        </select>
+                    </td>
+                </tr>
+            </table>
+        {% endif %}
+
+        <br>
+        <button type="submit">Update</button>
+    </form>
+
+    <style type="text/css">
+        .detailsTable td {
+            padding: 5px 10px;
+        }
+
+        input {
+            padding: 3px 7px;
+        }
+    </style>
+    <script>
+        $('#balanceWatchToggle').change(function() {
+            $(this).prop('checked') ? $('#balanceWatchModel').show() : $('#balanceWatchModel').hide();
+        }).trigger('change');
+    </script>
+{% endblock %}

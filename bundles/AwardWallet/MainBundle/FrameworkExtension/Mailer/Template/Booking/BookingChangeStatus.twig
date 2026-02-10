@@ -1,0 +1,74 @@
+{% extends '@MailTemplate/Layout/booking.twig' %}
+{% trans_default_domain "email" %}
+
+{% block subject %}{% apply spaceless %}{% autoescape false %}
+    {{ 'abrequest.subject'|trans({
+        '%requestId%': request.AbRequestID
+    }, 'email', lang)|desc('Award Booking Request #%requestId%') }}
+{% endautoescape %}{% endapply %}{% endblock subject %}
+
+{% block content %}
+    {% import '@MailTemplate/CommonMacro.twig' as commonMacro %}
+
+    {% set statuses = {
+        'booking.statuses.opened': ['opened', '#4684c4'],
+        'booking.statuses.canceled': ['canceled', '#b8bfcc'],
+        'booking.statuses.booked': ['booked', '#4684c4'],
+        'booking.statuses.paid': ['paid', '#4dbfa2'],
+        'booking.statuses.future': ['future', '#ffaa33'],
+    } %}
+
+    {% if toBooker %}
+        {% if request.assigneduser and toBookingBusiness is not defined %}
+            {% set toUser = request.assigneduser.fullname %}
+        {% else %}
+            {% set toUser = request.booker.bookerinfo.servicename %}
+        {% endif %}
+    {% else %}
+        {% set toUser = request.contactname %}
+    {% endif %}
+
+    {{ commonMacro.hello(toUser, _context, {
+        'padding-left': '0'
+    }) }}
+
+    {% set text = 'abrequest.change_status.new_status'|trans({
+        '%status%': '<br><br>
+            <table cellpadding="0" border="0" cellspacing="0" height="30">
+                <tr>
+                    <td align="center" valign="middle" height="30" width="32" style="background:'~statuses[status][1]~';border-right:1px solid #fff;line-height:1px;">
+                        <img src="' ~ baseImagesPath ~ '/booking/status-' ~ statuses[status][0] ~ '.png" height="25" width="25" border="0" alt="">
+                    </td>
+                    <td height="30" valign="middle" style="color:#fff;font-size:14px;font-weight:bold;background:'~statuses[status][1]~';padding:0 20px">
+                        ' ~ status|trans({}, 'booking', lang)|upper ~ '
+                    </td>
+                </tr>
+            </table>'
+    }, 'email', lang)|desc('The status of the following award booking request has been changed to: %status%') %}
+    {{ commonMacro.paragraph(text, _context, {escape: false}) }}
+
+    {{ commonMacro.paragraph(
+        'abrequest.link_details'|trans({}, 'email', lang)|desc('You can view the details of this request, right here:'),
+        _context, {},
+        {
+            'margin-top': '20px'
+        }
+    ) }}
+    {% set view_link = baseUrl ~ path('aw_booking_view_index', {'id': request.AbRequestID}) %}
+    {{ commonMacro.dottedLink(view_link, view_link, _context) }}
+
+    {{ commonMacro.paragraph(
+        'abrequest.link_requests'|trans({}, 'email', lang)|desc('Here is a list of all of your booking requests:'),
+        _context, {},
+        {
+            'margin-top': '20px'
+        }
+    ) }}
+    {% if toBooker %}
+        {% set list_link = baseUrl ~ path('aw_booking_list_queue') %}
+    {% else %}
+        {% set list_link = baseUrl ~ path('aw_booking_list_requests') %}
+    {% endif %}
+    {{ commonMacro.dottedLink(list_link, list_link, _context) }}
+
+{% endblock content %}

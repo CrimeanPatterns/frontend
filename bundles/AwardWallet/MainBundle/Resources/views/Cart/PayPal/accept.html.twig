@@ -1,0 +1,74 @@
+{% extends "@AwardWalletMain/Layout/hidden_left_menu.html.twig" %}
+
+{% block title %}
+    {{ 'cart.paypal.accept.title'|trans|desc('Confirm payment') }}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script type="text/javascript">
+        require(["jquery-boot", "lib/dialog", "translator-boot"], function($, dialog){
+            var busy = false;
+            var showSpinner = function() {
+                $('#pay-btn').addClass("loader");
+                busy = true;
+            };
+            var hideSpinner = function() {
+                $('#pay-btn').removeClass("loader");
+                busy = false;
+            };
+            $(function(){
+                $('#pay-btn').click(function(event) {
+                    event.preventDefault();
+                    if (busy) return false;
+                    showSpinner();
+                    $.post("{{ path('aw_cart_paypal_accept', {'token': app.request.query.get('token'), 'PayerID': app.request.query.get('PayerID')}) | raw }}", function(data) {
+                        if (data.status == 'ok') {
+                            $.get(data.url, function(data) {
+                                if (data.status == 'ok') {
+                                    window.location.href = data.url;
+                                }
+                                hideSpinner();
+                            }).fail(function() {
+                                hideSpinner();
+                            });
+                        } else {
+                            hideSpinner();
+                            if (data.url) {
+                                window.location.href = data.url;
+                            } else if (data.error) {
+                                dialog.alert(
+                                    data.error,
+                                    Translator.trans('alerts.error')
+                                );
+                            }
+                        }
+                    }).fail(function() {
+                        hideSpinner();
+                    });
+                    return false;
+                });
+            });
+        });
+    </script>
+{% endblock %}
+
+{% block content %}
+    <div class="main-blk shortened">
+        <h1>{{ 'cart.order'|trans({'%number%': cart.cartid})|desc("Order #%number%") }}</h1>
+        <div class="main-blk-content">
+            <p>{{ 'cart.paypal.accept.desc'
+                |trans({
+                    '%FirstAndLastName%': FirstAndLastName,
+                    '%Total%': cart.totalPrice|formatCurrency("USD"),
+                    '%Names%': names
+                })
+                |desc("Dear %FirstAndLastName%, do you want to pay <b>%Total%</b> for <b>%Names%</b>?")|raw }}
+            </p>
+        </div>
+        <div class="row-submit t-right">
+            <a class="btn-blue" id="pay-btn" href="#">{{ 'cart.paypal.pay-btn'|trans|desc("Pay") }}</a>
+            <a class="btn-silver" href="{{ path('aw_account_list') }}">{{ 'cancel'|trans }}</a>
+        </div>
+    </div>
+{% endblock %}

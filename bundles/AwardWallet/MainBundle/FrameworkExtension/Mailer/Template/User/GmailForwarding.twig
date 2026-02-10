@@ -1,0 +1,26 @@
+{% extends '@MailTemplate/Layout/base.twig' %}
+{% trans_default_domain "email" %}
+
+{% block subject %}{% apply spaceless %}{% autoescape false %}
+    {{ 'gmail_forwarding.subject'|trans({}, 'email', lang)|desc('Automatic forwarding approved') }}
+{% endautoescape %}{% endapply %}{% endblock subject %}
+
+{% block content %}
+    {% import '@MailTemplate/CommonMacro.twig' as commonMacro %}
+
+    {{ commonMacro.hello(null, _context) }}
+
+    {{ commonMacro.paragraph(
+        'gmail_forwarding.approved'|trans({}, 'email', lang)|desc("We have automatically approved forwarding from your gmail account to your AwardWallet mailbox. In order to see the change you may have to log out of gmail and log back in."),
+        _context
+    ) }}
+
+    {% if code is not null %}
+        {{ commonMacro.paragraph(
+            'gmail_forwarding.conf-number'|trans({
+                '%code%': commonMacro.span(code)
+            }, 'email', lang)|desc("In case if it doesn't work, here is the confirmation code that you can apply yourself: %code%"),
+            _context, {escape: false}
+        ) }}
+    {% endif %}
+{% endblock content %}

@@ -1,0 +1,41 @@
+{% extends '@MailTemplate/Offer/Chase/BaseTemplate.twig' %}
+{% trans_default_domain "email" %}
+
+{% block subject %}{% apply spaceless %}{% autoescape false %}
+    Your Trip to {{ location }} on {{ date|date('F jS') }}
+{% endautoescape %}{% endapply %}{% endblock subject %}
+
+{% block content %}
+    {% import '@MailTemplate/CommonMacro.twig' as commonMacro %}
+
+    <div style="padding: 0 10px">
+        {{ commonMacro.link(link, 'Turn Your Rewards into Big Savings on Flights', {
+            'color': '#1D6CB5',
+            'font-size': '25px',
+            'line-height': '1.2',
+            'margin': '0',
+            'padding': '5px 0 10px 0',
+            'font-weight': 'normal'
+        }) }}
+        {{ commonMacro.offerRemark(_context) }}
+
+        {{ commonMacro.dear(user.firstname, _context) }}
+
+        {{ commonMacro.paragraph(
+            'Congrats on your recent booking to ' ~ location ~ '! Wouldn’t it be nice if you could spend rewards instead of cash when it’s time to book your next trip?', _context
+        ) }}
+        {{ commonMacro.paragraph(
+            'If you value simplicity, the <a href="' ~ link ~ '">Chase Freedom Unlimited®</a> card is an ideal choice. You’ll get a great return on every purchase and earn points that are incredibly easy to use.', _context, {escape: false, fix_link: true}
+        ) }}
+        {{ commonMacro.paragraph(
+            'Each point is worth a penny towards travel, so the next time you want to book a trip, just head over to the Ultimate Rewards travel portal and rack up the savings.', _context
+        ) }}
+        {{ commonMacro.paragraph(
+            'Check out our post for more details, including a great welcome offer that can help you build up your points even faster.', _context
+        ) }}
+
+        <div style="text-align: center; padding-top: 15px;">
+            {{ commonMacro.button('Learn more', link) }}
+        </div>
+    </div>
+{% endblock content %}

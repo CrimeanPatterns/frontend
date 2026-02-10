@@ -1,0 +1,77 @@
+{% extends "@AwardWalletMain/Layout/accounts.html.twig" %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    {{ encore_entry_link_tags('account') }}
+{% endblock %}
+
+{% block content %}
+
+    <ul class="tabs-navigation middle">
+        <li><a class="active" href="#tab1">ALL<span class="amount">45</span></a></li>
+        <li><a href="#tab2">RECENTLY CHANGED<span class="amount">5</span></a></li>
+        <li><a href="#tab3">ACTIVE ACCOUNTS<span class="amount">32</span></a></li>
+    </ul>
+    <div class="last-update"><i class="icon-silver-refresh"></i><span>Last updated: 18 min ago</span></div>
+    <div class="tabs-content">
+            <section id="updater">
+                <div class="silver-blk update-account">
+                    <div class="title">
+                        <div class="loader"></div>
+                        <p>Updating <span>10</span> of <span>30</span> account</p>
+                    </div>
+                    <div class="content-blk">
+                        <div class="progress-bar">
+                            <div class="progress-bar-row">
+                                <span style="width:70%"></span>
+                            </div>
+                        </div>
+                        <table class="main-table">
+                            <tbody>
+                            <tr>
+                                <td class="prev"><i class="icon-successfully-update"></i></td>
+                                <td class="title-row">Accounts successfully updated</td>
+                                <td class="balance"></td>
+                                <td class="count"><span class="black">10</span></td>
+                            </tr>
+                            <tr>
+                                <td class="prev"><i class="icon-red-error"></i></td>
+                                <td class="title-row">Accounts with errors</td>
+                                <td class="balance"></td>
+                                <td class="count"><span class="black">20</span></td>
+                            </tr>
+                            <tr>
+                                <td class="prev"><i class="icon-green-up-m"></i></td>
+                                <td class="title-row">Accounts increased</td>
+                                <td class="balance"><span class="green">10</span></td>
+                                <td class="count"><span class="black">20</span></td>
+                            </tr>
+                            <tr>
+                                <td class="prev"><i class="icon-blue-down-m"></i></td>
+                                <td class="title-row">Accounts decreased</td>
+                                <td class="balance"><span class="blue">10</span></td>
+                                <td class="count"><span class="black">20</span></td>
+                            </tr>
+                            <tr class="total">
+                                <td colspan="2">Total change</td>
+                                <td class="balance"><span class="blue">10</span></td>
+                                <td class="count">20</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                        <div class="text-center">
+                            <a href="#" class="btn-blue">Stop updating</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="silver-blk update-account-advertise">
+                    <div class="advertise">
+                        {{ advt | raw }}
+                    </div>
+                    <p class="remark">*All advertising links open in a new window, checking balances will not stop.</p>
+                </div>
+                <div class="clear"></div>
+            </section>
+    </div>
+
+{% endblock %}

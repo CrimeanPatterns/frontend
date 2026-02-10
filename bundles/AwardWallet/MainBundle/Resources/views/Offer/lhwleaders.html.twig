@@ -1,0 +1,68 @@
+{# Issue #8347 #}
+
+{% extends "@AwardWalletMain/Offer/standard.html.twig" %}
+{% import '@AwardWalletMain/Offer/offerMacros.html.twig' as offerMacros %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    {{ encore_entry_link_tags('offer') }}
+    {{ encore_entry_link_tags('offers/lhwleaders') }}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        {{ offerMacros.jsOfferYes(_context, ApplyURL, Code, OfferUserID, defaultRedirectLocation) }}
+        {{ offerMacros.jsOfferNo(_context, Code, OfferUserID, defaultRedirectLocation) }}
+    </script>
+{% endblock %}
+
+{% block content %}
+    <div id="offer_wrap">
+        <div id="lhw_bg">
+            <div class="lhw_top">
+                <div class="offer_title lhw_title">
+                    Save $50 on your new LHW<br/>
+                    Leaders Club Membership!
+                </div>
+                <div id="div_ul" class="lhw_ul">
+                    <ul class="offer_list lhw_list">
+                        <li>COMPLIMENTARY CONTINENTAL BREAKFAST
+                        <li>ONE-CATEGORY ROOM UPGRADE*<br/>
+                        <span class="lhw_comm">* subject to availabilty</span>
+                        <li>EARN COMPLIMENTARY NIGHTS
+                        <li>COMPLIMENTARY INTERNET ACCESS
+                        <li>EXCLUSIVE MEMBER & HOTEL PRIVILEGES
+                    </ul>
+                </div>
+                <div class="lhw_discount">
+                    <table class="lhw_table">
+                        <tr><td>Leaders Club Price:</td>           <td class="lhw_sep"></td><td>$150</td></tr>
+                        <tr><td>Rebate:</td>                       <td class="lhw_sep"></td><td>-$50</td></tr>
+                        <tr><td><span class="lhw_final">Final Price:</span></td><td class="lhw_sep"></td><td><span class="lhw_final">$100</span></td></tr>
+                    </table>
+                </div>
+                <div class="lhw_bottom">
+                    <div class="offer_btn lhw_btn" onclick="offerYes();">
+                        Learn more
+                    </div>
+                </div>
+            </div>
+            <div class="lhw_terms">
+                TERMS & CONDITIONS
+                <ul class="offer_list lhw_terms_list">
+                    <li>Only applies to first time Leaders Club members
+                    <li>Must follow our link to register
+                    <li>After registration, add your LHW Leaders Club account to AwardWallet
+                    <li>Email us at <a href="mailto:LHW@AwandWaIlet.com">LHW@AwandWaIlet.com</a> with your Leaders Club account number and PayPal email address<br>and we will send you $50 within 35 days via PayPal (no other payment methods are available).
+                </ul>
+            </div>
+        </div>
+        <div class="offer_declinekind lhw_decline" onclick="offerNo();">
+            Never show this ad again
+        </div>
+        <div class="offer_toaccount lhw_proceed" onclick="window.location = '{{ defaultRedirectLocation }}'">
+            Proceed to my account
+        </div>
+    </div>
+{% endblock %}

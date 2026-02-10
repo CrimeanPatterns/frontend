@@ -1,0 +1,643 @@
+{% set queryExtend = [] %}
+{% set contentLinkClick = ' onclick="location.hash = this.getAttribute(\'data-href\'); return false;"' %}
+{% if is_granted('SITE_MOBILE_APP') %}
+    {% set queryExtend = { fromapp : 1, KeepDesktop: 1 } %}
+    {% set contentLinkClick = '' %}
+{% endif %}
+
+<div class="main-blk">
+    <!-- mobile native app style -->
+    <style>
+        .wrapper .content.static-page .main-blk ul li:after {
+            background: #535457;
+        }
+
+        .wrapper .content.static-page .main-blk ul {
+            background: transparent !important;
+        }
+
+        .wrapper .content.static-page .main-blk .number-list li {
+            padding-left: 20px;
+        }
+
+        .wrapper .content.static-page .main-blk .number-list li:first-child {
+            margin-top: 10px;
+        }
+
+        .content .scroll-links a[data-href],
+        .content .scroll-links span[data-href] {
+            font-size: 16px;
+            text-decoration: none;
+
+            font-weight: bold;
+            color: #4684c4;
+            cursor: pointer;
+            font-family: 'open_sansbold', 'open_sansregular', sans-serif;
+        }
+
+        .wrapper .content.static-page {
+            background: #fff;
+        }
+
+        .wrapper .content.static-page h4 {
+            font-size: 20px;
+            line-height: 1.3;
+            color: #535457;
+        }
+
+        .wrapper .content.static-page section {
+            padding-top: 30px;
+        }
+
+        .wrapper .content.static-page section:first-child {
+            padding-top: 0;
+        }
+
+        .wrapper .content.static-page .privacy-table {
+            display: block;
+            border-top: 2px solid #bec2cc !important;
+        }
+
+        .wrapper .content.static-page .privacy-table th {
+            display: none;
+        }
+
+        .wrapper .content.static-page .privacy-table td,
+        .wrapper .content.static-page .privacy-table tr {
+            display: block;
+        }
+
+        .wrapper .content.static-page .privacy-table tr {
+            border-top: 2px solid #bec2cc;
+            margin-top: -1px;
+        }
+
+        .wrapper .content.static-page .privacy-table tr:first-child {
+            border-top: 0;
+        }
+
+        .wrapper .content.static-page .privacy-table td {
+            display: flex;
+            flex-direction: row;
+            flex-wrap: nowrap;
+            align-items: center;
+            padding-left: 0;
+            padding-right: 0;
+        }
+
+        .wrapper .content.static-page .privacy-table td:before {
+            content: attr(data-title);
+            font-size: 13px;
+            color: #8e9199;
+            display: block;
+            width: 100px;
+            padding-right: 10px;
+        }
+
+        .wrapper .content.static-page .privacy-table td span {
+            width: calc(100% - 100px);
+        }
+
+        .main-blk-content > section[id] {
+            padding-top: 0;
+        }
+
+        .main-blk-content > section[id] h4 {
+            padding-top: 20px;
+        }
+
+        {% if is_granted('SITE_MOBILE_AREA') %}
+        @font-face {
+            font-family: 'Open Sans', sans-serif;
+            src: url('https://awardwallet.com/assets/awardwalletnewdesign/font/opensans-regular-webfont.eot?v=2');
+            src: url('https://awardwallet.com/assets/awardwalletnewdesign/font/opensans-regular-webfont.eot?#iefix') format('embedded-opentype'),
+            url('https://awardwallet.com/assets/awardwalletnewdesign/font/opensans-regular-webfont.woff?v=2') format('woff'),
+            url('https://awardwallet.com/assets/awardwalletnewdesign/font/opensans-regular-webfont.ttf?v=2') format('truetype');
+            font-weight: normal;
+            font-style: normal;
+        }
+
+        @font-face {
+            font-family: 'Open Sans', sans-serif;
+            src: url('https://awardwallet.com/assets/awardwalletnewdesign/font/opensans-bold-webfont.eot?v=2');
+            src: url('https://awardwallet.com/assets/awardwalletnewdesign/font/opensans-bold-webfont.eot?#iefix') format('embedded-opentype'),
+            url('https://awardwallet.com/assets/awardwalletnewdesign/font/opensans-bold-webfont.woff?v=2') format('woff'),
+            url('https://awardwallet.com/assets/awardwalletnewdesign/font/opensans-bold-webfont.ttf?v=2') format('truetype');
+            font-weight: 700;
+            font-style: normal;
+        }
+
+        body, html {
+            margin: 0;
+            padding: 0;
+            font-family: 'Open Sans', sans-serif;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        .main-blk {
+            font-family: 'Open Sans', sans-serif;
+        }
+
+        .main-blk h1,
+        .main-blk h2,
+        .main-blk h3,
+        .main-blk h4 {
+            font-weight: normal;
+        }
+
+        .main-blk .bold,
+        .main-blk strong {
+            font-weight: bold;
+        }
+
+        .main-blk p {
+            font-size: 16px;
+            color: #535457;
+            padding-top: 20px;
+            line-height: 1.625;
+        }
+
+        .main-blk p:empty {
+            display: none
+        }
+
+        .main-blk p span.red {
+            color: #cc3d5e;
+            font-weight: 700
+        }
+
+        .main-blk p:first-child {
+            padding-top: 0
+        }
+
+        .main-blk h2 {
+            display: block;
+            margin: -15px -15px 0;
+            padding: 15px;
+            background: #f8f9fa;
+            position: relative;
+            font-size: 20px;
+            color: #5c6373;
+            text-align: center;
+            border-bottom: 1px solid #dfe1e6
+        }
+
+        .main-blk h3 {
+            display: block;
+            margin: 10px -15px 0;
+            padding: 30px 15px 10px;
+            background: #fff;
+            position: relative;
+            font-size: 20px;
+            color: #5c6373;
+            border-bottom: 2px solid #bec2cc;
+            border-top: 1px solid #dfe1e6
+        }
+
+        .main-blk h4 {
+            font-size: 20px;
+            line-height: 1.3;
+            color: #535457
+        }
+
+        .main-blk section {
+            padding-top: 30px
+        }
+
+        .main-blk section:first-child {
+            padding-top: 0
+        }
+
+        .main-blk .row-blk {
+            margin-top: 45px
+        }
+
+        .main-blk .row-blk:first-child {
+            margin-top: 25px
+        }
+
+        .main-blk .row-blk:last-child {
+            margin-bottom: 5px
+        }
+
+        .main-blk .row-blk .title {
+            height: auto !important
+        }
+
+        .main-blk .row-blk .prev {
+            margin-bottom: 20px
+        }
+
+        .main-blk .row-blk .prev img {
+            width: 100px;
+            vertical-align: top
+        }
+
+        .main-blk .row-blk h4 {
+            font-size: 20px;
+            color: #5c6373
+        }
+
+        .main-blk .row-blk span.red {
+            font-size: 20px;
+            color: #cc3d5e;
+            margin-top: 5px;
+            display: block
+        }
+
+        .main-blk {
+            background: #f8f9fa;
+            padding: 15px
+        }
+
+        .main-blk ul {
+            background: #fff;
+            margin: 0 -15px -15px;
+            padding: 15px 15px 20px
+        }
+
+        .main-blk ul li {
+            display: block;
+            position: relative;
+            padding-left: 15px;
+            color: #535457;
+            font-size: 16px;
+            margin-top: 10px;
+            line-height: 1.625;
+        }
+
+        .main-blk ul li:after {
+            position: absolute;
+            content: "";
+            left: 0;
+            top: 11px;
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            -webkit-border-radius: 50%;
+            -moz-border-radius: 50%;
+            background: #535457
+        }
+
+        .main-blk ul li:first-child {
+            margin-top: 0
+        }
+
+        .main-blk .number-list li {
+            font-size: 16px;
+            margin-top: 10px;
+            line-height: 1.625;
+            padding-left: 23px;
+        }
+
+        .main-blk .main-table {
+            border-spacing: 0;
+            border-collapse: separate;
+            width: 100%;
+            margin-top: 20px;
+            border-top: 2px solid #bec2cc
+        }
+
+        .main-blk .main-table th {
+            font-size: 16px;
+            color: #8e9199;
+            text-align: left;
+            font-weight: 400;
+            padding: 8px 12px;
+            border-bottom: 1px dotted #8e9199
+        }
+
+        .main-blk .main-table td {
+            font-size: 16px;
+            line-height: 1.5;
+            border-bottom: 1px dotted #8e9199;
+            color: #5c6373;
+            padding: 12px 10px
+        }
+
+        .main-blk.white {
+            background: #fff;
+            border-top: 1px solid #dfe1e6
+        }
+
+        .main-blk.white p:first-child {
+            padding-top: 15px
+        }
+
+        .main-blk a {
+            font-weight: 700;
+            font-size: 16px;
+            text-decoration: none;
+            color: #4684c4
+        }
+
+        .main-blk a:active {
+            text-decoration: underline
+        }
+
+        .main-blk .privacy-table {
+            display: block;
+            width: 100%;
+        }
+
+        .main-blk .main-table tbody {
+            display: block;
+            width: 100%;
+        }
+
+        .main-blk .privacy-table th {
+            display: none;
+        }
+
+        .main-blk .privacy-table tr {
+            width: 100%;
+            display: -webkit-flex;
+            display: -ms-flexbox;
+            display: -ms-flex;
+            display: flex;
+            -webkit-flex-flow: column nowrap;
+            -ms-flex-flow: column nowrap;
+            flex-flow: column nowrap;
+            border-top: 2px solid #bec2cc;
+        }
+
+        .main-blk .privacy-table tr:first-child {
+            border-top: 0
+        }
+
+        .main-blk .privacy-table tr:not(:last-child) td:last-child {
+            border-bottom: 0;
+        }
+
+        .main-blk .privacy-table td {
+            display: block;
+            position: relative;
+            padding-left: 0;
+            padding-right: 0;
+            width: 100%;
+        }
+
+        .main-blk .privacy-table td span {
+            display: block;
+            width: 100%;
+            padding-left: 110px;
+        }
+
+        .main-blk .privacy-table td:before {
+            content: attr(data-title);
+            font-size: 13px;
+            color: #8e9199;
+            display: block;
+            width: 100px;
+            top: 15px;
+            position: absolute;
+            left: 0;
+            padding-right: 10px;
+        }
+
+        .account-blk .prev,
+        .account-blk .title {
+            display: inline-block;
+            vertical-align: middle
+        }
+
+        .main-blk p.silver {
+            text-align: center;
+            font-size: 12px;
+            color: #a6a9b3;
+            margin: -10px 0
+        }
+
+        .main-blk ul li:after {
+            background: #535457;
+        }
+
+        .main-blk ul {
+            background: transparent !important;
+        }
+
+        .main-blk .number-list li {
+            padding-left: 20px;
+        }
+
+        .main-blk .number-list li:first-child {
+            margin-top: 10px;
+        }
+
+        .main-blk .scroll-links a[data-href],
+        .main-blk .scroll-links span[data-href] {
+            font-size: 16px;
+            text-decoration: none;
+            font-weight: bold;
+            color: #4684c4;
+            cursor: pointer;
+        }
+
+        .main-blk h4 {
+            font-size: 20px;
+            line-height: 1.3;
+            color: #535457;
+        }
+
+        .main-blk section {
+            padding-top: 30px;
+        }
+
+        .main-blk section:first-child {
+            padding-top: 0;
+        }
+
+        .main-blk-content > section[id] {
+            padding-top: 30px;
+        }
+
+        .main-blk-content > section[id] h4 {
+            padding-top: 20px;
+        }
+
+        .main-blk .number-list li {
+            display: block;
+            position: relative;
+        }
+
+        .main-blk .number-list li:before {
+            position: absolute;
+            left: 0;
+            font-size: 16px;
+            top: 5px;
+            line-height: 1;
+            color: #535457;
+            display: inline-block;
+        }
+
+        /*dark mode*/
+
+        .dark-mode body,
+        .dark-mode .main-blk,
+        .dark-mode .main-blk h2 {
+            background: #1c1c1e;
+        }
+
+        .dark-mode .main-blk ul,
+        .dark-mode .main-blk.white,
+        .dark-mode .main-blk h3 {
+            background: #141414;
+        }
+
+        .dark-mode .main-blk ul li:after {
+            background: #fff;
+        }
+
+        .dark-mode .main-blk p,
+        .dark-mode .main-blk ul li,
+        .dark-mode .main-blk h3,
+        .dark-mode .main-blk h2,
+        .dark-mode .main-blk .row-blk h4,
+        .dark-mode .main-blk h4,
+        .dark-mode .main-blk .number-list li:before,
+        .dark-mode .main-blk .privacy-table td:before,
+        .dark-mode .main-blk .main-table td {
+            color: #fff;
+        }
+
+        .dark-mode .main-blk p span.red,
+        .dark-mode .main-blk .row-blk span.red {
+            color: #0984FF;
+        }
+
+        .dark-mode .main-blk h2,
+        .dark-mode .main-blk h3,
+        .dark-mode .main-blk .privacy-table tr,
+        .dark-mode .main-blk.white,
+        .dark-mode .main-blk .main-table,
+        .dark-mode .main-blk .main-table th {
+            border-color: #5a5a5f;
+        }
+
+        .dark-mode .main-blk p.silver {
+            color: #8e8e93;
+        }
+
+        .dark-mode .main-blk .scroll-links a[data-href],
+        .dark-mode .main-blk .scroll-links span[data-href],
+        .dark-mode .main-blk a {
+            color: #0984FF;
+        }
+
+        {% endif %}
+        .main-blk .ccpa-number-list li {
+            color: #535457;
+            position: relative;
+            font-size: 16px;
+            line-height: 28px;
+            margin-top: 5px;
+            padding-left: 25px;
+        }
+    </style>
+    <!-- end -->
+    <h1>California Consumer Privacy Act Disclosures</h1>
+    <div class="main-blk-content">
+        <p class="silver">Last Updated: February 10, 2020</p>
+        <p>
+            This California Consumer Privacy Act disclosure page ("Disclosure") supplements the
+            <a href="{{ url('aw_page_index', {page: 'privacy'}) }}">AwardWallet Privacy Notice</a> and is effective
+            as of January 1, 2020. The AwardWallet Privacy Notice describes:
+        </p>
+        <ul>
+            <li>the personal information that we collect in the “Information We Collect and Receive” section;</li>
+            <li>the sources from which we collect it in “Information We Collect and Receive” section;</li>
+            <li>the purposes for which we use it, the limited circumstances under which we share personal
+                information in and with whom we share it in “Information We Collect and Receive,” “How We Use the
+                Information We Collect and Receive,” and “Information Sharing” sections.
+            </li>
+        </ul>
+        <section>
+            <p>These additional disclosures are required by the California Consumer Privacy Act (“CCPA”):</p>
+        </section>
+        <section>
+            <p>1. <b>Categories of personal information collected.</b> The personal information that AwardWallet collects, or has collected from customers in the twelve months prior to the effective date of this Disclosure, fall into the following categories established by the CCPA, depending on which AwardWallet Service is used:</p>
+            <ul style="padding-left: 25px;">
+                <li>Identifiers including your name, phone number, postal address, unique personal identifier, online identifier, internet protocol (IP) address, email address, account name, passport number, or other similar identifiers;</li>
+                <li>Last 4 digits of a credit card number, individual financial transactions including merchant name, merchant category code, amount spent or any other financial information;</li>
+                <li>Commercial information, including third party loyalty reward program information, travel reservation information, products, or services purchased, obtained, or considered, or other purchasing or consuming histories or tendencies;</li>
+                <li>Internet or other electronic network activity information, including, but not limited to, browsing history, search history, and information regarding your interaction with an internet website, application, or advertisement;</li>
+                <li>Geolocation data, such as the location of your device or computer;</li>
+                <li>Inferences drawn from any of the information identified in this subdivision to create a profile about a customer reflecting the customer’s preferences, interests and other information used to personalize your experience.</li>
+            </ul>
+        </section>
+        <section>
+            <p>2. <b>Categories of personal information disclosed for a business purpose.</b> The personal information that AwardWallet disclosed about customers for a business purpose in the twelve months prior to the effective date of this Disclosure fall into the following categories established by the CCPA, depending on which AwardWallet Service is used:</p>
+            <ul style="padding-left: 25px;">
+                <li>Identifiers including your name, phone number, postal address, unique personal identifier, online identifier, internet protocol (IP) address, email address, account name, passport number, or other similar identifiers;</li>
+                <li>Last 4 digits of a credit card number, individual financial transactions including merchant name, merchant category code, amount spent or any other financial information;</li>
+                <li>Commercial information, including third party loyalty reward program information, travel reservation information, products, or services purchased, obtained, or considered, or other purchasing or consuming histories or tendencies;</li>
+                <li>Internet or other electronic network activity information, including, but not limited to, browsing history, search history, and information regarding your interaction with an internet website, application, or advertisement;</li>
+                <li>Geolocation data, such as the location of your device or computer;</li>
+                <li>Inferences drawn from any of the information identified in this subdivision to create a profile about a customer reflecting the customer’s preferences, interests and other information used to personalize your experience.</li>
+            </ul>
+        </section>
+        <section>
+            <p>3. <b>No Sale of Personal Information.</b> In the twelve months prior to the effective date of this Disclosure, AwardWallet has not sold any personal information of consumers, as those terms are defined under the CCPA.</p>
+        </section>
+        <section>
+            <p>4. <b>Your Rights under California Consumer Privacy Act</b></p>
+            <ul style="padding-left: 25px;">
+                <li><i>Right to Know:</i> you have the right to know what categories and specific pieces of CCPA personal information have been collected about you; the categories of sources from which CCPA personal information are collected; our business or commercial purpose for collecting, using, or disclosing CCPA personal information; the categories of third parties with whom we share CCPA personal information; the categories of CCPA personal information we have disclosed about you for a business purpose. We do not sell personal information.</li>
+                <li><i>Right to Receive a Copy:</i> you have a right to receive a copy of the specific CCPA personal information we collected about you.</li>
+                <li><i>Right to Delete:</i> you have a right to deletion of your CCPA personal information, subject to exceptions under the CCPA.</li>
+                <li><i>No Discrimination:</i> We will not discriminate against you based on your exercise any of your CCPA rights.</li>
+            </ul>
+        </section>
+        <section>
+            <p>
+                California customers with an AwardWallet account can exercise their rights directly or through an authorized agent by signing in to their AwardWallet account.
+                If you are a California customer without an AwardWallet account and you or your authorized agent would like to exercise your privacy rights, requests may be made <a href="{{ url('aw_contactus_index') }}">here</a>,
+                or by emailing us at support [at] AwardWallet.com. If you do not have an AwardWallet account, AwardWallet will ask you for information which we consider necessary to verify your identity for security and to prevent fraud.
+                This information may include name, contact information, and information related to your transaction or relationship with AwardWallet, but the specific information requested may differ depending on the circumstances of your request for your security and to protect privacy rights.
+            </p>
+        </section>
+    </div>
+</div>
+
+<script>
+    {% if is_granted('SITE_MOBILE_APP') %}
+    $('.scroll-links span[data-href]')
+        .prop('onclick', null)
+        .off('click')
+        .on('click.scroll', function (e) {
+            e.preventDefault();
+            var $section = $($(e.target).data('href'));
+            if ($section.length === 0)
+                return false;
+            $section.get(0).scrollIntoView();
+        });
+    {% else %}
+    {% if not is_granted("SITE_MOBILE_AREA") %}
+    require(['jquery-boot'], function ($) {
+        {% endif %}
+        if (typeof $ !== 'undefined') {
+            $('.scroll-links span[data-href]')
+                .prop('onclick', null)
+                .off('click')
+                .on('click.scroll', function (e) {
+                    e.preventDefault();
+                    var hash = $(e.target).data('href').substr(1);
+                    var $section = $('#' + hash);
+                    if ($section.length === 0)
+                        return false;
+
+                    $('html,body').animate({scrollTop: $section.offset().top - 10}, 500);
+                    location.hash = hash;
+                    return false;
+                });
+        }
+        {% if not is_granted("SITE_MOBILE_AREA") %}
+    });
+    {% endif %}
+    {% endif %}
+</script>

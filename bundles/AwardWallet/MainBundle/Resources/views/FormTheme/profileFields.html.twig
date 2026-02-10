@@ -1,0 +1,42 @@
+{% block profile_button_row %}
+    {# todo remove it! #}
+    {% apply spaceless %}
+        <div class="row{% if not valid %} error{% endif %}{% if col2 is defined %} col-2{% endif %}">
+            <div class="row-item">
+                {{ form_label(form) }}
+                <div class="input">
+                    <div class="input-item" style="width: 300px">
+                        {{ form_widget(form) }}
+                    </div>
+                </div>
+            </div>
+            <div class="info">
+                <div class="info-icon"></div>
+                <div class="info-description">
+                    <p>
+                        {% if help is defined and help != '' %}
+                            {{ help|trans({}, translation_domain)|raw }}
+                        {% elseif attr['notice'] is defined and attr['notice'] != '' %}
+                            {{ attr['notice']|raw }}
+                        {% endif %}
+                    </p>
+                </div>
+            </div>
+            {% if noErrors is not defined %}
+                {{ form_errors(form) }}
+            {% endif %}
+        </div>
+    {% endapply %}
+{% endblock profile_button_row %}
+
+{% block profile_button_widget %}
+    <div class="input-text">
+        {% if valueCounter is not empty %}
+            <span class="count-silver">{{ valueCounter }}</span>
+        {% endif %}
+        <span>{{ value }}</span>
+    </div>
+    <a href="{{ link }}" class="btn-silver f-right">{{ link_label|trans({}, translation_domain) }}</a>
+{% endblock profile_button_widget %}
+
+

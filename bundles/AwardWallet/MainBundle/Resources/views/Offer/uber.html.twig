@@ -1,0 +1,46 @@
+{# Issue #6584 #}
+
+{% extends "@AwardWalletMain/Offer/standard.html.twig" %}
+{% import '@AwardWalletMain/Offer/offerMacros.html.twig' as offerMacros %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    {{ encore_entry_link_tags('offer') }}
+    {{ encore_entry_link_tags('offers/uber') }}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        {{ offerMacros.jsOfferYes(_context, ApplyURL, Code, OfferUserID, 'noredirect') }}
+        {{ offerMacros.jsOfferNo(_context, Code, OfferUserID, defaultRedirectLocation) }}
+    </script>
+{% endblock %}
+
+{% block content %}
+    <div id="offer_wrap">
+        <div id="offer_bg" class="uber_bg">
+            <div class="uber_image">
+            </div>
+            <div class="offer_title uber_title">
+                Use Uber in <span class="uber_code">{{ City }}</span><br/>
+                to be your on-demand<br/>
+                private driver!
+            </div>
+            <div class="uber_desc">
+                Get a $20 credit by using<br/>
+                the following coupon code<br/>
+                at the time of registration: <span class="uber_code">n8xjj</span>
+            </div>
+            <div class="offer_btn uber_btn" onclick="offerYes();">
+                Register Now
+            </div>
+            <div class="offer_btn_no uber_btn_no" onclick="offerNo();">
+                Don't show me this offer again
+            </div>
+        </div>
+        <div class="offer_toaccount uber_toaccount" onclick="window.location = '{{ defaultRedirectLocation }}'">
+            Proceed to my account
+        </div>
+    </div>
+{% endblock %}

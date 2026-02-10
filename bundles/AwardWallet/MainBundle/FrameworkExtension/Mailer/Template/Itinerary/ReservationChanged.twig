@@ -1,0 +1,68 @@
+{% extends '@MailTemplate/Itinerary/ReservationNew.twig' %}
+{% trans_default_domain "email" %}
+
+{% block subject %}{% apply spaceless %}{% autoescape false %}
+    {{ 'reservation_changed.subject'|trans(
+        {'%count%': itineraries|length}, 'email', lang
+    )|desc('{1} ✈ The following travel reservation has been updated|[2,Inf[ ✈ The following travel reservations have been updated') }}
+{% endautoescape %}{% endapply %}{% endblock subject %}
+
+{% block content %}
+    {% import '@MailTemplate/CommonMacro.twig' as commonMacro %}
+    {% import '@MailTemplate/ItineraryMacro.twig' as itineraryMacro %}
+
+    {% if originalRecipient is defined and originalRecipient is not null %}
+        {% set text = 'reservation_changed.changed_to_ua'|trans({
+            '%bold_on%': '<b>',
+            '%bold_off%': '</b>',
+            '%uaName%': originalRecipient.fullname|htmlencode
+        }, 'email', lang)|desc('The following reservation that belongs to %bold_on%%uaName%%bold_off% has been updated, please review the information below.') %}
+    {% else %}
+        {% set text ='reservation_changed.changed'|trans({
+            '%bold_on%': '<b>',
+            '%bold_off%': '</b>'
+        }, 'email', lang)|desc('You have an updated travel reservation that was automatically added to %bold_on%AwardWallet%bold_off% Trips.') %}
+    {% endif %}
+
+    {{ commonMacro.hello(user.firstname, _context) }}
+    {{ commonMacro.paragraph(text, _context, {escape: false}) }}
+
+    {% for itinerary in itineraries %}
+        {% set ads = '' %}
+
+        {% if loop.first %}
+            {% if hasMailbox is defined and hasMailbox == false %}
+                {% set ads = ads ~ block('mailbox_offer') %}
+            {% endif %}
+            {% if advt is defined and advt is not null %}
+                {% set ads = ads ~ commonMacro.ad(advt, _context) %}
+            {% endif %}
+        {% endif %}
+
+        {% if ads != '' %}
+            {% set ad_option = {after_first_segment: ads} %}
+        {% endif %}
+
+        {{ itineraryMacro.renderItinerary(itinerary, _context, {'higher_property_style': ''}|merge(ad_option|default({}))) }}
+    {% endfor %}
+{% endblock content %}
+
+{% block unsubscribe_option %}{{ 'notification.change-travel-plan'|trans({}, 'messages', lang) }}{% endblock unsubscribe_option %}
+
+{% block unsubscribe_hash %}{{ '#changesToTravelReservations' }}{% endblock unsubscribe_hash %}
+
+{% block mailbox_offer %}
+    {% import '@MailTemplate/CommonMacro.twig' as commonMacro %}
+    {{ commonMacro.infoWithButton(
+        'reservation_changed.mailbox_offer'|trans({}, 'email', lang)|desc('Did you know that the best way to keep your travel plans updated (as well as updating your Delta, United, and Southwest accounts) is to link your mailbox to AwardWallet?'),
+        'link_mailbox_now.btn'|trans({}, 'email', lang)|desc('Link My Mailbox Now'),
+        personalHost ~ path('aw_usermailbox_view', {utm_source: 'automatedEmails', utm_medium: 'email', utm_campaign: 'TravelUpdated'}),
+        _context,
+        {}, {}, {},
+        {
+            width: 12,
+            height: 7,
+            imgPath: baseImagesPath ~ '/double-arrow-w.png'
+        }
+    ) }}
+{% endblock mailbox_offer %}

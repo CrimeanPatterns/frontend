@@ -1,0 +1,11 @@
+{% macro scanMailboxQuestion() %}
+    <div id="scan-mailbox-question" style="display: none;" class="sign-in-info">
+        <p>{{ 'scan-mailbox-question'|trans|desc('Do you agree to scan your mailbox for itineraries and loyalty accounts?') }}</p>
+        <div class="row-submit">
+            <div class="submit line-row">
+                <button tabindex="2" type="button" class="btn-silver" data-mailbox-access="false">{{ 'button.no'|trans }}</button>
+                <button tabindex="1" type="button" class="btn-blue" data-mailbox-access="true">{{ 'button.yes'|trans }}</button>
+            </div>
+        </div>
+    </div>
+{% endmacro %}

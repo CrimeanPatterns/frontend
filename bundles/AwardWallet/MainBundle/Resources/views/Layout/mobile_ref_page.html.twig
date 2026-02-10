@@ -1,0 +1,21 @@
+{% extends "@AwardWalletMain/Layout/main.html.twig" %}
+
+{% block javascript_ga_send_pageview %}
+    var redirectAlreadyCalled = false;
+
+    function redirectToLinkTracker() {
+        if (redirectAlreadyCalled) return;
+
+        redirectAlreadyCalled = true;
+        document.location.replace("{{ link_tracker_url|raw }}");
+    }
+
+    window.dataLayer = window.dataLayer || [];
+    window.dataLayer.push({
+        'event': 'mobile_ref_link',
+        'mobile_ref_link': "{{ link_tracker_url|raw }}",
+        'eventCallback': redirectToLinkTracker,
+    });
+
+    setTimeout(window.dataLayer.at(-1).eventCallback(), 3000);
+{% endblock %}

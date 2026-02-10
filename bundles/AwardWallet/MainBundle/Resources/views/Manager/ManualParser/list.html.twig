@@ -1,0 +1,1139 @@
+{% set title = "Messages list" %}
+{% use '@AwardWalletMain/FormTheme/oldFields.html.twig' %}
+{% extends '@AwardWalletMain/Manager/layout.html.twig' %}
+{% macro sort_icon(field, sort, direction) %}
+    {% if sort == field %}
+        {% if direction == 'asc' %}
+            <div class='icon_asc'></div>
+        {% else %}
+            <div class='icon_desc'></div>
+        {% endif %}
+    {% else %}
+        <div class='icon_sortable'></div>
+    {% endif %}
+{% endmacro %}
+{% macro format_date(date) %}
+    {% set parts = date | split(' ') %}
+    <nobr>{{ parts[0] }}</nobr><br><nobr>{{ parts[1] }}</nobr>
+{% endmacro %}
+{% block content %}
+    <!-- jQuery library -->
+    <script src="/lib/3dParty/jquery/plugins/jquery.json-3.4.1.min.js"></script>
+    <script src="/lib/3dParty/jquery/plugins/jquery.cookie.js"></script>
+    <script src="/lib/3dParty/jquery/plugins/jquery-1.12.1.ui.js"></script>
+    <style>
+        .ui-dialog .ui-dialog-titlebar-close {
+            width: auto;
+            height: auto;
+        }
+    </style>
+    <!-- JS & CSS library of MultiSelect plugin -->
+    <script src="/lib/3dParty/jquery/multiselect/jquery.multiselect.js"></script>
+    <link rel="stylesheet" href="/lib/3dParty/jquery/multiselect/jquery.multiselect.css">
+
+    <link href="{{ asset('assets/awardwalletmain/css/manualParser.css') }}?v=5" rel="stylesheet" type="text/css"
+          media="all"/>
+    <script src="/lib/scripts/scw.js"></script>
+    <script src="{{ asset('assets/awardwalletmain/js/listNavigation.js') }}"></script>
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script type="text/javascript" src="/lib/3dParty/jquery/json-viewer/jquery.json-viewer.js"></script>
+    <link href="/lib/3dParty/jquery/json-viewer/jquery.json-viewer.css?v=1" type="text/css" rel="stylesheet" />
+    <script type="text/javascript">
+        var OptionsPlugin = function(){
+            var self = this;
+            this.init = function(){
+                $('#options_button').click(function(){
+                    self.show();
+                    return false;
+                });
+                $('#options_save').click(function(){
+                    self.save();
+                    return false;
+                });
+            };
+            this.show = function(){
+                var popup = $('#options_popup');
+                popup.show();
+                popup.css("position","absolute");
+                popup.css("top", Math.max(0, (($(window).height() - $(popup).outerHeight()) / 2) +
+                    $(window).scrollTop()) + "px");
+                popup.css("left", Math.max(0, (($(window).width() - $(popup).outerWidth()) / 2) +
+                    $(window).scrollLeft()) + "px");
+            };
+            this.save = function(){
+                var args = $('#options_popup select');
+                var post = {};
+                for(var i = 0; i < args.length; i++)
+                    post[args.eq(i).attr('name')] = args.eq(i).val();
+                $.ajax({
+                    url: "{{ path("aw_manager_manualparser_options", {}) }}",
+                    type: "POST",
+                    data: post,
+                    success: function(e){console.log(e);},
+                    error: function(){alert('Error occurred');},
+                    complete: function(){$('#options_popup').hide();}
+                });
+            };
+            $(document).ready(this.init);
+            return this;
+        }();
+        var MetricPlugin = function(){
+        	var self = this;
+        	this.init = function(){
+				// load metrics
+				$.ajax({
+					url: "{{ path("aw_manager_manualparser_metric", {}) }}",
+					type: "GET",
+					success: function (data) {
+						var text;
+						text = "Parse: ";
+						if (data.Parse.Latest.Average) {
+							text += Number(data.Parse.Latest.Average).toFixed(1);
+							self.parse = data.Parse.Datapoints;
+						}
+						else
+							text += "No data";
+						text += "; Callbacks: ";
+						if (data.Callbacks.Latest.Average)
+							text += Number(data.Callbacks.Latest.Average).toFixed(1);
+						else
+							text += "No data";
+						$('#metric').text(text);
+						self.data = data.Graph;
+						console.log(data);
+					},
+					error: function () {
+						$('#metric').text('Query error');
+					}
+				});
+				self.graph = false;
+				self.drawn = false;
+				$('#metric_button').click(self.click);
+			};
+        	this.click = function() {
+        		if (!self.drawn)
+        			self.draw();
+        		self.graph = !self.graph;
+        		if (self.graph)
+        			$('#metric_graph').show();
+        		else
+        			$('#metric_graph').hide();
+        		return false;
+			};
+        	this.draw = function() {
+        		self.drawn = true;
+				google.charts.load('current', {'packages':['corechart']});
+				google.charts.setOnLoadCallback(self.drawChart);
+			};
+        	this.drawChart = function() {
+				var data = google.visualization.arrayToDataTable(self.data);
+
+				var options = {
+					curveType: 'function',
+					legend: {position: 'bottom'}
+				};
+
+				var chart = new google.visualization.LineChart(document.getElementById('metric_graph'));
+
+				chart.draw(data, options);
+			};
+			//$(document).ready(this.init);
+        	return this;
+        }();
+        var CheckboxPlugin = function() {
+        	var self = this;
+        	var list;
+        	var lastChecked;
+        	this.init = function() {
+        		list = $('input.sel');
+        		list.click(function(e){
+					if(!lastChecked) {
+						lastChecked = this;
+						return;
+					}
+					if(e.shiftKey) {
+						var start = list.index(this);
+						var end = list.index(lastChecked);
+						list.slice(Math.min(start,end), Math.max(start,end)+ 1).prop('checked', lastChecked.checked);
+					}
+					lastChecked = this;
+                });
+			};
+			$(document).ready(this.init);
+			return this;
+		}();
+        function selectByIDs() {
+            var tds = $('tr.list_row td:first-child input:checked').closest("td").next('td');
+            if (tds.length == 0)
+                tds = $('tr.list_row td:first-child + td');
+            var ids = "";
+            for (var i = 0; i < tds.length; i++) {
+                if (ids)
+                    ids = ids + ',';
+                ids = ids + tds.eq(i).text();
+            }
+            ids = ids.replace(/ /gi, "");
+            $('#fader').show();
+            document.location.href = "?id=" + ids + "&show=all&region={{ region }}";
+            return false;
+        }
+        function copySource(id) {
+            $('#fader').show();
+            $.ajax({
+                url: '/manager/email/parser/getEmail/' + id + '?region={{ region }}',
+                type: 'GET',
+                success: function (data) {
+                    var text = data;
+                    var input = document.createElement('textarea');
+                    document.body.appendChild(input);
+                    input.value = text;
+                    input.select();
+                    document.execCommand("copy");
+                    document.body.removeChild(input);
+                    $('#fader').hide();
+                    $("#copy-dialog").find('p').text('Success');
+                    $("#copy-dialog").dialog({
+                        closeText: '',
+                        resizable: false,
+                        modal: true
+                    });
+                },
+                error: function () {
+                    $("#copy-dialog").find('p').text('Can\'t copy to buffer. Try Download email');
+                    $("#copy-dialog").dialog({
+                        closeText: '',
+                        resizable: false,
+                        modal: true
+                    });
+                },
+                complete: function () {
+                    $('#fader').hide();
+                }
+            });
+            setTimeout(function () {
+                $("#copy-dialog").dialog("close");
+            }, 3000);
+            return false;
+        }
+        function showPreview(id) {
+            $('tr.email_preview').hide();
+            var row = $('tr[data-id="' + id + '"]');
+            var link = row.find('a.show');
+            if (link.length > 0) {
+                var next;
+                var select = $('#body_select_'+id);
+                if (!select.data('loaded')) {
+                    $.ajax({
+                        url: '/manager/email/parser/emailAttachmentInfo/' + id + '?region={{ region }}',
+                        type: 'GET',
+                        success: function(data) {
+                            select.append('<option value="/manager/email/parser/emailFrame/' + id + '?s=true' + '&region={{ region }}">Source</option>');
+                            for (var i in data) {
+                                if (data[i].ml) {
+                                    select.append('<option value="/manager/ml-parsing/iframe/' + id + '">ML markup</option>');
+                                }
+                                else {
+                                    select.append('<option value="/manager/email/parser/emailFrame/' + id + '?a=' + data[i].index + (data[i].text ? '&t=true' : '') + (data[i].image ? '&i=true' : '') + '&region={{ region }}"' + (!data[i].enabled ? ' disabled' : '') + '>' + data[i].name + '</option>');
+                                }
+                            }
+                        },
+                        complete: function() {
+                            select.data('loaded', '1');
+                            if (!next.find('div.email_html').attr('attr-filled')) {
+                                next.find('div.email_html').attr('attr-filled', '1');
+                                next.find('a:contains("Inspect")').attr('href', '/manager/email/parser/emailFrame/'+id+'?region={{ region }}');
+                                next.find('div.email_html').find('iframe').attr('src', '/manager/email/parser/emailFrame/'+id+'?region={{ region }}');
+                            }
+                        }
+
+                    });
+                }
+                next = $('tr[data-id="' + id + '"] + tr.email_preview:eq(0)');
+                next.show();
+                $('tr.list_row a.hide').removeClass('hide').addClass('show').text('View');
+                $('tr.list_row button.plus').text('+');
+                link.removeClass('show').addClass('hide').text('Hide');
+                row.find('button.plus').text('-');
+                var Y = row.offset().top - 30;
+                window.scrollTo(0, Y);
+            }
+            else {
+                row.find('a.hide').removeClass('hide').addClass('show').text('View');
+				row.find('button.plus').text('+');
+            }
+            return false;
+        }
+        function prevPreview(id) {
+        	var rows = $('tr[data-id="' + id + '"]').prevAll().filter('.list_row');
+        	if (rows.length > 0)
+        		showPreview(parseInt(rows.eq(0).attr('data-id')));
+        	return false;
+		}
+		function nextPreview(id) {
+			var rows = $('tr[data-id="' + id + '"]').nextAll().filter('.list_row');
+			if (rows.length > 0)
+				showPreview(parseInt(rows.eq(0).attr('data-id')));
+			return false;
+		}
+		function selectRow(id) {
+        	$('tr.list_row').removeClass('selected');
+        	$('tr[data-id="' + id + '"]').addClass('selected');
+		}
+        function rejectMessage(id, url, junk) {
+            var fader = $('#fader');
+            url = url + "?junk=" + (junk ? "true" : "false") + '&userId={{ app.user.userid }}';
+            fader.show();
+            $.ajax({
+                'url': url,
+                type: "POST",
+                success: function (data) {
+                    $('tr[data-id="' + id + '"] + tr.email_preview:eq(0)').remove();
+                    $('tr[data-id="' + id + '"]').remove();
+                },
+                error: function () {
+                    alert('ajax error');
+                },
+                complete: function () {
+                    fader.hide();
+                }
+            });
+        }
+        function parseAll() {
+            $('input#actionMany').val('parse');
+            var boxes = $('tr.list_row input.sel');
+            var c = 0;
+            for (var i = 0; i < boxes.length; i++) {
+                if (boxes[i].checked)
+                    c++;
+            }
+            if (c > 0) {
+                $('#fader').show();
+                $('form#select_form').submit();
+            }
+        }
+
+        function sendStaffAll() {
+            $('tr.filters td:first-child input:checked').prop('checked', false);
+            showSelectAll(0);
+            var tds = $('tr.list_row td:first-child input:checked').closest("td").next('td');
+            if (tds.length == 0) {
+                alert('no emails to send');
+                return;
+            }
+            // reset not awardwallet
+            for (var i = 0; i < tds.length; i++) {
+                var partner = tds.eq(i).parent().find('td.partner').get(0).innerHTML;
+                if (partner !== 'awardwallet' && partner !== 'testemail') {
+                    tds.eq(i).prev('td').find('input').prop('checked', false);
+                }
+            }
+            // checkselected
+            var boxes = $('tr.list_row input.sel');
+            var c = 0;
+            for (var i = 0; i < boxes.length; i++) {
+                if (boxes[i].checked)
+                    c++;
+            }
+
+            if (c > 0) {
+                showPrompt("Enter Family Member", function (value) {
+                });
+            } else alert('no emails to send (not aw not sent)');
+        }
+        function junkAll(action) {
+            $('input#actionMany').val(action);
+            var boxes = $('tr.list_row input.sel');
+            var c = 0;
+            for (var i = 0; i < boxes.length; i++) {
+                if (boxes[i].checked)
+                    c++;
+            }
+            if (c > 0) {
+                $('#fader').show();
+                $('form#select_form').submit();
+            }
+        }
+        function rejectSubject(id) {
+            $('input#actionMany').val('reject');
+            var fader = $('#fader');
+            fader.show();
+            checkBoxes(false);
+            $('tr[data-id="' + id + '"] input.sel').prop('checked', true);
+            $('input#auto').val('1');
+            $('form#select_form').submit();
+        }
+        function checkBoxes(checked) {
+            $('tr.list_row input.sel').prop('checked', checked);
+            if (checked) {
+                showSelectAll(1);
+            }
+            else {
+                showSelectAll(0);
+            }
+        }
+        function selectInSearch() {
+            showSelectAll(2);
+            return false;
+        }
+        function showSelectAll(state) {
+            switch (state) {
+                case 1:
+                    $('tr.select_all').show();
+                    $('div#s_all_1').show();
+                    $('div#s_all_2').hide();
+                    $('input#selected_all').val(0);
+                    break;
+                case 2:
+                    $('tr.select_all').show();
+                    $('div#s_all_2').show();
+                    $('div#s_all_1').hide();
+                    $('input#selected_all').val(1);
+                    break;
+                default:
+                    $('tr.select_all').hide();
+                    $('input#selected_all').val(0);
+                    break;
+            }
+            makeBtnTitles();
+        }
+        function makeBtnTitles() {
+            var chkBoxs = $('tr.list_row input.sel');
+            var bcdChecked = false;
+            var noBcdChecked = false;
+            for (var i = 0; i < chkBoxs.length; i++) {
+                if (chkBoxs[i].checked) {
+                    partner = $(chkBoxs[i]).parent().parent().find('td.partner').text();
+                    switch (partner) {
+                        case 'bcdtravel':
+                            bcdChecked = true;
+                            break;
+                        default:
+                            noBcdChecked = true;
+                            break;
+                    }
+                }
+            }
+            var btnRestr = $('button#markRestricted');
+            var btnJunk = $('button#markJunk');
+            var btnSkip = $('button#markSkipped');
+            if (bcdChecked && noBcdChecked) {
+                if (btnRestr)
+                    btnRestr.prop('title', 'Mixed select: BCD and no BCD');
+                if (btnJunk)
+                    btnJunk.prop('title', 'Mixed select: BCD and no BCD');
+                if (btnSkip)
+                    btnSkip.prop('title', 'Mixed select: BCD and no BCD');
+            } else if (bcdChecked && !noBcdChecked) {
+                if (btnRestr)
+                    btnRestr.prop('title', 'BCD Email');
+                if (btnJunk)
+                    btnJunk.prop('title', 'Adverts; no reservation');
+                if (btnSkip)
+                    btnSkip.prop('title', 'No LP; no parser; lack of info');
+            } else if (!bcdChecked && noBcdChecked) {
+                if (btnRestr)
+                    btnRestr.prop('title', 'Email from AA');
+                if (btnJunk)
+                    btnJunk.prop('title', 'Adverts; no reservation');
+                if (btnSkip)
+                    btnSkip.prop('title', 'No LP; no parser; lack of info');
+            } else {
+                if (btnRestr)
+                    btnRestr.prop('title', '');
+                if (btnJunk)
+                    btnJunk.prop('title', '');
+                if (btnSkip)
+                    btnSkip.prop('title', '');
+            }
+            return true;
+        }
+        function mpChecked(id) {
+            showSelectAll(0);
+        }
+        function clearSelection() {
+            checkBoxes(false);
+            return false;
+        }
+        function findSimilar(id) {
+            var row = $('tr[data-id="' + id + '"]');
+            $('tr.filters input[name="subject"]').val(row.find("td.subject").text().replace(/^fwd?:\s*/i, '').replace(/\.\.\.$/i, ''));
+//            $('tr.filters input[name="from"]').val(row.find("td.from").text());
+            $('form#search_form').submit();
+            return false;
+        }
+        function sortList(sort) {
+            var direction = "asc";
+            if ($('input#sort').val() == sort && $('input#direction').val() == 'asc')
+                direction = 'desc';
+            $('input#sort').val(sort);
+            $('input#direction').val(direction);
+            $('form#search_form').submit();
+            return false;
+        }
+        function mark(id, url) {
+            $("#mark-dialog").dialog({
+                resizable: false,
+                modal: true,
+                buttons: {
+                    "Junk": function () {
+                        $(this).dialog("close");
+                        rejectMessage(id, url, true);
+                    },
+                    "Skipped": function () {
+                        $(this).dialog("close");
+                        rejectMessage(id, url, false);
+                    }
+                }
+            });
+        }
+        function toggleAdvancedSearch() {
+        	var row = $('tr.advanced_filters');
+        	if (row.is(':visible'))
+        		row.hide();
+        	else
+        		row.show();
+        	return false;
+		}
+		function changePreview(select) {
+            $(select).nextAll('div.email_html').find('iframe')[0].src = select.value;
+            $(select).prevAll('a:contains("Inspect")').get(0).href = select.value;
+        }
+        var list;
+        $('document').ready(function() {
+        	// navigation
+            list = new ListNavigator('tr.list_row');
+            list.focus = function(row) {
+                $(row).find('td').eq(0).css('border-left', '#4d90f0 solid 3px');
+            };
+            list.blur = function(row) {
+                $(row).find('td').eq(0).css('border-left', '');
+            };
+            list.onEnter(function(row) {
+                var id = $(row).attr('data-id');
+                showPreview(id);
+            });
+            list.onSpace(function(row) {
+                var id = $(row).attr('data-id');
+                $(row).find('input[name="sel' + id + '"]').click();
+            });
+            list.setHandler(74, list.Down);
+            list.setHandler(75, list.Up);
+
+            $(window).on('scroll', function(){
+            	var h = $('#navhelper');
+            	h.show();
+            	if (window.scrollX < ($(document).width() - window.innerWidth) / 2) {
+            		h.text('JUMP -->');
+            		h.css('left', (window.innerWidth - 100) + 'px');
+				}
+				else {
+            		h.text('<-- JUMP');
+            		h.css('left', '20px');
+				}
+            });
+			var navhelper = $('#navhelper');
+			navhelper.on('mouseover', function(){
+				$('#navhelper').css('opacity', '1');
+			});
+			navhelper.on('mouseout', function(){
+				$('#navhelper').css('opacity', '0.1');
+			});
+			navhelper.on('click', function() {
+				if (window.scrollX < ($(document).width() - window.innerWidth) / 2) {
+					window.scrollTo(2000, window.scrollY);
+				}
+				else {
+					window.scrollTo(0, window.scrollY);
+				}
+			});
+			$('#region').on('change', function(e){
+			    document.location.href = "{{ path("aw_manager_manualparser_switchregion", {}) }}?r=" + e.target.value;
+            });
+            {% if options.jv == '1' %}
+                var list = $("pre[id^='json-renderer-']");
+                for (var i = 0; i < list.length; i++) {
+                    var value = list.get(i).innerText;
+                    if (value.length > 0) {
+                        var id = "#" + list.get(i).getAttribute('id');
+                        $(id).jsonViewer(JSON.parse(value), {collapsed: false, withQuotes: false, withLinks: false});
+                    }
+                }
+            {% endif %}
+            {% if options.sh == '1' %}
+            $('select[multiple]').find('option[value="all"]').remove();
+            $('select[multiple]').multiselect({
+                columns: 1,
+                search: false,
+                selectAll: true
+            });
+            $('input[value="parsed_all"]').on('change',function(){
+                $('input[value="parsed_user"]').prop('checked',!($(this).prop('checked')));
+                $('input[value="parsed_auto"]').prop('checked',!($(this).prop('checked')));
+                $('input[value="parsed_user"]').trigger('click');
+                $('input[value="parsed_auto"]').trigger('click');
+            });
+            $('input[value="rejected_all"]').on('change',function(){
+                $('input[value="rejected_user"]').prop('checked',!($(this).prop('checked')));
+                $('input[value="rejected_auto"]').prop('checked',!($(this).prop('checked')));
+                $('input[value="rejected_user"]').trigger('click');
+                $('input[value="rejected_auto"]').trigger('click');
+            });
+            {% endif %}
+        });
+    </script>
+    <link rel="stylesheet" href="{{ asset('/assets/awardwalletmain/css/flags.css') }}?id=1"/>
+    {% if region starts with 'us' %}
+        <div class="flag_mini us" title="US"></div>
+    {% elseif region starts with 'eu' %}
+        <div class="flag_mini eu" title="EU"></div>
+    {% endif %}
+    {% for flashMessage in app.session.flashbag.get('notice') %}
+        <div class="flash-message">
+            <em>Notice</em>: {{ flashMessage }}
+        </div>
+    {% endfor %}
+    <div id="navhelper" style="display: none; padding:10px;opacity:0.1;position:fixed;background-color: pink; border: black solid 1px;top:50%;"></div>
+    <a href='{{ path("aw_manager_manualparser_filters", {}) }}'>Filters ></a>
+    {# <a href="/manager/email/parser/filters">Filters</a> #}
+    {% if inputValues.show|length > 1 or  'all' in inputValues.show %}
+        <a href='#' style='margin-left: 100px;' class='mp_tt'>Colors?
+            <table class="mp_table" cellspacing="0" cellpadding="0">
+                <tr>
+                    <td class='mp bothBorder'>New</td>
+                </tr>
+                <tr class="parsed">
+                    <td class='mp bothBorder'>Parsed</td>
+                </tr>
+                <tr class="rejected">
+                    <td class='mp bothBorder'>Rejected</td>
+                </tr>
+                <tr class="process">
+                    <td class='mp bothBorder'>Process</td>
+                </tr>
+                <tr class="restricted">
+                    <td class='mp bothBorder'>Restricted</td>
+                </tr>
+                <tr class="skipped">
+                    <td class='mp bothBorder'>Skipped</td>
+                </tr>
+                <tr class="timeout">
+                    <td class='mp bothBorder'>Timeout</td>
+                </tr>
+            </table>
+        </a>
+    {% endif %}
+    <a href="#" style="margin-left:100px;" onclick="return selectByIDs();">Select by IDs</a>
+    {% if preview %}
+        <a style="margin-left:100px; margin-right: 50px;" href="{{ path("aw_manager_manualparser_switchpreview", {"preview" : "false"}) }}">Turn preview OFF</a>
+    {% else %}
+        <a style="margin-left:100px; margin-right: 50px;" href="{{ path("aw_manager_manualparser_switchpreview", {"preview" : "true"}) }}">Turn preview ON</a>
+    {% endif %}
+
+    {% if kind != "parse" %}
+        {% set l1 %}
+            <a href="{{ path("aw_manager_manualparser_list", {"kind":"parse", "show":"all" }) }}">PARSE</a>
+        {% endset %}
+    {% endif %}
+    {% if kind != 'scan' %}
+        {% set l2 %}
+            <a href="{{ path("aw_manager_manualparser_list", {"kind":"scan", "show":"all" }) }}">SCAN</a>
+        {% endset %}
+    {% endif %}
+    {% if kind != 'all' %}
+        {% set l3 %}
+            <a href="{{ path("aw_manager_manualparser_list", {"kind":"all", "show":"all" }) }}">ALL</a>
+        {% endset %}
+    {% endif %}
+    Go to:
+    {{ l1 ?? l2 }}
+    |
+    {{ l3 ?? l2 }}
+    <a style="margin-left:100px;" href="#" onclick="return toggleAdvancedSearch()">Toggle advanced</a>
+    <form name="findRequestId" method="post" style="display: inline; margin-left:100px;"><input type="text" name="requestId"><input type="submit" style="cursor:pointer;" value="find requestId"></form>
+    <select id="region">
+        {% for r in regions %}
+            <option value="{{ r }}" {% if region == r %} selected{% endif %}>{{ r }}</option>
+        {% endfor %}
+    </select>
+    <table class="mp_table" cellspacing="0" cellpadding="0" width="98%">
+        <tr class="caption">
+            <td class='mp bothBorder'></td>
+            <td class="mp rightBorder"><a href='#'
+                                          onclick="return sortList('id');">ID</a>{{ _self.sort_icon('id', inputValues.sort, inputValues.direction) }}
+            </td>
+            {% if options.order == 'dsftptpdu' %}
+            <td class="mp rightBorder"><a href="#"
+                                          onclick="return sortList('date');">Date</a>{{ _self.sort_icon('date', inputValues.sort, inputValues.direction) }}
+            {% endif %}
+            <td class="mp rightBorder">Subject</td>
+            <td class="mp rightBorder">From</td>
+            <td class="mp rightBorder">To</td>
+            <td class="mp rightBorder"><a href="#"
+                                          onclick="return sortList('partner');">Partner</a>{{ _self.sort_icon('partner', inputValues.sort, inputValues.direction) }}
+            </td>
+            <td class="mp rightBorder"><a href="#"
+                                          onclick="return sortList('provider');">Provider</a>{{ _self.sort_icon('provider', inputValues.sort, inputValues.direction) }}
+            </td>
+            <td class="mp rightBorder">User Data</td>
+            {% if options.order != 'dsftptpdu' %}
+            <td class="mp rightBorder"><a href="#"
+                                          onclick="return sortList('date');">Date</a>{{ _self.sort_icon('date', inputValues.sort, inputValues.direction) }}
+            </td>
+            {% endif %}
+            <td class="mp rightBorder"></td>
+        </tr>
+        <tr>
+            {% if notice == 'soon' %}
+            <td class='mp bothBorder' colspan="10" style='background-color: #ffc; padding: 3px 5px;'>
+                <span>Scheduled reindexing will take place soon, during this time displayed data may not be correct</span>
+            </td>
+            {% elseif notice == 'now' %}
+            <td class='mp bothBorder' colspan="10" style='background-color: #ff8282; padding: 3px 5px;'>
+                <b style="text-shadow: none;">Scheduled reindexing is in progress, displayed data may not be correct.</b>
+            </td>
+            {% endif %}
+        </tr>
+        <form method='GET' id='search_form'>
+            <input type='hidden' name='sort' id='sort' value='{{ inputValues.sort }}'>
+            <input type='hidden' name='direction' id='direction' value='{{ inputValues.direction }}'>
+            <input type="hidden" name="preview" value="{{ preview | json_encode }}">
+            <input type="hidden" name="region" value="{{ region }}">
+            <tr class='filters'>
+                <td class="mp bothBorder" style='text-align: center;'><input style='width: inherit' type='checkbox'
+                                                                             name='selAll' value=''
+                                                                             onclick="checkBoxes(this.checked);"></td>
+                <td class="mp rightBorder"><input type='text' name='id' value="{{ inputValues.id }}"></td>
+                {% if options.order == 'dsftptpdu' %}
+                    <td class="mp rightBorder">
+                        {% set widget = 'single_text' %}
+                        {% set attr = { } %}
+                        {% set name = 'datePick' %}
+                        {% set value = inputValues.date %}
+                        {% set id = 'datePickId' %}
+                        {% set full_name = 'date' %}
+                        {% set required = false %}
+                        {% set pattern = '' %}
+                        {{ block('date_widget') }}
+                    </td>
+                {% endif %}
+                <td class="mp rightBorder"><input type='text' name='subject' value="{{ inputValues.subject }}"></td>
+                <td class="mp rightBorder"><input type='text' name='from' value="{{ inputValues.from }}"></td>
+                <td class="mp rightBorder"><input type='text' name='to' value="{{ inputValues.to }}"></td>
+                <td class="mp rightBorder">
+                    <select name='partner' {% if options.rPar == '1' %}onchange='$("#fader").show(); $("form#search_form").submit();'{% endif %}>
+                        <option value="">Select partner</option>
+                        {% for partner in partners %}
+                            <option value="{{ partner }}" {% if partner == inputValues.partner %} selected{% endif %}>{{ partner }}</option>
+                        {% endfor %}
+                    </select>
+                </td>
+                <td class="mp rightBorder">
+                    <select name='providerId' {% if options.rProv == '1' %}onchange='$("#fader").show(); $("form#search_form").submit();'{% endif %}>
+                        <option value="">Select provider</option>
+                        {% for provider in providers %}
+                            <option value="{{ provider.ID }}" {% if provider.ID == inputValues.providerId %} selected{% endif %}>{{ provider.Name }}</option>
+                        {% endfor %}
+                    </select>
+                </td>
+                <td class="mp rightBorder"><input type="text" name="userData" value="{{ inputValues.userData }}"></td>
+                {% if options.order != 'dsftptpdu' %}
+                <td class="mp rightBorder">
+                    {% set widget = 'single_text' %}
+                    {% set attr = { } %}
+                    {% set name = 'datePick' %}
+                    {% set value = inputValues.date %}
+                    {% set id = 'datePickId' %}
+                    {% set full_name = 'date' %}
+                    {% set required = false %}
+                    {% set pattern = '' %}
+                    {{ block('date_widget') }}
+                </td>
+                {% endif %}
+                <td class='mp rightBorder'>
+                    <input style='cursor:pointer; width: auto;' type='submit' value='Search'>
+                    <button style="cursor:pointer;" onclick="$('#fader').show(); $('tr.filters input').val(''); $('tr.filters select').val(''); $('#search_form').submit(); return false;">
+                        Clear
+                    </button>
+                    <select style='width: auto;'
+                            {% if options.sh == '1' %}name='show[]'  multiple size="1"
+                            onclick='$(this).prop("size",12);'
+                            {% else %}name='show[]'
+                            onchange='$("#fader").show(); $("form#search_form").submit();'
+                            {% endif %}>
+                        {% set showOpts = {
+                        'new' : 'Review',
+                        'parsed_all' : 'Parsed messages',
+                        'parsed_user' : ' -> Parsed by user',
+                        'parsed_auto' : ' -> Parsed automatically',
+                        'rejected_all' : 'Rejected messages',
+                        'rejected_user' : ' -> Rejected by user',
+                        'rejected_auto' : ' -> Auto-rejected',
+                        'restricted' : 'Restricted',
+                        'process' : 'In process',
+                        'skipped' : 'Skipped',
+                        'timeout' : 'Timeout',
+                        'all' : 'All'
+                        } %}
+                        {% for key, cap in showOpts %}
+                            <option value='{{ key }}'{% if key in inputValues.show %} selected {% endif %}>{{ cap }}</option>
+                        {% endfor %}
+                    </select>
+                    {% set methodCond = {
+                        'parser' :     'parser',
+                        'ml' :         'ml',
+                        'ml_parsed' :  '  -> has data',
+                        'ml_empty' :   '  -> empty',
+                        'gpt' :        'gpt',
+                        'gpt_valid':   '  -> valid',
+                        'gpt_parsed' : '  -> has data',
+                        'gpt_empty' :  '  -> empty'
+
+                    } %}
+                    <select id="method" name="method">
+                        <option value="">all</option>
+                        {% for key, cap in methodCond %}
+                            <option value='{{ key }}'{% if key == inputValues.method %} selected {% endif %}>{{ cap }}</option>
+                        {% endfor %}
+                    </select>
+                </td>
+            </tr>
+            <tr class="filters advanced_filters" {% if not advanced %}style="display: none;"{% endif %}>
+                <td class="mp bothBorder"></td>
+                <td class="mp rightBorder"></td>
+                {% if options.order == 'dsftptpdu' %}
+                    <td class="mp rightBorder"></td>
+                {% endif %}
+                <td class="mp rightBorder"><input type='text' name='subjectAdv' value="{{ inputValues.subjectAdv }}"></td>
+                <td class="mp rightBorder"><input type='text' name='fromAdv' value="{{ inputValues.fromAdv }}"></td>
+                <td class="mp rightBorder"><input type='text' name='toAdv' value="{{ inputValues.toAdv }}"></td>
+                <td class="mp rightBorder"><input type='text' name='partnerAdv' value="{{ inputValues.partnerAdv }}"></td>
+                <td class="mp rightBorder"><input type="text" name="providerAdv" value="{{ inputValues.providerAdv }}"></td>
+                <td class="mp rightBorder"><input type="text" name="userDataAdv" value="{{ inputValues.userDataAdv }}"></td>
+                {% if options.order != 'dsftptpdu' %}
+                <td class="mp rightBorder"></td>
+                {% endif %}
+                <td class='mp rightBorder'></td>
+            </tr>
+            <tr class='select_all' style='display: none;'>
+                <td class='mp bothBorder' colspan="10" style='background-color: #ffc; padding: 3px 5px;'>
+                    <div id='s_all_1'>
+                        All <b id='page_count'></b> messages on this page are selected. <a href='#'
+                                                                                           onclick='return selectInSearch();'>Select
+                            all messages in current search</a>
+                    </div>
+                    <div id='s_all_2'>
+                        All messages in current search are selected. <a href='#' onclick='return clearSelection();'>Clear
+                            selection</a>
+                    </div>
+                </td>
+            </tr>
+        </form>
+        <form method='POST' id='select_form'>
+            {% for email in list %}
+                {% if inputValues.show != 'new' %}
+                    {% if email.userId == "0" %}
+                        {% set title = "Processed at " ~ email.processDate %}
+                    {% else %}
+                        {% set title = "Processed at " ~ email.processDate ~ " by " ~ email.userId %}
+                    {% endif %}
+                {% else %}
+                    {% set title = '' %}
+                {% endif %}
+                {% if states[email.state] is defined %}
+                    {% set class = states[email.state] %}
+                {% else %}
+                    {% set class = 'other' %}
+                {% endif %}
+                <tr class='list_row {{ class }} {% if email.kind == 2 %}scan{% endif %}' data-id="{{ email.id }}">
+                <td class="mp bothBorder"><input type='checkbox' class='sel' name='sel{{ email.id }}'
+                                                     value='{{ email.id }}' onclick='mpChecked({{ email.id }});'></td>
+                    <td class="mp rightBorder"><a title="{{ title }}" href="{{ path('aw_manager_manualparser_getemail', {'id': email.id, 'region': region}) }}">{{ email.id }}</a>
+                        {# {% if email.state > 5 %}<a class="mp_tt" href="#">?<span>{{ states[email.state] }}</span></a>{% endif %} #}
+                    </td>
+                    {% if options.order == 'dsftptpdu' %}
+                        <td class="mp rightBorder" title="{{ email.createDateUtc }} UTC">{{ _self.format_date(email.createDate) }}</td>
+                    {% endif %}
+                    <td nowrap class="mp rightBorder subject" onclick="selectRow({{ email.id }})"
+                        title="{{ email.subject }}">
+                        <button class="plus" style="cursor:pointer;" onclick="return showPreview({{ email.id }});">+</button>
+                        {% if preview %}
+                            {% if email.attachmentNested is not null %}
+                                {% if email.attachmentPdf > 0 %}
+                                <span class="mp_icon mp_icon_pdf"></span>
+                                {% endif %}
+                                {% if email.attachmentImage > 0 %}
+                                <span class="mp_icon mp_icon_image"></span>
+                                {% endif %}
+                                {% if email.attachmentNested or (email.emailMessageParentId is not null) %}
+                                <span class="mp_icon mp_icon_nested_email"></span>
+                                {% endif %}
+                            {% else %}
+                                <span class="mp_icon mp_icon_question_mark"></span>
+                            {% endif %}
+                            <b {% if email.attachmentNested %}style="color: blue;"{% endif %}>{{ email.subject[:70] }}{% if email.subject|length > 70 %}...{% endif %}</b><br><span style="opacity: 0.8;">{% if email.emailMessageParentId is not null %}// Parent Message ID: {{ email.emailMessageParentId }} // {% endif %}{{ email.preview }}</span>
+                    {% else %}
+                        {{ email.subject[:70] }}{% if email.subject|length > 70 %}...{% endif %}
+                    {% endif %}
+                    </td>
+                    <td nowrap class="mp rightBorder from" onclick="selectRow({{ email.id }})"
+                        title="{{ email.from }}">{{ email.from[:70] }}{% if email.from|length > 70 %}...{% endif %}</td>
+                    <td nowrap class="mp rightBorder" onclick="selectRow({{ email.id }})"
+                        title="{{ email.to }}">{{ email.to[:70] }}{% if email.to|length > 70 %}...{% endif %}</td>
+                    <td class="mp rightBorder partner">{{ email.partner }}</td>
+                    <td class="mp rightBorder" ondblclick="return showPreview({{ email.id }});">{{ email.providerName }}</td>
+                    <td class="mp rightBorder">{{ email.userData }}</td>
+                    {% if options.order != 'dsftptpdu' %}
+                    <td class="mp rightBorder" title="{{ email.createDateUtc }} UTC">{{ _self.format_date(email.createDate) }}</td>
+                    {% endif %}
+                    <td class="mp rightBorder">
+                        <a class='show' href='#'
+                           onclick="return showPreview({{ email.id }});">View</a>
+                        {% if email.allowDelete %}
+                            | <a href="{{ path("aw_manager_manualparser_delete", {"id": email.id}) }}">Delete</a>
+                        {% endif %}
+                        |
+                        <a href="/manager/emailadmin/history/{{ email.id }}?region={{ region }}" target="_blank">History</a>
+                        |
+                        <a href="/manager/emailadmin/check/index/{{ email.id }}?region={{ region }}" target="_blank">Check</a>
+                    </td>
+                </tr>
+                <tr class='email_preview bothBorder' style='display: none; vertical-align: top;'>
+                    <td class='mp bothBorder' colspan="7">
+                        <a href="#" onclick="return showPreview({{ email.id }});" style="margin-right: 20px;">Close</a>
+                        {% if not loop.first %}
+                        <a href="#" onclick="return prevPreview({{ email.id }});" style="margin-right: 20px;"> {{ '<--' | escape }} </a>
+                        {% endif %}
+                        {% if not loop.last %}
+                        <a href="#" onclick="return nextPreview({{ email.id }});"> {{ '-->' | escape }} </a>
+                        {% endif %}
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        <button style='cursor:pointer;font-size: 110%;padding:0;background:none;border:none;color:gray;margin-right: 20px;' title="Copy source to buffer" onclick="copySource({{ email.id }}); return false;">&nbsp;❒ Copy</button>
+                        <a href="{{ path('aw_manager_manualparser_getemail', {'id': email.id, 'region': region}) }}" style='font-size: 110%;padding:0;background:none;border:none;color:gray;text-decoration: none;margin-right: 15px;' title="If you can't recognize email content, try downloading whole email">&nbsp;❒ Download</a>
+                        <a href="#" target="_blank" style='font-size: 110%;padding:0;background:none;border:none;color:gray;text-decoration: none;'>&nbsp;❒ Inspect</a>
+                        <a href="/manager/emailadmin/payload/{{ email.id }}" target="_blank" style='font-size: 110%;padding:0;background:none;border:none;color:gray;text-decoration: none;'>&nbsp;❒ Get raw payload</a>
+                        <br/>
+                        <select onchange="return changePreview(this);" id="body_select_{{ email.id }}" data-loaded="">
+                            <option value="{{ path('aw_manager_manualparser_emailframe', {'id': email.id, 'region': region}) }}">Body</option>
+                        </select>
+                        <div class='email_html' id="email_html_{{ email.id }}">
+                            <iframe style="height: 800px; width: 100%;">
+                            </iframe>
+                        </div>
+                    </td>
+                    <td colspan="3" class='mp rightBorder' style="height:500px;white-space: nowrap;">
+                        <a href="#" onclick="$('#json-renderer-{{ email.id }}-2').hide(); $('#json-renderer-{{ email.id }}').show(); return false;" style='padding:0;background:none;border:none;color:gray;text-decoration: none;'>&nbsp;❒ Response</a>
+                        {% if email.parser is defined %}
+                        <a href="#" onclick="$('#json-renderer-{{ email.id }}').hide(); $('#json-renderer-{{ email.id }}-2').show(); return false;" style='padding:0;background:none;border:none;color:gray;text-decoration: none;'>&nbsp;❒ {{ email.parser }}</a>
+                        {% endif %}
+                        <div  style="width: auto;height:850px;overflow-y: scroll;">
+                        <pre id="json-renderer-{{ email.id }}">{{ email.parsedJson }}</pre>
+                        <pre id="json-renderer-{{ email.id }}-2" style="display: none;">{{ email.parsedData }}</pre>
+                        </div>
+                    </td>
+                </tr>
+            {% endfor %}
+            <tr>
+                <td colspan='10' style="padding-top: 5px;">
+                    {% if kind != "scan" %}
+                        <button id='markRestricted' onclick='junkAll("restrict"); return false;'>Mark selected as Restricted</button>
+                        <button style="display:none;" onclick='junkAll("timeout"); return false;'>Timeout and delete selected</button>
+                    {% endif %}
+                    <button id='markJunk' onclick='junkAll("reject"); return false;'>Mark selected as Junk</button>
+                    {% if kind != "scan" %}
+                    <button id='markSkipped' onclick='junkAll("skip"); return false;'>Mark selected as Skipped</button>
+                    {% endif %}
+                    <button onclick='parseAll(); return false;'>Send selected to Parse</button>
+                    <button onclick='sendStaffAll(); return false;' style="float: right;">Send selected to ME</button>
+                </td>
+            </tr>
+            <input type='hidden' name='auto' id='auto' value='0'>
+            <input type='hidden' name='actionMany' id='actionMany' value=''>
+            <input type='hidden' name='selected_all' id='selected_all' value=''>
+            <input type='hidden' name='member' id='member' value=''>
+        </form>
+    </table>
+    <div style="margin: 0 auto; width: 200px;">
+        <table>
+            <tr>
+                {% if pages.first is defined %}
+                    <td><a href="{{ pages.first }}">1</a> ...</td>
+                {% endif %}
+                {% if pages.prev is defined %}
+                    <td><a href="{{ pages.prev }}"> < Prev</a></td>
+                {% endif %}
+                <td>{{ pages.current }}</td>
+                {% if pages.next is defined %}
+                    <td><a href="{{ pages.next }}"> Next > </a></td>
+                {% endif %}
+
+            </tr>
+        </table>
+    </div>
+    <p title="{{ meta|json_encode }}">
+        Search result count: {% if meta.total_found is defined %} {{ meta.total_found }} {% else %} error {% endif %}
+    </p>
+    {% if aaPartners | length > 0 %}
+        <p>Partners that can parse AA emails: {{ aaPartners | join(', ') }}</p>
+    {% endif %}
+    <p>
+        <a href="#" id="options_button">Options</a>
+    </p>
+    <div id="options_popup" style="display: none; position: absolute; background: white; border: black solid 1px; padding: 20px;">
+        <table>
+            {% for op in optionList %}
+                <tr>
+                    <td><span>{{ op.desc }}</span></td>
+                    <td><select name="{{ op.name }}">
+                            {% for val, desc in op.options %}
+                                <option value="{{ val }}" {% if options[op.name] == val %}selected{% endif %}>{{ desc }}</option>
+                            {% endfor %}
+                        </select></td>
+                </tr>
+            {% endfor %}
+        </table>
+        <button id="options_save">Save</button>
+    </div>
+    <!--
+    <p>
+        Latest queue metric: <span id="metric">Loading...</span><br>
+        <a id="metric_button" href="#">Toggle graph</a>
+    </p>
+    <div id="metric_graph" style="display: none;width: 1500px; height: 500px;"></div>
+    <div id='fader'
+         style="display: none; padding-left: 50%; padding-top: 150px; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: white; -ms-filter: \'progid:DXImageTransform.Microsoft.Alpha(Opacity=80)\'; filter: alpha(opacity=80); opacity: 0.8; z-index: 100;">
+        <h3>Loading...</h3>
+    </div>
+    -->
+    <div id="mark-dialog" title="Select action" style="display: none;">
+        <p><span class="ui-icon ui-icon-alert" style="float:left; margin:0 7px 20px 0;"></span>
+            Mark selected emails as:</p>
+    </div>
+    <div id="copy-dialog" title="Copy result"  style="display: none; text-align: center; vertical-align: middle">
+    <p></p>
+    </div>
+    <style>
+        #prompt-form {
+            display: inline-block;
+            /*padding: 5px 5px 5px 50px;*/
+            /*width: 30%;*/
+            /*height: 75pt;*/
+            border: 1px solid black;
+            background: white no-repeat left 5px;
+            vertical-align: middle;
+            background-color: rgba(255, 246, 186, 0.98);
+        }
+
+        #prompt-form-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 9999;
+            width: 100%;
+            height: 100%;
+            text-align: center;
+        }
+
+        #prompt-form-container:before {
+            display: inline-block;
+            height: 100%;
+            content: '';
+            vertical-align: middle;
+        }
+
+        #prompt-form input[name="text"] {
+            display: block;
+            margin: 5px;
+            width: 90%;
+            height: 40%;
+            background-color: rgba(255, 251, 233, 0.98);
+        }
+    </style>
+    <script>
+        function showCover() {
+            var coverDiv = document.createElement('div');
+            coverDiv.id = 'cover-div';
+            document.body.appendChild(coverDiv);
+        }
+
+        function hideCover() {
+            document.body.removeChild(document.getElementById('cover-div'));
+        }
+
+        function showPrompt(text, callback) {
+            showCover();
+            var form = document.getElementById('prompt-form');
+            var container = document.getElementById('prompt-form-container');
+            document.getElementById('prompt-message').innerHTML = text;
+            form.elements.text.value = '';
+
+            function complete(value) {
+                hideCover();
+                container.style.display = 'none';
+                document.onkeydown = null;
+                callback(value);
+                if (value !== null) {
+                    $('input#member').val(value);
+                    $('input#actionMany').val('sendStaff');
+                    $('#fader').show();
+                    $('form#select_form').submit();
+                }
+                return false;
+            }
+
+            form.onsubmit = function() {
+                var value = form.elements.text.value;
+                var re = /^[a-zA-Z0-9\-_]*$/;
+                if (re.exec(value))
+                    complete(value);
+                else {
+                    alert('wrong family member format');
+                    complete(null);
+                }
+                return false;
+            };
+
+            form.elements.cancel.onclick = function() {
+                complete(null);
+            };
+
+            document.onkeydown = function(e) {
+                if (e.keyCode == 27) { // escape
+                    complete(null);
+                }
+            };
+
+            var lastElem = form.elements[form.elements.length - 1];
+            var firstElem = form.elements[0];
+
+            lastElem.onkeydown = function(e) {
+                if (e.keyCode == 9 && !e.shiftKey) {
+                    firstElem.focus();
+                    return false;
+                }
+            };
+
+            firstElem.onkeydown = function(e) {
+                if (e.keyCode == 9 && e.shiftKey) {
+                    lastElem.focus();
+                    return false;
+                }
+            };
+
+            container.style.display = 'block';
+            form.elements.text.focus();
+        }
+    </script>
+    <div id="prompt-form-container" style="display: none;">
+        <form id="prompt-form" _lpchecked="1">
+            <div id="prompt-message">Enter Family member</div>
+            <input name="text"/>
+            <input type="submit" value="Ok"/>
+            <input type="button" name="cancel" value="Cancel"/>
+            <p style="font-size: smaller; color: grey;">
+                Email will be sent as if from the mailbox scanner
+            </p>
+        </form>
+
+    </div>
+
+{% endblock %}

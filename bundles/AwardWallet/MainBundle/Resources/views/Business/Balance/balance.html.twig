@@ -1,0 +1,198 @@
+{% extends "@AwardWalletMain/Layout/business_default.html.twig" %}
+
+{% block javascripts %}
+    {{ parent() }}
+{% endblock %}
+
+{% block content %}
+    <div class="main-blk">
+        <h1>{{ 'business.current-credits'|trans|desc("Current Remaining AwardWallet Credit") }}: <span>{{ business.businessInfo.balance|formatCurrency('USD', false) }}</span></h1>
+
+        <div class="main-blk-content">
+            {% if not business.businessInfo.isTrial() %}
+                <div class="info-pricing">
+                    <p>
+                        <i class="icon-info-small"></i>
+                        <span>
+                            {% if estimated < 0 %}
+                                {{ 'business.insufficient-balance'|trans|desc('Insufficient balance.') }}
+                            {% elseif estimated == 0 %}
+                                {{ 'business.estimated.less-of-month'|trans({'%balance%': business.businessInfo.balance|formatCurrency('USD', false), '%monthly_pay%': recommendedMonthlyPayment|formatCurrency('USD', false), '%month%': estimated})|desc('Your balance of %balance% will not cover the cost of the business interface next month. You would need at least %monthly_pay% to pay for the outstanding members that are part of your business interface assuming the number of users that are part of your account stays the same.') }}
+                            {% elseif estimated >= 12 %}
+                                {{ 'business.estimated.greater-of-year'|trans({'%balance%': business.businessInfo.balance|formatCurrency('USD', false)})|desc('Your balance of %balance% should cover the cost of the business interface for about 12 more months, assuming the number of users are part of your account stays the same.') }}
+                            {% else %}
+                                {{ 'business.estimated'|trans({'%count%': estimated, '%balance%': business.businessInfo.balance|formatCurrency('USD', false), '%month%': estimated})|desc('Your balance of %balance% should cover the cost of the business interface for about 1 more month, assuming the number of users are part of your account stays the same.|Your balance of %balance% should cover the cost of the business interface for about %month% more months, assuming the number of users are part of your account stays the same.') }}
+                            {% endif %}
+                        </span>
+                    </p>
+                </div>
+            {% endif %}
+
+            <div class="title-note">
+                <h3>{{ 'business.total-members-cost.title'|trans|desc('AwardWallet business account fixed monthly cost') }}</h3>
+            </div>
+            <table class="main-table pricing">
+                <tbody>
+                <tr>
+                    <td>{{ 'business.total-members'|trans|desc('Total Business members') }}:</td>
+                    <td class="amount"><span class="bold">{{ membersCount|formatNumber }}</span></td>
+                </tr>
+                <tr>
+                    <td>{{ 'business.members-price'|trans|desc('Price per user per month') }}:</td>
+                    <td class="amount"><span class="bold">{{ membersPrice|formatCurrency('USD', false) }}</span></td>
+                </tr>
+                <tr>
+                    <td><span class="bold">{{ 'business.total-members-cost'|trans|desc('Total fixed monthly cost') }}:</span></td>
+                    <td class="amount"><span class="bold">{{ membersCost|formatCurrency('USD', false) }}</span></td>
+                </tr>
+                {% if membersDiscount %}
+                    <tr>
+                        <td><span class="bold red">{{ 'discount'|trans|desc('Discount') }}:</span></td>
+                        <td class="amount"><span class="bold red">{{ membersDiscount|formatNumber }}% ({{ (membersCost - membersCostDiscounted)|formatCurrency('USD', false) }})</span></td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <span class="bold">{{ 'business.total-members-cost.discount'|trans|desc('Fixed monthly cost after discount') }}:</span></td>
+                        <td class="amount"><span class="bold">{{ membersCostDiscounted|formatCurrency('USD', false) }}</span></td>
+                    </tr>
+                {% endif %}
+                </tbody>
+            </table>
+            <div class="title-note no-border">
+                <h3>{{ 'business.total-plus-members-cost.title'|trans|desc('AwardWallet business account variable monthly cost') }}</h3>
+            </div>
+            <table class="main-table pricing">
+                <tbody>
+                <tr>
+                    <td>{{ 'business.total-plus-members'|trans|desc('Total users to keep upgraded to Awardwallet Plus') }}:
+                    </td>
+                    <td class="amount"><span class="count-silver red">{{ plusCount|formatNumber }}</span></td>
+                </tr>
+                </tbody>
+            </table>
+            <table class="main-table pricing">
+                <tbody>
+                <tr>
+                    <td>{{ 'business.plus-price'|trans|desc('Price per 12 months') }}:</td>
+                    <td class="amount"><span class="bold">{{ plusPrice|formatCurrency('USD', false) }}</span></td>
+                </tr>
+                <tr>
+                    <td>{{ 'business.total-plus-members-cost'|trans|desc('Variable monthly cost') }}:</td>
+                    <td class="amount"><span class="bold">{{ plusCost|formatCurrency('USD', false) }}</span></td>
+                </tr>
+                </tbody>
+            </table>
+            <div class="info-pricing">
+                <i class="icon-info-small"></i>
+                <span>{{ 'business.total-plus-members-cost.info'|trans|desc('If users find coupons online to upgrade themselves (or pay on their own) you will not be charged to keep them upgraded. You are only charged $5 if AwardWallet Plus membership of the users that you wish to keep upgraded expires') }}.</span>
+            </div>
+
+            {% if business.isBooker() %}
+                <div class="title-note">
+                    <h3>{{ 'business.booking-cost.title'|trans|desc('AwardWallet booking account cost') }}</h3>
+                </div>
+                <table class="main-table pricing">
+                    <tbody>
+                    <tr>
+                        <td>{{ 'business.booking-price'|trans|desc('Price per successfully booked request') }}:</td>
+                        <td class="amount"><span class="bold">{{ abRequestPrice|formatCurrency('USD', false) }}</span></td>
+                    </tr>
+                    <tr>
+                        <td>{{ 'business.booking-paid-count'|trans|desc('Number of closed booking requests last month') }}:</td>
+                        <td class="amount"><span class="bold">{{ abRequestCount|formatNumber }}</span></td>
+                    </tr>
+                    <tr>
+                        <td><span class="bold">{{ 'business.booking-cost'|trans|desc('Estimated monthly cost of booking interface') }}:</span></td>
+                        <td class="amount"><span class="bold">{{ abRequestCost|formatCurrency('USD', false) }}</span></td>
+                    </tr>
+                    {% if abRequestDiscount %}
+                        <tr>
+                            <td><span class="bold red">{{ 'discount'|trans|desc('Discount') }}:</span></td>
+                            <td class="amount"><span class="bold red">{{ abRequestDiscount|formatNumber }}% ({{ (abRequestCost-abRequestCostDiscounted)|formatCurrency('USD', false) }})</span></td>
+                        </tr>
+                        <tr>
+                            <td><span class="bold">{{ 'business.booking-cost.discount'|trans|desc('Estimated monthly cost of booking interface after discount') }}:</span></td>
+                            <td class="amount"><span class="bold">{{ abRequestCostDiscounted|formatCurrency('USD', false) }}</span>
+                            </td>
+                        </tr>
+                    {% endif %}
+                    </tbody>
+                </table>
+            {% endif %}
+
+            <div class="title-note">
+                <h3>{{ 'business.transactions.title'|trans|desc('Transactions') }}</h3>
+            </div>
+            <table class="main-table pricing">
+                <thead>
+                <tr>
+                    <th>{{ 'business.transactions.date'|trans|desc('Date') }}</th>
+                    <th>{{ 'business.transactions.desc'|trans|desc('Transaction Description') }}</th>
+                    <th>{{ 'business.transactions.amount'|trans|desc('Amount') }}</th>
+                    <th>{{ 'business.transactions.balance'|trans|desc('Remaining AwardWallet Credits') }}</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% if pagination.count > 0 %}
+                    {% for transaction in pagination %}
+                        <tr{% if transaction is instanceof('\\AwardWallet\\MainBundle\\Entity\\BusinessTransaction\\Payment') %} class="green"{% endif %}>
+                            <td class="date">{{ transaction.createDate|formatDatetime('short', null) }}</td>
+                            <td class="description">
+                                {% if transaction is instanceof('\\AwardWallet\\MainBundle\\Entity\\BusinessTransaction\\MembershipRenewed') %}
+                                    {{ 'business.transaction.membership-renewed'|trans({'%date%': transaction.sourceDesc|formatDatetime('short', 'none')})|desc('Membership renewed to %date%') }}
+                                {% elseif transaction is instanceof('\\AwardWallet\\MainBundle\\Entity\\BusinessTransaction\\UpgradedToAwPlus') %}
+                                    {{ 'business.transaction.upgraded-to-plus'|trans({'%name%': transaction.sourceDesc})|desc('Upgraded %name% to AwardWallet Plus') }}
+                                {% elseif transaction is instanceof('\\AwardWallet\\MainBundle\\Entity\\BusinessTransaction\\AbRequestClosed') %}
+                                    {{ 'business.transaction.request-closed'|trans({'%request%': transaction.sourceDesc})|desc('Booking request #%request% closed') }}
+                                {% elseif transaction is instanceof('\\AwardWallet\\MainBundle\\Entity\\BusinessTransaction\\Payment') %}
+                                    {{ 'business.transaction.payment'|trans|desc('AwardWallet Business Interface Credits purchased') }}
+                                {% elseif transaction is instanceof('\\AwardWallet\\MainBundle\\Entity\\BusinessTransaction\\BalanceWatchStart') %}
+                                    {{ 'business.balancewatch.transaction-start'|trans({
+                                        '%link_account_on%' : '<a class="blue-link" href="' ~ url('aw_account_list') ~ '/?filterAccount=' ~ transaction.sourceDesc.login ~ '">',
+                                        '%link_account_off%': '</a>',
+                                        '%providerName%'    : transaction.sourceDesc.provider,
+                                        '%accountLogin%'    : transaction.sourceDesc.login,
+                                        '%userFullname%'    : transaction.sourceDesc.username
+                                    })|raw }}
+                                {% elseif transaction is instanceof('\\AwardWallet\\MainBundle\\Entity\\BusinessTransaction\\BalanceWatchRefund') %}
+                                    {{ 'business.balancewatch.transaction-refund'|trans({
+                                        '%link_account_on%' : '<a class="blue-link" href="' ~ url('aw_account_list') ~ '/?filterAccount=' ~ transaction.sourceDesc.login ~ '">',
+                                        '%link_account_off%': '</a>',
+                                        '%providerName%'    : transaction.sourceDesc.provider,
+                                        '%accountLogin%'    : transaction.sourceDesc.login,
+                                        '%userFullname%'    : transaction.sourceDesc.username
+                                    })|raw }}
+                                {% endif %}
+                            </td>
+                            {% if transaction is instanceof('\\AwardWallet\\MainBundle\\Entity\\BusinessTransaction\\Payment') %}
+                                <td class="amount"><span class="bold">{{ transaction.amount|formatCurrency('USD', false) }}</span></td>
+                            {% else %}
+                                {% if transaction.amount > 0 %}
+                                    <td class=""><span class="bold">({{ transaction.amount|formatCurrency('USD', false) }})</span></td>
+                                {% else  %}
+                                    <td class=""><span class="bold">{{ transaction.amount|formatCurrency('USD', false) }}</span></td>
+                                {% endif %}
+                            {% endif %}
+                            <td>{{ transaction.balance|formatCurrency('USD', false) }}</td>
+                        </tr>
+                    {% endfor %}
+                {% else %}
+                    <tr>
+                        <td colspan="4">{{ 'business.transactions.empty-list'|trans|desc('No records found') }}</td>
+                    </tr>
+                {% endif %}
+                </tbody>
+            </table>
+        </div>
+        {{ aw_pagination_render(pagination) }}
+        {% if app.user is not null and is_granted('ROLE_STAFF') and is_granted('SITE_DEV_MODE') %}
+            <div class="row-submit">
+                <a href="{{ url('aw_business_test_normal_payment') }}" class="btn-blue">Normal Month Payment</a>
+                <a href="{{ url('aw_business_test_partial_payment') }}" class="btn-blue">Partial Month Payment</a>
+                <a href="{{ url('aw_business_test_set_balance', {balance: 10000}) }}" class="btn-blue">Set Balance = 10000</a>
+                <a href="{{ url('aw_business_test_set_balance', {balance: 100}) }}" class="btn-blue">Set Balance = 100</a>
+                <a href="{{ url('aw_business_test_add_payment', {amount: 100}) }}" class="btn-blue">Add Payment = 100</a>
+            </div>
+        {% endif %}
+    </div>
+{% endblock %}

@@ -1,0 +1,68 @@
+{% extends '@AwardWalletMain/Manager/layout.html.twig' %}
+{% set title = "RA Register Queue" %}
+{% set contentTitle = "RA Register Queue" %}
+{% set postUrl = path('aw_manager_loyalty_ra_accounts_register_queue_delete') %}
+{% set postClearUrl = path('aw_manager_loyalty_ra_accounts_register_queue_clear') %}
+
+{% block content %}
+    {% include '@AwardWalletMain/Manager/LoyaltyAdmin/style/ra-register_style.html.twig' %}
+    <section class="container">
+        <div class="form-container">
+            <div class="result">
+                <h2>Log</h2>
+                <code>
+                    {{ log }}
+                </code>
+            </div>
+        </div>
+        <div class="report-container">
+            <div class="report">
+                <h2>Auto-registration queue list</h2>
+                {% if queue %}
+                    <table>
+                        <tbody>
+                            <tr>
+                                <th>Id</th>
+                                <th>Provider</th>
+                                <th>Queue date</th>
+                                <th>Register not earlier date</th>
+                                <th>fields</th>
+                                <th>Action</th>
+                            </tr>
+                            {% for id, record in queue %}
+                                <tr>
+                                    <td>{{ id }}</td>
+                                    <td>{{ record.provider }}</td>
+                                    <td>{{ record.queueDate }}</td>
+                                    <td>{{ record.registerNotEarlierDate }}</td>
+                                    <td>
+                                        {% for key, value in record.fields %}
+                                            {{ key }}: {{ value }} <br/>
+                                        {% endfor %}
+                                    </td>
+                                    <td>
+                                        <form action="{{ postUrl }}" method="post">
+                                            <input type="hidden" name="cluster" value="{{ cluster }}">
+                                            <input type="hidden" name="id" value="{{ id }}">
+                                            <input type="hidden" name="provider" value="{{ record.provider }}">
+                                            <button type="submit">Delete</button>
+                                        </form>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                            <tr><td colspan="6">
+                                    <form action="{{ postClearUrl }}" method="post">
+                                        <input type="hidden" name="cluster" value="{{ cluster }}">
+                                        <input type="hidden" name="provider" value="{{ provider }}">
+                                        <button type="submit">Clear</button>
+                                    </form>
+                                </td></tr>
+                        </tbody>
+                    </table>
+                {% else %}
+                    Empty
+                {% endif %}
+            </div>
+        </div>
+    </section>
+{% endblock %}

@@ -1,0 +1,154 @@
+{% set title = "User accounts" %}
+{% set contentTitle = "" %}
+{% extends '@AwardWalletMain/Manager/layout.html.twig' %}
+
+{% block content %}
+
+    <h2>User accounts</h2><br>
+    <form id="filter" action="{{ path('aw_manager_user_account_index') }}" method="get">
+        {#<select name="providerId" style="margin-right: 25px">
+            <option></option>
+            {% for row in providers %}
+                <option value="{{ row.providerid }}"{% if providerId == row.providerid %} selected{% endif %}>{{ row.displayname }}</option>
+            {% endfor %}
+        </select>#}
+
+        Disabled browser extension:
+        <label><input name="enabled" type="checkbox" value="1" {% if 1 == app.request.get('enabled') %} checked{% endif %}>Enabled</label>
+        <label><input name="disabled" type="checkbox" value="1" {% if 1 == app.request.get('disabled') %} checked{% endif %}>Disabled</label>
+        <button type="submit" style="margin-left: 25px">show</button>
+
+        {% if pagination is defined %}
+            <div style="float:right">|
+                {% for i in pagination.start..pagination.end %}
+                    <a{% if i == app.request.get('page') %} class="is-active" {% endif %} href="?providerId={{ providerId }}{% if 1 == app.request.get('enabled') %}&enabled=1{% endif %}{% if 1 == app.request.get('disabled') %}&disabled=1{% endif %}&page={{ i }}">{{ i }}</a> |
+                {% endfor %}
+            </div>
+        {% endif %}
+    </form>
+
+    <div>
+
+        <br>
+        <hr>
+        <br>
+        <form id="filter" action="{{ path('aw_manager_user_account_index') }}" method="get">
+            <table class="detailsTable" cellpadding="5">
+                <thead>
+                <tr>
+                    <td class="white">UserID</td>
+                    <td class="white">AccountID</td>
+                    <td class="white">Login</td>
+                    <td class="white">Login2</td>
+                    <td class="white">Login3</td>
+                    <td class="white">Balance</td>
+                    <td class="white">Disable Update Limit</td>
+                    <td class="white">Disabled extension</td>
+                </tr>
+                <tr>
+                    <td><input class="inputTxt" type="text" name="userId" maxlength="12" value=""><input type="Image" width="8" height="7" src="/lib/images/button1.gif"></td>
+                    <td><input class="inputTxt" type="text" name="accountId" maxlength="12" value=""><input type="Image" width="8" height="7" src="/lib/images/button1.gif"></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                </thead>
+                {% if account is defined %}
+                    <tbody>
+                    {% for row in account %}
+                        <tr data-accountid="{{ row.AccountID }}">
+                            <td>{{ row.UserID }}</br></td>
+                            <td><a href="{{ path('aw_manager_user_account_edit', {accountId : row.AccountID}) }}">{{ row.AccountID }}</a></td>
+                            <td>{{ row.Login }}</td>
+                            <td>{{ row.Login2 }}</td>
+                            <td>{{ row.Login3 }}</td>
+                            <td>{{ row.Balance }}</td>
+                            <td>{% if row.UpdateLimitDisabledUntil is not empty %}{{ row.UpdateLimitDisabledUntil|date('Y-m-d') }}{% endif %}</td>
+                            <td class="disext"><input type="checkbox" name="disableExtension" value="1" {% if 1 == row.DisableExtension %}checked{% endif %}></td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                {% endif %}
+            </table>
+
+        </form>
+    </div>
+
+    <script type="text/javascript">
+        $('td.disext input').change(function() {
+            var state = !$(this).prop('checked');
+            if (confirm('Are you sure you want to ' + (state ? 'ENABLE' : 'DISABLE') + ' check through extension')) {
+                var $row = $(this).closest('tr');
+                $.post('/manager/user/account/disableextension', {
+                    accountId : $row.data('accountid'),
+                    disable   : state ? 0 : 1
+                }, function(data) {
+                    $('#statepopup').html('Extension for<br>Account: <b>' + $row.find('td:eq(2)').text() + '</b> <br><br>Successfuly <b>' + (state ? 'ENABLED' : 'DISABLED') + '</b>').show();
+                    setTimeout("$('#statepopup').hide()", 5000);
+                }, 'json');
+                return;
+            }
+            $(this).prop('checked', state);
+            return false;
+        });
+    </script>
+    <div id="statepopup">Extension for Account 1234 - Disabled</div>
+    <style type="text/css">
+        td.disext {
+            text-align: center;
+        }
+
+        a.is-active {
+            color: #000;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        #statepopup {
+            display: none;
+            position: fixed;
+            top: 20%;
+            left: calc(50% - 150px);
+            width: 300px;
+            padding: 20px 15px;
+            text-align: center;
+            border: solid 1px #ddd;
+            background: #fafafa;
+        }
+
+        .filterById {
+            padding: 10px 0 0 0;
+        }
+
+        .filterById input {
+            width: 113px;
+        }
+
+        .detailsTable tbody td:nth-child(6) {
+            text-align: right;
+        }
+
+        .detailsTable td:first-child {
+            min-width: 100px;
+        }
+
+        .detailsTable tbody tr:nth-child(odd) {
+            background: #FFFCF5;
+        }
+
+        .detailsTable tbody tr:nth-child(even) {
+            background: #F5F2EB;
+        }
+
+        .inputTxt {
+            width: 70px;
+        }
+
+        .inputTxt + input[type="image"] {
+            margin-left: 10px;
+        }
+    </style>
+{% endblock %}

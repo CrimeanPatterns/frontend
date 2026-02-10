@@ -1,0 +1,23 @@
+{% import '@AwardWalletMain/Blog/components/loader.html.twig' as loaderComponent %}
+
+<section>
+    <div class="{{ bem('search-section', 'search-wrapper') }}">
+        <div id="searchbox" class="{{ bem('search-section', 'search-form-container') }}"></div>
+    </div>
+    <div class="{{ bem(pageName, 'container') }}">
+        <div id="stats"></div>
+        <div class="{{ bem('search-section', 'content-container') }}">
+            <div>
+                <div id="hits">
+                </div>
+                {{ loaderComponent.render(pageName) }}
+            </div>
+            {% include '@AwardWalletMain/Blog/components/offers_sidebar.html.twig' with {
+                        'offers': offers,
+                        'isSearchPage': true,
+            } %}
+        </div>
+    </div>
+    
+    
+</section>

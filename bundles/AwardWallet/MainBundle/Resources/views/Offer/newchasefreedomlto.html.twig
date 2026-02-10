@@ -1,0 +1,36 @@
+{# Issue #10908 #}
+
+{% extends "@AwardWalletMain/Offer/standard.html.twig" %}
+{% import '@AwardWalletMain/Offer/offerMacros.html.twig' as offerMacros %}
+{% import '@AwardWalletMain/TwigMacros/assets.html.twig' as assets %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    {{ encore_entry_link_tags('offer') }}
+    {{ encore_entry_link_tags('offers/newchasefreedomlto') }}
+    {{ assets.assets_form('css') }}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        {{ offerMacros.jsOfferYes(_context, ApplyURL, Code, OfferUserID, defaultRedirectLocation) }}
+        {{ offerMacros.jsOfferNo(_context, Code, OfferUserID, defaultRedirectLocation) }}
+    </script>
+{% endblock %}
+
+{% block content %}
+    <div id="offer_wrap">
+        <div class="chase-offer">
+            <h3>Only Days Left!</h3>
+            <p>Double the sign-up Bonus <br>on the BEST NO ANNUAL FEE <br>rewards card</p>
+            <a onclick="offerYes();" href="#" class="btn-blue-offer">Limited Time Offer - Don't Miss</a>
+        </div>
+        <div class="offer_declinekind" style="margin-top: 5px" onclick="offerNo();">
+            Never show this ad again
+        </div>
+        <div class="offer_toaccount" style="margin-top: 5px" onclick="window.location = '{{ defaultRedirectLocation }}'">
+            Proceed to my account
+        </div>
+    </div>
+{% endblock %}

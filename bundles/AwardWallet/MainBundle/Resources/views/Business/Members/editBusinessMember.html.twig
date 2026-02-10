@@ -1,0 +1,35 @@
+{% form_theme form with ['@AwardWalletMain/FormTheme/fields.html.twig'] %}
+{% extends "@AwardWalletMain/Layout/business_default.html.twig" %}
+
+{% block title %}{{ 'booking.access_level.title'|trans|desc('Change member access level') }}{% endblock %}
+
+{% block content %}
+    <div class="main-blk shortened">
+        <h1>{{ 'booking.access_level.form.title'|trans({'%agent_fullname%': userAgent.agentid.fullName})|desc('Access level for %agent_fullname%') }}</h1>
+
+        {% if app.session.flashbag.has('notice') %}
+            {% for flash_message in app.session.flashbag.get('notice') %}
+                <div class="success-title">
+                    <i class="icon-white-check-b"></i>
+                    <span>{{ flash_message }}</span>
+                </div>
+            {% endfor %}
+        {% endif %}
+        <form class="main-form spinnerable"
+              action="{{ path('aw_business_member_edit', {'userAgentId': userAgent.UserAgentId}) }}"
+              method="post"
+              autocomplete="off">
+
+            {{ form_widget(form, {'noSubmit':true}) }}
+            <div class="row-submit">
+                <button type="submit" class="btn-blue">
+                    {{ 'form.button.save'|trans }}
+                </button>
+            </div>
+        </form>
+    </div>
+    <div class="clear-fix"></div>
+
+    {% include '@AwardWalletMain/Business/Members/_accessGrantedBlock.html.twig' %}
+
+{% endblock %}

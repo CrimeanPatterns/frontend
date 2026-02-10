@@ -1,0 +1,469 @@
+{% set title = "Itinerary Check Error" %}
+{% set contentTitle = "" %}
+{% use '@AwardWalletMain/FormTheme/oldFields.html.twig' %}
+{% extends '@AwardWalletMain/Manager/layout.html.twig' %}
+{% macro sort_icon(field, sort, direction) %}
+    {% if sort == field %}
+        {% if direction == 'asc' %}
+            <div class='icon_asc'></div>
+        {% else %}
+            <div class='icon_desc'></div>
+        {% endif %}
+    {% else %}
+        <div class='icon_sortable'></div>
+    {% endif %}
+{% endmacro %}
+{% block content %}
+    <table style="width: 1320px; margin: 5px;">
+        <tr>
+            <td><h1 style="font-size: medium">Itinerary Check Error</h1></td>
+        </tr>
+    </table>
+    <script src="/lib/scripts/scw.js"></script>
+    <script src="/lib/3dParty/jquery/plugins/jquery.balloon.js"></script>
+    <script type="text/javascript">
+        function sortList(sort) {
+            if (sort=='ext'){
+                $('input#sortExt').val('{{ sortExtNext }}');
+                $('form#search_form').submit();
+                return false;
+            }
+            var direction = "asc";
+            if ($('input#sort').val() == sort && $('input#direction').val() == 'asc')
+                direction = 'desc';
+            $('input#sort').val(sort);
+            $('input#direction').val(direction);
+            $('form#search_form').submit();
+            return false;
+        }
+    </script>
+    <style>
+        #icon-ext {
+            display: inline-block;
+            text-align: left;
+            text-decoration: none;
+            /*vertical-align: top;*/
+            background-image: url({{ asset('assets/awardwalletnewdesign/img/sprite.png') }}?v=2);
+            background-repeat: no-repeat;
+
+            width: 11px;
+            height: 9px;
+            background-position: -129px -65px;
+            float: right;
+        }
+
+        .nowrap {
+            white-space: nowrap;
+        }
+        .pagination a {
+            padding: 4px 7px;
+        }
+        table.ice_table td.ice input {
+            width: 97%;
+        }
+        th, th * {
+            font-weight: bold !important;
+            text-align: center !important;
+            white-space: nowrap;
+        }
+        table.ice_table .ice {
+            background-color: white;
+            border-bottom: #D0D0D0 1px solid;
+            color: #4D4D4D;
+            font-size: 12px;
+            height: 22px;
+            padding: 3px 7px;
+            text-align: left;
+            text-shadow: 0 1px 0 white;
+        }
+        table.ice_table .detectionDate {
+            width: 150px;
+        }
+        table.ice_table .providerCode {
+            width: 150px;
+        }
+        table.ice_table .providerName {
+            width: 150px;
+        }
+        table.ice_table .ErrorType {
+            width: 200px;
+        }
+        table.ice_table .ErrorType select {
+            width: 120px;
+        }
+        table.ice_table tr.list_row .ErrorType {
+            font-size: x-small;
+        }
+        table.ice_table .Status {
+            width: 80px;
+        }
+        table.ice_table .Comment {
+            width: 450px;
+        }
+        table.ice_table tr.list_row .Comment {
+            font-size: x-small;
+        }
+        table.ice_table .Search {
+            width: 140px;
+        }
+        table.ice_table {
+            width: 1320px;
+            border-width: 0 !important;
+            margin: 5px;
+            vertical-align: middle;
+        }
+        table.ice_table .ice.bothBorder {
+            border-left: #D0D0D0 1px solid;
+            border-right: #D0D0D0 1px solid;
+        }
+        table.ice_table .ice.leftBorder {
+            border-left: #D0D0D0 1px solid;
+        }
+        table.ice_table .ice.rightBorder {
+            border-right: #D0D0D0 1px solid;
+        }
+        table.ice_table .ice.topBorder {
+            border-top: #D0D0D0 1px solid;
+        }
+
+        .ice .icon_asc {
+            background: url({{ asset('assets/awardwalletmain/images/icon-sprite.png') }}) -42px -12px no-repeat;
+            height: 7px;
+            width: 7px;
+            display: inline-block;
+            vertical-align: middle;
+            margin-left: 3px;
+        }
+        .ice .icon_desc {
+            background: url({{ asset('assets/awardwalletmain/images/icon-sprite.png') }}) -42px -19px no-repeat;
+            width: 7px;
+            height: 7px;
+            display: inline-block;
+            vertical-align: middle;
+            margin-left: 3px;
+        }
+        .ice .icon_sortable {
+            background: url({{ asset('assets/awardwalletmain/images/icon-sprite.png') }}) -42px -11px no-repeat;
+            opacity: 0.5;
+            width: 7px;
+            height: 15px;
+            display: inline-block;
+            vertical-align: middle;
+            margin-left: 3px;
+        }
+
+        table.ice_table tr.list_row.grayBack td {
+            /*background: #eaeaea;*/
+            font-weight: bold;
+        }
+        .descriptionErrorType {padding:20px 50px 20px 0;}
+        .descriptionErrorType table {border-collapse: collapse;}
+        .descriptionErrorType table td {border:1px solid #ccc; padding:10px;}
+        .descriptionErrorType table .titleErrorType {font-weight:bold;}
+        i[class^="icon-"], i[class*=" icon-"] {
+            display: inline-block;
+            text-align: center;
+            text-decoration: none;
+            vertical-align: middle;
+            background-image: url({{ asset('assets/awardwalletnewdesign/img/sprite.png?v=2') }});
+            background-repeat: no-repeat;
+        }
+        .icon-blue-info {
+            width: 13px;
+            height: 13px;
+            background-position: -111px -99px;
+        }
+
+    </style>
+    <script type="text/javascript">
+        function setAssignee(providerId, date, type, cell) {
+            cell = $(cell);
+            $.ajax({
+                url: "{{ path('aw_manager_itineraryCheckError_assignee') }}",
+                type: "POST",
+                dataType: "json",
+                data: {
+                    providerId: providerId,
+                    detectionDate: date,
+                    type: type
+                },
+                async: true,
+                success: function (data) {
+                    if (data.Status == 'OK') {
+                        var answer = (data.output == 'null' ? '' : data.output);
+                        cell.find('span:first').html(answer);
+                        var textLink = '';
+                        if (data.type == 1)
+                            textLink = 'Not me anymore';
+                        else if (data.type == 2)
+                            textLink = 'Reset assignee';
+                        else textLink = 'Assign me';
+
+                        if (data.type > 0)
+                            cell.find('span:first').parents('tr').addClass('grayBack');
+                        else
+                            cell.find('span:first').parents('tr').removeClass('grayBack');
+                        cell.find('a').attr('onclick', 'return setAssignee(' + providerId + ', \'' + date + '\', ' + data.type + ', this.parentNode);');
+                        cell.find('a').text(textLink);
+                    } else if (data.Status == 'ERROR') {
+                        alert(data.Message);
+                    }
+                }
+            });
+        }
+
+        function splitDays(){
+            var d = $('.list_row>td:first').html();
+            var col = [
+                'ffffff',
+                'rgb(255, 255, 226)'];
+//                '#EFFFE5'];
+//                '#eef1ff',
+//                '#fff6ba'];
+            var i = 0;
+            $('.list_row').each(function () {
+                if (d != $(this).find('td:first').html()) {
+                    d = $(this).find('td:first').html();
+                    i = i + 1;
+                    i = i % 2;
+                }
+                $(this).find('td').css('background-color', col[i]);
+            })
+//            var d = $('.list_row>td:first').html();
+//            $('.list_row').each(function () {
+//                if (d != $(this).find('td:first').html()) {
+//                    d = $(this).find('td:first').html();
+//                    $(this).prev().find('td').css('border-bottom-color', 'black')
+//                }
+//            })
+        }
+
+        $(document).ready(function () {
+            $('.bl').balloon({
+                html: true,
+                position: 'right',
+                minLifetime: 0, showDuration: 0, hideDuration: 0,
+                css: {
+                    backgroundColor: "rgba(228, 234, 244, 1)",
+                    opacity: "1"
+                }
+            });
+            // reload page every 5 min
+            setTimeout(function () {
+                window.location.reload();
+            }, 1000 * 60 * 5);
+
+            splitDays();
+        });
+
+    </script>
+    <span id="sortExtText" style="color:blue; float: left; padding-left: 10px; cursor: pointer;" class="bl" onclick="sortList('ext');" title="change ext sorting to {{ sortExtNext }}">{{ sortExt }}</span>
+    <div style="width: 720px; padding-left: 600px;">
+        <table class="pagination">
+            <tr>
+                {% if pages.first is defined %}
+                    <td><a href="{{ pages.first }}">1</a> ...</td>
+                {% endif %}
+                {% if pages.prev is defined %}
+                    <td><a href="{{ pages.prev }}"> < Prev</a></td>
+                {% endif %}
+                <td>{{ pages.current }}</td>
+                {% if pages.next is defined %}
+                    <td><a href="{{ pages.next }}"> Next > </a></td>
+                {% endif %}
+
+            </tr>
+        </table>
+    </div>
+
+    <table class="ice_table" cellspacing="0" cellpadding="0">
+        <tr class="caption">
+            <th class="ice bothBorder topBorder detectionDate"><a href='#'
+                                          onclick="return sortList('detectionDate');">Detection
+                    Date</a>{{ _self.sort_icon('detectionDate', inputValues.sort, inputValues.direction) }}
+            </th>
+            <th class="ice rightBorder topBorder providerCode"><a href='#'
+                                          onclick="return sortList('providerCode');">Provider
+                    Code</a>{{ _self.sort_icon('providerCode', inputValues.sort, inputValues.direction) }}
+            </th>
+            <th class="ice rightBorder topBorder providerName"><a href='#'
+                                          onclick="return sortList('providerName');">Display
+                    Name</a>{{ _self.sort_icon('providerName', inputValues.sort, inputValues.direction) }}
+            </th>
+            <th class="ice rightBorder topBorder ProviderState">Provider State</th>
+            <th class="ice rightBorder topBorder ErrorType">Error Type</th>
+            <th class="ice rightBorder topBorder Status">Status</th>
+            <th class="ice rightBorder topBorder Comment">Comment</th>
+            <th class="ice rightBorder topBorder Search"><a href='#'
+                                                            onclick="return sortList('assignee');">Assignee top</a>{{ _self.sort_icon('assignee', inputValues.sort, inputValues.direction) }}
+            </th>
+        </tr>
+        <form method='GET' id='search_form'>
+            <input type='hidden' name='sort' id='sort' value='{{ inputValues.sort }}'>
+            <input type='hidden' name='direction' id='direction' value='{{ inputValues.direction }}'>
+            <input type='hidden' name='sortExt' id='sortExt' value='{{ sortExt }}'>
+            <tr class='filters'>
+                <td class="ice bothBorder">
+                    {% set widget = 'single_text' %}
+                    {% set attr = { } %}
+                    {% set name = 'datePick' %}
+                    {% set value = inputValues.detectionDate %}
+                    {% set id = 'datePickId' %}
+                    {% set full_name = 'detectionDate' %}
+                    {% set required = false %}
+                    {% set pattern = '' %}
+                    {{ block('date_widget') }}
+                </td>
+                <td class="ice rightBorder"><input type='text' name='providerCode'
+                                                  value="{{ inputValues.providerCode }}"></td>
+                <td class="ice rightBorder"><input type='text' name='providerName'
+                                                  value="{{ inputValues.providerName }}"></td>
+                <td class="ice rightBorder ProviderState">
+                    <select name='providerState'>
+                        <option value="">Select state</option>
+                        {% for num,state in arProviderState %}
+                            <option value="{{ num }}" {% if inputValues.providerState is defined and num == inputValues.providerState %} selected{% endif %}>{{ state }}</option>
+                        {% endfor %}
+                    </select>
+                </td>
+                <td class="ice rightBorder ErrorType">
+                    <select name='errorType'>
+                        <option value="">Select type</option>
+                        {% for errorType in errorTypes %}
+                            <option value="{{ errorType.ID }}" {% if errorType.ID == inputValues.errorType %} selected{% endif %}>{{ errorType.Description }}</option>
+                        {% endfor %}
+                    </select>
+                    <i class='icon-blue-info' rel='Info' id="Info"/>
+                        <div class='descriptionErrorType' style='display: none;'>
+                            <table>
+                                <tr>
+                                    <td class='titleErrorType'>Info</td>
+                                    <td class='descrErrorType' lab='Info'>
+                                        <b>No update</b> - дата резервации не обновилась при проверке аккаунта<br/>
+                                        <b>Parser notice</b> - ошибки парсинга резерваций<br/>
+                                        <b>Errors from retrieve by conf #</b> - ошибки парсинга через ретрив<br/>
+                                        <b>No future itineraries</b> - у прова нет резерваций в будущем<br/>
+                                        <b>Should be noItinerariesArr</b> - вернулся пустой список резерваций, должно было вернуться noItineraries<br/>
+                                        <b>Outdated itineraries</b> - за последние сутки не было новых резерваций у прова
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+
+                </td>
+                <td class="ice rightBorder">
+                    <select name='status'>
+                        <option value="">Select status</option>
+                        {% for status in statuses %}
+                            <option value="{{ status.ID }}" {% if status.ID == inputValues.status %} selected{% endif %}>{{ status.Description }}</option>
+                        {% endfor %}
+                    </select>
+                </td>
+                <td class="ice rightBorder"><input width="100%" type='text' name='comment' value="{{ inputValues.comment }}"></td>
+                <td class="ice rightBorder Search nowrap">
+                    <button style='width: auto;' type='submit' value='Search'>Search</button>
+                    <button onclick="$('#fader').show(); $('tr.filters input').val(''); $('tr.filters select').val(''); $('#search_form').submit(); return false;">
+                        Clear
+                    </button>
+                </td>
+            </tr>
+        </form>
+        <form method='POST' id='select_form'>
+            {% for row in data %}
+
+                {% if row.Assignee %}
+                    <tr class='list_row grayBack'>
+                {% else %}
+                    <tr class='list_row'>
+                {% endif %}
+                    <td class="ice bothBorder detectionDate nowrap"
+                        title="{{ row.DetectionDate }}">{{ row.DetectionDate }}</td>
+                    <td class="ice rightBorder providerCode nowrap"
+                        title="{{ row.Code }}">{{ row.Code }}{{ row.extCheckIndicator|raw }}</td>
+                    <td class="ice rightBorder providerName nowrap"
+                        title="{{ row.DisplayName }}">{{ row.DisplayName|raw }}</td>
+                <td class="ice rightBorder ProviderState nowrap"
+                    title="{{ row.ProviderState }}">{{ attribute(arProviderState, row.ProviderState) }}</td>
+                    <td class="ice rightBorder ErrorType nowrap"
+                        {% for key,value in row.dataStats %}
+                            data-{{ key }}={{ value }}
+                        {% endfor %}
+                        title="{{ row.grpErrorType }}">{{ row.statErrorType|raw }}</td>
+                    <td class="ice rightBorder Status nowrap"
+                        title="{{ row.grpStatus }}">{{ row.grpStatus|nl2br }}</td>
+                    <td class="ice rightBorder Comment"
+                        title="{{ row.grpComment }}">{{ row.grpComment|nl2br }}</td>
+                    <td class="ice rightBorder">
+                        <a href="/manager/itineraryCheckError/details?providerId={{ row.ProviderID }}&date={{ row.DetectionDate }}">Details</a>
+                        |
+                        <div class="assignee nowrap">
+                            {% if row.Assignee %}
+                                {% if row.Assignee == currentUser %}
+                                    {% set type = 1 %}
+                                    {% set text = 'Not me anymore' %}
+
+                                {% else %}
+                                    {% set type = 2 %}
+                                    {% set text = 'Reset assignee' %}
+                                {% endif %}
+                            {% else %}
+                                {% set type = 0 %}
+                                {% set text = 'Assign me' %}
+                            {% endif %}
+                            <span >{% if row.Assignee %}{{ row.AssigneeLogin }}{% else %}{% endif %}</span>
+                            <a href='#' id='assignee{{ row.ProviderID }}-row{{ loop.index0 }}'
+                               onclick="return setAssignee({{ row.ProviderID }}, '{{ row.DetectionDate }}', {{ type }}, this.parentNode);">{{ text }}</a>
+                        </div>
+                    </td>
+                </tr>
+            {% endfor %}
+        </form>
+    </table>
+    <div style="width: 720px; padding-left: 600px;">
+        <table class="pagination">
+            <tr>
+                {% if pages.first is defined %}
+                    <td><a href="{{ pages.first }}">1</a> ...</td>
+                {% endif %}
+                {% if pages.prev is defined %}
+                    <td><a href="{{ pages.prev }}"> < Prev</a></td>
+                {% endif %}
+                <td>{{ pages.current }}</td>
+                {% if pages.next is defined %}
+                    <td><a href="{{ pages.next }}"> Next > </a></td>
+                {% endif %}
+
+            </tr>
+        </table>
+    </div>
+<script>
+    $("i#Info").hover(
+        function(event){
+            if (typeof($(this).attr('rel')) != 'undefined') {
+                var label = $(this).attr('rel');
+                var text = $('td[lab='+label+']').html();
+                if ($('#helper').length == 0) {
+                    $('body').append("<div id='helper'></div>");
+                } else {
+                    $('#helper').show();
+                }
+                var data = {
+                    position:   'fixed',
+                    left:       620,
+                    top:        80,
+                    border:     '2px solid #000',
+                    background: '#e9e9e9',
+                    color:      '#000',
+                    padding:    '10px',
+                    width:      600
+                };
+                $('#helper').css(data).html(text);
+            }
+        },
+        function(){
+            $('#helper').hide();
+        }
+    );
+
+</script>
+{% endblock %}

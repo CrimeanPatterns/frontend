@@ -1,0 +1,39 @@
+<div id="mileValueBox" class="chart__filter">
+    <p>We've estimated the value of points based on travel redemptions. Learn more about <a href="https://awardwallet.com/blog/awardwallet-mile-valuations/" target="_blank" class="blue-link">how we calculate mile values</a>. <a href="{{ url('aw_points_miles_values') }}" target="_blank" class="blue-link">Click here</a> to replace our estimates with your own mile values.</p>
+    <div class="chart__filter_container">
+        <div class="chart__filter_wrap">
+            <div
+                    class="chart__filter_block"
+                    data-ng-repeat="provider in providers"
+            >
+                <span data-ng-bind="provider.name + ':'"></span>
+                <div class="curr-value" data-ng-if="!isEditable(provider.id)">
+                    <strong data-ng-bind="showValue(provider.showValue, provider.currency) "></strong>
+                    <span
+                            data-ng-if="!!provider.userValue && !!provider.manualValue"
+                            data-ng-bind="showValue(provider.manualValue, provider.currency)"
+                    ></span>
+                    <span
+                            data-ng-if="!!provider.userValue && !provider.manualValue && !!provider.autoValue"
+                            data-ng-bind="showValue(provider.autoValue, provider.currency)"
+                    ></span>
+                </div>
+                <a href="#" data-ng-click="handleEdit($event, provider.id)" data-ng-if="!isEditable(provider.id)">
+                    <i class="icon-edit"></i>
+                </a>
+
+                <div class="curr-block" data-ng-if="isEditable(provider.id)">
+                    <input type="text" data-ng-model="provider.showValue" data-ng-readonly="isSaving">
+                    <div class="curr-block__val" data-ng-bind="provider.currency"></div>
+                </div>
+                <a class="btn-blue" href="#" data-ng-click="handleSave($event, provider.id)"
+                   data-ng-if="isEditable(provider.id)"><i class="icon-white-check-b"></i></a>
+
+            </div>
+        </div>
+        <div class="t-right">
+            <a href="{{ url('aw_points_miles_values') }}" target="_blank" class="blue-link">Set more mile values <i
+                        class="icon-double-arrow-right-blue"></i></a>
+        </div>
+    </div>
+</div>

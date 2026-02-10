@@ -1,0 +1,506 @@
+{% set MOBILE_NAV = true %}
+{% set HIDE_NAV = true %}
+{% set MAIN_BODY_CLASSES = {
+    'manual-hidden': true,
+    'responsive': true,
+    'hide-menu': true,
+    'hide-env-content': isBlogUserSummary is same as(true),
+    'blogTimelineSummary': isBlogUserSummary is same as(true),
+}|merge(MAIN_BODY_CLASSES|default({})) %}
+
+{% extends "@AwardWalletMain/Layout/common.html.twig" %}
+
+{% block meta %}
+    {{ parent() }}
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0, viewport-fit=cover">
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="https://unpkg.com/@google/markerclustererplus@4.0.1/dist/markerclustererplus.min.js"></script>
+    <script type="text/javascript">
+        {% if isBlogUserSummary is same as(true) %}
+        {{ jsTest1|raw }}
+        {% endif %}
+        function initFirstLoad() {
+            require([
+                'jquery-boot',
+                'angular-boot',
+                'pages/travelSummary',
+                'lib/design'
+            ], function ($, angular) {
+                angular.module('travelSummaryApp').constant('data', {{ data|json_encode|default('false')|raw }});
+                angular.module('travelSummaryApp').constant('statTabs', {
+                    airports: '{{ translations.airports }}',
+                    countries: '{{ translations.countries }}',
+                    airlines: '{{ translations.airlines }}'
+                });
+                $(function () {
+                    angular.bootstrap($('div.content').get(), ['travelSummaryApp']);
+                    TravelSummary.init();
+                    {% if isBlogUserSummary is same as(false) %}
+                    TravelSummary.showMailboxPopup();
+                    {% else %}
+                    $('[data-tip]', '.blogTimelineSummary').removeAttr('data-tip');
+                    $('[title]', '.blogTimelineSummary').removeAttr('title');
+                    {{ jsTest2|raw }}
+                    window.callFromBlog = function(params) {
+                        const htmlEl = document.querySelector('html');
+                        if ('' === params || ('light' !== params.theme && 'dark' !== params.theme)) {
+                            htmlEl.classList.remove('light-mode');
+                            htmlEl.classList.remove('dark-mode');
+                        } else if ('light' === params.theme) {
+                            htmlEl.classList.remove('dark-mode');
+                            htmlEl.classList.add('light-mode');
+                        } else if ('dark' === params.theme) {
+                            htmlEl.classList.remove('light-mode');
+                            htmlEl.classList.add('dark-mode');
+                        }
+                    }
+                    $(window).resize(function(){
+                        window.parent.postMessage({
+                            func: 'authorSummaryInfo',
+                            height: document.getElementById('body').scrollHeight,
+                            distance: '{{ data.distance }}',
+                            countries: '{{ data.locationStat.getCountries }}',
+                            travelYear: '{{ data.travelYear }}',
+                        }, '*');
+                    });
+                    $(window).resize();
+                    {% endif %}
+                });
+            });
+        }
+    </script>
+    <script async defer
+            src="https://maps.googleapis.com/maps/api/js?key={{ googleKey }}&callback=initFirstLoad">
+    </script>
+    <style>
+        .popup-container {
+            cursor: auto;
+            height: 0;
+            position: absolute;
+            /* The max width of the info window.
+            width: 200px; */
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+    <div data-ng-controller="mainCtrl as main" data-ng-cloak>
+        <div class="main-blk silver empty">
+            {% if isBlogUserSummary is same as(true) %}
+                <h1>Travel Summary for {{ data.travelYear }}</h1>
+            {% else %}
+            <h1>{{ translations.historicalTravelSummary }}</h1>
+            <div class="main-blk-actions">
+                <div>
+                    <label for="traveler">{{ translations.traveler }}:</label>
+                    <div class="styled-select middle">
+                        <div>
+                            <select data-ng-model="main.state.currentUser" data-ng-change="main.handleChange()" id="traveler">
+                                {% for id, name in agents %}
+                                    <option value="{{ id }}">{{ name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <label for="timeframe">{{ translations.timeframe }}:</label>
+                    <div class="styled-select middle">
+                        <div>
+                            <select data-ng-model="main.currentPeriod" id="timeframe" data-ng-model-options="{getterSetter: true}">
+                                {% for key, period in periods %}
+                                <option value="{{ key }}">{{ period }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+        <div class="main-blk" data-ng-show="main.state.isLoading">
+            <div class="ajax-loader">
+                <div class="loading"></div>
+            </div>
+        </div>
+        <div class="main-blk" data-ng-show="main.state.noData && !main.state.isLoading">
+            <div class="not-found" style="border: 0px;">
+                <i class="icon-warning-small"></i>
+                <p>{{ translations.noData | raw }}</p>
+            </div>
+{#            <div class="ajax-loader">#}
+{#                <h2>No Data</h2>#}
+{#            </div>#}
+        </div>
+
+        <div id="map-modal" class="map-modal-container" data-ng-show="main.state.showMapPopup">
+            <div class="map-modal-header">
+                <div class="map-modal-title">
+                    <span class="[[ main.state.category ]]"></span>
+                    <div class="location" ng-switch on="main.state.category">
+                        <h3 ng-switch-when="air">[[ main.state.activeAirport.key ]] <span>([[ main.state.activeAirport.title ]])</span></h3>
+                        <h3 ng-switch-when="hotel|parking|rental|restaurant|meeting|show|event|conference|rave" ng-switch-when-separator="|" data-ng-if="!main.state.activeAirport.payload.differentTitles">[[ main.state.activeAirport.key ]]</h3>
+                        <h3 ng-switch-when="hotel|parking|rental|restaurant|meeting|show|event|conference|rave" ng-switch-when-separator="|" data-ng-if="main.state.activeAirport.payload.differentTitles">[[ main.state.activeAirport.payload.address ]]</h3>
+                        <span class="extended" ng-switch-when="hotel|parking|rental|restaurant|meeting|show|event|conference|rave" ng-switch-when-separator="|">[[ main.state.activeAirport.title ]]</span>
+                        <h3 ng-switch-when="bus|train|cruise|ferry|transfer" ng-switch-when-separator="|">[[ main.state.activeAirport.title ]]</h3>
+                    </div>
+                </div>
+                <button class="map-modal-button" data-ng-click="main.handlePopupClose($event)"><span class="icon-close"></span></button>
+            </div>
+            <div class="map-modal-body">
+                <div class="map-modal-table">
+                    <a class="row" href="[[ segment.timelineLink ]]" target="_blank" data-ng-if="main.state.airport" data-ng-repeat="(index, segment) in main.state.activeAirport.payload.segments track by index">
+                        <div class="cell row-date-cell"><div data-ng-bind="segment.depDate"></div></div>
+                        <div class="cell">
+                            <div>
+                                <span class="aircode" data-ng-bind="segment.depCode"></span>
+                                <span class="route-arrow"></span>
+                                <span class="aircode" data-ng-bind="segment.arrCode"></span>
+                            </div>
+                        </div>
+                        <div class="cell row-travel-plan-cell" data-ng-bind="segment.travelPlan"></div>
+                    </a>
+
+                    <a class="row" href="[[ segment.timelineLink ]]" target="_blank" data-ng-if="!main.state.airport" ng-switch on="main.state.category" data-ng-repeat="(index, segment) in main.state.activeAirport.payload.segments track by index">
+                        <div class="cell row-date-cell"><div data-ng-bind="segment.date"></div></div>
+                        <div class="cell" ng-switch-when="hotel|parking|rental|restaurant|meeting|show|event|conference|rave" ng-switch-when-separator="|" data-ng-bind="main.getDurationText(main.state.category, segment)"></div>
+                        <div class="cell" ng-switch-when="hotel|parking|rental|restaurant|meeting|show|event|conference|rave" ng-switch-when-separator="|" data-ng-if="main.state.activeAirport.payload.differentTitles" data-ng-bind="segment.details"></div>
+                        <div class="cell" ng-switch-when="bus|train|cruise|ferry|transfer" ng-switch-when-separator="|" data-ng-bind="main.state.activeAirport.payload.reservationTitle"></div>
+                        <div class="cell row-travel-plan-cell" data-ng-bind="segment.travelPlan"></div>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div data-ng-show="main.state.isLoaded && !main.state.isLoading && !main.state.noData" {% if isBlogUserSummary is same as(false) %}style="margin-top: 5px;"{% endif %}>
+            <div
+                class="main-blk map silver"
+                data-ng-class="{
+                    'show-map-modal': main.state.showMapPopup
+                }"
+                id="map_div"
+                style="height: 600px;"
+            ></div>
+            <div class="main-blk silver">
+                <div class="main-blk-content">
+                    <div class="title-note">
+                        <h3>{{ 'trips.travel-statistics'|trans({}, 'trips')|desc('Travel Statistics') }}</h3>
+                    </div>
+                    <div class="row-list">
+                        <div class="green" data-tip title="[[main.state.tips.totalFlights]]">
+                            <div class="row-list__caption">{{ 'trips.total-flights'|trans({}, 'trips')|desc('Total Flights') }}</div>
+                            <div class="row-list__count"><span data-ng-bind="main.state.travelStatistics.totalFlights.value"></span>
+                            </div>
+                            <div>
+                                <div class="row-list__status" data-ng-if="main.state.prevDiff">
+                                    <i data-ng-if="main.state.prevDiff.totalFlights !== 0" class="[[ main.state.prevDiff.totalFlights > 0 ? 'i-up' : 'i-down' ]]"></i>
+                                    <span>[[ main.getComparedToText(main.state.prevDiff.totalFlights, main.state.comparedTo) ]]</span>
+                                </div>
+                            </div>
+                            <div class="row-list__icon">
+                                <i class="i-flight"></i>
+                            </div>
+                        </div>
+                        <div class="green" data-tip title="[[main.state.tips.longHaulFlights]]">
+                            <div class="row-list__caption">{{ 'trips.long-haul-flights'|trans({}, 'trips')|desc('Long Haul Flights') }}</div>
+                            <div class="row-list__count">
+                                <span data-ng-bind="main.state.travelStatistics.longHaulFlights.value"></span>
+                                &nbsp;[[ main.state.travelStatistics.longHaulFlights.percentage ]]%
+                            </div>
+                            <div>
+                                <div class="row-list__status" data-ng-if="main.state.prevDiff">
+                                    <i data-ng-if="main.state.prevDiff.longHaulFlights !== 0" class="[[ main.state.prevDiff.longHaulFlights > 0 ? 'i-up' : 'i-down' ]]"></i>
+                                    <span>[[ main.getComparedToText(main.state.prevDiff.longHaulFlights, main.state.comparedTo) ]]</span>
+                                </div>
+                            </div>
+                            <div class="row-list__icon">
+                                <i class="i-flight-short"></i>
+                            </div>
+                        </div>
+                        <div class="green" data-tip title="[[main.state.tips.shortHaulFlights]]">
+                            <div class="row-list__caption">{{ 'trips.short-haul-flights'|trans({}, 'trips')|desc('Short Haul Flights') }}</div>
+                            <div class="row-list__count">
+                                <span data-ng-bind="main.state.travelStatistics.shortHaulFlights.value"></span>
+                                &nbsp;[[ main.state.travelStatistics.shortHaulFlights.percentage ]]%
+                            </div>
+                            <div>
+                                <div class="row-list__status" data-ng-if="main.state.prevDiff">
+                                    <i data-ng-if="main.state.prevDiff.shortHaulFlights !== 0" class="[[ main.state.prevDiff.shortHaulFlights > 0 ? 'i-up' : 'i-down' ]]"></i>
+                                    <span>[[ main.getComparedToText(main.state.prevDiff.shortHaulFlights, main.state.comparedTo) ]]</span>
+                                </div>
+                            </div>
+                            <div class="row-list__icon">
+                                <i class="i-flight-long"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row-list">
+                        <div class="green2" data-tip title="[[ main.state.tips.hotelNights ]]">
+                            <div class="row-list__caption">{{ 'trips.statistics.hotel_nights'|trans({}, 'trips')|desc('Hotel Nights') }}</div>
+                            <div class="row-list__count"><span data-ng-bind="main.state.travelStatistics.hotelNights"></span></div>
+                            <div>
+                                <div class="row-list__status" data-ng-if="main.state.prevDiff">
+                                    <i data-ng-if="main.state.prevDiff.hotelNights !== 0" class="[[ main.state.prevDiff.hotelNights > 0 ? 'i-up' : 'i-down' ]]"></i>
+                                    <span>[[ main.getComparedToText(main.state.prevDiff.hotelNights, main.state.comparedTo) ]]</span>
+                                </div>
+                            </div>
+                            <div class="row-list__icon">
+                                <span class="background-icon hotel"></span>
+                            </div>
+                        </div>
+                        <div class="green2" data-tip title="[[ main.state.tips.rentalCarDays ]]">
+                            <div class="row-list__caption">{{ 'trips.statistics.rental_car_days'|trans({}, 'trips')|desc('Rental Car Days') }}</div>
+                            <div class="row-list__count"><span data-ng-bind="main.state.travelStatistics.rentalCarDays"></span></div>
+                            <div>
+                                <div class="row-list__status" data-ng-if="main.state.prevDiff">
+                                    <i data-ng-if="main.state.prevDiff.rentalCarDays !== 0" class="[[ main.state.prevDiff.rentalCarDays > 0 ? 'i-up' : 'i-down' ]]"></i>
+                                    <span>[[ main.getComparedToText(main.state.prevDiff.rentalCarDays, main.state.comparedTo) ]]</span>
+                                </div>
+                            </div>
+                            <div class="row-list__icon">
+                                <span class="background-icon rental"></span>
+                            </div>
+                        </div>
+                        <div class="green2" data-tip title="[[ main.state.tips.parkingDays ]]">
+                            <div class="row-list__caption">{{ 'trips.statistics.parking_days'|trans({}, 'trips')|desc('Parking Days') }}</div>
+                            <div class="row-list__count"><span data-ng-bind="main.state.travelStatistics.parkingDays"></span></div>
+                            <div>
+                                <div class="row-list__status" data-ng-if="main.state.prevDiff">
+                                    <i data-ng-if="main.state.prevDiff.parkingDays !== 0" class="[[ main.state.prevDiff.parkingDays > 0 ? 'i-up' : 'i-down' ]]"></i>
+                                    <span>[[ main.getComparedToText(main.state.prevDiff.parkingDays, main.state.comparedTo) ]]</span>
+                                </div>
+                            </div>
+                            <div class="row-list__icon">
+                                <span class="background-icon parking"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row-list">
+                        <div class="green3" data-tip title="[[ main.state.tips.cruisesDays ]]">
+                            <div class="row-list__caption">{{ 'trips.statistics.total_days_at_sea'|trans({}, 'trips')|desc('Total Days At The Sea') }}</div>
+                            <div class="row-list__count"><span data-ng-bind="main.state.travelStatistics.cruisesDays"></span></div>
+                            <div>
+                                <div class="row-list__status" data-ng-if="main.state.prevDiff">
+                                    <i data-ng-if="main.state.prevDiff.cruisesDays !== 0" class="[[ main.state.prevDiff.cruisesDays > 0 ? 'i-up' : 'i-down' ]]"></i>
+                                    <span>[[ main.getComparedToText(main.state.prevDiff.cruisesDays, main.state.comparedTo) ]]</span>
+                                </div>
+                            </div>
+                            <div class="row-list__icon">
+                                <span class="background-icon cruise"></span>
+                            </div>
+                        </div>
+                        <div class="green3" data-tip title="[[ main.state.tips.totalFerries ]]">
+                            <div class="row-list__caption">{{ 'trips.statistics.ferries_taken'|trans({}, 'trips')|desc('Ferries Taken') }}</div>
+                            <div class="row-list__count"><span data-ng-bind="main.state.travelStatistics.totalFerries"></span></div>
+                            <div>
+                                <div class="row-list__status" data-ng-if="main.state.prevDiff">
+                                    <i data-ng-if="main.state.prevDiff.totalFerries !== 0" class="[[ main.state.prevDiff.totalFerries > 0 ? 'i-up' : 'i-down' ]]"></i>
+                                    <span>[[ main.getComparedToText(main.state.prevDiff.totalFerries, main.state.comparedTo) ]]</span>
+                                </div>
+                            </div>
+                            <div class="row-list__icon">
+                                <span class="background-icon ferry"></span>
+                            </div>
+                        </div>
+                        <div class="green3" data-tip title="[[ main.state.tips.totalBuses ]]">
+                            <div class="row-list__caption">{{ 'trips.statistics.bus_rides'|trans({}, 'trips')|desc('Bus Rides') }}</div>
+                            <div class="row-list__count"><span data-ng-bind="main.state.travelStatistics.totalBuses"></span></div>
+                            <div>
+                                <div class="row-list__status" data-ng-if="main.state.prevDiff">
+                                    <i data-ng-if="main.state.prevDiff.totalBuses !== 0" class="[[ main.state.prevDiff.totalBuses > 0 ? 'i-up' : 'i-down' ]]"></i>
+                                    <span>[[ main.getComparedToText(main.state.prevDiff.totalBuses, main.state.comparedTo) ]]</span>
+                                </div>
+                            </div>
+                            <div class="row-list__icon">
+                                <span class="background-icon bus"></span>
+                            </div>
+                        </div>
+                        <div class="green3" data-tip title="[[ main.state.tips.restaurantReservations ]]">
+                            <div class="row-list__caption">{{ 'trips.statistics.restaurant_reservations'|trans({}, 'trips')|desc('Restaurant Reservations') }}</div>
+                            <div class="row-list__count"><span data-ng-bind="main.state.travelStatistics.restaurantReservations"></span></div>
+                            <div>
+                                <div class="row-list__status" data-ng-if="main.state.prevDiff">
+                                    <i data-ng-if="main.state.prevDiff.restaurantReservations !== 0" class="[[ main.state.prevDiff.restaurantReservations > 0 ? 'i-up' : 'i-down' ]]"></i>
+                                    <span>[[ main.getComparedToText(main.state.prevDiff.restaurantReservations, main.state.comparedTo) ]]</span>
+                                </div>
+                            </div>
+                            <div class="row-list__icon">
+                                <span class="background-icon restaurant"></span>
+                            </div>
+                        </div>
+                        <div class="green3" data-tip title="[[ main.state.tips.totalTrains ]]">
+                            <div class="row-list__caption">{{ 'trips.statistics.train_rides_taken'|trans({}, 'trips')|desc('Train Rides Taken') }}</div>
+                            <div class="row-list__count"><span data-ng-bind="main.state.travelStatistics.totalTrains"></span></div>
+                            <div>
+                                <div class="row-list__status" data-ng-if="main.state.prevDiff">
+                                    <i data-ng-if="main.state.prevDiff.totalTrains !== 0" class="[[ main.state.prevDiff.totalTrains > 0 ? 'i-up' : 'i-down' ]]"></i>
+                                    <span>[[ main.getComparedToText(main.state.prevDiff.totalTrains, main.state.comparedTo) ]]</span>
+                                </div>
+                            </div>
+                            <div class="row-list__icon">
+                                <span class="background-icon train"></span>
+                            </div>
+                        </div>
+                        <div class="green3" data-tip title="[[ main.state.tips.eventsAttended ]]">
+                            <div class="row-list__caption">{{ 'trips.statistics.events_attended'|trans({}, 'trips')|desc('Events Attended') }}</div>
+                            <div class="row-list__count"><span data-ng-bind="main.state.travelStatistics.eventsAttended"></span></div>
+                            <div>
+                                <div class="row-list__status" data-ng-if="main.state.prevDiff">
+                                    <i data-ng-if="main.state.prevDiff.eventsAttended !== 0" class="[[ main.state.prevDiff.eventsAttended > 0 ? 'i-up' : 'i-down' ]]"></i>
+                                    <span>[[ main.getComparedToText(main.state.prevDiff.eventsAttended, main.state.comparedTo) ]]</span>
+                                </div>
+                            </div>
+                            <div class="row-list__icon">
+                                <span class="background-icon event"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="main-blk silver">
+                <div class="main-blk-content">
+                    <div class="title-note">
+                        <h3>{{ translations.locationStatistics }}</h3>
+                    </div>
+                    <div class="row-list">
+                        <div class="blue" data-tip title="[[main.state.tips.countries]]">
+                            <div class="row-list__caption">{{ translations.countries }}</div>
+                            <div class="row-list__count"><span data-ng-bind="main.state.locationStat.countries"></span></div>
+                            <div>
+                                <div class="row-list__status" data-ng-if="main.state.prevDiff">
+                                    <i data-ng-if="main.state.prevDiff.countries !== 0" class="[[ main.state.prevDiff.countries > 0 ? 'i-up' : 'i-down' ]]"></i>
+                                    <span>[[ main.getComparedToText(main.state.prevDiff.countries, main.state.comparedTo) ]]</span>
+                                </div>
+                            </div>
+                            <div class="row-list__icon">
+                                <i class="i-countries"></i>
+                            </div>
+                        </div>
+                        <div class="blue" data-tip title="[[main.state.tips.cities]]">
+                            <div class="row-list__caption">{{ translations.towns }} / {{ translations.cities }}</div>
+                            <div class="row-list__count"><span data-ng-bind="main.state.locationStat.cities"></span></div>
+                            <div>
+                                <div class="row-list__status" data-ng-if="main.state.prevDiff">
+                                    <i data-ng-if="main.state.prevDiff.cities !== 0" class="[[ main.state.prevDiff.cities > 0 ? 'i-up' : 'i-down' ]]"></i>
+                                    <span>[[ main.getComparedToText(main.state.prevDiff.cities, main.state.comparedTo) ]]</span>
+                                </div>
+                            </div>
+                            <div class="row-list__icon">
+                                <i class="i-cities"></i>
+                            </div>
+                        </div>
+                        <div class="blue" data-tip title="[[main.state.tips.continents]]">
+                            <div class="row-list__caption">{{ translations.continents }}</div>
+                            <div class="row-list__count"><span data-ng-bind="main.state.locationStat.continents"></span></div>
+                            <div>
+                                <div class="row-list__status" data-ng-if="main.state.prevDiff">
+                                    <i data-ng-if="main.state.prevDiff.continents !== 0" class="[[ main.state.prevDiff.continents > 0 ? 'i-up' : 'i-down' ]]"></i>
+                                    <span>[[ main.getComparedToText(main.state.prevDiff.continents, main.state.comparedTo) ]]</span>
+                                </div>
+                            </div>
+                            <div class="row-list__icon">
+                                <i class="i-continents"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row-list">
+                        <div class="map-block" id="regions_div">
+                            <div class="map-block-container">
+                                {% include "@AwardWalletMain/TravelSummary/world.svg.twig"%}
+                                <div class="map-block-overlay"></div>
+                            </div>
+                        </div>
+                        <div class="empty">
+                            <div style="display: flex; flex-direction: row; justify-content: space-between;">
+                                <div style="flex-grow: 1;">
+                                    <ul class="tabs-navigation small">
+                                        <li data-ng-repeat="(i, tab) in main.getStatTabs() track by i">
+                                            <a
+                                                data-ng-bind="main.statTabs[tab].toUpperCase()"
+                                                data-ng-click="main.handleTabChange($event, tab)"
+                                                data-ng-class="{ 'active': main.state.activeTab === tab}"></a>
+                                        </li>
+                                    </ul>
+                                </div>
+                                <div style="align-self: center;" data-ng-show="main.state.activeTab === 'countries'">
+                                    {% if isBlogUserSummary is same as(false) %}
+                                    <a class="btn-blue" data-ng-href="[[ main.exportVisitedCountriesLink ]]">
+                                        {{ 'export-with-dates.short'|trans({},'trips')|desc('Export With Dates') }}
+                                    </a>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="tabs-content">
+                                <div>
+                                    <table class="main-table no-border graphic-stats">
+                                        <tr
+                                            data-ng-repeat="(i, item) in main.state[main.state.activeTab] track by i"
+                                            {% if isBlogUserSummary is same as(false) %}data-tip title="[[item.tip]]"{% endif %}
+                                        >
+                                            <td data-ng-bind="i + 1"></td>
+                                            <td><span class="blue" data-ng-bind="item.key"></span></td>
+                                            <td data-ng-bind="item.title"></td>
+                                            <td><span class="blue" data-ng-bind="item.value"></span></td>
+                                            <td data-ng-bind="'('+(item.value/main.state.totals[main.state.activeTab]*100).toFixed(0)+' %)'">
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="main-blk silver">
+                <div class="main-blk-content">
+                    <div class="title-note">
+                        <h3>{{ translations.distanceAndTime }}</h3>
+                    </div>
+                    <div class="row-list">
+                        <div class="blue" data-tip title="[[main.state.tips.distance]]">
+                            <div class="row-list__caption">{{ translations.distanceTraveled }}</div>
+                            <div class="row-list__count"><span data-ng-bind="main.state.distance"></span> mi</div>
+                            <div>
+                                <div class="row-list__status" data-ng-if="main.state.prevDiff">
+                                    <i data-ng-if="main.state.prevDiff.distance !== 0" class="[[ main.state.prevDiff.distance > 0 ? 'i-up' : 'i-down' ]]"></i>
+                                    <span>[[ main.getComparedToText(main.state.prevDiff.distance, main.state.comparedTo, main.state.prevDiff.distanceFormatted) ]]</span>
+                                </div>
+                            </div>
+                            <div class="row-list__icon">
+                                <i class="i-flight-short"></i>
+                            </div>
+                        </div>
+                        <div class="orange" data-tip title="[[main.state.tips.distance]]">
+                            <div class="row-list__caption">{{ translations.timesAroundWorld }}</div>
+                            <div class="row-list__count"><span data-ng-bind="main.state.aroundTheWorld"></span></div>
+                            <div>
+                                <div class="row-list__status" data-ng-if="main.state.prevDiff">
+                                    <i data-ng-if="main.state.prevDiff.aroundTheWorld !== 0" class="[[ main.state.prevDiff.aroundTheWorld > 0 ? 'i-up' : 'i-down' ]]"></i>
+                                    <span>[[ main.getComparedToText(main.state.prevDiff.aroundTheWorld, main.state.comparedTo, main.state.prevDiff.aroundTheWorldFormatted) ]]</span>
+                                </div>
+                            </div>
+                            <div class="row-list__icon">
+                                <i class="i-flight-long"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% if isBlogUserSummary is same as(true) %}
+        <div class="blog-summary-bottom">
+            <div class="summary-aw-ico"></div>
+            <div class="summary-info">
+                <strong>Do you like this report?</strong>
+                <p>Check your own personal travel summary report <a href="{{ url('aw_travel_summary') }}" target="_blank">here</a></p>
+            </div>
+        </div>
+    {% endif %}
+{% endblock %}

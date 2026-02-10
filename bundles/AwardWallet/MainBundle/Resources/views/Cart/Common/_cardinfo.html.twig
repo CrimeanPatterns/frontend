@@ -1,0 +1,150 @@
+{% form_theme form with ['@AwardWalletMain/FormTheme/fields.html.twig'] %}
+
+<div class="title-note">
+    <h3>{{ 'cart.cc-info'|trans }}</h3>
+</div>
+
+<div class="credit-cards">
+    <img id="card_visa" src="/assets/awardwalletnewdesign/img/visa.png" alt="" class="active" width="74" height="47">
+    <img id="card_mastercard" src="/assets/awardwalletnewdesign/img/mastercard.png" alt="" class="active" width="74" height="47">
+    <img id="card_amex" src="/assets/awardwalletnewdesign/img/american-express.png" alt="" class="active" width="74" height="47">
+    <img id="card_discover" src="/assets/awardwalletnewdesign/img/discover.png" alt="" class="active" width="74" height="47">
+</div>
+
+{{ form_widget(form._token) }}
+{{ form_row(form.full_name) }}
+{{ form_row(form.card_number) }}
+{{ form_row(form.security_code, {'col2': true}) }}
+<div class="row col-2 {% if form.expiration_month.vars.errors is not empty %} error{% endif %}">
+    <div class="row-item">
+        {{ form_label(form.expiration_month) }}
+        <div class="input">
+            <div class="input-item">
+                {{ form_widget(form.expiration_month, {'small': true}) }}
+                {{ form_widget(form.expiration_year, {'small': true}) }}
+            </div>
+        </div>
+    </div>
+    <div class="info">
+        <div class="info-icon"></div>
+        <div class="info-description"><p></p></div>
+    </div>
+    {{ form_errors(form.expiration_month) }}
+</div>
+<div class="clear"></div>
+
+<div id="security-code-popup" style="display: none">
+        <img src="/assets/awardwalletnewdesign/img/card-rear.png" alt="Card"/>
+		<img src="/assets/awardwalletnewdesign/img/card-front.png" alt="Card"/>
+</div>
+
+<style>
+    .row.error.col-2 .error-message{
+        display: block;
+    }
+    #security-code{
+        cursor: pointer;
+    }
+</style>
+
+<script>
+    require([
+        'lib/design'
+    ], function () {
+
+        var detectCardType = function (cardNumber) {
+            var iin = cardNumber.substring(0, 6),
+                    type = '',
+                    maxlength = 16;
+
+            if (/^4/.test(iin)) {
+                type = 'visa';
+            } else if (/^5[1-5]/.test(iin)) {
+                type = 'mastercard';
+            } else if (/^3[47]/.test(iin)) {
+                type = 'amex';
+                maxlength = 15;
+            } else if (/^6(?:011|5|4[4-9])/.test(iin) || (622126 <= iin && iin <= 622925)) {
+                type = 'discover';
+            }
+
+            return {
+                type: type,
+                maxlength: maxlength
+            };
+        };
+
+        $('#security-code-popup')
+                .dialog({
+                    width: 490,
+                    title: 'Credit cards security code',
+                    autoOpen: false,
+                    modal: true,
+                    buttons: [
+                        {
+                            text: Translator.trans('button.ok'),
+                            'class': 'btn-blue',
+                            click: function () {
+                                $(this).dialog('close');
+                            }
+                        }
+                    ],
+                    open: function () {
+
+                    }
+                });
+
+        $('#security-code').on('click', function (e) {
+            e.preventDefault();
+            $('#security-code-popup').dialog('open');
+        });
+
+        $('#card_info_card_number')
+                .on('keydown', function (e) {
+
+                    if ((!(e.keyCode >= 48 && e.keyCode <= 57) && !(e.keyCode >= 96 && e.keyCode <= 105) && $.inArray(e.keyCode, [46, 8, 37, 39, 9]) === -1 && ( !e.ctrlKey && $.inArray(e.keyCode, [67, 86]) === -1)) || e.shiftKey) {
+                        e.preventDefault();
+                    }
+
+                    var value = e.target.value.replace(/[^\d]/g, ''),
+                            card = detectCardType(value);
+
+                    if (value.length >= card.maxlength && $.inArray(e.keyCode, [46, 8, 37, 39, 9]) === -1 && this.selectionStart === this.selectionEnd) {
+                        e.preventDefault();
+                    }
+                })
+                .on('keyup input cut', function (e) {
+                    var value = e.target.value.replace(/[^\d]/g, ''),
+                            start = this.selectionStart,
+                            end = this.selectionEnd,
+                            oldValue = e.target.value,
+                            card = detectCardType(value),
+                            cardImgs = $('div.credit-cards img');
+
+                    if (card.type === 'amex') {
+                        e.target.value = value.substring(0, 15).replace(/(^[\d]{4})([\d]{6})?(?!$)/, '$1 $2 ').replace(/\s{2}/, ' ');
+                    } else {
+                        e.target.value = value.substring(0, 16).replace(/([\d]{4})(?!$)/g, '$1 ');
+                    }
+
+                    if (this.selectionStart) {
+                        if (start === oldValue.length) {
+                            this.setSelectionRange(e.target.value.length, e.target.value.length);
+                        } else {
+                            this.setSelectionRange(start, end);
+                        }
+                    }
+
+                    if (value.length === 0) {
+                        cardImgs.addClass('active');
+                    } else {
+                        cardImgs.removeClass('active');
+                        $('#card_' + card.type).addClass('active');
+                    }
+
+                })
+                .trigger('input');
+
+
+    });
+</script>

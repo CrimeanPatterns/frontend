@@ -1,0 +1,93 @@
+{% form_theme form with ['@AwardWalletMain/FormTheme/fields.html.twig'] %}
+{% extends '@AwardWalletMain/Layout/profile.html.twig' %}
+
+{% block title %}{{ 'user.security_question.form.title'|trans|desc('Security questions') }}{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script type="text/javascript">
+        require(['jquery-boot'], function($) {
+            $(function() {
+                const FORM_NAME = 'profile_security_question';
+                let hiddenQuestions = [];
+
+                function addHiddenQuestion(select) {
+                    hiddenQuestions.push({
+                        'select': $(select).attr('id'),
+                        'value': $(select).val()
+                    });
+                }
+
+                function hideQuestions() {
+                    let currentSelect = '#' + $(this).attr('id');
+
+                    hiddenQuestions = hiddenQuestions.filter(function (item) {
+                        return item.select !== $(currentSelect).attr('id');
+                    });
+
+                    if ($(currentSelect).val() !== '') {
+                        addHiddenQuestion(currentSelect);
+
+                        $('select:not(' + currentSelect + ')').children('option[value="' + $(currentSelect).val() + '"]').hide();
+                    } else {
+                        let number = $(currentSelect).closest('.main-form-item').attr('id').slice(-1);
+                        $('input[name="' + FORM_NAME + '[questions][' + number + '][answer]"]').val('');
+                    }
+
+                    $('form select').each(function (index, element) {
+                        showQuestions('#' + $(element).attr('id'));
+                    });
+                }
+
+                /**
+                 * Shows hidden items in the list that were previously hidden and not selected anywhere.
+                 *
+                 * @param {string} id css selector of the dropdown list
+                 */
+                function showQuestions(id) {
+                    let hiddenArray = hiddenQuestions.map(function (item) {
+                        return item.value;
+                    });
+
+                    $(id).children('option').filter(function () {
+                        return $(this).css('display') === 'none' && !hiddenArray.includes($(this).val());
+                    }).show();
+                }
+
+                $('form select').each(function (index, element) {
+                    if ($(element).val() !== '') {
+                        addHiddenQuestion('#' + $(element).attr('id'));
+                    }
+                });
+                $('select').on('change', hideQuestions);
+            })
+        });
+    </script>
+{% endblock %}
+
+{% block content %}
+    <div class="main-blk shortened">
+        <h1>{{ 'user.security_question.form.title'|trans|desc('Security questions') }}</h1>
+        {% if app.session.flashBag.has('notice') %}
+            <div class="main-blk-content">
+                {% for flash_message in app.session.flashBag.get('notice') %}
+                    <div class="success-title">
+                        <i class="icon-white-check-b"></i>
+                        <span>{{ flash_message }}</span>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+        {{ form_start(form, {'attr': {'class': 'main-form spinnerable', 'autocomplete': 'off'}, 'action': path('aw_profile_question')}) }}
+            {% for questionEntry in form.questions %}
+                {{ form_widget(questionEntry, {'noSubmit': true}) }}
+            {% endfor %}
+
+            <div class="row-submit">
+                <div class="row-submit-item">
+                    <button type="submit" class="btn-blue">{{ 'form.button.update'|trans }}</button>
+                </div>
+            </div>
+        {{ form_end(form) }}
+    </div>
+{% endblock %}

@@ -1,0 +1,33 @@
+{% extends "@AwardWalletMain/Layout/hidden_left_menu.html.twig" %}
+{% import "@AwardWalletMain/TwigMacros/environment.html.twig" as environmentMacros %}
+{% trans_default_domain "messages" %}
+
+{% block title %}
+    {{ 'cancel-subscription.title'|trans }}
+{% endblock %}
+
+{% block header_metatags %}
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+
+    {{ encore_entry_link_tags('global-loader') }}
+    {{ encore_entry_link_tags('user-settings') }}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+
+    {{ encore_entry_script_tags('trans/' ~ app.request.locale) }}
+    {{ encore_entry_script_tags('user-settings', null, '_default', {'defer': true}) }}
+{% endblock %}
+
+{% block content %}
+    {% include '@AwardWalletMain/Layout/global-loader.html.twig' %}
+
+    <div class="main-blk-content">
+        <div id="content" {{ environmentMacros.dataAttr(data) }}></div>
+    </div>
+{% endblock %}

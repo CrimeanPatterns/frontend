@@ -1,0 +1,112 @@
+{% set is_not_shared = 0 %}
+{% for account in request.accounts|filter(account => account.requested) %}
+    {% if account.abaccountprogramid in message.metadata.getAPR() %}
+        {% set accessLevel = agentsRep.getAccessLevel(account.account.userId, account.account, request.getBooker(), false) %}
+        {% if accessLevel is empty %}{% set is_not_shared = is_not_shared + 1 %}{% endif %}
+    {% endif %}
+{% endfor %}
+{% for account in request.customPrograms|filter(account => account.requested) %}
+    {% if account.abcustomprogramid in message.metadata.getCPR() %}{% set is_not_shared = is_not_shared + 1 %}{% endif %}
+{% endfor %}
+
+{% if is_granted('USER_BOOKING_REFERRAL') %}
+    {% if is_not_shared > 0 %}
+    {% else %}
+        <p>{{ 'booking.share.booker-share-shared'|trans({'%name%': request.contactname }, 'booking')|desc('%name% has securely shared the following accounts with you') }}:</p>
+    {% endif %}
+    <table class="share-account">
+        <thead>
+        <tr>
+            <td>{{ 'booking.display.name'|trans({}, 'booking') }}</td>
+            <td>{{ 'booking.balance'|trans({}, 'booking') }}</td>
+            <td>{{ 'booking.owner'|trans({}, 'booking') }}</td>
+            <td>{{ 'booking.actions'|trans({}, 'booking')|desc('Actions') }}</td>
+        </tr>
+        </thead>
+        <tbody>
+        {% for account in request.accounts|filter(account => account.requested) %}
+            {% if account.abaccountprogramid in message.metadata.getAPR() %}
+                {% set accessLevel = agentsRep.getAccessLevel(account.account.userId, account.account, request.getBooker(), false) %}
+                <tr>
+                    <td>{{ account.account.getProviderid().getDisplayName() }}</td>
+                    <td>{{ account.account.balance is not null ? account.account.balance|formatNumber : '-' }}</td>
+                    <td>{{ account.account.getOwnerFullName() }}</td>
+                    <td>
+                        {% if accessLevel is not empty %}
+                            {% set programm = account.account.getProviderid().getDisplayName() %}
+                            <a href="{{ path('aw_business_account_list', {page: 1, filterProgram: programm, filterOwner: account.account.getOwnerFullName()}) }} }}" target="_blank">{{ 'booking.share.view'|trans({}, 'booking')|desc('View') }}</a>
+                            <span></span>
+                            <a href="{{ url('aw_account_redirect', {'ID': account.account.accountid}) }}" target="_blank">{{ 'button.autologin'|trans({}, 'messages') }}</a>
+                        {% endif %}
+                    </td>
+                </tr>
+            {% endif %}
+        {% endfor %}
+        {% for account in request.customPrograms|filter(account => account.requested) %}
+            {% if account.abcustomprogramid in message.metadata.getCPR() %}
+                <tr>
+                    <td>
+                        {% if account.Provider is empty %}
+                            {{ account.name }}
+                        {% else %}
+                            {{ account.Provider.getName() }}
+                        {% endif %}
+                    </td>
+                    <td>{{ account.balance is not null ? account.balance|formatNumber : '-'}}</td>
+                    <td>{{ account.owner }}</td>
+                    <td></td>
+                </tr>
+            {% endif %}
+        {% endfor %}
+        </tbody>
+    </table>
+    {#{% if is_not_shared > 0 %}#}
+        {#<a href="{{ path('aw_booking_share_resendmail', {id: message.AbMessageID}) }}"#}
+           {#class="btn spec">{{ 'booking.share.resend-share-request'|trans({}, 'booking')|desc('Resend account sharing request') }}</a>#}
+    {#{% endif %}#}
+{% else %}
+    {% if is_not_shared > 0 %}
+        <p>{{ 'booking.share.user-share-requested'|trans({}, 'booking')|desc('You are being asked to share the following accounts') }}:</p>
+    {% else %}
+        <p>{{ 'booking.share.user-share-shared'|trans({"%booker%": message.request.booker.bookerinfo.ServiceName }, 'booking')|desc('You have successfully shared the following accounts with %booker%') }}:</p>
+    {% endif %}
+    <table class="share-account">
+        <thead>
+        <tr>
+            <td>{{ 'booking.display.name'|trans({}, 'booking') }}</td>
+            <td>{{ 'booking.balance'|trans({}, 'booking') }}</td>
+            <td>{{ 'booking.owner'|trans({}, 'booking') }}</td>
+        </tr>
+        </thead>
+        <tbody>
+        {% for account in request.accounts|filter(account => account.requested) %}
+            {% if account.abaccountprogramid in message.metadata.getAPR() %}
+                <tr>
+                    <td>{{ account.account.getProviderid().getName() }}</td>
+                    <td>{{ account.account.balance is not null ? account.account.balance|formatNumber : '-' }}</td>
+                    <td>{{ account.account.getOwnerFullName() }}</td>
+                </tr>
+            {% endif %}
+        {% endfor %}
+        {% for account in request.customPrograms|filter(account => account.requested) %}
+            {% if account.abcustomprogramid in message.metadata.getCPR() %}
+                <tr>
+                    <td>
+                        {% if account.Provider is empty %}
+                            {{ account.name }}
+                        {% else %}
+                            {{ account.Provider.getName() }}
+                        {% endif %}
+                    </td>
+                    <td>{{ account.balance is not null ? account.balance|formatNumber : '-' }}</td>
+                    <td>{{ account.owner }}</td>
+                </tr>
+            {% endif %}
+        {% endfor %}
+        </tbody>
+    </table>
+    {#{% if is_not_shared > 0 %}#}
+        {#<a href="{{ path('aw_booking_share_index', {id: message.Request.AbRequestID}) }}"#}
+           {#class="btn spec">{{ 'booking.share.share'|trans({}, 'booking')|desc('Share accounts') }}</a>#}
+    {#{% endif %}#}
+{% endif %}

@@ -1,0 +1,48 @@
+{% set title = "Extendion stat details" %}
+{% use '@AwardWalletMain/FormTheme/oldFields.html.twig' %}
+{% extends '@AwardWalletMain/Manager/layout.html.twig' %}
+
+{% block content %}
+
+    <style>
+        table{
+            border-collapse: collapse;
+        }
+        #extension_stat_details td{
+            border: #D0D0D0 1px solid;
+            padding: 2px 3px;
+        }
+    </style>
+
+    <h2>Code: {{ providerCode }} / {{ errorMessage }}</h2>
+
+    {% if accounts|length > 0 %}
+        <table id="extension_stat_details" cellspacing="0" cellpadding="0">
+            <tr>
+                <td>No</td>
+                <td>ErrorDate</td>
+                <td>UserID</td>
+                <td>AccountID</td>
+                <td>Log</td>
+                <td width="10px">v</td>
+            </tr>
+            <br />
+            {% for account in accounts %}
+                <tr>
+                    <td>{{ loop.index }}</td>
+                    <td>{{ account.ErrorDate|date('Y-m-d H:i:s') }}</td>
+                    <td><a href="/manager/impersonate?UserID={{ account.UserID }}&AutoSubmit&AwPlus=1" target="_blank">{{ account.UserID }}</a></td>
+                    <td><a title="Password request" href="/manager/passwordVault/requestPassword.php?ID={{ account.AccountID }}" target='_blank'>{{ account.AccountID }}</a></td>
+                    {% if account.log.bucket is not empty %}
+                        <td> <a href='/manager/loyalty/logs/{{ account.log.bucket|e }}/{{ account.log.filename|e }}' target='_blank'>Log - {{ account.log.date|slice(11,5) }}</a></td>
+                    {% else %}
+                        <td> <a href='/manager/loyalty/logs?AccountID={{ account.AccountID }}' target='_blank'>All logs</a></td>
+                    {% endif %}
+                    <td><input type="checkbox"/></td>
+                </tr>
+            {% endfor %}
+        </table>
+    {% else %}
+        <h2>No Accounts</h2>
+    {% endif %}
+{% endblock %}

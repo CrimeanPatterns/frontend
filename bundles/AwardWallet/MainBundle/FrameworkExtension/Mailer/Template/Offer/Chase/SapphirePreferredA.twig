@@ -1,0 +1,44 @@
+{% extends '@MailTemplate/Offer/Chase/BaseTemplate.twig' %}
+{% trans_default_domain "email" %}
+
+{% block subject %}{% apply spaceless %}{% autoescape false %}
+    Your Trip to {{ location }} on {{ date|date('F jS') }}
+{% endautoescape %}{% endapply %}{% endblock subject %}
+
+{% block content %}
+    {% import '@MailTemplate/CommonMacro.twig' as commonMacro %}
+
+    <div style="padding: 0 10px">
+        {{ commonMacro.link(link, 'A Simple Strategy to Save Big Money on Airfare', {
+            'color': '#1D6CB5',
+            'font-size': '25px',
+            'line-height': '1.2',
+            'margin': '0',
+            'padding': '5px 0 10px 0',
+            'font-weight': 'normal'
+        }) }}
+        {{ commonMacro.offerRemark(_context) }}
+
+        {{ commonMacro.dear(user.firstname, _context) }}
+
+        {{ commonMacro.paragraph(
+            'Nice job booking your next flight to ' ~ location ~ ' on ' ~ date|formatDatetime('short', 'none', locale) ~ '. We hope you have a great trip.', _context
+        ) }}
+        {{ commonMacro.paragraph(
+            'If you’re looking to save money on future flights, we highly recommend checking out the <a href="' ~ link ~ '">Chase Sapphire Preferred®</a>, one of our favorite travel rewards cards.', _context, {escape: false, fix_link: true}
+        ) }}
+        {{ commonMacro.paragraph(
+            'The Sapphire Preferred earns Ultimate Rewards points which you can use to pay for flights via the Chase Travel Portal. Each point is worth 1.25¢ towards travel, so a $500 ticket purchased with Ultimate Rewards will cost 40,000 points.', _context
+        ) }}
+        {{ commonMacro.paragraph(
+            'In addition to earning valuable points, cardholders receive an extensive list of travel perks and insurance benefits. Plus, you can transfer points earned with the Sapphire Preferred to 14 different airline and hotel partners, including United, British Airways, and Hyatt.', _context
+        ) }}
+        {{ commonMacro.paragraph(
+            'Take a look at our guide to building a <a href="' ~ link ~ '">killer combo of Ultimate Rewards earning credit cards</a> for more info.', _context, {escape: false, fix_link: true}
+        ) }}
+
+        <div style="text-align: center; margin-top: 15px;">
+            {{ commonMacro.button('Learn more', link) }}
+        </div>
+    </div>
+{% endblock content %}

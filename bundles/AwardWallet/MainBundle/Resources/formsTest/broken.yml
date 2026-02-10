@@ -1,0 +1,48 @@
+text:
+  type: 'text'
+  options:
+    required: false
+    help: 'Help Option'
+    header: 'Header Option'
+    attr:
+      notice: 'Notice Attribute (where Help & Header Options render?)'
+
+checkbox:
+  type: 'checkbox'
+  options:
+    required: false
+
+checkbox_required:
+  type: 'checkbox'
+  options:
+    required: true
+
+checkbox_checked:
+  type: 'checkbox'
+  options:
+    data: true
+    value: 1
+
+radio:
+  type: 'radio'
+
+radio_checked:
+  type: 'radio'
+  options:
+    data: true
+    value: 1
+
+select_expanded:
+  extend: select
+  options:
+    expanded: true
+
+select_multiple:
+  extend: select
+  options:
+    multiple: true
+
+aw-datepicker:
+  type: datepicker
+  options:
+    label: 'aw.form.type.datepicker'

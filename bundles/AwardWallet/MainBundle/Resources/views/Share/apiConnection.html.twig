@@ -1,0 +1,99 @@
+{% extends '@AwardWalletMain/Layout/common.html.twig' %}
+{% form_theme formWithoutAccountsToEdit with ['@AwardWalletMain/FormTheme/fields.html.twig'] %}
+{% form_theme formWithoutAccounts with ['@AwardWalletMain/FormTheme/fields.html.twig'] %}
+{% form_theme formWithAccounts with ['@AwardWalletMain/FormTheme/fields.html.twig'] %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        require(['jquery-boot'], function ($) {
+            $(function () {
+                $(document).on('click', '.js-accept-connection-without-accounts-to-edit', function (event) {
+                    event.preventDefault();
+                    $('.js-share-all-button').hide();
+                    $('.js-continue-button').show();
+                    $('#accept-connection-without-accounts-to-edit').submit();
+                    return false;
+                });
+
+                $(document).on('click', '.js-accept-connection-without-accounts', function (event) {
+                    event.preventDefault();
+                    $('#accept-connection-without-accounts').submit();
+                    return false;
+                });
+
+                $(document).on('click', '.js-accept-connection-with-accounts', function (event) {
+                    event.preventDefault();
+                    $('#accept-connection-with-accounts').submit();
+                    return false;
+                });
+            })
+        });
+    </script>
+{% endblock %}
+
+{% block mainContent %}
+    <div class="main-blk shortened">
+        <h1>{{ 'api.invite-title'|trans|desc('Account Access Authorization') }}</h1>
+        {% if business.businessInfo.isApiEnabled and business.businessInfo.isApiInviteEnabled and business.businessInfo.apiCallbackUrl %}
+            <div class="main-blk-content">
+                <p>{#<span class="bold">{{ business.fullName }}</span> #}{{ 'api.invite-text'|trans({'%partner%': business.fullName})|desc('%partner% is requesting access to all of your loyalty accounts and travel plans. They are requesting the following level of access') }}:
+                <ul>
+                    <li>{{ accessText }}</li>
+                </ul>
+                {% if granularSharing %}
+                    <p>{{ 'api.invite-text.2'|trans|desc('If you wish to share specific accounts instead of all accounts you can <a href="" target="_blank" class="js-accept-connection-without-accounts-to-edit">accept</a> this request and then manually share specific accounts from the "Accounts" page by selecting them and choosing "Share accounts" from the "Actions" menu.')|raw }}
+                {% endif %}
+            </div>
+            <div class="row-submit t-right">
+                <a href="{{ denyUrl }}" class="btn-silver">{{ 'user.connections.button.deny'|trans }}</a>
+                <a href="" class="btn-blue js-accept-connection-without-accounts js-continue-button" style="display: none">{{ 'continue'|trans }}</a>
+                <a href="" class="btn-blue js-accept-connection-with-accounts js-share-all-button">{{ 'user.connections.button.share-all'|trans|desc('Share All Accounts') }}</a>
+            </div>
+            <form style="display: none" id="accept-connection-without-accounts-to-edit"
+                  action="{{ path('aw_api_connection_confirm') }}" target="_blank"
+                  method="post">
+                {{ form_widget(formWithoutAccountsToEdit, {'noSubmit':true}) }}
+            </form>
+            <form style="display: none" id="accept-connection-without-accounts"
+                  action="{{ path('aw_api_connection_confirm') }}"
+                  method="post">
+                {{ form_widget(formWithoutAccounts, {'noSubmit':true}) }}
+            </form>
+            <form style="display: none" id="accept-connection-with-accounts"
+                  action="{{ path('aw_api_connection_confirm') }}"
+                  method="post">
+                {{ form_widget(formWithAccounts, {'noSubmit':true}) }}
+            </form>
+        {% else %}
+            <div class="main-blk-content">
+                {% if not business.businessInfo.apiCallbackUrl %}
+                    <p>{{ 'api.invite-error'|trans|desc('Error Occurred.') }}</p>
+
+                    <p>
+                        {{ 'api.invite-error.empty-callback-url'|trans|desc('Callback URL has not been configured.') }}
+                        {{ 'api.invite-error.contact-admin'|trans|desc('Please contact your app administrator to fix this issue.') }}
+                    </p>
+                {% elseif not business.businessInfo.isApiInviteEnabled %}
+                    <p>{{ 'api.invite-error'|trans|desc('Error Occurred.') }}</p>
+
+                    <p>
+                        {{ 'api.invite-error.invite-disabled'|trans|desc('This business has not been authorised by AwardWallet to invite users.') }}
+                        {{ 'api.invite-error.contact-admin'|trans|desc('Please contact your app administrator to fix this issue.') }}
+                    </p>
+                {% else %}
+                    <p>{{ 'api.invite-error'|trans|desc('Error Occurred.') }}</p>
+
+                    <p>
+                        {{ 'api.invite-error.api-disabled'|trans|desc('API disabled.') }}
+                        {{ 'api.invite-error.contact-admin'|trans|desc('Please contact your app administrator to fix this issue.') }}
+                    </p>
+                {% endif %}
+            </div>
+            <div class="row-submit t-right">
+                <a href="/" class="btn-blue">{{ 'button.ok'|trans }}</a>
+            </div>
+        {% endif %}
+    </div>
+{% endblock %}
+

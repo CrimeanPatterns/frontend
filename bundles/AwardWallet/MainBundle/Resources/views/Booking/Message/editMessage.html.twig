@@ -1,0 +1,40 @@
+{% form_theme messageForm '@AwardWalletMain/Booking/fields.html.twig' %}
+<div class="rounded">
+    <div class="item">
+        <div class="booking-form js-edit-message-form" id="editMessageForm">
+            {{ form_start(messageForm) }}
+            {{ form_errors(messageForm) }}
+            <fieldset style="margin: 0; padding: 10px;">
+                {{ form_row(messageForm.Post) }}
+            </fieldset>
+            <div style="clear: both;">
+                <div class="buttons" style="float:right; margin-left:10px;">
+                    <a href="#" class="btn spec wide"
+                       id="messageEditFormSubmitButton">{{ 'form.button.save'|trans|desc('Save') }}</a>
+                </div>
+                <div class="buttons" style="float:right; margin-left:30px;">
+                    <a href="#" class="btn wide light"
+                       id="messageEditFormCancelButton">{{ 'form.button.cancel'|trans|desc('Cancel') }}</a>
+                </div>
+                {% if is_granted('USER_BOOKING_REFERRAL') %}
+                    <div class="prefer" style="float:left; padding-top:5px; margin-left:170px; margin-top: 0px">
+						{% if messageForm.offsetExists('Internal') %}
+                        <div class="input">
+                            {{ form_widget(messageForm.Internal) }}
+                        </div>
+						{% endif %}
+                    </div>
+                    <div class="prefer" style="float:left; margin-left: 75px; margin-top: 15px;">
+						{% if messageForm.offsetExists('Color') %}
+							<div class="input">
+								{{ form_widget(messageForm.Color) }}
+							</div>
+						{% endif %}
+                    </div>
+                {% endif %}
+            </div>
+            <div style="clear: both; margin-bottom: 20px;"></div>
+            {{ form_end(messageForm) }}
+        </div>
+    </div>
+</div>

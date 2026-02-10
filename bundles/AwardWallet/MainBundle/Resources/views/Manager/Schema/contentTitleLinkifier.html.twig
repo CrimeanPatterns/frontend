@@ -1,0 +1,10 @@
+<script>
+    const header = document.getElementById('content-title');
+
+    if (header != null) {
+        const link = document.createElement('a');
+        link.href = "{{ listLink | raw }}";
+        link.innerHTML = header.outerHTML;
+        header.replaceWith(link)
+    }
+</script>

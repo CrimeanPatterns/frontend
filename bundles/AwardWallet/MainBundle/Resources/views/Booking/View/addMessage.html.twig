@@ -1,0 +1,59 @@
+{% form_theme messageForm '@AwardWalletMain/Booking/fields.html.twig' %}
+<div class="booking-form js-message-form" id="addMessageForm" style="display: none">
+
+    <div id="messageFormNotification" class="notification-success" style="display: none">
+        <i class="old-icon-check-white"></i>
+        <p>{{ 'booking.notification.message_sent' | trans() | desc('Your message has been sent and is now visible in the thread above.') }}</p>
+    </div>
+
+    {% if app.request.attributes.has('errors') and app.request.attributes.get('errors') is not empty %}
+    <div id="messageFormError" style="background-color: #ff0000; color: white; font-weight: bold; padding: 10px;">
+        <p>{{ app.request.attributes.get('errors') }}</p>
+    </div>
+    {% endif %}
+
+    {{ form_start(messageForm, {'action':  path('aw_booking_message_ajaxaddmessage', {id: request.abrequestid})} ) }}
+    {{ form_errors(messageForm) }}
+    <fieldset style="margin: 0; padding: 10px;">
+        {{ form_row(messageForm.Post) }}
+    </fieldset>
+    <div style="clear: both;min-height:32px; margin-bottom:20px">
+        <div class="buttons" style="float:right; margin-left:30px;">
+            <button type="submit" class="btn spec wide"{% if is_granted("USER_BOOKING_REFERRAL") %} disabled="disabled"{% endif %} id="messageFormSubmitButton">{{ 'form.button.send'|trans }}</button>
+        </div>
+        {% if is_granted('USER_BOOKING_REFERRAL') %}
+            <div class="prefer" style="float:left; padding-top:5px; margin-left:170px; margin-top: 0px">
+				{% if messageForm.offsetExists('Internal') %}
+                <div class="input">
+                    {{ form_widget(messageForm.Internal) }}{{ form_label(messageForm.Internal) }}
+                </div>
+				{% endif %}
+				{% if messageForm.offsetExists('TextInclude') %}
+					<div class="input">
+						{{ form_widget(messageForm.TextInclude) }}{{ form_label(messageForm.TextInclude) }}
+					</div>
+				{% endif %}
+				{% if messageForm.offsetExists('InfoMessage') %}
+					<div class="input">
+						{{ form_widget(messageForm.InfoMessage) }}{{ form_label(messageForm.InfoMessage) }}
+					</div>
+				{% endif %}
+				{% if messageForm.offsetExists('ActionMessage') %}
+					<div class="input">
+						{{ form_widget(messageForm.ActionMessage) }}{{ form_label(messageForm.ActionMessage) }}
+					</div>
+				{% endif %}
+            </div>
+            <div class="prefer" style="float:left;  margin-left: 75px; margin-top: 15px;">
+				{% if messageForm.offsetExists('Color') %}
+                <div class="input">
+                    {{ form_widget(messageForm.Color) }}
+                </div>
+				{% endif %}
+            </div>
+            
+        {% endif %}
+		<div class="clear"></div>
+    </div>
+    {{ form_end(messageForm) }}
+</div>

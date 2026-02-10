@@ -1,0 +1,13 @@
+{% extends "@AwardWalletWidget/menu.html.twig" %}
+
+{% block item %}
+    <li class="header-menu-{{ key }}{% if loop.length - 1 == loop.index %} credit-offer{% endif %}">{{ widget_render(item, {class: 'btn-light-silver'}) }}</li>
+{% endblock %}
+{% block menu %}
+    <div class="menu-burger"></div>
+    <div class="menu-container">
+        <ul class="user-menu">
+            {{ block('items') }}
+        </ul>
+    </div>
+{% endblock %}

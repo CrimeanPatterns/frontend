@@ -1,0 +1,33 @@
+{% extends "@AwardWalletMain/Layout/accounts.html.twig" %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    {{ encore_entry_link_tags('account') }}
+{% endblock %}
+
+{% block content %}
+    <div class="tabs-content">
+        {% for adv in advertises %}
+            <section style="margin-bottom: 10px">
+                <div class="silver-blk update-account">
+                    <div class="title">
+                        <p>{{ adv.title }}</p>
+                    </div>
+                    <div class="content-blk">
+                        <div class="text-center">
+                            <a href="{{ adv.url }}" class="btn-blue">Edit in Manager</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="silver-blk update-account-advertise">
+                    <div class="advertise">
+                        {{ adv.content | raw }}
+                    </div>
+                    <p class="remark">*All advertising links open in a new window, checking balances will not stop.</p>
+                </div>
+                <div class="clear"></div>
+            </section>
+        {% endfor %}
+    </div>
+
+{% endblock %}

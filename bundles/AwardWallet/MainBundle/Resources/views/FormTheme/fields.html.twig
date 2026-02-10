@@ -1,0 +1,443 @@
+{% block form_widget %}
+    {% if errors|length > 0 %}
+        <div class="error-message-blk">
+            {% for error in errors %}
+                <i class="icon-warning-small"></i>
+                <p>{{ error.message|raw }}</p>
+            {% endfor %}
+        </div>
+    {% endif %}
+    <div class="main-form-item" {{ block('widget_container_attributes') }}>
+        {{ block('form_rows') }}
+        {{ form_rest(form) }}
+        {% if noSubmit is defined and noSubmit %}
+
+        {% else %}
+            {{ block('submit_widget') }}
+        {% endif %}
+    </div>
+{% endblock %}
+
+{% block separator_row %}
+    <div class="main-separator"></div>
+{% endblock separator_row %}
+
+{% block checkbox_widget %}
+    <input type="checkbox" {{ block('widget_attributes') }}
+           class="checkbox"{% if value is defined %} value="{{ value }}"{% endif %}{% if checked %} checked="checked"{% endif %}/>
+    <label class="label" {% if id %}for="{{ id }}"{% endif %}></label>
+{% endblock checkbox_widget %}
+
+{% block checkbox_row %}
+	<div class="row{% if not valid and not compound %} error{% endif %}{% if attr['rowClass'] is defined %} {{ attr['rowClass'] }}{% endif %}">
+		<div class="row-item flag">
+			<div class="flag-item">
+            {% if attr.caption is defined %}<label class="flag-item-label" for="{{ id }}">{{ attr.caption|trans }}</label>{% endif %}
+			{{ form_widget(form) }}
+			</div>
+			<div class="input">
+				<div class="input-item">
+					{% if label is empty %}
+						{% set label = name|humanize %}
+					{% endif %}
+					<label for="{{ id }}">{#{% if required %}<span class="required">*</span> {% endif %}#}{{ label|trans|raw }}</label>
+				</div>
+			</div>
+		</div>
+		<div class="info">
+			<div class="info-icon"></div>
+			<div class="info-description">
+                <p>
+                    {% if help is defined and help != '' %}
+                        {{ help|trans({}, translation_domain)|raw }}
+                    {% elseif attr['notice'] is defined and attr['notice'] != '' %}
+                        {{ attr['notice']|raw }}
+                    {% endif %}
+                </p>
+            </div>
+		</div>
+        {{ form_errors(form) }}
+	</div>
+{% endblock checkbox_row %}
+
+{% block radio_widget -%}
+	<input type="radio" {{ block('widget_attributes') }} class="radio" {% if value is defined %} value="{{ value }}"{% endif %}{% if checked %} checked="checked"{% endif %} />
+    {% if withoutLabel is not defined %}
+	    <label class="label" {% if id %}for="{{ id }}"{% endif %}></label>
+    {% endif %}
+{%- endblock radio_widget %}
+
+{% block datepicker_widget %}{% apply spaceless %}
+	{% if disabled %}
+		{{  block('text_widget') }}
+	{% else %}
+        {# TODO: wrong template. need remake the form type #}
+        {% set hidden = 1 %}
+		<input type="hidden" {{ block('widget_attributes') }} {% if value is defined %}value="{{ value }}" {% endif %}/>
+		<div class="datepicker-container">
+            <input type="text" data-role='datepicker' id="{{ id }}_datepicker" name="datepicker_{{ name }}" data-dp-opt="{{ datepicker_options|default({})|js_json_encode }}" {% for attrname, attrvalue in attr %}{{ attrname }}="{{ attrvalue }}" {% endfor %}{% if required is defined and required is same as(true) %} required="required"{% endif %}/>
+        </div>
+	{% endif %}
+{% endapply %}{% endblock datepicker_widget  %}
+
+{% block radio_row %}
+	<div class="row{% if not valid and not compound %} error{% endif %}">
+		<div class="row-item flag">
+			<div class="flag-item">
+				{{ form_widget(form) }}
+			</div>
+			<div class="input">
+				<div class="input-item">
+					{% if label is empty %}
+						{% set label = name|humanize %}
+					{% endif %}
+					<label for="{{ id }}">{#{% if required %}<span class="required">*</span> {% endif %}#}{{ label|trans|raw }}</label>
+				</div>
+			</div>
+		</div>
+		<div class="info">
+			<div class="info-icon"></div>
+			<div class="info-description">
+                <p>
+                    {% if help is defined and help != '' %}
+                        {{ help|trans({}, translation_domain)|raw }}
+                    {% elseif attr['notice'] is defined and attr['notice'] != '' %}
+                        {{ attr['notice']|raw }}
+                    {% endif %}
+                </p>
+            </div>
+		</div>
+        {{ form_errors(form) }}
+	</div>
+{% endblock radio_row %}
+
+{% block text_widget %}
+    <input type="text" style="position: absolute;left: -5000px" tabindex="-1">
+    <input type="text" {{ block('widget_attributes') }} {% if value is defined %}value="{{ value }}"{% endif %} />
+{% endblock %}
+
+{% block autocomplete_widget %}
+    <input type="hidden" name="{{ full_name }}" {% if value is defined %}value="{{ value }}"{% endif %} />
+    {% set full_name = '' %}
+    <input type="text" {{ block('widget_attributes') }} {% if text_value is defined %}value="{{ text_value }}"{% endif %} />
+{% endblock %}
+
+{% block email_widget %}
+    <input type="text" style="position: absolute;left: -5000px" tabindex="-1">
+    <input type="email" {{ block('widget_attributes') }} {% if value is defined %}value="{{ value }}"{% endif %} />
+{% endblock %}
+
+{% block password_widget %}
+    <input type="password" style="position: absolute;left: -5000px" tabindex="-1">
+    <input type="password" {{ block('widget_attributes') }} {% if value is defined %}value="{{ value }}"{% endif %} />
+{% endblock %}
+
+{% block file_widget %}
+    <div class="styled-file">
+        <span>{{ 'choose-file'|trans|desc("Choose File") }}</span>
+        <input type="file" {{ block('widget_attributes') }} />
+    </div>
+    <div class="file-name"></div>
+{% endblock %}
+
+{% block masked_password_widget %}
+	{{ form_widget(form.password) }}
+	{{ form_widget(form.unmodified) }}
+	{% if impersonated %}
+		<div class="hidden dialog">
+			<label>CASE#:</label>
+			<input class="impersonate" type="text" name="case"/>
+		</div>
+        {% if not webpack|default(false) %}
+            <script type="text/javascript">
+                require(['lib/request'], function(request){
+                    request('#{{ id }}_password');
+                });
+            </script>
+        {% else %}
+            <script type="text/javascript">
+                window.fieldsImpersonatedId = '{{ id }}';
+            </script>
+            {{ encore_entry_script_tags('fields-impersonated', null, '_default', {'defer': true}) }}
+        {% endif %}
+	{% else %}
+        {% if not webpack|default(false) %}
+            <script type="text/javascript">
+                require(['lib/revealPassword'], function(reveal){
+                    reveal('#{{ id }}_password');
+                });
+            </script>
+        {% else %}
+            <script type="text/javascript">
+                window.fieldsPSWId = '{{ id }}';
+            </script>
+            {{ encore_entry_script_tags('fields-not-impersonated', null, '_default', {'defer': true}) }}
+        {% endif %}
+	{% endif %}
+{% endblock %}
+
+{% block masked_password_row %}
+    {% apply spaceless %}
+        <div class="row{% if not valid %} error{% endif %}{% if col2 is defined %} col-2{% endif %} row-{{ name }}">
+            <div class="row-item">
+                {{ form_label(form) }}
+                <div class="input">
+                    <div class="input-item">
+                        {{ form_widget(form) }}
+                    </div>
+                </div>
+            </div>
+            <div class="info">
+                <div class="info-icon"></div>
+                <div class="info-description">
+                    <p>
+                        {% if help is defined and help != '' %}
+                            {{ help|trans({}, translation_domain)|raw }}
+                        {% elseif attr['notice'] is defined and attr['notice'] != '' %}
+                            {{ attr['notice']|raw }}
+                        {% endif %}
+                    </p>
+                </div>
+            </div>
+            {% if noErrors is not defined %}
+                {{ form_errors(form) }}
+            {% endif %}
+        </div>
+    {% endapply %}
+{% endblock %}
+
+{% block choice_widget_options %}
+    {% apply spaceless %}
+        {% for group_label, choice in options %}
+            {% if choice is iterable %}
+                <optgroup label="{{ choice_translation_domain is same as(false) ? group_label : group_label|trans({}, choice_translation_domain) }}">
+                    {% set options = choice %}
+                    {{ block('choice_widget_options') }}
+                </optgroup>
+            {% else %}
+                <option value="{{ choice.value }}"{% if choice.attr %}{% with { attr: choice.attr } %}{{ block('attributes') }}{% endwith %}{% endif %}{% if not render_preferred_choices|default(false) and choice is selectedchoice(value) %} selected="selected"{% endif %}>{{ choice_translation_domain is same as(false) ? choice.label : choice.label|trans({}, choice_translation_domain) }}</option>
+            {% endif %}
+        {% endfor %}
+    {% endapply %}
+{% endblock choice_widget_options %}
+
+{% block choice_widget_expanded %}
+    {% apply spaceless %}
+        <div {{ block('widget_container_attributes') }} class="radio-list">
+            {% for child in form %}
+                <div class="radio-list-row">
+                    {{ form_widget(child, {'withoutLabel' : true}) }}
+                    {{ form_label(child, null, {'required': false, 'label_attr': {'class': 'label'} }) }}
+                </div>
+            {% endfor %}
+        </div>
+    {% endapply %}
+{% endblock choice_widget_expanded %}
+
+{% block choice_widget %}
+    {% apply spaceless %}
+        {% if expanded %}
+            {{ block('choice_widget_expanded') }}
+        {% else %}
+            <div class="styled-select{% if inline is defined %} inline{% endif %}{% if small is defined %} small{% endif %}{% if disabled is defined %} disabled{% endif %}">
+                <div>
+                <select {{ block('widget_attributes') }}{% if multiple %} multiple="multiple"{% endif %}>
+                    {% if placeholder is not none %}
+                        <option value="">{{ placeholder|trans({}, translation_domain) }}</option>
+                    {% endif %}
+                    {% if preferred_choices|length > 0 %}
+                        {% set options = preferred_choices %}
+                        {{ block('choice_widget_options') }}
+                        {% if choices|length > 0 and separator is not none %}
+                            <option disabled="disabled">{{ separator }}</option>
+                        {% endif %}
+                    {% endif %}
+                    {% set options = choices %}
+                    {{ block('choice_widget_options') }}
+                </select>
+                </div>
+            </div>
+        {% endif %}
+    {% endapply %}
+{% endblock choice_widget %}
+
+{% extends '@AwardWalletMain/Account/Add/_unitedAnswer.html.twig' %}
+
+{% block form_errors %}
+	{% apply spaceless %}
+        {% if errors|length > 0 %}
+			{% for error in errors %}
+				<div class="error-message">
+				    <div class="warning"><i class="icon-warning-small"></i></div>
+				    <div class="error-message-description" data-error-type="{{ error.getMessageTemplate() }}">{{ error.message|raw }}</div>
+				</div>
+			{% endfor %}
+		{% endif %}
+        {% if not compound %}
+            {{ block('hidden_errors') }}
+        {% endif %}
+	{% endapply %}
+{% endblock form_errors %}
+
+{% block repeated_row %}
+    {{ block('form_rows') }}
+{% endblock repeated_row %}
+
+{% block form_label %}
+    {% if label is not same as(false) -%}
+        {% if label is empty %}
+            {% set label = name|humanize %}
+        {% endif %}
+        <label for="{{ id }}" {{ block('label_attributes') }}>{{ label|trans({}, translation_domain)|raw }}<span class="required"{% if not required %} style="display: none;"{% endif %}>*</span></label>
+    {% endif %}
+{% endblock %}
+
+{% block button_widget %}
+	{% apply spaceless %}
+		{% if label is empty %}
+			{% set label = name|humanize %}
+		{% endif %}
+		<input type="{{ type|default('button') }}" class="btn-blue" {{ block('button_attributes') }} value="{{ label|trans({}, translation_domain) }}"/>
+	{% endapply %}
+{% endblock button_widget %}
+
+{% block submit_widget %}
+    {% if text_submit_button is not defined or text_submit_button is empty %}
+        {% set text_submit_button = label %}
+    {% endif %}
+	{% apply spaceless %}
+        <div class="row-submit">
+            <div class="row-submit-item">
+                <div class="submit">
+                    <input type="submit" class="btn-blue" value="{{ text_submit_button|default('Submit')|trans }}" {% if submit_button_attr is defined %}{{ submit_button_attr|raw }}{% endif %}>
+                </div>
+            </div>
+        </div>
+	{% endapply %}
+{% endblock submit_widget %}
+
+{% block reset_widget %}
+	{% apply spaceless %}
+		{% set type = type|default('reset') %}
+		<div class="reset">
+		{{ block('button_widget') }}
+		</div>
+	{% endapply %}
+{% endblock reset_widget %}
+
+{% block button_errors %}
+{% endblock button_errors %}
+
+{% block form_row %}
+    {% apply spaceless %}
+        <div class="row{% if errors|length > 0 %} error{% endif %}{% if col2 is defined %} col-2{% endif %} row-{{ name }}{% if attr['rowClass'] is defined %} {{ attr['rowClass'] }}{% endif %}">
+            <div class="row-item">
+                {{ form_label(form) }}
+                <div class="input">
+                    <div class="input-item">
+                        {{ form_widget(form) }}
+                    </div>
+                </div>
+            </div>
+			<div class="info">
+				<div class="info-icon"></div>
+				<div class="info-description">
+                    <p>
+                        {% if help is defined and help != '' %}
+                            {{ help|trans({}, translation_domain)|raw }}
+                        {% elseif attr['notice'] is defined and attr['notice'] != '' %}
+                            {{ attr['notice']|raw }}
+                        {% endif %}
+                    </p>
+                </div>
+			</div>
+            {% if noErrors is not defined %}
+			    {{ form_errors(form) }}
+            {% endif %}
+        </div>
+    {% endapply %}
+{% endblock %}
+
+{% block widget_attributes -%}
+    id="{{ id }}" name="{{ full_name }}"
+    {%- if disabled %} disabled="disabled"{% endif -%}
+    {%- if required %} required="required"{% endif -%}
+    {%- for attrname, attrvalue in attr -%}
+        {{- " " -}}
+        {%- if attrname in ['placeholder', 'title'] -%}
+            {{- attrname }}="{{ attrvalue|trans({}, translation_domain) }}"
+        {%- elseif attrvalue is same as(true) -%}
+            {{- attrname }}="{{ attrname }}"
+        {%- elseif attrvalue is not same as(false) -%}
+            {{- attrname }}="{{ attrvalue }}"
+        {%- endif -%}
+    {%- endfor -%}
+{%- endblock widget_attributes %}
+
+{% block label_attributes -%}
+    {%- for attrname, attrvalue in label_attr -%}
+        {{- " " -}}
+        {%- if attrname in ['placeholder', 'title'] -%}
+            {{- attrname }}="{{ attrvalue|trans({}, translation_domain) }}"
+        {%- elseif attrvalue is same as(true) -%}
+            {{- attrname }}="{{ attrname }}"
+        {%- elseif attrvalue is not same as(false) -%}
+            {{- attrname }}="{{ attrvalue }}"
+        {%- endif -%}
+    {%- endfor -%}
+{%- endblock label_attributes %}
+
+{% block hidden_errors %}
+    {% import _self as selfMacro %}
+
+    {% if form.vars.name == 'security_code' %}
+        {{ selfMacro.drawHiddenError('card.security_code.invalid'|trans({}, 'messages')) }}
+    {% endif %}
+    {% if required or form.vars.name == 'login' or form.vars.name == 'login2' or form.vars.name == 'login3' or form.vars.name == 'pass' or form.vars.name == 'password'  %}
+        {{ selfMacro.drawHiddenError('notblank'|trans({}, 'validators'), 'valueMissing') }}
+    {% endif %}
+    {% if "email" in form.vars.block_prefixes %}
+        {{ selfMacro.drawHiddenError('user.email.invalid'|trans({}, 'validators'), 'typeMismatch') }}
+    {% endif %}
+    {% if "url" in form.vars.block_prefixes %}
+        {{ selfMacro.drawHiddenError('invalid_url'|trans({}, 'validators')|desc("This value is not a valid URL."), 'typeMismatch') }}
+    {% endif %}
+    {% if form.vars.attr.minlength is defined %}
+        {{ selfMacro.drawHiddenError('minlength'|trans({'%count%': form.vars.attr.minlength, '%limit%': form.vars.attr.minlength}, 'validators')|desc('This value is too short. It should have %limit% character or more.|This value is too short. It should have %limit% characters or more.'), 'tooShort') }}
+    {% endif %}
+    {% if form.vars.attr.maxlength is defined %}
+        {{ selfMacro.drawHiddenError('maxlength'|trans({'%count%': form.vars.attr.maxlength, '%limit%': form.vars.attr.maxlength}, 'validators')|desc('This value is too long. It should have %limit% character or less.|This value is too long. It should have %limit% characters or less.'), 'tooLong') }}
+    {% endif %}
+    {% if form.vars.attr.pattern is defined %}
+        {{ selfMacro.drawHiddenError('pattern'|trans({}, 'validators')|desc('This value is not valid.'), 'patternMismatch') }}
+    {% endif %}
+{% endblock %}
+
+{% macro drawHiddenError(text, type) %}{% apply spaceless %}
+    <div class="error-message" data-type="{{ type|default("") }}" style="display: none">
+        <div class="warning"><i class="icon-warning-small"></i></div>
+        <div class="error-message-description">
+            {{ text }}
+        </div>
+    </div>
+{% endapply %}{% endmacro %}
+
+{% block notice_widget %}{% apply spaceless %}
+    <div class="warning-blk">
+        <i class="icon-warning-small-white"></i>
+        <p>{{ message|raw }}</p>
+    </div>
+{% endapply %}{% endblock %}
+
+{% block datalist_widget %}
+    <input type="text" list="{{ id }}_list" {{ block('widget_attributes') }}{% if value is not empty %}value="{{ value }}"{% endif %}>
+    <datalist id="{{ id }}_list">
+        {% for choice in choices %}
+            <option value="{{ choice }}"></option>
+        {% endfor %}
+    </datalist>
+{% endblock %}
+
+{% block html_row %}
+    {{ html_text|raw }}
+{% endblock %}

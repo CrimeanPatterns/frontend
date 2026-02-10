@@ -1,0 +1,35 @@
+{% extends is_granted('SITE_BUSINESS_AREA') ? "@AwardWalletMain/Layout/business_default.html.twig" : "@AwardWalletMain/Layout/edit_connections.html.twig" %}
+{% form_theme form with ['@AwardWalletMain/FormTheme/fields.html.twig'] %}
+
+{% block header_metatags %}
+    {% include '@AwardWalletMain/Utility/scalableViewport.html.twig' %}
+{% endblock %}
+
+{% block content %}
+    <div class="add-account">
+        <div class="main-blk">
+            <h1>{{ 'agents.connect.step1.header'|trans|desc('Add a new connection') }}</h1>
+
+            <form action="" method="post" novalidate="1" class="main-form">
+                {% if form.vars.errors|length %}
+                    <div class="error-message-blk">
+                        {% for error in form.vars.errors %}
+                            <i class="icon-warning-b"></i>
+                            <p>{{ error.message }}</p>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+                <div class="main-form-item">
+                    {% for field in form %}
+                        {{ form_row(field) }}
+                    {% endfor %}
+                </div>
+                <div class="row-submit">
+                    <button type="submit" class="btn-blue">{{ 'form.button.submit'|trans }}</button>
+                </div>
+                {{ form_rest(form) }}
+            </form>
+        </div>
+        {{ include('@AwardWalletMain/Agent/_faq.html.twig') }}
+    </div>
+{% endblock %}

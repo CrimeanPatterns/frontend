@@ -1,0 +1,109 @@
+{% import "@AwardWalletMain/MileValue/macros.twig" as mileValueMacros %}
+
+{% set MOBILE_NAV = true %}
+{% set MAIN_BODY_CLASSES = {
+    'manual-hidden': true,
+    'responsive': true,
+}|merge(MAIN_BODY_CLASSES|default({})) %}
+{% extends app.user is not null ? "@AwardWalletMain/Layout/common.html.twig" : "@AwardWalletMain/Layout/not_logged.html.twig" %}
+{% import "@AwardWalletMain/TwigMacros/recaptcha.html.twig" as recaptcha %}
+
+{% block stylesheets %}
+    {{ parent() }}
+{% endblock %}
+
+{% block meta %}
+    {{ parent() }}
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0, viewport-fit=cover">
+{% endblock %}
+
+{% block body_left_widgets %}
+    {{ widget_render('left_top') }}
+    {{ widget_render('credit_card_tools_zone') }}
+    {{ widget_render('left_bottom') }}
+{% endblock %}
+
+{% block title %}{{ 'point-mile-values'|trans|desc('Point and Mile Values') }}{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        require([
+            'jquery-boot',
+            'angular-boot',
+            'pages/pointsMiles'
+        ], function($, angular) {
+            angular.module('pointValuesApp').constant('isAuth', {% if isAuth is not empty %}true{% else %}false{% endif %});
+            angular.module('pointValuesApp').constant('datas', {# comment for tests, do not remove #}/* DATA START */{{ datas|json_encode|raw }}/* DATA END */);
+
+            $(function() {
+                angular.bootstrap($('div.content').get(), ['pointValuesApp']);
+            });
+        });
+    </script>
+{% endblock %}
+
+{% block content %}
+
+    <style type="text/css">
+        .point-mile-values tbody .col strong:empty:after {
+            content: '{{ 'na'|trans }}';
+        }
+
+        {% if isAuth is empty %}
+        .userset-edit {display: none !important;}
+
+        .main-table.point-values .avr-value > div {align-items: center;}
+
+        {% endif %}
+    </style>
+    <div id="pointMiles" class="main-blk point-mile-values" data-ng-controller="pointMileCtrl">
+        <h1>{{ 'point-mile-values'|trans }}</h1>
+        <div class="main-blk-content">
+            <p><label class="silver-text">{{ 'values-based-actual-bookings-info'|trans({
+                        '%link_on%': '<a class="blue-link" href="https://awardwallet.com/blog/awardwallet-mile-valuations/">',
+                        '%link_off%': '</a>'
+                    })|desc('The values below are objective and are based on the actual bookings that AwardWallet users have made. For more info, please %link_on%click here%link_off%.')|raw }}</label><br><br></p>
+            <div class="search column">
+                <div class="row">
+                    <label>{{ 'start-typing-name-program-to-find'|trans|desc('Start typing the name of the program you wish to find:') }}</label>
+                    <div class="input">
+                        <input class="search-input" ng-model="filterVal.providerName" ng-change="filters.providerName()" ng-class="{'search-input-fill': filterVal.providerName.length}" type="text" value="">
+                        <a ng-click="filters.clear()" href=""><i class="icon-close-silver"></i></a>
+                    </div>
+                </div>
+            </div>
+
+            {{ mileValueMacros.showMileValue() }}
+            <p id="notFound" class="no-result ng-cloak"><i class="icon-warning-small"></i><span>{{ 'award.account.list.empty-autocomplete'|trans }}</span></p>
+
+            <div class="ajax-loader" ng-show="loading" ng-class="{'ajax-loader-abs' : loading}">
+                <div class="loading"></div>
+            </div>
+
+            {% if isAuth is not empty %}
+                <div class="title-note">
+                    <h3>{{ 'booking.request.add.form.miles.add-custom'|trans([], 'booking') }}</h3>
+                    <div id="anotherProgramAdd" class="adding-row">
+                        <div class="adding-row__block">
+                            <label for="customProgramName">{{ 'new_abrequest.source_of_miles.program_name'|trans([], 'email') }}:</label>
+                            <input id="customProgramName" class="cp-autocomplete" ng-model="anotherProgram.name" type="text" value="" data-active="only">
+                        </div>
+                        <div class="adding-row__block">
+                            <label for="customAverageValue">{{ 'average-value'|trans }}:</label>
+                            <div class="curr-block">
+                                <input id="customAverageValue" ng-model="anotherProgram.value" type="text" value="" ng-keypress="digitFilter($event)">
+                                <div class="curr-block__val">¢</div>
+                            </div>
+                        </div>
+                        <div class="adding-row__button">
+                            <button class="btn-blue" ng-disabled="anotherProgram.disabled()" ng-click="anotherProgram.setUserValue($event)" type="submit">{{ 'button.add'|trans }}</button>
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+
+        </div>
+    </div>
+
+{% endblock %}

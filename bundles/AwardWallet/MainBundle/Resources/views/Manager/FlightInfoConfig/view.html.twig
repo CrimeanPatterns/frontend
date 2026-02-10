@@ -1,0 +1,46 @@
+{% set title = "FlightInfo Rules Config" %}
+{% extends '@AwardWalletMain/Manager/layout.html.twig' %}
+
+{% block content %}
+    <style type="text/css">
+        table {
+            border-collapse: collapse;
+        }
+        table td {
+            border: lightgray solid 1px;
+            padding: 7px;
+        }
+        thead td {
+            font-weight: bold;
+        }
+    </style>
+
+    <a href="{{ url('aw_manager_flightinfoconfig_index') }}">FlightInfo Config</a>
+
+    <hr size="2"/>
+
+    <h1>
+        Rule {{ configRule.name }}
+        <small> &nbsp; <a href="{{ url('aw_manager_flightinfoconfig_edit', {id: configRule.flightInfoConfigID}) }}">Edit</a></small>
+        <small> &nbsp; <a href="{{ url('aw_manager_flightinfoconfig_delete', {id: configRule.flightInfoConfigID}) }}">Delete</a></small>
+    </h1>
+
+    <br/>
+    <table>
+        <tbody>
+        <tr><td bgcolor="#eee">Name</td>                <td>{{ configRule.name }}</td></tr>
+        <tr><td bgcolor="#eee">Comment</td>             <td>{{ configRule.comment }}</td></tr>
+        <tr><td bgcolor="#eee">Request Type</td>        <td>{% if configRule.type == 1 %}Check Exists{% elseif configRule.type == 2 %}Subscribe{% elseif configRule.type == 3 %}Update{% else %}?{% endif %}</td></tr>
+        <tr><td bgcolor="#eee">Request Service</td>     <td>{{ configRule.service }}</td></tr>
+        <tr><td bgcolor="#eee">Schedule Rules</td>      <td>{{ configRule.scheduleRules|nl2br }}</td></tr>
+        <tr><td bgcolor="#eee">Ignore Fields</td>       <td>{{ configRule.ignoreFields|nl2br }}</td></tr>
+        <tr><td bgcolor="#eee">Enabled</td>             <td>{% if configRule.isEnable %}+{% else %}-{% endif %}</td></tr>
+        <tr><td bgcolor="#eee">Schedule</td>            <td>{% if configRule.isSchedule %}+{% else %}-{% endif %}</td></tr>
+        <tr><td bgcolor="#eee">Debug</td>               <td>{% if configRule.isDebug %}+{% else %}-{% endif %}</td></tr>
+        <tr><td bgcolor="#eee">User Level</td>          <td>{% if configRule.AWPlusFlag == 0 %}All{% elseif configRule.AWPlusFlag == 1 %}Regular Only{% elseif configRule.AWPlusFlag == 2 %}Plus Only{% else %}?{% endif %}</td></tr>
+        <tr><td bgcolor="#eee">Flight Region</td>       <td>{% if configRule.RegionFlag == 0 %}All{% elseif configRule.RegionFlag == 1 %}Domestic Only{% elseif configRule.RegionFlag == 2 %}International Only{% else %}?{% endif %}</td></tr>
+        </tbody>
+    </table>
+
+{% endblock %}
+

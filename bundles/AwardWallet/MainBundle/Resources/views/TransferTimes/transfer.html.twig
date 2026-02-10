@@ -1,0 +1,50 @@
+{% import "@AwardWalletMain/TransferTimes/macros.twig" as macros %}
+
+<ul class="tabs-navigation middle main-tabs">
+    <li>
+        <a ui-sref="mainState.mileTransferTimes" ng-class="{active: ('mainState.mileTransferTimes' | includedByState) || ('mainState.mileTransferTimesFilter' | includedByState) || ('mainState.mileTransferTimesLocale' | includedByState) || ('mainState.mileTransferTimesLocaleFilter' | includedByState)}">
+            {{ 'transfer_times'|trans|upper }}
+        </a>
+    </li>
+    <li>
+        <a ui-sref="mainState.milePurchaseTimes" ng-class="{active: ('mainState.milePurchaseTimes' | includedByState) || ('mainState.milePurchaseTimesFilter' | includedByState) || ('mainState.milePurchaseTimesLocale' | includedByState) || ('mainState.milePurchaseTimesLocaleFilter' | includedByState)}">
+            {{ 'purchase_times'|trans|upper }}
+        </a>
+    </li>
+</ul>
+
+<div class="tabs-content fixed-width" >
+    <div class="tab-main-content main-ui-view">
+        <div class="ajax-loader" data-ng-show="main.status.loaded == false"><div class="loading"></div></div>
+        <div class="search">
+            <div class="row">
+                <label>{{ 'start-typing-name-program-to-find'|trans }}</label>
+                <div  class="input">
+                    <div>
+                        <input name="search-provider" data-ng-class="{'empty-query': !programValue()}" data-ng-model="programValue"
+                               ng-model-options="{ getterSetter: true }"
+                               type="text" auto-focus autocomplete="off" spellcheck="false">
+                        <a href="#" data-ng-show="programValue()" data-ng-click="programValue('')"
+                           class="reset-input"><i class="icon-close-silver"></i></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="title-note">
+            <h1 class="head-title">{{ 'transfer_times'|trans }}</h1>
+        </div>
+        <div class="search-box__operations" data-ng-show="main.status.loading == true || main.status.loaded == true">
+            <div class="ajax-loader" data-ng-show="main.status.loading"><div class="loading"></div></div>
+            {{ macros.showTransferTimes() }} 
+        </div>
+    </div>
+</div>
+<script>
+    // save tab when changed language for unauthorized users
+    $(function() {
+        $("li.language li.ui-menu-item").html(function() {
+            return $(this).html().replace("mile-purchase-times","mile-transfer-times");
+        });
+    });
+</script>

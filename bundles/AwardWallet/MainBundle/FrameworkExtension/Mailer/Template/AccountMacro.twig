@@ -1,0 +1,216 @@
+{% macro renderAccount(account, recipient, context) %}{% trim %}
+    {% import _self as selfMacro %}
+    {% import '@MailTemplate/CommonMacro.twig' as commonMacro %}
+
+    {% if recipient is instanceof('\\AwardWallet\\MainBundle\\Entity\\Useragent') %}
+        {% set hideProp = recipient.getAgentid().getAccountlevel() == constant('ACCOUNT_LEVEL_FREE') %}
+        {% set updateLink = false %}
+        {% set toFamily = true %}
+    {% else %}
+        {% set hideProp = recipient.getAccountlevel() == constant('ACCOUNT_LEVEL_FREE') %}
+        {% set updateLink = true %}
+        {% set toFamily = false %}
+    {% endif %}
+
+    <table width="100%" cellpadding="0" border="0" cellspacing="0" style="margin-top:30px;border-bottom:2px solid #bec2cc">
+        <tr>
+            <td valign="top" width="40" align="left" style="line-height:1px">
+                <img src="{{ context.baseImagesPath }}/kind/{{ account['Kind'] }}.png" border="0" width="30" height="32" alt="">
+            </td>
+            <td valign="top" style="font-size: 25px; color: #3d424d; padding-top: 4px; line-height: 1;">
+                {{ account['DisplayName']|preg_replace('/\\([^\\)]+\\)/ims', '<span style="color:#828b99;display:inline-block;">${0}</span>')|raw }}
+                {% if account['SubDisplayName'] is defined and account['SubDisplayName'] is not empty %}
+                    <p style="margin: 0;font-size: 18px;padding-top: 5px;padding-bottom: 5px;">{{ account['SubDisplayName'] }}</p>
+                {% endif %}
+            </td>
+        </tr>
+        <tr>
+            <td valign="top" width="40" align="left">&nbsp;</td>
+            <td valign="top" style="padding: 5px 0 5px 0;font-size: 16px;color: #535457;">
+                <img src="{{ context.baseImagesPath }}/owner.png" border="0" width="10" height="13" alt="">
+                &nbsp; {{ account['UserName']|htmldecode }}
+            </td>
+        </tr>
+    </table>
+
+    <table width="100%" cellpadding="0" border="0" cellspacing="0" style="margin-top:5px;">
+        <tr>
+            <td width="40" align="left"  valign="top" style="line-height:1px">
+                <img src="{{ context.baseImagesPath }}/arrow-{{ account['ChangedOverPeriodPositive'] ? 'up' : 'down' }}.png" alt="" border="0" width="25" height="25">
+            </td>
+            <td valign="top" style="font-size:15px;color:#3d424d; padding:5px 0;line-height: 17px; ">
+                {{ 'rewards_activity.changed_from'|trans({
+                    '%bold_on%': '<b>',
+                    '%bold_off%': '</b>',
+                    '%from%': account['LastBalance']|htmlencode,
+                    '%to%': account['Balance']|htmlencode,
+                }, 'email', context.lang)|desc("Changed from %bold_on%%from%%bold_off% to %bold_on%%to%%bold_off%")|raw }}
+                <span style="color:{{ account['ChangedOverPeriodPositive'] ? '#4dbfa2' : '#4684c4' }}">
+                    &nbsp;&nbsp;<img src="{{ context.baseImagesPath }}/small-arrow-{{ account['ChangedOverPeriodPositive'] ? 'up' : 'down' }}.png" alt="" width="10" height="10">
+                    {{ account['LastChange'] }}
+                </span>
+            </td>
+        </tr>
+    </table>
+
+    {{ selfMacro.subHeader('account_details'|trans({}, 'messages', context.lang), context) }}
+
+    <table width="100%" cellpadding="0" border="0" cellspacing="0" style="line-height:18px;border-bottom:1px dotted #8e9199;">
+        <tr>
+            <td style="padding:10px 0">
+                <table width="100%" cellpadding="0" border="0" cellspacing="0">
+                    <tr>
+                        {{ selfMacro.nameCell('account.label'|trans({}, 'messages', context.lang)) }}
+                        {{ selfMacro.valueCell(account['MainProperties']['Login']|disableEmailLink, {}, {escape: false}) }}
+                    </tr>
+                    {% if account['ExpirationDate'] %}
+                        <tr>
+                            {{ selfMacro.nameCell('account.label.expiration'|trans({}, 'messages', context.lang), {
+                                'padding-top': '5px',
+                                'padding-right': '5px'
+                            }) }}
+                            {% if hideProp and account['ExpirationKnown'] %}
+                                {{ selfMacro.upgradeCell(updateLink, context) }}
+                            {% else %}
+                                {{ selfMacro.valueCell(account['ExpirationDate'], {
+                                    'padding-top': '5px'
+                                }) }}
+                            {% endif %}
+                        </tr>
+                    {% endif %}
+                    {% if account['Properties'] is defined %}
+                        {% for property in account['Properties'] %}
+                            {% if property['Visible'] == '1' and property['SortIndex'] is defined %}
+                                <tr>
+                                    {{ selfMacro.nameCell(property['Name']|htmldecode, {
+                                        'padding-top': '5px',
+                                        'padding-right': '5px'
+                                    }) }}
+                                    {% if hideProp %}
+                                        {{ selfMacro.upgradeCell(updateLink, context) }}
+                                    {% else %}
+                                        {{ selfMacro.valueCell(property['Val'], {
+                                            'padding-top': '5px'
+                                        }) }}
+                                    {% endif %}
+                                </tr>
+                            {% endif %}
+                        {% endfor %}
+                    {% endif %}
+                </table>
+            </td>
+        </tr>
+    </table>
+
+    {% if account['balanceChart'] is defined %}
+        {{ selfMacro.subHeader('balance_history'|trans({}, 'messages', context.lang)|desc('Balance History'), context) }}
+
+        {% if hideProp %}
+            {% if toFamily %}
+                <table width="100%" cellpadding="0" border="0" cellspacing="0" style="line-height:18px;border-bottom:1px dotted #8e9199;">
+                    <tr>
+                        <td valign="middle" style="padding:10px 0; color:#535457; font-size:15px">
+                            {{ 'awplus-only'|trans({}, 'email', context.lang)|desc("AwardWallet Plus members only") }}
+                        </td>
+                    </tr>
+                </table>
+            {% else %}
+                <table width="100%" cellpadding="0" border="0" cellspacing="0" style="line-height:18px;border-bottom:1px dotted #8e9199;">
+                    <tr>
+                        <td valign="middle" style="padding:10px 0; color:#535457; font-size:15px">
+                            {{ 'awplus-only-upgrade'|trans({
+                                '%link_on%': '<a href="' ~ context.baseUrl ~ path('aw_users_pay') ~ '" style="font-size:13px; color:#4684c4; text-decoration:none; font-weight:bold">',
+                                '%link_off%': '</a>'
+                            }, 'email', context.lang)|desc("Available to AwardWallet Plus members only, please %link_on%upgrade today%link_off%")|raw }}
+                        </td>
+                        <td width="35" align="right" valign="middle" style="padding:15px 10px">
+                            <img src="{{ context.baseImagesPath }}/arrow-right-blue.png" alt="" width="7" height="9" border="0">
+                        </td>
+                    </tr>
+                </table>
+            {% endif %}
+        {% else %}
+            <br>
+            <img src="{{ context.baseUrl ~ path('aw_account_balancechart') }}?{{ account['balanceChart'] }}" alt="" width="100%" height="215" style="max-width:500px !important; height:auto !important;" >
+        {% endif %}
+    {% endif %}
+
+    {% if not toFamily and (account['DisableClientPasswordAccess'] is not defined or account['DisableClientPasswordAccess'] is empty) %}
+        {% set autologin_link = context.baseUrl ~ path('aw_account_redirect', {
+            'ID': account['ID']
+        }) %}
+        {{ commonMacro.autologinLink(
+            autologin_link,
+            'autologin-link'|trans({
+                '%displayName%': account['DisplayName']|htmldecode
+            }, 'email', context.lang)|desc('To autologin to your %displayName% account, please use the link below:'),
+            context
+        ) }}
+    {% endif %}
+
+{% endtrim %}{% endmacro %}
+
+{% macro subHeader(text, context) %}{% trim %}
+    {% import '@MailTemplate/CommonMacro.twig' as commonMacro %}
+
+    {{ commonMacro.header(text, context, {}, {
+        'color': '#3d424d',
+        'line-height': '24px'
+    }) }}
+{% endtrim %}{% endmacro %}
+
+{% macro nameCell(text, styles) %}{% trim %}
+    <td  width="150" class="first-cell" valign="top" style="{{
+        {
+            'font-size': '15px',
+            'padding-right':'15px', 
+            'color': '#70798c'
+        }|merge(styles|default({}))|joinAssociative(":", ";")
+    }}">
+        {{ text }}:
+    </td>
+{% endtrim %}{% endmacro %}
+
+{% macro valueCell(text, styles, options) %}{% trim %}
+    {% set options = {
+        'escape': true
+    }|merge(options|default({})) %}
+    <td {# width="60%" #} valign="bottom" style="{{
+    {
+        'font-size': '16px',
+        'color': '#535457',
+    }|merge(styles|default({}))|joinAssociative(":", ";")
+    }}">
+        {% if options['escape'] %}{{ text|htmldecode }}{% else %}{{ text|raw }}{% endif %}
+    </td>
+{% endtrim %}{% endmacro %}
+
+{% macro upgradeCell(isLink, context) %}{% trim %}
+    {% import _self as selfMacro %}
+    {% if isLink %}
+        {{ selfMacro.valueCell(selfMacro.upgradeLink(context), {
+            'padding-top': '5px'
+        }, {'escape': false}) }}
+    {% else %}
+        {{ selfMacro.valueCell('awplus-only'|trans({}, 'email', context.lang)|desc("AwardWallet Plus members only"), {
+            'padding-top': '5px'
+        }) }}
+    {% endif %}
+{% endtrim %}{% endmacro %}
+
+{% macro upgradeLink(context) %}{% trim %}
+    <a href="{{ context.baseUrl ~ path('aw_users_pay') }}" style="text-decoration:none;color:#4684c4;">
+        <table width="100%" cellpadding="0" border="0" cellspacing="0">
+            <tr>
+                <td valign="middle">
+                    <span style="font-size:13px; color:#4684c4; text-decoration:none; font-weight:bold">
+                        {{ 'awplus-only'|trans({}, 'email', context.lang)|desc("AwardWallet Plus members only") }}
+                    </span>
+                </td>
+                <td width="35" align="right" valign="middle" style="padding:0 10px">
+                    <img src="{{ context.baseImagesPath }}/arrow-right-blue.png" alt="" width="7" height="9" border="0">
+                </td>
+            </tr>
+        </table>
+    </a>
+{% endtrim %}{% endmacro %}

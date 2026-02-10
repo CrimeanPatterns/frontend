@@ -1,0 +1,49 @@
+{% form_theme form with '@AwardWalletMain/FormTheme/fields.html.twig' %}
+
+<div id="register-business" class="ui-dialog register">
+    <div class="ui-dialog-titlebar">
+        <h3>{{ 'landing.page.dialog.registration.link'|trans|desc('Quick registration') }}</h3>
+
+        <p>
+            {{ 'landing.page.dialog.already.text'|trans|desc('Already have an account?') }} <a href="{{ path('aw_login') }}">
+                {{ 'landing.page.dialog.register.link'|trans|desc('Click to login') }}
+            </a>
+        </p>
+        <a class="ui-dialog-titlebar-close" href="{{ path('aw_business_home') }}"><i class="ui-icon-closethick"></i></a>
+    </div>
+    <div class="ui-dialog-content">
+        <div class="sign-in">
+            <div class="item">
+                {{ form_start(form, {'attr': {'class': 'main-form', 'id': 'registerForm', 'autocomplete': 'off', 'method': 'post'}}) }}
+                    <div class="col">
+                        {{ form_row(form.login) }}
+                        {% include '@AwardWalletMain/Profile/PersonalInfo/_passwordPolicyPopup.html.twig' %}
+                        {{ form_row(form.pass.Password) }}
+                        {{ form_row(form.pass.ConfirmPassword) }}
+                        {{ form_row(form.company) }}
+                    </div>
+                    <div class="col">
+                        {{ form_row(form.firstname) }}
+                        {{ form_row(form.lastname) }}
+                        {{ form_row(form.email) }}
+                        {{ form_row(form.picturever) }}
+                    </div>
+                    <div class="row-submit">
+                        <div class="row-submit-item">
+                            <div class="remember-me">
+                                {{ 'register.dialog.terms'|trans({}, 'landing')|raw }}
+                            </div>
+                            <div class="submit">
+                                <button id="register-button" type="submit" class="btn-blue">{{ 'buttons.register'|trans }}</button>
+                            </div>
+                        </div>
+                    </div>
+                {{ form_end(form) }}
+                <div class="em-handle"></div>
+                <div class="em-safe"></div>
+                <div class="em-clock"></div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="overlay"></div>

@@ -1,0 +1,11 @@
+<div class="row">
+	{#<div class="heading silver">#}
+		{#<i class="icon-silver-arrow-down"></i>#}
+		{#<h3>{{ 'menu.header.profile' | trans({}, 'menu') | desc('MY AWARDWALLET') }}</h3>#}
+	{#</div>#}
+	<ul class="default">
+        {% for item in items %}
+            {{ widget_render(item) }}
+        {% endfor %}
+    </ul>
+</div>

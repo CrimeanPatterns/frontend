@@ -1,0 +1,33 @@
+{% set title = "Airlines" %}
+{% extends '@AwardWalletMain/Manager/layout.html.twig' %}
+{% form_theme form with ['form_table_layout.html.twig'] %}
+
+{% block content %}
+    <style type="text/css">
+        table {
+            border-collapse: collapse;
+        }
+        table td {
+            border: lightgray solid 1px;
+            padding: 7px;
+        }
+        thead td {
+            font-weight: bold;
+        }
+    </style>
+
+    <a href="{{ url('aw_manager_airline_index') }}">Airlines</a>
+
+    <hr size="2"/>
+
+    <h1>Add New Airline</h1>
+
+    <br/>
+    <form name="edit" method="post" autocomplete="off">
+        {{ form_widget(form) }}
+        <br/>
+        <input class="buttonBg" value="Add" type="submit">
+    </form>
+
+{% endblock %}
+

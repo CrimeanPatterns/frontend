@@ -1,0 +1,9 @@
+{% extends '@MailTemplate/Layout/base.twig' %}
+
+{% block restore_row %}{% endblock restore_row %}
+
+{% block unsubscribe %}
+    {% import '@MailTemplate/CommonMacro.twig' as commonMacro %}
+
+    If you wish, feel free to {{ commonMacro.link(unsubscribeLink, 'unsubscribe') }} from our emails. Uncheck the box for "Promotional Offers" to not receive this type of email in the future.
+{% endblock unsubscribe %}

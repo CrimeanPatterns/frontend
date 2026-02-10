@@ -1,0 +1,17 @@
+{% extends '@MailTemplate/Layout/base.twig' %}
+{% trans_default_domain "email" %}
+
+{% block subject %}{% apply spaceless %}{% autoescape false %}
+    AwardWallet request type: "General", #123
+{% endautoescape %}{% endapply %}{% endblock subject %}
+
+{% block content %}
+    {% import '@MailTemplate/CommonMacro.twig' as commonMacro %}
+
+    {% if user is instanceof('\\AwardWallet\\MainBundle\\Entity\\Usr') %}
+        {% set name = user.firstname %}
+    {% endif %}
+
+    {{ commonMacro.paragraph('Hi ' ~ name ~ ', thank you for reaching out to our support; we have received your message. We try to respond to all support requests within one business day; however, currently, due to the holidays, we are short-staffed until ' ~ endDate|date('F j, Y') ~ ', so it may take a little longer for us to respond to you. We apologize for this inconvenience!') }}
+    {{ commonMacro.paragraph('From all of us here at AwardWallet, we wish you a happy New Year ' ~ endDate|date('Y') ~ '!') }}
+{% endblock content %}

@@ -1,0 +1,492 @@
+
+{% block action_popups %}
+    {{ block('storage_action_popup') }}
+    {{ block('goal_action_popup') }}
+    {{ block('archive_action_popup') }}
+    {{ block('owner_action_popup') }}
+    {{ block('share_action_popup') }}
+    {{ block('backup_action_popup') }}
+    {{ block('restore_action_popup') }}
+    {{ block('autologin_popup') }}
+    {{ block('delete_action_popup') }}
+    {{ block('enable_action_popup') }}
+    {{ block('enable_action_popup') }}
+    {{ block('disable_background_updating_action_popup') }}
+    {{ block('expiration_warning_popup') }}
+{% endblock %}
+
+
+{% block delete_action_popup %}
+    <div data-ng-cloak2 data-ng-controller="deleteActionCtrl as deleteAction">
+        <dialog id="delete-action" data-title="'{{ 'award.account.popup.delete.title'|trans|desc('Delete selected accounts') }}'" data-auto-open="false" data-modal="true" data-width="500">
+            <p id="delete-action-text">{{ 'award.account.popup.delete'|trans({count: 1, accounts: 1})|desc('{1}You are about to delete <span class="bold">1 account</span> from your AwardWallet profile, are you sure you want to do that?|[2,Inf]You are about to delete <span class="bold">%accounts% accounts</span> from your AwardWallet profile, are you sure you want to do that?')|raw }}</p>
+        </dialog>
+    </div>
+{% endblock %}
+
+{% block enable_action_popup %}
+    <div data-ng-cloak2 data-ng-controller="enableActionCtrl as enableAction">
+        <dialog id="enable-action" data-title="'{{ 'award.account.popup.enable.title'|trans|desc('Enable selected accounts') }}'" data-auto-open="false" data-modal="true" data-width="500">
+            <p ng-if="!disabled">{{ 'enable.accounts.text2'|trans|desc("Are you sure you want to enable the selected accounts in your AwardWallet profile?") }}</p>
+            <p ng-if="disabled">{{ 'disable.accounts.text2'|trans|desc("Are you sure you want to disable the selected accounts in your AwardWallet profile?") }}</p>
+        </dialog>
+    </div>
+{% endblock %}
+
+{% block disable_background_updating_action_popup %}
+    <div data-ng-cloak2 data-ng-controller="disableBackgroundUpdatingActionCtrl as disableBackgroundUpdatingAction">
+    </div>
+{% endblock %}
+
+{% block autologin_popup %}
+    {% import "@AwardWalletMain/TwigMacros/extension.html.twig" as extension %}
+    <div data-ng-cloak2>
+        {{ extension.autologin_popup() }}
+    </div>
+{% endblock %}
+
+{% block storage_action_popup %}
+    <div data-ng-cloak2 data-ng-controller="setStorageActionCtrl as setStorageAction">
+        <dialog id="set-storage-action" data-auto-open="false" data-title="'{{ 'award.account.popup.set-storage.title'|trans|desc('Store passwords') }}'" data-modal="true" data-width="500">
+            <form name="setStorageActionForm" class="store-password">
+                <p id="set-storage-action-text">{{ 'award.account.popup.set-storage'|trans({count: 1, accounts: 1})|desc('{1}You\'ve selected <span class="bold">1 account</span>, please choose where you wish to store password for this account|[2,Inf]You\'ve selected <span class="bold">%accounts% accounts</span>, please choose where you wish to store passwords for these accounts')|raw }}</p>
+
+                <p>{{ 'account.label.save.password'|trans }}:</p>
+                <ul id="storage-options">
+                    <li>
+                        <input type="radio" data-ng-model="setStorageAction.storage" class="radio" name="storage" value="database" id="set-storage-action-save-database"/>
+                        <label class="label" for="set-storage-action-save-database">{{ 'account.choice.save.password.with.aw'|trans }}</label>
+                    </li>
+                    <li>
+                        <input type="radio" data-ng-model="setStorageAction.storage" class="radio" name="storage" value="local" id="set-storage-action-save-local"/>
+                        <label class="label" for="set-storage-action-save-local">{{ 'account.choice.save.password.locally'|trans }}</label>
+                    </li>
+                </ul>
+                {{ 'account.save.password.note'|trans|desc('<p>Please note that AwardWallet encrypts all of your passwords regardless of where you store them. For details <a href="/faqs#10" target="_blank">click here</a>.</p><p>* If you choose to store passwords locally in this browser you would need to re-enter them again if you ever switch devices or browsers.</p>')|raw }}
+                <input type="submit" name="" value="" style="visibility:hidden; position: absolute; height: 0; width: 0; border: none; padding: 0;" hidefocus="true" tabindex="-1"/>
+            </form>
+        </dialog>
+    </div>
+{% endblock %}
+
+{% block goal_action_popup %}
+    <div data-ng-cloak2 data-ng-controller="setGoalActionCtrl as setGoalAction">
+        <dialog id="set-goal-action" data-auto-open="false" data-title="'{{ 'award.account.popup.set-goal.title'|trans|desc('Set account goals') }}'" data-modal="true" data-width="500">
+            <form name="setGoalActionForm" class="main-form">
+                <p id="set-goal-action-text">{{ 'award.account.popup.set-goal'|trans({count: 1, accounts: 1})|desc('{1}You\'ve selected <span class="bold">1 account</span>, please provide a goal you wish to set for this account. In this case Goal is a number of miles or points you wish to have this account.|[2,Inf]You\'ve selected <span class="bold">%accounts% accounts</span>, please provide a goal you wish to set for all of these accounts. In this case Goal is a number of miles or points you wish to have on each one of these accounts individually.')|raw }}</p>
+
+                <div class="row" data-ng-class="{error: setGoalActionForm.goal.$invalid}">
+                    <div class="row-item">
+                        <label for="set-goal-action-goal">{{ 'account.label.goal'|trans }}:</label>
+
+                        <div class="input">
+                            <div class="input-item">
+                                <input type="number" name="goal" data-ng-model="setGoalAction.goal" min="0" max="1000000000" id="set-goal-action-goal">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="info">
+                        <div class="info-icon"></div>
+                        <div class="info-description"><p></p></div>
+                    </div>
+                    <div class="error-message">
+                        <div class="warning"><i class="icon-warning-small"></i></div>
+                        <div class="error-message-description" style="padding-right: 10px">
+                            <ul data-ng-if="setGoalActionForm.goal.$dirty && setGoalActionForm.goal.$invalid">
+                                <li data-ng-show="setGoalActionForm.goal.$error.number">{{ 'error.value'|trans|desc('This value should be a valid number.') }}</li>
+                                <li data-ng-show="setGoalActionForm.goal.$error.min">{{ 'error.value-ge'|trans({'{{ limit }}': 1})|desc('This value should be {{ limit }} or more.') }}</li>
+                                <li data-ng-show="setGoalActionForm.goal.$error.max">{{ 'error.value-le'|trans({'{{ limit }}': 1000000000})|desc('This value should be {{ limit }} or less.') }}</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <input type="submit" name="" value="" style="visibility:hidden; position: absolute; height: 0; width: 0; border: none; padding: 0;" hidefocus="true" tabindex="-1"/>
+            </form>
+        </dialog>
+    </div>
+{% endblock %}
+
+{% block archive_action_popup %}
+    <div data-ng-cloak2 data-ng-controller="setArchiveActionCtrl as setArchiveAction">
+        <dialog id="set-archive-action" data-auto-open="false" data-title="'{{ 'award.account.popup.set-archive.title'|trans|desc('Confirm Account Archival') }}'" data-modal="true" data-width="600">
+            <form name="setArchiveActionForm" class="main-form">
+                <p id="set-archive-action-text">{{ 'award.account.popup.set-archive'|trans({count: 1, accounts: 1})|desc('{1}You are about to archive <span class="bold">%accounts%</span> selected account. Archived accounts will be transferred to a dedicated \'Archived Accounts\' tab. However, you can reactivate them anytime by moving them back to your \'Active Accounts\' tab.|[2,Inf]You are about to archive <span class="bold">%accounts%</span> selected accounts. Archived accounts will be transferred to a dedicated \'Archived Accounts\' tab. However, you can reactivate them anytime by moving them back to your \'Active Accounts\' tab.')|raw }}</p>
+
+                <div class="row">
+                    <div class="error-message">
+                        <div class="warning"><i class="icon-warning-small"></i></div>
+                        <div class="error-message-description" style="padding-right: 10px;">{{ 'notblank'|trans({}, 'validators') }}</div>
+                    </div>
+                </div>
+                <input type="submit" name="" value="" style="visibility: hidden; position: absolute; width: 0; height: 0; padding: 0; border: none;" hidefocus="true" tabindex="-1" />
+            </form>
+        </dialog>
+    </div>
+{% endblock %}
+
+{% block expiration_warning_popup %}
+    <div data-ng-cloak2>
+        <dialog id="expiration-warning-action" data-auto-open="false" data-title="'{{ 'account.expiration.popup.title'|trans|desc('Expiration warning')|e('js') }}'" data-modal="true" data-width="500">
+            <p id="expiration-warning-text"></p>
+            <a id="expiration-link-text" href="#" class="blog-post-link" target="_blank">
+                <div class="link-line"><span class="link-vertical-line"></span></div>
+                <div class="link-text"></div>
+                <div class="link-icon-additional"><span class="link-arrow-right"></span></div>
+            </a>
+            <a id="expiration-link-image" href="#" class="blog-post-link" target="_blank">
+                <div class="link-image"></div>
+                <div class="link-text"></div>
+                <div class="link-icon-additional"><span class="link-arrow-right"></span></div>
+            </a>
+        </dialog>
+    </div>
+{% endblock %}
+
+{% block owner_action_popup %}
+    <div data-ng-cloak2 data-ng-controller="setOwnerActionCtrl as setOwnerAction">
+        <dialog id="set-owner-action" data-auto-open="false" data-title="'{{ 'award.account.popup.set-owner.title'|trans|desc('Assign new owner') }}'" data-modal="true" data-width="600">
+            <form name="setOwnerActionForm" class="main-form">
+                <p id="set-owner-action-text">{{ 'award.account.popup.set-owner'|trans({count: 1, accounts: 1})|desc('{1}You\'ve selected <span class="bold">1 account</span>, here you can choose new owner for this account.|[2,Inf]You\'ve selected <span class="bold">%accounts% accounts</span>, here you can choose new owner for these accounts.')|raw }}</p>
+
+                <div class="row">
+                    <div class="row-item">
+                        <label for="set-owner-action-owner">{{ 'award.account.popup.set-owner.choice'|trans|desc('Choose new owner')|raw }}:</label>
+
+                        <div class="input">
+                            <div class="input-item">
+                                <div class="styled-select">
+                                    <div>
+                                    <select name="owner" data-ng-model="setOwnerAction.owner" id="set-owner-action-owner" data-ng-options="user.ID as user.name for user in setOwnerAction.possibleOwners">
+                                        <option value="">{{ 'account.option.please.select'|trans }}...</option>
+                                    </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="info">
+                        <div class="info-icon"></div>
+                        <div class="info-description"><p></p></div>
+                    </div>
+                    <div class="error-message">
+                        <div class="warning"><i class="icon-warning-small"></i></div>
+                        <div class="error-message-description" style="padding-right: 10px">{{ 'notblank'|trans({}, 'validators') }}</div>
+                    </div>
+                </div>
+                <input type="submit" name="" value="" style="visibility:hidden; position: absolute; height: 0; width: 0; border: none; padding: 0;" hidefocus="true" tabindex="-1"/>
+            </form>
+        </dialog>
+    </div>
+{% endblock %}
+
+{% block share_action_popup %}
+    <div data-ng-cloak2 data-ng-controller="shareActionCtrl as shareAction">
+        <dialog id="share-action" data-auto-open="false" data-title="'{{ 'award.account.popup.share.title'|trans|desc('Share selected accounts') }}'" data-modal="true" data-width="800">
+            <form name="shareActionForm" class="main-form">
+                <p id="share-action-text">{{ 'award.account.popup.share'|trans({count: 1, accounts: 1})|desc('{1}You\'ve selected <span class="bold">1 account</span>, here you can choose to share this account.|[2,Inf]You\'ve selected <span class="bold">%accounts% accounts</span>, here you can choose to share these accounts.')|raw }}</p>
+
+                <table class="sharing-accounts">
+                    <tr data-ng-repeat="user in shareAction.possibleShares">
+                        <td>
+                            <input id="shareAction[[ user.ID ]]" class="checkbox" type="checkbox" data-ng-click="shareAction.change(user.ID, $event)">
+                            <label for="shareAction[[ user.ID ]]" class="label" data-ng-class="{minus: shareAction.data[user.ID] == 1, checked: shareAction.data[user.ID] == 2}" data-ng-click="shareAction.change(user.ID, $event)"></label>
+                        </td>
+                        <td><label for="shareAction[[ user.ID ]]">[[ user.name ]]</label></td>
+                        <td><a href="/user/connections/[[ user.ID ]]" target="_blank" tabindex="-1">[[ user.shareableNotice ]]</a></td>
+                    </tr>
+                </table>
+                <input type="submit" name="" value="" style="visibility:hidden; position: absolute; height: 0; width: 0; border: none; padding: 0;" hidefocus="true" tabindex="-1"/>
+            </form>
+        </dialog>
+    </div>
+{% endblock %}
+
+{% block backup_action_popup %}
+    <div data-ng-cloak2 data-ng-controller="backupActionCtrl as backupAction">
+        <dialog id="backup-action" data-auto-open="false" data-title="'{{ 'award.account.popup.backup.title'|trans|desc('Backup passwords') }}'" data-modal="true" data-width="600">
+            <div class="backup-success">
+                <i class="icon-green-check-b" data-ng-show="backupAction.stage == 2"></i>
+                <p id="backup-action-text">{{ 'award.account.popup.backup'|trans({count: 1, accounts: 1})|desc('{1}<span class="bold">1 account password</span> was selected for a backup.|[2,Inf]<span class="bold">%accounts% account passwords</span> were selected for a backup.')|raw }}</p>
+            </div>
+
+            <div class="backup-error" data-ng-show="backupAction.cannot.length">
+                <i class="icon-red-error-b"></i>
+                <p id="backup-action-text-cannot">{{ 'award.account.popup.backup.cannot'|trans({count: 1, accounts: 1})|desc('{1}The following <span class="bold">account has an empty password</span> and thus cannot be backed up:|[2,Inf]The following <span class="bold">%accounts% accounts have empty passwords</span> and thus cannot be backed up:')|raw }}</p>
+            </div>
+
+            <div class="backup-list" data-ng-show="backupAction.cannot.length">
+                <div class="row" data-ng-repeat="account in backupAction.cannot">
+                    <p data-ng-bind-html="account.title | unsafe"></p>
+                    <p class="silver" data-ng-bind-html="account.login | unsafe"></p>
+                </div>
+            </div>
+
+            <form id="backup-action-download-form" name="backupActionDownloadForm" style="display: none" target="backupActionIframe" method="post" enctype="multipart/form-data" action="{{ path('aw_account_backup_passwords') }}">
+                <input id="backup-action-download-accounts" name="accounts" type="hidden">
+                <input id="backup-action-download-csrf" type="hidden" name="CSRF"/>
+                <input name="download" value="1" type="hidden">
+            </form>
+            <iframe style="width:0; height: 0; display: none" width="0" height="0" frameborder="0" name="backupActionIframe" id="backup-action-iframe"></iframe>
+        </dialog>
+    </div>
+{% endblock %}
+
+{% block restore_action_popup %}
+    <div data-ng-cloak2 data-ng-controller="restoreActionCtrl as restoreAction">
+        <dialog id="restore-action" data-auto-open="false" data-title="'{{ 'award.account.popup.restore.title'|trans|desc('Restore passwords') }}'" data-modal="true" data-width="600">
+            <div class="backup-success">
+                <p id="restore-action-text" data-ng-show="restoreAction.stage != 3">{{ 'award.account.popup.restore'|trans({count: 1, accounts: 1})|desc('{1}<span class="bold">1 account password</span> was selected for a restore.|[2,Inf]<span class="bold">%accounts% account passwords</span> were selected for a restore.')|raw }}</p>
+
+                <i class="icon-green-check-b" data-ng-show="restoreAction.restored.length"></i>
+                <p id="restore-action-text-ok" data-ng-show="restoreAction.restored.length">{{ 'award.account.popup.restore.ok'|trans({count: 1, accounts: 1})|desc('{1}<span class="bold">1 account password</span> was successfully restored.|[2,Inf]<span class="bold">%accounts% account passwords</span> were successfully restored.')|raw }}</p>
+            </div>
+
+            <div class="backup-error" data-ng-show="restoreAction.cannot.length">
+                <i class="icon-red-error-b"></i>
+                <p id="restore-action-text-cannot">{{ 'award.account.popup.restore.cannot'|trans|desc("Passwords for the following accounts have not been restored") }}:</p>
+            </div>
+
+            <div class="backup-list" data-ng-show="restoreAction.cannot.length">
+                <div class="row" data-ng-repeat="account in restoreAction.cannot">
+                    <p data-ng-bind-html="account.title | unsafe"></p>
+                    <p class="silver" data-ng-bind-html="account.login | unsafe"></p>
+                </div>
+            </div>
+
+            <form name="restoreActionForm" id="restore-action-form" class="main-form" target="restoreActionIframe" method="post" enctype="multipart/form-data" action="{{ path('aw_account_restore_passwords') }}">
+                <div class="row" data-ng-class="{error: restoreAction.error}" data-ng-show="restoreAction.stage == 1">
+                    <input id="restore-action-download-accounts" name="accounts" type="hidden">
+                    <input id="restore-action-download-csrf" type="hidden" name="CSRF"/>
+                    <div class="row-item">
+                        <label for="restore-action-file">{{ 'award.account.popup.restore.file'|trans|desc('Choose backup file')|raw }}:</label>
+
+                        <div class="input">
+                            <div class="styled-file">
+                                <span>{{ 'award.account.popup.restore.file-field'|trans|desc('Choose file')|raw }}</span>
+                                <input name="passwords" id="restore-action-file" type="file">
+                            </div>
+                            <div class="file-name" style="max-width: 200px"></div>
+                        </div>
+                    </div>
+                    <div class="info">
+                        <div class="info-icon"></div>
+                        <div class="info-description"><p></p></div>
+                    </div>
+                    <div class="error-message" data-ng-if="restoreAction.error">
+                        <div class="warning"><i class="icon-warning-small"></i></div>
+                        <div class="error-message-description" style="padding-right: 10px">
+                            [[ restoreAction.error ]]
+                        </div>
+                    </div>
+                </div>
+                <input type="submit" name="" value="" style="visibility:hidden; position: absolute; height: 0; width: 0; border: none; padding: 0;" hidefocus="true" tabindex="-1"/>
+            </form>
+            <iframe style="width:0; height: 0; display: none" width="0" height="0" frameborder="0" name="restoreActionIframe" id="restore-action-iframe"></iframe>
+        </dialog>
+    </div>
+{% endblock %}
+
+{% block upgrade_popup %}
+    <dialog data-ng-cloak2 id="need-upgrade" data-auto-open="false" data-title="'{{ 'please-upgrade'|trans }}'" data-modal="true" data-width="500" data-popup-open="{% if upgrade_popup_open is defined and upgrade_popup_open is same as(true) %}true{% else %}false{% endif %}">
+        <p>{{ 'award.account.popup.need-upgrade.p1'|trans|desc('This feature is only available to AwardWallet Plus members. By upgrading to Plus you support our development efforts, which makes the service better. We appreciate your support!') }}</p>
+        <br/>
+        <p>{{ 'award.account.popup.need-upgrade.p2'|trans|desc('Please click OK to proceed to the upgrade page, or Cancel to close this window.') }}</p>
+    </dialog>
+{% endblock %}
+
+{% block pending_popup %}
+    <dialog data-ng-cloak2 id="account-pending" data-auto-open="false" data-modal="true" data-width="800" data-bind-to-scope="true">
+        <p data-ng-bind-html="account.title | unsafe">{{ 'award.account.popup.pending.title'|trans|desc('You have a new <span class="red bold">%displayName%</span> account that was added into your profile automatically.')|raw }}</p>
+        <table class="main-table account-pending small">
+            <tbody>
+            <tr>
+                <td class="title"><strong>{{ 'award.account.popup.pending.from'|trans|desc('Retrieved from') }}:</strong></td>
+                <td>[[account.email]]</td>
+            </tr>
+            <tr data-ng-if="account.userName">
+                <td class="title"><strong>{{ 'award.account.popup.pending.name'|trans|desc('Name on the account') }}:</strong></td>
+                <td>[[account.userName]]</td>
+            </tr>
+            <tr>
+                <td class="title"><strong>{{ 'award.account.popup.pending.emaildate'|trans|desc('Date of email') }}:</strong></td>
+                <td>[[account.emailDate]]</td>
+            </tr>
+            <tr>
+                <td class="title"><strong>{{ 'award.account.popup.pending.emailsubject'|trans|desc('Email subject') }}:</strong></td>
+                <td>[[account.emailSubject]]</td>
+            </tr>
+            </tbody>
+        </table>
+        <form action="/" class="main-form" name="pendingForm" data-ng-submit="submit(this, $event)">
+            <div data-ng-repeat="field in account.fields" data-ng-switch="field.type" data-ng-init="fillModel(field)">
+                <div class="row" data-ng-class="{error: pendingForm[field.full_name].$invalid && submitted}" data-ng-switch-when="text">
+                    <div class="row-item">
+                        <label for="[[field.full_name]]">[[field.label]]<span data-ng-if="field.required" class="required">*</span></label>
+
+                        <div class="input">
+                            <div class="input-item">
+                                <input type="text" id="[[field.full_name]]" name="[[field.full_name]]" data-ng-required="field.required" data-ng-readonly="field.read_only" data-ng-model="pendings[field.full_name]">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="info">
+                        <div class="info-icon"></div>
+                        <div class="info-description"><p>[[field.attr.notice]]</p></div>
+                    </div>
+                    <div class="error-message" data-ng-show="pendingForm[field.full_name].$error.required && submitted">
+                        <div class="warning"><i class="icon-warning-small"></i></div>
+                        <div class="error-message-description" style="padding-right: 10px">{{ 'notblank'|trans({}, 'validators') }}</div>
+                    </div>
+                </div>
+                <div class="row" data-ng-class="{error: pendingForm[field.full_name].$invalid && submitted}" data-ng-switch-when="choice">
+                    <div class="row-item">
+                        <label for="account_owner">[[field.label]]<span data-ng-if="field.required" class="required">*</span></label>
+
+                        <div class="input">
+                            <div class="input-item">
+                                <div class="styled-select">
+                                    <div>
+                                    <select name="[[field.full_name]]" data-ng-required="field.required" data-ng-model="pendings[field.full_name]">
+                                        <option data-ng-repeat="option in field.choices" value="[[option.value]]" data-ng-selected="option.selected">[[option.label]]</option>
+                                    </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="info">
+                        <div class="info-icon"></div>
+                        <div class="info-description"><p>[[field.attr.notice]]</p></div>
+                    </div>
+                    <div class="error-message" data-ng-show="pendingForm[field.full_name].$error.required && submitted">
+                        <div class="warning"><i class="icon-warning-small"></i></div>
+                        <div class="error-message-description" style="padding-right: 10px">{{ 'notblank'|trans({}, 'validators') }}</div>
+                    </div>
+                </div>
+                <div class="row" data-ng-class="{error: pendingForm[field.full_name].$invalid && submitted}" data-ng-switch-when="password">
+                    <div class="row-item">
+                        <label for="[[field.full_name]]">[[field.label]]<span data-ng-if="field.required" class="required">*</span></label>
+
+                        <div class="input">
+                            <div class="input-item">
+                                <input type="password" id="[[field.full_name]]" name="[[field.full_name]]" data-ng-required="field.required" data-ng-model="pendings[field.full_name]">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="info">
+                        <div class="info-icon"></div>
+                        <div class="info-description"><p>[[field.attr.notice]]</p></div>
+                    </div>
+                    <div class="error-message" data-ng-show="pendingForm[field.full_name].$error.required && submitted">
+                        <div class="warning"><i class="icon-warning-small"></i></div>
+                        <div class="error-message-description" style="padding-right: 10px">{{ 'notblank'|trans({}, 'validators') }}</div>
+                    </div>
+                </div>
+                <div class="row" data-ng-class="{error: pendingForm[field.full_name].$invalid && submitted}" data-ng-switch-when="checkbox">
+                    <div class="row-item flag">
+                        <div class="flag-item">
+                            <input type="checkbox" class="checkbox" id="[[field.name]]" name="[[field.full_name]]" data-ng-required="field.required" data-ng-model="pendings[field.full_name]">
+                            <label class="label" for="[[field.name]]"></label>
+                        </div>
+                        <div class="input">
+                            <div class="input-item">
+                                <label for="[[field.name]]">[[field.label]]<span data-ng-if="field.required" class="required">*</span></label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="info">
+                        <div class="info-icon"></div>
+                        <div class="info-description"><p></p></div>
+                    </div>
+                    <div class="error-message" data-ng-show="pendingForm[field.full_name].$error.required && submitted">
+                        <div class="warning"><i class="icon-warning-small"></i></div>
+                        <div class="error-message-description" style="padding-right: 10px">{{ 'notblank'|trans({}, 'validators') }}</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row" data-ng-show="cnt > 1">
+                <div class="row-item flag">
+                    <div class="flag-item">
+                        <input type="checkbox" class="checkbox" id="apply" name="apply" data-ng-model="pendings.apply">
+                        <label class="label" for="apply"></label>
+                    </div>
+                    <div class="input">
+                        <div class="input-item">
+                            <label for="apply">{{ 'pending.popup.apply'|trans|desc('Apply to all [[cnt]] pending accounts') }}</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="info">
+                    <div class="info-icon"></div>
+                    <div class="info-description"><p></p></div>
+                </div>
+                <div class="error-message">
+                    <div class="warning"><i class="icon-warning-small"></i></div>
+                    <div class="error-message-description" style="padding-right: 10px">This field is required</div>
+                </div>
+            </div>
+            <input type="hidden" name="edit_account[AccountID]" value="[[account.id]]"/>
+        </form>
+    </dialog>
+{% endblock %}
+
+{% block old_site_popups %}
+    <div id="fader" class="fader" style="visibility: hidden;" onclick="faderClick()"></div>
+    <div id="framePopup" style="top: 0px; left: 0px; height: 100px; position: absolute; z-index: 1000; width: 100px; display: none;" class="ui-dialog ui-widget ui-widget-content ui-corner-all ui-front ui-draggable ui-resizable ui-dialog-buttons" role="dialog">
+        <div>
+            <div class="ui-dialog-titlebar ui-widget-header ui-corner-all ui-helper-clearfix"><span class="ui-dialog-title"><span id="frameHeader"></span>&nbsp;</span>
+                <button class="ui-button ui-widget ui-state-default ui-corner-all ui-button-icon-only ui-dialog-titlebar-close" role="button" aria-disabled="false" title="close" onclick="cancelPopup(); return false;"><span class="ui-button-icon-primary ui-icon ui-icon-closethick"></span><span class="ui-button-text">close</span></button>
+            </div>
+            <div class="ui-dialog-content ui-widget-content" style="padding: 0">
+                <div id="popupFrameContainer"></div>
+                <div class="clear"></div>
+            </div>
+        </div>
+    </div>
+    <div id="messagePopup" style="height: 200px; position: absolute; z-index: 1000; width: 540px; display: none;" class="ui-dialog ui-widget ui-widget-content ui-corner-all ui-front ui-draggable ui-resizable ui-dialog-buttons" role="dialog">
+        <div>
+            <div class="ui-dialog-titlebar ui-widget-header ui-corner-all ui-helper-clearfix"><span class="ui-dialog-title"><div id="messageHeader"></div>&nbsp;</span>
+                <button class="ui-button ui-widget ui-state-default ui-corner-all ui-button-icon-only ui-dialog-titlebar-close" id="messagePopupClose" role="button" aria-disabled="false" title="close" onclick="cancelPopup(); return false;"><span class="ui-button-icon-primary ui-icon ui-icon-closethick"></span><span class="ui-button-text">close</span></button>
+            </div>
+            <div class="ui-dialog-content ui-widget-content">
+                <div style="padding-top: 10px; margin: 5px 20px auto 20px;" id="messagePopupBody">
+                    {# todo trans #}
+                    <div id="messageText">Question</div>
+                    <div style="margin-top: 10px;" id="messageButtons">
+                        <button type="submit" class="btn-blue" onclick="cancelPopup()" id="messageOKButton" style="width: 120px;">OK</button>
+                        <button type="submit" class="btn-blue" onclick="cancelPopup()" style="display: none;" id="messageCancelButton">Cancel</button>
+                    </div>
+                    <div class="clear"></div>
+                    <div id="messageProgress" class="progress" style="display: none;"></div>
+                </div>
+                <div class="clear"></div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block upgrade_notify_popup %}
+    <dialog id="upgradeNotifyPopup"
+            data-ng-cloak2
+            data-auto-open="{% if upgradeNotifyPopup.autoOpen is defined and upgradeNotifyPopup.autoOpen == true %}true{% else %}false{% endif %}"
+            data-title="'{{ 'awardwallet-plus-expired'|trans|desc('AwardWallet Plus Expired') }}'"
+            data-modal="true"
+            data-width="660"
+            data-addclass="blue"
+            data-close="upgradeNotifyPopupClose"
+            data-position-at="center top+100"
+    >
+        <div class="aw-plus">
+            <p>{{ 'awplus-expired.please-upgrade.diff-between'|trans({
+                '%name%': user.name,
+                '%break%' : '<br>',
+                '%link_diff_on%' : '<a href="' ~ path('aw_pricing') ~ '" target="_blank">',
+                '%link_diff_off%': '</a>',
+            })|desc('Hi, %name%, your AwardWallet Plus subscription has recently expired, please upgrade your account now to keep getting the benefits of AwardWallet Plus.%break%%link_diff_on%Here is the difference between AwardWallet Plus and AwardWallet Regular accounts%link_diff_off%')|raw }}</p>
+            <div class="t-center">
+                <a href="{{ path('aw_users_pay', {'ref': 212}) }}" class="btn-white">{{ 'awplus-advertise.2'|trans }}</a>
+            </div>
+        </div>
+    </dialog>
+{% endblock %}

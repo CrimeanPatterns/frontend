@@ -1,0 +1,54 @@
+POST https://test.api.amadeus.com/v2/shopping/flight-offers
+Authorization: Bearer {{access_token}}
+Content-Type: application/json
+
+{
+  "currencyCode": "USD",
+  "originDestinations": [
+    {
+      "id": "1",
+      "originLocationCode": "SAN",
+      "destinationLocationCode": "MSP",
+      "departureDateTimeRange": {
+        "date": "2024-07-17",
+        "time": "11:30:00"
+      }
+    },
+    {
+      "id": "2",
+      "originLocationCode": "MSP",
+      "destinationLocationCode": "SAN",
+      "departureDateTimeRange": {
+        "date": "2024-07-23",
+        "time": "16:55:00"
+      }
+    }
+  ],
+  "travelers": [
+    {
+      "id": "1",
+      "travelerType": "ADULT"
+    },
+    {
+      "id": "2",
+      "travelerType": "ADULT"
+    }
+  ],
+  "sources": [
+    "GDS"
+  ],
+  "searchCriteria": {
+    "maxFlightOffers": 20,
+    "flightFilters": {
+      "cabinRestrictions": [
+        {
+          "cabin": "ECONOMY",
+          "coverage": "MOST_SEGMENTS",
+          "originDestinationIds": [
+            "1", "2"
+          ]
+        }
+      ]
+    }
+  }
+}

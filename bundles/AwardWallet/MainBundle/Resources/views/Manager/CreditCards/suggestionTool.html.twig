@@ -1,0 +1,59 @@
+{% set title = "Credit Cards: Suggestion Tool" %}
+{% extends '@AwardWalletMain/Manager/layout.html.twig' %}
+
+{% block content %}
+    <style>
+        .select2-container {
+            min-width: 805px;
+        }
+
+        #prompt {
+            width: 100%;
+            min-height: 600px;
+        }
+
+        #result {
+            max-width: 800px;
+            padding: 1rem 0;
+        }
+    </style>
+
+    <input id="user" name="userId" value="" placeholder="Select user">
+    <div>
+        <div id="result"></div>
+        <div><textarea id="prompt" style="display: none"></textarea></div>
+    </div>
+
+    <script>
+        $('#user').select2({
+            minimumInputLength: 2,
+            ajax: {
+                url: "{{ path('aw_manager_cc_suggestion_tool_users') }}",
+                dataType: 'json',
+                type: 'GET',
+                multiple: false,
+                allowClear: true,
+                cache: true,
+                data: function(term) {
+                    $('#result').text('Loading...');
+                    return {
+                        term: term
+                    };
+                },
+                results: function(data) {
+                    return {
+                        results: $.map(data, function(item) {
+                            return item;
+                        })
+                    };
+                }
+            }
+        }).on('change', function(e) {
+            $.post("{{ path('aw_manager_cc_suggestion_tool_user') }}", e.added, function(data) {
+                $('#prompt').val(data.prompt).show();
+                $('#result').html(data.result);
+
+            }, 'json');
+        });
+    </script>
+{% endblock %}

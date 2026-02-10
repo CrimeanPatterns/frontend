@@ -1,0 +1,127 @@
+{% trans_default_domain 'messages' %}
+{% from "@AwardWalletMain/TwigMacros/oauthButtons.html.twig" import oauthButtons %}
+{% from "@AwardWalletMain/TwigMacros/scanMailboxQuestion.html.twig" import scanMailboxQuestion %}
+
+<div id="register" class="ui-dialog">
+    <div class="ui-dialog-titlebar">
+        <h3 data-ng-if="isStep(1) || isStep(3)">{{ 'buttons.register'|trans }}</h3>
+        <h3 data-ng-if="isStep(2)">{{ 'landing.page.dialog.registration.link'|trans|desc('Quick registration') }}</h3>
+
+        <a data-ui-sref="{{ homeRef|default('home') }}" class="ui-dialog-titlebar-close"><i class="ui-icon-closethick"></i></a>
+    </div>
+
+    <div class="ui-dialog-content">
+        <div class="sign-in">
+            <div class="item">
+                <form data-ng-show="isStep(1) || isStep(3)">
+                    {{ scanMailboxQuestion() }}
+                    <div id="register-buttons" data-ng-show="isStep(1)">
+                        {{ oauthButtons('register') }}
+                        <div class="or-block">{{ 'or'|trans }}</div>
+                        <div class="row-submit">
+                            <div class="submit">
+                                <button id="quickRegistration" tabindex="1" type="button" class="btn-blue wide" data-ng-click="setStep(2)">{{ 'buttons.register'|trans }}</button>
+                                <p>
+                                    {{ 'landing.page.dialog.already.text'|trans|desc('Already have an account?') }}
+                                    <a data-ui-sref="{{ loginRef|default('login') }}">{{ 'landing.page.dialog.register.link'|trans|desc('Click to login') }}</a>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                </form>
+
+                <div data-ng-show="isStep(2)">
+                    <form class="main-form unselectable" name="registerForm" data-ng-submit="submit(registerForm)" novalidate autocomplete="off" method="post">
+                        <div class="row" data-ng-class="{error: registerForm.email.$invalid && submitted}">
+                            <div class="row-item">
+                                <label for="quick_registration_email">{{ 'login.email'|trans }}<span class="required">*</span></label>
+
+                                <div class="input">
+                                    <div class="input-item">
+                                        <div data-ng-if="registerForm.email.$error.required && submitted" class="req" title="{{ 'notblank'|trans({}, 'validators') }}" data-tip="fixed"><i class="icon-warning-small"></i></div>
+                                        <div data-ng-if="(registerForm.email.$error.email || registerForm.email.$error.pattern) && submitted" class="req" title="{{ 'user.email.invalid'|trans({}, 'validators')|desc('This is not a valid email address') }}" data-tip="fixed"><i class="icon-warning-small"></i></div>
+                                        <div data-ng-if="registerForm.email.$error.taken && submitted" class="req" title="{{ 'user.email_taken'|trans({}, 'validators') }}" data-tip="fixed"><i class="icon-red-error"></i></div>
+                                        <div data-ng-if="registerForm.email.$error.locked && submitted"  class="req" title="{{ 'user.email.locked'|trans({}, 'validators')|desc('Please wait 5 minutes before next attempt') }}" data-tip="fixed"><i class="icon-red-error"></i></div>
+                                        <input data-lpignore="true" tabindex="1" type="email" id="quick_registration_email" data-ng-change="emailChecked = false;" data-ng-keyup="resetErrors()" name="email" data-ng-model="form.email" data-autofill="email" auto-focus data-ng-pattern="/^[_a-zA-Z\d\-\+\.]+@([_a-zA-Z\d\-]+(\.[_a-zA-Z\d\-]+)+)$/" required autocomplete="off">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row" data-ng-class="{error: registerForm.pass.$invalid && submitted}">
+                            <div class="row-item">
+                                <label for="password">{{ 'login.pass'|trans }}<span class="required">*</span></label>
+
+                                <div class="input">
+                                    <div class="input-item">
+                                        <div data-ng-if="registerForm.pass.$error.required && submitted" class="req" title="{{ 'notblank'|trans({}, 'validators') }}" data-tip="fixed"><i class="icon-warning-small"></i></div>
+                                        <div data-ng-if="registerForm.pass.$error.minlength && submitted" class="req" title="{{ 'user.password.minlength'|trans({'%count%': 8}, 'validators')|desc('{1}Please enter at least 1 character|]1,Inf]Please enter at least %count% characters') }}" data-tip="fixed"><i class="icon-warning-small"></i></div>
+                                        <div data-ng-if="registerForm.pass.$error.maxlength && submitted" class="req" title="{{ 'user.password.maxlength'|trans({'%count%': 72}, 'validators')|desc('{1}Please enter no more than 1 character|]1,Inf]Please enter no more than %count% characters') }}" data-tip="fixed"><i class="icon-warning-small"></i></div>
+                                        <div data-ng-if="!submitted && !showPass" ng-click="toggleShowPass()" class="req"><i class="icon-closed-eye"></i></div>
+                                        <div data-ng-if="!submitted && showPass" ng-click="toggleShowPass()" class="req"><i class="icon-open-eye"></i></div>
+                                        <input tabindex="2" id="password" data-lpignore="true" data-ng-keyup="resetErrors()" required data-ng-minlength="4" data-ng-maxlength="72" type="[[ showPass ? 'text' : 'password' ]]" name="pass" data-ng-model="form.pass" autocomplete="off"/>
+                                        {% include '@AwardWalletMain/Profile/PersonalInfo/_passwordPolicyPopup.html.twig' %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row" data-ng-class="{error: registerForm.firstname.$invalid && submitted}">
+                            <div class="row-item">
+                                <label for="firstname">{{ 'login.first'|trans }}<span class="required">*</span></label>
+
+                                <div class="input">
+                                    <div class="input-item">
+                                        <div data-ng-if="registerForm.firstname.$error.required && submitted" class="req" title="{{ 'notblank'|trans({}, 'validators') }}" data-tip="fixed"><i class="icon-warning-small"></i></div>
+                                        <div data-ng-if="registerForm.firstname.$error.maxlength && submitted" class="req" title="{{ 'user.password.maxlength'|trans({'%count%': 30}, 'validators')|desc('{1}Please enter no more than 1 character|]1,Inf]Please enter no more than %count% characters') }}" data-tip="fixed"><i class="icon-warning-small"></i></div>
+                                        <input tabindex="3" type="text" id="firstname" name="firstname" data-ng-keyup="resetErrors()" data-ng-maxlength="30" data-ng-model="form.firstname" data-autofill="fname" required autocomplete="off"/>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row" data-ng-class="{error: registerForm.lastname.$invalid && submitted}">
+                            <div class="row-item">
+                                <label for="lastname">{{ 'login.name'|trans }}<span class="required">*</span></label>
+
+                                <div class="input">
+                                    <div class="input-item">
+                                        <div data-ng-if="registerForm.lastname.$error.required && submitted" class="req" title="{{ 'notblank'|trans({}, 'validators') }}" data-tip="fixed"><i class="icon-warning-small"></i></div>
+                                        <div data-ng-if="registerForm.lastname.$error.maxlength && submitted" class="req" title="{{ 'user.password.maxlength'|trans({'%count%': 30}, 'validators')|desc('{1}Please enter no more than 1 character|]1,Inf]Please enter no more than %count% characters') }}" data-tip="fixed"><i class="icon-warning-small"></i></div>
+                                        <input tabindex="4" type="text" id="lastname" name="lastname" data-ng-keyup="resetErrors()" data-ng-maxlength="30" data-ng-model="form.lastname" data-autofill="lname" required autocomplete="off"/>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="row-item">
+                                <label for="coupon">{{ 'user.coupon.form.label'|trans }}</label>
+
+                                <div class="input">
+                                    <div class="input-item">
+                                        <input tabindex="5" type="text" id="coupon" name="coupon" data-ng-keyup="resetErrors()" data-ng-model="coupon" data-autofill="coupon" autocomplete="off"/>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row-submit">
+                            <div class="remember-me">
+                                {{ 'register.dialog.terms'|trans({}, 'landing')|desc('By clicking “Register”, you agree to our <a href="/page/terms" target="_blank">Terms of Use</a> and <a href="/page/privacy" target="_blank">Privacy Notice</a>')|raw }}
+                            </div>
+                            <div class="submit">
+                                <button tabindex="7" type="button" class="btn-silver" data-ng-click="setStep(1)">{{ 'button.back'|trans }}</button>
+                                <button id="quickRegistrationSubmit" tabindex="6" data-ng-disabled="(registerForm.$invalid && submitted) || spinner" type="submit" class="btn-blue" data-ng-class="{loader:spinner}">{{ 'buttons.register'|trans }}</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="em-handle"></div>
+                <div class="em-clock"></div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="overlay"></div>

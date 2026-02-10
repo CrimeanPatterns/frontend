@@ -1,0 +1,82 @@
+{% extends '@MailTemplate/Layout/base.twig' %}
+{% trans_default_domain "email" %}
+
+{% block subject %}{% apply spaceless %}{% autoescape false %}
+    {{ 'blog.new-comment.published'|trans({
+        '%link_on%' : '',
+        '%link_off%' : '',
+    }, 'email', lang)|desc('New %link_on%comments%link_off% have been published on the AwardWallet Blog') }}
+{% endautoescape %}{% endapply %}{% endblock subject %}
+
+{% block content_row %}
+    {% import '@MailTemplate/CommonMacro.twig' as commonMacro %}
+
+    <tr>
+        <td style="border-left:solid 1px #a6aab3;border-right:solid 1px #a6aab3;padding:10px 20px 20px; color:#535457; line-height: 24px; font-size: 16px;" bgcolor="#fff" class="email-white">
+            {{ commonMacro.hello((user.FirstName ?? ''), _context) }}
+            {{ 'blog.new-comment.published'|trans({
+                '%link_on%' : '<b style="color:#3d424d">',
+                '%link_off%' : '</b>',
+            }, 'email', lang)|raw }}
+        </td>
+    </tr>
+    {% for blogPost in blogPosts %}
+        <tr>
+            <td style="border: solid 1px #a6aab3; border-bottom: 0; background: #ffffff; padding: 20px" class="email-white">
+                <table width="100%" cellpadding="0" border="0" cellspacing="0">
+                    <tr>
+                        <td valign="middle">
+                            <a href="{{ blogPost.postLink }}" style="font-size: 25px; color: #3d424d; line-height: 30px; font-family: Georgia,Times,Times New Roman,serif; text-decoration: none;" target="_blank" class="white-text">{{ blogPost.postTitle }}</a> <br><div style="font-size: 12px; color: #777f8c; padding-top: 10px;" class="white-text">{{ blogPost.commentCount }} comments</div>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+        {% for comment in blogPost.comments %}
+            <tr>
+                <td style="border-left: solid 1px #a6aab3;border-right: solid 1px #a6aab3; background: #ffffff;" class="email-white">
+                    <table width="100%" cellpadding="0" border="0" cellspacing="0">
+                        <tr>
+                            <td valign="middle">
+
+                                <table width="100%" cellpadding="0" border="0" cellspacing="0" bgcolor="#f9f9fa" class="email-silver">
+                                    <tr>
+                                        <td style="padding:15px 20px" valign="top" width="30">
+                                            {% if comment.avatarSrc is not defined or comment.avatarSrc is empty %}
+                                                {% set avatarSrc = 'anonymous' %}
+                                            {% else %}
+                                                {% set avatarSrc = comment.avatarSrc %}
+                                            {% endif %}
+                                            <img src="https://www.gravatar.com/avatar/{{ avatarSrc }}?d=mm&s=30" width="30" height="30" alt="" border="0">
+                                        </td>
+                                        <td valign="top" style="padding:15px 20px 0 0;">
+                                            <div style="font-size:12px;color:#777f8c; line-height: 1">{{ comment.CommentDate|formatDatetime('long', 'short', locale) }}</div>
+                                            <div style="color:#515766; font-size:16px;"><a href="{{ comment.CommentLink }}" style="color:#4684c4;text-decoration:none"><b>{{ comment.CommentAuthor|nl2br }}</b></a> says:</div>
+                                        </td>
+                                    </tr>
+                                </table>
+
+                                <div style="padding: 10px 20px 20px; font-size: 15px; color: #515766; line-height: 1.5;">{{ comment.CommentContent }}</div>
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+        {% endfor %}
+        <tr>
+            <td style="border-bottom: solid 1px #a6aab3;border-left: solid 1px #a6aab3;border-right: solid 1px #a6aab3;height: 15px; background: #fff" class="email-white"></td>
+        </tr>
+    {% endfor %}
+
+{% endblock content_row %}
+
+{% block unsubscribe %}
+    {% import '@MailTemplate/CommonMacro.twig' as commonMacro %}
+
+    {% if unsubscribeUrl is defined and unsubscribeUrl is not empty %}
+        {% set link = unsubscribeUrl %}
+    {% else %}
+        {% set link = unsubscribeLink ~ '#newBlogPosts' %}
+    {% endif %}
+    {{ commonMacro.baseUnsubscribeLink(link, _context) }}
+{% endblock unsubscribe %}

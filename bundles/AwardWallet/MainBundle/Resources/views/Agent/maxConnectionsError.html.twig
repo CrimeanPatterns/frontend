@@ -1,0 +1,28 @@
+{% extends "@AwardWalletMain/Layout/edit_connections.html.twig" %}
+
+{% block header_metatags %}
+    {% include '@AwardWalletMain/Utility/scalableViewport.html.twig' %}
+{% endblock %}
+
+{% block content %}
+    <div class="add-account">
+        <div class="main-blk">
+            <h1>{{ 'agents.connect.step1.header'|trans|desc('Add a new connection') }}</h1>
+
+            <div class="main-blk-content">
+                <div class="warning-message">
+                    <i class="icon-warning-b"></i>
+                    <p>{{ 'agents.connect.max-connections.message'|trans({
+                            '%connectionsLink%': '<a href="' ~ path('aw_user_connections') ~ '">',
+                            '%createBusinessLink%': '<a href="' ~ path('aw_user_convert_to_business') ~ '">',
+                            '%linkEnd%': '</a>'
+                        })|desc('Under the personal interface you can have a maximum of 20 connected users. At the moment you already invited 20 users so you either need to %connectionsLink%remove some of your connections%linkEnd% or %createBusinessLink%switch to a business interface%linkEnd% which does not have such limitations.') | raw }}</p>
+                </div>
+            </div>
+            <div class="row-submit">
+                <a href="{{ path('aw_user_connections') }}" class="btn-blue">{{ 'menu.header.persons.manage'|trans({},'menu') }}</a>
+            </div>
+        </div>
+        {{ include('@AwardWalletMain/Agent/_faq.html.twig') }}
+    </div>
+{% endblock %}

@@ -1,0 +1,274 @@
+{% extends "@AwardWalletMain/Layout/default.html.twig" %}
+{% block title %}{{ item.title }}{% endblock %}
+
+{% block meta %}
+    {{ parent() }}
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="description" content="{{ item.description }}">
+{% endblock %}
+
+{% block body_left_widgets %}
+    {{ widget_render('left_top') }}
+{% endblock %}
+
+{% block hide_menu_button %}
+{% endblock %}
+
+{% block stylesheets %}
+    {{ encore_entry_link_tags('api-doc') }}
+    <style>
+        .highlight table td { padding: 5px; }
+        .highlight table pre { margin: 0; }
+        .highlight, .highlight .w {
+            color: #f8f8f2;
+            /*background-color: #272822;*/
+        }
+        .highlight .err {
+            color: #151515;
+            background-color: #ac4142;
+        }
+        .highlight .c, .highlight .cd, .highlight .cm, .highlight .c1, .highlight .cs {
+            color: #505050;
+        }
+        .highlight .cp {
+            color: #f4bf75;
+        }
+        .highlight .nt {
+            color: #f4bf75;
+        }
+        .highlight .o, .highlight .ow {
+            color: #d0d0d0;
+        }
+        .highlight .p, .highlight .pi {
+            color: #d0d0d0;
+        }
+        .highlight .gi {
+            color: #90a959;
+        }
+        .highlight .gd {
+            color: #ac4142;
+        }
+        .highlight .gh {
+            color: #6a9fb5;
+            background-color: #151515;
+            font-weight: bold;
+        }
+        .highlight .k, .highlight .kn, .highlight .kp, .highlight .kr, .highlight .kv {
+            color: #aa759f;
+        }
+        .highlight .kc {
+            color: #d28445;
+        }
+        .highlight .kt {
+            color: #d28445;
+        }
+        .highlight .kd {
+            color: #d28445;
+        }
+        .highlight .s, .highlight .sb, .highlight .sc, .highlight .sd, .highlight .s2, .highlight .sh, .highlight .sx, .highlight .s1 {
+            color: #90a959;
+        }
+        .highlight .sr {
+            color: #75b5aa;
+        }
+        .highlight .si {
+            color: #8f5536;
+        }
+        .highlight .se {
+            color: #8f5536;
+        }
+        .highlight .nn {
+            color: #f4bf75;
+        }
+        .highlight .nc {
+            color: #f4bf75;
+        }
+        .highlight .no {
+            color: #f4bf75;
+        }
+        .highlight .na {
+            color: #6a9fb5;
+        }
+        .highlight .m, .highlight .mf, .highlight .mh, .highlight .mi, .highlight .il, .highlight .mo, .highlight .mb, .highlight .mx {
+            color: #90a959;
+        }
+        .highlight .ss {
+            color: #90a959;
+        }
+        pre.highlight {
+            padding: 0px 28px;
+        }
+        .content blockquote {
+            padding-top: 20px;
+            padding-bottom: 0px;
+        }
+        .dropdown-submenu { display:none }
+
+        @media (max-width: 1355px) {
+            table.response-width {
+                display: block;
+            }
+
+            .content table.response-width tr:nth-child(2n) > td {
+                background-color: transparent;
+            }
+
+            table.response-width thead {
+                display: none;
+            }
+
+            table.response-width tbody td {
+                position: relative;
+                display: block;
+                padding-top: 2rem !important;
+            }
+
+            table.response-width tbody td::before {
+                display: block;
+                position: absolute;
+                top: -.1rem;
+                font-weight: bold;
+            }
+
+            table.response-width tbody td:nth-child(1) {
+                min-width: 70px;
+            }
+
+            table.response-width tbody td:nth-child(2) {
+                min-width: 30px;
+            }
+
+            table.response-width tbody td:nth-child(3) {
+                min-width: 55px;
+            }
+
+            table.response-width tbody td:nth-child(1)::before {
+                content: 'Parameter';
+            }
+
+            table.response-width tbody td:nth-child(2)::before {
+                content: 'Type';
+            }
+
+            table.response-width tbody td:nth-child(3)::before {
+                content: 'Required';
+            }
+
+            table.response-width tbody td:nth-child(4)::before {
+                content: 'Description';
+            }
+
+            table.response-width tbody tr:not(:last-child) td:nth-child(4) {
+                width: 100%;
+                margin-bottom: 2rem;
+                border-bottom: solid 1px #d6dae6;
+            }
+
+            table.response-width tr {
+                display: flex !important;
+                flex-wrap: wrap;
+                flex-grow: 1;
+            }
+        }
+
+        .page-wrapper .dark-box,
+        .content pre, .content blockquote {
+            width: 45%;
+        }
+        .content>h1, .content>h2, .content>h3, .content>h4, .content>h5, .content>h6, .content>p, .content>table, .content>ul, .content>ol, .content>aside, .content>dl {
+            margin-right: 45%;
+        }
+
+    </style>
+{% endblock %}
+
+{% block javascripts %}
+    {# encore_entry_script_tags('api-doc') #}
+    <script src="/assets/awardwalletnewdesign/js/lib/api-doc.js" language="javascript"></script>
+
+    <script>
+        require(['lib/design'], function(){
+            $(document).ready(function(){
+                $('.menu-burger').click(function(){
+                    $('.menu-container').slideToggle();
+                });
+
+                // $('.api-nav__has-submenu > a').click(function(e){
+                //     e.preventDefault();
+                //     $(this).parent().toggleClass('active');
+                // });
+
+                $(".page-wrapper a[href*='#']").click(function(){
+                    var href = $(this).attr("href"),
+                        topPosition = $(href).offset().top;
+                    $('html,body').animate({scrollTop: topPosition - 60}, 500);
+                    return false;
+                });
+
+//                $('.tocify .tocify-item>a').click(function(){
+//                    var id = $(this).parent('li').attr("data-unique"),
+//                        topPosition = $('#'+ id).offset().top;
+//                    $('html,body').animate({scrollTop: topPosition - 55}, 500);
+//                    return false;
+//                });
+                $('.preview').click(function(e){
+                    $('.modal-content')[0].src = this.src;
+                    $('.modal').show();
+                    var px = ($('.modal').height() - $('.modal table').height()) / 2;
+                    if ($('#headerSite').height() && px < $('#headerSite').height()) {
+                        px = $('#headerSite').height();
+                    }
+                    if (px > 0) {
+                        $('.modal table').css('margin-top', px + 'px');
+                    }
+                    else {
+                        $('.modal table').css('margin-top', '');
+                    }
+                });
+                $('.modal-close').click(function(){
+                    $('.modal').hide();
+                });
+                $('.modal-content').click(function(){
+                    $('.modal').hide();
+                });
+
+                $('th:contains("Parameter")', 'table thead').each(function() {
+                    $(this).closest('table').addClass('response-width');
+                });
+            })
+        });
+
+    </script>
+{% endblock %}
+
+{% block body_header_widgets %}
+    {{ widget_render('logo') }}
+    {{ widget_render('header_menu_documentation') }}
+{% endblock %}
+
+{% block popup %}
+    <a href="./" id="nav-button">
+      <span>
+        <!-- NAV -->
+        <img src="/assets/awardwalletnewdesign/img/navbar.png">
+      </span>
+    </a>
+{% endblock %}
+
+{% block page_content %}
+{% include '@AwardWalletMain/Page/_apiNav.html.twig' %}
+{% include "@AwardWalletMain/ApiDocumentation/"~item.page~".html.twig" %}
+{% endblock %}
+
+{% block footer %}
+    <!-- footer -->
+    <footer class="footer-site">
+        {{ widget_render('footer') }}
+    </footer>
+    <!-- end -->
+{% endblock %}
+
+{% block sessions %}
+{% endblock %}
+{% block page_aside %}
+{% endblock %}

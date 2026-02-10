@@ -1,0 +1,13 @@
+{% extends '@MailTemplate/Layout/Offer/row.twig' %}
+
+{% block content_row %}
+    <tr>
+        <td style="line-height:18px;font-size:14px; border: solid 1px #a6aab3;background:#fff;border-top:0;" class="email-white">
+            <!-- content -->
+            {% block content %}
+                {% block offer_content %}{% endblock offer_content %}
+            {% endblock content %}
+            <!-- end -->
+        </td>
+    </tr>
+{% endblock content_row %}

@@ -1,0 +1,41 @@
+<div id="emailNdr" style="display: none;" title="{{ 'ndr.popup.title'|trans|desc("Invalid Email Provided") }}">
+    <p>
+        {{ 'ndr.popup.desc'|trans({"%name%": app.user.firstname |htmlencode})|desc("Dear %name%, we tried sending you an email but it returned back to us as \"non-deliverable\", either you provided us with an invalid email address or your mail server does not accept emails from awardwallet.com. Please, update your email address below, or if your address is typed in correctly, just click \"Update Email Address\" without changing it. If your mail server keeps denying emails from us we will show this message to you again.")|raw }}
+    </p>
+    <br>
+    <form class="main-form">
+        <div class="row">
+            <div class="row-item">
+                <label for="newEmail">{{ 'login.email'|trans }}</label>
+                <div class="input">
+                    <div class="input-item">
+                        <input type="text" name="newEmail" id="newEmail" value="{{ app.user.email }}" />
+                    </div>
+                </div>
+            </div>
+            <div class="info">
+                <div class="info-icon"></div>
+                <div class="info-description"><p></p></div>
+            </div>
+            <div class="error-message" id="not_blank_error" style="display: none">
+                <div class="warning"><i class="icon-warning-small"></i></div>
+                <div class="error-message-description">
+                    {{ 'notblank'|trans({}, 'validators') }}
+                </div>
+            </div>
+            <div class="error-message" id="invalid_error" style="display: none">
+                <div class="warning"><i class="icon-warning-small"></i></div>
+                <div class="error-message-description">
+                    {{ 'user.email.invalid'|trans({}, 'validators') }}
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+{% if not webpack|default(false) %}
+    <script>
+        require(['lib/emailNdr'], function(){});
+    </script>
+{% else %}
+    {{ encore_entry_script_tags('email-ndr', null, '_default', {'defer': true}) }}
+{% endif %}

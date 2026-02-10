@@ -1,0 +1,20 @@
+{% extends "@AwardWalletMain/Layout/default.html.twig" %}
+{% import _self as macros %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block body %}
+    <div class="page-404">
+        <div class="page-404-menu">
+            <ul>
+                <li><a href="{{ path('aw_account_list') }}">Loyalty Accounts</a></li>
+                <li><a href="{{ path('aw_timeline') }}">Travel Plans</a></li>
+                <li><a href="{{ path('aw_booking_list_requests') }}">Reward Bookings</a></li>
+            </ul>
+        </div>
+
+        <div class="page-404-text">
+            <p>{{ message|raw }}</p>
+        </div>
+    </div>
+{% endblock %}

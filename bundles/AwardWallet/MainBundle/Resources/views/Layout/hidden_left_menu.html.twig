@@ -1,0 +1,14 @@
+{% set MAIN_BODY_CLASSES = {
+	'manual-hidden': true,
+	'hide-menu': true,
+	'responsive': false
+}|merge(MAIN_BODY_CLASSES|default({})) %}
+
+{% extends is_granted('SITE_BUSINESS_AREA') ? "@AwardWalletMain/Layout/business_default.html.twig" : "@AwardWalletMain/Layout/default.html.twig" %}
+
+{% block body_left_widgets %}
+	{{ widget_render('left_top') }}
+{% endblock %}
+
+{% block hide_menu_button %}
+{% endblock %}

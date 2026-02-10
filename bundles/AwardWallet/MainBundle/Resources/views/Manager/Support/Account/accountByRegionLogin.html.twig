@@ -1,0 +1,30 @@
+<div class="box" id="row-login2">
+{% if Login2.Login2choices|length > 0 %}
+    Login2:&nbsp;<label style="width: 200px;" for="login2">{{ Login2.Login2Caption }}</label>
+    </br>
+    <select id="login2" style="width: 200px;">
+        {% for key,value in Login2.Login2choices %}
+            <option value='{{ value }}'>{{ key }}</option>
+        {% endfor %}
+    </select>
+{% elseif not(Login2.Login2Caption is empty) %}
+    Login2:&nbsp;<label style="width: 200px;" for="login2">{{ Login2.Login2Caption }}</label>
+    </br>
+    <input id="login2" style="width: 200px;">
+{% endif %}
+</div>
+<div class="box" id="row-login3" {% if not Login3.required %}style="display: none;"{% endif %}>
+{% if Login3.Login3choices|length > 0 %}
+    Login3:&nbsp;<label style="width: 200px;" for="login3">{{ Login3.Login3Caption }}</label>
+    </br>
+    <select id="login3" style="width: 200px;">
+        {% for key,value in Login3.Login3choices %}
+            <option value='{{ value }}'>{{ key }}</option>
+        {% endfor %}
+    </select>
+{% elseif not(Login3.Login3Caption is empty) %}
+    Login3:&nbsp;<label style="width: 200px;" for="login3">{{ Login3.Login3Caption }}</label>
+    </br>
+    <input id="login3" style="width: 200px;">
+{% endif %}
+</div>

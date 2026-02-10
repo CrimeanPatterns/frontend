@@ -1,0 +1,14 @@
+{% import '@AwardWalletMain/Mobile/ExternalTracking/macro.html.twig' as ads %}
+<!doctype html>
+<html lang="{{ app.request.locale|replace({'_': '-'}) }}">
+<head>
+    <title>AwardWallet</title>
+    {% for provider in providers %}
+        {% if provider.type == 'superfly' %}
+            {{ ads.superfly(provider.data) }}
+        {% endif %}
+    {% endfor %}
+</head>
+<body>
+</body>
+</html>

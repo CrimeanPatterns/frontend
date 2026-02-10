@@ -1,0 +1,20 @@
+parameters:
+
+
+services:
+    _defaults:
+        public: true
+
+    aw.widget:
+        class: AwardWallet\WidgetBundle\WidgetFactory\Factory
+        arguments: ["@service_container", "@router", "@security.token_storage", "@doctrine.orm.entity_manager"]
+
+    aw.widget_abstract:
+        abstract: true
+        public: true
+        calls:
+            - [setContainer, ["@service_container"]]
+
+    AwardWallet\WidgetBundle\Widget\OnecardMenuWidget: '@aw.widget.onecard_menu'
+
+    AwardWallet\WidgetBundle\Widget\TripsPersonsWidget: '@aw.widget.trips_persons'

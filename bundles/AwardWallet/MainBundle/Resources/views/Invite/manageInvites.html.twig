@@ -1,0 +1,233 @@
+{% extends '@AwardWalletMain/Layout/common.html.twig' %}
+{% import "@AwardWalletMain/TwigMacros/new.html.twig" as macros %}
+
+{% block title %}{{ 'user.invites.page_title'|trans()|desc('My invitations') }}{% endblock %}
+
+{% block body_left_widgets %}
+    {{ widget_render('left_top') }}
+    {{ widget_render('left_bottom') }}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        window.invitesData = {{ invites|json_encode|raw }};
+        require([
+            'pages/invites/main',
+            'lib/design',
+            'lib/customizer'
+        ], function () {
+
+        });
+    </script>
+{% endblock %}
+
+{% block content %}
+    <div class="main-blk" data-ng-controller="invitesPageCtrl">
+
+        <h1>{{ 'user.invites.page_heading'|trans()|desc('Referral status') }}</h1>
+
+        <div class="main-blk-content">
+
+            <table class="main-table referal-status" data-ng-cloak data-ng-show="invites.length">
+                <thead>
+                <tr>
+                    <th></th>
+                    <th>
+                        <a data-ng-click="sortBy('InviteDate')">
+                            {{ 'user.invites.heading.date' | trans() | desc('Date') }}
+                            <i data-ng-class="{'icon-silver-arrow-up': sort == '+InviteDate', 'icon-silver-arrow-down': sort == '-InviteDate'}"></i>
+                        </a>
+                    </th>
+                    <th>
+                        <a data-ng-click="sortBy('firstname')">
+                            {{ 'user.invites.heading.email' | trans() | desc('Email') }}
+                            {#<span class="required">*</span>#}
+                            <i data-ng-class="{'icon-silver-arrow-up': sort == '+firstname', 'icon-silver-arrow-down': sort == '-firstname'}"></i>
+                        </a>
+                    </th>
+                    <th>{{ 'user.invites.heading.status' | trans() | desc('Status') }}</th>
+                    <th>
+                        <a data-ng-click="sortBy('Bonus')">
+                            {{ 'user.invites.heading.referral_bonus' | trans() | desc('Referral Bonus') }}
+                            <i data-ng-class="{'icon-silver-arrow-up': sort == '+Bonus', 'icon-silver-arrow-down': sort == '-Bonus'}"></i>
+                        </a>
+                    </th>
+                    <th></th>
+                </tr>
+                </thead>
+
+                <tbody>
+
+                <tr class="filter">
+                    <td class="check">
+                        <div></div>
+                    </td>
+
+                    <td class="date">
+                        <div></div>
+                    </td>
+
+                    <td class="email">
+                        <div class="input-item">
+                            <input type="text" ng-class="{'search-input': ! memberName, 'clear-input': memberName}" data-ng-model="memberName" data-ng-model-options="{ debounce: 150 }" placeholder="Search"/>
+                            <a data-ng-click="clearFilters()" class="reset">
+                                <i class="icon-close-silver"></i>
+                            </a>
+                        </div>
+                    </td>
+
+                    <td class="status">
+                        <div></div>
+                    </td>
+
+                    <td>
+                        <div></div>
+                    </td>
+
+                    <td class="t-right">
+                        <div>
+                            {#<a data-ng-href="#" data-ng-click="clearFilters()">#}
+                                {#{{ 'business.members.table_filter.clear_filters'|trans()|desc('Clear filters') }}#}
+                            {#</a>#}
+                        </div>
+                    </td>
+                </tr>
+
+                <tr data-ng-repeat="invite in shown | page:(activePage*onPage):onPage" data-ng-if="shown.length > 0" data-agent-id="[[ invite.InviteeID ]]">
+
+                    <td class="check">
+                    </td>
+
+                    <td class="date">[[ invite.InviteDate|toISODate|date:'mediumDate' ]]</td>
+
+                    <td class="email">
+                        <span class="name" data-ng-bind-html="invite.firstname | htmlencode | highlight:memberName:false:'green' | unsafe"></span>
+                        <span class="email">([[ invite.Email ]])</span>
+                    </td>
+
+                    <td class="status">
+                        <div ng-if="invite.isapproved == 0">
+                            <div class="prev">
+                                <i class="icon-not-updated"></i>
+                            </div>
+                            <p>{{ 'user.connections.waiting_approval' | trans() | desc('Waiting for approval') }}</p>
+                        </div>
+                        <div ng-if=" ! invite.useragentid">
+                            <div class="prev">
+                                <i class="icon-green-check"></i>
+                            </div>
+                            <p>{{ 'user.invites.registered' | trans() | desc('Registered') }}</p>
+                        </div>
+                        <div ng-if="invite.isapproved == 1">
+                            <div class="prev">
+                                <i class="icon-connect-green"></i>
+                            </div>
+                            <p>{{ 'user.invites.connected' | trans() | desc('Connected') }}</p>
+                        </div>
+                    </td>
+
+                    <td>
+                        <p>[[ invite.Bonus ]]</p>
+                    </td>
+
+                    <td class="actions">
+                        <ul class="list-actions">
+                            <li ng-if=" ! invite.useragentid">
+                                <a data-ng-click="connect([[ invite.InviteeID ]])" data-role=tooltip
+                                   title="{{ 'user.invites.connect' | trans() | desc('Connect') }}">
+                                    <i class="icon-connect"></i>
+                                </a>
+                            </li>
+
+                            <li ng-if="invite.isapproved == 0">
+                                <a data-ng-click="resend([[ invite.InviteeID ]])" data-role=tooltip
+                                   title="{{ 'user.invites.resend' | trans() | desc('Resend') }}">
+                                    <i class="icon-user-update"></i>
+                                </a>
+                            </li>
+
+                            <li ng-if="invite.isapproved == 1">
+                                <a href="/user/connections/[[ invite.useragentid ]]" data-role=tooltip
+                                   title="{{ 'user.invites.edit' | trans() | desc('Edit') }}">
+                                    <i class="icon-edit"></i>
+                                </a>
+                            </li>
+
+                            <li ng-if="invite.isapproved">
+                                <a data-ng-click="deleteConnection([[ invite.InviteeID ]], [[ invite.useragentid ]])"
+                                   data-role=tooltip
+                                   title="{{ 'user.invites.disconnect' | trans() | desc('Disconnect') }}">
+                                    <i class="icon-pending"></i>
+                                </a>
+                            </li>
+
+                        </ul>
+                    </td>
+                </tr>
+
+                <tr class="select-all" data-ng-show="shown.length != 0">
+                    <td class="check" colspan="2">
+                    </td>
+
+                    
+                    <td class="t-right" colspan="2">
+                        <p>{{ 'user.invites.total_points' | trans() | desc('Total AwardWallet Referral Bonus Points') }}
+                            :</p>
+
+                        <p>{{ 'user.invites.redeemed_points' | trans() | desc('Redeemed') }}:</p>
+
+                        <p>{{ 'user.invites.available_point' | trans() | desc('Available for redemption') }}:</p>
+                    </td>
+
+                    <td>
+                        <p><span class="bold red">{{ total_bonus }}</span></p>
+
+                        <p><span class="bold red">{{ redeemed }}</span></p>
+
+                        <p><span class="bold red">{{ max(total_bonus - redeemed, 0) }}</span></p>
+                    </td>
+
+                    <td></td>
+
+                </tr>
+                </tbody>
+            </table>
+
+            {{ macros.drawSplashScreen() }}
+
+            <p data-ng-if="invites.length && shown.length == 0" class="no-result" data-ng-cloak>
+                <i class="icon-warning-small"></i>
+                <span>
+                    {{ 'business.members.no_records_found'|trans()|desc('No records found that match your criteria') }}
+                    </span>
+            </p>
+
+            <p data-ng-if=" ! invites.length" class="no-result" data-ng-cloak>
+                <i class="icon-warning-small"></i>
+                <span>
+                    {{ 'user.invites.not-invited'|trans()|desc('You have not invited anyone to AwardWallet yet. In order to earn AwardWallet referral bonus points you need to invite other users to AwardWallet using the invite options in the left navigation bar.') }}
+                </span>
+            </p>
+
+
+        </div>
+
+        <ul class="pagination" data-ng-cloak data-ng-if="pages.length > 1">
+            <li data-ng-if="activePage - 5 > 0">
+                <a data-ng-click="setActivePage(0)"><</a>
+            </li>
+            <li data-ng-repeat="page in pages | page:(activePage - 5):11" data-ng-class="{'active': page == activePage}">
+                <a data-ng-click="setActivePage(page)">[[ page + 1 ]]</a>
+            </li>
+            <li data-ng-if="pages.length > 11 && activePage + 6 < pages.length">
+                <a data-ng-click="setActivePage(pages.length - 1)">></a>
+            </li>
+        </ul>
+
+        <div class="row-submit" data-ng-if="invites.length" data-ng-cloak>
+            <button class="btn-blue f-right" data-ng-click="redeem()">{{ 'redeem.points'|trans|desc('Redeem Points') }}</button>
+        </div>
+
+    </div>
+{% endblock %}

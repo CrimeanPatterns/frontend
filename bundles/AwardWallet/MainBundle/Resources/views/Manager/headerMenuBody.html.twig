@@ -1,0 +1,28 @@
+<div id="fixedMenu" style="position: fixed; left: 0; right: 0; top: 0; background-color: #F0F0F0; padding: 0; border-bottom: #DADADA 1px solid; z-index: 100;">
+    <span class="preload1"></span>
+    <span class="preload2"></span>
+    <ul id="nav">
+        {% for title,item in menu %}
+        <li class="top"><a href="#" class="top_link"><span class="down">{{ title }}</span></a>
+            <ul class="sub">
+                {% for title,item in item.menu %}
+                    <li>
+                        <a href="{% if item.url is defined %}{{ item.url|raw }}{% else %}#{% endif %}"{% if item.menu is defined %} class="fly"{% endif %}{% if item.desc is defined %} title="{{ item.desc|raw }}"{% endif %}>{{ title }}</a>
+                        {% if item.menu is defined %}
+                            <ul>
+                                {% for title,item in item.menu %}
+                                    <li><a href="{{ item.url|raw }}" {% if item.desc is defined %} title="{{ item.desc|raw }}"{% endif %}>{{ title }}</a></li>
+                                {% endfor %}
+                            </ul>
+                        {% endif %}
+                    </li>
+                {% endfor %}
+            </ul>
+            {% endfor %}
+        <li class="top" id="shortcutInfo"><a href="#" class="top_link"><span>⌃⇧S — search box</span></a></li>
+        <li class="top" id="shortcutSettings"><a href="#" class="top_link"><span>⚙️</span></a></li>
+        <li class="top" id="exitLink"><a class="top_link" href="{{ url('aw_users_logout') }}"><span>({{ app.user.username }}) Logout</span></a></li>
+    </ul>
+    <div style="clear: both; font-size: 1px;">&nbsp;</div>
+    <div id="extendFixedMenu"></div>
+</div>

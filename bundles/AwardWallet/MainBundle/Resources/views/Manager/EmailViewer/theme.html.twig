@@ -1,0 +1,15 @@
+{% use "form_table_layout.html.twig" %}
+
+{%- block choice_widget_options -%}
+    {% import "@AwardWalletMain/TwigMacros/environment.html.twig" as environmentMacros %}
+
+    {% for group_label, choice in options %}
+        {%- if choice is iterable -%}
+            <option disabled="disabled">{{ group_label|trans({}, translation_domain)|raw }}</option>
+            {% set options = choice %}
+            {{- block('choice_widget_options') -}}
+        {%- elseif choice.value is not empty -%}
+            <option {{ environmentMacros.dataAttr(choice.attr) }} value="{{ choice.value }}"{% if choice is selectedchoice(value) %} selected="selected"{% endif %}>{{ choice.label|trans({}, translation_domain)|raw }}</option>
+        {%- endif -%}
+    {% endfor %}
+{%- endblock choice_widget_options -%}

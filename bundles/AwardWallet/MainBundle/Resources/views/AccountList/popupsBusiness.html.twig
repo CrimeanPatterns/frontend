@@ -1,0 +1,32 @@
+{% use '@AwardWalletMain/AccountList/popups.html.twig' %}
+
+{% block owner_action_popup %}
+    <div data-ng-cloak2 data-ng-controller="setOwnerActionCtrl as setOwnerAction">
+        <dialog id="set-owner-action" data-auto-open="false" data-title="'{{ 'award.account.popup.set-owner.title'|trans|desc('Assign new owner') }}'" data-modal="true" data-width="600">
+            <form name="setOwnerActionForm" class="main-form">
+                <p id="set-owner-action-text">{{ 'award.account.popup.set-owner'|trans({count: 1, accounts: 1})|desc('{1}You\'ve selected <span class="bold">1 account</span>, here you can choose new owner for this account.|[2,Inf]You\'ve selected <span class="bold">%accounts% accounts</span>, here you can choose new owner for these accounts.')|raw }}</p>
+
+                <div class="row">
+                    <div class="row-item">
+                        <label for="set-owner-action-owner">{{ 'award.account.popup.set-owner.choice'|trans|desc('Choose new owner')|raw }}:</label>
+
+                        <div class="input">
+                            <div class="input-item">
+                                <input type="text" data-ng-model="setOwnerAction.owner" style="display: none;"/>
+                                <input autocomplete="off" spellcheck="false" type="text" name="owner" class="js-useragent-autocomplete" id="set-owner-action-owner"/>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="info">
+                        <div class="info-icon"></div>
+                        <div class="info-description"><p></p></div>
+                    </div>
+                    <div class="error-message">
+                        <div class="warning"><i class="icon-warning-small"></i></div>
+                        <div class="error-message-description" style="padding-right: 10px">{{ 'notblank'|trans({}, 'validators') }}</div>
+                    </div>
+                </div>
+            </form>
+        </dialog>
+    </div>
+{% endblock %}

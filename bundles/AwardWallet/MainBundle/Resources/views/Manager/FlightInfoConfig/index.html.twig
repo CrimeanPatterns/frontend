@@ -1,0 +1,71 @@
+{% set title = "FlightInfo Rules Config" %}
+{% extends '@AwardWalletMain/Manager/layout.html.twig' %}
+
+{% block content %}
+    <style type="text/css">
+        table {
+            border-collapse: collapse;
+        }
+        table td {
+            border: lightgray solid 1px;
+            padding: 7px;
+        }
+        thead td {
+            font-weight: bold;
+        }
+    </style>
+
+    <a href="{{ url('aw_manager_flightinfoconfig_index') }}">FlightInfo Config</a> |
+    <a href="{{ url('aw_manager_flightinfo_index') }}">FlightInfo</a>
+
+    <hr size="2"/>
+
+    <h1>
+        Rules ({{ configRules|length }})
+        <small> &nbsp; <a href="{{ url('aw_manager_flightinfoconfig_add') }}">Add New</a></small>
+    </h1>
+
+    {% if configRules|length %}
+        <br/>
+        <table>
+            <thead>
+            <tr>
+                <td>Name</td><td>Type</td><td>Service</td>
+                <td>Enable</td><td>Schedule</td><td>Debug</td>
+                <td>Schedule Rules</td>
+                <td>Ignore Fields</td>
+                <td>AWPlus</td><td>Region</td>
+                <td></td>
+            </tr>
+            </thead>
+            <tbody>
+            {% for row in configRules %}
+                <tr>
+                    <td><a href="{{ url('aw_manager_flightinfoconfig_view', {id: row.flightInfoConfigID}) }}">{{ row.name }}</a><br/><i>{{ row.comment }}</i></td>
+                    <td>{% if row.type == 1 %}Check Exists{% elseif row.type == 2 %}Subscribe{% elseif row.type == 3 %}Update{% else %}?{% endif %}</td>
+                    <td>{{ row.service }}</td>
+                    <td>{% if row.enable %}+{% else %}-{% endif %}</td>
+                    <td>{% if row.schedule %}+{% else %}-{% endif %}</td>
+                    <td>{% if row.debug %}+{% else %}-{% endif %}</td>
+                    <td>{{ row.scheduleRules|nl2br }}</td>
+                    <td>{{ row.ignoreFields|nl2br }}</td>
+                    <td>{% if row.AWPlusFlag == 0 %}All{% elseif row.AWPlusFlag == 1 %}Regular Only{% elseif row.AWPlusFlag == 2 %}Plus Only{% else %}?{% endif %}</td>
+                    <td>{% if row.RegionFlag == 0 %}All{% elseif row.RegionFlag == 1 %}Domestic Only{% elseif row.RegionFlag == 2 %}International Only{% else %}?{% endif %}</td>
+                    <td><nobr>
+                        <a href="{{ url('aw_manager_flightinfoconfig_edit', {id: row.flightInfoConfigID}) }}">edit</a> &middot;
+                        {% if row.isEnable %}
+                            <a href="{{ url('aw_manager_flightinfoconfig_disable', {id: row.flightInfoConfigID}) }}">disable</a> &middot;
+                        {% else %}
+                            <a href="{{ url('aw_manager_flightinfoconfig_enable', {id: row.flightInfoConfigID}) }}">enable</a> &middot;
+                        {% endif %}
+                        <a href="{{ url('aw_manager_flightinfoconfig_delete', {id: row.flightInfoConfigID}) }}">delete</a>
+                    </nobr></td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        Rules not exists
+    {% endif %}
+
+{% endblock %}

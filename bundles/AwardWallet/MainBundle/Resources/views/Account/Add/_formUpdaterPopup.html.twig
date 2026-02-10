@@ -1,0 +1,54 @@
+<div data-ng-cloak data-ng-controller="updaterQuestionCtrl as updaterQuestion">
+    <dialog id="updater-question" data-auto-open="false" data-title="'{{ 'award.account.popup.updater-question.title'|trans({provider: ''})|desc('%provider% ask you a security question') }}'" data-modal="true" data-width="500">
+        <form name="updaterQuestionForm" class="main-form">
+            <p>[[ updaterQuestion.question ]]</p>
+
+            <div class="row">
+                <div class="row-item">
+                    <label for="updater-question-answer">{{ 'award.account.popup.updater-question.label'|trans|desc('Answer') }}:</label>
+
+                    <div class="input">
+                        <div class="input-item">
+                            <input type="text" name="answer" data-ng-model="updaterQuestion.answer" id="updater-question-answer">
+                        </div>
+                    </div>
+                </div>
+                <div class="info">
+                    <div class="info-icon"></div>
+                    <div class="info-description"><p></p></div>
+                </div>
+                <div class="error-message">
+                    <div class="warning"><i class="icon-warning-small"></i></div>
+                    <div class="error-message-description">{{ 'notblank'|trans({}, 'validators') }}</div>
+                </div>
+            </div>
+        </form>
+    </dialog>
+</div>
+<div data-ng-cloak data-ng-controller="updaterPasswordCtrl as updaterPassword">
+    <dialog id="updater-password" data-auto-open="false" data-title="'{{ 'award.account.popup.updater-password.title'|trans({provider: ''})|desc('%provider% ask you a password') }}'" data-modal="true" data-width="500">
+        <form name="updaterPasswordForm" class="main-form">
+            <p>[[ updaterPassword.title ]]</p>
+
+            <div class="row">
+                <div class="row-item">
+                    <label for="updater-password-password">{{ 'award.account.popup.updater-password.label'|trans|desc('Password') }}:</label>
+
+                    <div class="input">
+                        <div class="input-item">
+                            <input type="password" name="password" data-ng-model="updaterPassword.password" id="updater-password-password">
+                        </div>
+                    </div>
+                </div>
+                <div class="info">
+                    <div class="info-icon"></div>
+                    <div class="info-description"><p></p></div>
+                </div>
+                <div class="error-message">
+                    <div class="warning"><i class="icon-warning-small"></i></div>
+                    <div class="error-message-description">{{ 'notblank'|trans({}, 'validators') }}</div>
+                </div>
+            </div>
+        </form>
+    </dialog>
+</div>

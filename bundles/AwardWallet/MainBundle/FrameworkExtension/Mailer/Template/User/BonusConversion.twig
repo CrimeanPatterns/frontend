@@ -1,0 +1,45 @@
+{% extends '@MailTemplate/Layout/base.twig' %}
+{% trans_default_domain "email" %}
+
+{% block subject %}{% apply spaceless %}{% autoescape false %}
+    {{ 'bonus-conversion.subject'|trans({
+        '%bonusValue%': conversion.miles|formatNumber(null, locale),
+        '%providerName%': conversion.airline,
+        '%bonusUnits%': conversion.account.providerid.currency.name|default("miles")|lower
+    }, 'email', lang)|desc('%bonusValue% %providerName% %bonusUnits% have been credited to your account') }}
+{% endautoescape %}{% endapply %}{% endblock subject %}
+
+{% block content %}
+    {% import '@MailTemplate/CommonMacro.twig' as commonMacro %}
+
+    {% set units = conversion.account.providerid.currency.name|default("miles")|lower %}
+    {{ commonMacro.hello(user.firstname, _context) }}
+
+    {{ commonMacro.paragraph(
+        'bonus-conversion.we-deposited'|trans({
+            '%bold_on%': '<b>',
+            '%bold_off%': '</b>',
+            '%bold2_on%': '<b>',
+            '%bold2_off%': '</b>',
+            '%bold3_on%': '<b>',
+            '%bold3_off%': '</b>',
+            '%bonusValue%': conversion.miles|formatNumber(null, locale),
+            '%providerName%': conversion.airline|htmlencode,
+            '%bonusUnits%': units|htmlencode,
+            '%accountNumber%': conversion.account.accountNumber|htmlencode
+        }, 'email', lang)
+        |desc('
+            We wanted to thank you for referring users to %bold_on%AwardWallet%bold_off%!
+            We are thrilled to share our success with you!
+            We just deposited %bold2_on%%bonusValue% %providerName%%bold2_off% %bonusUnits% to your account # %bold3_on%%accountNumber%%bold3_off%.
+        '),
+        _context, {escape: false}
+    ) }}
+
+    {{ commonMacro.paragraph(
+        'bonus-conversion.thank-you'|trans({
+            '%bonusUnits%': units
+        }, 'email', lang)|desc('Thank you very much and we are looking forward to depositing more %bonusUnits% to your account in the future!'),
+        _context
+    ) }}
+{% endblock content %}

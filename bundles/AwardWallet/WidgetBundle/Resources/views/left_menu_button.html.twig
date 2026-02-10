@@ -1,0 +1,22 @@
+<li{% if isActive %} class="active"{% endif %} {% if (count == 'empty' or count == 0) and app.request.attributes.get('_route') == 'aw_timeline' %} style="display: none"{% endif %}>
+    <div class="row-item">
+        {% if hasAdd %}<a href="{{ addLink }}" class="add"><i class="icon-add-dark"></i></a>{% endif %}
+        <a data-id="{{ id | lower }}" href="{{ link }}" class="{% if class is defined %}{{ class }} {% endif %}{% if count is defined and (count is null or 0 == count) %}no-counter{% endif %}" data-agentid="{{ clientId }}">
+            {% if count is defined and count is not null %}
+                <h3 {% if sharedFamilyMember is defined and sharedFamilyMember %}class="silver"{% endif %}>{{ title }}</h3>
+                {% if sharedFamilyMember is defined and sharedFamilyMember %}
+                    <h3>{{ sharedFamilyMember }}</h3>
+                {% endif %}
+                {% if count != 'empty' %}
+                    <span class="count {% if isActive %}blue{% else %}silver{% endif %}">{{ count }}</span>
+                {% else %}
+                    <span class="count {% if isActive %}blue{% else %}silver{% endif %}" style="display: none">0</span>
+                {% endif %}
+            {% elseif 'onecard' == id %}
+                {{ title|raw }}
+            {% else %}
+                {{ title }}
+            {% endif %}
+        </a>
+    </div>
+</li>

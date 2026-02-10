@@ -1,0 +1,164 @@
+{% extends "@AwardWalletMain/Layout/main.html.twig" %}
+
+{% block title %}Test dateTimeDiff{% endblock %}
+
+{% block stylesheets %}{% endblock %}
+
+{% block body %}
+
+    <style>
+        #log {
+            font-family: Courier;
+            padding: 10px;
+        }
+        .success {
+            color: #0AAC0D;
+        }
+        .error {
+            color: #9b001f;
+        }
+    </style>
+
+    <h1>
+        Testing dateTimeDiff on {{ env }} environment
+    </h1>
+    <div id="log">
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+
+    <script type="text/javascript">
+
+        function log(line, br)
+        {
+            br = br || false;
+            $('#log').append('<div>' + line + '</div>' + (br ? '<br/>' : ''));
+        }
+
+        function test(script, expected, extraData)
+        {
+            log(script + ' -> ' + expected);
+            var result = script();
+            if (result === expected) {
+                log('<span class="success">passed</span>', true);
+            } else {
+                log('<span class="error">failed</span>, expected: ' + expected + ', actual: ' + result + ', ' + extraData, true);
+            }
+        }
+
+        function tests(dateTimeDiff)
+        {
+            log('starting dateTimeDiff tests');
+
+            {% for suite in tests %}
+                {% set interval = suite['interval'] %}
+
+                {% for testCase in suite['tests']['formatDuration']|default([]) %}
+                    test(
+                        function() {
+                            return dateTimeDiff.formatDuration(
+                                new Date('{{ testCase['fromDate'] }}'),
+                                new Date('{{ testCase['toDate'] }}'),
+                                {{ testCase['onlyDate'] ? 'true' : 'false' }},
+                                {{ testCase['shortFormat'] ? 'true' : 'false' }},
+                                false,
+                                'en'
+                            );
+                        },
+                        '{{ testCase['expected'] }}',
+                        '{{ testCase['log'] }}'
+                    );
+                {% endfor %}
+
+                {% for testCase in suite['tests']['shortFormatViaDates']|default([]) %}
+                    test(
+                        function() {
+                            return dateTimeDiff.shortFormatViaDates(
+                                new Date('{{ testCase['fromDate'] }}'),
+                                new Date('{{ testCase['toDate'] }}'),
+                                true,
+                                {{ testCase['fromToday'] ? 'true' : 'false' }},
+                                'en'
+                            );
+                        },
+                        '{{ testCase['expected'] }}',
+                        '{{ testCase['log'] }}'
+                    );
+                {% endfor %}
+
+                {% for testCase in suite['tests']['longFormatViaDates']|default([]) %}
+                    test(
+                        function() {
+                            return dateTimeDiff.longFormatViaDates(
+                                new Date('{{ testCase['fromDate'] }}'),
+                                new Date('{{ testCase['toDate'] }}'),
+                                true,
+                                {{ testCase['fromToday'] ? 'true' : 'false' }},
+                                'en'
+                            );
+                        },
+                        '{{ testCase['expected'] }}',
+                        '{{ testCase['log'] }}'
+                    );
+                {% endfor %}
+
+                {% for testCase in suite['tests']['shortFormatViaDateTimes']|default([]) %}
+                    test(
+                        function() {
+                            return dateTimeDiff.shortFormatViaDateTimes(
+                                new Date('{{ testCase['fromDate'] }}'),
+                                new Date('{{ testCase['toDate'] }}'),
+                                true,
+                                {{ testCase['fromToday'] ? 'true' : 'false' }},
+                                'en'
+                            );
+                        },
+                        '{{ testCase['expected'] }}',
+                        '{{ testCase['log'] }}'
+                    );
+                {% endfor %}
+
+                {% for testCase in suite['tests']['longFormatViaDateTimes']|default([]) %}
+                    test(
+                        function() {
+                            return dateTimeDiff.longFormatViaDateTimes(
+                                new Date('{{ testCase['fromDate'] }}'),
+                                new Date('{{ testCase['toDate'] }}'),
+                                true,
+                                {{ testCase['fromToday'] ? 'true' : 'false' }},
+                                'en'
+                            );
+                        },
+                        '{{ testCase['expected'] }}',
+                        '{{ testCase['log'] }}'
+                    );
+                {% endfor %}
+
+                {% for testCase in suite['tests']['formatDurationInHours']|default([]) %}
+                    test(
+                        function() {
+                            return dateTimeDiff.formatDurationInHours(
+                                new Date('{{ testCase['fromDate'] }}'),
+                                new Date('{{ testCase['toDate'] }}'),
+                                'en'
+                            );
+                        },
+                        '{{ testCase['expected'] }}',
+                        '{{ testCase['log'] }}'
+                    );
+                {% endfor %}
+            {% endfor %}
+
+            log('all tests complete');
+        }
+
+        require(['jquery-boot', 'dateTimeDiff'], function(jq, dateTimeDiff) {
+            tests(dateTimeDiff);
+        })
+
+    </script>
+
+{% endblock %}
+

@@ -1,0 +1,75 @@
+{% extends '@MailTemplate/Layout/base.twig' %}
+{% trans_default_domain "email" %}
+
+{% block subject %}{% apply spaceless %}{% autoescape false %}
+    {{ 'user-chose-share.subject'|trans({'%name%': inviter.company }, 'email', lang)|desc('Connection invite from %name%') }}
+{% endautoescape %}{% endapply %}{% endblock subject %}
+
+{% block headerLogo %}
+    {% if inviter.isBusiness and inviter.bookerInfo %}
+        {% import '@MailTemplate/CommonMacro.twig' as commonMacro %}
+        {{ commonMacro.bookerLogo(inviter.bookerInfo, _context) }}
+    {% else %}
+        {{ parent() }}
+    {% endif %}
+{% endblock %}
+
+{% block content %}
+    {% import '@MailTemplate/CommonMacro.twig' as commonMacro %}
+
+    {{ commonMacro.hello(user.fullname, _context, {
+        'padding-left': '0'
+    }) }}
+
+    {{ commonMacro.paragraph(
+        'business-chose-share.message'|trans({
+            '%awardwallet%': '<b>AwardWallet</b>',
+            '%businessName%': "<b style=\"color:#3d424d;\">" ~ (inviter.company|htmlencode) ~ "</b>"
+        }, 'email', lang)|desc(
+        'A travel administrator from %businessName% is asking you to get linked to this business via your %awardwallet% account.
+            Once you do this, you will have an option to share your reward programs and trips with the
+            travel administrators from %businessName%. You get to choose what you want to share and what
+            they will be able to see. Next time you login to %awardwallet% you may see %businessName%
+            in the list of pending connections.'
+        ),
+        _context, {escape: false}
+    ) }}
+
+    {{ commonMacro.paragraph(
+        'user-chose-share.redirect'|trans({}, 'email', lang)|desc('To accept this connection please use the following link') ~ ":",
+        _context, {}, {
+            'margin-top': '30px'
+        }
+    ) }}
+
+    {% set link = baseUrl ~ path('aw_user_connections') %}
+    {{ commonMacro.dottedLink(link, link, _context) }}
+{% endblock content %}
+
+{% block signature %}
+    {%  if inviter.isBusiness and inviter.bookerInfo %}
+        {% import '@MailTemplate/CommonMacro.twig' as commonMacro %}
+        <tr>
+            <td align="right" style="padding:10px">
+                <span style="font-size:13px;color:#535457">
+                    {% set link = commonMacro.link(inviter.bookerInfo.ServiceURL, '$$')|split('$$') %}
+                    {{ 'thank_you_team'|trans({
+                        '%link_on%': link[0],
+                        '%link_off%': link[1],
+                        '%teamName%': inviter.bookerInfo.ServiceName|htmlencode
+                    }, 'email', lang)|desc('Thank you, <br>%link_on% %teamName% team%link_off%.')|raw }}
+                </span>
+            </td>
+        </tr>
+    {% else %}
+        {{ parent() }}
+    {% endif %}
+{% endblock signature %}
+
+{% block physical_address_row %}
+    {% if inviter.isBusiness and inviter.bookerInfo and inviter.bookerInfo.address is not empty %}
+        <span>{{ inviter.bookerInfo.address|raw }}</span>
+    {% else %}
+        {{ parent() }}
+    {% endif %}
+{% endblock physical_address_row %}

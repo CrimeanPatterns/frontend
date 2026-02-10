@@ -1,0 +1,97 @@
+{% import _self as macro %}
+{% macro drawValue(value) %}
+    {% if value matches '/^[\\d]{10}$/' %}
+        {{ value }} <span style="color: darkgrey">({{ value|date('Y-m-d H:i:s') }})</span>
+    {% else %}
+        {{ value }}
+    {% endif %}
+{% endmacro %}
+
+<style>
+    .table {
+        display: flex;
+        gap: 2px;
+        flex-direction: column;
+        width: 100%;
+    }
+
+    .table-header, .table-row {
+        display: grid;
+        gap: 2px;
+        grid-template-columns: 150px 1fr;
+    }
+
+    .column-4 {
+        grid-template-columns: 200px 1fr 1fr 1fr;
+    }
+
+    .column-1 {
+        grid-template-columns: 1fr;
+    }
+
+    .table-header > div, .table-row > div {
+        padding: 10px;
+        border: 1px solid #ddd;
+    }
+
+    .table-header > div:first-child, .table-row > div:first-child {
+        font-weight: bold;
+    }
+
+    .table-header {
+        background-color: #ddd;
+        font-weight: bold;
+    }
+
+    a {
+        text-decoration: none;
+        color: #0b93d5;
+    }
+</style>
+
+<div class="table">
+    <div class="table-header">
+        <div>Name</div>
+        <div>Value</div>
+    </div>
+
+    {% for key in info|keys %}
+        {% set value = info[key] %}
+
+        {% if value is not iterable %}
+            <div class="table-row">
+                <div class="table-cell">{{ key }}</div>
+                <div>{{ value }}</div>
+            </div>
+        {% elseif value is iterable %}
+            {% if value.type == constant('\\AwardWallet\\MainBundle\\Controller\\Manager\\ItineraryInfoController::TYPE_HTML') %}
+                <div class="table-row">
+                    <div class="table-cell">{{ key }}</div>
+                    <div>{{ value.data|raw }}</div>
+                </div>
+            {% endif %}
+        {% endif %}
+    {% endfor %}
+</div>
+
+<h3>Changed Properties</h3>
+
+<div class="table">
+    <div class="table-header column-4">
+        <div>Change Date</div>
+        <div>Property Name</div>
+        <div>Old Value</div>
+        <div>New Value</div>
+    </div>
+
+    {% for prop in changedProps %}
+        <div class="table-row column-4">
+            <div class="table-cell">{{ prop.ChangeDate|date('Y-m-d H:i:s') }}</div>
+            <div>{{ prop.Name }}</div>
+            <div>{{ macro.drawValue(prop.OldVal) }}</div>
+            <div>{{ macro.drawValue(prop.NewVal) }}</div>
+        </div>
+    {% else %}
+        <div class="table-row column-1"><div>No changes</div></div>
+    {% endfor %}
+</div>

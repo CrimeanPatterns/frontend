@@ -1,0 +1,71 @@
+{% set isApiDoc = (currentRoute == 'aw_api_doc' or 'aw_api_doc_locale' == currentRoute) %}
+{% set apiDocItemKey = (isApiDoc and key is defined ? key : null) %}
+
+<div class="api-nav">
+    <div class="api-nav__item">
+        <ul class="api-nav__menu">
+            <li class="api-nav__has-submenu">
+                <a href="#"{% if isApiDoc or currentRoute in ['aw_supported_email', 'aw_supported_email_locale', 'aw_emailTestParse', 'aw_emailTestParse_locale'] %} class="active"{% endif %}>AwardWallet APIs</a>
+                <ul class="api-nav__submenu">
+                    <li>
+                        <a href="{{ urlLocale('aw_api_doc_locale', {item: 'main'}) }}"{% if isApiDoc and 'main' == apiDocItemKey %} class="active"{% endif %}>APIs Main Page</a>
+                    </li>
+                    <li>
+                        <a href="{{ urlLocale('aw_api_doc_locale', {item: 'email'}) }}"{% if isApiDoc and 'email' == apiDocItemKey %} class="active"{% endif %}>Email Parsing API Documentation</a>
+                        <ul class="api-nav__submenu-inner">
+                            <li><a href="{{ urlLocale('aw_supported_email_locale') }}"{% if currentRoute == 'aw_supported_email' or 'aw_supported_email_locale' == currentRoute %} class="active"{% endif %}>Supported Providers</a></li>
+                            <li><a href="{{ urlLocale('aw_emailTestParse_locale') }}"{% if currentRoute == 'aw_emailTestParse' or 'aw_emailTestParse_locale' == currentRoute %} class="active"{% endif %}>Email Parsing Test Page</a></li>
+                        </ul>
+                    </li>
+                    <li>
+                        <a href="{{ urlLocale('aw_api_doc_locale', {item: 'loyalty'}) }}"{% if isApiDoc and 'loyalty' == apiDocItemKey %} class="active"{% endif %}>Web Parsing API (Loyalty) Documentation</a>
+                    </li>
+                    <li>
+                        <a href="{{ urlLocale('aw_api_doc_locale', {item: 'account'}) }}"{% if isApiDoc and 'account' == apiDocItemKey %} class="active"{% endif %}>Account Access API Documentation</a>
+                    </li>
+                </ul>
+            </li>
+            <li class="api-nav__has-submenu">
+                <a href="#"{% if currentRoute in [
+                    'aw_api_itinerary_management', 'aw_api_itinerary_management_locale',
+                    'aw_api_flight_delay_compensation', 'aw_api_flight_delay_compensation_locale',
+                    'aw_api_green_startups', 'aw_api_green_startups_locale',
+                    'aw_api_expense_management', 'aw_api_expense_management_locale'
+                ] %} class="active"{% endif %}>APIs Use Cases</a>
+                <ul class="api-nav__submenu">
+                    <li><a href="{{ urlLocale('aw_api_itinerary_management_locale') }}"{% if currentRoute == 'aw_api_itinerary_management' or 'aw_api_itinerary_management_locale' == currentRoute %} class="active"{% endif %}>Itinerary Management</a></li>
+                    <li><a href="{{ urlLocale('aw_api_flight_delay_compensation_locale') }}"{% if currentRoute == 'aw_api_flight_delay_compensation' or 'aw_api_flight_delay_compensation_locale' == currentRoute %} class="active"{% endif %}>Flight Delay Compensation</a></li>
+                    <li><a href="{{ urlLocale('aw_api_green_startups_locale') }}"{% if currentRoute == 'aw_api_green_startups' or 'aw_api_green_startups_locale' == currentRoute %} class="active"{% endif %}>Carbon Footprint Offsetting</a></li>
+                    {% if is_granted('ROLE_STAFF') %}
+                        <li><a href="#">Travel Management Companies (TMCs)</a></li>
+                    {% endif %}
+                    <li><a href="{{ urlLocale('aw_api_expense_management_locale') }}"{% if currentRoute == 'aw_api_expense_management' or 'aw_api_expense_management_locale' == currentRoute %} class="active"{% endif %}>Expense Management</a></li>
+                </ul>
+            </li>
+            <li>
+                <a href="{{ urlLocale('aw_contactus_index_locale') }}?API">Request an API Key</a>
+            </li>
+        </ul>
+    </div>
+</div>
+
+{% if null != app.request.locale and constant('\AwardWallet\\MainBundle\\FrameworkExtension\\Twig\\MetaExtension::DEFAULT_LOCALE') != app.request.locale and is_granted('ROLE_USER') is not same as(true) %}
+    <script>
+        require(['jquery'], function($) {
+            $(document).ready(function() {
+                const lang = '/' + $('html').attr('lang') + '/';
+                const langPostfix = lang.substring(0, lang.length - 1);
+                $('a[href]:not([href^="#"]):not([href^="http"]):not([href^="?"]):not([href^="' + lang + '"])', 'div.page, div.content').each(function() {
+                    $(this).attr('href', langPostfix + $(this).attr('href'));
+                });
+                const domain = 'https://awardwallet.com';
+                $('a[href^="http"]:not([href*=".com/user/"])', 'div.page, div.content').each(function() {
+                    const href = $(this).attr('href');
+                    if (-1 === href.indexOf(`${domain}${lang}`)) {
+                        $(this).attr('href', href.replace(domain, `${domain}${langPostfix}`));
+                    }
+                });
+            });
+        });
+    </script>
+{% endif %}

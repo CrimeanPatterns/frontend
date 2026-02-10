@@ -1,0 +1,27 @@
+{% import '@AwardWalletMain/Blog/components/card_components.html.twig' as cardComponents %}
+{% import '@AwardWalletMain/Blog/components/icons.html.twig' as icons %}
+
+
+<aside class="{{ bem('offers-sidebar', null, isSearchPage ? ['from-top'] : []) }}">
+    <div class="{{ bem('offers-sidebar', 'header') }}">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M13 0L6 14.1818H12V24L19 9.81818H13V0Z" fill="#FFAA33"/>
+        </svg>
+        <span>{{ offers.title }}</span>
+    </div>
+    <div class="{{ bem('offers-sidebar', 'card-container') }}">
+        {% for card in offers.cards %}
+            {{ cardComponents.renderCard(card, 'sidebar') }}
+        {% endfor %}
+        {% if offers.more is defined %}
+            <div class="{{ bem('offered-card', 'all-cards-link-wrapper') }}">
+                <a href="{{ offers.more.link }}" class="{{ bem('offered-card', 'all-cards-link') }}">
+                    {{ offers.more.text }}
+                    <span class="{{ bem('offered-card', 'arrow-icon') }}">
+                        {{ icons.arrowIcon() }}
+                    </span>
+                </a>
+            </div>
+        {% endif %}
+    </div>
+</aside>

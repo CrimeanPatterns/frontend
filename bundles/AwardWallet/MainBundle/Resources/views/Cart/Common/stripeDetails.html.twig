@@ -1,0 +1,175 @@
+{% set MOBILE_NAV = true %}
+{% set HIDE_NAV = true %}
+{% set MAIN_BODY_CLASSES = {
+    'manual-hidden': true,
+    'responsive': true,
+    'hide-menu': true
+}|merge(MAIN_BODY_CLASSES|default({})) %}
+
+{% extends app.user is not null ? "@AwardWalletMain/Layout/common.html.twig" : "@AwardWalletMain/Layout/not_logged.html.twig" %}
+
+{% if billingForm is defined %}
+    {% form_theme billingForm with ['@AwardWalletMain/FormTheme/fields.html.twig'] %}
+{% endif %}
+
+{% import "@AwardWalletMain/Cart/macros.html.twig" as macro %}
+
+{% block header_metatags %}
+    {% include '@AwardWalletMain/Utility/scalableViewport.html.twig' %}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        var oldonload = window.onload;
+        var newonload = function () {
+            if (window.devicePixelRatio == 2) {
+                $("form img").each(function () {
+                    var retinaSrc = $(this).attr('src').replace('.png', '@2x.png');
+                    $(this).attr('src', retinaSrc);
+                });
+            }
+        };
+        if (typeof window.onload != 'function') {
+            window.onload = newonload;
+        } else {
+            window.onload = function() {
+                if (oldonload) {
+                    oldonload();
+                }
+                newonload();
+            }
+        }
+
+        require([
+            'lib/design', 'pages/billing'
+        ], function () {
+            $('form').on('submit', function (e) {
+                const messageWarning = document.querySelector('#error-warning');
+                messageWarning.style.display = 'none';
+                e.preventDefault();
+                $('form button[type="submit"]')
+                    .addClass('loader')
+                    .attr('disabled', 'disabled');
+                {% if subscription %}
+                stripe.confirmSetup({
+                    //`Elements` instance that was used to create the Payment Element
+                    elements,
+                    confirmParams: {
+                        return_url: {{ returnUrl|json_encode|raw }}
+                        //return_url: document.location.protocol + '://' + document.host + document.location.pathname,
+                    }
+                })
+                {% else %}
+                stripe.confirmPayment({
+                    //`Elements` instance that was used to create the Payment Element
+                    elements,
+                    confirmParams: {
+                        return_url: {{ returnUrl|json_encode|raw }}
+                        //return_url: document.location.protocol + '://' + document.host + document.location.pathname,
+                    }
+                })
+                {% endif %}
+                .then(({error}) => {
+                    $('form button[type="submit"]')
+                        .removeClass('loader')
+                        .removeAttr('disabled');
+
+                    if (error) {
+                        // This point will only be reached if there is an immediate error when
+                        // confirming the payment. Show error to your customer (for example, payment
+                        // details incomplete)
+                        const messageContainer = document.querySelector('#error-message');
+                        messageContainer.textContent = error.message;
+                        messageWarning.style.display = 'block';
+                    } else {
+                        alert('success');
+                        // Your customer will be redirected to your `return_url`. For some payment
+                        // methods like iDEAL, your customer will be redirected to an intermediate
+                        // site first to authorize the payment, then redirected to the `return_url`.
+                    }
+                })
+
+            });
+        });
+    </script>
+    <script src="https://js.stripe.com/v3/"></script>
+    <script>
+        const stripe = Stripe({{ stripePublishableKey|json_encode|raw }});
+        const options = {
+            clientSecret: {{ stripeClientSecret|json_encode|raw }},
+            //appearance: {},
+        };
+        const elements = stripe.elements(options);
+        const paymentElement = elements.create('payment');
+        paymentElement.mount('#payment-element');
+    </script>
+{% endblock %}
+
+{% block meta %}
+    {{ parent() }}
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0, viewport-fit=cover">
+{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        .coded-as-message-blk{
+            padding: 0 20px;
+            margin: 10px 0;
+            i { float: left; margin-right: 10px; position: relative; top: 2px; }
+            p{
+                margin-left: 0;
+            }
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+    <div class="main-blk shortened">
+        <h1>
+            {% if changePaymentMethod %}
+                {{ 'cart.order-update-payment-method'|trans|desc("Update payment method") }}
+            {% else %}
+                {{ 'cart.order-review'|trans }}
+            {% endif %}
+        </h1>
+        <form action="" method="post" class="main-form">
+            <div class="main-form-item">
+                {% if not changePaymentMethod %}
+                    {{ macro.drawCart(cart) }}
+                {% endif %}
+            </div>
+            <div id="payment-element" style="padding: 0 15px 10px 20px;"></div>
+
+            <div class="error-message-blk" id="error-warning" {% if error is not defined %} style="display: none;"{% endif %}>
+                <i class="icon-warning-small"></i>
+                <p id="error-message">{{ 'cart.cc-error'|trans|raw }}</p>
+            </div>
+
+            <div class="coded-as-message-blk">
+                <p>
+                    <i class="icon-info-small"></i>
+                    {{ 'awardwallet-coded-as-travel'|trans({'%link_on%': '<a href="https://awardwallet.com/merchants/Awardwallet+Llc_62246920?categoryGroupId=5" target="_blank">', '%link_off%': '</a>'})|raw }}
+                </p>
+            </div>
+
+            <div  style="position: static;" class="row-submit t-right">
+                {% if backToUrl %}
+                    <a href="{{ backToUrl }}" class="btn-silver">{{ 'button.back'|trans|desc("Back") }}</a>
+                {% endif %}
+                <button type="submit" class="btn-blue">{{ 'button.pay'|trans }}</button>
+            </div>
+
+        </form>
+
+        {% if cart.hasPrepaidAwPlusSubscription() and hasAppleSubscription %}
+            <div>
+                {{ 'awardwallet_cannot_cancel_apple_recurring_payment_notice'|trans({
+                    '%bold_on%': '<b>',
+                    '%bold_off%': '</b>'
+                })|desc("%bold_on%Important:%bold_off% AwardWallet is unable to cancel the recurring payment you set up previously with Apple. After submitting this payment, you will receive instructions to cancel your subscription via Apple.")|raw }}
+            </div>
+        {% endif %}
+    </div>
+{% endblock %}

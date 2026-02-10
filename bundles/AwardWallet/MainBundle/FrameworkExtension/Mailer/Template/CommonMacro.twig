@@ -1,0 +1,668 @@
+{# in the message header #}
+{% macro logo(url, img, alt) %}{% trim %}
+    <td align="center" valign="middle" height="90">
+        {% if url != null %}
+            <a href="{{ url }}" target="_blank">
+                <img width="300" height="80" src="{{ img }}" alt="{{ alt }}" title="{{ alt }}" border="0" />
+            </a>
+        {% else %}
+            <img width="300" height="80" src="{{ img }}" alt="{{ alt }}" title="{{ alt }}" border="0" />
+        {% endif %}
+    </td>
+{% endtrim %}{% endmacro %}
+
+{% macro awLogo(context, isLink = true) %}{% trim %}
+    {% import _self as selfMacro %}
+
+    {% if context.user is defined
+        and context.user is instanceof('\\AwardWallet\\MainBundle\\Entity\\Usr')
+        and context.user.email|lower == context.email|lower
+    %}
+        {% set user = context.user %}
+        {% set hash = user.emailVerificationHash %}
+    {% endif %}
+    {% set params = {
+        userId: user is defined ? user.userid : 0,
+        hash: hash|default(randomCode(40))
+    } %}
+    {% if not context.debug and context.advt is defined and context.advt is not null %}
+        {% set extParams = {ad: context.advt.socialadid} %}
+    {% endif %}
+    {{ selfMacro.logo(
+        isLink ? 'http://awardwallet.com' : null,
+        context.personalHost ~ path('aw_email_logo', params|merge(extParams|default({}))),
+        'AwardWallet.com'
+    ) }}
+{% endtrim %}{% endmacro %}
+
+{% macro bookerLogo(bookerInfo, context) %}{% trim %}
+    {% import _self as selfMacro %}
+
+    {% if context.user is defined
+        and context.user is instanceof('\\AwardWallet\\MainBundle\\Entity\\Usr')
+        and context.user.email|lower == context.email|lower
+    %}
+        {% set user = context.user %}
+        {% set hash = user.emailVerificationHash %}
+    {% endif %}
+    {% set params = {
+        userId: user is defined ? user.userid : 0,
+        hash: hash|default(randomCode(40)),
+        booker: bookerInfo.UserID.userid
+    } %}
+    {% if not context.debug and context.advt is defined and context.advt is not null %}
+        {% set extParams = {ad: context.advt.socialadid} %}
+    {% endif %}
+    {{ selfMacro.logo(
+        bookerInfo.ServiceURL,
+        context.personalHost ~ path('aw_email_booker_logo', params|merge(extParams|default({}))),
+        bookerInfo.ServiceName
+    ) }}
+{% endtrim %}{% endmacro %}
+
+{# greeting #}
+{% macro hello(name, context, styles) %}{% trim %}
+    {% if name is defined and name is not empty %}
+        <p class="greeting-hi" style="{{
+            {
+                'color': '#535457',
+                'font-size': '16px',
+                'line-height': '24px',
+                'margin' : '0'
+            }|merge(styles|default({}))|joinAssociative(":", ";")
+        }}">
+
+                {{ 'hi.span'|trans({
+                    '%span_on%': '<b style="color:#3d424d;">',
+                    '%span_off%': '</b>',
+                    '%name%': name|htmlencode
+                }, 'email', context.lang)|desc('Hi %span_on%%name%%span_off%')|raw }},
+        </p>
+    {% else %}
+        <p class="greeting-hi" style="{{
+            {
+                'color': '#3d424d',
+                'font-size': '16px',
+                'line-height': '24px',
+                'font-weight': 'bold',
+                'margin' : '0'
+            }|merge(styles|default({}))|joinAssociative(":", ";")
+        }}">
+            {{ 'hi-anonymous'|trans({}, 'email', context.lang)|desc('Hi') }},
+        </p>
+    {% endif %}
+{% endtrim %}{% endmacro %}
+
+{% macro dear(name, context, styles) %}{% trim %}
+    <p style="{{
+    {
+        'color': '#535457',
+        'font-size': '16px',
+        'line-height': '24px'
+    }|merge(styles|default({}))|joinAssociative(":", ";")
+    }}">
+
+        {{ 'dear.span'|trans({
+            '%span_on%': '<b style="color:#3d424d;">',
+            '%span_off%': '</b>',
+            '%name%': name|htmlencode
+        }, 'email', context.lang)|desc('Dear %span_on%%name%%span_off%')|raw }},
+    </p>
+{% endtrim %}{% endmacro %}
+
+{# advertising, with border bottom #}
+{% macro ad(ad, context, styles, stylesCell) %}{% trim %}
+    {% import _self as selfMacro %}
+    {% set content = ad.content %}
+    {% if not context.debug %}
+        {% set content = ad.content
+            |proxy_links(context.personalHost ~ path('aw_advertise_click', {ad: ad.socialadid}), 'url')
+        %}
+    {% endif %}
+    <table width="100%" cellpadding="0" border="0" cellspacing="0" style="{{
+        {
+            'line-height': '18px',
+            'border-bottom': '1px dotted #8e9199'
+        }|merge(styles|default({}))|joinAssociative(":", ";")
+    }}">
+        <tr>
+            <td style="{{
+                {
+                    'padding': '10px 10px'
+                }|merge(stylesCell|default({}))|joinAssociative(":", ";")
+            }}">
+                {{ selfMacro.updateLinks(content)|raw }}
+            </td>
+        </tr>
+    </table>
+{% endtrim %}{% endmacro %}
+
+{# advertising frame #}
+{% macro adFrame(ad, context, styles, stylesCell) %}{% trim %}
+    {% import _self as selfMacro %}
+    {{ selfMacro.ad(ad, context, {
+        'margin-top': '15px',
+        'border': '1px solid #bec2cc',
+        'line-height': 'inherit',
+        'border-bottom': 'inherit'
+    }|merge(styles|default({})), {}|merge(stylesCell|default({}))) }}
+{% endtrim %}{% endmacro %}
+
+{# simple paragraph #}
+{% macro paragraph(text, context, options, styles) %}{% trim %}
+    {% import _self as selfMacro %}
+    {% set options = {
+        'escape': true,
+        'fix_link': false
+    }|merge(options|default({})) %}
+    {% set styles = {
+        'margin-top': '10px',
+        'line-height': '24px',
+        'color': '#535457',
+        'font-size': '16px'
+    }|merge(styles|default({})) %}
+    <div style="{{ styles|joinAssociative(":", ";") }}"{% if options.cssWrapClass is defined %} class="{{ options.cssWrapClass }}"{% endif %}>
+        {% if options['escape'] %}
+            {{ text }}
+        {% else %}
+            {% if options['fix_link'] %}{{ selfMacro.updateLinks(text, {
+                'font-size': styles['font-size']
+            })|raw }}{% else %}{{ text|raw }}{% endif %}
+        {% endif %}
+    </div>
+{% endtrim %}{% endmacro %}
+
+{# preview for gmail #}
+{% macro preview(text) %}{% trim %}
+    <div class="email-preview-text" style="display: none !important; visibility:hidden; mso-hide:all; font-size:1px;
+        color:#ffffff; line-height:1px; max-height:0px; max-width:0px; opacity:0; overflow:hidden;">
+        {{ text }}
+    </div>
+{% endtrim %}{% endmacro %}
+
+{# simple link #}
+{% macro link(href, text, styles, options) %}{% trim %}
+    {% set options = {
+        'escape': true,
+    }|merge(options|default({})) %}
+    {% set text = text|default(href) %}
+    {% set defaultStyles = {
+        'color': '#4684c4',
+        'line-height': '20px',
+        'font-weight': 'bold',
+        'text-decoration': 'none'
+    } %}
+    {% if text matches '/^[^\\s]+$/' and text|length > 30 %}
+        {% set defaultStyles = defaultStyles|merge({
+            'word-break': 'break-all',
+        }) %}
+    {% endif %}
+
+    <a href="{{ href }}" style="{{
+        defaultStyles|merge(styles|default({}))|joinAssociative(":", ";")
+    }}" target="_blank">{% if options['escape'] %}{{ text }}{% else %}{{ text|raw }}{% endif %}</a>
+{% endtrim %}{% endmacro %}
+
+{# text selection #}
+{% macro span(text, styles) %}{% trim %}
+    <span style="{{
+    {
+        'color': '#fff',
+        'background': '#828b99',
+        'display': 'inline-block',
+        'padding': '3px 5px'
+    }|merge(styles|default({}))|joinAssociative(":", ";") }}">
+        {{ text }}
+    </span>
+{% endtrim %}{% endmacro %}
+
+{% macro button(text, link, styles) %}{% trim %}
+    {% set defaultStyles = {
+        'display': 'inline-block',
+        'font-size': '16px',
+        'text-decoration': 'none',
+        'color': '#FFF',
+        'border': '1px solid #125DA3',
+        'background': '#165CA1 !important',
+        'height': '35px',
+        'line-height': '35px',
+        'padding': '0 30px',
+        'text-shadow': '0 1px #125da3',
+        'margin': '10px 5px'
+    } %}
+    <a href="{{ link }}" style="{{
+        defaultStyles|merge(styles|default({}))|joinAssociative(":", ";")
+    }}" target="_blank">{{ text }}</a>
+{% endtrim %}{% endmacro %}
+
+{% macro buttonWithImg(text, link, linkStyles, imgPath, imgWidth, imgHeight, imgStyles, alt) %}{% trim %}
+    {% set defaultLinkStyles = {
+        'display': 'inline-block',
+        'font-size': '16px',
+        'text-decoration': 'none',
+        'color': '#FFF',
+        'border': '1px solid #125DA3',
+        'background': '#165CA1 !important',
+        'height': '32px',
+        'line-height': '32px',
+        'padding': '0 15px',
+        'text-shadow': '0 1px #125da3',
+        'margin': '10px 5px'
+    } %}
+    {% set defaultImgStyles = {
+        'display': 'inline-block',
+        'vertical-align': 'middle',
+        'margin-left': '12px'
+    } %}
+    <a href="{{ link }}" style="{{
+        defaultLinkStyles|merge(linkStyles|default({}))|joinAssociative(":", ";")
+    }}" target="_blank">
+        <span>{{ text }}</span>
+        <img src="{{ imgPath }}" alt="{{ alt }}" border="0" width="{{ imgWidth }}" height="{{ imgHeight }}" style="{{
+            defaultImgStyles|merge(imgStyles|default({}))|joinAssociative(":", ";")
+        }}">
+    </a>
+{% endtrim %}{% endmacro %}
+
+{# update text, replace old links to new #}
+{% macro updateLinks(text, linkStyles) %}{% trim %}
+    {% import _self as selfMacro %}
+    {% set link = selfMacro.link('$1', '$2', {
+        'font-size': '15px'
+    }|merge(linkStyles|default({}))) %}
+    {{ text|preg_replace("/<a(?![^>]*style=)[^>]*href=\"([^\"]+)\"[^>]*>([^<]*)<\\/a>/ims", link)|raw }}
+{% endtrim %}{% endmacro %}
+
+{# block with text and link #}
+{% macro dottedLink(href, text, context, linkStyle, wrapperStyle) %}{% trim %}
+    {% import _self as selfMacro %}
+    {% set text = text|default(href) %}
+    <table width="100%" cellpadding="0" border="0" cellspacing="0" style="{{
+        {
+            'border-top': '1px dotted #8e9199',
+            'border-bottom': '1px dotted #8e9199',
+            'margin-top': '10px'
+        }|merge(wrapperStyle|default({}))|joinAssociative(":", ";") }}">
+        <tr>
+            <td valign="middle" style="padding:6px 0;">
+                {{ selfMacro.link(href, text, {
+                    'font-size': '15px'
+                }|merge(linkStyle|default({}))) }}
+            </td>
+            <td width="35" align="right" valign="middle" style="padding:8px 10px">
+                <img src="{{ context.baseImagesPath }}/arrow-right-blue.png" alt="" width="7" height="9" border="0">
+            </td>
+        </tr>
+    </table>
+{% endtrim %}{% endmacro %}
+
+{# block with text and link + autologin icon #}
+{% macro autologinLink(href, text, context, options, linkStyle, cellStyle, wrapperStyle) %}{% trim %}
+    {% import _self as selfMacro %}
+    {% set options = {
+        'escape': true
+    }|merge(options|default({})) %}
+    <table width="100%" cellpadding="0" border="0" cellspacing="0" style="{{
+        {
+            'border-top': '1px dotted #8e9199',
+            'border-bottom': '1px dotted #8e9199',
+            'margin-top': '20px'
+        }|merge(wrapperStyle|default({}))|joinAssociative(":", ";")
+    }}">
+        <tr>
+            <td valign="top" align="left" width="40" style="padding-top:12px;line-height:1">
+                <img src="{{ context.baseImagesPath }}/autologin.png" width="30" height="18" alt="autologin">
+            </td>
+            <td valign="top" align="left" style="{{
+                {
+                    'padding-top': '12px',
+                    'line-height': '20px',
+                    'color': '#535457 !important',
+                    'font-size': '16px',
+                    'display': 'block'
+                }|merge(cellStyle|default({}))|joinAssociative(":", ";")
+            }}">
+                {% if options['escape'] %}{{ text }}{% else %}{{ text|raw }}{% endif %}
+                <table width="100%" cellpadding="0" border="0" cellspacing="0">
+                    <tr>
+                        <td valign="middle" style="padding:3px 10px 10px 0;">
+                            {{ selfMacro.link(href, href, {
+                                'font-size': '15px'
+                            }|merge(linkStyle|default({}))) }}
+                        </td>
+                        <td width="35" align="right" valign="middle" style="padding:3px 10px 10px 0">
+                            <img src="{{ context.baseImagesPath }}/arrow-right-blue.png" alt="" width="7" height="9" border="0">
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+{% endtrim %}{% endmacro %}
+
+{% macro smallWarning(text, context, options, cellStyle, wrapperStyle, imgStyle) %}{% trim %}
+    {% set options = {
+        'escape': true
+    }|merge(options|default({})) %}
+    <table width="100%" cellpadding="0" border="0" cellspacing="0" style="{{
+        {
+            'margin-top': '15px',
+            'margin-bottom' : '15px',
+            'border-top': '2px solid #ffaa33',
+            'font-size': '16px',
+            'color': '#535457',
+            'line-height': '24px',
+            'border-bottom': '2px solid #ffaa33'
+        }|merge(wrapperStyle|default({}))|joinAssociative(":", ";")
+    }}">
+        <tr>
+            <td width="20" align="center" valign="top" style="{{
+                {
+                    'line-height': '1px',
+                    'width': '23px',
+                    'padding-top': '11px',
+                    'padding-bottom': '9px',
+                    'vertical-align': 'top',
+                    'text-align': 'left'
+                }|merge(imgStyle|default({}))|joinAssociative(":", ";")
+            }}">
+                <img src="{{ context.baseImagesPath }}/warning-small.png" alt="" border="0" width="14" height="13">
+            </td>
+            <td valign="top" style="{{
+                {
+                    'padding': '6px 0'
+                }|merge(cellStyle|default({}))|joinAssociative(":", ";")
+            }}">
+                {% if options['escape'] %}{{ text }}{% else %}{{ text|raw }}{% endif %}
+            </td>
+        </tr>
+    </table>
+{% endtrim %}{% endmacro %}
+
+{# warning block #}
+{% macro warning(text, info, context, options, cellStyle, wrapperStyle, imgStyle) %}{% trim %}
+    {% set options = {
+        'escape': true
+    }|merge(options|default({})) %}
+    <table width="100%" cellpadding="0" border="0" cellspacing="0" style="{{
+        {
+            'margin-top': '15px',
+            'border-top': '2px solid #ffaa33',
+            'font-size': '16px',
+            'color': '#3d424d',
+            'line-height': '24px'
+        }|merge(wrapperStyle|default({}))|joinAssociative(":", ";")
+    }}">
+        <tr>
+            <td width="20" align="center" valign="top" style="{{
+                {
+                    'padding-top': '14px',
+                    'line-height': '1px'
+                }|merge(imgStyle|default({}))|joinAssociative(":", ";")
+            }}">
+                <img src="{{ context.baseImagesPath }}/warning-small.png" alt="" border="0" width="14" height="13">
+            </td>
+            <td valign="top" style="{{
+                {
+                    'padding': '10px 5px'
+                }|merge(cellStyle|default({}))|joinAssociative(":", ";")
+            }}">
+                {% if options['escape'] %}{{ text }}{% else %}{{ text|raw }}{% endif %}
+            </td>
+        </tr>
+        <tr>
+            <td style="background:#ffaa33" style="padding:5px 0"></td>
+            <td style="background:#ffaa33;font-size:16px;color:#ffffff; font-weight:bold;padding: 5px 25px 5px 5px;line-height: 18px;">
+                {{ info }}
+            </td>
+        </tr>
+    </table>
+{% endtrim %}{% endmacro %}
+
+{# info block #}
+{% macro info(text, context, options, cellStyles, wrapperStyles, imgStyles) %}{% trim %}
+    {% set options = {
+        'escape': true
+    }|merge(options|default({})) %}
+    <table width="100%" cellpadding="0" border="0" cellspacing="0" style="{{
+        {
+            'margin-top': '20px',
+            'line-height': '18px'
+        }|merge(wrapperStyles|default({}))|joinAssociative(":", ";")
+    }}">
+        <tr>
+            <td valign="top" align="left" width="13" style="{{
+                {
+                    'padding-top': '4px',
+                    'padding-left': '0px',
+                    'padding-right': '7px',
+                    'line-height' : '1px'
+                }|merge(imgStyles|default({}))|joinAssociative(":", ";")
+            }}"> <img src="{{ context.baseImagesPath }}/info.png" alt="" border="0" width="13" height="13"></td>
+            <td valign="top" style="{{
+                {
+                    'font-size': '16px',
+                    'line-height' : '24px',
+                    'color': '#535457',
+                    'font-weight': 'bold'
+                }|merge(cellStyles|default({}))|joinAssociative(":", ";")
+            }}">
+                {% if options['escape'] %}{{ text }}{% else %}{{ text|raw }}{% endif %}
+            </td>
+        </tr>
+    </table>
+{% endtrim %}{% endmacro %}
+
+{# info block with button #}
+{% macro infoWithButton(text, buttonText, buttonLink, context, options, containerStyles, infoStyles, buttonStyles) %}{% trim %}
+    {% import _self as selfMacro %}
+
+    {% set cellStyles = {
+        'padding-right': '10px',
+        'font-weight': 'normal',
+        'font-family': "Arial, sans-serif",
+        'font-size': '15px',
+    }|merge(infoStyles.cellStyles|default({})) %}
+    {% set wrapperStyles = {
+        'margin-top': '12px'
+    }|merge(infoStyles.wrapperStyles|default({})) %}
+    {% set imgStyles = {
+        'padding-left': '10px',
+        'padding-right': '10px',
+        'padding-top': '5px'
+    }|merge(infoStyles.imgStyles|default({})) %}
+    {% set buttonLinkStyles = {}|merge(buttonStyles.linkStyles|default({})) %}
+    {% set buttonImgStyles = {}|merge(buttonStyles.imgStyles|default({})) %}
+    {% set width = buttonStyles.width %}
+    {% set height = buttonStyles.height %}
+    {% set imgPath = buttonStyles.imgPath %}
+
+    <table width="100%" cellpadding="0" border="0" cellspacing="0" style="{{
+        {
+            'margin-top': '22px',
+            'border' : '1px solid #EBEDF2',
+            'background' : '#fffae3'
+        }|merge(containerStyles|default({}))|joinAssociative(":", ";")
+    }}">
+        <tr>
+            <td style="vertical-align: top;">
+                {{ selfMacro.info(text, context, options, cellStyles, wrapperStyles, imgStyles) }}
+            </td>
+        </tr>
+        <tr>
+            <td style="vertical-align: top; text-align: center">
+                {{ selfMacro.buttonWithImg(buttonText, buttonLink, {
+                    'margin': '20px 10px',
+                    'font-size': '13px'
+                }|merge(buttonLinkStyles|default({})), imgPath, width, height, buttonImgStyles) }}
+            </td>
+        </tr>
+    </table>
+{% endtrim %}{% endmacro %}
+
+{# header with arrow down #}
+{% macro header(text, context, options, cellStyles, wrapperStyles, arrowCellStyles) %}{% trim %}
+    {% set options = {
+        'escape': true
+    }|merge(options|default({})) %}
+    <table width="100%" cellpadding="0" border="0" cellspacing="0" style="{{
+        {
+            'margin-top': '15px',
+            'border-bottom': '2px solid #bec2cc'
+        }|merge(wrapperStyles|default({}))|joinAssociative(":", ";")
+    }}">
+        <tbody>
+        <tr>
+            {#<td width="20" align="left" valign="top" style="{{
+                {
+                    'padding-top': '12px',
+                    'line-height': '1px'
+                }|merge(arrowCellStyles|default({}))|joinAssociative(":", ";")
+            }}">
+                <img src="{{ context.baseImagesPath }}/arrow.png" alt="" border="0" width="9" height="6">
+            </td>
+            #}
+            <td valign="top" style="{{
+                {
+                    'font-size': '20px',
+                    'color': '#535457',
+                    'padding': '5px 0'
+                }|merge(cellStyles|default({}))|joinAssociative(":", ";")
+            }}">
+                {% if options['escape'] %}{{ text }}{% else %}{{ text|raw }}{% endif %}
+            </td>
+        </tr>
+        </tbody>
+    </table>
+{% endtrim %}{% endmacro %}
+
+{# list of accounts #}
+{% macro accountList(accounts, context) %}{% trim %}
+    <table width="100%" cellpadding="0" border="0" cellspacing="0" style="border-top:2px solid #bec2cc;line-height:20px;border-bottom:1px dotted #8e9199; margin-top:20px;">
+        <tr>
+            <td style="padding:10px 0">
+                {% for account in accounts %}
+                    <table width="100%" cellpadding="0" border="0" cellspacing="0">
+                        <tr>
+                            <td  width="150" class="first-cell" valign="top" style="font-size:15px;color:#70798c; padding-right:15px">
+                                {{ 'award_program'|trans({}, 'email', context.lang)|desc('Award Program') }}:
+                            </td>
+                            <td {# width="60%" #} valign="top" style="font-size:16px;color:#535457;">
+                                {% if account is instanceof("\\AwardWallet\\MainBundle\\Entity\\Providercoupon") %}
+                                    {{ account.programname|htmlencode
+                                        |preg_replace('/^[^\\(]+(?=\\(|$)/ims', '<b style="font-weight:bold;color:#3d424d;">${0}</b>')
+                                        |preg_replace('/\\([^\\)]+\\)/ims', '<span style="display:inline-block;">${0}</span>')|raw }}
+                                {% else %}
+                                    {% if account.providerid is not null %}
+                                        {{ account.providerid.displayname|htmlencode
+                                            |preg_replace('/^[^\\(]+(?=\\(|$)/ims', '<b style="font-weight:bold;color:#3d424d;">${0}</b>')
+                                            |preg_replace('/\\([^\\)]+\\)/ims', '<span style="display:inline-block;">${0}</span>')|raw }}
+                                    {% else %}
+                                        {{ account.programname|htmlencode
+                                            |preg_replace('/^[^\\(]+(?=\\(|$)/ims', '<b style="font-weight:bold;color:#3d424d;">${0}</b>')
+                                            |preg_replace('/\\([^\\)]+\\)/ims', '<span style="display:inline-block;">${0}</span>')|raw }}
+                                    {% endif %}
+                                {% endif %}
+                            </td>
+                        </tr>
+                        <tr>
+                            <td  width="150" class="first-cell" valign="top" style="padding-right:15px;padding-top:5px;font-size:15px;color:#70798c">
+                                {{ 'owner'|trans({}, 'email', context.lang)|desc('Owner') }}:
+                            </td>
+                            <td {# width="60%" #} valign="top" style="padding-top:5px;font-size:16px;color:#535457;">
+                                {{ account.getOwnerFullName }}
+                            </td>
+                        </tr>
+                        <tr>
+                            <td  width="150" valign="top" style="padding-right:15px; padding-top:5px;font-size:15px;color:#70798c">
+                                {{ 'balance'|trans({}, 'email', context.lang)|desc('Balance') }}:
+                            </td>
+                            <td {# width="60%" #} valign="top" style="padding-top:5px;font-size:16px;color:#535457;">
+                                {% if account is instanceof("\\AwardWallet\\MainBundle\\Entity\\Providercoupon") %}
+                                    {{ account.description }}: {{ account.value }}
+                                {% else %}
+                                    {{ account|formatBalance(context.locale) }}
+                                {% endif %}
+                            </td>
+                        </tr>
+                    </table>
+                    {% if not loop.last %}
+                        <br>
+                    {% endif %}
+                {% endfor %}
+            </td>
+        </tr>
+    </table>
+{% endtrim %}{% endmacro %}
+
+{% macro baseUnsubscribeLink(unsubscribeLink, context, styles) %}{% trim %}
+    {% import _self as selfMacro %}
+    {% set unsubscribe_link = selfMacro.link(unsubscribeLink, '$$', styles)|split('$$') %}
+    {{ 'unsubscribe_description_common'|trans({
+        '%link_on%': unsubscribe_link[0],
+        '%link_off%': unsubscribe_link[1]
+    }, 'email', context.lang)|desc('You can %link_on%unsubscribe%link_off% from our emails at any time.')|raw }}
+{% endtrim %}{% endmacro %}
+
+{% macro changeOrUnsubscribeLink(unsubscribeLink, context, styles) %}{% trim %}
+    {% import _self as selfMacro %}
+    {% set unsubscribe_link = selfMacro.link(unsubscribeLink, '$$', styles)|split('$$') %}
+    {{ 'change_frequency_or_unsubscribe'|trans({
+        '%link_on%': unsubscribe_link[0],
+        '%link_off%': unsubscribe_link[1]
+    }, 'email', context.lang)|desc('To change the frequency or to unsubscribe from the AwardWallet Blog emails, %link_on%click here%link_off%')|raw }}
+{% endtrim %}{% endmacro %}
+
+{% macro familyMemberUnsubscribeLink(user, baseUnsubscribeLink, context, styles) %}{% trim %}
+    {% import _self as selfMacro %}
+    {% if user is instanceof('\\AwardWallet\\MainBundle\\Entity\\Useragent') %}
+        {% if user.getSharecode() is not empty %}
+            {% set unsubscribe_link = selfMacro.link(url('aw_user_family_unsubscribe', {userAgentId: user.useragentid, code: user.getSharecode()}), '$$', styles)|split('$$') %}
+            {{ 'unsubscribe_ua'|trans({
+                '%link_on%': unsubscribe_link[0],
+                '%link_off%': unsubscribe_link[1]
+            }, 'email', context.lang)|desc('If you wish to not receive these reports in the future %link_on%click here%link_off%.')|raw }}
+        {% else %}
+            {{ selfMacro.baseUnsubscribeLink(baseUnsubscribeLink, context, styles) }}
+        {% endif %}
+    {% else %}
+        {{ selfMacro.baseUnsubscribeLink(baseUnsubscribeLink, context, styles) }}
+    {% endif %}
+{% endtrim %}{% endmacro %}
+
+{% macro emailPreview(text) %}{% trim %}
+    <div style="display: none; max-height: 0px; overflow: hidden;">{{ text }}</div>
+    <!-- Insert &zwnj;&nbsp; hack after hidden preview text -->
+    {% for i in 1..13 %}
+        <div style="display: none; max-height: 0px; overflow: hidden;">&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div>
+    {% endfor %}
+{% endtrim %}{% endmacro %}
+
+{% macro offerRemark(context, query_string, styles, linkStyles) %}{% trim %}
+    {% import _self as selfMacro %}
+
+    {% set url = 'https://awardwallet.com/blog/advertiser-disclosure/' ~ query_string|default('') %}
+
+    {{ selfMacro.paragraph('AwardWallet receives compensation from advertising partners for links in this email and on our blog.
+        The opinions expressed here are our own and have not been reviewed, provided, or approved by any bank advertiser.
+        Here’s ' ~ selfMacro.link(url, 'our complete list of Advertisers', {
+            'color': '#4684c4',
+            'text-decoration': 'none',
+            'font-weight': 'normal',
+            'line-height': '13px'
+        }|merge(linkStyles|default({}))) ~ '.', context, {escape: false, fix_link: false, cssWrapClass: 'email-silver'}, {
+            'margin-top': '15px',
+            'margin-right': '0',
+            'margin-bottom': '0',
+            'margin-left': '0',
+            'padding': '10px',
+            'box-sizing': 'border-box',
+            'font-size': '11px',
+            'font-style': 'italic',
+            'font-weight': 'normal',
+            'color': 'rgb(97, 103, 115)',
+            'background': 'rgb(249, 249, 250)',
+            'line-height': '13px'
+        }|merge(styles|default({})))
+    }}
+{% endtrim %}{% endmacro %}

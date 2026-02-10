@@ -1,0 +1,8 @@
+{% macro datepicker_input(name, value, attr, options) %}{% apply spaceless %}
+    {% set customClass = attr.class|default('') %}
+    {% set attr = attr|default({})|merge({'class': 'date '~customClass}) %}
+    {% set id = attr.id|default(name ~ '_id') %}
+    <input type="hidden" id="{{ id }}" name="{{ name }}" {% if value|default('') is not empty %}value="{{ value }}" {% endif %}/>
+    <div class="datepicker-container"><input type="text" id="{{ id }}_datepicker" name="datepicker_{{ name }}" data-dp-opt="{{ options|default({})|js_json_encode }}" {% for attrname, attrvalue in attr %}{{ attrname }}="{{ attrvalue }}" {% endfor %}/></div>
+{% endapply %}{% endmacro %}
+

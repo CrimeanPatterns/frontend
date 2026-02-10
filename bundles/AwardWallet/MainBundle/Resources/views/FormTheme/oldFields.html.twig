@@ -1,0 +1,658 @@
+{# Widgets #}
+
+{% block form_widget %}
+{% apply spaceless %}
+    {% if compound %}
+        {{ block('form_widget_compound') }}
+    {% else %}
+        {{ block('form_widget_simple') }}
+    {% endif %}
+{% endapply %}
+{% endblock form_widget %}
+
+{% block form_widget_compound %}
+{% apply spaceless %}
+	<form action="{{ action|default('#') }}" onsubmit="submitonce(this, true)" name="{{ name }}" class="editor_form" method="post">
+		<table class="formTable" {{ block('widget_container_attributes') }}  cellspacing="0" cellpadding="5" border="0">
+			<colgroup>
+				<col class="c0" />
+				<col class="c1" />
+				<col class="c2" />
+				<col class="c3" />
+			</colgroup>
+			{{ form_errors(form) }}
+			{% for field in form %}
+				{{ form_errors(field) }}
+			{% endfor %}
+	        {{ block('form_rows') }}
+	        {{ form_rest(form) }}
+            {% if noSubmit is defined and noSubmit %}
+
+            {% else %}
+	            {{ block('submit_widget') }}
+            {% endif %}
+	    </table>
+    </form>
+    <script type="text/javascript">
+		$(document).ready(function(){
+			attachFormEvents('{{ name }}');
+		});
+	</script>
+{% endapply %}
+{% endblock form_widget_compound %}
+
+{% block form_widget_simple %}
+{% apply spaceless %}
+    {% set type = type|default('text') %}
+    {% set attr = {'size': 34}|merge(attr) %}
+    <table class="inputFrame" cellspacing="0" cellpadding="0">
+    	<tr>
+            {% if type == 'file' %}
+                <td colspan="3">
+                    <input type="{{ type }}" {{ block('widget_attributes') }} {% if value is not empty %}value="{{ value }}" {% endif %}/>
+                    <input type="hidden" name="MAX_FILE_SIZE" value="30000" />
+                </td>
+            {% else %}
+                <td class="ifLeft"></td>
+                <td class="ifCenter">
+                    <input type="{{ type }}" {{ block('widget_attributes') }} {% if value is not empty %}value="{{ value }}" {% endif %}/>
+                </td>
+                <td class="ifRight"></td>
+            {% endif %}
+		</tr>
+    </table>
+{% endapply %}
+{% endblock form_widget_simple %}
+
+{% block collection_widget %}
+{% apply spaceless %}
+    {% if prototype is defined %}
+        {% set attr = attr|merge({'data-prototype': form_row(prototype) }) %}
+    {% endif %}
+    {{ block('form_widget') }}
+{% endapply %}
+{% endblock collection_widget %}
+
+{% block textarea_widget %}
+{% apply spaceless %}
+	<div class="boxToll">
+		<div class="left"></div>
+		<div class="right"></div>
+		<div class="center pad">
+			<textarea {{ block('widget_attributes') }}>{{ value }}</textarea>
+		</div>
+		<div class="bottom">
+			<div class="left"></div>
+			<div class="right"></div>
+		</div>
+	</div>
+{% endapply %}
+{% endblock textarea_widget %}
+
+{% block htmleditor_widget %}
+    {% apply spaceless %}
+        <div class="boxToll">
+            <div class="left"></div>
+            <div class="right"></div>
+            <div class="center pad">
+                <textarea {{ block('widget_attributes') }}>{{ value }}</textarea>
+                <script type="text/javascript">
+                    {% autoescape 'js' %}
+                    window.CKEDITOR_BASEPATH = '{{ app.request.basePath ~ '/' ~ base_path }}';
+                    {% endautoescape %}
+                </script>
+
+                <script type="text/javascript" src="{{ asset(base_path ~ 'ckeditor.js') }}"></script>
+                <script type="text/javascript">
+                    {% autoescape false %}
+                    {% set plugins = '' %}
+                    {% for name, external_plugin in external_plugins %}
+                    CKEDITOR.plugins.addExternal('{{ name }}', '{{ app.request.basePath ~ external_plugin.path }}', '{{ external_plugin.file }}');
+                    {% if not loop.first %}
+                    {% set plugins = plugins ~ ',' %}
+                    {% endif %}
+                    {% set plugins = plugins ~ name %}
+                    {% endfor %}
+
+                    var htmlEditorConfig = {
+                        {% if width is not null %}
+                        width: '{{ width }}',
+                        {% endif %}
+                        {% if height is not null %}
+                        height: '{{ height }}',
+                        {% endif %}
+                        {% if force_paste_as_plaintext is not null %}
+                        forcePasteAsPlainText: {{ force_paste_as_plaintext }},
+                        {% endif %}
+                        {% if language is not null %}
+                        language: '{{ language }}',
+                        {% endif %}
+                        {% if ui_color is not null %}
+                        uiColor: "{{ ui_color }}",
+                        {% endif %}
+                        {% if startup_outline_blocks == true %}
+                        startupOutlineBlocks: {{ startup_outline_blocks }},
+                        {% endif %}
+                        {% if filebrowser_browse_url.route is defined and filebrowser_browse_url.route is not null %}
+                        filebrowserBrowseUrl: '{{ path(filebrowser_browse_url.route, filebrowser_browse_url.route_parameters) }}',
+                        {% elseif filebrowser_browse_url.url is defined and filebrowser_browse_url.url is not null %}
+                        filebrowserBrowseUrl: '{{ filebrowser_browse_url.url }}',
+                        {% endif %}
+                        {% if filebrowser_upload_url.route is defined and filebrowser_upload_url.route is not null %}
+                        filebrowserUploadUrl: '{{ path(filebrowser_upload_url.route, filebrowser_upload_url.route_parameters) }}',
+                        {% elseif filebrowser_upload_url.url is defined and filebrowser_upload_url.url is not null %}
+                        filebrowserUploadUrl: '{{ filebrowser_upload_url.url }}',
+                        {% endif %}
+                        {% if filebrowser_image_browse_url.route is defined and filebrowser_image_browse_url.route is not null %}
+                        filebrowserImageBrowseUrl: '{{ path(filebrowser_image_browse_url.route, filebrowser_image_browse_url.route_parameters) }}',
+                        {% elseif filebrowser_image_browse_url.url is defined and filebrowser_image_browse_url.url is not null %}
+                        filebrowserImageBrowseUrl: '{{ filebrowser_image_browse_url.url }}',
+                        {% endif %}
+
+                        {% if filebrowser_image_upload_url.route is defined and filebrowser_image_upload_url.route is not null %}
+                        filebrowserImageUploadUrl: '{{ path(filebrowser_image_upload_url.route, filebrowser_image_upload_url.route_parameters) }}',
+                        {% elseif filebrowser_image_upload_url.url is defined and filebrowser_image_upload_url.url is not null %}
+                        filebrowserImageUploadUrl: '{{ filebrowser_image_upload_url.url }}',
+                        {% endif %}
+                        {% if filebrowser_flash_browse_url.route is defined and filebrowser_flash_browse_url.route is not null %}
+                        filebrowserFlashBrowseUrl: '{{ path(filebrowser_flash_browse_url.route, filebrowser_flash_browse_url.route_parameters) }}',
+                        {% elseif filebrowser_flash_browse_url.url is defined and filebrowser_flash_browse_url.url is not null %}
+                        filebrowserFlashBrowseUrl: '{{ filebrowser_flash_browse_url.url }}',
+                        {% endif %}
+                        {% if filebrowser_flash_upload_url.route is defined and filebrowser_flash_upload_url.route is not null %}
+                        filebrowserFlashUploadUrl: '{{ path(filebrowser_flash_upload_url.route, filebrowser_flash_upload_url.route_parameters) }}',
+                        {% elseif filebrowser_flash_upload_url.url is defined and filebrowser_flash_upload_url.url is not null %}
+                        filebrowserFlashUploadUrl: '{{ filebrowser_flash_upload_url.url }}',
+                        {% endif %}
+                        {% if skin is not null %}
+                        skin: '{{ skin }}',
+                        {% endif %}
+                        {% if format_tags|length > 0 %}
+                        format_tags: '{{ format_tags | join(';') | raw }}',
+                        {% endif %}
+                        {% if base_href is not null %}
+                        baseHref: '{{ base_href }}',
+                        {% endif %}
+                        {% if body_class is not null %}
+                        bodyClass: '{{ body_class }}',
+                        {% endif %}
+                        {% if contents_css is not null %}
+                        {% if contents_css is iterable %}
+                        {% set contents_css_array = [] %}
+                        {% for file in contents_css %}
+                        {% set contents_css_array = contents_css_array|merge([asset(file)]) %}
+                        {% endfor %}
+                        contentsCss: {{ contents_css_array|json_encode }},
+                        {% else %}
+                        contentsCss: '{{ asset(contents_css) }}',
+                        {% endif %}
+                        {% endif %}
+                        {% if basic_entities is not null %}
+                        basicEntities: '{{ basic_entities }}',
+                        {% endif %}
+                        {% if entities is not null %}
+                        entities: '{{ entities }}',
+                        {% endif %}
+                        {% if entities_latin is not null %}
+                        entities_latin: '{{ entities_latin }}',
+                        {% endif %}
+                        {% if startup_mode is not null %}
+                        startupMode: '{{ startup_mode }}',
+                        {% endif %}
+                        {% if plugins %}
+                        extraPlugins: '{{ plugins }}',
+                        {% endif %}
+                        {% if custom_config %}
+                        customConfig: '{{ asset(custom_config) }}',
+                        {% endif %}
+                        {% if on is not null %}
+                        on: {{ on }},
+                        {% endif %}
+                        {% if templates_files is not null %}
+                        templates_files: {{ templates_files | json_encode | raw }},
+                        {% endif %}
+                        toolbar: {{ toolbar | json_encode | raw }}
+                    };
+                    CKEDITOR.replace("{{ id }}", htmlEditorConfig);
+                    CKEDITOR.instances["{{ id }}"].rawConfig = htmlEditorConfig;
+                    {% endautoescape %}
+                </script>
+            </div>
+            <div class="bottom">
+                <div class="left"></div>
+                <div class="right"></div>
+            </div>
+        </div>
+    {% endapply %}
+{% endblock htmleditor_widget %}
+
+{% block choice_widget_options %}
+{% apply spaceless %}
+    {% for group_label, choice in options %}
+        {% if choice is iterable %}
+            <optgroup label="{{ group_label|trans({}, translation_domain) }}">
+                {% set options = choice %}
+                {{ block('choice_widget_options') }}
+            </optgroup>
+        {% else %}
+            <option value="{{ choice.value }}"{% if choice is selectedchoice(value) %} selected="selected"{% endif %}>{{ choice.label|trans({}, translation_domain) }}</option>
+        {% endif %}
+    {% endfor %}
+{% endapply %}
+{% endblock choice_widget_options %}	
+
+{% block choice_widget %}
+{% apply spaceless %}
+    {% if expanded %}
+        <div {{ block('widget_container_attributes') }}>
+        {% for child in form %}
+            {{ form_widget(child) }}
+            {{ form_label(child) }}
+        {% endfor %}
+        </div>
+    {% else %}
+    <table class="inputFrame" cellspacing="0" cellpadding="0">
+    	<tr>
+			<td class="ifLeft"></td>
+			<td class="ifCenter">
+				<select {{ block('widget_attributes') }}{% if multiple %} multiple="multiple"{% endif %}>
+			        {% if placeholder is not none %}
+			            <option value="">{{ placeholder|trans({}, translation_domain) }}</option>
+			        {% endif %}
+			        {% if preferred_choices|length > 0 %}
+			            {% set options = preferred_choices %}
+			            {{ block('choice_widget_options') }}
+			            {% if choices|length > 0 and separator is not none %}
+			                <option disabled="disabled">{{ separator }}</option>
+			            {% endif %}
+			        {% endif %}
+			        {% set options = choices %}
+			        {{ block('choice_widget_options') }}
+			    </select>
+			</td>
+			<td class="ifRight"></td>
+		</tr>
+    </table>
+    {% endif %}
+{% endapply %}
+{% endblock choice_widget %}
+
+{% block checkbox_widget %}
+{% apply spaceless %}
+    <input type="checkbox" {{ block('widget_attributes') }}{% if value is defined %} value="{{ value }}"{% endif %}{% if checked %} checked="checked"{% endif %} />
+{% endapply %}
+{% endblock checkbox_widget %}
+
+{% block radio_widget %}
+{% apply spaceless %}
+    <input type="radio" {{ block('widget_attributes') }}{% if value is defined %} value="{{ value }}"{% endif %}{% if checked %} checked="checked"{% endif %} />
+{% endapply %}
+{% endblock radio_widget %}
+
+{% block datetime_widget %}
+{% apply spaceless %}
+    {% if widget == 'single_text' %}
+        {{ block('form_widget_simple') }}
+    {% else %}
+        <div {{ block('widget_container_attributes') }}>
+            {{ form_widget(form.date) }}
+            {{ form_widget(form.time) }}
+        </div>
+    {% endif %}
+{% endapply %}
+{% endblock datetime_widget %}
+
+{% block date_widget %}
+{% apply spaceless %}
+    {% if widget == 'single_text' %}
+    	<table border="0" cellpadding="0" cellspacing="0" class="noBorder" id="scw{{ name }}Table">
+    		<tr>
+    			<td class="scwDate1">
+    				<table class="inputFrame" cellspacing="0" cellpadding="0">
+    					<tr>
+							<td class="ifLeft"></td>
+							<td class="ifCenter">
+								<input class="inputTxt inputDate"{% if attr.readonly is not defined %} onclick="scwShow(this, event)"{% endif %} type="text" {{ block('widget_attributes') }} {% if value is not empty %}value="{{ value }}" {% endif %}/>
+							</td>
+							<td class="ifRight"></td>
+						</tr>
+    				</table>
+    			</td>
+    			{% if attr.readonly is not defined %}
+	    			<td class="scwDate2">
+	    				<img class="calicon" width="20" height="22" border="0" onclick="scwShow(document.getElementById('{{ id }}'),event);" alt="Pick the date" src="/lib/images/calendar3.gif">
+	    			</td>
+    			{% endif %}
+    		</tr>
+    	</table>
+    {% else %}
+        <div {{ block('widget_container_attributes') }}>
+            {{ date_pattern|replace({
+                '{{ year }}':  form_widget(form.year),
+                '{{ month }}': form_widget(form.month),
+                '{{ day }}':   form_widget(form.day),
+            })|raw }}
+        </div>
+    {% endif %}
+{% endapply %}
+{% endblock date_widget %}
+
+{% block time_widget %}
+{% apply spaceless %}
+    {% if widget == 'single_text' %}
+        {{ block('form_widget_simple') }}
+    {% else %}
+        <div {{ block('widget_container_attributes') }}>
+            {{ form_widget(form.hour, { 'attr': { 'size': '1' } }) }}:{{ form_widget(form.minute, { 'attr': { 'size': '1' } }) }}{% if with_seconds %}:{{ form_widget(form.second, { 'attr': { 'size': '1' } }) }}{% endif %}
+        </div>
+    {% endif %}
+{% endapply %}
+{% endblock time_widget %}
+
+{% block number_widget %}
+{% apply spaceless %}
+    {# type="number" doesn't work with floats #}
+    {% set type = type|default('text') %}
+    {{ block('form_widget_simple') }}
+{% endapply %}
+{% endblock number_widget %}
+
+{% block integer_widget %}
+{% apply spaceless %}
+    {% set type = type|default('number') %}
+    {{ block('form_widget_simple') }}
+{% endapply %}
+{% endblock integer_widget %}
+
+{% block money_widget %}
+{% apply spaceless %}
+    {{ money_pattern|replace({ '{{ widget }}': block('form_widget_simple') })|raw }}
+{% endapply %}
+{% endblock money_widget %}
+
+{% block url_widget %}
+{% apply spaceless %}
+    {% set type = type|default('url') %}
+    {{ block('form_widget_simple') }}
+{% endapply %}
+{% endblock url_widget %}
+
+{% block search_widget %}
+{% apply spaceless %}
+    {% set type = type|default('search') %}
+    {{ block('form_widget_simple') }}
+{% endapply %}
+{% endblock search_widget %}
+
+{% block percent_widget %}
+{% apply spaceless %}
+    {% set type = type|default('text') %}
+    {{ block('form_widget_simple') }} %
+{% endapply %}
+{% endblock percent_widget %}
+
+{% block password_widget %}
+{% apply spaceless %}
+    {% set type = type|default('password') %}
+    {{ block('form_widget_simple') }}
+{% endapply %}
+{% endblock password_widget %}
+
+{% block hidden_widget %}
+    {% set type = type|default('hidden') %}
+    <input type="{{ type }}" {{ block('widget_attributes') }} {% if value is not empty %}value="{{ value }}" {% endif %}/>
+{% endblock hidden_widget %}
+
+{% block email_widget %}
+{% apply spaceless %}
+    {% set type = type|default('email') %}
+    {{ block('form_widget_simple') }}
+{% endapply %}
+{% endblock email_widget %}
+
+{% block button_widget %}
+    {% apply spaceless %}
+        {% if label is empty %}
+            {% set label = name|humanize %}
+        {% endif %}
+        <button type="{{ type|default('button') }}" {{ block('button_attributes') }}>{{ label|trans({}, translation_domain) }}</button>
+    {% endapply %}
+{% endblock button_widget %}
+
+{% block reset_widget %}
+    {% apply spaceless %}
+        {% set type = type|default('reset') %}
+        {{ block('button_widget') }}
+    {% endapply %}
+{% endblock reset_widget %}
+
+{% block submit_widget %}
+{% apply spaceless %}
+	<tr>
+		<td colspan="2"></td>
+		<td class="formButtons" colspan="2">
+			<table cellspacing="0" align="{{ align_submit_button|default('left') }}">
+				<tr>
+					<td>
+						<div class="overallButton" onClick="{{ onclick_submit_button|default("var form = $(this).closest('form'); if(checkHtml5Form(form)) return true; else return false;") }}">
+							<table cellspacing="0" cellpadding="0" border="0">
+								<tr>
+									<td><div class="buttonLeft"></div></td>
+									<td>
+										<input class="buttonBg" type="submit" value="{{ text_submit_button|default('Send')|trans }}" />
+									</td>
+									<td><div class="buttonRight"></div></td>
+								</tr>
+							</table>
+						</div>
+					</td>
+				</tr>
+			</table>
+		</td>
+	</tr>
+{% endapply %}
+{% endblock submit_widget %}
+
+{# Labels #}
+
+{% block form_label %}
+{% apply spaceless %}
+	{% if label is empty %}
+        {% set label = name|humanize %}
+    {% endif %}
+    {% set attr = attr|merge({'for': id}) %}
+    {% if required %}
+        {% set label_attr = label_attr|merge({'class': (label_attr.class|default('') ~ ' required')|trim}) %}
+    {% endif %}
+    <label{% for attrname,attrvalue in attr %}{% if attrname != 'notice' %} {{attrname}}="{{attrvalue}}"{% endif %}{% endfor %}>
+		<table cellspacing="0" cellpadding="0">
+	 		<tr>
+				<td class="labelText">{{ label|trans({}, translation_domain) }}</td>
+				{% if required %}
+					<td class="asterisk">*</td> 
+				{% endif %}
+			</tr>
+		</table>
+	</label>
+{% endapply %}
+{% endblock form_label %}
+
+{% block button_label %}{% endblock %}
+
+{# Rows #}
+
+{% block repeated_row %}
+{% apply spaceless %}
+    {{ block('form_rows') }}
+{% endapply %}
+{% endblock repeated_row %}
+
+{% block form_row %}
+{% apply spaceless %}
+    <tr id="tr{{ id }}" class="text{% if errors|length > 0 %} error{% endif %}">
+    	<td class="row rowLeft">
+			<div></div>
+		</td>
+		{% if block_prefixes[1] in ['checkbox'] %}
+			<td class="caption nowrap row">
+	        </td>
+		{% else %}
+			<td class="caption nowrap row">
+        	{{ form_label(form, label|default(null)) }}
+	        </td>
+		{% endif %}
+		<td class="input row">
+			{% if block_prefixes[1] in ['checkbox'] %}
+				<table cellspacing="0" cellpadding="0" border="0">
+					<tr>
+						<td class="checkboxLeft">{{ form_widget(form) }}</td>
+						<td class="checkboxRight">
+							{{ form_label(form, label|default(null)) }}
+							{% if attr['notice'] is defined and attr['notice'] != '' %}
+								<div class="fieldhint">{{ attr['notice']|raw|trans({}, translation_domain) }}</div>
+							{% endif %}
+						</td>
+					</tr>
+				</table>
+			{% else %}
+				{{ form_widget(form) }}
+	        	{% if attr['notice'] is defined and attr['notice'] != '' %}
+					<div class="fieldhint">{{ attr['notice']|raw|trans({}, translation_domain) }}</div>
+				{% endif %}
+			{% endif %}
+       	</td>
+        <td class="row rowRight">
+			<div></div>
+		</td>
+    </tr>
+{% endapply %}
+{% endblock form_row %}
+
+{% block button_row %}
+    {% apply spaceless %}
+        <div>
+            {{ form_widget(form) }}
+        </div>
+    {% endapply %}
+{% endblock button_row %}
+
+{% block hidden_row %}
+    {{ form_widget(form) }}
+{% endblock hidden_row %}
+
+{# Misc #}
+
+{% block form %}
+    {% apply spaceless %}
+        {{ form_start(form) }}
+        {{ form_widget(form) }}
+        {{ form_end(form) }}
+    {% endapply %}
+{% endblock form %}
+
+{% block form_start %}
+    {% apply spaceless %}
+        {% set method = method|upper %}
+        {% if method in ["GET", "POST"] %}
+            {% set form_method = method %}
+        {% else %}
+            {% set form_method = "POST" %}
+        {% endif %}
+            <form method="{{ form_method|lower }}" action="{{ action }}"{% for attrname, attrvalue in attr %} {{ attrname }}="{{ attrvalue }}"{% endfor %}{% if multipart %} enctype="multipart/form-data"{% endif %}>
+        {% if form_method != method %}
+            <input type="hidden" name="_method" value="{{ method }}" />
+        {% endif %}
+    {% endapply %}
+{% endblock form_start %}
+
+{% block form_end %}
+    {% apply spaceless %}
+        {% if not render_rest is defined or render_rest %}
+            {{ form_rest(form) }}
+        {% endif %}
+        </form>
+    {% endapply %}
+{% endblock form_end %}
+
+{% block form_enctype %}
+{% apply spaceless %}
+    {% if multipart %}enctype="multipart/form-data"{% endif %}
+{% endapply %}
+{% endblock form_enctype %}
+
+
+{% block form_errors %}
+{% apply spaceless %}
+    {% if errors|length > 0 %}
+        {% for error in errors %}
+        	<tr>
+				<td class="errorMessage" colspan="4">
+					<div class="icon"></div>
+					<div class="text">
+						<b class="errorPrefix">Error: </b>
+						{% set parameters = error.messageParameters|merge({'{{ name }}': label|trans({}, translation_domain) }) %}
+						{% set template = error.messageTemplate|replace({'This value': '{{ name }}'}) %}
+						{{ template|trans(parameters, 'validators') }}
+					</div>
+				</td>
+			</tr>
+        {% endfor %}
+    {% endif %}
+{% endapply %}
+{% endblock form_errors %}
+
+{% block form_rest %}
+{% apply spaceless %}
+    {% for child in form %}
+        {% if not child.rendered %}
+            {{ form_row(child) }}
+        {% endif %}
+    {% endfor %}
+{% endapply %}
+{% endblock form_rest %}
+
+{# Support #}
+{% block widget_attributes %}
+{% apply spaceless %}
+    id="{{ id }}" name="{{ full_name }}"{% if required %} required="required"{% endif %}{% if pattern is defined and pattern %} pattern="{{ pattern }}"{% endif %}
+    {% for attrname,attrvalue in attr %}
+    	{% if attrname != 'notice' %}
+			{{attrname}}="{{attrvalue}}" 
+		{% endif %}
+	{% endfor %}
+{% endapply %}
+{% endblock widget_attributes %}
+
+{% block widget_container_attributes %}
+{% apply spaceless %}
+    id="{{ id }}"
+    {% for attrname,attrvalue in attr %}
+    	{% if attrname != 'notice' %}
+			{{attrname}}="{{attrvalue}}" 
+		{% endif %}
+	{% endfor %}
+{% endapply %}
+{% endblock widget_container_attributes %}
+
+{% block button_attributes %}
+    {% apply spaceless %}
+        id="{{ id }}" name="{{ full_name }}"{% if disabled %} disabled="disabled"{% endif %}
+        {% for attrname, attrvalue in attr %}{{ attrname }}="{{ attrvalue }}" {% endfor %}
+    {% endapply %}
+{% endblock button_attributes %}
+
+{% block captcha_widget %}
+{% apply spaceless %}
+	{% set attr = {'size': 20}|merge(attr) %}
+	<table cellspacing="0" cellpadding="0" border="0" style="border: none">
+		<tr>
+			<td style="border: none;">
+			{{ block('form_widget_simple') }}
+			</td>
+			<td style="border: none;">
+				<img style="margin-left: 5px;max-width: none;" src="{{ captcha_code }}" title="captcha" width="{{ captcha_width }}" height="{{ captcha_height }}" />
+			</td>
+		</tr>
+	</table>
+{% endapply %}
+{% endblock %}

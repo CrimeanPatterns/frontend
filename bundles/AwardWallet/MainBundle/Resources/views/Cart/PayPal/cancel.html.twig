@@ -1,0 +1,17 @@
+{% extends "@AwardWalletMain/Layout/hidden_left_menu.html.twig" %}
+
+{% block title %}
+    {{ 'cart.paypal.cancel.title'|trans|desc('Payment cancelation') }}
+{% endblock %}
+
+{% block content %}
+    <div class="main-blk shortened">
+        <h1>{{ 'cart.paypal.cancel.title'|trans }}</h1>
+        <div class="main-blk-content t-center">
+            <p>{{ 'cart.paypal.cancel.desc'|trans|desc("Your payment with paypal was cancelled. Try other payment methods.")|raw }}</p>
+        </div>
+        <div class="row-submit">
+            <a class="btn-blue" href="{{ path('aw_cart_common_paymenttype') }}">{{ 'cart.select-type'|trans }}</a>
+        </div>
+    </div>
+{% endblock %}

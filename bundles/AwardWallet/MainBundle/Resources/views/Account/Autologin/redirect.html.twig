@@ -1,0 +1,91 @@
+{% extends "@AwardWalletMain/Layout/main.html.twig" %}
+{% import "@AwardWalletMain/TwigMacros/extension.html.twig" as extension %}
+{% use '@AccountList/popups.html.twig' %}
+
+{% block title %}{{ 'auto-login'|trans|desc('Auto login') }}{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    {% if loginWithExtension %}
+    <script type="text/javascript">
+
+        function initExtension(){
+            if(browserExt.supportedBrowser()){
+                if(browserExt.showInfoBrowser()){
+                    startRedirecting();
+                }else{
+                    let timer = setTimeout(function() {
+                        console.log('no extension v2 available, will redirect to {{ loginUrl }}');
+                        redirectAccount({{ params['accountId'] }}, {{ displayName | json_encode | raw }}, {{ providerName | json_encode | raw }}, false, {{ askLocalPassword | json_encode | raw }}, {{ login | json_encode | raw }}, {{ userName | json_encode | raw }});
+                        document.location.href = '{{ loginUrl | raw }}';
+                    }, 1000);
+                    browserExt.pushOnReady(function() {
+                        clearTimeout(timer);
+                        startRedirecting();
+                    });
+                }
+            }
+            else{
+                startRedirecting();
+            }
+        }
+
+        function loginWithExtension(){
+            var params = {{ params | json_encode(constant('JSON_PRETTY_PRINT')) | raw }};
+            if(lastAskedPassword)
+                params.password = lastAskedPassword;
+            browserExt.updateExtension(function(){
+                browserExt.setAccountInfo(params);
+                browserExt.autologin(
+                    {{ params['accountId'] }},
+                    function(){
+                        browserExt.submitStat('{{ params['providerCode'] }}', true);
+                        browserExt.closeThisTab();
+                    },
+                    function(error){
+                        browserExt.submitStat('{{ params['providerCode'] }}', false, error);
+                        browserExt.closeThisTab();
+                    }
+                );
+            });
+        }
+
+    </script>
+	{% endif %}
+
+	<script type="text/javascript">
+		var mode = {{ mode | json_encode | raw }};
+
+		function canLoginWithExtension(){
+			return {{ loginWithExtension|json_encode | raw  }} && browserExt.supportedBrowser() && !browserExt.showInfoBrowser();
+		}
+
+		function startRedirecting(){
+			redirectAccount({{ params['accountId'] }}, {{ displayName | json_encode | raw }}, {{ providerName | json_encode | raw }}, {{ autologin | json_encode | raw }}, {{ askLocalPassword | json_encode | raw }}, {{ login | json_encode | raw }}, {{ userName | json_encode | raw }});
+		}
+
+		function processRedirect(){
+            if (mode == 'download')
+                document.location.href = {{ frameURL | json_encode | raw }};
+            else if (canLoginWithExtension())
+                loginWithExtension();
+            else
+                document.getElementById('redirectFrame').src = {{ frameURL | json_encode | raw }};
+		}
+
+		require(['browserext'], function(){
+            startAccountOperations(); {# not needed ? #}
+            {{ onLoad | raw }};
+        })
+
+	</script>
+{% endblock %}
+
+{% block body %}
+    <body style="margin: 0;" id="body">
+        {% include "@AccountList/_autologinPopup.html.twig" %}
+        {{ block('old_site_popups') }}
+        {{ extension.load() }}
+        <iframe id="redirectFrame" width="400" height="400" style="display: none;" frameborder="0" src="about:blank"></iframe>
+    </body>
+{% endblock %}

@@ -1,0 +1,662 @@
+{% extends popup is defined and popup ? "@AwardWalletMain/Offer/_offerPopup.html.twig" : "@AwardWalletMain/Offer/standard.html.twig" %}
+{% import '@AwardWalletMain/Offer/offerMacros.html.twig' as offerMacros %}
+{% import '@AwardWalletMain/TwigMacros/assets.html.twig' as assets %}
+
+{% block stylesheets %}
+	{{ parent() }}
+	{{ encore_entry_link_tags('offer') }}
+	{{ encore_entry_link_tags('offers/awardwalletplussubscription') }}
+	{{ encore_entry_link_tags('awardwallet-plus-subscription-offer') }}
+	{% if popup is not defined %}
+		{{ assets.assets_form('css') }}
+	{% endif %}
+{% endblock %}
+
+{% block javascripts %}
+	{{ parent() }}
+	<script>
+		{{ offerMacros.jsOfferYes(_context, ApplyURL, Code, OfferUserID, ApplyURL) }}
+        {{ offerMacros.jsOfferNo(_context, Code, OfferUserID, defaultRedirectLocation) }}
+	</script>
+    {{ encore_entry_script_tags('awardwallet-plus-subscription-offer', null, '_default', {'defer': true}) }}
+{% endblock %}
+
+{% block content %}
+	<div
+				id="offer_wrap"
+				class="{{ bem('awardwallet-plus-subscription-offer') }}">
+				<div
+					class="{{ bem('awardwallet-plus-subscription-offer', 'title-block') }}">
+					<h3
+						class="{{ bem('awardwallet-plus-subscription-offer', 'title') }}">Hey
+						{{ OfferData.userName }},</h3>
+					<p
+						class="{{ bem('awardwallet-plus-subscription-offer', 'subtitle') }}">
+						Thanks for using AwardWallet! You are currently on our free tier, which means that you're missing out on some great features.
+					</p>
+					<button
+                        onclick="dialog.get('offerPopup').close();"
+						class="{{ bem('awardwallet-plus-subscription-offer', 'cross-button') }}">
+						<img
+							{{ image_src('awardwallet-plus-subscription-offer/cross.svg') }} alt="Cross icon">
+					</button>
+				</div>
+				<div
+					class="{{ bem('awardwallet-plus-subscription-offer', 'content-container') }}">
+					<table
+						class="{{ bem('comparison-versions-table') }}">
+						<thead
+							class="{{ bem('comparison-versions-table', 'header') }}">
+							<tr
+								class="{{ bem('comparison-versions-table', 'row') }}">
+								<th>
+									<h4
+										class="{{ bem('awardwallet-plus-subscription-offer', 'table-title') }}">If you're serious about using points and miles to save on travel, you should check out AwardWallet Plus. Here's how it stacks up against the free account:</h4>
+								</th>
+								<th
+									class="{{ bem('comparison-versions-table', 'header-cell', ['fade-border', 'aw-free']) }} {{ bem('awardwallet-plus-subscription-offer', 'table-header-cell') }}">
+                                    
+									<p
+										class="{{ bem('comparison-versions-table', 'title', ['free']) }} {{ bem('awardwallet-plus-subscription-offer', 'table-reset-margin') }} {{ bem('awardwallet-plus-subscription-offer', 'table-column-title') }}">AwardWallet</p>
+		
+									<p
+										class="{{ bem('comparison-versions-table', 'header-cell-description') }} {{ bem('awardwallet-plus-subscription-offer', 'table-reset-margin') }} {{ bem('awardwallet-plus-subscription-offer', 'table-column-title', ['free']) }}">Free</p>
+								</th>
+								<th
+									class="{{ bem('upgrade-aw-block') }} {{ bem('comparison-versions-table', 'header-cell', ['aw-plus', 'fade-border']) }} {{ bem('awardwallet-plus-subscription-offer', 'table-header-cell') }}">
+									<p
+										class="{{ bem('upgrade-aw-block', 'title') }} {{ bem('awardwallet-plus-subscription-offer', 'table-column-title', ['blue']) }}">
+										AwardWallet
+										<picture style="line-height: 0;">
+											<img
+												{{ image_src('upgrade-aw-block/aw-plus-icon.svg') }} alt="AwardWallet PLus icon">
+										</picture>
+									</p>
+									<p
+										class="{{ bem('awardwallet-plus-subscription-offer', 'table-reset-margin') }}">
+										<span
+											class="{{ bem('upgrade-aw-block', 'price') }}">
+											${{ OfferData.awPlusPrice }}
+											<span
+												class="{{ bem('upgrade-aw-block', 'price-currency') }}">USD</span>
+										</span>
+										<span
+											class="{{ bem('upgrade-aw-block', 'additional-info') }}">{{ 'pricing.limited.offer.period'|trans|raw }}</span>
+									</p>
+								</th>
+							</tr>
+						</thead>
+						<tbody
+							class="{{ bem('comparison-versions-table', 'body') }}">
+							<tr
+								class="{{ bem('comparison-versions-table', 'row') }}">
+								<td
+									class="{{ bem('comparison-versions-table', 'cell', ['statement']) }}">
+									<picture
+										class="{{ bem('comparison-versions-table', 'icon') }}">
+										<img
+											{{ image_src('comparison-versions-table/assets/update.svg') }} alt="Update icon">
+									</picture>
+									{{ 'pricing.comparison.statement1'|trans|desc('Number of updates allowed per loyalty account in a 24-hour period')|raw }}
+								</td>
+								<td
+									class="{{ bem('comparison-versions-table', 'cell', ['free', 'left-border', 'desktop']) }}">
+									{{ 'pricing.daily.limited'|trans|desc('Limited to 2x daily')|raw }}
+								</td>
+								<td
+									class="{{ bem('comparison-versions-table', 'cell', ['plus', 'left-border', 'desktop']) }}">
+									<img
+										{{ image_src('comparison-versions-table/assets/accept.svg') }} alt="Accept icon"/>
+									{{ 'pricing.unlimited'|trans|desc('Unlimited')|raw }}
+								</td>
+								<td
+									class="{{ bem('comparison-versions-table', 'cell', ['mobile']) }}">
+									<div
+										class="{{ bem('comparison-versions-table', 'cell', ['free']) }}">
+										{{ 'pricing.daily.limited'|trans|desc('Limited to 2x daily')|raw }}
+									</div>
+									<div
+										class="{{ bem('comparison-versions-table', 'cell', ['plus']) }}">
+										<img
+											{{ image_src('comparison-versions-table/assets/accept.svg') }} alt="Accept"/>
+										{{ 'pricing.unlimited'|trans|desc('Unlimited')|raw }}
+									</div>
+								</td>
+							</tr>
+							<tr
+								class="{{ bem('comparison-versions-table', 'row') }}">
+								<td
+									class="{{ bem('comparison-versions-table', 'cell', ['statement']) }}">
+									<picture
+										class="{{ bem('comparison-versions-table', 'icon') }}">
+										<img
+											{{ image_src('comparison-versions-table/assets/flame.svg') }} alt="Flame icon">
+									</picture>
+									{{ 'pricing.comparison.statement2'|trans|desc('View point and mile expiration dates for each account')|raw }}
+								</td>
+								<td
+									class="{{ bem('comparison-versions-table', 'cell', ['free', 'left-border', 'desktop']) }}">
+									{{ 'pricing.up.to.expirations'|trans|desc('Up to 3 expirations')|raw }}
+								</td>
+								<td
+									class="{{ bem('comparison-versions-table', 'cell', ['plus', 'left-border', 'desktop']) }}">
+									<img
+										{{ image_src('comparison-versions-table/assets/accept.svg') }} alt="Accept icon"/>
+									{{ 'pricing.unlimited'|trans|raw }}
+								</td>
+								<td
+									class="{{ bem('comparison-versions-table', 'cell', ['mobile']) }}">
+									<div
+										class="{{ bem('comparison-versions-table', 'cell', ['free']) }}">
+										{{ 'pricing.up.to.expirations'|trans|desc('Up to 3 expirations')|raw }}
+									</div>
+									<div
+										class="{{ bem('comparison-versions-table', 'cell', ['plus']) }}">
+										<img
+											{{ image_src('comparison-versions-table/assets/accept.svg') }} alt="Accept icon"/>
+										{{ 'pricing.unlimited'|trans|raw }}
+									</div>
+								</td>
+							</tr>
+							<tr
+								class="{{ bem('comparison-versions-table', 'row') }}">
+								<td
+									class="{{ bem('comparison-versions-table', 'cell', ['statement']) }}">
+									<picture
+										class="{{ bem('comparison-versions-table', 'icon') }}">
+										<img
+											{{ image_src('comparison-versions-table/assets/star.svg') }} alt="Star icon">
+									</picture>
+									<span>
+										{{ 'pricing.comparison.statement3'|trans|desc('See progress towards elite status and other reward-account properties')|raw }}
+									</span>
+								</td>
+								<td
+									class="{{ bem('comparison-versions-table', 'cell', ['free-icon', 'left-border', 'desktop']) }}">
+									<img
+										class="{{ bem('comparison-versions-table', 'cell-img-light') }}" {{ image_src('comparison-versions-table/assets/cross.svg') }} alt="Cross icon"/>
+									<img
+										class="{{ bem('comparison-versions-table', 'cell-img-dark') }}" {{ image_src('comparison-versions-table/assets/cross--dark.svg') }} alt="Cross icon"/>
+								</td>
+								<td
+									class="{{ bem('comparison-versions-table', 'cell', ['plus', 'left-border', 'desktop']) }}">
+									<img
+										{{ image_src('comparison-versions-table/assets/check.svg') }} alt="Check icon"/>
+								</td>
+								<td
+									class="{{ bem('comparison-versions-table', 'cell', ['mobile']) }}">
+									<div
+										class="{{ bem('comparison-versions-table', 'cell', ['free']) }}">
+										<img
+											class="{{ bem('comparison-versions-table', 'cell-img-light') }}" {{ image_src('comparison-versions-table/assets/cross.svg') }} alt="Cross icon"/>
+										<img
+											class="{{ bem('comparison-versions-table', 'cell-img-dark') }}" {{ image_src('comparison-versions-table/assets/cross--dark.svg') }} alt="Cross icon"/>
+									</div>
+									<div
+										class="{{ bem('comparison-versions-table', 'cell', ['plus']) }}">
+										<img
+											{{ image_src('comparison-versions-table/assets/check.svg') }} alt="Check icon"/>
+									</div>
+								</td>
+							</tr>
+							<tr
+								class="{{ bem('comparison-versions-table', 'row') }}">
+								<td
+									class="{{ bem('comparison-versions-table', 'cell', ['statement']) }}">
+									<picture
+										class="{{ bem('comparison-versions-table', 'icon') }}">
+										<img
+											{{ image_src('comparison-versions-table/assets/chart.svg') }} alt="Chart icon">
+									</picture>
+									{{ 'pricing.comparison.statement4'|trans|desc('See how your account balance has changed over time')|raw }}
+								</td>
+								<td
+									class="{{ bem('comparison-versions-table', 'cell', ['free-icon', 'left-border', 'desktop']) }}">
+									<img
+										class="{{ bem('comparison-versions-table', 'cell-img-light') }}" {{ image_src('comparison-versions-table/assets/cross.svg') }} alt="Cross icon"/>
+									<img
+										class="{{ bem('comparison-versions-table', 'cell-img-dark') }}" {{ image_src('comparison-versions-table/assets/cross--dark.svg') }} alt="Cross icon"/>
+								</td>
+								<td
+									class="{{ bem('comparison-versions-table', 'cell', ['plus', 'left-border', 'desktop']) }}">
+									<img
+										{{ image_src('comparison-versions-table/assets/check.svg') }} alt="Check icon"/>
+								</td>
+								<td
+									class="{{ bem('comparison-versions-table', 'cell', ['mobile']) }}">
+									<div
+										class="{{ bem('comparison-versions-table', 'cell', ['free']) }}">
+										<img
+											class="{{ bem('comparison-versions-table', 'cell-img-light') }}" {{ image_src('comparison-versions-table/assets/cross.svg') }} alt="Cross icon"/>
+										<img
+											class="{{ bem('comparison-versions-table', 'cell-img-dark') }}" {{ image_src('comparison-versions-table/assets/cross--dark.svg') }} alt="Cross icon"/>
+									</div>
+									<div
+										class="{{ bem('comparison-versions-table', 'cell', ['plus']) }}">
+										<img
+											{{ image_src('comparison-versions-table/assets/check.svg') }} alt="Check icon"/>
+									</div>
+								</td>
+							</tr>
+							<tr
+								class="{{ bem('comparison-versions-table', 'row') }}">
+								<td
+									class="{{ bem('comparison-versions-table', 'cell', ['statement']) }}">
+									<picture
+										class="{{ bem('comparison-versions-table', 'icon') }}">
+										<img
+											{{ image_src('comparison-versions-table/assets/history.svg') }} alt="History icon">
+									</picture>
+									{{ 'pricing.comparison.statement5'|trans|desc('Display transaction history of points earned and redeemed')|raw }}
+								</td>
+								<td
+									class="{{ bem('comparison-versions-table', 'cell', ['free-icon', 'left-border', 'desktop']) }}">
+									<img
+										class="{{ bem('comparison-versions-table', 'cell-img-light') }}" {{ image_src('comparison-versions-table/assets/cross.svg') }} alt="Cross icon"/>
+									<img
+										class="{{ bem('comparison-versions-table', 'cell-img-dark') }}" {{ image_src('comparison-versions-table/assets/cross--dark.svg') }} alt="Cross icon"/>
+								</td>
+								<td
+									class="{{ bem('comparison-versions-table', 'cell', ['plus', 'left-border', 'desktop']) }}">
+									<img
+										{{ image_src('comparison-versions-table/assets/check.svg') }} alt="Check icon"/>
+								</td>
+								<td
+									class="{{ bem('comparison-versions-table', 'cell', ['mobile']) }}">
+									<div
+										class="{{ bem('comparison-versions-table', 'cell', ['free']) }}">
+										<img
+											class="{{ bem('comparison-versions-table', 'cell-img-light') }}" {{ image_src('comparison-versions-table/assets/cross.svg') }} alt="Cross icon"/>
+										<img
+											class="{{ bem('comparison-versions-table', 'cell-img-dark') }}" {{ image_src('comparison-versions-table/assets/cross--dark.svg') }} alt="Cross icon"/>
+									</div>
+									<div
+										class="{{ bem('comparison-versions-table', 'cell', ['plus']) }}">
+										<img
+											{{ image_src('comparison-versions-table/assets/check.svg') }} alt="Check icon"/>
+									</div>
+								</td>
+							</tr>
+							<tr
+								class="{{ bem('comparison-versions-table', 'row') }}">
+								<td
+									class="{{ bem('comparison-versions-table', 'cell', ['statement']) }}">
+									<picture
+										class="{{ bem('comparison-versions-table', 'icon') }}">
+										<img
+											{{ image_src('comparison-versions-table/assets/download.svg') }} alt="Download icon">
+									</picture>
+									{{ 'pricing.comparison.statement6'|trans|desc('Download your rewards data as Excel or PDF files')|raw }}
+								</td>
+								<td
+									class="{{ bem('comparison-versions-table', 'cell', ['free-icon', 'left-border', 'desktop']) }}">
+									<img
+										class="{{ bem('comparison-versions-table', 'cell-img-light') }}" {{ image_src('comparison-versions-table/assets/cross.svg') }} alt="Cross icon"/>
+									<img
+										class="{{ bem('comparison-versions-table', 'cell-img-dark') }}" {{ image_src('comparison-versions-table/assets/cross--dark.svg') }} alt="Cross icon"/>
+								</td>
+								<td
+									class="{{ bem('comparison-versions-table', 'cell', ['plus', 'left-border', 'desktop']) }}">
+									<img
+										{{ image_src('comparison-versions-table/assets/check.svg') }} alt="Check icon"/>
+								</td>
+								<td
+									class="{{ bem('comparison-versions-table', 'cell', ['mobile']) }}">
+									<div
+										class="{{ bem('comparison-versions-table', 'cell', ['free']) }}">
+										<img
+											class="{{ bem('comparison-versions-table', 'cell-img-light') }}" {{ image_src('comparison-versions-table/assets/cross.svg') }} alt="Cross icon"/>
+										<img
+											class="{{ bem('comparison-versions-table', 'cell-img-dark') }}" {{ image_src('comparison-versions-table/assets/cross--dark.svg') }} alt="Cross icon"/>
+									</div>
+									<div
+										class="{{ bem('comparison-versions-table', 'cell', ['plus']) }}">
+										<img
+											{{ image_src('comparison-versions-table/assets/check.svg') }} alt="Check icon"/>
+									</div>
+								</td>
+							</tr>
+							<tr
+								class="{{ bem('comparison-versions-table', 'row') }}">
+								<td
+									class="{{ bem('comparison-versions-table', 'cell', ['statement']) }}">
+									<picture
+										class="{{ bem('comparison-versions-table', 'icon') }}">
+										<img
+											{{ image_src('comparison-versions-table/assets/speedometer.svg') }} alt="Speedometer icon">
+									</picture>
+									{{ 'pricing.comparison.statement7'|trans|desc('Update multiple accounts with a single click (up to 5x faster)')|raw }}
+								</td>
+								<td
+									class="{{ bem('comparison-versions-table', 'cell', ['free-icon', 'left-border', 'desktop']) }}">
+									<img
+										class="{{ bem('comparison-versions-table', 'cell-img-light') }}" {{ image_src('comparison-versions-table/assets/cross.svg') }} alt="Cross icon"/>
+									<img
+										class="{{ bem('comparison-versions-table', 'cell-img-dark') }}" {{ image_src('comparison-versions-table/assets/cross--dark.svg') }} alt="Cross icon"/>
+								</td>
+								<td
+									class="{{ bem('comparison-versions-table', 'cell', ['plus', 'left-border', 'desktop']) }}">
+									<img
+										{{ image_src('comparison-versions-table/assets/check.svg') }} alt="Check icon"/>
+								</td>
+								<td
+									class="{{ bem('comparison-versions-table', 'cell', ['mobile']) }}">
+									<div
+										class="{{ bem('comparison-versions-table', 'cell', ['free']) }}">
+										<img
+											class="{{ bem('comparison-versions-table', 'cell-img-light') }}" {{ image_src('comparison-versions-table/assets/cross.svg') }} alt="Cross icon"/>
+										<img
+											class="{{ bem('comparison-versions-table', 'cell-img-dark') }}" {{ image_src('comparison-versions-table/assets/cross--dark.svg') }} alt="Cross icon"/>
+									</div>
+									<div
+										class="{{ bem('comparison-versions-table', 'cell', ['plus']) }}">
+										<img
+											{{ image_src('comparison-versions-table/assets/check.svg') }} alt="Check icon"/>
+									</div>
+								</td>
+							</tr>
+							<tr
+								class="{{ bem('comparison-versions-table', 'row') }}">
+								<td
+									class="{{ bem('comparison-versions-table', 'cell', ['statement']) }}">
+									<picture
+										class="{{ bem('comparison-versions-table', 'icon') }}">
+										<img
+											{{ image_src('comparison-versions-table/assets/mute.svg') }} alt="Mute icon">
+									</picture>
+									{{ 'pricing.comparison.statement8'|trans|desc('Enjoy an ad-free experience across your AwardWallet account')|raw }}
+								</td>
+								<td
+									class="{{ bem('comparison-versions-table', 'cell', ['free-icon', 'left-border', 'desktop']) }}">
+									<img
+										class="{{ bem('comparison-versions-table', 'cell-img-light') }}" {{ image_src('comparison-versions-table/assets/cross.svg') }} alt="Cross icon"/>
+									<img
+										class="{{ bem('comparison-versions-table', 'cell-img-dark') }}" {{ image_src('comparison-versions-table/assets/cross--dark.svg') }} alt="Cross icon"/>
+								</td>
+								<td
+									class="{{ bem('comparison-versions-table', 'cell', ['plus', 'left-border', 'desktop']) }}">
+									<img
+										{{ image_src('comparison-versions-table/assets/check.svg') }} alt="Check icon"/>
+								</td>
+								<td
+									class="{{ bem('comparison-versions-table', 'cell', ['mobile']) }}">
+									<div
+										class="{{ bem('comparison-versions-table', 'cell', ['free']) }}">
+										<img
+											class="{{ bem('comparison-versions-table', 'cell-img-light') }}" {{ image_src('comparison-versions-table/assets/cross.svg') }} alt="Cross icon"/>
+										<img
+											class="{{ bem('comparison-versions-table', 'cell-img-dark') }}" {{ image_src('comparison-versions-table/assets/cross--dark.svg') }} alt="Cross icon"/>
+									</div>
+									<div
+										class="{{ bem('comparison-versions-table', 'cell', ['plus']) }}">
+										<img
+											{{ image_src('comparison-versions-table/assets/check.svg') }} alt="Check icon"/>
+									</div>
+								</td>
+							</tr>
+							<tr
+								class="{{ bem('comparison-versions-table', 'row') }}">
+								<td
+									class="{{ bem('comparison-versions-table', 'cell', ['statement']) }}">
+									<picture
+										class="{{ bem('comparison-versions-table', 'icon') }}">
+										<img
+											{{ image_src('comparison-versions-table/assets/notification.svg') }} alt="Notification icon">
+									</picture>
+									{{ 'pricing.comparison.statement9'|trans|desc('Choose to receive only essential notifications, no promotional emails')|raw }}
+								</td>
+								<td
+									class="{{ bem('comparison-versions-table', 'cell', ['free-icon', 'left-border', 'desktop']) }}">
+									<img
+										class="{{ bem('comparison-versions-table', 'cell-img-light') }}" {{ image_src('comparison-versions-table/assets/cross.svg') }} alt="Cross icon"/>
+									<img
+										class="{{ bem('comparison-versions-table', 'cell-img-dark') }}" {{ image_src('comparison-versions-table/assets/cross--dark.svg') }} alt="Cross icon"/>
+								</td>
+								<td
+									class="{{ bem('comparison-versions-table', 'cell', ['plus', 'left-border', 'desktop']) }}">
+									<img
+										{{ image_src('comparison-versions-table/assets/check.svg') }} alt="Check icon"/>
+								</td>
+								<td
+									class="{{ bem('comparison-versions-table', 'cell', ['mobile']) }}">
+									<div
+										class="{{ bem('comparison-versions-table', 'cell', ['free']) }}">
+										<img
+											class="{{ bem('comparison-versions-table', 'cell-img-light') }}" {{ image_src('comparison-versions-table/assets/cross.svg') }} alt="Cross icon"/>
+										<img
+											class="{{ bem('comparison-versions-table', 'cell-img-dark') }}" {{ image_src('comparison-versions-table/assets/cross--dark.svg') }} alt="Cross icon"/>
+									</div>
+									<div
+										class="{{ bem('comparison-versions-table', 'cell', ['plus']) }}">
+										<img
+											{{ image_src('comparison-versions-table/assets/check.svg') }} alt="Check icon"/>
+									</div>
+								</td>
+							</tr>
+							<tr
+								class="{{ bem('comparison-versions-table', 'row') }}">
+								<td
+									class="{{ bem('comparison-versions-table', 'cell', ['statement']) }}">
+									<picture
+										class="{{ bem('comparison-versions-table', 'icon') }}">
+										<img
+											{{ image_src('comparison-versions-table/assets/plane.svg') }} alt="Plane icon">
+									</picture>
+									{{ 'pricing.comparison.statement10'|trans|desc('See your complete travel history')|raw }}
+								</td>
+								<td
+									class="{{ bem('comparison-versions-table', 'cell', ['free', 'left-border-faded', 'desktop']) }}">
+									{{ 'interval_short.years'|transchoice(1)|raw }}
+								</td>
+								<td
+									class="{{ bem('comparison-versions-table', 'cell', ['plus', 'left-border-faded', 'desktop']) }}">
+									<img
+										{{ image_src('comparison-versions-table/assets/accept.svg') }} alt="Accept icon"/>
+									{{ 'pricing.up.to.years'|trans|desc('Up to 10 years')|raw }}
+								</td>
+								<td
+									class="{{ bem('comparison-versions-table', 'cell', ['mobile']) }}">
+									<div
+										class="{{ bem('comparison-versions-table', 'cell', ['free']) }}">
+										{{ 'interval_short.years'|transchoice(1)|raw }}
+									</div>
+									<div
+										class="{{ bem('comparison-versions-table', 'cell', ['plus']) }}">
+										<img
+											{{ image_src('comparison-versions-table/assets/accept.svg') }} alt="Accept icon"/>
+										{{ 'pricing.up.to.years'|trans|desc('Up to 10 years')|raw }}
+									</div>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+					<div
+						class="{{ bem('awardwallet-plus-subscription-offer', 'action_buttons') }}">
+						<button
+                            id="return_to_accounts"
+							class="{{ bem('awardwallet-plus-subscription-offer', 'secondary-button') }}" 
+                            onclick="dialog.get('offerPopup').close();">
+							{{ 'offer.proceed'|trans|desc('Proceed to my account') }}
+                            
+						</button>
+						<a
+							class="{{ bem('button') }} {{ bem('awardwallet-plus-subscription-offer', 'upgrade-button') }}" href="#"
+							onclick="offerYes(false); return false;">Upgrade to AwardWallet
+							<img
+								{{ image_src( 'awardwallet-plus-subscription-offer/aw-plus-icon.svg') }} alt="AwardWallet Plus icon"></a>
+					</div>
+				</div>
+		
+			</div>
+
+	{# <div
+		id="offer_wrap"
+		class="offer-block">
+		<div
+			class="awardwallet-plus offer-aw">
+			<h3>Hey
+				{{ OfferData.userName }},</h3>
+
+			<p>Thanks for using AwardWallet, and for being a part of the 500,000+ member community that loves points and miles. We work hard every day to keep you and your rewards organized. Fun fact &ndash; you’ve logged into your account
+				<span
+					class="offer-bold">{{ OfferData.logonCount }}</span>
+				times since you registered on
+				<span
+					class="offer-bold">{{ OfferData.registrationDate }}</span>. (but who’s counting?)</p>
+
+			<p>Did you know that there are features of our service that you’re not taking advantage of? You’re currently at the AwardWallet Free tier, but AwardWallet Plus might be for you. At $30/year, it is just $2.50/month to have access to the best of AwardWallet and early access into our newest features and functionality. In addition to supporting the AwardWallet team, here’s what you’d get with AwardWallet Plus:</p>
+			<table
+				class="main-table">
+				<tr>
+					<td
+						class="caption-row"></td>
+
+					<td
+						class="status">
+						AwardWallet
+						<span
+							class="offer-bold">Free</span>
+					</td>
+					<td
+						class="status">
+						AwardWallet
+						<span
+							class="offer-bold">Plus</span>
+					</td>
+				</tr>
+				<tr>
+					<td
+						class="caption-row">Display Expiration Date of Your Points or Miles</td>
+
+					<td
+						class="status">
+						Up to 3 accounts
+					</td>
+					<td
+						class="status">
+						Unlimited
+					</td>
+				</tr>
+				<tr>
+					<td
+						class="caption-row">Update Accounts in Parallel (up to 5X Faster)</td>
+
+					<td
+						class="status">
+						<i
+							class="icon-red-error"></i>
+					</td>
+					<td
+						class="status">
+						<i
+							class="icon-green-check"></i>
+					</td>
+				</tr>
+				<tr>
+					<td
+						class="caption-row">Display Historical Transactions for Loyalty Accounts (whenever available)</td>
+
+					<td
+						class="status">
+						<i
+							class="icon-red-error"></i>
+					</td>
+					<td
+						class="status">
+						<i
+							class="icon-green-check"></i>
+					</td>
+				</tr>
+				<tr>
+					<td
+						class="caption-row">Display Additional Reward Account Properties
+						<br/>
+						(Last Activity, Status Expiration, Points Earned YTD, etc.)</td>
+
+					<td
+						class="status">
+						<i
+							class="icon-red-error"></i>
+					</td>
+					<td
+						class="status">
+						<i
+							class="icon-green-check"></i>
+					</td>
+				</tr>
+				<tr>
+					<td
+						class="caption-row">Charting of Your Account Balances as They Change Over Time</td>
+
+					<td
+						class="status">
+						<i
+							class="icon-red-error"></i>
+					</td>
+					<td
+						class="status">
+						<i
+							class="icon-green-check"></i>
+					</td>
+				</tr>
+				<tr>
+					<td
+						class="caption-row">Export Account Balances Into Excel or PDF</td>
+
+					<td
+						class="status">
+						<i
+							class="icon-red-error"></i>
+					</td>
+					<td
+						class="status">
+						<i
+							class="icon-green-check"></i>
+					</td>
+				</tr>
+
+				<tr>
+					<td
+						class="caption-row">The Ability to Hide Annoying Ads Like This One</td>
+
+					<td
+						class="status">
+						<i
+							class="icon-red-error"></i>
+					</td>
+					<td
+						class="status">
+						<i
+							class="icon-green-check"></i>
+					</td>
+				</tr>
+
+				<tr>
+					<td
+						class="caption-row">Price</td>
+
+					<td
+						class="status">
+						Free
+					</td>
+					<td
+						class="status">
+						${{ OfferData.awPlusPrice }}/year
+					</td>
+				</tr>
+			</table>
+			<a
+				href="#"
+				onclick="offerYes(false); return false;"
+				class="btn-blue">Upgrade to AwardWallet Plus Now</a>
+		</div>
+		<div
+			class="offer_declinekind"></div>
+		<div
+			class="offer_toaccount"
+			style="margin-top: 5px"
+			onclick="$('#offerPopup').dialog('close');">
+			{{ 'offer.proceed'|trans|desc('Proceed to my account') }}
+		</div>
+	</div> #}
+{% endblock %}

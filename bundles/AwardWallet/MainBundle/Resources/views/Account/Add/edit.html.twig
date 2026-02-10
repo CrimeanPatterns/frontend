@@ -1,0 +1,300 @@
+{% form_theme form with [
+	'@AwardWalletMain/FormTheme/sharingOptions.html.twig',
+	'@AwardWalletMain/FormTheme/fields.html.twig',
+	'@AwardWalletMain/FormTheme/oauth.html.twig',
+	'@AwardWalletMain/FormTheme/capitalcards_oauth.html.twig',
+	'@AwardWalletMain/FormTheme/recaptcha.html.twig'
+] %}
+
+{% extends app.request.attributes.has('ngtemplate') ? "@AwardWalletMain/Layout/ngtemplate.html.twig" :
+    (is_granted('SITE_BUSINESS_AREA') ? "@AwardWalletMain/Layout/business_check_balance.html.twig" : "@AwardWalletMain/Layout/accounts.html.twig") %}
+
+{% import '@AwardWalletMain/TwigMacros/extension.html.twig' as extension %}
+{% use '@AccountList/updater.html.twig' %}
+
+{% block javascripts %}
+	{{ parent() }}
+	<script>
+		require(['angular', 'jquery-boot', 'lib/personalLimiter', 'pages/accounts/desktopForm', 'sockjs', 'pages/account/accountEdit', 'lib/accountAutocomplete', 'lib/accountSharing', 'jqueryui', 'routing', 'lib/couponAutocomplete', 'oldscripts', 'centrifuge', 'pages/accounts/controllers/accountForm', 'pages/account/edit'],
+		/**
+		 *
+		 * @param $
+		 * @param personalLimiter
+		 * @param {DesktopForm} desktopForm
+		 */
+		function(angular, $, personalLimiter, desktopForm, SockJS, autologinV3){
+			window.SockJS = SockJS;
+            $(function () {
+				var form = $('form[name=add]');
+
+				{% if not app.request.attributes.has('ngtemplate') and not check %}
+					angular.module('accountEditApp').constant('AccountEditConfig', {
+						autologinPermission: {{ is_granted('AUTOLOGIN_WITH_EXTENSION', account) | json_encode | raw }},
+						accountId: '{{ account.accountId }}'
+					});
+
+					angular.bootstrap(document.body, ['appConfig', 'accountEditApp']);
+				{% endif %}
+
+
+				{% if account.accountId is empty %}
+					if (form.find('.error-message-blk').length == 0) {
+						form.find('input[name*="["]:visible').first().focus();
+					}
+
+                    $('#account-form').bind('submit', function (event) {
+						if(event.isDefaultPrevented())
+							return false;
+                        if (personalLimiter.showPopup()) {
+                            return false;
+                        }
+                    });
+                {% endif %}
+
+				$('#account-form').bind('submit', function (event) {
+					if(event.isDefaultPrevented()) {
+						return false;
+					}
+					var button = $('#submit-button');
+					button.attr('disabled', 'disabled');
+					button.addClass('loader');
+				});
+
+				if (form.find('.error-message-blk').length == 0) {
+					$('form[name=add] div.error').find('input[name*="["]:visible').first().focus();
+				}
+
+                $('.faq a.show').click(function (e) {
+                    e.preventDefault();
+                    var text = $(this).html();
+                    var div = $(this).parent();
+                    $(this).remove();
+                    div.html(div.html() + ' ' + text);
+                    $('.faq-blk-item').fadeIn('slow');
+                });
+
+				{% if form.vars.javascripts is not empty %}
+					{% for javascript in form.vars.javascripts %}
+						(function() {
+							// form logic customizations
+                            {{ javascript | raw }}
+                            desktopForm.init(addFormExtension);
+						})();
+					{% endfor %}
+				{% endif %}
+
+                {% if check %}
+					{# added hash checking to prevent check start on page reload #}
+					if(document.location.hash != '#check') {
+						document.location.hash = '#check';
+						angular.module('accountFormApp').constant('AccountData', {{ accountData|json_encode|raw }});
+						angular.bootstrap($('.page .item .content').get(), ['accountFormApp']);
+					}
+                {% else %}
+                    personalLimiter.showPopup();
+                {% endif %}
+
+                var updateForwardingEmails = function(email) {
+                    var emails = $('.userEmail').filter(function(id, item){return $(item).find('nobr').length == 0});
+                    emails.each(function(id, item){
+                        $(item).text(email);
+                    })
+                };
+
+                $('#account_owner').on('change', function(e) {
+                    var selected = $(e.target).find('option:selected');
+                    updateForwardingEmails(selected.data('email'));
+                });
+
+				{% if form.children.captcha is defined %}
+                // this should be called after above bind('submit') calls
+                initRecaptcha();
+				{% endif %}
+
+                const link = document.querySelector('.mailbox-learn-more');
+
+                if (link) {
+                    let isShown = false;
+
+                    link.addEventListener('click', function (e) {
+                        e.preventDefault();
+
+                        if (!isShown) {
+                            document.querySelectorAll('form .info-blk.hidden-block').forEach(el => {
+                                el.style.display = 'block';
+                            });
+                            isShown = true;
+                        }
+                    });
+                }
+            });
+		});
+	</script>
+{% endblock %}
+
+{% block content %}
+	<div class="add-account{% if account.providerid %} provider-{{ account.providerid.code }}{% endif %}">
+    {% if check %}
+        {{ block('updater_question_popup') }}
+        {{ block('updater_password_popup') }}
+    {% endif%}
+	<div class="main-blk">
+	{% if not app.request.attributes.has('ngtemplate') %}
+		<div class="heading has-rating">
+			<h1>{{ displayName | raw }}</h1>
+			{% if rating.providerRating is defined %}
+			<a class="rating-wrap" href="{{ path('aw_loyalty_program_rating', {'loyaltyProgramName' : ratingUrl}) }}" target="_blank">
+				<div class="rating middle">
+					{% for i in 1..5 %}
+						{% if i <= rating.providerRating.total %}
+							<span class="blue-star"></span>
+						{% else %}
+							<span></span>
+						{% endif %}
+					{% endfor %}
+				</div>
+				<div class="rating-wrap__text">
+					{% if rating.providerRating.count > 0 %}
+                        {{ 'based_on_n_reviews.v2'|trans({
+                            '%count%': rating.providerRating.count,
+                            '%number%': rating.providerRating.count|formatNumber,
+                        })|desc('Based on %number% review|Based on %number% reviews') }}
+                    {% endif %}
+				</div>
+			</a>
+			{% endif %}
+		</div>
+	{% endif %}
+        {% if app.request.attributes.has('ngtemplate') %}
+            {% set action = path('aw_account_add') %}
+        {% else %}
+            {% if account.accountid %}
+                {% set action = path('aw_account_edit', {
+                    accountId: account.accountid,
+                    backTo: app.request.query.get('backTo')
+                }) %}
+            {% else %}
+                {% set action = path('aw_account_add', {
+                    providerId: account.providerid ? account.providerid.providerid : null,
+                    backTo: app.request.query.get('backTo')
+                }) %}
+            {% endif %}
+        {% endif %}
+
+		<form id="account-form" action="{{ action }}" name="add" class="main-form" method="post" autocomplete="off" data-id="{{ account.accountid }}">
+			<div style="position:absolute;left:-10000px;top:auto;width:1px;height:1px;overflow:hidden;">
+                {# chrome autocomplete can not be disabled - let it fill this dummy fields #}
+                <input name="lcatch" type="text"/><input type="password" name="pcatch"/>
+			</div>
+			{% if check %}
+				{% include "@AwardWalletMain/Account/Add/_formUpdater.html.twig" %}
+			{% endif %}
+
+			<div ng-non-bindable>
+                {{ form_widget(form, {'noSubmit' : true}) }}
+			</div>
+
+			<div class="row-submit">
+				<div class="row-submit-item">
+					<div class="submit">
+						<button type="submit" class="btn-blue submit" id="submit-button">
+							{% if account.accountid is empty %}
+								{{ 'account.buttons.add'|trans|desc('Add Account') }}
+							{% else %}
+								{{ 'account.buttons.edit'|trans }}
+							{% endif %}
+						</button>
+					</div>
+				</div>
+			</div>
+		</form>
+
+	</div>
+	<div class="faq">
+		{% if account.providerid and account.providerid.oauthProvider%}
+		<div class="faq-blk">
+			<div class="heading">
+				<i class="icon-info-small"></i>
+
+				<p>
+					{{ 'oauth.provider.faq'|trans({
+						'%programName%': account.providerid.name
+					})|desc('This integration is powered by %programName%, which is the most secure and
+							 efficient way to pull account information. This means you need to authorize AwardWallet
+							 via %programName% website to have access to your data (see below).
+							 You can also revoke this access any time you want.') }}
+				</p>
+			</div>
+		</div>
+		{% elseif account.canCheck() %}
+		<div class="faq-blk">
+			<div class="heading">
+				<i class="icon-info-small"></i>
+
+				{% set extendNoteText = account.providerid.id == constant('AwardWallet\\MainBundle\\Entity\\Provider::BREX_ID')
+					? 'account.check_note.header_cardadmin'|trans({'%short_name%': account.providerid.shortname})|desc('We also recommend that you create a separate user under your %short_name% account specifically for AwardWallet, you need to give it the "Card Admin" role, and provide AwardWallet with this account instead of your main account.')
+					: '' %}
+				<p>
+					{{ 'account.check_note.header'|trans({
+						'%short_name%': account.providerid.shortname,
+						'%extend-text%' : extendNoteText,
+						'%login_url%': url('aw_out', {url: account.providerid.loginurl})
+					})|desc('Here is how this works, to add %short_name% account to AwardWallet you need to make sure you can
+						successfully login to %short_name% via <a href="%login_url%" target="_blank">this page</a> and you need to be able to see your own
+						balance. %extend-text% If you are having difficulties, please <a href="#" class="show">click here to continue
+						reading</a>')|raw }}
+				</p>
+			</div>
+			<div class="faq-blk-item">
+				<p>
+                    {{ 'account.check_note.intro'|trans|desc('Some times just being able to login is not enough. The number one reason why our users can\'t successfully add an account is invalid credentials. Here is how you can verify that you are entering valid credentials:') }}
+				</p>
+				<ol>
+					<li><span>1.</span>
+
+						<p>
+                            {{ 'account.check_note.1'|trans|desc('Сlick the "Reveal password" link right underneath your password field on this page.') }}
+                        </p>
+                    </li>
+					<li><span>2.</span>
+
+						<p>
+                            {{ 'account.check_note.2'|trans|desc('Type in your AwardWallet password and click Reveal. After that you should be seeing both your user name and your password in clear text.') }}
+                        </p>
+                    </li>
+					<li><span>3.</span>
+
+						<p>
+                            {{ 'account.check_note.3'|trans({
+                                '%short_name%': account.providerid.shortname,
+                                '%login_url%': url('aw_out', {url: account.providerid.loginurl})
+                            })|desc('Copy your user name and password and then paste (don\'t simply re-type) them into the login input boxes on the <a href="%login_url%" target="_blank">%short_name%</a> website.')|raw }}
+                        </p>
+                    </li>
+				</ol>
+				<p>
+                    {{ 'account.check_note.footer'|trans({
+                        '%short_name%': account.providerid.shortname,
+                        '%login_url%': url('aw_out', {url: account.providerid.loginurl})
+                    })|desc('If %short_name% website is asking you some questions about your profile after you login, until you answer those questions, AwardWallet will not be able to check your balance.')|raw }}
+					{% if successRate > 80 %}
+                        {{ 'account.check_note.success_rate_ok'|trans({
+                            '%short_name%': account.providerid.shortname,
+                            '%login_url%': url('aw_out', {url: account.providerid.loginurl}),
+                            '%success_rate%': successRate,
+                            '%status_url%': '/status/'
+                        })|desc('As of now, our success rate at checking %short_name% accounts is %success_rate%% - this includes all of the accounts that were given to us with invalid credentials. We believe %short_name% is not broken right now however if you think otherwise please mark it as broken <a href="%status_url%" target="_blank">here</a> and our support team will look into it.')|raw }}
+					{% endif %}
+				</p>
+			</div>
+		</div>
+		{% endif %}
+	</div>
+	</div>
+
+    {% if not app.request.attributes.has('ngtemplate') %}
+        {{ extension.load() }}
+        {{ extension.autologin_popup() }}
+    {% endif %}
+
+{% endblock %}

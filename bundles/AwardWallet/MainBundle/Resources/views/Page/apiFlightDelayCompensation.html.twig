@@ -1,0 +1,65 @@
+{% set MOBILE_NAV = true %}
+{% set HIDE_NAV = true %}
+{% set MAIN_BODY_CLASSES = {
+    'manual-hidden': true,
+    'responsive': true,
+    'hide-menu': true
+}|merge(MAIN_BODY_CLASSES|default({})) %}
+
+{% extends app.user is not null ? "@AwardWalletMain/Layout/common.html.twig" : "@AwardWalletMain/Layout/not_logged.html.twig" %}
+
+{% block title %}How to build a flight delay compensation app with AwardWallet | Flight Delay API{% endblock %}
+
+{% block meta %}
+    {{ parent() }}
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0, viewport-fit=cover">
+    <meta name="description" content="Learn how AwardWallet help with building flight delay compensation services using powerful APIs - email parsing and web parsing">
+{% endblock %}
+
+{% block content %}
+    {% include '@AwardWalletMain/Page/_apiNav.html.twig' %}
+    <div class="main-blk content-page has-additionl-menu">
+        <h1>How AwardWallet API help with building flight delay compensation services</h1>
+        <picture class="preview-image">
+            <source srcset="../../assets/awardwalletnewdesign/img/api/flight-delay/delayed-desktop.png?v=2" media="(min-width: 768px)">
+            <img src="../../assets/awardwalletnewdesign/img/api/flight-delay/delayed-mobile.png" alt="flight delay compensation">
+        </picture>
+        <div class="main-blk-content">
+            <p>In today’s world of travel uncertainty, it can be difficult for consumers to get the compensation they are entitled to as a result of airline delays and cancellations. Airlines sometimes try to avoid paying compensation to passengers, even when they are legally obligated to do so. Travel companies rely on the fact that many customers will simply not bother to further pursue a claim for compensation. In fact, 87% of travellers do
+                not understand what they are entitled to claim. The airline legislation varies from country to country and can be complex. Within Europe, many flights are governed by EU261 law which, while most people are aware of, many do not understand the different criteria for claims and the varying rates of compensation.</p>
+            <div class="title-note no-border bold">
+                <h2>What do flight compensation companies provide?</h2>
+            </div>
+            <p>This is where a growing industry of flight compensation companies come into play. Companies such as <a href="https://www.airhelp.com/en/" target="_blank" rel="noopener noreferrer">Airhelp</a> allow consumers to be supported in applying for compensation. The disrupted passenger can simply enter their details online to get an initial assessment of their case. Simple questions help to identify the flights that the traveller was on, and whether there is likely
+                to be a claim for compensation. The majority of flight compensation companies will typically charge their clients a fee of between 20-35% of the payment received. In return, the flight compensation broker will handle the claim on behalf of the customer.</p>
+            <div class="title-note no-border bold">
+                <h2>Which technologies are the foundation for successfully building flight delay compensation services?</h2>
+            </div>
+            <p>For new flight delay compensation start-ups, the challenge is getting the right technology to automate the task as much as possible. Unless the majority of the claims can be submitted and assessed electronically, there will be insufficient profit margin to charge a competitive rate. Most startups would be looking for an email parsing service to gather the specific details of the customer's travel itinerary. Building a proprietary
+                system to do this from scratch can be very costly and more challenging to maintain.</p>
+            <p>This is where an existing email parsing service can invaluable to a startup. Email parsing services work by extracting unstructured information from emails and converting them into a useable set of structured data. A client’s reservation email from a travel company will contain most of the needed details to submit a claim on their behalf. In this way, the customer can merely forward on their itineraries to the compensation company
+                to file their application.</p>
+            <div class="title-note no-border bold">
+                <h2>What solutions does AwardWallet offer for flight compensation companies?</h2>
+            </div>
+            <div class="picture">
+                <img class="picture__light" src="../../assets/awardwalletnewdesign/img/flightdelay-pic.png" srcset="../../assets/awardwalletnewdesign/img/flightdelay-pic@2x.png 2x" alt="Email Parsing API">
+                <img class="picture__dark" src="../../assets/awardwalletnewdesign/img/flightdelay-pic-dark.png" srcset="../../assets/awardwalletnewdesign/img/flightdelay-pic-dark@2x.png 2x" alt="Email Parsing API">
+            </div>
+            <p>AwardWallet offers developers a comprehensive answer to email parsing. Our powerful APIs can provide a simple solution to derive the required flight data from any travel companies reservation email. All of our email parsing automation is built in house at AwardWallet and our team is always working on improvements to our parsing service as well. The AwardWallet Email Parsing API will return flight itinerary details in a structured
+                format (JSON) from any customer’s travel reservation email.</p>
+            <p>Another benefit to our email parsing service is that we can add additional information with data from third-party services. For example, if a client’s email for their flight reservations does not contain the IATA airport codes, we can insert that data for you. We do this by looking up the route by the airline, dates and flights numbers using services such as Flight Stats.</p>
+            <p>AwardWallet email parsing <a href="{{ path('aw_supported_email') }}">supports thousands of email formats</a> to ensure all your customers' emails can be processed automatically. You can try out our service <a href="{{ path('aw_emailTestParse') }}">using this test page</a>. Just upload the email reservation .eml file or copy and paste the raw content of the email on the test page. Almost immediately, you should be able
+                to view the resulting data at the bottom of the page.</p>
+            <p>Additionally, we can offer added benefit for your customers by reducing the time and effort required for them to find and forward emails to your company. At AwardWallet, <a href="{{ path('aw_api_doc', {item:'email'}) }}#section-email_scanner">our API allows us to connect to the customers' mailboxes and scan</a> them for relevant reservations. Your customer would simply link their email inbox to your company, while in the background
+                AwardWallet will scan your clients' emails on your behalf.</p>
+            <p>This could also bring significantly increased revenue by identifying flights that are potentially subject to delay or cancellation compensation. These could even be flights from some time ago, as we can scan as far back in the past as required. In many cases the customer may not have been aware that they were entitled to compensation. Once a qualifying flight is found, you can contact the customer offering your services to assist
+                in claiming their compensation.</p>
+            <p>To find out more about our Email Parsing, Email scanning or Web Parsing APIs, you can <a href="{{ path('aw_contactus_index') }}?API">contact us via this page</a> to get additional information such as pricing. We can also set up test access credentials for you to trial our service.</p>
+        </div>
+        <div class="row-submit">
+            <a href="{{ path('aw_contactus_index') }}?API" class="btn-blue">Contact Us</a>
+            <a href="/api/email" class="btn-blue">Documentation</a>
+        </div>
+    </div>
+{% endblock %}

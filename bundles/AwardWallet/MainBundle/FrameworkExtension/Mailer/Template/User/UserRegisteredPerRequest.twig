@@ -1,0 +1,43 @@
+{% extends '@MailTemplate/Layout/base.twig' %}
+{% trans_default_domain "email" %}
+
+{% block subject %}{% apply spaceless %}{% autoescape false %}
+    {{ 'user-registered-per-request.subject'|trans({}, 'email', lang)|desc('User registered per your request') }}
+{% endautoescape %}{% endapply %}{% endblock subject %}
+
+{% block content %}
+    {% import '@MailTemplate/CommonMacro.twig' as commonMacro %}
+
+    {{ commonMacro.hello(user.firstname, _context) }}
+
+    {% set mailtoLink = null %}
+    {% if not invitee.isBusiness %}
+        {% set mailtoLink = commonMacro.link('mailto:'~invitee.email, invitee.email) %}
+    {% endif %}
+    {{ commonMacro.paragraph(
+        'user-registered-per-request.thank-you'|trans({
+            '%bold_on%': '<b style="color:#3d424d;">',
+            '%bold_off%': mailtoLink is null ? '</b>' : '</b> ('~mailtoLink~')',
+            '%inviteeUserName%': invitee.fullname|htmlencode,
+            '%awardwallet%': '<b>AwardWallet</b>'
+        }, 'email', lang)|desc('%bold_on%%inviteeUserName%%bold_off% has just registered on %awardwallet% per your invitation. Thank you very much for referring this user to us, we truly appreciate it!'),
+        _context, {escape: false}
+    ) }}
+
+    {% set selection = commonMacro.span('$$', {
+        "min-width": "22px",
+        "text-align": "center"
+    })|split('$$') %}
+    {{ commonMacro.paragraph(
+        'user-registered-per-request.reward'|trans({
+            '%count%': usersNeeded,
+            '%bold_on%': selection[0],
+            '%bold_off%': selection[1],
+            '%bold2_on%': '<b>',
+            '%bold2_off%': '</b>',
+            '%awardwallet_plus%': '<b>AwardWallet Plus</b>'
+        }, 'email', lang)|desc('{1} Once %bold_on%%count%%bold_off% more user registers per your invitation, you will receive a %bold2_on%free upgrade%bold2_off% to %awardwallet_plus%|[2,Inf[ Once %bold_on%%count%%bold_off% more users register per your invitation, you will receive a %bold2_on%free upgrade%bold2_off% to %awardwallet_plus%'),
+        _context, {escape: false}
+    ) }}
+
+{% endblock content %}

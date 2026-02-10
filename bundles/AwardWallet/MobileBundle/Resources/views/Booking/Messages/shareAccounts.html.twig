@@ -1,0 +1,74 @@
+{% import _self as macro %}
+
+{% apply spaceless %}
+{% set abRequest = message.request %}
+{% set is_not_shared = 0 %}
+{% for account in abRequest.accounts|filter(account => account.requested) %}
+    {% if account.abaccountprogramid in message.metadata.getAPR() %}
+        {% set accessLevel = uaRep.getAccessLevel(account.account.userId, account.account, abRequest.getBooker(), false) %}
+        {% if accessLevel is empty %}{% set is_not_shared = is_not_shared + 1 %}{% endif %}
+    {% endif %}
+{% endfor %}
+{% for account in abRequest.customPrograms|filter(account => account.requested) %}
+    {% if account.abcustomprogramid in message.metadata.getCPR() %}{% set is_not_shared = is_not_shared + 1 %}{% endif %}
+{% endfor %}
+
+<div class="sharing-request">
+    <p>
+        {% if shareAction == "request" %}
+            {{ 'booking.share.user-share-requested'|trans({}, 'booking') }}
+        {% elseif shareAction == "response" %}
+            {% if is_not_shared > 0 %}
+                {{ 'booking.share.user-share-requested'|trans({}, 'booking') }}
+            {% else %}
+                {{ 'booking.share.user-share-shared'|trans({"%booker%": message.request.booker.bookerinfo.ServiceName }, 'booking') }}
+            {% endif %}
+        {% endif %}
+    </p>
+    <div class="table-block">
+        {% for account in abRequest.accounts|filter(account => account.requested) %}
+            {% if account.abaccountprogramid in message.metadata.getAPR() %}
+                {% set a = account.account %}
+                {{ macro.messageBlock(
+                    a.providerid.name,
+                    a.balance is not null ? a.balance|formatNumber : '-',
+                    a.ownerFullName
+                )}}
+            {% endif %}
+        {% endfor %}
+        {% for account in abRequest.customPrograms|filter(account => account.requested) %}
+            {% if account.abcustomprogramid in message.metadata.getCPR() %}
+                {{ macro.messageBlock(
+                    account.provider is empty ? account.name : account.provider.name,
+                    account.balance is not null ? account.balance|formatNumber : '-',
+                    account.owner
+                )}}
+            {% endif %}
+        {% endfor %}
+    </div>
+    {% if shareAction == "request" and is_not_shared > 0 %}
+        <div class="button-row">
+            <a href="{{ url('aw_booking_share_index', {id: message.Request.AbRequestID, KeepDesktop: 1}) }}" target="_blank" class="btn-blue">
+                {{ 'award.account.list.menu.actions.share'|trans({}, 'messages') }}
+            </a>
+        </div>
+    {% endif %}
+</div>
+{% endapply %}
+
+{% macro messageBlock(provider, balance, owner) %}{% apply spaceless %}
+    <table>
+        <tr>
+            <td>{{ 'booking.display.name'|trans({}, "booking") }}</td>
+            <td><span class="red bold">{{ provider }}</span></td>
+        </tr>
+        <tr>
+            <td>{{ 'booking.balance'|trans({}, "booking") }}</td>
+            <td>{{ balance }}</td>
+        </tr>
+        <tr>
+            <td>{{ 'booking.owner'|trans({}, "booking") }}</td>
+            <td>{{ owner }}</td>
+        </tr>
+    </table>
+{% endapply %}{% endmacro %}

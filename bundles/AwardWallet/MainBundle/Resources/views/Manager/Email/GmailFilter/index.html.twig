@@ -1,0 +1,39 @@
+{% extends '@AwardWalletMain/Manager/layout.html.twig' %}
+
+{% block content %}
+
+    <form method="get">
+        <label for="login">User login</label><input type="text" id="login" name="login">
+        <input type="submit">
+    </form>
+    <div>
+        Addresses are split into {{ meta.listCount }} files, address count by list:
+        {% for i, cnt in meta.lengths %}
+            <li>{{ i }}: {{ cnt }}</li>
+        {% endfor %}
+        Last changes were made {{ meta.lastUpdateDate }}
+    </div>
+    {% if urls is defined %}
+        {% for i, url in urls %}
+            <br>
+            <a href="{{ url }}" target="_blank">Download filter #{{ i }}</a>
+        {% endfor %}
+    {% endif %}
+    <br>
+    <h3>Instructions:</h3>
+    <div>
+        <ul>
+            <li> In the GMail interface go to 'Settings' -> 'See all settings'</li>
+            <li> Go to 'Forwarding and POP/IMAP' tab</li>
+            <li> Click 'Add a forwarding address', input 'login+f@email.awardwallet' and follow the instructions</li>
+            <li> Go to 'Filters and Blocked Addresses' tab</li>
+            <li> Click 'Import filter' -> 'Choose File'</li>
+            <li> Click 'Open File'</li>
+            <li> Click 'Create filters'</li>
+        </ul>
+    </div>
+    <div>
+        <a href="{{ url('aw_manager_email_gmailFilter_list') }}" target="_blank">Address List</a>
+    </div>
+{% endblock %}
+

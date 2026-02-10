@@ -1,0 +1,19 @@
+BEGIN:VCALENDAR
+PRODID:-//AwardWallet LLC//Itinerary Calendar//EN
+VERSION:2.0
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+X-WR-RELCALID:{{ CalendarID }}
+X-WR-CALNAME:AW Travel ({{ firstName|raw }})
+X-WR-CALDESC:AW Travel ({{ firstName|raw }})
+DESCRIPTION:AW Travel ({{ firstName|raw }})
+NAME:AW Travel ({{ firstName }})
+X-PUBLISHED-TTL:PT15M
+{% for event in events %}
+BEGIN:VEVENT
+{% for property in event %}
+{{ property.Name }}:{{ property.Value|raw }}
+{% endfor %}
+END:VEVENT
+{% endfor %}
+END:VCALENDAR

@@ -1,0 +1,14 @@
+{% extends "@AwardWalletMain/Layout/default.html.twig" %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+    require(['common/web-push'], function(webPush){
+        webPush.init('{{ vapid_public_key }}', '{{ webpush_id }}', null, false);
+    });
+    </script>
+{% endblock %}
+
+{% block content %}
+    This page will subscribe anonymous user to push notifications
+{% endblock %}

@@ -1,0 +1,22 @@
+{% macro render(labels, pageName) %}
+    <section class="{{ bem(pageName, 'container') }}">
+        <div class="{{ bem(pageName, 'hero') }}">
+            <h1 class="{{ bem(pageName, 'hero-title') }}">
+                {{ 'discover-world-with-aw'|trans|raw }}
+            </h1>
+            <ul class="{{ bem(pageName, 'hero-labels') }}">
+                {% for label in labels %}
+                    <li>
+                        <a
+                            href="{{ label.link }}"
+                            class="{{ bem(pageName, 'hero-label-link') }}"
+                            id="{{ label.name }}"
+                        >
+                            <span>{{ label.name|raw }}</span>
+                        </a>
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>    
+    </section>
+{% endmacro %}

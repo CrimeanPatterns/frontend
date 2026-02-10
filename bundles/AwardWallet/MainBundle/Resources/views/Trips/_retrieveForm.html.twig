@@ -1,0 +1,71 @@
+{% form_theme form with ['@AwardWalletMain/FormTheme/fields.html.twig'] %}
+<div class="add-account">
+    <div class="main-blk">
+
+        <h1>{{ 'trips.confirmation.title'|trans|desc('Retrieve reservations via conf #') }}
+            <span class="blue">{{ displayName | raw }}</span>
+        </h1>
+        <input type="hidden" id="can_check_conf_value" value="{{ provider.cancheckconfirmation }}">
+        <input type="hidden" id="provider_code" value="{{ provider.code }}">
+        <form name="add" id="checkConfForm" class="main-form" action="{{ path('aw_trips_retrieve_confirmation', {'providerId': provider.ProviderID}) }}" method="post" autocomplete="off">
+
+            {% if isError %}
+                <div class="error-message-blk small">
+                    <i class="icon-error-small-white"></i>
+                    <p>{{ 'trips.confirmation.error'|trans|desc("We could not get any reservations by this number") }}</p>
+                </div>
+            {% endif %}
+
+            <div class="overlay js-check-overlay" style="display: none"></div>
+            <div class="main-form-event js-check-account" style="display: none">
+                <div class="update">
+                    <i class="icon-silver-arrow-down"></i>
+                    <p>{{ 'award.account.form.checking.title'|trans }}</p>
+                    <div class="progress-bar">
+                        <div class="progress-bar-row">
+                            <p>1%</p>
+                            <span style="width:1%"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {{ form_widget(form, {'noSubmit' : true}) }}
+
+            <div class="row-submit">
+                <div class="row-submit-item">
+                    <div class="submit">
+                        <button id="submitFormBtn" type="submit" class="btn-blue">{{ 'trips.confirmation.buttons.retrieve'|trans|desc('Retrieve') }}</button>
+                    </div>
+                </div>
+            </div>
+        </form>
+
+    </div>
+
+    <div class="faq">
+        <div class="faq-blk">
+            <div class="heading">
+                <i class="icon-info-small"></i>
+
+                {% set fromLink = "this_form_link"|trans|desc("this form") %}
+                {% set fromPage = "this_page_link"|trans|desc("this page") %}
+
+                {% if provider.ProviderId == 39 %}
+
+                    {% set pageLink = "https://www.swiss.com/us/en/login" %}
+
+                    <p>{{ "retrive.form.info"|trans({
+                            "%this_form_link%": "<a href="~formUrl~" target=\"_blank\">"~fromLink~"</a>",
+                            "%this_page_link%": "<a href="~pageLink~" target=\"_blank\">"~fromPage~"</a>"
+                        })|desc("Please note that for this to work, you must be able to view your reservation by submitting the same information via %this_form_link% or %this_page_link%")|raw }}
+                    </p>
+                {% else %}
+                    <p>{{ 'retrive.form.info.alt'|trans({
+                            "%this_form_link%": "<a data-regions="~regions|json_encode~" href="~formUrl~" target=\"_blank\">"~fromLink~"</a>"
+                        })|desc("Please note that for this to work, you must be able to view your reservation by submitting the same information via %this_form_link%")|raw }}</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>

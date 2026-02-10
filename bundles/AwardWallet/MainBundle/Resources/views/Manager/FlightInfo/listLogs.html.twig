@@ -1,0 +1,50 @@
+{% set title = "FlightInfo statistics" %}
+{% extends '@AwardWalletMain/Manager/layout.html.twig' %}
+
+{% block content %}
+    <style type="text/css">
+        table {
+            border-collapse: collapse;
+        }
+        table td {
+            border: lightgray solid 1px;
+            padding: 7px;
+        }
+        thead td {
+            font-weight: bold;
+        }
+        .navigation {
+            padding: 20px 0 0 0;
+        }
+    </style>
+    {% if data|length %}
+        <h3>FlightInfoLog statistics for {{ headerDate }}</h3>
+        <table>
+            <thead>
+            <tr>
+                <td></td><td>Service</td><td>Create Date</td><td>Expire Date</td>
+                <td>Request</td>
+            </tr>
+            </thead>
+            <tbody>
+            {% for row in data %}
+                <tr>
+                    <td rowspan="2">&nbsp;</td>
+                    <td>{{ row.service }}</td>
+                    <td>{% if row.createDate %}{{ row.createDate|formatDatetime('long') }}{% endif %}</td>
+                    <td>{% if row.expireDate %}{{ row.expireDate|formatDatetime('long') }}{% endif %}</td>
+                    <td>{{ row.request }}</td>
+                </tr>
+                <tr>
+                    <td colspan="4"><pre>{{ row.json|json_encode(constant('JSON_PRETTY_PRINT')) }}</pre></td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+        <div class="navigation">
+            {{ aw_pagination_render(pagination) }}
+        </div>
+    {% else %}
+        <h3>Empty FlightInfoLog statistics data</h3>
+    {% endif %}
+{% endblock %}

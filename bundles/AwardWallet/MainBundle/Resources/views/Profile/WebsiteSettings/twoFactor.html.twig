@@ -1,0 +1,95 @@
+{% if form is defined %}
+    {% form_theme form with [
+        '@AwardWalletMain/FormTheme/twoFactFields.html.twig',
+        '@AwardWalletMain/FormTheme/fields.html.twig'
+    ] %}
+{% endif %}
+{% extends "@AwardWalletMain/Layout/profile.html.twig" %}
+
+{% block title %}{{ 'two-factor.title'|trans|desc("Two-factor authentication setup") }}{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        require(['jquery-boot', 'lib/formReauthenticator'],
+            function($) {
+                setInterval(function() {
+                    $.ajax({
+                        url: Routing.generate('aw_ping'),
+                        global: false
+                    });
+                }, 1000 * 60 * 7);
+            }
+        );
+    </script>
+{% endblock %}
+
+{% block content %}
+    <div class="main-blk shortened">
+        <h1>{{ 'two-factor.title'|trans|desc("Two-factor authentication setup") }}</h1>
+        {% if isNeedSetPassword is defined and isNeedSetPassword is same as true %}
+
+            {% set route2fa = path('aw_profile_2factor') %}
+            {% set routeDelete = path('aw_user_delete') %}
+            {% set businessMembers = path('aw_business_members') %}
+            {% set popupData = two_fact.getPopupData(app.user) %}
+            {% if popupData is same as null %}
+                {% set popupData = {
+                    'userAgentId': false,
+                    'company': null,
+                    'isBusinessAdmin': false,
+                } %}
+            {% endif %}
+            {% set businessMemberEdit = popupData['userAgentId'] ? path('aw_business_member_edit', {userAgentId: popupData['userAgentId']}) : null %}
+
+            {% set transParams = {
+                '%companyName%': popupData['company'],
+                '%link1_on%': '<a href="' ~ (
+                is_granted('SITE_BUSINESS_AREA') ?
+                popupData['userAgentId'] ? businessMemberEdit : businessMembers :
+                path('aw_security_switch_site', {'Goto': popupData['userAgentId'] ? businessMemberEdit : businessMembers})
+                ) ~ '" target="_blank">',
+                '%link1_off%': '</a>',
+                '%link2_on%': popupData['isBusinessAdmin']
+                ? '<a href="' ~ (is_granted('SITE_BUSINESS_AREA') ? routeDelete : path('aw_security_switch_site', {'Goto': routeDelete})) ~ '" target="_blank">'
+                : '',
+                '%link2_off%': popupData['isBusinessAdmin'] ? '</a>' : '',
+                '%break%': '<br>',
+                '%break2%': '<br>',
+                '%extend-text%': 'create-password-before-2fa'|trans({
+                    '%break%': '<br>',
+                    '%break2%': '<br>',
+                })|desc('%break%%break2%Before you can enable 2FA, we need to switch your login method from "Google" to AwardWallet. Please create an AwardWallet password and start using your username and password to log in moving forward. Once this is done, you\'ll be able to set up two-factor authentication.')
+            } %}
+
+            <div class="main-blk-content">
+                <p>{% if popupData['company'] is null and popupData['isBusinessAdmin'] is same as false %}
+                    {{ 'create-password-before-2fa'|trans({'%break%': '', '%break2%': ''}) }}
+                {% else %}
+                    {{ '2fact-require-message'|trans(transParams)|raw }}
+                {% endif %}</p>
+                <p>
+                    {% if is_granted('SITE_BUSINESS_AREA') %}
+                        {% set routeCreatePassword = path('aw_security_switch_site', {'Goto': path('aw_profile_change_password')}) %}
+                    {% else %}
+                        {% set routeCreatePassword = path('aw_profile_change_password', {'backTo': path('aw_profile_2factor') }) %}
+                    {% endif %}
+                    <a class="btn-blue" href="{{ routeCreatePassword }}">{{ 'create-aw-password'|trans }}</a>
+                </p>
+            </div>
+        {% else %}
+            <form class="main-form spinnerable"
+                  action="{{ path('aw_profile_2factor') }}"
+                  method="post"
+                  data-reauth-action="2FactSetupAction"
+            >
+                {{ form_widget(form, {'noSubmit':true}) }}
+                <div class="row-submit">
+                    <button type="submit" class="btn-blue">
+                        {{ 'form.button.next'|trans }}
+                    </button>
+                </div>
+            </form>
+        {% endif %}
+    </div>
+{% endblock %}

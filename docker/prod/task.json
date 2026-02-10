@@ -1,0 +1,122 @@
+{
+    "containerDefinitions": [
+        {
+            "name": "worker",
+            "volumesFrom": [
+                {
+                    "sourceContainer": "fluent"
+                }
+            ],
+            "essential": true,
+            "mountPoints": [
+                {
+                    "containerPath": "/www/awardwallet/engine",
+                    "sourceVolume": "engine"
+                }
+            ],
+            "environment": [
+                {
+                    "name": "MAILER_HOST",
+                    "value": "127.0.0.1"
+                },
+                {
+                    "name": "FLUENT_HOST",
+                    "value": "127.0.0.1"
+                }
+            ],
+            "image": "718278292471.dkr.ecr.us-east-1.amazonaws.com/frontend/worker:TAG",
+            "logConfiguration": {
+                "logDriver": "awslogs",
+                "options": {
+                    "awslogs-create-group": "true",
+                    "awslogs-group": "frontend",
+                    "awslogs-region": "us-east-1",
+                    "awslogs-stream-prefix": "task"
+                }
+            }
+        },
+        {
+            "name": "postfix",
+            "essential": true,
+            "image": "718278292471.dkr.ecr.us-east-1.amazonaws.com/postfix:2.05",
+            "logConfiguration": {
+                "logDriver": "awslogs",
+                "options": {
+                    "awslogs-create-group": "true",
+                    "awslogs-group": "frontend",
+                    "awslogs-region": "us-east-1",
+                    "awslogs-stream-prefix": "task"
+                }
+            },
+            "portMappings": [
+                {
+                    "containerPort": 25
+                }
+            ]
+        },
+        {
+            "name": "updater",
+            "essential": false,
+            "mountPoints": [
+                {
+                    "containerPath": "/destination",
+                    "sourceVolume": "engine"
+                }
+            ],
+            "environment": [
+                {
+                    "name": "FOLDER",
+                    "value": "engine"
+                },
+                {
+                    "name": "RABBIT_HOST",
+                    "value": "192.168.2.48"
+                }
+            ],
+            "logConfiguration": {
+                "logDriver": "awslogs",
+                "options": {
+                    "awslogs-create-group": "true",
+                    "awslogs-group": "frontend",
+                    "awslogs-region": "us-east-1",
+                    "awslogs-stream-prefix": "task"
+                }
+            },
+            "image": "718278292471.dkr.ecr.us-east-1.amazonaws.com/updater:2.01"
+        },
+        {
+            "name": "fluent",
+            "essential": true,
+            "image": "718278292471.dkr.ecr.us-east-1.amazonaws.com/frontend/fluentbit:TAG",
+            "logConfiguration": {
+                "logDriver": "awslogs",
+                "options": {
+                    "awslogs-create-group": "true",
+                    "awslogs-group": "frontend",
+                    "awslogs-region": "us-east-1",
+                    "awslogs-stream-prefix": "task"
+                }
+            },
+            "portMappings": [
+                {
+                    "containerPort": 24224
+                }
+            ]
+        }
+    ],
+    "volumes": [
+        {
+            "name": "engine",
+            "host": {}
+        }
+    ],
+    "networkMode": "awsvpc",
+    "family": "frontend-task",
+    "cpu": "1024",
+    "memory": "8192",
+    "taskRoleArn": "arn:aws:iam::718278292471:role/frontend-ecs-task",
+    "executionRoleArn": "arn:aws:iam::718278292471:role/ecsTaskExecutionRole",
+    "requiresCompatibilities": [
+        "FARGATE"
+    ]
+}

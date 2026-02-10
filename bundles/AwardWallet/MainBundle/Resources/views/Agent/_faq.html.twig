@@ -1,0 +1,16 @@
+<div class="faq">
+    <div class="faq-blk">
+        <div class="heading">
+            <i class="icon-info-small"></i>
+
+            {% if is_granted('SITE_BUSINESS_AREA') %}
+                <p>{{ 'agents.connect.business.faq1'|trans|desc('In the business interface you are able to connect with other AwardWallet members so that they can share their loyalty accounts and travel plans with you.') }}</p>
+                <p>{{ 'agents.connect.business.faq2'|trans|desc('Connecting with people on AwardWallet is easy; all you need is provide an email address of the person you want to connect with.') }}</p>
+            {% else %}
+            <p>{{ 'agents.connect.faq1'|trans|desc('You should only invite someone you know. Once that person accepts your invitation you can choose what exactly you wish to share, i.e. your accounts and or travel plans.') }}</p>
+
+            <p>{{ 'agents.connect.faq2'|trans|desc('Typical use cases would be: husband and wife sharing accounts and travel plans while each maintaining their own AwardWallet accounts.') }}</p>
+            {% endif %}
+        </div>
+    </div>
+</div>

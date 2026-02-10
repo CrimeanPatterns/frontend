@@ -1,0 +1,147 @@
+{% use '@AwardWalletMain/AccountList/elements.html.twig' %}
+
+{% block list_elements %}
+    <section data-ng-cloak2 class="main-ui-view" data-ng-controller="listCtrl as list" data-ng-show="main.state.loaded">
+        {{ block('list_filter_reset') }}
+        {{ block('list_table') }}
+        {{ block('list_empty') }}
+        {{ block('list_totals') }}
+    </section>
+{% endblock %}
+
+{% block list_filter_reset %}
+    <div class="filtered-row" data-ng-if="main.stateParams.agentId || main.stateParams.recent || main.stateParams.errors">
+        <p data-ng-show="main.stateParams.recent == '7'">{{ 'award.account.list.reset.changed_week'|trans|desc('Accounts changed in the last <span class="red">week</span>')|raw }}</p>
+        <p data-ng-show="main.stateParams.recent == '31'">{{ 'award.account.list.reset.changed_month'|trans|desc('Accounts changed in the last <span class="red">month</span>')|raw }}</p>
+        <p data-ng-show="main.stateParams.errors && !main.stateParams.recent">{{ 'award.account.list.reset.errors'|trans|desc('Accounts with <span class="red">errors</span>')|raw }}</p>
+        <p data-ng-show="main.stateParams.agentId && !main.stateParams.recent && !main.stateParams.errors" data-ng-bind-html="main.state.agentTitle | unsafe"></p>
+        <a href="" data-ng-click="main.setOptions({recent: undefined, errors: undefined, agentId: undefined})" class="btn-silver f-right">{{ 'award.account.list.reset.reset'|trans|desc('Switch to full list')|raw }}</a>
+    </div>
+{% endblock %}
+
+{% block list_totals %}
+    <div data-ng-cloak class="account-totals" data-ng-show="list.totals.viewTotal && (list.pager.pages <= 1 || !main.state.pager)">
+        {{ block('list_totals_details') }}
+        <div class="title">{{ "award.account.list.totals"|trans|desc('Totals') }}:</div>
+        <div class="account"><span>[[list.totals.viewTotal]]</span> [[list.view.getItems()]]</div>
+        <div class="balance">[[list.totals.viewBalance | number:0]]</div>
+    </div>
+{% endblock %}
+
+{% block list_table %}
+    <div class="account-list business">
+        {{ block('list_header') }}
+        {{ block('list_filters') }}
+        <div data-ng-repeat="row in list.elements.data track by row.ID" class="row-[[::row.type]]">
+            {{ block('row_data') }}
+        </div>
+        {{ block('pager') }}
+    </div>
+{% endblock %}
+
+{% block list_header %}
+    <div class="row-kind">
+        <div class="account-title-row">
+            <div class="check">&nbsp;</div>
+            <div class="account-details">&nbsp;</div>
+            <div class="program">
+                <a href="" data-ng-click="list.view.sort('DisplayName')">{{ "award.account.list.column.program"|trans|desc("Award Program") }}
+                    <i data-ng-if="list.view.reverse && list.view.order == 'DisplayName'" class="icon-silver-arrow-down"></i>
+                    <i data-ng-if="!list.view.reverse && list.view.order == 'DisplayName'" class="icon-silver-arrow-up"></i>
+                </a>
+            </div>
+            <div class="owner">{{ "award.account.list.column.owner"|trans|desc("Owner") }}</div>
+            <div class="account">{{ "award.account.list.column.account"|trans|desc("Account") }}</div>
+            <div class="status">{{ "award.account.list.column.status"|trans|desc("Status") }}</div>
+            <div class="balance">
+                <a href="" data-ng-click="list.view.sort('BalanceRaw')">{{ "award.account.list.column.balance"|trans|desc("Balance") }}
+                    <i data-ng-if="!list.view.reverse && list.view.order == 'BalanceRaw'" class="icon-silver-arrow-down"></i>
+                    <i data-ng-if="list.view.reverse && list.view.order == 'BalanceRaw'" class="icon-silver-arrow-up"></i>
+                </a>
+            </div>
+            <div class="cash">
+                {{ 'cash-equivalent'|trans({'%break%':'<br> '})|raw }}
+            </div>
+            <div class="expire">
+                <a href="" data-ng-click="list.view.sort('ExpirationDateTs')">{{ "award.account.list.column.expire"|trans|desc("Expire") }}
+                    <i data-ng-if="list.view.reverse && list.view.order == 'ExpirationDateTs'" class="icon-silver-arrow-down"></i>
+                    <i data-ng-if="!list.view.reverse && list.view.order == 'ExpirationDateTs'" class="icon-silver-arrow-up"></i>
+                </a>
+            </div>
+            <div class="lastupdate">
+                <a href="" data-ng-click="list.view.sort('LastUpdatedDateTs')">{{ "award.account.list.column.lastupdate"|trans|desc("Last Updated") }}
+                    <i data-ng-if="list.view.reverse && list.view.order == 'LastUpdatedDateTs'" class="icon-silver-arrow-down"></i>
+                    <i data-ng-if="!list.view.reverse && list.view.order == 'LastUpdatedDateTs'" class="icon-silver-arrow-up"></i>
+                </a>
+            </div>
+            <div class="actions">&nbsp;</div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block list_filters %}
+    <div class="row-filter" data-ng-hide="list.updating.active">
+        <div class="check">&nbsp;</div>
+        <div class="account-details">&nbsp;</div>
+        <div class="program">
+            <input type="text"{# data-ng-model-options="{ debounce: 350 }" #}data-ng-model="list.filters.program" id="filterProgram" data-ng-keypress="list.keyPress($event)" autocomplete="off" spellcheck="false"/>
+        </div>
+        <div class="owner">
+            <input type="text"{# data-ng-model-options="{ debounce: 350 }" #}data-ng-model="list.filters.owner" id="filterOwner" data-ng-keypress="list.keyPress($event)" autocomplete="off" spellcheck="false"/>
+        </div>
+        <div class="account">
+            <input type="text"{# data-ng-model-options="{ debounce: 350 }" #}data-ng-model="list.filters.account" data-ng-keypress="list.keyPress($event)" autocomplete="off" spellcheck="false"/>
+        </div>
+        <div class="status">
+            <input type="text"{# data-ng-model-options="{ debounce: 350 }" #}data-ng-model="list.filters.status" data-ng-keypress="list.keyPress($event)" autocomplete="off" spellcheck="false"/>
+        </div>
+        <div class="balance">
+            <div class="more">
+                <input type="text"{# data-ng-model-options="{ debounce: 350 }" #}data-ng-model="list.filters.balance" data-ng-keypress="list.keyPress($event)" autocomplete="off" spellcheck="false"/>
+            </div>
+        </div>
+        <div class="cash">
+        </div>
+        <div class="expire">
+            <div class="less">
+                <input autocomplete="off" spellcheck="false" type="text" data-datepicker data-dp-opt="{{ {yearRange: "1910:c+50"}|js_json_encode }}" data-ng-model="list.filters.expire" id="filterExpire_datepicker" data-ng-keypress="list.keyPress($event)"/>
+                <input type="hidden" id="filterExpire"/>
+            </div>
+        </div>
+        <div class="lastupdate">
+            <div class="less">
+                <input autocomplete="off" spellcheck="false" type="text" data-datepicker data-dp-opt="{{ {yearRange: "1910:c+50"}|js_json_encode }}" data-ng-model="list.filters.lastupdate" id="filterLastUpdate_datepicker" data-ng-keypress="list.keyPress($event)"/>
+                <input type="hidden" id="filterLastUpdate"/>
+            </div>
+        </div>
+        <div class="actions">
+            <a href="" class="btn-blue" data-ng-click="list.goFilters()">{{ 'business.members.table_filter.go_filters'|trans()|desc('Find') }}</a>
+            <a data-ng-show="list.hasFilters()" href="" class="btn-silver" data-ng-click="list.clearFilters()"><i class="icon-close-dark"></i></a>
+        </div>
+    </div>
+{% endblock %}
+
+{% block pager %}
+    <ul class="pagination" data-ng-show="list.pager.pages > 1 && main.state.pager">
+        <li data-ng-if="list.pager.page - 6 > 0">
+            <a data-ng-click="list.setActivePage(1)"><</a>
+        </li>
+        <li data-ng-repeat="page in list.pager.pagesIndex" data-ng-class="{'active': page == list.pager.page}">
+            <a data-ng-click="list.setActivePage(page)">[[ page ]]</a>
+        </li>
+        <li data-ng-if="list.pager.pages > 11 && list.pager.page + 5 < list.pager.pages">
+            <a data-ng-click="list.setActivePage(list.pager.pages)">></a>
+        </li>
+    </ul>
+{% endblock %}
+
+{% block row_column_program_alliance %}
+    <div data-ng-if="::element.account.AllianceIcon" class="alliance">
+        <div class="alliance-item">
+            <div class="picture">
+                <img class="picture__dark" data-ng-src="[[ element.account.AllianceIcon.replace('alliances/', 'alliances/dark/') + (main.devicePixelRatio && main.devicePixelRatio == 2 ? '@2x.png' : '.png') ]]" alt="" height="28" width="23"/>
+                <img class="picture__light" data-ng-src="[[ element.account.AllianceIcon + (main.devicePixelRatio && main.devicePixelRatio == 2 ? '@2x.png' : '.png') ]]" alt="" height="28" width="23"/>
+            </div>
+        </div>
+    </div>
+{% endblock %}

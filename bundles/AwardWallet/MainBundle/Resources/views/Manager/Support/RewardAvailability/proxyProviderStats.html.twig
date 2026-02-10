@@ -1,0 +1,302 @@
+<style>
+    .chart {
+        margin: 10px 50px;
+        /*float: left;*/
+        width: 600px;
+        height: 200px;
+    }
+
+    .chart_small {
+        margin: 10px 20px;
+        float: left;
+        /*width: 450px;*/
+        width: 30%;
+        height: 200px;
+    }
+
+    .line {
+        width: 100%;
+        height: 0px;
+        border-bottom: 1px solid black;
+        position: absolute;
+    }
+
+    .line_dashed {
+        width: 100%;
+        height: 0px;
+        border-bottom: 1px solid black;
+        position: absolute;
+    }
+
+    .like_a {
+        color: #512D01;
+        text-decoration: underline;
+        font-weight: normal;
+    }
+
+    table {
+        border-collapse: collapse;
+        font-family: serif;
+    }
+
+    table td, table th {
+        padding: 0;
+        font-family: serif;
+    }
+
+    th, th * {
+        font-weight: bold !important;
+        text-align: center !important;
+        vertical-align: bottom !important;
+        white-space: nowrap;
+        font-size: 13px;
+        height: 22px;
+    }
+
+    td.head, th.head {
+        background-color: white;
+        border-bottom: #D0D0D0 1px solid;
+        color: #4D4D4D;
+        font-size: 13px;
+        height: 22px;
+        padding: 1px 4px 1px 4px;
+        text-align: center;
+        text-shadow: 0 1px 0 white;
+    }
+
+    table.mixed_list th {
+        background: ghostwhite
+    }
+
+    table.mix {
+        height: 100%;
+    }
+    table.mix th, table.mix td {
+        padding: 2px;
+    }
+
+    table .bothBorder {
+        border-left: #D0D0D0 1px solid;
+        border-right: #D0D0D0 1px solid;
+    }
+
+    table .leftBorder {
+        border-left: #D0D0D0 1px solid;
+    }
+
+    table .rightBorder {
+        border-right: #D0D0D0 1px solid;
+    }
+
+    table .topBorder {
+        border-top: #D0D0D0 1px solid;
+    }
+</style>
+{% set printProv = providerCode=='all' %}
+{% for provider,provData in data.prov %}
+    {% if provData.errorMsg is defined %}
+        {% if printProv %}
+            <div class="line"></div>
+            <br>
+            <strong class="like_a">
+                {% if 'cluster' in app.request.uri %}
+                    <a href="{{ app.request.uri }}&providerCode={{ provider }}">{{ provider }}</a>
+                {% else %}
+                    <a href="{{ app.request.uri }}?providerCode={{ provider }}">{{ provider }}</a>
+                {% endif %}
+            </strong>
+        {% endif %}
+        <span>{{ provData.errorMsg }}</span>
+    {% else %}
+        <div>
+            {% if printProv %}
+                <div class="line"></div>
+                <br>
+                <strong class="like_a">
+                    {% if 'cluster' in app.request.uri %}
+                        <a href="{{ app.request.uri }}&providerCode={{ provider }}">{{ provider }}</a>
+                    {% else %}
+                        <a href="{{ app.request.uri }}?providerCode={{ provider }}">{{ provider }}</a>
+                    {% endif %}
+                </strong>
+            {% endif %}
+            <div style="float: right; text-align: end; border: double; margin-right: 5px; padding: 5px;">
+                <strong style="text-align: left;">IP stats</strong>
+                {% for proxy,cntIp in provData.uniqueAddress %}
+                    <br><br><span>{{ proxy }} - {{ cntIp }}</span>
+                {% endfor %}
+            </div>
+            <div id="columnchart_errorCode{{ provider }}" class="chart"></div>
+
+            {% for proxy,proxyData in provData.details %}
+                <div>
+                    <div id="columnchart_retry{{ provider }}{{ proxy }}" class="chart_small"></div>
+                </div>
+
+            {% endfor %}
+            <script type="text/javascript">
+                google.charts.load('current', {'packages': ['bar']});
+                google.charts.setOnLoadCallback(drawCharts);
+
+                function drawCharts() {
+                    {% set header = provData.tableError.header %}
+                    var data = google.visualization.arrayToDataTable([
+                        {{ header | json_encode | raw }},
+
+                        {% for d in provData.tableError.data %}
+
+                        {{ d | json_encode | raw }},
+                        {% endfor %}
+                    ]);
+
+                    var options = {
+                        colors: ['#28620f', '#0aac0d', '#E245A3', '#0003CD', '#F50518', '#5A061A', 'black']
+                    };
+
+                    var chart = new google.charts.Bar(document.getElementById('columnchart_errorCode{{ provider }}'));
+
+                    chart.draw(data, google.charts.Bar.convertOptions(options));
+
+                    {% for proxy,proxyData in provData.details %}
+                    {% set header = proxyData.tableRetry.header %}
+                    var data = google.visualization.arrayToDataTable([
+                        {{ header | json_encode | raw }},
+
+                        {% for d in proxyData.tableRetry.data %}
+                        {{ d | json_encode | raw }},
+                        {% endfor %}
+                    ]);
+                    {# {% endfor %} #}
+
+                    var chart = new google.charts.Bar(document.getElementById('columnchart_retry{{ provider }}{{ proxy }}'));
+
+                    chart.draw(data, google.charts.Bar.convertOptions(options));
+                    {% endfor %}
+                }
+            </script>
+            {% if provData.mixed is defined %}
+                <div style="float: left;  width: 100%;">
+                    <br>
+                    <div class="line_dashed"></div>
+                    <br>
+                    <div id="piechart{{ provider }}"></div>
+                    <script type="text/javascript">
+                        google.charts.load('current', {'packages': ['corechart']});
+                        google.charts.setOnLoadCallback(drawChart);
+
+                        function drawChart() {
+
+                            var data = google.visualization.arrayToDataTable([
+                                ['Helped', '%'],
+                                ['helped', {{ provData.mixed.helped.true }}],
+                                ['not helped', {{ provData.mixed.helped.false }}]
+                            ]);
+
+                            var options = {
+                                title: 'Requests with mixed proxy'
+                            };
+
+                            var chart = new google.visualization.PieChart(document.getElementById('piechart{{ provider }}'));
+
+                            chart.draw(data, options);
+                        }
+                    </script>
+                    <div>
+                        <table class="mixed_list" style="border-collapse: collapse;">
+                            <tr>
+                                <td class="topBorder bothBorder" style="font-weight: bold; text-align: center;">HELPED
+                                </td>
+                                <td class="topBorder rightBorder" style="font-weight: bold; text-align: center;">NOT
+                                    HELPED
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="head bothBorder">
+                                    <table class="mix">
+                                        <tr>
+                                            <th class="topBorder bothBorder">in</th>
+                                            <th class="topBorder rightBorder">out</th>
+                                            <th class="topBorder rightBorder">requestId</th>
+                                            <th class="topBorder rightBorder">status</th>
+                                        </tr>
+                                        {% if provData.mixed.list.true is defined %}
+                                        {% for row in provData.mixed.list.true.data|slice(0,7) %}
+                                            <tr>
+                                                <td class="topBorder bothBorder">{{ row.proxyProviderOnInit }}
+                                                    -{{ row.proxyRegionOnInit }}&nbsp;[{{ row.proxyAddressOnInit }}]
+                                                </td>
+                                                <td class="topBorder rightBorder">{{ row.proxyProvider }}
+                                                    -{{ row.proxyRegion }}&nbsp;[{{ row.proxyAddress }}]
+                                                </td>
+                                                <td class="topBorder rightBorder">
+                                                    <div style="text-align: right;margin-right: 20px;">
+                                                        {% if manageLog %}
+                                                            <a href='https://awardwallet.com/manager/loyalty/logs?Method=reward-availability&RequestID={{ row.requestId }}&Partner=juicymiles'
+                                                               target='_blank'>{{ row.requestId }}</a>&nbsp&nbsp<a
+                                                                style="float:right;"
+                                                                href='https://awardwallet.com/manager/loyalty/logs?Method=reward-availability&RequestID={{ row.requestId }}&Partner=juicymiles&ShowLatest=1'
+                                                                target='_blank'>last</a>
+                                                        {% else %}
+                                                            {{ row.requestId }}
+                                                        {% endif %}
+                                                    </div>
+                                                </td>
+                                                <td class="topBorder rightBorder">{{ row.errorCode }}</td>
+                                            </tr>
+                                        {% endfor %}
+                                        {%  else %}
+                                            <tr rowspan="7"><td colspan="4">no examples</td></tr>
+                                        {%  endif %}
+                                    </table>
+                                </td>
+                                <td class="head rightBorder">
+                                    <table class="mix">
+                                        <tr>
+                                            <th class="topBorder bothBorder">in</th>
+                                            <th class="topBorder rightBorder">out</th>
+                                            <th class="topBorder rightBorder">requestId</th>
+                                            <th class="topBorder rightBorder">status</th>
+                                        </tr>
+                                        {% if provData.mixed.list.false is defined %}
+                                        {% for row in provData.mixed.list.false.data|slice(0,7) %}
+                                            <tr>
+                                                <td class="topBorder bothBorder">
+                                                    {{ row.proxyProviderOnInit }}-{{ row.proxyRegionOnInit }}
+                                                    &nbsp;[{{ row.proxyAddressOnInit }}]
+                                                </td>
+                                                <td class="topBorder rightBorder">
+                                                    {{ row.proxyProvider }}-{{ row.proxyRegion }}
+                                                    &nbsp;[{{ row.proxyAddress }}]
+                                                </td>
+                                                <td class="topBorder rightBorder">
+                                                    <div style="text-align: right;margin-right: 20px;">
+                                                        {% if manageLog %}
+                                                            <a href='https://awardwallet.com/manager/loyalty/logs?Method=reward-availability&RequestID={{ row.requestId }}&Partner=juicymiles'
+                                                               target='_blank'>{{ row.requestId }}</a>&nbsp&nbsp<a
+                                                                style="float:right;"
+                                                                href='https://awardwallet.com/manager/loyalty/logs?Method=reward-availability&RequestID={{ row.requestId }}&Partner=juicymiles&ShowLatest=1'
+                                                                target='_blank'>last</a>
+                                                        {% else %}
+                                                            {{ row.requestId }}
+                                                        {% endif %}
+                                                        <span style="float:left;">retry: {{ row.retryNumber }}&nbsp;&nbsp;</span>
+                                                    </div>
+                                                </td>
+                                                <td class="topBorder rightBorder">{{ row.errorCode }}</td>
+                                            </tr>
+                                        {% endfor %}
+                                        {%  else %}
+                                            <tr rowspan="7"><td colspan="4">no examples</td></tr>
+                                        {%  endif %}
+
+                                    </table>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+        <br>
+    {% endif %}
+{% endfor %}

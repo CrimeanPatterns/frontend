@@ -1,0 +1,43 @@
+<div class="title-note">
+    <h3>{{ title }}</h3>
+</div>
+<table class="main-table edit-account">
+    <thead>
+    <tr>
+        <th class="caption-row">{{ 'session.warning.access-type'|trans|desc("Access type") }} <span class="small">({{ 'session.warning.access-type.desc'|trans|desc("Browser, mobile, etc.") }})</span></th>
+        <th>{{ 'session.warning.location'|trans|desc("Location") }} ({{ 'session.warning.location.desc'|trans|desc("IP address") }})</th>
+        <th{% if logout is not empty %} colspan="2"{% endif %}>{{ 'session.last-used'|trans|desc('Last used') }} <span class="small">({{ 'session.warning.loggedin.desc'|trans }})</span></th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for session in sessions %}
+        <tr{% if session.RememberMeTokenID is not empty %} data-rtid="{{ session.RememberMeTokenID }}"{% elseif session.SessionID is defined and session.SessionID is not empty %} data-sid="{{ session.SessionID }}"{% endif %}>
+            <td class="caption-row">
+                {% if session.getBrowser.soft is not empty %}
+                    <span data-role="tooltip" title="{{ session.UserAgent }}">{{ session.getBrowser.soft }}</span>{% if session._current is defined %} <span class="bold red nowrap">({{ 'session.my'|trans }})</span>{% endif %}
+                    {% if session._group.UserAgent is defined %}<p class="hidden" style="font-size: .7rem">&mdash; {{ session._group.UserAgent|join("<br>&mdash; ")|raw }}</p>{% endif %}
+                {% else %}
+                    {{ "unknown"|trans }}
+                {% endif %}
+            </td>
+            <td>
+                {% if session.location is defined and session.location is not empty %}
+                    {{ session.location }} ({{ session.IP }})
+                {% else %}
+                    {{ session.IP }}
+                {% endif %}
+            </td>
+            <td>
+                <span class="time blue js-date-utc--title" data-role="tooltip" title="{{ session.LastUsed|formatDatetime }}" data-date="{{ session.LastUsed|date('c') }}">{{ session.LastUsed|formatTimeAgo(true, true) }}</span>
+            </td>
+            {% if logout is not empty %}
+                <td>
+                    {% if session._current is not defined %}
+                        <a class="btn-silver nowrap js-idclear" href="#">{{ 'session.logout'|trans }}</a>
+                    {% endif %}
+                </td>
+            {% endif %}
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>

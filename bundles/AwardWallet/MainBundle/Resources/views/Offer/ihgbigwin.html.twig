@@ -1,0 +1,81 @@
+{# Issue #7963 #}
+
+{% extends "@AwardWalletMain/Offer/standard.html.twig" %}
+{% import '@AwardWalletMain/Offer/offerMacros.html.twig' as offerMacros %}
+{% import '@AwardWalletMain/TwigMacros/assets.html.twig' as assets %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    {{ encore_entry_link_tags('offer') }}
+    {{ encore_entry_link_tags('offers/ihgbigwin') }}
+    {{ assets.assets_form('css') }}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    {{ assets.assets_form('js') }}
+    <script>
+        function selectChange(sel){
+            accId = sel.options[sel.selectedIndex].value;
+        }
+        {{ offerMacros.jsOfferNo(_context, Code, OfferUserID, defaultRedirectLocation) }}
+        function offerAgreed() {
+        {% autoescape false %}
+        {% if (preview != 1) and (src != 1) %}
+        {% if vars.isLocalProd == false %}
+            $.post("{{ url('aw_offer_agree', { 'offerUserId': OfferUserID, 'agreed': '1' } ) }}");
+        {% endif %}
+        {% endif %}
+        {% endautoescape %}
+            window.open('{{ url('aw_account_redirect', {ID: accId, goto: 'offerIHGBigwin'}) }}','_blank');
+            window.setTimeout(function() {window.location = '{{ defaultRedirectLocation }}';}, 1000);
+            return true;
+        }
+    </script>
+{% endblock %}
+
+{% block content %}
+    <div id="offer_wrap">
+        <div id="ihgbigwin_bg">
+            <div class="offer_title ihgbigwin_title">
+                The Big Win is a fantastic opportunity<br/>
+                to earn toward free travel and more with IHG® Rewards Club.
+            </div>
+            <div class="ihgbigwin_desc">
+                Sign up, review your offers and start<br/>
+                earning free travel, merchandise and<br/>
+                more with IHG® Rewards Club at<br/>
+                <strong>more than 4,600 hotels</strong> in nearly<br/>
+                <strong>100 countries</strong> and territories worldwide.
+            </div>
+            <script>
+                accId = {{ Accounts[0].AccountID }};
+            </script>
+            <div class="ihgbigwin_bottom">
+                {% if Accounts|length == 1 %}
+                <div style="display: table;">
+                {% else %}
+                    <div class="ihgbigwin_select_label">
+                        Please select an account to register:
+                    </div>
+                    <div style="display: table;">
+                    <select style="opacity:0; height: 30px" onchange="selectChange(this);">
+                        {% for account in Accounts %}
+                            <option value="{{ account.AccountID }}">{{ account.AccountNumber }} ({{ account.UserName }})</option>
+                        {% endfor %}
+                    </select>
+                {% endif %}
+                <div class="offer_btn" id="ihgbigwin_btn" onclick="offerAgreed();">
+                    Register for this promotion
+                </div>
+                    </div>
+            </div>
+        </div>
+        <div class="offer_declinekind" onclick="offerNo();">
+            Never show this ad again
+        </div>
+        <div class="offer_toaccount ihgbigwin_toaccount" onclick="window.location = '{{ defaultRedirectLocation }}'">
+            Proceed to my account
+        </div>
+    </div>
+{% endblock %}

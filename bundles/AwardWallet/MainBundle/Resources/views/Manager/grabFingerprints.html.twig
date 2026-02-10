@@ -1,0 +1,14 @@
+{% extends '@AwardWalletMain/Manager/layout.html.twig' %}
+
+{% block content %}
+    <h2>Fingerprints</h2>
+    <pre id="fingerprints">Loading..</pre>
+
+    <script>
+        require(['lib/fingerprints'], function(fingerprints) {
+            document.getElementById('fingerprints').innerText = JSON.stringify(fingerprints, null, 2);
+        })
+    </script>
+
+{% endblock %}
+

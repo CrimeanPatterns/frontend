@@ -1,0 +1,122 @@
+{% set MOBILE_NAV = true %}
+{% set HIDE_NAV = true %}
+{% set MAIN_BODY_CLASSES = {
+    'manual-hidden': true,
+    'responsive': true,
+    'hide-menu': true
+}|merge(MAIN_BODY_CLASSES|default({})) %}
+
+{% extends app.user is not null ? "@AwardWalletMain/Layout/common.html.twig" : "@AwardWalletMain/Layout/not_logged.html.twig" %}
+
+{% import "@AwardWalletMain/Cart/macros.html.twig" as macro %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        require([
+            'lib/customizer', 'lib/design', 'routing'
+        ], function (customizer) {
+            var btn = $('#cardPayButton'),
+                    overlay = $('.overlay'),
+                    event = $('.main-form-event');
+
+            btn.on('click', function (e) {
+                e.preventDefault();
+                $('html, body').animate({ scrollTop: 0 }, 'slow');
+
+                btn.addClass('loader').attr('disabled', 'disabled');
+
+                var progressBar = event.find('.update');
+
+                overlay.show();
+                event.show();
+                progressBar.show();
+
+                progressBar.find('.progress-bar-row span').animate({
+                    width:'100%'
+                }, 15000, 'linear');
+                var value = 0;
+
+                setInterval(function(){
+                    value += value >= 98 ? 0 : 2;
+                    progressBar.find('.progress-bar-row p').html(value + '%');
+                }, 300);
+
+                $.ajax({
+                    url: "{{ url }}",
+                    method: 'POST',
+                    success: function (data) {
+                        if (data.success && data.cartId) {
+                            var queryParameters = {id: data.cartId}, tmp;
+                            if ((tmp = parseInt(customizer.getQueryParameter('forceId'))) && !Number.isNaN(tmp) && tmp > 0) queryParameters['forceId'] = tmp;
+                            window.location.href = Routing.generate('aw_cart_common_complete', queryParameters)
+                        } else {
+                            btn.removeClass('loader').unbind('click');
+                            overlay.hide();
+                            progressBar.hide();
+                            if(data.error){
+                                event.find('.success-blk p').html(data.error);
+                            }
+                            event.find('.success-payment').show();
+                        }
+                    }
+                });
+            });
+        });
+    </script>
+{% endblock %}
+
+{% block meta %}
+    {{ parent() }}
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0, viewport-fit=cover">
+{% endblock %}
+
+{% block content %}
+    <div class="main-blk shortened">
+        <h1>{{ 'cart.order-review'|trans|desc("Order Review") }}</h1>
+        <form action="/" class="main-form">
+            <div class="overlay" style="display: none"></div>
+            <div class="main-form-event" style="display: none">
+                <div class="success-payment" style="display: none">
+                    <div class="success-blk">
+                        <div class="prev"><i class="icon-red-error-b"></i></div>
+                        <p>
+                            {{ 'cart.cc-error'|trans|desc("There has been an error processing your credit card.<br/>Please try again and if problems persist, please try another payment method.")|raw }}
+                        </p>
+                    </div>
+                    <a class="btn-blue" href="{{ path('aw_cart_common_orderdetails') }}">{{ 'cart.error.back-to-order'|trans|desc("Back to order") }}</a>
+                </div>
+                <div class="update" style="display: none">
+                    <i class="icon-silver-arrow-down"></i><p>{{ 'please-wait'|trans|desc("Please wait...") }}</p>
+                    <div class="progress-bar">
+                        <div class="progress-bar-row">
+                            <p>1%</p>
+                            <span style="width:1%"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="main-form-item">
+
+                {{ macro.drawCart(cart) }}
+                {#{{ macro.drawBillingAddress(cart) }}#}
+                {{ macro.drawCardInfo(cart) }}
+
+            </div>
+
+            {% set scheduledDate = cart.scheduledDate %}
+            {% if scheduledDate is null %}
+                {% set payButtonLabel = 'button.pay'|trans|desc("Pay") %}
+            {% else %}
+                {% set payButtonLabel = 'button.schedule-payment'|trans({'%date%': scheduledDate|formatDatetime('short', 'none')})|desc("Schedule Payment on %date%") %}
+            {% endif %}
+            <div class="row-submit t-right">
+                <a href="{{ url('aw_cart_common_orderdetails') }}" class="btn-silver">{{ 'button.back'|trans|desc("Back") }}</a>
+                <button class="btn-blue" id="cardPayButton">{{ payButtonLabel }}</button>
+            </div>
+        </form>
+    </div>
+{% endblock %}
+
+

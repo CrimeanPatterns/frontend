@@ -1,0 +1,41 @@
+{% extends "@AwardWalletMain/Layout/print.html.twig" %}
+{% use '@AwardWalletMain/Timeline/_printTimelineElements.html.twig' %}
+{% import '@AwardWalletMain/TwigMacros/common.html.twig' as common %}
+
+
+{% block meta %}
+    {{ parent() }}
+    <base href="{{ path('aw_timeline_print') }}">
+    <META NAME="description" content="{{ 'timeline.sharing.meta'|trans|desc('AwardWallet is the most comprehensive travel plan management solution on the internet.') }}">
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    {{ common.angularLinkConverter() }}
+    {{ encore_entry_script_tags('trans/' ~ app.request.locale) }}
+    {{ encore_entry_script_tags('timeline') }}
+{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    {{ encore_entry_link_tags('timeline') }}
+    {{ encore_entry_link_tags('trips') }}
+    {{ encore_entry_link_tags('scanner') }}
+{% endblock %}
+
+{% block title %}
+    {{ 'timeline.sharing.title'|trans|desc('AwardWallet - the best tool for travelers to track their reservations and frequent flier miles') }}
+{% endblock %}
+
+{% block content %}
+    <div class="trip" data-ng-controller="timeline" data-ng-cloak>
+
+        <div class="ajax-loader" data-ng-if="spinner">
+            <div class="loading"></div>
+        </div>
+
+        <div data-ng-if="!spinner">
+            {{ block('trip_list') }}
+        </div>
+    </div>
+{% endblock %}

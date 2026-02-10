@@ -1,0 +1,39 @@
+{% use '@AwardWalletMain/AccountList/updater.html.twig' %}
+
+{% block updater_control %}
+    <div class="text-center">
+        <a data-ng-show="updateAction.state.updating" href="" data-ng-click="updateAction.stop()" class="btn-blue">{{ 'award.account.list.update.stop'|trans|desc("Stop updating") }}</a>
+        <a data-ng-hide="updateAction.state.updating" href="" data-ng-click="updateAction.next(updateProgress.counters.trips)" class="btn-blue">{{ 'award.account.list.update.next'|trans|desc("Next") }}</a>
+    </div>
+{% endblock %}
+
+{% block updater_stat %}
+    <table class="main-table">
+        <tbody>
+        <tr data-ng-show="updateProgress.counters.trips">
+            <td class="prev" style="border-bottom: 2px solid rgb(190, 194, 204);"><i class="icon-green-check"></i></td>
+            <td class="title-row" style="border-bottom: 2px solid rgb(190, 194, 204);">{{ 'award.account.list.update.found-trips'|trans|desc('Total reservations found') }}</td>
+            <td class="balance" style="border-bottom: 2px solid rgb(190, 194, 204);"></td>
+            <td class="count" style="border-bottom: 2px solid rgb(190, 194, 204);"><span class="black">[[ updateProgress.counters.trips ]]</span></td>
+        </tr>
+        <tr data-ng-show="(updateProgress.counters.success - updateProgress.counters.disabled) > 0">
+            <td class="prev" style="border-top: none;"><i class="icon-green-check"></i></td>
+            <td class="title-row" style="border-top: none;">{{ 'award.account.list.update.checked'|trans|desc('Accounts successfully checked') }}</td>
+            <td class="balance" style="border-top: none;"></td>
+            <td class="count" style="border-top: none;"><span class="black">[[ updateProgress.counters.success - updateProgress.counters.disabled ]]</span></td>
+        </tr>
+        <tr data-ng-show="updateProgress.counters.disabled">
+            <td class="prev" style="border-top: none;"><i class="icon-warning-small"></i></td>
+            <td class="title-row" style="border-top: none;">{{ 'award.account.list.update.disabled-counter'|trans|desc('Not able to update') }}</td>
+            <td class="balance" style="border-top: none;"></td>
+            <td class="count" style="border-top: none;"><span class="black">[[ updateProgress.counters.disabled ]]</span></td>
+        </tr>
+        <tr data-ng-show="updateProgress.counters.error">
+            <td class="prev"><i class="icon-red-error"></i></td>
+            <td class="title-row">{{ 'award.account.list.update.error-counter'|trans|desc('Accounts with errors') }}</td>
+            <td class="balance"></td>
+            <td class="count"><span class="black">[[ updateProgress.counters.error ]]</span></td>
+        </tr>
+        </tbody>
+    </table>
+{% endblock %}

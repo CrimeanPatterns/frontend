@@ -1,0 +1,807 @@
+parameters:
+    aw.security.antibruteforce_locker.lockout_periods: 60
+    aw.security.antibruteforce_locker.lockout_period_seconds: 60
+
+    aw.security.antibruteforce_locker.lockout_login_attempts: 10
+    aw.security.antibruteforce_locker.lockout_ip_attempts: 20
+
+    aw.security.antibruteforce_locker.lockout_login_keyprefix: 'login_lockout_GEN4_'
+    aw.security.antibruteforce_locker.lockout_ip_keyprefix: 'ip_lockout_GEN4_'
+
+    aw.security.antibruteforce_locker.forgot_periods: 3
+    aw.security.antibruteforce_locker.forgot_seconds: 60
+    aw.security.antibruteforce_locker.forgot_attempts: 5
+    aw.security.antibruteforce_locker.forgot_keyprefix: 'fpip_lockout_GEN3_'
+
+    bot_ip_detector_class: 'AwardWallet\MainBundle\Security\BotIpDetector'
+
+services:
+    _defaults:
+        public: true
+        bind:
+            $elasticSearchHost: '%env(ELASTICSEARCH_HOST)%'
+            bool $recaptchaEnabled: "%recaptcha_enabled%"
+            $channelCheckers: !tagged aw.voter.messaging_channel.access_checker
+    _instanceof:
+        AwardWallet\MainBundle\Security\Voter\MessagingChannelVoter\MessagingChannelAccessCheckerInterface:
+            tags: ['aw.voter.messaging_channel.access_checker']
+        AwardWallet\MainBundle\Security\Authenticator\Step\StepInterface:
+            tags:
+                - { name: 'monolog.logger', channel: 'security' }
+        Symfony\Component\Security\Core\Authorization\Voter\VoterInterface:
+            tags:
+                - { name: security.voter }
+    AwardWallet\MainBundle\Security\Voter\:
+        resource: '../../Security/Voter'
+        exclude: '../../Security/Voter/Subject/*.php'
+        autowire: true
+
+    aw.security.token_storage:
+        public: true
+        autowire: true
+        class: AwardWallet\MainBundle\FrameworkExtension\AwTokenStorage
+        arguments:
+            - "@security.token_storage"
+            - "@security.authorization_checker"
+            - "@doctrine.orm.entity_manager"
+    AwardWallet\MainBundle\FrameworkExtension\AwTokenStorage: '@aw.security.token_storage'
+
+    AwardWallet\MainBundle\FrameworkExtension\AwTokenStorageInterface: "@aw.security.token_storage"
+
+    aw.security.authentication_listener:
+        public: true
+        autowire: true
+        class:  AwardWallet\MainBundle\Security\AuthenticationListener
+        arguments:
+            $tokenProvider: '@AwardWallet\MainBundle\Security\RememberMe\RememberMeTokenProvider'
+            $loginLocker: "@aw.security.antibruteforce.login"
+            $ipLocker: "@aw.security.antibruteforce.ip"
+        tags:
+            - { name: 'monolog.logger', channel: 'security' }
+            - { name: kernel.event_listener, event: kernel.exception, method: onCoreException, priority: 1000 }
+            - { name: kernel.event_listener, event: security.interactive_login, method: onInteractiveLogin, priority: 1000 }
+            - { name: kernel.event_listener, event: security.switch_user, method: onSwitchUser, priority: 1000 }
+
+    AwardWallet\MainBundle\Security\OAuth\LoginListener:
+        autowire: true
+        tags:
+            - { name: kernel.event_listener, event: security.interactive_login, method: onInteractiveLogin, priority: 1100 }
+
+
+    aw.security.access.control:
+        public: true
+        class: AwardWallet\MainBundle\Globals\AccessLevel\AccessControlList
+        arguments: []
+        calls:
+           - [ setEntityManager, [ "@doctrine.orm.entity_manager" ] ]
+        shared:    true
+
+    aw.security.password_checker:
+        public: true
+        class: AwardWallet\MainBundle\Security\PasswordChecker
+        arguments:
+            - "@aw.security.antibruteforce.ip"
+            - "@aw.security.antibruteforce.login"
+            - "@monolog.logger.security"
+            - "@security.encoder_factory"
+            - "@doctrine.orm.entity_manager"
+            - "%reveal_master_password%"
+
+    AwardWallet\MainBundle\Security\PasswordChecker: '@aw.security.password_checker'
+
+    aw.security.authenticator.login_form:
+        public: true
+        class: AwardWallet\MainBundle\Security\Authenticator\LoginFormAuthenticator
+        arguments:
+            - !tagged aw.security.authenticator.login_form.entry_point
+            - "@aw.security.authenticator.form_entry_point_helper"
+            - "@request_stack"
+            - "@translator"
+
+    aw.security.authenticator.entry_point.desktop_form:
+        public: true
+        class: AwardWallet\MainBundle\Security\Authenticator\EntryPoint\DesktopFormEntryPoint
+        arguments:
+            - !tagged aw.security.authenticator.login_form.entry_point.step
+            - !tagged aw.security.authenticator.login_form.entry_point.step_factory
+            - "@aw.security.authenticator.form_entry_point_helper"
+            - "@translator"
+            - '@AwardWallet\MainBundle\Security\Authenticator\EntryPoint\AuthKeyChecker'
+            - "@monolog.logger.security"
+            - '@AwardWallet\MainBundle\Service\MobileAppRedirector'
+        tags:
+            - { name: aw.security.authenticator.login_form.entry_point, priority: 0 }
+
+    aw.security.authenticator.entry_point.mobile_form:
+        public: true
+        class: AwardWallet\MainBundle\Security\Authenticator\EntryPoint\MobileFormEntryPoint
+        arguments:
+            - !tagged aw.security.authenticator.login_form.entry_point.step
+            - !tagged aw.security.authenticator.login_form.entry_point.step_factory
+            - "@aw.security.authenticator.form_entry_point_helper"
+            - "@translator"
+            - "@form.factory"
+            - "@aw.form.dehydrator"
+            - "@aw.api.versioning"
+            - '@AwardWallet\MainBundle\Security\Authenticator\EntryPoint\AuthKeyChecker'
+            - "@logger"
+        tags:
+            - { name: aw.security.authenticator.login_form.entry_point, priority: 1 }
+
+    aw.security.authenticator.entry_point.mobile_old_form:
+        public: true
+        class: AwardWallet\MainBundle\Security\Authenticator\EntryPoint\MobileOldFormEntryPoint
+        arguments:
+            - !tagged aw.security.authenticator.login_form.entry_point.step
+            - !tagged aw.security.authenticator.login_form.entry_point.step_factory
+            - "@aw.api.versioning"
+            - "@aw.security.authenticator.form_entry_point_helper"
+            - "@translator"
+            - '@AwardWallet\MainBundle\Security\Authenticator\EntryPoint\AuthKeyChecker'
+            - "@monolog.logger.security"
+        tags:
+            - { name: aw.security.authenticator.login_form.entry_point, priority: 2 }
+
+    aw.security.authenticator.form_entry_point_helper:
+        public: true
+        class: AwardWallet\MainBundle\Security\Authenticator\EntryPoint\FormEntryPointHelper
+        arguments:
+            - "@aw.security.antibruteforce.login"
+            - "@monolog.logger.security"
+            - '@AwardWallet\MainBundle\Security\TwoFactorAuthentication\TwoFactorAuthenticationService'
+
+    aw.security.authenticator.entry_point.step.csrf:
+        public: true
+        class: AwardWallet\MainBundle\Security\Authenticator\Step\CsrfStep
+        arguments:
+            - "@security.csrf.token_manager"
+            - "@monolog.logger.security"
+        tags:
+           - { name: aw.security.authenticator.login_form.entry_point.step }
+
+    AwardWallet\MainBundle\Security\Authenticator\EntryPoint\AuthKeyChecker:
+        autowire: true
+        public: true
+        arguments:
+            - "@monolog.logger.security"
+            - "%local_passwords_key%"
+            - "%local_passwords_key_old%"
+
+    aw.security.authenticator.entry_point.step.business_admin:
+        public: true
+        class: AwardWallet\MainBundle\Security\Authenticator\Step\BusinessAdminStep
+        arguments:
+            - "%business_host%"
+            - '@AwardWallet\MainBundle\Entity\Repositories\UsrRepository'
+            - "@monolog.logger.security"
+        tags:
+            - { name: aw.security.authenticator.login_form.entry_point.step }
+
+    aw.security.authenticator.entry_point.step.ip_lockout:
+        public: true
+        class: AwardWallet\MainBundle\Security\Authenticator\Step\IpLockoutStep
+        arguments:
+            - "@aw.security.antibruteforce.ip"
+            - "@monolog.logger.security"
+        tags:
+            - { name: aw.security.authenticator.login_form.entry_point.step }
+
+    AwardWallet\MainBundle\Security\Authenticator\Step\DetectBotIpStep:
+        public: true
+        autowire: true
+        tags:
+            - { name: aw.security.authenticator.login_form.entry_point.step }
+
+    aw.security.authenticator.entry_point.step.login_password_lockout:
+        public: true
+        class: AwardWallet\MainBundle\Security\Authenticator\Step\LoginPasswordLockoutStep
+        arguments:
+            - "@aw.security.antibruteforce.login"
+            - "@aw.security.antibruteforce.password"
+            - "@monolog.logger.security"
+        tags:
+            - { name: aw.security.authenticator.login_form.entry_point.step }
+
+    aw.security.authenticator.entry_point.step.login_password:
+        public: true
+        class: AwardWallet\MainBundle\Security\Authenticator\Step\LoginPasswordStep
+        arguments:
+            - "@monolog.logger.security"
+            - "@aw.security.password_checker"
+        tags:
+            - { name: aw.security.authenticator.login_form.entry_point.step }
+
+    aw.security.authenticator.entry_point.step.one_time_code_by_app_recovery:
+        public: true
+        class: AwardWallet\MainBundle\Security\Authenticator\Step\OneTimeCodeByAppRecoveryStep
+        autowire: true
+        tags:
+            - { name: aw.security.authenticator.login_form.entry_point.step }
+            - { name: 'monolog.logger', channel: 'security' }
+
+    aw.security.authenticator.entry_point.step.one_time_code_by_app:
+        public: true
+        class: AwardWallet\MainBundle\Security\Authenticator\Step\OneTimeCodeByAppStep
+        autowire: true
+        tags:
+            - { name: aw.security.authenticator.login_form.entry_point.step }
+            - { name: 'monolog.logger', channel: 'security' }
+
+    aw.security.authenticator.entry_point.step.one_time_code_by_email:
+        public: true
+        class: AwardWallet\MainBundle\Security\Authenticator\Step\OneTimeCodeByEmail\OneTimeCodeByEmailStep
+        arguments:
+            - "@monolog.logger.security"
+            - "@aw.globals.geo"
+            - '@AwardWallet\MainBundle\Security\Authenticator\Step\OneTimeCodeByEmail\StorageOperations'
+            - "@aw.email.mailer"
+            - "@event_dispatcher"
+            - "@translator"
+            - '@AwardWallet\MainBundle\Security\Authenticator\Step\OneTimeCodeByEmail\SupportChecker'
+        tags:
+            - { name: aw.security.authenticator.login_form.entry_point.step }
+
+    AwardWallet\MainBundle\Security\Authenticator\Step\OneTimeCodeByEmail\StorageOperations:
+        autowire: true
+        arguments:
+            $oneTimeCodeRepo: '@AwardWallet\MainBundle\Entity\Repositories\OneTimeCodeRepository'
+
+    AwardWallet\MainBundle\Security\Authenticator\Step\OneTimeCodeByEmail\SupportChecker:
+        autowire: true
+        arguments:
+            - '@AwardWallet\MainBundle\Security\Authenticator\Step\LocationChangedChecker'
+            - "@monolog.logger.security"
+            - "%email_otc%"
+
+    aw.security.authenticator.entry_point.step.scripted:
+        public: true
+        class: AwardWallet\MainBundle\Security\Authenticator\Step\ScriptedStep
+        arguments:
+            - "@monolog.logger.security"
+        tags:
+            - { name: aw.security.authenticator.login_form.entry_point.step }
+
+    aw.security.authenticator.entry_point.step.security_question:
+        public: true
+        class: AwardWallet\MainBundle\Security\Authenticator\Step\SecurityQuestion\SecurityQuestionsStep
+        arguments:
+            - "@aw.question_generator"
+            - "@monolog.logger.security"
+            - "@translator"
+            - '@AwardWallet\MainBundle\Security\Authenticator\Step\SecurityQuestion\SupportChecker'
+        tags:
+            - { name: aw.security.authenticator.login_form.entry_point.step }
+
+    AwardWallet\MainBundle\Security\Authenticator\Step\SecurityQuestion\SupportChecker:
+        autowire: true
+        arguments:
+            - "@aw.question_generator"
+            - '@AwardWallet\MainBundle\Security\Authenticator\Step\LocationChangedChecker'
+            - "@monolog.logger.security"
+
+    AwardWallet\MainBundle\Security\Authenticator\Step\LocationChangedChecker:
+        autowire: true
+        arguments:
+            - "@monolog.logger.security"
+            - "@aw.globals.geo"
+
+    AwardWallet\MainBundle\Security\Authenticator\Step\Recaptcha\CaptchaStepHelper:
+        autowire: true
+
+    aw.security.authenticator.entry_point.step.desktop_captcha:
+        public: true
+        autowire: true
+        class: AwardWallet\MainBundle\Security\Authenticator\Step\Recaptcha\DesktopCaptchaStep
+        arguments:
+            $captchaResolver: '@AwardWallet\MainBundle\Security\Captcha\Resolver\DesktopCaptchaResolver'
+        tags:
+            - { name: aw.security.authenticator.login_form.entry_point.step }
+
+
+    aw.security.authenticator.entry_point.step.mobile_captcha:
+        public: true
+        autowire: true
+        class: AwardWallet\MainBundle\Security\Authenticator\Step\Recaptcha\MobileCaptchaStep
+        arguments:
+            $captchaResolver: '@AwardWallet\MainBundle\Security\Captcha\Resolver\MobileCaptchaResolver'
+        tags:
+            - { name: aw.security.authenticator.login_form.entry_point.step }
+
+    AwardWallet\MainBundle\Security\Authenticator\Step\AbstainingStep:
+        tags:
+            - { name: aw.security.authenticator.login_form.entry_point.step }
+
+    aw.security.authenticator.entry_point.step_factory.load_user:
+        public: true
+        class: AwardWallet\MainBundle\Security\Authenticator\Step\LoadUserStepFactory
+        arguments:
+            - "@monolog.logger.security"
+        tags:
+            - { name: aw.security.authenticator.login_form.entry_point.step_factory }
+
+    aw.security.user_provider:
+        public: true
+        class: AwardWallet\MainBundle\Security\AwUserProvider
+        autowire: true
+
+
+    AwardWallet\MainBundle\Security\RememberMe\RememberMeTokenProvider:
+        public: true
+        class: AwardWallet\MainBundle\Security\RememberMe\RememberMeTokenProvider
+        autowire: true
+
+    AwardWallet\MainBundle\Security\RememberMe\RememberMeServices:
+        public: true
+        arguments:
+          - ["@security.user.provider.concrete.user_db"]
+          - "%security.rememberme_key%:%security.rememberme_key_old%"
+          - "secured_area"
+          - { name: "%security.rememberme_name%", always_remember_me: false, remember_me_parameter: "%security.rememberme_parameter%", lifetime: "%security.rememberme_lifetime%", path: "/", domain: null, httponly: true }
+          - "@logger"
+        calls:
+          - [setTokenProvider, ['@AwardWallet\MainBundle\Security\RememberMe\RememberMeTokenProvider']]
+
+    aw.security.antibruteforce.login:
+        public: true
+        class: AwardWallet\MainBundle\Security\AntiBruteforceLockerService
+        arguments:
+            - "@aw.memcached"
+            - "%aw.security.antibruteforce_locker.lockout_login_keyprefix%"
+            - "%aw.security.antibruteforce_locker.lockout_period_seconds%"
+            - "%aw.security.antibruteforce_locker.lockout_periods%"
+            - "%aw.security.antibruteforce_locker.lockout_login_attempts%"
+            - 'Your account has been locked out from AwardWallet for 1 hour, due to a large number of invalid login attempts.'
+            - "@monolog.logger.security"
+
+
+    aw.security.antibruteforce.ip:
+        public: true
+        class: AwardWallet\MainBundle\Security\AntiBruteforceLockerService
+        arguments:
+            - "@aw.memcached"
+            - "%aw.security.antibruteforce_locker.lockout_ip_keyprefix%"
+            - "%aw.security.antibruteforce_locker.lockout_period_seconds%"
+            - "%aw.security.antibruteforce_locker.lockout_periods%"
+            - "%aw.security.antibruteforce_locker.lockout_ip_attempts%"
+            - 'You have been locked out from AwardWallet for 1 hour, due to a large number of invalid login attempts.'
+            - "@monolog.logger.security"
+
+    aw.security.antibruteforce.forgot:
+        public: true
+        class: AwardWallet\MainBundle\Security\AntiBruteforceLockerService
+        arguments:
+            - "@aw.memcached"
+            - "%aw.security.antibruteforce_locker.forgot_keyprefix%"
+            - "%aw.security.antibruteforce_locker.forgot_seconds%"
+            - "%aw.security.antibruteforce_locker.forgot_periods%"
+            - "%aw.security.antibruteforce_locker.forgot_attempts%"
+            - 'Please wait 5 minutes before next attempt.'
+            - "@monolog.logger.security"
+
+    aw.security.antibruteforce.password:
+        public: true
+        class: AwardWallet\MainBundle\Security\AntiBruteforceLockerService
+        arguments:
+            - "@aw.memcached"
+            - 'lock_pass'
+            - 60
+            - 5
+            - 20
+            - 'Please wait 5 minutes before next attempt.'
+            - "@monolog.logger.security"
+
+    aw.security.antibruteforce.check_login:
+        public: true
+        class: AwardWallet\MainBundle\Security\AntiBruteforceLockerService
+        arguments:
+            - "@aw.memcached"
+            - 'lock_check_login'
+            - 60
+            - 5
+            - 10
+            - 'Please wait 5 minutes before next attempt.'
+            - "@monolog.logger.security"
+
+    aw.security.antibruteforce.check_email:
+        public: true
+        class: AwardWallet\MainBundle\Security\AntiBruteforceLockerService
+        arguments:
+            - "@aw.memcached"
+            - 'lock_check_email'
+            - 60
+            - 5
+            - 10
+            - 'Please wait 5 minutes before next attempt.'
+            - "@monolog.logger.security"
+
+    aw.security.antibruteforce.connection_search:
+        public: true
+        class: AwardWallet\MainBundle\Security\AntiBruteforceLockerService
+        arguments:
+            - "@aw.memcached"
+            - 'connection_search'
+            - 60
+            - 5
+            - 10
+            - 'Please wait 5 minutes before next attempt.'
+            - "@monolog.logger.security"
+
+    aw.security.antibruteforce.captcha:
+        public: true
+        class: AwardWallet\MainBundle\Security\AntiBruteforceLockerService
+        arguments:
+            - "@aw.memcached"
+            - 'captcha'
+            - 60
+            - 5
+            - 10
+            - 'Please wait 5 minutes before next attempt.'
+            - "@monolog.logger.security"
+
+    aw.security.antibruteforce.use_coupon_form:
+        public: true
+        class: AwardWallet\MainBundle\Security\AntiBruteforceLockerService
+        arguments:
+            - "@aw.memcached"
+            - 'use_coupon_form'
+            - 60
+            - 5
+            - 10
+            - 'Please wait 5 minutes before next attempt.'
+            - "@monolog.logger.security"
+
+    aw.security.antibruteforce.add_connection:
+        public: true
+        class: AwardWallet\MainBundle\Security\AntiBruteforceLockerService
+        arguments:
+            - "@aw.memcached"
+            - 'add_connection'
+            - 60
+            - 10
+            - 10
+            - 'Please wait 10 minutes before next attempt.'
+            - "@monolog.logger.security"
+
+    aw.security.antibruteforce.api_export:
+        public: true
+        class: AwardWallet\MainBundle\Security\AntiBruteforceLockerService
+        arguments:
+            - "@aw.memcached"
+            - 'api_export'
+            - 60
+            - 10
+            - 12
+            - 'You have been locked out from AwardWallet API for 10 minutes, due to a large number of invalid login attempts'
+            - "@monolog.logger.security"
+
+    aw.security.antibruteforce.email:
+        public: true
+        class: AwardWallet\MainBundle\Security\AntiBruteforceLockerService
+        arguments:
+            - "@aw.memcached"
+            - 'email'
+            - 60
+            - 20
+            - 2
+            - 'Please wait 1 hour before next attempt.'
+            - "@monolog.logger.security"
+
+    aw.security.antibruteforce.flight_fill:
+        public: true
+        class: AwardWallet\MainBundle\Security\AntiBruteforceLockerService
+        arguments:
+            - "@aw.memcached"
+            - 'flight_fill'
+            - 10
+            - 6
+            - 10
+            - 'Please wait before next attempt'
+            - "@monolog.logger.security"
+
+    aw.security.antibruteforce.google_request:
+        public: true
+        class: AwardWallet\MainBundle\Security\AntiBruteforceLockerService
+        arguments:
+            - "@aw.memcached"
+            - 'google_request'
+            - 10
+            - 6
+            - 100
+            - 'Please wait before next attempt'
+            - "@monolog.logger.security"
+
+    aw.security.antibruteforce.merchant_lookup_ip:
+        public: true
+        class: AwardWallet\MainBundle\Security\AntiBruteforceLockerService
+        arguments:
+            - "@aw.memcached"
+            - 'lookup_pass_ip'
+            - 300
+            - 6
+            - 100
+            - 'Please wait before next attempt.'
+            - "@monolog.logger.security"
+
+    aw.security.antibruteforce.merchant_lookup_user:
+        public: true
+        class: AwardWallet\MainBundle\Security\AntiBruteforceLockerService
+        arguments:
+            - "@aw.memcached"
+            - 'lookup_pass_user'
+            - 300
+            - 6
+            - 100
+            - 'Please wait before next attempt.'
+            - "@monolog.logger.security"
+
+    AwardWallet\MainBundle\Security\TwoFactorAuthentication\TwoFactorAuthenticationService:
+        public: true
+        autowire: true
+        lazy: true
+        arguments:
+            $localPasswordsKey: "%local_passwords_key%"
+            $localPasswordsKeyOld: "%local_passwords_key_old%"
+
+    aw.security.antibruteforce.mailbox_password:
+        public: true
+        class: AwardWallet\MainBundle\Security\AntiBruteforceLockerService
+        arguments:
+            - "@aw.memcached"
+            - 'lock_mailbox_pass'
+            - 60
+            - 5
+            - 20
+            - 'Please wait 5 minutes before next attempt.'
+            - "@monolog.logger.security"
+
+    aw.security.antibruteforce.mailbox_user:
+        public: true
+        class: AwardWallet\MainBundle\Security\AntiBruteforceLockerService
+        arguments:
+            - "@aw.memcached"
+            - 'lock_mailbox_user'
+            - 60
+            - 5
+            - 10
+            - 'Please wait 5 minutes before next attempt.'
+            - "@monolog.logger.security"
+
+    aw.security.antibruteforce.mailbox_email:
+        public: true
+        class: AwardWallet\MainBundle\Security\AntiBruteforceLockerService
+        arguments:
+            - "@aw.memcached"
+            - 'lock_mailbox_email'
+            - 60
+            - 5
+            - 10
+            - 'Please wait 5 minutes before next attempt.'
+            - "@monolog.logger.security"
+
+    aw.security.antibruteforce.mailbox_ip:
+        public: true
+        class: AwardWallet\MainBundle\Security\AntiBruteforceLockerService
+        arguments:
+            - "@aw.memcached"
+            - 'lock_mailbox_ip'
+            - 60
+            - 5
+            - 10
+            - 'Please wait 5 minutes before next attempt.'
+            - "@monolog.logger.security"
+
+    aw.security.antibruteforce.centrifuge_channel_auth:
+        public: true
+        class: AwardWallet\MainBundle\Security\AntiBruteforceLockerService
+        arguments:
+            - "@aw.memcached"
+            - 'lock_centrifuge_channel_auth'
+            - 60
+            - 5
+            - 100
+            - 'Please wait 5 minutes before next attempt.'
+            - "@monolog.logger.security"
+
+    aw.security.antibruteforce.manager_tier1:
+        public: true
+        class: AwardWallet\MainBundle\Security\AntiBruteforceLockerService
+        arguments:
+            $memcached: "@aw.memcached"
+            $prefix: 'manager_lock_tier1_v1_'
+            $periodSeconds: 60
+            $periods: 60
+            $maxAttempts: 250
+            $errorMessage: "Access denied"
+            $logger: "@monolog.logger.security"
+
+    aw.security.antibruteforce.manager_tier2:
+        public: true
+        class: AwardWallet\MainBundle\Security\AntiBruteforceLockerService
+        arguments:
+            $memcached: "@aw.memcached"
+            $prefix: 'manager_lock_tier2_v2_'
+            $periodSeconds: 60
+            $periods: 60
+            $maxAttempts: 500
+            $errorMessage: "Access denied"
+            $logger: "@monolog.logger.security"
+
+    aw.security.antibruteforce.manager_tier3:
+        public: true
+        class: AwardWallet\MainBundle\Security\AntiBruteforceLockerService
+        arguments:
+            $memcached: "@aw.memcached"
+            $prefix: 'manager_lock_tier3_v1_'
+            $periodSeconds: 60
+            $periods: 60
+            $maxAttempts: 1000
+            $errorMessage: "Access denied"
+            $logger: "@monolog.logger.security"
+
+    aw.security.antibruteforce.manager_tier4:
+        public: true
+        class: AwardWallet\MainBundle\Security\AntiBruteforceLockerService
+        arguments:
+            $memcached: "@aw.memcached"
+            $prefix: 'manager_lock_tier4_v1_'
+            $periodSeconds: 60
+            $periods: 60
+            $maxAttempts: 2000
+            $errorMessage: "Access denied"
+            $logger: "@monolog.logger.security"
+
+    aw.security.antibruteforce.page_visit_locker:
+        public: true
+        class: AwardWallet\MainBundle\Security\AntiBruteforceLockerService
+        arguments:
+            - "@aw.memcached"
+            - 'page_visit_locker_pass_user'
+            - 60
+            - 5
+            - 300
+            - 'Please wait before next attempt.'
+            - "@monolog.logger.security"
+
+    aw.security.antibruteforce.best_credit_cards_locker:
+        public: true
+        class: AwardWallet\MainBundle\Security\AntiBruteforceLockerService
+        arguments:
+            - "@aw.memcached"
+            - 'best_credit_cards_user'
+            - 600
+            - 6
+            - 30,
+            - 'Please wait before next attempt.'
+            - "@monolog.logger.security"
+
+    aw.question_generator:
+        public: true
+        class: AwardWallet\MainBundle\Security\TwoFactorAuthentication\QuestionGenerator
+        autowire: true
+
+    AwardWallet\MainBundle\Security\SessionListener:
+        public: true
+        arguments:
+            - "@doctrine.orm.default_entity_manager"
+            - "@aw.security.token_storage"
+            - "@security.authorization_checker"
+            - "@router"
+            - "@service_container"
+            - "@logger"
+            - "%kernel.debug%"
+            - "@request_stack"
+        tags:
+            - { name: kernel.event_subscriber, priority: 1000 }
+
+    aw.security.invite_locker:
+        public: true
+        class: AwardWallet\MainBundle\Security\InviteLocker
+        arguments: ["@aw.memcached", "@monolog.logger.security", "@security.token_storage", "@request_stack"]
+
+    aw.ownerable.right.checker:
+        public: true
+        class: AwardWallet\MainBundle\Security\OwnerableRightChecker
+        arguments: ['@AwardWallet\MainBundle\Security\Voter\SiteVoter', '@AwardWallet\MainBundle\Entity\Repositories\UsrRepository']
+
+    aw.secure_token_listener:
+        public: true
+        class: AwardWallet\MainBundle\FrameworkExtension\Listeners\AwSecureTokenListener\AwSecureTokenListener
+        arguments:
+            - "@service_container"
+            - "@aw.api.versioning"
+        tags:
+            - { name: kernel.event_listener, event: kernel.controller, method: onKernelController, priority: -2 }
+
+
+    aw.mobile_token_checker:
+        public: true
+        class: AwardWallet\MainBundle\FrameworkExtension\Listeners\AwSecureTokenListener\MobileTokenChecker\MobileTokenChecker
+        arguments:
+            - "@aw.api.versioning"
+            - "@translator"
+            - "%aw.secure_token.salt_key%"
+
+    AwardWallet\MainBundle\Security\Encryptor\Encryptor:
+        autowire: true
+        arguments:
+            - "@aw.encryption.backend.sodium1"
+            - !tagged aw.encryptor.backend
+
+    aw.encryption.backend.sodium1:
+        class: AwardWallet\MainBundle\Security\Encryptor\Backend\Sodium1Backend
+        autowire: true
+        arguments:
+            $prefix: "sodium1:"
+            $key: "@=parameter('encryptor_keys')['sodium1']"
+
+    AwardWallet\MainBundle\Security\Encryptor\Backend\Util\SodiumEncryptor:
+        autowire: true
+
+    AwardWallet\MainBundle\Security\Reauthentication\ReauthenticatorWrapper:
+        autowire: true
+        arguments:
+            $authorizationChecker: "@security.authorization_checker"
+
+    AwardWallet\MainBundle\Security\Reauthentication\Reauthenticator:
+        autowire: true
+        arguments:
+            $reauthenticators: !tagged aw.security.reauthenticator
+            $ipLocker: "@aw.security.antibruteforce.ip"
+            $loginLocker: "@aw.security.antibruteforce.login"
+            $logger: "@monolog.logger.security"
+
+    AwardWallet\MainBundle\Security\Reauthentication\Mobile\MobileReauthenticatorHandler:
+        autowire: true
+        tags:
+            - { name: 'monolog.logger', channel: 'security' }
+
+    AwardWallet\MainBundle\Security\Reauthentication\PasswordReauthenticator:
+        autowire: true
+        arguments:
+            $passwordChecker: "@aw.security.password_checker"
+        tags:
+            - { name: aw.security.reauthenticator, priority: 2 }
+            - { name: 'monolog.logger', channel: 'security' }
+
+    AwardWallet\MainBundle\Security\Reauthentication\CodeReauthenticator:
+        autowire: true
+        tags:
+            - { name: aw.security.reauthenticator, priority: 1 }
+            - { name: 'monolog.logger', channel: 'security' }
+        arguments:
+            $senders: !tagged aw.security.reauthenticator_code_sender
+
+    AwardWallet\MainBundle\Security\Reauthentication\Mobile\KeychainReauthenticator:
+        autowire: true
+        tags:
+            - { name: aw.security.reauthenticator, priority: 3 }
+            - { name: 'monolog.logger', channel: 'security' }
+
+    AwardWallet\MainBundle\Security\Reauthentication\EmailCodeSender:
+        autowire: true
+        tags:
+            - { name: aw.security.reauthenticator_code_sender }
+
+    AwardWallet\MainBundle\Security\Reauthentication\MobilePushCodeSender:
+        autowire: true
+        tags:
+            - { name: aw.security.reauthenticator_code_sender }
+
+    AwardWallet\MainBundle\Security\Reauthentication\Mobile\MobileReauthenticationRequestListener:
+        autowire: true
+        tags:
+            - { name: kernel.event_listener, event: kernel.controller, method: onKernelController, priority: -1 }
+            - { name: kernel.event_listener, event: kernel.response, method: onKernelResponse, priority: 199 }
+            - { name: 'monolog.logger', channel: 'security' }
+
+
+    AwardWallet\MainBundle\Security\BotIpDetector:
+        class: '%bot_ip_detector_class%'
+        autowire: true
+        tags:
+            - { name: 'monolog.logger', channel: 'security' }
+
+    AwardWallet\MainBundle\Security\RealUserDetector:
+        autowire: true
+        tags:
+            - { name: kernel.event_listener, event: aw.account_updated, method: onAccountUpdated }

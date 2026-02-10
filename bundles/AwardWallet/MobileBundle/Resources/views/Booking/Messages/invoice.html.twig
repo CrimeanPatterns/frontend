@@ -1,0 +1,119 @@
+{% apply spaceless %}
+{% set abRequest = message.request %}
+{% set bookerInfo = abRequest.booker.bookerinfo %}
+{% set invoice = message.invoice %}
+{% set currencyCode = bookerInfo.currency.code %}
+<div class="invoice">
+    <p>
+        {{ "invoice.message.intro"|trans({'%contactname%': abRequest.contactname|htmlencode}, 'booking')|raw }}
+    </p>
+    <div class="white-block">
+        <div class="top-container">
+            <img class="booker-logo" width="260" src="{{ url_scheme ~ '://' ~ host }}/{{ bookerInfo.MobileInvoiceLogo }}" alt=""> <br>
+            {{ bookerInfo.address|raw }}
+            <p><a href="mailto:{{ bookerInfo.FromEmail }}" class="blue-link">{{ bookerInfo.FromEmail }}</a></p>
+        </div>
+        <div class="table-block">
+            <table>
+                <tr>
+                    <td>{{ "invoice.invoice"|trans({}, 'booking') }} #</td>
+                    <td>{{ invoice.id }}</td>
+                </tr>
+                <tr>
+                    <td>{{ "invoice.message.terms"|trans({}, 'booking') }}</td>
+                    <td>{{ "invoice.message.due-on-receipt"|trans({}, 'booking') }}</td>
+                </tr>
+                <tr>
+                    <td>{{ "invoice.message.invoice-date"|trans({}, 'booking') }}</td>
+                    <td>{{ message.createdate|leadTZ|formatDatetime('medium', 'none') }}</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>
+                        {{ abRequest.contactname }}<br>
+                        {{ message.request.contactphone }}<br>
+                        <a href="mailto:{{ abRequest.contactemail }}" class="blue-link">{{ abRequest.contactemail }}</a>
+                    </td>
+                </tr>
+            </table>
+
+            {% for item in invoice.items %}
+                <table>
+                    <thead>
+                        <tr>
+                            <th colspan="2">{{ item.description }}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>{{ "user-pay.column.quantity.title"|trans({}, 'messages') }}</td>
+                            <td>{{ item.quantity|formatNumber }}</td>
+                        </tr>
+                        <tr>
+                            <td>{{ "invoice.message.rate"|trans({}, 'booking') }}</td>
+                            <td>{{ item.price|formatCurrency(currencyCode) }}</td>
+                        </tr>
+                        <tr>
+                            <td>{{ "business.transactions.amount"|trans({}, 'messages') }}</td>
+                            <td>
+                                {{ item.priceTotal|formatCurrency(currencyCode) }}
+
+                                {% if item.discount > 0 %}
+                                    <span class="red bold">- {{ item.discount|formatNumber }}% {{ "invoice.message.discount"|trans({}, 'booking') }}</span> = {{ item.total|formatCurrency(currencyCode) }}
+                                {% endif %}
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            {% endfor %}
+
+            {% for program in message.invoice.miles %}
+                <table>
+                    <thead>
+                        <tr>
+                            <th colspan="2">
+                                {{ "invoice.message.program-miles"|trans({
+                                    '%program%': program.customname,
+                                    '%owner%': program.owner
+                                }, 'booking') }}
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>{{ "business.transactions.amount"|trans({}, 'messages') }}</td>
+                            <td>{{ program.balance|formatNumber }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            {% endfor %}
+
+            <table>
+                <tbody>
+                    <tr>
+                        <td>{{ "invoice.form.total-label"|trans({}, 'booking') }}</td>
+                        <td><span class="red bold total">{{ invoice.total|formatCurrency(currencyCode) }}</span></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="invoice-status">
+        {% if invoice.isPaid %}
+            <div class="icon-paid-invoice"></div>
+        {% else %}
+            <div class="icon-unpaid-invoice"></div>
+        {% endif %}
+    </div>
+    <p>{{ "invoice.message.footer"|trans({}, 'booking') }}</p>
+    {% if not invoice.isPaid %}
+        <div class="button-row">
+            <a href="{{ url('aw_booking_view_index', {
+                'id': message.request.getAbRequestID,
+                'invoice': message.getAbMessageID,
+                'KeepDesktop': 1
+            }) }}" target="_blank" class="btn-blue">{{ "invoice.message.payment-button"|trans({}, 'booking') }}</a>
+        </div>
+    {% endif %}
+</div>
+{% endapply %}

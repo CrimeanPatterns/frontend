@@ -1,0 +1,85 @@
+{% extends '@MailTemplate/Layout/base.twig' %}
+{% trans_default_domain "email" %}
+
+{% block subject %}{% apply spaceless %}{% autoescape false %}
+    {{ 'want-connect.subject'|trans({'%name%': inviter.fullname }, 'email', lang)|desc('%name% wants to connect with you on AwardWallet.com') }}
+{% endautoescape %}{% endapply %}{% endblock subject %}
+
+{% block headerLogo %}
+    {% if inviter.isBusiness and inviter.bookerInfo %}
+        {% import '@MailTemplate/CommonMacro.twig' as commonMacro %}
+        {{ commonMacro.bookerLogo(inviter.bookerInfo, _context) }}
+    {% else %}
+        {{ parent() }}
+    {% endif %}
+{% endblock %}
+
+{% block content %}
+    {% import '@MailTemplate/CommonMacro.twig' as commonMacro %}
+
+    {{ commonMacro.hello(null, _context) }}
+
+    {% set mailtoLink = null %}
+    {% if not inviter.isBusiness %}
+        {% set mailtoLink = commonMacro.link('mailto:'~inviter.email, inviter.email) %}
+    {% endif %}
+    {{ commonMacro.paragraph(
+        'want-connect.user-message'|trans({
+            '%bold_on%': '<b style="color:#3d424d;">',
+            '%bold_off%': mailtoLink is null ? '</b>' : '</b> ('~mailtoLink~')',
+            '%userName%': inviter.fullname|htmlencode,
+            '%awardwallet%': 'AwardWallet',
+            '%bold2_on%': '<b>',
+            '%bold2_off%': '</b>'
+        }, 'email', lang)|desc("%bold_on% %userName% %bold_off% wants to connect with you on %bold2_on% %awardwallet% %bold2_off% for the purpose of sharing some award balance information with you."),
+        _context, {escape: false}
+    ) }}
+
+    {{ commonMacro.paragraph(
+        'want-connect.register'|trans({
+            '%awardwallet%': '<b>AwardWallet</b>'
+        }, 'email', lang)|desc('To accept this request please register on %awardwallet%'),
+        _context, {escape: false},
+        {
+            'margin-top': '30px'
+        }
+    ) }}
+
+    {% set shareAccountsLink = personalHost ~ '/invite/' ~ inviteCode.code %}
+    {{ commonMacro.dottedLink(shareAccountsLink, shareAccountsLink, _context) }}
+
+    {{ commonMacro.info(
+        'want-connect.already-registered'|trans({
+            '%awardwallet%': '<b>AwardWallet</b>'
+        }, 'email', lang)|desc('If you are already a member of AwardWallet you may follow the link above without registering again on %awardwallet%.'),
+        _context, {escape: false}
+    ) }}
+{% endblock content %}
+
+{% block signature %}
+    {%  if inviter.isBusiness and inviter.bookerInfo %}
+        {% import '@MailTemplate/CommonMacro.twig' as commonMacro %}
+        <tr>
+            <td align="right" style="padding:10px">
+                <span style="font-size:13px;color:#535457">
+                    {% set link = commonMacro.link(inviter.bookerInfo.ServiceURL, '$$')|split('$$') %}
+                    {{ 'thank_you_team'|trans({
+                        '%link_on%': link[0],
+                        '%link_off%': link[1],
+                        '%teamName%': inviter.bookerInfo.ServiceName|htmlencode
+                    }, 'email', lang)|desc('Thank you, <br>%link_on% %teamName% team%link_off%.')|raw }}
+                </span>
+            </td>
+        </tr>
+    {% else %}
+        {{ parent() }}
+    {% endif %}
+{% endblock signature %}
+
+{% block physical_address_row %}
+    {% if inviter.isBusiness and inviter.bookerInfo and inviter.bookerInfo.address is not empty %}
+        <span>{{ inviter.bookerInfo.address|raw }}</span>
+    {% else %}
+        {{ parent() }}
+    {% endif %}
+{% endblock physical_address_row %}

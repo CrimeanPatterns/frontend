@@ -1,0 +1,14 @@
+{% extends "@AwardWalletMain/Layout/business_default.html.twig" %}
+
+{% block popup %}
+    {{ parent() }}
+    {% if app.user.business.businessInfo.isBlocked() %}
+        <div id="insufficient_balance_popup" style="display: none;">
+            <p>{{ 'insufficient-balance.popup.text1'|trans }}</p>
+        </div>
+    {% elseif app.user.business.bookerInfo.isBlocked() %}
+        <div id="insufficient_balance_popup" style="display: none;">
+            <p>{{ 'insufficient-balance.popup.text1'|trans }}</p>
+        </div>
+    {% endif %}
+{% endblock %}

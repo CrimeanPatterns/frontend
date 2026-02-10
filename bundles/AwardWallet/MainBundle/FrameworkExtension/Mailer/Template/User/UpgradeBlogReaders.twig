@@ -1,0 +1,27 @@
+{% extends '@MailTemplate/Layout/base.twig' %}
+{% trans_default_domain "email" %}
+
+{% block subject %}{% apply spaceless %}{% autoescape false %}
+    {{ 'your-free-upgrade-awplus'|trans({}, 'email', lang)|desc('Your Free Upgrade to AwardWallet Plus') }}
+{% endautoescape %}{% endapply %}{% endblock subject %}
+
+{% block content %}
+    {% import '@MailTemplate/CommonMacro.twig' as commonMacro %}
+
+    <span style="color:#535457;">
+        {{ commonMacro.hello(user.firstname, _context) }}
+        <br>
+        {{ 'being-loyal-customer-upgrade-account-v2'|trans({
+            '%break%' : '<br>',
+            '%break2%' : '<br>',
+            '%blogpostCount%' : 'blog-posts'|trans({'%count%': blogpostCount}, 'messages', lang),
+            '%amountTimeSpent%' : 'hours'|trans({'%count%': amountTimeSpent}, 'messages', lang),
+            '%untilDate%' : untilDate,
+            '%link_on%': '<a href="' ~ path('aw_home') ~ '" style="color:#4684c4;font-weight:bold;text-decoration:none;">',
+            '%link_off%' : '</a>',
+        }, 'email', lang)|desc("Thank you for being a loyal AwardWallet customer! We recently noticed that you've been especially active reading the AwardWallet blog. Our latest report says you've visited %blogpostCount% and spent about %amountTimeSpent% on the blog in the past month.
+%break%%break2%Our writing team works hard to create the best content about loyalty programs and travel, and we're really happy to know that you're finding it valuable. As a token of appreciation, we're upgrading your account to AwardWallet Plus until %untilDate%.
+%break%%break2%%link_on%Please enjoy this complimentary upgrade!%link_off%")|raw }}
+    </span>
+
+{% endblock content %}

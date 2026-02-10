@@ -1,0 +1,31 @@
+{% extends app.user is not null ? "@AwardWalletMain/Layout/common.html.twig" : "@AwardWalletMain/Layout/not_logged.html.twig" %}
+{% import _self as macros %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+    <div class="main-blk">
+        <div class="main-blk-content">
+            <table cellspacing="0" cellpadding="0" border="0" align="center" style="width: 100%;">
+                <tr>
+                    <td valign="bottom" align="center"><br>
+                        <div style="width: 400px; position: inherit;" class="ui-dialog ui-widget ui-widget-content ui-corner-all ui-front ui-draggable ui-resizable ui-dialog-buttons" role="dialog">
+                            <div>
+                                <div class="ng-isolate-scope ui-dialog-content ui-widget-content">
+                                    <table cellspacing="0" cellpadding="0" border="0">
+                                        <tr>
+                                            <td width="50" align="left"><img src="/lib/images/error_big.gif" border="0" alt=""></td>
+                                            <td class="errorFrm">{{ message|raw }}</td>
+                                        </tr>
+                                    </table>
+                                    <div class='clear'></div>
+                                </div>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+    <br /><br /><br /><br />
+{% endblock %}

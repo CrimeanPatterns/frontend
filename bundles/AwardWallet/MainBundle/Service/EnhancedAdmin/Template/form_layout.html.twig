@@ -1,0 +1,25 @@
+{% use "bootstrap_4_layout.html.twig" %}
+
+{% block form_widget_simple -%}
+    {%- if type is not defined or (type != 'hidden' and type != 'date' and type != 'time') -%}
+        {%- set className = ' w-50' -%}
+        {%- set attr = attr|merge({class: (attr.class|default('') ~ className)|trim}) -%}
+    {%- elseif type is defined and (type == 'date' or type == 'time') -%}
+        {%- set className = ' w-25' -%}
+        {%- set attr = attr|merge({class: (attr.class|default('') ~ className)|trim}) -%}
+    {%- endif -%}
+    {{- parent() -}}
+{%- endblock form_widget_simple %}
+
+{% block submit_widget -%}
+    {%- set attr = attr|merge({
+        class: (attr.class|default('btn-primary'))|trim,
+        onclick: "this.disabled=true; this.form.submit();" ~ (attr.onclick is defined ? (';' ~ attr.onclick) : '')
+    }) -%}
+
+    {{- parent() -}}
+{%- endblock submit_widget %}
+
+{% block html_row -%}
+    {{ html_text|raw }}
+{%- endblock html_row %}

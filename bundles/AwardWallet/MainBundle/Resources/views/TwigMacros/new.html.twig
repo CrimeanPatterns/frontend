@@ -1,0 +1,207 @@
+{% macro drawSplashScreen(asPage, height) %}
+    {% if asPage|default(true) %}
+        <div data-ng-cloak class="main-blk splash" {% if height is defined and height > 0 %}style="height: {{ height }}px;"{% endif %}>
+            <div class="ajax-loader">
+                <div class="loading"></div>
+            </div>
+        </div>
+    {% else %}
+        <div class="ajax-loader" {% if height is defined and height > 0 %}style="height: {{ height }}px;"{% endif %}>
+            <div class="loading"></div>
+        </div>
+    {% endif %}
+{% endmacro %}
+
+{% macro fader(clickToClose) %}
+    <div id="faderNew" {% if clickToClose == 'closable' %} onclick="pagePopup.hideByFader();return false;" {% endif %}></div>
+{% endmacro %}
+
+{% macro stdPopup(title) %}
+    <div class="stdPopup" id="stdPopup">
+        <div class="stdPopupHeader">
+            <div class="stdPopupClose" onclick="popupHide();">
+                <i class="icon-cross-dark" style="vertical-align: middle"></i>
+            </div>
+            <span class="stdPopupTitle" id="stdPopupTitle">
+            {{ title|trans|raw }}
+            </span>
+        </div>
+        <div id="stdPopupContent">
+            Place content here via innerHTML
+        </div>
+    </div>
+{% endmacro %}
+
+{# Leave this macro as a single string #}
+{% macro progressBar(id) %}<div class="progress-bar"{% if id is defined %} id="{{ id }}"{% endif %}><span style="width:80%"><p>80%</p></span></div>{% endmacro %}
+
+{% macro pluralInternational(text,count) %}{% apply spaceless %}
+   {% if count <= 0 %}
+       {% set plural = 0 %}
+   {% else %}
+       {% set first = count % 10 %}
+       {% set second = (count % 100) // 10 %}
+       {% if second != 1 and first>0 and first < 5 %}
+           {% if first == 1 %}
+               {% set plural = 1 %}
+           {% else %}
+               {% set plural = 2 %}
+           {% endif %}
+       {% else %}
+           {% set plural = 10 %}
+       {% endif %}
+   {% endif %}
+   {{ text|trans({'%count%': count})|raw }}{% endapply %}
+{% endmacro %}
+
+{% macro balanceTabs(tabs) %}{% apply spaceless %}
+    <ul class="balance-tabs">
+        {% for tab in tabs %}
+            {% apply spaceless %}
+                <li{% if tab.active %} class="active"{% endif %}{% if tab.id is defined %} id="{{ tab.id }}"{% endif %}>
+                    <span><span>
+                    {% if tab.href is defined %}
+                    <a href="{{ tab.href|raw }}"{% if tab.id is defined %} onclick="switchBalancesTabs('{{ tab.id }}');return false;"{% endif %}>
+                        {{ tab.text|trans|raw }}
+                        <span class="label label-inverse">{{ tab.count }}</span>
+                    </a>
+                    {% else %}
+                    <span>
+                        {{ tab.text|trans|raw }}
+                        <span>{{ tab.count }}</span>
+                    </span>
+                    {% endif %}
+                    </span></span>
+                </li>
+            {% endapply %}{% endfor %}
+    </ul>
+{% endapply %}{% endmacro %}
+
+{% macro toollistitem(item,userTabs) %}{% apply spaceless %}
+        <li{% if item.class %} class="{{ item.class }}"{% endif %}>
+            {#{% if userTabs %}<i class="icon-plus-gray"></i>{% endif %}#}
+            {% if item.addlink is defined %}<span class="addlink"><a href="{{ item.addlink }}"><i class="icon-plus-gray"></i></a> </span>{% endif %}
+            {% if item.ancor %}
+                {% set class = item.ancor.class %}
+                {% if userTabs %}{% set class = [class,' person']|join|trim %}{% endif %}
+                <a href="{{ item.ancor.href }}"{% if class %} class="{{ class }}"{% endif %}>
+                    {% if item.ancor.icon is defined %}
+                        <i class="{{ item.ancor.icon }}"></i>
+                    {% endif %}
+                    {{ item.ancor.text|trans|raw }}
+                    {% if item.label %}
+                        <span class="label{% if item.label.class %} {{ item.label.class }}{% endif %}">
+                            {{ item.label.value }}
+                        </span>
+                    {% endif %}
+                </a>
+            {% elseif item.input %}
+                <input type="{{ item.input.type }}" id="{{ item.input.id }}">
+                <label for="{{ item.input.id }}">
+                    {{ item.input.text|trans }}
+                </label>
+            {% endif %}
+        </li>
+{% endapply %}{% endmacro %}
+
+{% macro buttontext(button) %}{% apply spaceless %}
+    {% if button.icon %}
+        <i class="{{ button.icon }}"></i>
+    {% endif %}
+    {% if button.text %}
+        {{ button.text|trans|raw }}
+    {% endif %}
+    {% if button.badge %}
+        <span class="badge badge-inverse {{ button.badge.class }}">{{ button.badge.value }}</span>
+    {% endif %}
+{% endapply %}{% endmacro %}
+
+{% macro pulllist(button) %}
+    {% import _self as self %}
+    {% if button.pull is defined %}
+        <ul>
+            {% for item in button.pull %}{{ self.toollistitem(item,'') }}{% endfor %}
+        </ul>
+    {% endif %}
+{% endmacro %}
+
+{% macro toolbutton(button) %}{% apply spaceless %}
+    {% import _self as self %}
+    {% if button.href is defined %}
+        <a class="btn{% if button.class is defined %} {{ button.class }}{% endif %}{% if button.pull is defined %} pulldown{% endif %}" href="{{ button.href }}">
+            {{ self.buttontext(button) }}
+            {% if button.pull is defined %}<i class="icon-caret"></i>{% endif %}
+        </a>
+    {% elseif button.checkbutton is defined %}
+        <a class="btn{% if button.class is defined %} {{ button.class }}{% endif %}{% if button.pull is defined %} pulldown{% endif %}" href="javascript:void(0);">
+            {% if button.id %}<label>{% endif %}
+            <input type="checkbox"{% if button.id %} id="{{ button.id }}"{% endif %}{% if button.checkbutton == 'checked' %} checked{% endif %}>
+            {% if button.id %}<label for="{{ button.id }}">{% endif %}
+            {{ self.buttontext(button) }}
+            </label>
+            {% if button.pull is defined %}<i class="icon-caret"></i>{% endif %}
+        </a>
+    {% elseif button.checkbox is defined %}
+        {% if button.id %}<label>{% endif %}
+        <input type="checkbox"{% if button.id %} id="{{ button.id }}"{% endif %}{% if button.checkbutton == 'checked' %} checked{% endif %}>
+        {% if button.id %}<label for="{{ button.id }}">{% endif %}
+        {{ self.buttontext(button) }}
+        </label>
+    {% elseif button.input is defined %}
+        <label{% if button.pull is defined %} class="pulldown"{% endif %}>
+            {{ self.buttontext(button) }}
+            <input type="text" class="{% if button.class is defined %} {{ button.class }}{% endif %}"{% if button.input %} value="{{ button.input }}"{% endif %}>
+            {% if button.pull is defined %}<i class="icon-caret"></i>{% endif %}
+        </label>
+    {% else %}
+        <span{% if button.class is defined %} class="{{ button.class }}"{% endif %}>
+            {{ self.buttontext(button) }}
+        </span>
+    {% endif %}
+        {{ self.pulllist(button) }}
+{% endapply %}{% endmacro %}
+
+{% macro toolbuttongroup(btngr) %}{% apply spaceless %}
+    {% import _self as self %}
+    <div class="btn-group">{% apply spaceless %}
+            {% for button in btngr %}{{ self.toolbutton(button) }}{% endfor %}
+        {% endapply %}</div>
+{% endapply %}{% endmacro %}
+
+{% macro toolbuttons(buttons) %}{% apply spaceless %}
+    {% import _self as self %}
+    {% for btngr in buttons %}{{ self.toolbuttongroup(btngr) }}{% endfor %}
+    {% endapply %}{% endmacro %}
+
+{% macro toolheader(group) %}{% apply spaceless %}
+    {% if group.id %}
+        <input type="checkbox" id="{{ group.id }}" checked>
+        <label for="{{ group.id }}">
+            <i class="icon-drop-shut"></i>
+            {{ group.heading|trans|raw }}
+        </label>
+    {% elseif group.heading %}
+        <h3>{{ group.heading|trans|raw }}</h3>
+    {% endif %}
+    {% if group.image %}<img src="{{ asset(group.image.src) }}"{% if group.image.class %} class="{{ group.image.class }}"{% endif %}>{% endif %}
+{% endapply %}{% endmacro %}
+
+{% macro toolbox(group) %}{% apply spaceless %}
+    {% import _self as self %}
+    <div{% if group.class %} class="{{ group.class }}"{% endif %}>
+        {{ self.toolheader(group) }}
+        {% if group.buttons %}{{ self.toolbuttons(group.buttons) }}{% endif %}
+        {% if group.list %}
+            <ul>
+                {% for item in group.list %}{{ self.toollistitem(item,group.class == 'user-tabs' and not loop.first ) }}{% endfor %}
+            </ul>
+        {% endif %}
+    </div>
+{% endapply %}{% endmacro %}
+
+{% macro toolbar(list) %}{% apply spaceless %}
+    {% import _self as self %}
+    {% for group in list %}
+        {{ self.toolbox(group) }}
+    {% endfor %}
+{% endapply %}{% endmacro %}

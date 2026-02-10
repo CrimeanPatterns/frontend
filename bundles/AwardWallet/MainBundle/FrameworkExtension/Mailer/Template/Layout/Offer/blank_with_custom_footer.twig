@@ -1,0 +1,11 @@
+{% extends '@MailTemplate/Layout/Offer/blank_with_unsubscribe.twig' %}
+
+{% block unsubscribe %}
+    Offer applies to new Members only, and all applications are subject to approval.<br/>
+    {{ parent() }}
+{% endblock unsubscribe %}
+
+{% block physical_address_row %}
+    <br/><span>{{ constant('EMAIL_PHYSICAL_ADDRESS_PLAIN') }}</span>
+{% endblock physical_address_row %}
+

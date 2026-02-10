@@ -1,0 +1,164 @@
+{% extends '@AwardWalletMain/Manager/layout.html.twig' %}
+{% set title = "RA Accounts" %}
+{% set contentTitle = "" %}
+
+{% block content %}
+    <script>
+        $(document).ready(function() {
+            {% if account.provider!='' %}
+            $('#checkDisabled').prop('checked', true);
+            {% endif %}
+            {% if account.provider=='' %}
+            $('#sel_provider').on('change', function(){
+                getSearchLinks();
+            });
+            {% endif %}
+            getSearchLinks();
+            clickChB();
+        });
+        function getSearchLinks() {
+            {% if account.provider=='' %}
+            var code = $('#sel_provider').get(0).value;
+            {% else %}
+            var code = '{{ account.provider }}';
+            {% endif %}
+            $('#links').html('');
+            $.ajax(
+                {
+                    url: "{{ path('aw_manager_loyalty_ra_accounts_link') }}",
+                    type: "POST",
+                    data: {
+                        provider: code
+                    },
+                    async: true,
+                    success: function (data) {
+                        if (data) {
+                            $('#links').html(data);
+                        }
+                    }
+                }
+            );
+
+        }
+        function clickChB(){
+            $('input[type="text"]').prop( "disabled", $('#checkDisabled').is(":checked"));
+        }
+        function submitForm(){
+            if ($('#checkDisabled').is(':checked')) {
+                $('#checkDisabled').click();
+                clickChB();
+            }
+            $("form").submit();
+        }
+    </script>
+    {% if error is defined %}
+        <b style="color: red;">{{ error }}</b>
+    {% endif %}
+    <div>
+        <a href="{{ path('aw_manager_loyalty_ra_accounts', {'cluster':cluster}) }}">&lt;Back</a>
+    </div>
+    <form method="POST">
+        <input type="hidden" name="cluster" value="{{ cluster }}">
+        <table class="detailsTable">
+            <tr><td>ID</td><td><b>{{ account.id }}</b></td></tr>
+            <tr>
+                <td>Provider</td>
+                <td>
+                    {% if account.provider=='' %}
+                    <select name="provider" id="sel_provider">
+                        <option value="">Select</option>
+                        {% for c in providers %}
+                            <option value="{{ c }}" {% if account.provider == c %} selected{% endif %}>{{ c }}</option>
+                        {% endfor %}
+                    </select>
+                    {% else %}
+                        <input name="provider" value="{{ account.provider }}" type="hidden">
+                        {{ account.provider }}
+                    {% endif %}
+                </td>
+            </tr>
+            <tr>
+                <td>Links</td>
+                <td id="links"></td>
+            </tr>
+            <tr>
+                <td>Login</td>
+                <td><input type="text" name="login" value="{{ account.login }}"></td>
+            </tr>
+            <tr>
+                <td>Login2</td>
+                <td><input type="text" name="login2" value="{{ account.login2 }}"></td>
+            </tr>
+            <tr>
+                <td>Login3</td>
+                <td><input type="text" name="login3" value="{{ account.login3 }}"></td>
+            </tr>
+            <tr>
+                <td>Password</td>
+                <td><input type="text" name="password" value="{{ account.password }}"></td>
+            </tr>
+            <tr>
+                <td>Email</td>
+                <td><input type="text" name="email" value="{{ account.email }}"></td>
+            </tr>
+            <tr>
+                <td>Questions</td>
+                <td>
+                    <table>
+                        <thead>
+                            <tr><td>Question</td><td>Answer</td></tr>
+                        </thead>
+                        <tbody>
+                            <tr><td><input type="text" name="question0" value="{{ account.answers[0][0] }}"></td><td><input type="text" name="answer0" value="{{ account.answers[0][1] }}"></td></tr>
+                            <tr><td><input type="text" name="question1" value="{{ account.answers[1][0] }}"></td><td><input type="text" name="answer1" value="{{ account.answers[1][1] }}"></td></tr>
+                            <tr><td><input type="text" name="question2" value="{{ account.answers[2][0] }}"></td><td><input type="text" name="answer2" value="{{ account.answers[2][1] }}"></td></tr>
+                            <tr><td><input type="text" name="question3" value="{{ account.answers[3][0] }}"></td><td><input type="text" name="answer3" value="{{ account.answers[3][1] }}"></td></tr>
+                            <tr><td><input type="text" name="question4" value="{{ account.answers[4][0] }}"></td><td><input type="text" name="answer4" value="{{ account.answers[4][1] }}"></td></tr>
+                        </tbody>
+                    </table>
+                </td>
+            </tr>
+            <tr>
+                <td>State</td>
+                <td><select name="state">
+                        <option value="">Select</option>
+                        {% for state,caption in states %}
+                            <option value="{{ state }}" {% if account.state == state %} selected{% endif %}>{{ caption }} ({{ state }})</option>
+                        {% endfor %}
+                    </select></td>
+            </tr>
+            <tr>
+                <td>Reset ErrorCode</td>
+                <td><input type="checkbox" name="reset" value="1"></td>
+            </tr>
+            <tr>
+                <td><input id="checkDisabled" type="checkbox" onclick="clickChB();" title="set on/off disabled"></td><td><input type="submit" onclick="submitForm();"></td>
+            </tr>
+            <tr>
+                <td>Register Info <a href="#" onclick="$('table.registerInfo').show(); $(this).hide(); return false;">(show)</a></td>
+                <td>
+                    <table class="registerInfo" style="display: none">
+                        <thead>
+                        <tr><td>Field</td><td>Value</td></tr>
+                        </thead>
+                        <tbody>
+                        {% for num,k in account.registerInfo %}
+                            <tr>
+                                {% for i,v in k %}
+                                    {%  if i==0 %}
+                                    <td><input type="text" name="key{{ num }}" value="{{ v }}"></td>
+                                    {% else %}
+                                    <td><input type="text" name="value{{ num }}" value="{{ v }}"></td>
+                                        {% endif %}
+                                {% endfor %}
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </td>
+
+            </tr>
+        </table>
+    </form>
+
+{% endblock %}

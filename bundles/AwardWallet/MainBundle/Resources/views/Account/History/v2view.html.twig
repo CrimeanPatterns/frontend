@@ -1,0 +1,229 @@
+{% extends is_granted('SITE_BUSINESS_AREA') ? "@AwardWalletMain/Layout/business_check_balance.html.twig" : "@AwardWalletMain/Layout/accounts_list.html.twig" %}
+
+{% block javascripts %}
+    {{ parent() }}
+    {# Need to decide how to load comfortably lang files #}
+    <script>
+        require(['jquery-boot', 'angular-boot', 'directives/retooltipAfter', 'pages/accounts/controllers/v2accountHistory'],
+            function ($, angular) {
+                window.InitDataTest = /* DATA START */{# comment used in tests #}{{ historyData|json_encode|default('false')|raw }}/* DATA END */;
+                angular.module('accountHistoryApp').constant('InitData', InitDataTest);
+
+                $(function () {
+                    angular.bootstrap($('.page .item .content').get(), ['accountHistoryApp', 'retooltip-after-directive']);
+                });
+            });
+    </script>
+{% endblock %}
+
+{% block popup %}
+    {{ parent() }}
+
+{% endblock %}
+
+{% block content %}
+    <div class="main-blk" data-ng-controller="mainCtrl as main">
+        <h1>
+            {{ 'history-transaction.provider-header'|trans({'%providerName%': displayName})|raw }}
+            {% if subAccountName %}
+                {{ subAccountName }}
+            {% endif %}
+            <span class="silver">{{ 'history-transaction.account-header'|trans({'%accountNumber%': accountNumber, '%userName%': userName}) }}</span>
+        </h1>
+
+        {% if awFree %}
+            <div class="main-blk-content">
+                <p class="warning-block">
+                    <i class="icon-warning-small"></i>
+                    <span>{{ 'please-upgrade-detail'|trans({'%link%': path('aw_users_pay')})|raw }}</span>
+                </p>
+            </div>
+        {% else %}
+            <div class="ajax-loader" data-ng-show="!main.state.loaded"><div class="loading"></div></div>
+            <div class="overlay" data-ng-hide="!main.state.reloading"></div>
+            <div class="main-blk-content" data-ng-cloak>
+                <div data-ng-cloak data-ng-show="main.state.loaded" class="transaction-top">
+                    <div class="transaction-info provider">
+                    {% if providerCode == 'delta' %}
+                        {{ 'account-history.delta.info'|trans({
+                            '%linkStart%': '<a href="' ~ autologinUrl ~ '" class="blue-link" target="_blank">',
+                            '%linkEnd%': '</a>',
+                            '%action%': '<a href="" data-ng-click="main.uploadHistory.upload()" class="blue-link">'
+                        }) | raw }}
+                    {% elseif providerCode == 'mileageplus' %}
+                        {{ 'account-history.mileageplus.info'|trans({
+                            '%linkStart%': '<a href="' ~ autologinUrl ~ '" class="blue-link" target="_blank">',
+                            '%linkEnd%': '</a>',
+                            '%action%': '<a href="" data-ng-click="main.uploadHistory.upload()" class="blue-link">'
+                        }) | raw }}
+                    {% elseif providerCode == 'rapidrewards' %}
+                        {{ 'account-history.rapidrewards.info'|trans({
+                            '%linkStart%': '<a href="' ~ autologinUrl ~ '" class="blue-link" target="_blank">',
+                            '%linkEnd%': '</a>',
+                            '%action%': '<a href="" data-ng-click="main.uploadHistory.upload()" class="blue-link">',
+                            '%mailTo%': '<a href="mailto:' ~ user.login ~ (familyMember ? '.' ~ familyMember.alias : '') ~ '@awardwallet.com" class="blue-link">' ~ user.login ~ (familyMember ? '.' ~ familyMember.alias : '') ~ '@awardwallet.com</a>'
+                        }) | raw }}
+                    {% endif %}
+                    </div>
+                    <div class="transaction-info success" style="display: none;">
+                        <i class="icon-green-check"></i><strong class="green">{{ "thank.you"|trans }}</strong>.
+                        {{ "account-history.upload_success"|trans }}
+                    </div>
+                    <div class="transaction-info error" style="display: none;">
+                        <i class="icon-red-error"></i>
+                        <strong class="red">{{ "account-history.upload_error"|trans }}</strong>
+                    </div>
+                    <div class="progress-bar" style="width: 250px; display: none;">
+                        <input accept="{{ providerCode == 'delta' or providerCode == 'rapidrewards' ? 'application/pdf,text/html' : '.csv'  }}" type="file" name="uploadHistory" id="uploadHistory" file-model="main.uploadHistory.file" style="display: none;">
+                        <div class="progress-bar-row">
+                            <p style="overflow: hidden; text-overflow: ellipsis;"></p>
+                            <span style="width:10%"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="t-right">
+                    <a class="btn-blue" href="{{ exportUrl }}">Export to CSV</a>
+                </div>
+
+                <offer-cards-filter
+                        init-data="main.offerCardsFilter"
+                        check-model="main.state.cardsFilter"
+                        check-action="main.reloadRows()"
+                        data-ng-if="main.state.subAccountId"
+                >
+                </offer-cards-filter>
+
+                <table class="main-table transaction" data-ng-class="{'non-us-box': {% if isNonUSAccount is defined and isNonUSAccount is same as true %}true{% else %}false{% endif %}}">
+                    <thead>
+                    <tr>
+                        {#<th></th>#}
+                        <th data-ng-class="{ 'balance-cell': column.isBalance, 'offer-cell': column.isOffer }"
+                            data-ng-style="{ width: (column.field == 'Description') ? '30%' : 'auto' }"
+                            data-ng-repeat="(i, column) in main.historyColumns track by i"
+                            data-ng-bind="column.name"
+                        >
+                        </th>
+                        <th></th>
+                    </tr>
+                    </thead>
+                    <tbody infinite-scroll='main.loadMore()' infinite-scroll-distance='2'>
+                    <tr class="filter white">
+                        <td data-ng-repeat="(i, column) in main.historyColumns track by i">
+                            <div data-ng-if="column.field == 'Description'">
+                                <input type="text"
+                                       class="search-input"
+                                       data-ng-model="main.descriptionFilter"
+                                       ng-model-options="{
+                                           'updateOn': 'default blur',
+                                           'debounce': {
+                                                'default': 500,
+                                                'blur': 0
+                                            }
+                                       }"
+                                       ng-change='main.reloadRows()'
+                                       data-ng-class="{ 'has-text': main.descriptionFilter.length > 0 }"
+                                />
+                                <a href="" class="reset-input" ng-click="main.resetSearch($event)">
+                                    <i class="icon-close-silver"></i>
+                                </a>
+                            </div>
+                        </td>
+                        <td></td>
+                    </tr>
+
+                    <tr data-ng-repeat="(i, row) in main.historyRows track by i"
+                            data-ng-class="{ green: row.isPositiveTransaction, blue: !row.isPositiveTransaction }"
+                        >
+                            {#<td class="check">#}
+                                {#<input type="checkbox" class="checkbox" id="[[ row.uuid ]]"#}
+                                       {#data-ng-model="main.checker[k].checked"#}
+                                       {#data-ng-click="main.selectOne($event, row.uuid)"#}
+                                {#>#}
+                                {#<label for="[[row.uuid]]" class="label"></label>#}
+                            {#</td>#}
+                            <td data-ng-repeat="(j, cell) in row.cells track by j"
+                                class="[[cell.color]]"
+                                data-ng-class="{
+                                    'balance-cell': main.historyColumns[j].isBalance && cell.type === 'string',
+                                    'points-cell': cell.multiplier && cell.type === 'string',
+                                    'potential-cell': cell.type === 'offer',
+                                    'transp-like': cell.type === 'thumb_up',
+                                    'pointer': cell.type === 'offer',
+                                    'offer-cell': cell.isOffer,
+                                }"
+                                data-ng-click="cell.type === 'offer' ? main.showOfferPopup(row.uuid, row.merchantName) : null"
+                            >
+                                <div data-ng-if="cell.type === 'string'">
+                                    <span data-ng-if="!cell.multiplier || cell.multiplier < 1"
+                                          data-ng-bind="cell.valueFormatted"
+                                          data-ng-class="{ bold: main.historyColumns[j].isBalance && j === row.cells.length-1 }"
+                                    ></span>
+                                    <span data-ng-if="cell.multiplier >= 1">
+                                        <div style="margin-right: 5px">
+                                            <span data-ng-bind="cell.valueFormatted"></span><br/>
+                                            <span class="silver-text" data-ng-bind="row.pointsValue"></span>
+                                        </div>
+
+                                        <div class="up-block">
+                                            <div data-ng-bind="cell.multiplier + 'x'" class="up-counter"></div>
+                                        </div>
+                                    </span>
+                                </div>
+                                <div data-ng-if="cell.type === 'empty'">
+                                </div>
+                                <div data-ng-if="cell.type === 'thumb_up'">
+                                    <div class="inner">
+                                        <i class="icon-like"></i>
+                                    </div>
+                                </div>
+                                <div data-ng-if="cell.type === 'offer'">
+                                    <div class="inner">
+                                        <div>
+                                            <span data-ng-bind="cell.valueFormatted"></span><br/>
+                                            <span class="silver-text" style="font-weight: normal" data-ng-bind="row.potentialPointsValue"></span>
+                                        </div>
+                                        {#<div data-ng-if="!cell.multiplier">&nbsp;</div>#}
+                                        <div class="up-block">
+                                            <div data-ng-bind="cell.multiplier+'x'" class="up-counter"></div>
+                                        </div>
+                                    </div>
+                                    <div class="arrow"><i class="icon-double-arrow-right-white"></i></div>
+                                </div>
+                            </td>
+                            <td class="actions">
+                                {% if is_granted('ROLE_STAFF') %}
+                                <ul class="list-actions" data-ng-if="row['tripId']" >
+                                    <li data-tip title="{{ 'go_to_timeline_segment'|trans }}">
+                                        <a href="[[ main.tripLink(row['tripId']) ]]" target="_blank">
+                                            <i class="icon-go-timeline"></i>
+                                        </a>
+                                    </li>
+                                </ul>
+                                {% endif %}
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="not-found" data-ng-cloak data-ng-show="!main.historyRows.length && main.state.loaded">
+                    <i class="icon-warning-small"></i>
+                    <p>{{ "account.history.not-exist"|trans|raw }}</p>
+                </div>
+                <div class="loader-container">
+                    <div class="loader" data-ng-show="main.state.loading"></div>
+                </div>
+            </div>
+            <div data-ng-cloak2>
+                <dialog id="credit-card-offer-popup" data-auto-open="false" data-modal="true" data-width="700">
+                    <div data-ng-show="!main.state.offerLoading" data-ng-bind-html="main.offerDialogContent | unsafe"></div>
+                    <div class="ajax-loader" data-ng-show="main.state.offerLoading"><div class="loading"></div></div>
+                </dialog>
+            </div>
+        {% endif %}
+    </div>
+
+    <script type="text/ng-template" id="/offerCardsFilter">
+        {% include "@AwardWalletMain/SpentAnalysis/offerCardsFilter.html.twig" %}
+    </script>
+{% endblock %}

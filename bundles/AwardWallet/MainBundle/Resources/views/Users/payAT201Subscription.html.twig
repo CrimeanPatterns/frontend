@@ -1,0 +1,79 @@
+{% set MOBILE_NAV = true %}
+{% set HIDE_NAV = true %}
+{% set MAIN_BODY_CLASSES = {
+    'manual-hidden': true,
+    'responsive': true,
+    'hide-menu': true
+}|merge(MAIN_BODY_CLASSES|default({})) %}
+
+{% extends app.user is not null ? "@AwardWalletMain/Layout/common.html.twig" : "@AwardWalletMain/Layout/not_logged.html.twig" %}
+{% form_theme form with ['@AwardWalletMain/FormTheme/fields.html.twig'] %}
+
+{% block meta %}
+    {{ parent() }}
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0, viewport-fit=cover">
+{% endblock %}
+
+{% block content %}
+
+    <div class="main-blk shortened">
+        <h1>{{ 'cart.item.type.at201'|trans|desc('Award Travel 201 Subscription') }}</h1>
+        {% if app.user is not null %}
+            {% if at201Subscription %}
+                <div class="info-title">
+                    <i class="icon-info-white"></i>
+                    <p>{{ 'user-pay.at201-subscription-existed.message'|trans({
+                            '%link_start%': '<a href="' ~ url('aw_profile_overview') ~ '">',
+                            '%link_end%': '</a>'
+                        })|desc('You already have an Award Travel 201 subscription, if you wish to cancel it or change the payment method please do that from your %link_start%profile page.%link_end%') | raw }}</p>
+                </div>
+            {% endif %}
+            {% if plusSubscription and not at201Subscription %}
+                <div class="info-title">
+                    <i class="icon-info-white"></i>
+                    <p>{{ 'user-pay.at201-subscription-existed-awplus.message'|trans|desc('You already have an AwardWallet Plus subscription, please note that your current AwardWallet Plus subscription will be canceled and this new subscription will go into effect.') }}</p>
+                </div>
+            {% endif %}
+        {% endif %}
+
+        <form method="post" class="main-form silver">
+
+            {% if not at201Subscription %}
+                <div class="main-blk-content">
+                    <table class="main-table payment">
+                        <thead>
+                        <tr>
+                            <th class="item">{{ 'user-pay.column.item.title'|trans }}</th>
+                            <th class="quantity">{{ 'user-pay.column.quantity.title'|trans }}</th>
+                            <th class="t-right">{{ 'user-pay.column.price.title'|trans }}</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <td>{{ item.name | trans }}</td>
+                            <td>
+                                {{ 'interval_short.months'|trans({'%count%': item.months}) }}
+                                {% if item.savings is not null %}
+                                    ({{ item.savings }}% {{ 'savings'|trans|desc('Savings') }})
+                                {% endif %}
+                            </td>
+                            <td class="t-right price">{{ item.price|formatCurrency('USD') }}</td>
+                        </tr>
+                        </tbody>
+                    </table>
+
+                    <table class="main-table total">
+                        <tr class="totals">
+                            <td><strong class="red">{{ 'total'|trans|desc('Total') }}:</strong></td>
+                            <td class="total-price t-right"><span
+                                        class="red">{{ item.price|formatCurrency('USD') }}</span></td>
+                        </tr>
+                    </table>
+                </div>
+
+                {{ form_widget(form, {'noSubmit' : true}) }}
+            {% endif %}
+        </form>
+    </div>
+
+{% endblock %}

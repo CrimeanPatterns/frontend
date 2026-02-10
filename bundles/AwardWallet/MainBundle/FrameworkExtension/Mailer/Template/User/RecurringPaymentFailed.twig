@@ -1,0 +1,71 @@
+{% extends '@MailTemplate/Layout/base.twig' %}
+{% trans_default_domain "email" %}
+
+{% block subject %}{% apply spaceless %}{% autoescape false %}
+    {% if subscriptionType == constant('AwardWallet\\MainBundle\\Entity\\Usr::SUBSCRIPTION_TYPE_AT201') %}
+        {{ 'at201-recurring-payment-failed.subject'|trans({}, 'email', lang)|desc('IMPORTANT: Award Travel 201 Subscription Failed to Renew') }}
+    {% else %}
+        {{ 'recurring-payment-failed.subject'|trans({}, 'email', lang)|desc('IMPORTANT: AwardWallet Plus Subscription Failed to Renew') }}
+    {% endif %}
+{% endautoescape %}{% endapply %}{% endblock subject %}
+
+{% block content %}
+    {% import '@MailTemplate/CommonMacro.twig' as commonMacro %}
+
+    {{ commonMacro.dear(user.firstname, _context) }}
+
+    {% if subscriptionType == constant('AwardWallet\\MainBundle\\Entity\\Usr::SUBSCRIPTION_TYPE_AT201') %}
+        {% set description = 'at201-recurring-payment-failed'|trans({}, 'email', lang)
+            |desc("Your Award Travel 201 subscription is scheduled for renewal.") %}
+    {% else %}
+        {% if semiAnnualSubscription %}
+            {% set description = 'recurring-payment-failed.semi-annual'|trans({}, 'email', lang)
+                |desc("Your AwardWallet Plus semi-annual subscription is scheduled for renewal.") %}
+        {% else %}
+            {% set description = 'recurring-payment-failed.yearly'|trans({}, 'email', lang)
+                |desc("Your AwardWallet Plus yearly subscription is scheduled for renewal.") %}
+        {% endif %}
+    {% endif %}
+
+    {% if paymentSource == constant("\\AwardWallet\\MainBundle\\FrameworkExtension\\Mailer\\Template\\User\\RecurringPaymentFailed::PAYMENT_SOURCE_PAYPAL") %}
+        {% set description = description ~ ' ' ~ 'recurring-payment-failed.paypal'|trans({
+            '%amount%': amount|formatCurrency("USD", true, locale),
+            '%through_date%': throughDate|formatDatetime('medium', 'none', locale)
+        }, 'email', lang)
+            |desc("We attempted to charge your PayPal account %amount% to renew your membership through %through_date%, but the charge was declined.") %}
+    {% elseif paymentSource == constant("\\AwardWallet\\MainBundle\\FrameworkExtension\\Mailer\\Template\\User\\RecurringPaymentFailed::PAYMENT_SOURCE_CC") %}
+        {% set description = description ~ ' ' ~ 'recurring-payment-failed.cc'|trans({
+            '%ccNumber%': ccNumber,
+            '%amount%': amount|formatCurrency("USD", true, locale),
+            '%through_date%': throughDate|formatDatetime('medium', 'none', locale)
+        }, 'email', lang)
+            |desc("We attempted to charge your card ending in %ccNumber% %amount% to renew your membership through %through_date%, but the charge was declined.") %}
+    {% endif %}
+
+    {{ commonMacro.paragraph(description, _context) }}
+
+    {{ commonMacro.paragraph(
+        'recurring-payment-failed.update-link'|trans({}, 'email', lang)|desc('Please follow this link to update your payment method:'),
+        _context
+    ) }}
+    {% set pay_link = baseUrl ~ paymentLink %}
+    {{ commonMacro.dottedLink(pay_link, pay_link, _context) }}
+
+    {% if paymentSource == constant("\\AwardWallet\\MainBundle\\FrameworkExtension\\Mailer\\Template\\User\\RecurringPaymentFailed::PAYMENT_SOURCE_PAYPAL") %}
+        {% set finally = 'recurring-payment-failed.finally-one-week-paypal'|trans({}, 'email', lang)
+            |desc("If you do nothing we will attempt to charge your PayPal account daily, for one week and then give up.") %}
+    {% elseif paymentSource == constant("\\AwardWallet\\MainBundle\\FrameworkExtension\\Mailer\\Template\\User\\RecurringPaymentFailed::PAYMENT_SOURCE_CC") %}
+        {% set finally = 'recurring-payment-failed.finally-one-week-cc'|trans({}, 'email', lang)
+            |desc("If you do nothing we will attempt to charge your card daily, for one week and then give up.") %}
+    {% endif %}
+
+    {% set page_link = commonMacro.link(baseUrl ~ path('aw_pricing'), '$$')|split('$$') %}
+    {% set finally = finally ~ ' ' ~ 'recurring-payment-failed.page'|trans({
+        '%link_on%': page_link[0],
+        '%link_off%': page_link[1]
+    }, 'email', lang)|desc("If you wish to review the benefits of AwardWallet Plus, please visit %link_on%this page%link_off%.") %}
+
+    {% if subscriptionType != constant('AwardWallet\\MainBundle\\Entity\\Usr::SUBSCRIPTION_TYPE_AT201') %}
+        {{ commonMacro.paragraph(finally, _context, {escape: false}) }}
+    {% endif %}
+{% endblock content %}

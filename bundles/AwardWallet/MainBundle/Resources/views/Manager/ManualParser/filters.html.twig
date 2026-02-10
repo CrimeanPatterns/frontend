@@ -1,0 +1,70 @@
+{% set title = "Spam filters" %}
+{% use '@AwardWalletMain/FormTheme/oldFields.html.twig' %}
+{% extends '@AwardWalletMain/Manager/layout.html.twig' %}
+{% block content %}
+    <link href="{{ asset('assets/awardwalletmain/css/manualParser.css') }}" rel="stylesheet" type="text/css" media="all" />
+    <script type="text/javascript">
+        function deleteFilter(id) {
+            $('input#delete').val(id);
+            $('input#add_subject').val('');
+            $('input#add_filter').val('');
+            $('form#manage').submit();
+            return false;
+        }
+    </script>
+    <a href="{{ path("aw_manager_manualparser_list", {}) }}">Return to list</a>
+    <a href="{{ path("aw_manager_manualparser_checkfilter", {}) }}" style="float: right;">Check filters ></a>
+    {% for flashMessage in app.session.flashbag.get('notice') %}
+        <div class="flash-message">
+            <em>Notice</em>: {{ flashMessage }}
+        </div>
+    {% endfor %}
+    <form name='manage' id='manage' method='POST'>
+    <table class="mp_table" cellspacing="0" cellpadding="0" width="98%">
+        <tr class="caption">
+            <td class="mp bothBorder"><a href='#'>ID</a></td>
+            <td class="mp rightBorder"><a href="#">Subject filter</a></td>
+            <td class="mp rightBorder"><a href='#'>From filter</a></td>
+            <td class="mp rightBorder"><a href='#'>With/without attachment</a></td>
+            <td class="mp rightBorder"><a href='#'>Type attachment filter</a></td>
+            <td class="mp rightBorder"></td>
+        </tr>
+        {% for filter in list %}
+            <tr class='list_row{% if loop.index0 is even %} odd{% endif %}' data-id="{{ filter.id }}">
+                <td class="mp bothBorder">{{ filter.id }}</td>
+                <td class="mp rightBorder subject" title="{{ filter.subject }}">{{ filter.subject[:70] }}{% if filter.subject|length > 70 %}...{% endif %}</td>
+                <td class="mp rightBorder">{{ filter.fromEmail }}</td>
+                <td class="mp rightBorder">{{ filter.attachment }}</td>
+                <td class="mp rightBorder">{{ filter.attachmentType }}</td>
+                <td class="mp rightBorder">
+                    <a href='#' onclick="return deleteFilter({{ filter.id }});">Delete</a>
+                </td>
+            </tr>
+        {% endfor %}
+        <tr>
+            <td class="mp bothBorder"></td>
+            <td class="mp rightBorder"><input type='text' style='width: 90%;' name='subject' id='add_subject' value=""></td>
+            <td class="mp rightBorder"><input type='text' style='width: 90%;' name='from' id='add_from' value=""></td>
+            <td class="mp rightBorder">
+                <select style='width: 90%;' name='attach' id='add_attach'>
+                    {% for attach in attaches %}
+                        <option value="{{ attach.ID }}">{{ attach.Description }}</option>
+                    {% endfor %}
+                </select>
+            </td>
+            <td class="mp rightBorder">
+                <select style='width: 90%;' name='attachType' id='add_attachType'>
+                    {% for attachType in attacheTypes %}
+                        <option value="{{ attachType.ID }}">{{ attachType.Description }}</option>
+                    {% endfor %}
+                </select>
+            </td>
+            <td class="mp rightBorder"><input type='submit' value='Create new'></td>
+        </tr>
+    </table>
+    <input type='hidden' name='delete' id="delete" value="">
+    </form>
+    <div id='fader' style="display: none; padding-left: 50%; padding-top: 150px; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-color: white; -ms-filter: \'progid:DXImageTransform.Microsoft.Alpha(Opacity=80)\'; filter: alpha(opacity=80); opacity: 0.8; z-index: 100;">
+        <h3>Loading...</h3>
+    </div>
+{% endblock %}

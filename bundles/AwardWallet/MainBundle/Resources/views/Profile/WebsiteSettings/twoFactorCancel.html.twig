@@ -1,0 +1,35 @@
+{% form_theme form with ['@AwardWalletMain/FormTheme/fields.html.twig'] %}
+{% extends "@AwardWalletMain/Layout/profile.html.twig" %}
+
+{% block title %}{{ 'two-factor.cancel.title'|trans|desc("Cancel two-factor Authentication") }}{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        require(['lib/formReauthenticator']);
+    </script>
+{% endblock %}
+
+{% block content %}
+    <div class="main-blk shortened">
+        <h1>{{ 'two-factor.cancel.title'|trans|desc("Cancel two-factor Authentication") }}</h1>
+        <div class="main-blk-content t-center _2fac-m">
+            <p>{{ 'two-factor.cancel.question'|trans|desc('Would you like to cancel two-factor authentication?') }}</p>
+        </div>
+        <form class="main-form spinnerable"
+              action="{{ path('aw_profile_2factor_cancel') }}"
+              method="post" name="twofact_cancel"
+              data-reauth-action="2FactCancelAction"
+        >
+            {{ form_widget(form, {'noSubmit':true}) }}
+            <div class="row-submit">
+                <a href="{{ path('aw_profile_overview') }}" class="btn-silver">
+                    {{ 'button.no'|trans }}
+                </a>
+                <button type="submit" class="btn-blue">
+                    {{ 'button.yes'|trans }}
+                </button>
+            </div>
+        </form>
+    </div>
+{% endblock %}

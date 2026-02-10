@@ -1,0 +1,79 @@
+{% extends app.user is not null ? "@AwardWalletMain/Layout/profile.html.twig" : "@AwardWalletMain/Layout/not_logged.html.twig" %}
+
+{% block title %}{{ 'notifications'|trans }}{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        require(['pages/notifications']);
+
+        {% if not app.user.wpDisableAll %}
+        require(['common/web-push'], function(webPush) {
+            webPush.init('{{ vapid_public_key }}', '{{ webpush_id }}', {{ app.user.userId }}, {{ is_granted('ROLE_STAFF') ? 'true' : 'false' }}, {
+                ignoreDismiss: true,
+                dontShowPopup: true,
+            });
+        });
+        {% endif %}
+    </script>
+{% endblock %}
+
+{% block content %}
+    {% form_theme form with ['@AwardWalletMain/FormTheme/fields.html.twig', _self] %}
+
+    <div class="main-blk shortened">
+        <h1>{{ block('title') }}</h1>
+
+        {% if app.session.flashbag.has('notice') %}
+            {% for flash_message in app.session.flashbag.get('notice') %}
+                <div class="success-title">
+                    <i class="icon-white-check-b"></i>
+                    <span>{{ flash_message }}</span>
+                </div>
+            {% endfor %}
+        {% endif %}
+
+        <div class="page-content">
+            <form action="" method="post" class="main-form spinnerable" id="notifications-form">
+                <div class="main-form-item">
+                    <table class="main-table edit-account notifications inside">
+                        <thead>
+                        <tr>
+                            <th></th>
+                            <th>{{ 'mobile'|trans }}</th>
+                            <th>{{ 'desktop'|trans }}</th>
+                            <th>{{ 'email'|trans }}</th>
+                        </tr>
+                        </thead>
+
+                        <tbody>
+                        <tr>
+                            <td class="caption-row">
+                                {{ 'notification.blog-new-post'|trans }}
+                                <i class="icon-info-silver" data-role="tooltip"
+                                   title="{{ 'notification.blog-new-post.help'|trans }}"></i>
+                            </td>
+                            {{ form_row(form.mpNewBlogPosts) }}
+                            {{ form_row(form.wpNewBlogPosts) }}
+                            {{ form_row(form.emailNewBlogPosts) }}
+                        </tr>
+                        </tbody>
+
+                    </table>
+                </div>
+                <div class="row-submit">
+                    <button type="submit" class="btn-blue">{{ 'form.button.update'|trans }}</button>
+                </div>
+                {{ form_rest(form) }}
+            </form>
+        </div>
+    </div>
+{% endblock %}
+
+{% block checkbox_row %}
+    <td class="status">{{ form_widget(form) }}</td>
+{% endblock checkbox_row %}
+
+{% block choice_row %}
+    <td class="status">{{ form_widget(form, {small: true}) }}</td>
+{% endblock choice_row %}

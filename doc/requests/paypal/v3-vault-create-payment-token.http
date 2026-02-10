@@ -1,0 +1,21 @@
+POST https://api.paypal.com/v2/vault/payment-tokens
+Authorization: Bearer {{access_token}}
+PayPal-Request-ID: b5efbe82-bbad-4bb0-aeeb-bfef5b442e53
+Content-Type: application/json
+
+{
+  "source": {
+    "card": {
+      "number": "{{card_number}}",
+      "expiry": "{{card_expiration}}",
+      "name": "{{card_name}}",
+      "billing_address": {
+        "address_line_1": "{{card_billing_line_1}}",
+        "admin_area_1": "{{card_billing_state_code}}",
+        "admin_area_2": "{{card_billing_city}}",
+        "postal_code": "{{card_billing_zip}}",
+        "country_code": "{{card_billing_country_code}}"
+      }
+    }
+  }
+}

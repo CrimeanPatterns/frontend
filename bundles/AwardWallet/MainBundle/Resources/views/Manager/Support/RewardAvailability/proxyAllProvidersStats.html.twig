@@ -1,0 +1,129 @@
+{% set title = "RA - Proxy statistics" %}
+{% set contentTitle = "" %}
+{% use '@AwardWalletMain/FormTheme/oldFields.html.twig' %}
+{% extends '@AwardWalletMain/Manager/layout.html.twig' %}
+
+{% block content %}
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script src="/lib/scripts/scw.js"></script>
+    <script src="/lib/3dParty/jquery/plugins/jquery.balloon.js"></script>
+    <script>
+        function updateLocationWithParams(arr) {
+            const queryString = window.location.search;
+            const urlParams = new URLSearchParams(queryString);
+            for (let pair of arr) {
+                urlParams.delete(pair[0]);
+                if (typeof pair[1] !=='undefined')
+                    urlParams.append(pair[0],pair[1]);
+            }
+            if (urlParams.size > 0)
+                document.location = '{{ path('aw_manager_rewardAvailabilityProxiesStats') }}?'+urlParams;
+            else
+                document.location = '{{ path('aw_manager_rewardAvailabilityProxiesStats') }}';
+        }
+        function checkCluster(e) {
+            let matches = e.value.match(/(.+?)(?:-(flight|hotel))?$/);
+            var arr = new Map([
+                ['cluster', matches[1]],
+                ['type', matches[2]]
+            ]);
+            updateLocationWithParams(arr);
+        }
+        function getHours() {
+            let hours = $('#hours').val();
+            if (Number(hours) > 0) {
+                {% if 'providerCode=' in app.request.uri %}
+                document.location='{{ path('aw_manager_rewardAvailabilityProxiesStats') }}?hours='+hours+'&cluster={{ cluster }}&type={{ type }}&providerCode={{ providerCode }}';
+                {% else %}
+                document.location='{{ path('aw_manager_rewardAvailabilityProxiesStats') }}?hours='+hours+'&cluster={{ cluster }}&type={{ type }}';
+                {% endif %}
+                return true;
+            }
+            alert('incorrect value hours');
+            return false;
+        }
+    </script>
+    <h1 style="font-size: medium">Reward Availability - Proxy statistics</h1>
+    <div>
+        <h1 style="font-size: small; display: inline">({{ startDate }}&nbsp;-&nbsp;{{ endDate }})</h1>
+    </div>
+    <br>
+    <select onchange="checkCluster(this);">
+        {% for n,c in clustersList %}
+            {% if c=='ra-awardwallet' %}
+                <option value="{{ c }}-flight" {% if cluster==c and type=='flight' %} selected="selected" {% endif %}>{{ n }}-flight</option>
+                <option value="{{ c }}-hotel" {% if cluster==c and type=='hotel' %} selected="selected" {% endif %}>{{ n }}-hotel</option>
+            {% else %}
+                <option value="{{ c }}" {% if cluster==c %}selected="selected"{% endif %}>{{ n }}</option>
+            {% endif %}
+        {% endfor %}
+    </select>
+    <br>
+    <div style="float: left;">
+        <label for="hours">last&nbsp;</label><input id="hours" type="text" style="width: 45px;"
+                                                    value="{% if period %}4{% else %}{{ hours }}{% endif %}">&nbsp;hours
+    </div>
+    <button onclick="getHours(); return false;"
+            style="float: left; margin-left: 5px;">show
+    </button>
+    <div style="float: left; margin-left: 130px;" id="period">
+        <form>
+            <div style="float: left">
+                {% set widget = 'single_text' %}
+                {% set attr = { } %}
+                {% set name = 'datePick1' %}
+                {% if not period %}
+                    {% set value = '' %}
+                {% else %}
+                    {% set value = startDate[:10] %}
+                {% endif %}
+                {% set id = 'datePickId1' %}
+                {% set full_name = 'startDate' %}
+                {% set required = false %}
+                {% set pattern = '' %}
+                {{ block('date_widget') }}
+            </div>
+            <input name="startTime" style="float: left; padding: 4px; width: 35px; height: 10px;"
+                   value="{{ startTime }}" required pattern="[0-9]{2}:[0-9]{2}">&nbsp-
+
+            <div style="float: left">
+                {% set widget = 'single_text' %}
+                {% set attr = { } %}
+                {% set name = 'datePick2' %}
+                {% if not period %}
+                    {% set value = '' %}
+                {% else %}
+                    {% set value = endDate[:10] %}
+                {% endif %}
+                {% set id = 'datePickId2' %}
+                {% set full_name = 'endDate' %}
+                {% set required = false %}
+                {% set pattern = '' %}
+                {{ block('date_widget') }}
+            </div>
+            <input name="endTime" style="float: left; padding: 4px; width: 35px; height: 10px;" value="{{ endTime }}"
+                   required pattern="[0-9]{2}:[0-9]{2}">
+            <button type="submit">update</button>
+        </form>
+    </div>
+    <br>
+    <br>
+    {% if providerCode is defined and providerCode!='all' %}
+        <div class="line"></div><br>
+        <strong style="color: #512D01; text-decoration: underline; font-weight: normal;">
+            {% if 'providerCode=' in app.request.uri %}
+                {{ providerCode }}
+            {% else %}
+                {% if 'cluster' in app.request.uri %}
+                    <a href="{{ app.request.uri }}&providerCode={{ providerCode }}">{{ providerCode }}</a>
+                {% else %}
+                    <a href="{{ app.request.uri }}?providerCode={{ providerCode }}">{{ providerCode }}</a>
+                {% endif %}
+            {% endif %}
+        </strong>
+    {% endif %}
+    <div style="display: grid; width: 100%;">
+        {% include "@AwardWalletMain/Manager/Support/RewardAvailability/proxyProviderStats.html.twig" with {'data': data, 'manageLog': true, 'cluster': cluster, 'type':type} %}
+    </div>
+
+{% endblock %}

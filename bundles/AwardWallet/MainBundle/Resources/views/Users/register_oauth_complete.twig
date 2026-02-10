@@ -1,0 +1,28 @@
+{% extends "@AwardWalletMain/Layout/default.html.twig" %}
+
+{% block title %}{{ 'user.invites.registered'|trans }}{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        window.dataLayer.push({
+            'event': 'user_registered',
+            'userRegisteredType': 'desktop_oauth',
+            'userRegisteredMethod': '{{ authMethod }}',
+            'eventCallback': function() {
+                window.location.href = '{{ redirectUrl }}';
+            }
+        });
+        setTimeout(window.dataLayer.at(-1).eventCallback(), 3000);
+    </script>
+{% endblock %}
+
+{% block content %}
+    <div class="main-blk">
+        <h1>{{ 'alerts.success'|trans }}</h1>
+        <div class="content main-blk-content">
+            {{ 'please-wait'|trans }}
+        </div>
+    </div>
+{% endblock %}

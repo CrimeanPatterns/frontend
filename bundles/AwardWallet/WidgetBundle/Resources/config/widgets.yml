@@ -1,0 +1,594 @@
+parameters:
+
+
+services:
+
+    # logo
+    aw.widget.logo:
+        class: AwardWallet\WidgetBundle\Widget\LogoWidget
+        public: true
+        parent: aw.widget_abstract
+        arguments:
+            - 'header/logo.html.twig'
+        tags:
+            - { name: aw.widget.whitelabel }
+
+    # logo
+    aw.widget.business_logo:
+        class: AwardWallet\WidgetBundle\Widget\BusinessLogoWidget
+        public: true
+        parent: aw.widget_abstract
+        arguments:
+            - 'header/business_logo.html.twig'
+        tags:
+            - { name: aw.widget.whitelabel }
+
+    aw.widget.locales:
+        class: AwardWallet\WidgetBundle\Widget\LocalesWidget
+        public: true
+        parent: aw.widget_abstract
+        arguments:
+            - 'header/locales.html.twig'
+        tags:
+            - { name: aw.widget.whitelabel }
+
+    aw.widget.locales_footer:
+        class: AwardWallet\WidgetBundle\Widget\LocalesWidget
+        public: true
+        parent: aw.widget_abstract
+        arguments:
+            - 'footer/locales.html.twig'
+        tags:
+            - { name: aw.widget.whitelabel }
+
+    aw.widget.business_locales_footer:
+        class: AwardWallet\WidgetBundle\Widget\UserLocalesWidget
+        public: true
+        parent: aw.widget_abstract
+        arguments:
+            - 'footer/business_locales.html.twig'
+        tags:
+            - { name: aw.widget.whitelabel }
+
+    # =================================
+
+    # header zone
+    aw.widget.user_buttons:
+        class: AwardWallet\WidgetBundle\Widget\MenuWidget
+        public: true
+        parent: aw.widget_abstract
+        arguments:
+            - 'header/buttons.html.twig'
+            - button_balance: "@aw.widget.button_balance"
+              button_trips: "@aw.widget.button_trips"
+              button_booking: "@aw.widget.button_booking"
+        tags:
+            - { name: aw.widget.header }
+
+    aw.widget.button_balance:
+        class: AwardWallet\WidgetBundle\Widget\ButtonAccountsWidget
+        public: true
+        parent: aw.widget_abstract
+        arguments:
+            - 'header/button_accounts.html.twig'
+
+    aw.widget.button_trips:
+        class: AwardWallet\WidgetBundle\Widget\ButtonTripsWidget
+        public: true
+        parent: aw.widget_abstract
+        arguments:
+            - 'header/button_trips.html.twig'
+
+    aw.widget.button_booking:
+        class: AwardWallet\WidgetBundle\Widget\ButtonBookingsWidget
+        public: true
+        parent: aw.widget_abstract
+        arguments:
+            - 'header/button_bookings.html.twig'
+
+    aw.widget.personal_business:
+        class: AwardWallet\WidgetBundle\Widget\PersonalBusinessWidget
+        public: true
+        parent: aw.widget_abstract
+        arguments:
+            - 'header/personal_business.html.twig'
+        tags:
+            - { name: aw.widget.header }
+
+    aw.widget.header_menu:
+        class: AwardWallet\WidgetBundle\Widget\TopMenuWidget
+        public: true
+        parent: aw.widget_abstract
+        arguments:
+            - 'header/menu.html.twig'
+            - tools:
+                url: '#'
+                text: 'menu.tools'
+                items:
+                    analysis_merchants:
+                        card_spend_analysis: { route: 'aw_spent_analysis_index', trans: 'credit-card.ccsa_title' }
+                        transaction_analyzer: { route: 'aw_transactions_index', trans: 'transaction-analyzer' }
+                        category_lookup: { route: 'aw_merchant_lookup', trans: 'credit-card.merchant_lookup_title' }
+                        reverse_lookup: { route: 'aw_merchant_reverse_lookup', trans: 'credit-card.merchant_reverse_title' }
+                    trans_purch_stat:
+                        transfer: { route: 'aw_mile_transfer_times_index', trans: 'transfer_times' }
+                        milevalue: { route: 'aw_points_miles_values', trans: 'point-mile-values' }
+                        flightsearch: { route: 'aw_flight_search', trans: 'award-flight-research-tool', granted: 'ROLE_STAFF' }
+                    travel:
+                        trends: { route: 'aw_charts_travel_trends', trans: 'travel-trends'}
+                        summary: { route: 'aw_travel_summary', trans: 'trips.travel-summary-report', domain: 'trips' }
+                        hotel_search: { route: 'aw_hotelreward_index', trans: 'award-hotel-research-tool' }
+                        hotels: { route: 'aw_hotels_index', trans: 'track.group.hotel', granted: 'ROLE_STAFF' }
+                        podcast: { route: 'aw_podcast', text: 'AwardTravel 101 Podcast', class: 'new' }
+                    faqs:  { route: 'aw_faq_index', trans: 'menu.faqs' }
+              blog:      ['/blog/', 'menu.blog']
+              community: ['https://awardwallet.com/blog/link/at101', 'menu.community']
+              api:       ['/api/main', 'APIs']
+              promos:    ['/promos', 'menu.promos']
+              cards:     ['https://awardwallet.com/blog/credit-cards/', 'menu.credit-card-offers']
+              contact:   ['/contact', 'menu.contact-us']
+              logout:    '@aw.widget.button_logout'
+        tags:
+            - { name: aw.widget.header }
+
+    aw.widget.header_menu_documentation:
+        class: AwardWallet\WidgetBundle\Widget\TopMenuWidget
+        public: true
+        parent: aw.widget_abstract
+        arguments:
+            - 'header/menu-doc.html.twig'
+            - blog:       ['/blog/', 'menu.blog']
+              community:  ['https://awardwallet.com/blog/link/at101', 'menu.community']
+              faqs:       ['/faqs', 'menu.faqs']
+              api:        ['/api/main', 'APIs']
+              promos:     ['/promos', 'menu.promos']
+              cards:      ['https://awardwallet.com/blog/credit-cards/', 'menu.credit-card-offers']
+              contact:    ['/contact', 'menu.contact-us']
+
+    aw.widget.not_logged_header_menu:
+        class: AwardWallet\WidgetBundle\Widget\TopMenuWidget
+        public: true
+        parent: aw.widget_abstract
+        arguments:
+            - 'header/not_logged_menu.html.twig'
+            - supported: { route: 'aw_supported_locale', trans: 'menu.supported' }
+              about: { route: 'aw_page_index_locale', params: { 'page': 'about' }, trans: 'menu.about-us' }
+              tools:
+                  url: '#'
+                  text: 'menu.tools'
+                  items:
+                      analysis_merchants:
+                          #card_spend_analysis: { route: 'aw_spent_analysis_index', trans: 'credit-card.ccsa_title' }
+                          #transaction_analyzer: { route: 'aw_transactions_index', trans: 'transaction-analyzer'}
+                          category_lookup: { route: 'aw_merchant_lookup_locale', trans: 'credit-card.merchant_lookup_title' }
+                          #reverse_lookup: { route: 'aw_merchant_reverse_lookup', trans: 'credit-card.merchant_reverse_title' }
+                      trans_purch_stat:
+                          transfer: { route: 'aw_mile_transfer_times_index_locale', trans: 'transfer_times'}
+                          milevalue: { route: 'aw_points_miles_values_locale', trans: 'point-mile-values'}
+                      travel:
+                          trends: { route: 'aw_charts_travel_trends_locale', trans: 'travel-trends'}
+                          hotel_search: { route: 'aw_hotelreward_index_locale', trans: 'award-hotel-research-tool' }
+                          podcast: { route: 'aw_podcast', text: 'AwardTravel 101 Podcast', class: 'new' }
+                          #summary: { route: 'aw_travel_summary', trans: 'trips.travel-summary-report' , domain: 'trips'}
+                      booking:
+                          booking: { route: 'aw_booking_add_index_locale', trans: 'award-booking-service' }
+                      faqs: { route: 'aw_faq_index_locale', trans: 'menu.faqs' }
+              cards: ['/blog/', 'menu.blog']
+              api: { route: 'aw_api_doc_locale', params: { 'item': 'main' }, trans: 'APIs' }
+              contact: { route: 'aw_contactus_index_locale', trans: 'menu.contact-us' }
+#              partners:     ['/{_locale}/page/partners', 'menu.partners']
+              locales:  '@aw.widget.locales'
+
+    aw.widget.not_logged_header_menu_mobile:
+        class: AwardWallet\WidgetBundle\Widget\TopMenuWidget
+        public: true
+        parent: aw.widget_abstract
+        arguments:
+            - 'header/not_logged_menu_mobile.html.twig'
+            - supported: ['/supported-programs', 'menu.supported']
+              about:     ['/page/about', 'menu.about-us']
+              tools:
+                url: '#'
+                text: 'menu.tools'
+                items:
+                    analysis_merchants:
+                        #card_spend_analysis: { route: 'aw_spent_analysis_index', trans: 'credit-card.ccsa_title' }
+                        #transaction_analyzer: { route: 'aw_transactions_index', trans: 'transaction-analyzer'}
+                        category_lookup: { route: 'aw_merchant_lookup', trans: 'credit-card.merchant_lookup_title' }
+                        #reverse_lookup: { route: 'aw_merchant_reverse_lookup', trans: 'credit-card.merchant_reverse_title' }
+                    trans_purch_stat:
+                        transfer: { route: 'aw_mile_transfer_times_index', trans: 'transfer_times'}
+                        milevalue: { route: 'aw_points_miles_values', trans: 'point-mile-values'}
+                    travel:
+                        trends: { route: 'aw_charts_travel_trends', trans: 'travel-trends'}
+                        #summary: { route: 'aw_travel_summary', trans: 'trips.travel-summary-report' , domain: 'trips'}
+              blog:      ['/blog/', 'menu.blog']
+              api:       ['/api/main', 'APIs']
+              privacy:   ['/page/privacy', 'menu.privacy-notice']
+              terms:     ['/page/terms', 'menu.terms-of-use']
+              media:     ['/pr/', 'menu.media']
+              cards:     ['https://awardwallet.com/blog/credit-cards/', 'menu.credit-card-offers']
+              promos:     ['/promos', 'menu.promos']
+              faqs:      ['/faqs', 'menu.faqs']
+              booking: ['/awardBooking/add', 'award-booking-service']
+              contactUs: ['/contact', 'menu.contact-us']
+              locales:  '@aw.widget.locales'
+              blocales: '@aw.widget.business_locales_footer'
+
+    aw.widget.not_logged_header_menu_mobile_register:
+        class: AwardWallet\WidgetBundle\Widget\TopMenuWidget
+        public: true
+        parent: aw.widget_abstract
+        arguments:
+            - 'header/not_logged_menu_mobile.html.twig'
+            - register:  ['/m/registration', 'buttons.register']
+              login:     ['/m/login', 'login.button.login']
+              supported: ['/supported-programs', 'menu.supported']
+              about:     ['/page/about', 'menu.about-us']
+              blog:      ['/blog/', 'menu.blog']
+              api:       ['/api/main', 'APIs']
+              privacy:   ['/page/privacy', 'menu.privacy-notice']
+              terms:     ['/page/terms', 'menu.terms-of-use']
+              media:     ['/pr/', 'menu.media']
+              cards:     ['https://awardwallet.com/blog/credit-cards/', 'menu.credit-card-offers']
+              promos:     ['/promos', 'menu.promos']
+              faqs:      ['/faqs', 'menu.faqs']
+              contactUs: ['/contact', 'menu.contact-us']
+              locales:  '@aw.widget.locales'
+
+    aw.widget.button_logout:
+        class: AwardWallet\WidgetBundle\Widget\TemplateWidget
+        public: true
+        parent: aw.widget_abstract
+        arguments:
+            - 'header/button_logout.html.twig'
+
+    # business header zone
+    aw.widget.business_buttons:
+        class: AwardWallet\WidgetBundle\Widget\BusinessTopMenuWidget
+        public: true
+        parent: aw.widget_abstract
+        arguments:
+            - 'header/buttons.html.twig'
+            - button_accounts: "@aw.widget.business_button_accounts"
+              button_trips: "@aw.widget.business_button_trips"
+              button_booking: "@aw.widget.business_button_booking"
+              button_members: "@aw.widget.business_button_members"
+              button_balance:  "@aw.widget.business_button_balance"
+            - '@aw.security.token_storage'
+            - '@AwardWallet\MainBundle\Security\Voter\BusinessVoter'
+        tags:
+            - { name: aw.widget.business_header }
+
+    aw.widget.business_button_accounts:
+        class: AwardWallet\WidgetBundle\Widget\BusinessButtonAccountsWidget
+        public: true
+        parent: aw.widget_abstract
+        arguments:
+            - 'header/business_button_accounts.html.twig'
+
+    aw.widget.business_button_trips:
+        class: AwardWallet\WidgetBundle\Widget\BusinessButtonTripsWidget
+        public: true
+        parent: aw.widget_abstract
+        arguments:
+            - 'header/business_button_trips.html.twig'
+
+    aw.widget.business_button_booking:
+        class: AwardWallet\WidgetBundle\Widget\BusinessButtonBookingsWidget
+        public: true
+        parent: aw.widget_abstract
+        arguments:
+            - 'header/business_button_bookings.html.twig'
+
+    aw.widget.business_button_members:
+        class: AwardWallet\WidgetBundle\Widget\BusinessButtonMembersWidget
+        public: true
+        parent: aw.widget_abstract
+        arguments:
+            - 'header/business_button_members.html.twig'
+
+    aw.widget.business_button_balance:
+        class: AwardWallet\WidgetBundle\Widget\BusinessButtonBalanceWidget
+        public: true
+        parent: aw.widget_abstract
+        arguments:
+            - 'header/business_button_balance.html.twig'
+
+    aw.widget.business_personal:
+        class: AwardWallet\WidgetBundle\Widget\TemplateWidget
+        public: true
+        parent: aw.widget_abstract
+        arguments:
+            - 'header/business_personal.html.twig'
+        tags:
+            - { name: aw.widget.business_header }
+
+    aw.widget.business_header_menu:
+        class: AwardWallet\WidgetBundle\Widget\BusinessHeaderMenuWidget
+        public: true
+        parent: aw.widget_abstract
+        arguments:
+            - 'header/business_menu.html.twig'
+            - account:  ['/user/profile', 'menu.business-account']
+              contact:  ['/contact', 'menu.contact-us']
+              api:      ['/api/', 'APIs']
+              logout:   "@aw.widget.button_logout"
+            - '@aw.security.token_storage'
+            - '@AwardWallet\MainBundle\Security\Voter\BusinessVoter'
+        tags:
+            - { name: aw.widget.business_header }
+
+    # =================================
+
+    # footer zone
+    aw.widget.copyright:
+        class: AwardWallet\WidgetBundle\Widget\TemplateWidget
+        public: true
+        parent: aw.widget_abstract
+        arguments:
+            - 'footer/copyright.html.twig'
+        tags:
+            - { name: aw.widget.footer }
+
+    aw.widget.footer_menu:
+        class: AwardWallet\WidgetBundle\Widget\MenuWidget
+        public: true
+        parent: aw.widget_abstract
+        arguments:
+            - 'footer/menu.html.twig'
+            - privacy:      ['/{_locale}/page/privacy', 'menu.privacy-notice']
+              terms:        ['/{_locale}/page/terms', 'menu.terms-of-use']
+              about:        ['/{_locale}/page/about', 'menu.about-us']
+#              media:        ['/{_locale}/pr/', 'menu.media']
+#              services:     ['/page/services', 'menu.services']
+#              offers:       ['/cards.php', 'menu.offers']
+#              reviews:      ['/rating/view.php', 'menu.reviews']
+              cards:        ['https://awardwallet.com/blog/credit-cards/', 'menu.credit-card-offers']
+              promos:       ['/{_locale}/promos', 'menu.promos']
+#              partners:     ['/page/partners', 'menu.partners']
+              supported:    ['/{_locale}/supported-programs', 'menu.supported']
+              faqs:         ['/{_locale}/faqs', 'menu.faqs']
+              api:      ['/{_locale}/api/main', 'APIs']
+              booking:      ['/{_locale}/awardBooking/add', 'award-booking-service']
+              contactUs:    ['/{_locale}/contact', 'menu.contact-us']
+              locales:      "@aw.widget.locales_footer"
+              blocales:     "@aw.widget.business_locales_footer"
+        tags:
+            - { name: aw.widget.footer }
+
+    aw.widget.footer_menu_mobile:
+        class: AwardWallet\WidgetBundle\Widget\MenuWidget
+        public: true
+        parent: aw.widget_abstract
+        arguments:
+            - 'footer/menu_mobile.html.twig'
+            - privacy:   ['/m/privacy', 'menu.privacy-notice']
+              terms:     ['/m/terms', 'menu.terms-of-use']
+              about:     ['/m/about', 'menu.about-us']
+#              media:     ['/{_locale}/pr/', 'menu.media']
+              cards:     ['https://awardwallet.com/blog/credit-cards/', 'menu.credit-card-offers']
+              supported: ['/{_locale}/supported-programs', 'menu.supported']
+              booking:   ['/awardBooking/add', 'award-booking-service']
+              faqs:      ['/{_locale}/faqs', 'menu.faqs']
+              api:       ['/api/main', 'APIs']
+              contactUs: ['/contact', 'menu.contact-us']
+              locales:   "@aw.widget.locales_footer"
+              blocales:  "@aw.widget.business_locales_footer"
+
+    aw.widget.mobile:
+        class: AwardWallet\WidgetBundle\Widget\TemplateWidget
+        public: true
+        parent: aw.widget_abstract
+        arguments:
+            - 'footer/mobile.html.twig'
+        tags:
+            - { name: aw.widget.footer }
+
+    # =================================
+
+    # left column zone, top
+    aw.widget.user_info:
+        class: AwardWallet\WidgetBundle\Widget\UserInfoWidget
+        public: true
+        parent: aw.widget_abstract
+        arguments:
+            - '@AwardWallet\MainBundle\Service\UserAvatar'
+            - 'left/user_info.html.twig'
+        tags:
+            - { name: aw.widget.left_top, position: first }
+
+    aw.widget.credit_card_tools:
+        class: AwardWallet\WidgetBundle\Widget\CreditCardToolsWidget
+        public: true
+        parent: aw.widget_abstract
+        arguments:
+            - 'left/credit_card_tools.html.twig'
+        tags:
+            - { name: aw.widget.credit_card_tools_zone }
+
+  # left column zone, bottom
+    aw.widget.invite:
+        class: AwardWallet\WidgetBundle\Widget\InviteWidget
+        public: true
+        parent: aw.widget_abstract
+        arguments:
+            - 'left/invite.html.twig'
+        tags:
+            - { name: aw.widget.left_bottom }
+            - { name: aw.widget.whitelabel }
+
+    # left column zone, middle
+
+    # accounts menu
+
+    aw.widget.add_account_button:
+        class: AwardWallet\WidgetBundle\Widget\AddAccountAndPendingButtonsWidget
+        public: true
+        parent: aw.widget_abstract
+        arguments:
+            - 'accounts/add_button.html.twig'
+        tags:
+            - { name: aw.widget.accounts }
+            - { name: aw.widget.accounts_list }
+            - { name: aw.widget.connections }
+
+    aw.widget.accounts_main_menu:
+        class: AwardWallet\WidgetBundle\Widget\AccountsPersonsWidget
+        public: true
+        parent: aw.widget_abstract
+        arguments:
+            - 'accounts/persons_menu.html.twig'
+        tags:
+            - { name: aw.widget.accounts }
+            - { name: aw.widget.accounts_list }
+
+    aw.widget.accounts_add_more_menu:
+        class: AwardWallet\WidgetBundle\Widget\AccountsAddMoreMenuWidget
+        public: true
+        autowire: true
+        parent: aw.widget_abstract
+        arguments:
+            - 'accounts/add_more_menu.html.twig'
+        tags:
+            - { name: aw.widget.accounts }
+            - { name: aw.widget.accounts_list }
+            - { name: aw.widget.connections }
+
+    aw.widget.accounts_manage_menu:
+        class: AwardWallet\WidgetBundle\Widget\TemplateWidget
+        public: true
+        parent: aw.widget_abstract
+        arguments:
+            - 'accounts/manage_menu.html.twig'
+        tags:
+            - { name: aw.widget.whitelabel }
+
+#    aw.widget.accounts_list_options:
+#        class: AwardWallet\WidgetBundle\Widget\TemplateWidget
+#        parent: aw.widget_abstract
+#        arguments:
+#            - 'accounts/list_options.html.twig'
+#        tags:
+#            - { name: aw.widget.accounts_list }
+
+    # trips menu
+
+    aw.widget.add_trip_button:
+        class: AwardWallet\WidgetBundle\Widget\TemplateWidget
+        public: true
+        parent: aw.widget_abstract
+        arguments:
+            - 'trips/add_button.html.twig'
+        tags:
+            - { name: aw.widget.trips }
+
+    aw.widget.trips_persons:
+        class: AwardWallet\WidgetBundle\Widget\TripsPersonsWidget
+        public: true
+        parent: aw.widget_abstract
+        arguments:
+            - 'accounts/persons_menu.html.twig'
+        tags:
+            - { name: aw.widget.trips }
+
+    aw.widget.trips_main_menu:
+        class: AwardWallet\WidgetBundle\Widget\TemplateWidget
+        public: true
+        parent: aw.widget_abstract
+        arguments:
+            - 'trips/main_menu.html.twig'
+        tags:
+            - { name: aw.widget.trips }
+
+    # bookings menu
+
+    aw.widget.add_booking_button:
+        class: AwardWallet\WidgetBundle\Widget\TemplateWidget
+        public: true
+        parent: aw.widget_abstract
+        arguments:
+            - 'bookings/add_button.html.twig'
+        tags:
+            - { name: aw.widget.bookings }
+
+    aw.widget.bookings_main_menu:
+        class: AwardWallet\WidgetBundle\Widget\TemplateWidget
+        public: true
+        parent: aw.widget_abstract
+        arguments:
+            - 'bookings/main_menu.html.twig'
+        tags:
+
+    # others
+
+    AwardWallet\WidgetBundle\Widget\UserProfileWidget:
+        public: true
+        parent: aw.widget_abstract
+        arguments:
+            - 'left/user_profile.html.twig'
+        tags:
+            - { name: aw.widget.user_profile }
+
+    AwardWallet\WidgetBundle\Widget\BookingLeftMenuWidget:
+        public: true
+        autowire: true
+        parent: aw.widget_abstract
+        arguments:
+            - 'left/bookings_menu.html.twig'
+        tags:
+            - { name: aw.widget.bookings }
+
+    aw.widget.onecard_menu:
+        class: AwardWallet\WidgetBundle\Widget\OnecardMenuWidget
+        public: true
+        parent: aw.widget_abstract
+        arguments:
+            - 'left/onecard_menu.html.twig'
+        tags:
+            - { name: aw.widget.onecard }
+
+    aw.widget.onecard_advert:
+            class: AwardWallet\WidgetBundle\Widget\OnecardAdWidget
+            public: true
+            parent: aw.widget_abstract
+            arguments:
+                - 'left/onecard_advert.html.twig'
+            tags:
+                - { name: aw.widget.left_bottom }
+                - { name: aw.widget.onecard }
+                - { name: aw.widget.whitelabel }
+
+    AwardWallet\WidgetBundle\Widget\ContactUsWidget:
+            public: true
+            autowire: true
+            parent: aw.widget_abstract
+            arguments:
+                - 'left/contact_us.html.twig'
+            tags:
+                - { name: aw.widget.contact_us }
+
+    AwardWallet\WidgetBundle\Widget\ConnectionsPersonsWidget:
+            public: true
+            autowire: true
+            parent: aw.widget_abstract
+            arguments:
+                - 'left/connections_persons.html.twig'
+            tags:
+                - { name: aw.widget.connections_edit }
+
+    # =================================
+
+    aw.widget.auth_menu:
+        class: AwardWallet\WidgetBundle\Widget\MenuWidgetExtended
+        public: true
+        parent: aw.widget_abstract
+        arguments:
+            - ulclass: 'user-buttons'
+
+    aw.widget.landing_top_menu:
+        class: AwardWallet\WidgetBundle\Widget\MenuWidgetExtended
+        public: true
+        parent: aw.widget_abstract
+        arguments:
+            - ulclass: 'nav-buttons'

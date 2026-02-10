@@ -1,0 +1,629 @@
+parameters:
+
+services:
+    _defaults:
+        public: true
+
+    # form types
+    aw.form.type.datepicker:
+        public: true
+        class: AwardWallet\MainBundle\Form\Type\DatePickerType
+        tags:
+            - { name: form.type }
+    aw.form.type.accounts_selector:
+        public: true
+        autowire: true
+        class: AwardWallet\MainBundle\Form\Type\AccountsSelectorType
+        arguments:
+            - '@AwardWallet\MainBundle\Manager\AccountListManager'
+            - '@AwardWallet\MainBundle\Globals\AccountList\OptionsFactory'
+        tags:
+            - { name: form.type }
+    aw.form.type.accounts_selector_extended:
+        public: true
+        class: AwardWallet\MainBundle\Form\Type\AccountsSelectorExtendedType
+        arguments:
+            - '@AwardWallet\MainBundle\Manager\AccountListManager'
+            - '@AwardWallet\MainBundle\Globals\AccountList\OptionsFactory'
+            - "@doctrine.orm.default_entity_manager"
+            - '@AwardWallet\MainBundle\Globals\Localizer\LocalizeService'
+        tags:
+            - { name: form.type }
+    aw.form.type.two_choices_or_text:
+        public: true
+        class: AwardWallet\MainBundle\Form\Type\TwoChoicesOrTextType
+        tags:
+            - { name: form.type }
+    aw.form.type.booking.passenger:
+        public: true
+        class: AwardWallet\MainBundle\Form\Type\AbPassengerType
+        arguments: ["@doctrine.orm.default_entity_manager", "@translator", '@AwardWallet\MainBundle\Globals\Localizer\LocalizeService']
+        tags:
+            - { name: form.type }
+    aw.form.type.booking.segment:
+        public: true
+        class: AwardWallet\MainBundle\Form\Type\AbSegmentType
+        tags:
+            - { name: form.type }
+    aw.form.type.booking_custom_program:
+        public: true
+        class: AwardWallet\MainBundle\Form\Type\AbCustomProgramType
+        arguments: ["@doctrine.orm.default_entity_manager"]
+        tags:
+            - { name: form.type }
+    aw.form.type.booking_request:
+        public: true
+        class: AwardWallet\MainBundle\Form\Type\AbRequestType
+        arguments: ["@doctrine.orm.default_entity_manager", '@AwardWallet\MainBundle\Globals\Localizer\LocalizeService']
+        tags:
+            - { name: form.type }
+    aw.form.type.booking_request_properties:
+        public: true
+        class: AwardWallet\MainBundle\Form\Type\AbRequestPropertiesType
+        arguments: ["@doctrine.orm.default_entity_manager", "@validator"]
+        tags:
+            - { name: form.type }
+    aw.form.type.booking_request_message:
+        public: true
+        class: AwardWallet\MainBundle\Form\Type\AbMessageType
+        arguments: ["@security.authorization_checker", "@router", "@request_stack", "@doctrine.orm.default_entity_manager"]
+        tags:
+            - { name: form.type }
+    aw.form.type.booking_request_edit_message:
+        public: true
+        class: AwardWallet\MainBundle\Form\Type\AbMessageEditType
+        arguments: ["@security.authorization_checker", "@router", "@request_stack", "@doctrine.orm.default_entity_manager"]
+        tags:
+            - { name: form.type }
+
+    aw.form.type.booking_request_invoice:
+        public: true
+        class: AwardWallet\MainBundle\Form\Type\AbInvoiceType
+        arguments: ["@translator"]
+        tags:
+            - { name: form.type }
+
+    aw.form.type.booking_request_invoice_miles:
+        public: true
+        class: AwardWallet\MainBundle\Form\Type\AbInvoiceMilesType
+        arguments: ["@translator"]
+        tags:
+            - { name: form.type }
+
+    aw.form.type.passwordMask:
+        public: true
+        class: AwardWallet\MainBundle\Form\Type\PasswordMaskType
+        tags:
+            - { name: form.type }
+
+    aw.form.type.select2_hidden:
+        public: true
+        class: AwardWallet\MainBundle\Form\Type\Select2HiddenType
+        tags:
+            - { name: form.type }
+
+    aw.form.type.select2_choice:
+        public: true
+        class: AwardWallet\MainBundle\Form\Type\Select2ChoiceType
+        tags:
+            - { name: form.type }
+
+    aw.form.type.autocomplete:
+        public: true
+        class: AwardWallet\MainBundle\Form\Type\AutocompleteType
+        arguments: ["@router"]
+        tags:
+            - { name: form.type }
+
+    aw.form.type.email_multiple:
+        public: true
+        class: AwardWallet\MainBundle\Form\Type\EmailMultipleType
+        tags:
+            - { name: form.type }
+
+    aw.form.type.masked_password:
+        public: true
+        class: AwardWallet\MainBundle\Form\Type\MaskedPasswordType
+        arguments: ["@translator", "@security.authorization_checker"]
+        tags:
+            - { name: form.type }
+
+    aw.form.type.user_pay:
+        public: true
+        class: AwardWallet\MainBundle\Form\Type\Cart\UserPayType
+        tags:
+            - { name: form.type }
+
+    aw.form.type.business_pay:
+            public: true
+            class: AwardWallet\MainBundle\Form\Type\Cart\BusinessPayType
+            arguments: ['@AwardWallet\MainBundle\Globals\Localizer\LocalizeService', "@security.token_storage", "@translator", '@AwardWallet\MainBundle\Service\BusinessTransaction\BusinessTransactionManager']
+            shared: false
+            tags:
+                - { name: form.type }
+
+    aw.form.type.card_info:
+        public: true
+        class: AwardWallet\MainBundle\Form\Type\CardInfoType
+        arguments: ["@translator", '@AwardWallet\MainBundle\Globals\Cart\CartUserSource',"@router"]
+        tags:
+            - { name: form.type }
+
+    aw.form.type.websettings:
+        public: true
+        class: AwardWallet\MainBundle\Form\Type\WebsiteSettingsType
+        autowire: true
+        tags:
+            - { name: form.type }
+
+    aw.form.type.2fact:
+        public: true
+        class: AwardWallet\MainBundle\Form\Type\TwoFactorAuthType
+        arguments:
+            - '@AwardWallet\MainBundle\Security\TwoFactorAuthentication\TwoFactorAuthenticationService'
+            - "@security.token_storage"
+            - "%host%"
+        tags:
+            - { name: form.type }
+
+    aw.form.type.business_member:
+        public: true
+        class: AwardWallet\MainBundle\Form\Type\BusinessMemberType
+        arguments: ["@translator", "@doctrine.orm.default_entity_manager"]
+        tags:
+            - { name: form.type }
+
+    AwardWallet\MainBundle\Form\Type\AwPlusGiftType:
+        autowire: true
+        arguments:
+            $emailLocker: '@aw.security.antibruteforce.check_email'
+        tags:
+            - { name: form.type }
+
+    # validators
+    aw.form.validator.emails_textarea:
+            public: true
+            class: AwardWallet\MainBundle\Validator\Constraints\EmailsTextareaValidator
+            arguments: ['@translator']
+            tags:
+                - { name: validator.constraint_validator, alias: emails_textarea }
+
+    aw.form.validator.date_range:
+        public: true
+        class: AwardWallet\MainBundle\Validator\Constraints\DateRangeValidator
+        arguments: ['@AwardWallet\MainBundle\Globals\Localizer\LocalizeService']
+        tags:
+            - { name: validator.constraint_validator, alias: date_range }
+
+    aw.form.validator.callback:
+        public: true
+        class: AwardWallet\MainBundle\Validator\Constraints\CallbackWithDepValidator
+        arguments: ["@service_container"]
+        tags:
+            - { name: validator.constraint_validator, alias: callback_dep }
+
+    AwardWallet\MainBundle\Validator\Constraints\ConditionOldValidator:
+        tags:
+            - { name: validator.constraint_validator, alias: condition_old }
+
+    AwardWallet\MainBundle\Validator\Constraints\ConditionValidator:
+        arguments:
+            - "@aw.expression_language"
+        tags:
+            - { name: validator.constraint_validator, alias: condition }
+
+
+    AwardWallet\MainBundle\Validator\Constraints\ConversionValidator:
+        arguments:
+            - "@aw.expression_language"
+        tags:
+            - { name: validator.constraint_validator, alias: conversion }
+
+    aw.form.validator.card_expiration:
+        public: true
+        class: AwardWallet\MainBundle\Validator\Constraints\CardExpirationValidator
+        arguments: ["@translator"]
+        tags:
+            - { name: validator.constraint_validator, alias: card_expiration }
+
+    aw.form.validator.user_password.disallow_master_pass:
+        public: true
+        class: AwardWallet\MainBundle\Validator\Constraints\UserPasswordValidator
+        arguments: ["@security.token_storage", "@security.encoder_factory", "@aw.security.password_checker", "@request_stack", false, "%reveal_master_password%"]
+        tags:
+            - { name: validator.constraint_validator, alias: aw.form.validator.user_password.disallow_master_pass }
+
+    aw.form.validator.user_password.allow_master_pass:
+        public: true
+        class: AwardWallet\MainBundle\Validator\Constraints\UserPasswordValidator
+        arguments: ["@security.token_storage", "@security.encoder_factory", "@aw.security.password_checker", "@request_stack", true, "%reveal_master_password%"]
+        tags:
+            - { name: validator.constraint_validator, alias: aw.form.validator.user_password.allow_master_pass }
+
+    aw.form.validator.anti_bruteforce_locker:
+        public: true
+        class: AwardWallet\MainBundle\Validator\Constraints\AntiBruteforceLockerValidator
+        arguments: ["@service_container"]
+        tags:
+            - { name: validator.constraint_validator, alias: anti_bruteforce_locker }
+
+    aw.form.validator.unique_entity:
+        public: true
+        class: AwardWallet\MainBundle\Validator\Constraints\UniqueEntityValidator
+        arguments: ["@doctrine", "@aw.metadata_factory"]
+        tags:
+            - { name: validator.constraint_validator, alias: unique_entity }
+
+    aw.form.constraint.transformer.unique_entity_transformer:
+        public: true
+        class: AwardWallet\MainBundle\Validator\Constraints\Transformer\UniqueEntityTransformer
+
+    aw.form.validator.constraint_reference:
+        public: true
+        class: AwardWallet\MainBundle\Validator\Constraints\ConstraintReferenceValidator
+        arguments: ["@aw.metadata_factory", "@aw.form.constraint.transformer.manager"]
+        tags:
+            - { name: validator.constraint_validator, alias: constraint_reference }
+
+    aw.form.validator.andx:
+        public: true
+        class: AwardWallet\MainBundle\Validator\Constraints\AndXValidator
+        tags:
+            - { name: validator.constraint_validator, alias: andx }
+
+    aw.form.validator.service:
+        public: true
+        class: AwardWallet\MainBundle\Validator\Constraints\ServiceValidator
+        arguments: ["@service_container"]
+        tags:
+            - { name: validator.constraint_validator, alias: service}
+
+    aw.form.constraint.transformer.manager:
+        public: true
+        class: AwardWallet\MainBundle\Validator\Constraints\Transformer\TransformerManager
+        calls:
+            - [addConstraintTransformer, ["@aw.form.constraint.transformer.unique_entity_transformer"]]
+
+    aw.metadata_factory:
+        public: true
+        class: Symfony\Component\Validator\Validator\LegacyValidator
+        factory: ["@validator.builder", "getValidator"]
+
+    aw.form.validator.legacy_validator:
+        public: true
+        alias: aw.metadata_factory
+
+    AwardWallet\MainBundle\Validator\UserEmailValidator:
+        public: true
+        autowire: true
+
+    # extensions
+    aw.form.extension.help:
+        public: true
+        class: AwardWallet\MainBundle\Form\Extension\FieldTypeHelpExtension
+        tags:
+            - { name: form.type_extension, extended_type: Symfony\Component\Form\Extension\Core\Type\FormType }
+
+    aw.form.extension.json:
+        public: true
+        class: AwardWallet\MainBundle\Form\Extension\JsonFormExtension\JsonFormExtension
+        tags:
+            - { name: form.type_extension, extended_type: Symfony\Component\Form\Extension\Core\Type\FormType }
+
+    aw.form.extension.choice:
+        public: true
+        class: AwardWallet\MainBundle\Form\Extension\JsonFormExtension\ChoiceTypeExtension
+        tags:
+            - { name: form.type_extension, extended_type: Symfony\Component\Form\Extension\Core\Type\ChoiceType }
+
+    AwardWallet\MainBundle\Form\Extension\SorterFormExtension:
+        class: AwardWallet\MainBundle\Form\Extension\SorterFormExtension
+        tags:
+            - { name: form.type_extension, extended_type: Symfony\Component\Form\Extension\Core\Type\FormType }
+
+    AwardWallet\MainBundle\Form\Account\EmailHelper:
+        autowire: true
+
+    AwardWallet\MainBundle\Form\Account\Builder:
+        arguments:
+            - "@translator_hijacker"
+            - "@aw.globals"
+            - "@database_connection"
+            - '@AwardWallet\MainBundle\Entity\Repositories\UseragentRepository'
+            - '@AwardWallet\MainBundle\Entity\Repositories\AccountRepository'
+            - "@request_stack"
+            - "@security.authorization_checker"
+            - "@aw.api.versioning"
+            - '@AwardWallet\MainBundle\Service\ProviderTranslator'
+            - '@AwardWallet\MainBundle\Form\Account\EmailHelper'
+            - "%engine_path%"
+            - "%kernel.project_dir%"
+    aw.form.account.property_helper:
+        public: true
+        class: AwardWallet\MainBundle\Form\Account\PropertyHelper
+        arguments: ["@database_connection", '@AwardWallet\MainBundle\Entity\Repositories\ProviderpropertyRepository']
+    aw.form.account.status_helper:
+        public: true
+        class: AwardWallet\MainBundle\Form\Account\StatusHelper
+        arguments: ["@database_connection", '@AwardWallet\MainBundle\Entity\Repositories\ElitelevelRepository', '@AwardWallet\MainBundle\Entity\Repositories\ProviderpropertyRepository']
+    aw.form.account.answer_helper:
+        public: true
+        class: AwardWallet\MainBundle\Form\Account\AnswerHelper
+        arguments: ["@database_connection", "@doctrine.orm.default_entity_manager", "@translator"]
+    AwardWallet\MainBundle\Form\Account\AnswerHelper: '@aw.form.account.answer_helper'
+
+    aw.form.type.sharing_options:
+        public: true
+        class: AwardWallet\MainBundle\Form\Type\SharingOptionsType
+        arguments: ["@security.token_storage", '@AwardWallet\MainBundle\Entity\Repositories\UseragentRepository', "@translator"]
+        tags:
+            - { name: form.type }
+
+    aw.form.type.oauth:
+                public: true
+                class: AwardWallet\MainBundle\Form\Type\OauthType
+                tags:
+                    - { name: form.type }
+
+    aw.form.type.capitalcards_oauth:
+        public: true
+        autowire: true
+        class: AwardWallet\MainBundle\Form\Type\CapitalcardsOauthType
+        tags:
+            - { name: form.type }
+
+    aw.form.type.capitalcards_oauth_mobile:
+        public: true
+        autowire: true
+        class: AwardWallet\MainBundle\Form\Type\Mobile\Loyalty\CapitalcardsOauthMobileType
+        tags:
+            - { name: form.type }
+
+    AwardWallet\MainBundle\Form\Transformer\CapitalcardsTransformerFactory:
+        autowire: true
+
+    aw.form.type.separator:
+                    public: true
+                    class: AwardWallet\MainBundle\Form\Type\SeparatorType
+                    tags:
+                        - { name: form.type }
+
+    aw.form.type.group_desc:
+        public: true
+        class: AwardWallet\MobileBundle\Form\Type\NewDesign\GroupDescType
+        tags:
+            - { name: form.type }
+
+
+    AwardWallet\MainBundle\Globals\FormDehydrator:
+        autowire: true
+        class: AwardWallet\MainBundle\Globals\FormDehydrator
+        arguments:
+          - "@translator_hijacker"
+          - "@router"
+          - "@aw.api.versioning"
+          - "@security.authorization_checker"
+          - '@AwardWallet\MainBundle\Entity\Repositories\CardImageRepository'
+          - '@AwardWallet\MainBundle\Entity\Repositories\CurrencyRepository'
+          - '@AwardWallet\MainBundle\Globals\AccountList\Mapper\MobileFormatter\Desanitizer'
+          - '@logger'
+
+    aw.form.dehydrator:
+        alias: AwardWallet\MainBundle\Globals\FormDehydrator
+        public: true
+
+    aw.form.reveal.password:
+        public: true
+        class: AwardWallet\MainBundle\Form\Type\RevealPasswordType
+        arguments: ["@doctrine.orm.default_entity_manager", "@translator", "@session", "@security.authorization_checker"]
+        tags:
+            - {name: form.type}
+
+    aw.form.billing.address:
+        public: true
+        class: AwardWallet\MainBundle\Form\Type\Cart\BillingAddressType
+        arguments: ["@request_stack", "@doctrine.orm.default_entity_manager", "@security.token_storage", "@translator", '@AwardWallet\MainBundle\Service\GeoLocation\GeoLocation']
+        tags:
+            - {name: form.type}
+
+    aw.form.payment_type:
+        public: true
+        class: AwardWallet\MainBundle\Form\Type\Cart\SelectPaymentType
+        autowire: true
+        tags:
+            - {name: form.type}
+
+    AwardWallet\MainBundle\Form\Type\UserType:
+        autowire: true
+        autoconfigure: true
+        tags:
+            - { name: form.type }
+
+    aw.history.type:
+        public: true
+        class: AwardWallet\MainBundle\Form\Type\AccountHistoryType
+        arguments:
+          - "@aw.globals"
+        tags:
+              - { name: form.type }
+
+    # Mobile
+
+    aw.mobile.url_transformer:
+        autowire: true
+        public: true
+        class: AwardWallet\MobileBundle\Form\View\UrlTransformer
+        arguments: ["@router", "/m/api"]
+
+    AwardWallet\MobileBundle\Form\View\UrlTransformer: '@aw.mobile.url_transformer'
+
+    aw.mobile.profile_overview:
+        public: true
+        class: AwardWallet\MobileBundle\Form\View\Profile\Overview
+        arguments:
+            - "@translator"
+            - "@aw.api.versioning"
+            - '@AwardWallet\MainBundle\Controller\Profile\ProfileOverviewController'
+            - "@aw.mobile.url_transformer"
+            - "@doctrine.orm.entity_manager"
+            - "@security.authorization_checker"
+            - '@AwardWallet\MainBundle\Service\NotificationSettings'
+            - '@AwardWallet\MainBundle\Globals\Localizer\LocalizeService'
+            - '@AwardWallet\MainBundle\Scanner\UserMailboxCounter'
+            - '@AwardWallet\MainBundle\Service\LegacyUrlGenerator'
+            - '@AwardWallet\MainBundle\FrameworkExtension\Error\SafeExecutorFactory'
+            - '@AwardWallet\MainBundle\Service\GeoLocation\GeoLocation'
+            - '@AwardWallet\MainBundle\Service\User\SubscriptionInfoHelper'
+
+    aw.form.mobile.block_container:
+        public: true
+        class: AwardWallet\MobileBundle\Form\Type\BlockContainerType
+        tags:
+            - {name: form.type}
+
+    aw.form.extension.mobile:
+        public: true
+        class: AwardWallet\MobileBundle\Form\Extension\MobileFormTypeExtension
+        tags:
+            - { name: form.type_extension, extended_type: AwardWallet\MobileBundle\Form\Type\MobileType }
+
+    aw.form.extension.attr_updaters:
+        class: AwardWallet\MainBundle\Form\Extension\AttrUpdatersFormExtension
+        tags:
+            - { name: form.type_extension, extended_type: Symfony\Component\Form\Extension\Core\Type\FormType }
+
+    aw.mobile.form:
+        public: true
+        class: AwardWallet\MobileBundle\Form\Type\MobileType
+        tags:
+            - {name: form.type}
+
+    aw.mobile.switcher:
+        public: true
+        class: AwardWallet\MobileBundle\Form\Type\SwitcherType
+        tags:
+            - {name: form.type}
+
+    aw.form.text_completion:
+        public: true
+        class: AwardWallet\MobileBundle\Form\Type\Components\TextCompletionType
+        tags:
+            - {name: form.type}
+
+    aw.mobile.register:
+        public: true
+        class: AwardWallet\MobileBundle\Form\Type\NewDesign\RegisterNewUserType
+        arguments:
+            - "@translator"
+            - '@AwardWallet\MainBundle\Security\SiegeModeDetector'
+            - "@aw.api.versioning"
+            - "%recaptcha_enabled%"
+        tags:
+            - {name: form.type}
+
+    # Handlers
+
+    aw.form.handler_helper:
+        autowire: true
+        public: true
+        class: AwardWallet\MainBundle\Form\Handler\FormHandlerHelper
+        arguments:
+            - "@security.authorization_checker"
+            - "@property_accessor"
+    AwardWallet\MainBundle\Form\Handler\FormHandlerHelper: '@aw.form.handler_helper'
+
+    aw.form.generic_request_handler:
+        abstract: true
+        class: AwardWallet\MainBundle\Form\Handler\GenericRequestHandler\Handler
+        arguments: ["@event_dispatcher", "@aw.form.handler_helper", "@doctrine.orm.default_entity_manager"]
+
+    # Subscribers
+
+    aw.form.subscriber.mobile.partial_form:
+        public: true
+        class: AwardWallet\MobileBundle\Form\Handler\Subscriber\Common\PartialFormSubscriber
+
+    aw.form.subscriber.mobile.request_data_transformer:
+        public: true
+        class: AwardWallet\MobileBundle\Form\Handler\Subscriber\Common\RequestDataTransformationSubscriber
+
+    aw.form.card_image.subscriber.mobile:
+        public: true
+        class: AwardWallet\MainBundle\Form\Handler\Subscriber\Account\CardImageMobile
+        arguments:
+            - "@aw.card_image_manager"
+            - '@AwardWallet\MainBundle\Entity\Repositories\CardImageRepository'
+            - "@doctrine.orm.entity_manager"
+            - "@security.authorization_checker"
+            - '@AwardWallet\MainBundle\Worker\AsyncProcess\Process'
+            - '@AwardWallet\CardImageParser\CardImageParserLoader'
+            - "@aw.card_iamge.dom_converter"
+            - '@AwardWallet\MainBundle\Entity\Repositories\ProviderpropertyRepository'
+            - "@logger"
+
+    aw.form.contactus.auth:
+        public: true
+        class: AwardWallet\MainBundle\Form\Type\ContactUsAuthType
+        arguments: ["@translator"]
+        tags:
+            - {name: form.type}
+
+    aw.form.contactus.unauth:
+        class: AwardWallet\MainBundle\Form\Type\ContactUsUnauthType
+        public: true
+        parent: aw.form.contactus.auth
+#        arguments: ["@translator"]
+        tags:
+            - {name: form.type}
+
+    aw.form.extension.time:
+        public: true
+        class: AwardWallet\MainBundle\Form\Extension\TimeTypeExtension
+        arguments:
+            - '@AwardWallet\MainBundle\Globals\Localizer\LocalizeService'
+        tags:
+            - { name: form.type_extension, extended_type: Symfony\Component\Form\Extension\Core\Type\TimeType }
+
+    aw.form.type.promotions_region_filter:
+        public: true
+        class: AwardWallet\MainBundle\Form\Type\PromotionsRegionFilter
+        arguments: ["@doctrine.orm.entity_manager"]
+        tags:
+            - {name: form.type}
+
+    AwardWallet\MainBundle\Form\Helper\MobileExtensionLoader:
+        autowire: true
+        arguments:
+            - "%kernel.root_dir%"
+            - "@aw.api.versioning"
+
+
+    AwardWallet\MainBundle\Form\Type\Mobile\SpentAnalysis\SpentAnalysisType:
+        autowire: true
+        autoconfigure: true
+
+    AwardWallet\MainBundle\Form\Type\Mobile\SpentAnalysis\TransactionAnalysisType:
+        autowire: true
+        autoconfigure: true
+
+    AwardWallet\MainBundle\Form\Type\SecurityQuestionType:
+        autowire: true
+        autoconfigure: true
+
+    AwardWallet\MainBundle\Form\Type\Mobile\Merchant\MerchantReverseLookupType:
+        autowire: true
+        autoconfigure: true
+
+    AwardWallet\MainBundle\Form\Type\FlexibleFloatType:
+        autowire: true
+        autoconfigure: true
+        public: true
+
+    AwardWallet\MobileBundle\Form\Transformer\FloatBalanceTransformer:
+        autowire: true
+
+    AwardWallet\MainBundle\Form\Type\Cart\AT201SubscriptionType:
+        autowire: true
+        autoconfigure: true
+        tags:
+            - {name: form.type}

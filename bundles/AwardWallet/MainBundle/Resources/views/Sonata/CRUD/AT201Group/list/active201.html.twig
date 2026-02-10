@@ -1,0 +1,15 @@
+{% extends '@SonataAdmin/CRUD/list_boolean.html.twig' %}
+
+{% block field %}
+    {% apply spaceless %}
+        {% if object.userid is not empty and object.userid.hasAt201Access %}
+            <span class="label label-success">
+                {{ 'label_type_yes'|trans({}, 'SonataAdminBundle') }}
+            </span>
+        {% else %}
+            <span class="label label-danger">
+                {{ 'label_type_no'|trans({}, 'SonataAdminBundle') }}
+            </span>
+        {% endif %}
+    {% endapply %}
+{% endblock %}

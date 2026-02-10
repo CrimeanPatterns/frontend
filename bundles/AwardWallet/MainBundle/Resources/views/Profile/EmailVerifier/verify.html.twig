@@ -1,0 +1,25 @@
+{% extends app.user is not null ?
+    "@AwardWalletMain/Layout/default.html.twig" : "@AwardWalletMain/Layout/not_logged.html.twig" %}
+
+{% block title %}
+    {{ 'email.verify_popup.title'|trans }}
+{% endblock %}
+
+{% block content %}
+    <div class="main-blk shortened">
+        <h1>{{ 'email.verify_popup.title'|trans }}</h1>
+        <div class="main-blk-content">
+            {% if error is defined %}
+                <div class="error-title">
+                    <i class="icon-close-white"></i>
+                    <span>{{ error|raw }}</span>
+                </div>
+            {% else %}
+                <div class="success-title">
+                    <i class="icon-white-check-b"></i>
+                    <span>{{ 'email_verified'|trans|desc("Thank you! Your email has been verified.") }}</span>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}

@@ -1,0 +1,654 @@
+{% extends '@MailTemplate/Layout/base.twig' %}
+{% trans_default_domain "email" %}
+
+{% block subject %}{% apply spaceless %}{% autoescape false %}
+    {{ 'best_mileage_deal.subject'|trans({
+        '%destination%': data.destination,
+    }, 'email', lang)|desc('A Better Award Price for Your Trip to %destination%') }}
+{% endautoescape %}{% endapply %}{% endblock subject %}
+
+{% block headStyle %}{% trim %}
+    {{ parent() }}
+    <style>
+        span.bold, .bold {
+            font-weight: 600 !important;
+        }
+        .important-info-list li::marker {
+            color: #4684C4 !important;
+            font-size: 1.3em;
+        }
+
+        @media only screen and (min-width: 620px) {
+            .container-1 {
+                padding: 14px 30px 10px !important;
+            }
+            .card-container {
+                padding: 24px 30px 29px !important;
+            }
+            .container-2 {
+                padding: 0 30px 0 !important;
+            }
+            .greeting {
+                font-size: 42px !important;
+                line-height: 48.77px !important;
+            }
+            .paragraph {
+                font-size: 16px !important;
+                margin-top: 16.11px !important;
+            }
+            .highlighted-paragraph {
+                font-size: 20px !important;
+                line-height: 23.22px !important;
+                margin-top: 34px !important;
+            }
+            .card {
+                border-radius: 20px !important;
+            }
+            .card-header {
+                padding: 22px 30px 20px !important;
+            }
+            .card-header-left img {
+                width: 40px !important;
+                height: 40px !important;
+            }
+            .card-header-desc h2 {
+                padding: 0 0 7px !important;
+                font-size: 22px !important;
+                line-height: 25.54px !important;
+            }
+            .card-header-desc span {
+                font-size: 14px !important;
+                line-height: 16.26px !important;
+            }
+            .card-header-right {
+                font-size: 16px !important;
+                line-height: 18.4px !important;
+            }
+            .card-header-right div {
+                font-size: 14px !important;
+                line-height: 16.26px !important;
+            }
+            .card-header-secondary {
+                padding-top: 19px !important;
+                left: -3px !important;
+                right: -3px !important;
+            }
+            .conf-no-value {
+                display: inline-block !important;
+            }
+            .card-body-table {
+                border-radius: 16px !important;
+            }
+            .data-container {
+                padding: 26px 26px 28px !important;
+            }
+            .divider {
+                padding: 0 26px 0 !important;
+            }
+
+            .cost-column {
+                width: 49% !important;
+                max-width: 49% !important;
+            }
+            .charge-duration-column {
+                width: 49% !important;
+                max-width: 49% !important;
+                padding-top: 0 !important;
+            }
+            .total-charge-column {
+                width: 66.3% !important;
+                max-width: 66.3% !important;
+            }
+            .duration-column {
+                width: 28% !important;
+                max-width: 28% !important;
+            }
+            .label {
+                font-size: 16px !important;
+            }
+            .cost-value {
+                font-size: 26px !important;
+                line-height: 29.9px !important;
+            }
+            .cost-value img {
+                width: 10px !important;
+                height: 15px !important;
+            }
+            .total-charge-value, .duration-value {
+                font-size: 16px !important;
+                line-height: 18.4px !important;
+                padding-top: 9px !important;
+            }
+            .total-charge-value img, .duration-value img {
+                width: 6.42px !important;
+                height: 9.38px !important;
+            }
+            .departing-name-value, .arriving-name-value {
+                font-size: 19px !important;
+                line-height: 21.85px !important;
+                padding: 8px 0 6px !important;
+            }
+            .departing-time-value, .arriving-time-value {
+                font-size: 14px !important;
+                line-height: 16.26px !important;
+            }
+            .other-value {
+                margin-top: 22px !important;
+            }
+            .other-value .label {
+                display: inline-block !important;
+            }
+            .other-value .value {
+                display: inline-block !important;
+                font-size: 16px !important;
+                line-height: 22px !important;
+            }
+            .layover {
+                border-radius: 12px !important;
+                padding: 5px 8px !important;
+            }
+            .layover-label, .layover-time {
+                font-size: 12px !important;
+                line-height: 12px !important;
+            }
+            .layover-time {
+                padding-left: 6px !important;
+            }
+            .policy-header {
+                font-size: 20px !important;
+                line-height: 23.22px !important;
+            }
+            .policy-text {
+                font-size: 14px !important;
+            }
+            .important-info {
+                padding: 17px 24px !important;
+            }
+            .confirm-availability {
+                font-size: 14px !important;
+                line-height: 22px !important;
+            }
+            .recent-award-tickets-header {
+                font-size: 26px !important;
+                line-height: 30.19px !important;
+                margin: 36px 0 0 !important;
+            }
+            .flight-card-badge {
+                border-radius: 15px !important;
+                padding: 2px 2px 2px 13px !important;
+                margin: 3px !important;
+            }
+            .flight-card-badge-icon {
+                padding-right: 8px !important;
+            }
+            .flight-card-badge-text {
+                font-size: 16px !important;
+                line-height: 22px !important;
+            }
+            .flight-card-badge-savings {
+                padding-left: 8px !important;
+            }
+            .flight-card-badge-savings div {
+                font-size: 16px !important;
+                line-height: 26px !important;
+                padding: 0 7px !important;
+                border-radius: 13px !important;
+            }
+            .important-info-item {
+                font-size: 14px !important;
+                line-height: 22px !important;
+                padding: 16px 0 0 7px !important;
+            }
+            .action {
+                padding: 0 26px 26px !important;
+            }
+            .check-availability-button {
+                padding: 15px !important;
+                font-size: 16px !important;
+                line-height: 18.58px !important;
+            }
+        }
+    </style>
+{% endtrim %}{% endblock headStyle %}
+
+{% block content_row %}
+    {% import '@MailTemplate/CommonMacro.twig' as commonMacro %}
+    {% import _self as macro %}
+
+    <tr>
+        <td style="line-height:24px; font-size:16px; border-left: solid 1px #a6aab3; border-right: solid 1px #a6aab3; border-bottom: solid 1px #a6aab3; background:#fff;padding:0;" class="email-white">
+            <div class="container-1" style="padding: 4px 20px 0;">
+                <div class="greeting" style="font-family:Trebuchet MS, Arial, sans-serif;color: #3D424D;font-size: 22px;line-height: 25.54px;font-weight: 700;margin: 0;">
+                    {{ 'hi.span'|trans({
+                        '%span_on%': '<b style="color:#3d424d;">',
+                        '%span_off%': '</b>',
+                        '%name%': user.firstname|htmlencode
+                    }, 'email', lang)|raw }},
+                </div>
+
+                <div class="paragraph" style="font-family: Trebuchet MS, Arial, sans-serif;color: #3D424D;font-size: 12px;line-height: 22px;font-weight: 400;margin-top: 10.11px;">
+                    {{ 'best_mileage_deal.rebooking_award_ticket_better_price_testing'|trans({}, 'email', lang)|desc('AwardWallet is testing out a new feature to let you know when you might be able to rebook an award ticket at a better price.') }}
+                </div>
+
+                <div class="highlighted-paragraph" style="font-family: Trebuchet MS, Arial, sans-serif;color: #3D424D;font-size: 16px;line-height: 18.58px;font-weight: 400;margin-top: 17px;">
+                    {{ 'best_mileage_deal.existing_reservation_info_intro'|trans({}, 'email', lang)|desc('Here is the information we have about your existing reservation:') }}
+                </div>
+            </div>
+
+            {{ macro.flight_card(data.existing, _context) }}
+
+            <div class="container-2" style="padding: 0 20px 0;">
+                {% if data.existing.policy %}
+                    <h2 class="policy-header" style="font-family: Trebuchet MS, Arial, sans-serif; font-size: 16px; line-height: 18.58px; font-weight: 400; color: #3D424D; margin: 0; padding: 0;">
+                        {{ 'best_mileage_deal.provider-award-change'|trans({
+                            '%providerDisplayName%': data.existing.airline_name
+                        }, 'email', lang)|desc('%providerDisplayName% Award Change / Cancellation Policy') }}
+                    </h2>
+
+                    <div class="policy-text" style="font-family: Trebuchet MS, Arial, sans-serif; font-size: 12px; line-height: 22px; font-weight: 400; color: #3D424D; margin: 0; padding: 20px 0 22px;">
+                        {{ data.existing.policy|raw }}
+                    </div>
+                {% endif %}
+
+                <div class="important-info" style="border-radius: 6px; background-color: #F9F9FA; padding: 14px;">
+                    <div class="confirm-availability" style="font-family: Trebuchet MS, Arial, sans-serif; font-size: 12px; line-height: 14px; font-weight: 700; color: #3D424D;">
+                        {{ 'best_mileage_deal.confirm_availability'|trans({
+                            '%span_on%': '<span style="color: #1C6CC1;">',
+                            '%span_off%': '</span>'
+                        }, 'email', lang)|desc('%span_on%IMPORTANT:%span_off% Before you make any changes to your current reservation, please confirm that the option(s) below is/are still available.')|raw }}
+                    </div>
+                    <ul class="important-info-list" style="padding-left: 15px; margin: 0;">
+                        {% if data.existing.phone %}
+                            <li style="padding: 12px 0 0 2px; font-family: Trebuchet MS, Arial, sans-serif; font-size: 12px; line-height: 16px; font-weight: 400; color: #3D424D;" class="important-info-item">
+                                {{ 'best_mileage_deal.rebooking_with_original_program_contact_info'|trans({
+                                    '%providerDisplayName%': data.existing.airline_name,
+                                    '%phone%': data.existing.phone,
+                                }, 'email', lang)|desc('If you are rebooking with %providerDisplayName%, we recommend you call %phone% to change your itinerary with a customer service agent.') }}
+                            </li>
+                        {% endif %}
+
+                        <li style="padding: 12px 0 0 2px; font-family: Trebuchet MS, Arial, sans-serif; font-size: 12px; line-height: 16px; font-weight: 400; color: #3D424D;" class="important-info-item">
+                            {{ 'best_mileage_deal.rebook_with_different_miles_recommendation'|trans({
+                                '%providerDisplayName%': data.existing.airline_name,
+                            }, 'email', lang)|desc('If you are rebooking with %providerDisplayName%, we recommend you call %phone% to change your itinerary with a customer service agent.') }}
+                        </li>
+                    </ul>
+                </div>
+
+                <h2 style="margin: 18px 0 0; padding: 0; font-family: Trebuchet MS, Arial, sans-serif; font-size: 18px; line-height: 20.9px; font-weight: 700; color: #3D424D;" class="recent-award-tickets-header">
+                    {{ 'best_mileage_deal.recent_award_tickets_found'|trans({}, 'email', lang)|desc('Here are the award tickets we found recently:') }}
+                </h2>
+            </div>
+
+            {% for route in data.found_routes %}
+                {{ macro.flight_card(route, _context) }}
+            {% endfor %}
+        </td>
+    </tr>
+{% endblock content_row %}
+
+{% macro flight_card(card_data, context) %}{% trim %}{% autoescape false %}
+    {% import _self as macro %}
+
+    {% if card_data.airline_color is defined %}
+        {% set colorBg = card_data.airline_color %}
+        {% set colorText = '#FFFFFF' %}
+    {% else %}
+        {% set colorBg = '#F5F5F6' %}
+        {% set colorText = '#3D424D' %}
+    {% endif %}
+
+    {% set colorGreen = '#009750' %}
+    {% set colorRed = '#FF0000' %}
+
+    {% set isDurationChangeBeneficial = null %}
+    {% set isCostChangeBeneficial = null %}
+    {% set isTaxesChangeBeneficial = null %}
+
+    <div class="card-container" style="padding: 23px 6px 20px; text-align: center;">
+        <table class="card" border="0" cellpadding="0" cellspacing="0" role="presentation" style="width:100%; border-radius: 14px; background-color: {{ colorBg }};">
+            <!-- card header start -->
+            <tr>
+                <td class="card-header" style="padding: 14px 14px 11px;">
+                    <table border="0" cellpadding="0" cellspacing="0" role="presentation" valign="middle" style="width:100%;">
+                        <!-- card header primary start -->
+                        <tr>
+                            <td class="card-header-left">
+                                <table border="0" cellpadding="0" cellspacing="0" style="width:100%;" role="presentation">
+                                    <tr>
+                                        <td style="width: 31px;text-align: center;">
+                                            <img src="{{ context.baseImagesPath }}/airlines/{{ card_data.airline_code }}@2x.png"
+                                                 alt="{{ card_data.airline_name }} Logo"
+                                                 style="vertical-align: middle; width: 31px; height: 31px;">
+                                        </td>
+                                        <td class="card-header-desc" style="padding-left: 12px;text-align: left;">
+                                            <h2 style="font-family:Trebuchet MS, Arial, sans-serif;font-size: 16px;line-height: 18.58px;font-weight: 700;color: {{ colorText }};margin: 0;padding: 0 0 4px;">
+                                                {{ card_data.airline_name }}
+                                            </h2>
+                                            <span style="display:block;font-family: Trebuchet MS, Arial, sans-serif;font-size: 12px;line-height: 13.93px;font-weight: 400;color: {{ colorText }};opacity: 0.66;">
+                                                {{ card_data.dep_date }}
+                                            </span>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </td>
+                            {% if card_data.conf_no is defined %}
+                                <td class="card-header-right" style="text-align: right;font-family: Arial, sans-serif;font-size: 12px;line-height: 13.8px;font-weight: 700;color: #3D424D;" valign="middle">
+                                    <span class="conf-no-label" style="color: {{ colorText }}66;white-space: nowrap;overflow: hidden;text-overflow: ellipsis;">{{ 'timeline.section.conf'|trans({}, 'messages', context.lang) }}</span>
+                                    <span class="conf-no-value" style="display: block;">{{ card_data.conf_no }}</span>
+                                    <div style="font-family: Trebuchet MS, Arial, sans-serif;font-size: 12px;line-height: 13.93px;font-weight: 400;color: {{ colorText }};opacity: 0.66;">
+                                        {{ 'number-passengers'|trans({
+                                            '%count%': card_data.passengers,
+                                            '%number%': card_data.passengers
+                                        }, 'trips', context.lang) }}
+                                    </div>
+                                </td>
+                            {% endif %}
+                        </tr>
+                        <!-- card header primary end -->
+
+                        {% if card_data.changes is defined %}
+                            <!-- card header secondary start -->
+                            <tr>
+                                <td class="card-header-secondary" style="padding-top: 8px; text-align: start;position: relative; left: -2px; right: -2px;line-height: 0;font-size: 0;"><!--
+
+                                    {% for change in card_data.changes %}
+                                        {% set kind = change.kind %}
+
+                                        {% if kind == 'duration' %}
+                                            --><div class="flight-card-badge" style="display: inline-block; background-color: #fff; border-radius: 11px; padding: 2px 2px 2px 7px; margin: 2px;">
+                                                <table border="0" cellpadding="0" cellspacing="0" style="width: 100%;" role="presentation">
+                                                    <tr>
+                                                        <td class="flight-card-badge-icon" style="padding-right: 6px;">
+                                                            <img src="{{ context.baseUrl }}/images/email/newdesign/speedometer@2x.png"
+                                                                 width="16" height="12"
+                                                                 style="vertical-align: middle;">
+                                                        </td>
+                                                        {% set isDurationChangeBeneficial = change.isBeneficial ? 1 : 2 %}
+                                                        {% if change.isBeneficial %}
+                                                            {% set text1 = 'best_mileage_deal.duration-faster'|trans({
+                                                                '%duration%': change.duration
+                                                            }, 'email', context.lang)|desc('%duration% faster') %}
+                                                            {% set text2 = 'best_mileage_deal.percent-faster'|trans({
+                                                                '%percent%': change.percentage
+                                                            }, 'email', context.lang)|desc('%percent% faster') %}
+                                                            {% set color = colorGreen %}
+                                                        {% else %}
+                                                            {% set text1 = 'best_mileage_deal.duration-longer'|trans({
+                                                                '%duration%': change.duration
+                                                            }, 'email', context.lang)|desc('%duration% longer') %}
+                                                            {% set text2 = 'best_mileage_deal.percent-slower'|trans({
+                                                                '%percent%': change.percentage
+                                                            }, 'email', context.lang)|desc('%percent% slower') %}
+                                                            {% set color = colorRed %}
+                                                        {% endif %}
+
+                                                        <td class="flight-card-badge-text" style="font-family: Trebuchet MS, Arial, sans-serif; font-size: 12px; line-height: 12px; font-weight: 700; color: #3D424D; padding: 0; white-space: nowrap;">
+                                                            {{ text1 }}
+                                                        </td>
+                                                        <td class="flight-card-badge-savings" style="padding-left: 6px;">
+                                                            <div style="font-family: Trebuchet MS, Arial, sans-serif; font-size: 12px; line-height: 18px; font-weight: 700; color: #FFFFFF; border-radius: 11px; background-color: {{ color }}; padding: 0 6px; white-space: nowrap;">
+                                                                {{ text2 }}
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                </table>
+                                            </div><!--
+                                        {% elseif kind == 'cost' and change.isBeneficial %}
+                                            {% set isCostChangeBeneficial = change.isBeneficial ? 1 : 2 %}
+                                            --><div class="flight-card-badge" style="display: inline-block; background-color: #fff; border-radius: 11px; padding: 2px 2px 2px 7px; margin: 2px;">
+                                                <table border="0" cellpadding="0" cellspacing="0" style="width: 100%;" role="presentation">
+                                                    <tr>
+                                                        <td class="flight-card-badge-text" style="font-family: Trebuchet MS, Arial, sans-serif; font-size: 12px; line-height: 12px; font-weight: 700; color: #3D424D; padding: 0; white-space: nowrap;">
+                                                            {{ 'best_mileage_deal.spend-fewer'|trans({
+                                                                '%amount%': change.amount,
+                                                                '%currency%': change.currency
+                                                            }, 'email', context.lang)|desc('Spend %amount% fewer %currency%') }}
+                                                        </td>
+                                                        <td class="flight-card-badge-savings" style="padding-left: 6px;">
+                                                            <div style="font-family: Trebuchet MS, Arial, sans-serif; font-size: 12px; line-height: 18px; font-weight: 700; color: #FFFFFF; border-radius: 11px; background-color: #009750; padding: 0 6px; white-space: nowrap;">
+                                                                {{ 'best_mileage_deal.saving'|trans({
+                                                                    '%percent%': change.percentage
+                                                                }, 'email', context.lang)|desc('%percent% savings') }}
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                </table>
+                                            </div><!--
+                                        {% elseif kind == 'taxes' %}
+                                            --><div class="flight-card-badge" style="display: inline-block; background-color: #fff; border-radius: 11px; padding: 2px 2px 2px 7px; margin: 2px;">
+                                                <table border="0" cellpadding="0" cellspacing="0" style="width: 100%;" role="presentation">
+                                                    <tr>
+                                                        {% set isTaxesChangeBeneficial = change.isBeneficial ? 1 : 2 %}
+                                                        {% if change.isBeneficial %}
+                                                            {% set text1 = 'best_mileage_deal.pay-less'|trans({
+                                                                '%amount%': change.amount
+                                                            }, 'email', context.lang)|desc('Pay %amount% less') %}
+                                                            {% set text2 = 'best_mileage_deal.savings'|trans({
+                                                                '%percent%': change.percentage
+                                                            }, 'email', context.lang)|desc('%percent% savings') %}
+                                                            {% set color = colorGreen %}
+                                                        {% else %}
+                                                            {% set text1 = 'best_mileage_deal.pay-more'|trans({
+                                                                '%amount%': change.amount
+                                                            }, 'email', context.lang)|desc('Pay %amount% more') %}
+                                                            {% set text2 = 'best_mileage_deal.percent-increase'|trans({
+                                                                '%percent%': change.percentage
+                                                            }, 'email', context.lang)|desc('%percent% increase') %}
+                                                            {% set color = colorRed %}
+                                                        {% endif %}
+
+                                                        <td class="flight-card-badge-text" style="font-family: Trebuchet MS, Arial, sans-serif; font-size: 12px; line-height: 12px; font-weight: 700; color: #3D424D; padding: 0; white-space: nowrap;">
+                                                            {{ text1 }}
+                                                        </td>
+                                                        <td class="flight-card-badge-savings" style="padding-left: 6px;">
+                                                            <div style="font-family: Trebuchet MS, Arial, sans-serif; font-size: 12px; line-height: 18px; font-weight: 700; color: #FFFFFF; border-radius: 11px; background-color: {{ color }}; padding: 0 6px; white-space: nowrap;">
+                                                                {{ text2 }}
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                </table>
+                                            </div><!--
+                                        {% endif %}
+                                    {% endfor %}
+
+                                --></td>
+                            </tr>
+                            <!-- card header secondary end -->
+                        {% endif %}
+                    </table>
+                </td>
+            </tr>
+            <!-- card header end -->
+
+            <!-- card body start -->
+            <tr>
+                <td style="padding: 0 4px 4px;">
+                    <table class="card-body-table" border="0" cellpadding="0" cellspacing="0" role="presentation" style="width:100%;border-radius: 10px;background-color: white;">
+                        <tr>
+                            <td class="data-container" style="padding: 14px 14px 19px;text-align: start;">
+                                <div class="cost-column" style="display: inline-block;vertical-align: top;text-align: left;width: 100%;">
+                                    {% if isCostChangeBeneficial == 1 %}
+                                        {% set colorText = colorGreen %}
+                                    {% else %}
+                                        {% set colorText = '#3D424D' %}
+                                    {% endif %}
+
+                                    {{ macro.label('itineraries.cost'|trans({}, 'trips', context.lang)) }}
+                                    <div class="cost-value" style="font-family: Arial, sans-serif;font-size: 22px;line-height: 25.3px;font-weight: 700;color: {{ colorText }};display: inline-block;align-items: baseline;padding-top: 3px;">
+                                        {{ card_data.cost }}
+
+                                        {% if isCostChangeBeneficial == 1 %}
+                                            {{ macro.change_icon({
+                                                'width': '8px',
+                                                'height': '11.69px'
+                                            }, context) }}
+                                        {% endif %}
+                                    </div>
+                                </div>
+
+                                <div class="charge-duration-column" style="display: inline-block;vertical-align: top;text-align: left;width: 100%;padding-top: 17px;">
+                                    <div class="total-charge-column" style="display: inline-block;vertical-align: top;text-align: left;width: 49%;max-width: 49%;">
+                                        {% if isTaxesChangeBeneficial != null %}
+                                            {% if isTaxesChangeBeneficial == 1 %}
+                                                {% set colorText = colorGreen %}
+                                                {% set icon = 'down' %}
+                                            {% else %}
+                                                {% set colorText = colorRed %}
+                                                {% set icon = 'up' %}
+                                            {% endif %}
+                                        {% else %}
+                                            {% set colorText = '#3D424D' %}
+                                            {% set icon = null %}
+                                        {% endif %}
+
+                                        {{ macro.label('itineraries.total-charge'|trans({}, 'trips', context.lang)) }}
+                                        <div class="total-charge-value" style="font-family: Arial, sans-serif;font-size: 14px;line-height: 16.1px;font-weight: 700;color: {{ colorText }};padding-top: 0;">
+                                            {{ card_data.total_charge }}
+
+                                            {% if icon != null %}
+                                                {{ macro.change_icon({
+                                                    'width': '5.95px',
+                                                    'height': '8.69px'
+                                                }, context, icon) }}
+                                            {% endif %}
+                                        </div>
+                                    </div>
+
+                                    <div class="duration-column" style="display: inline-block;vertical-align: top;text-align: left;width: 49%;max-width: 49%">
+                                        {% if isDurationChangeBeneficial != null %}
+                                            {% if isDurationChangeBeneficial == 1 %}
+                                                {% set colorText = colorGreen %}
+                                                {% set icon = 'down' %}
+                                            {% else %}
+                                                {% set colorText = colorRed %}
+                                                {% set icon = 'up' %}
+                                            {% endif %}
+                                        {% else %}
+                                            {% set colorText = '#3D424D' %}
+                                            {% set icon = null %}
+                                        {% endif %}
+
+                                        {{ macro.label('itineraries.trip.duration'|trans({}, 'trips', context.lang)) }}
+                                        <div class="duration-value" style="font-family: Arial, sans-serif;font-size: 14px;line-height: 16.1px;font-weight: 700;color: {{ colorText }};padding-top: 0;">
+                                            {{ card_data.duration }}
+
+                                            {% if icon != null %}
+                                                {{ macro.change_icon({
+                                                    'width': '5.95px',
+                                                    'height': '8.69px'
+                                                }, context, icon) }}
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+
+                        {{ macro.hr('', context) }}
+
+                        {% for segment in card_data.segments %}
+                            <tr>
+                                <td class="data-container" style="padding: 14px 14px 19px;text-align: start;">
+                                    <div style="display: inline-block;vertical-align: top;text-align: left;width: 49%;max-width: 49%;">
+                                        {{ macro.label('departing'|trans({}, 'trips', context.lang) ~ '&nbsp;&nbsp;&rarr;') }}
+                                        <div class="departing-name-value" style="font-family: Arial, sans-serif; font-size: 14px; line-height: 16.1px; font-weight: 700; color: #3D424D; padding: 0 0 3px;">
+                                            {{ segment.from.name }}
+                                        </div>
+                                        <div class="departing-time-value" style="font-family: Trebuchet MS, Arial, sans-serif; font-size: 12px; line-height: 13.93px; font-weight: 400; color: #3D424D; opacity: 0.5;">
+                                            {{ segment.from.time }}
+                                        </div>
+                                        <div class="other-value" style="margin-top: 17px;">
+                                            {{ macro.label('itineraries.trip.air.airline-name'|trans({}, 'trips', context.lang) ~ ':') }}
+                                            <div class="value" style="font-family: Trebuchet MS, Arial, sans-serif; font-size: 12px; line-height: 13.93px; font-weight: 700; color: #3D424D;">
+                                                {{ segment.airline|default('—') }}
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div style="display: inline-block;vertical-align: top;text-align: left;width: 49%;max-width: 49%;">
+                                        {{ macro.label('arriving'|trans({}, 'trips', context.lang)) }}
+                                        <div class="arriving-name-value" style="font-family: Arial, sans-serif; font-size: 14px; line-height: 16.1px; font-weight: 700; color: #3D424D; padding: 0 0 3px;">
+                                            {{ segment.to.name }}
+                                        </div>
+                                        <div class="arriving-time-value" style="font-family: Trebuchet MS, Arial, sans-serif; font-size: 12px; line-height: 13.93px; font-weight: 400; color: #3D424D; opacity: 0.5;">
+                                            {{ segment.to.time }}
+                                        </div>
+                                        <div class="other-value" style="margin-top: 17px;">
+                                            {{ macro.label('itineraries.trip.cabin'|trans({}, 'trips', context.lang) ~ ':') }}
+                                            <div class="value" style="font-family: Trebuchet MS, Arial, sans-serif; font-size: 12px; line-height: 13.93px; font-weight: 700; color: #3D424D;">
+                                                {{ segment.cabin|default('—') }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+
+                            {% if not loop.last %}
+                                {{ macro.hr(segment.layover|default(''), context) }}
+                            {% endif %}
+                        {% endfor %}
+
+                        {% if card_data.check_availability_url is defined and card_data.airline_color is defined %}
+                            <tr>
+                                <td class="action" style="padding: 0 14px 14px;">
+                                    <a href="{{ card_data.check_availability_url }}" target="_blank"
+                                       class="check-availability-button"
+                                       style="display:block; text-decoration: none; background-color: {{ card_data.airline_color }}; color: #FFFFFF; border-radius: 8px; padding: 12px; text-align: center; white-space: nowrap; font-family: Trebuchet MS, Arial, sans-serif; font-size: 14px; line-height: 16.26px; font-weight: 700;">
+                                        {{ 'check-availability'|trans({}, 'messages', context.lang) }}
+                                    </a>
+                                </td>
+                            </tr>
+                        {% endif %}
+                    </table>
+                </td>
+            </tr>
+            <!-- card body end -->
+        </table>
+    </div>
+{% endautoescape %}{% endtrim %}{% endmacro %}
+
+{% macro label(text) %}{% trim %}{% autoescape false %}
+    <div class="label" style="font-family: Trebuchet MS, Arial, sans-serif;font-size: 12px;line-height: 22px;font-weight: 400;color: #3D424D;opacity: 0.5;white-space: nowrap;overflow: hidden;text-overflow: ellipsis;vertical-align: bottom;">
+        {{ text }}
+    </div>
+{% endautoescape %}{% endtrim %}{% endmacro %}
+
+{% macro hr(layover, context) %}{% trim %}{% autoescape false %}
+    <tr>
+        <td class="divider" style="padding: 0 14px 0;">
+            {% if layover %}
+                <table role="presentation" cellspacing="0" cellpadding="0" border="0" style="width: 100%;">
+                    <tr>
+                        <td align="left" style="padding: 0; white-space: nowrap;height:0; line-height:0;">
+                            <div class="layover" style="border: 1px solid #ECECED; border-radius: 8px; padding: 2.5px 6px;">
+                                <span class="layover-label" style="font-family: Trebuchet MS, Arial, sans-serif; font-size: 10px; line-height: 10px; font-weight: 400; color: #3D424D; opacity: 0.5;">{{ 'layover'|trans({}, 'trips', context.lang) }}</span><span class="layover-time" style="font-family: Trebuchet MS, Arial, sans-serif; font-size: 10px; line-height: 10px; font-weight: 700; color: #3D424D;padding-left: 3px;">{{ layover }}</span>
+                            </div>
+                        </td>
+                        <td width="100%" align="left" valign="middle">
+                            <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0">
+                                <tr>
+                                    <td>
+                                        <p style="border-top: solid 1px rgba(61, 66, 77, 0.1);font-size:1px;margin:0px auto;width:100%;"></p>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                </table>
+            {% else %}
+                <p style="border-top: solid 1px rgba(61, 66, 77, 0.1);font-size:1px;margin:0px auto;width:100%;"></p>
+            {% endif %}
+        </td>
+    </tr>
+{% endautoescape %}{% endtrim %}{% endmacro %}
+
+{% macro change_icon(styles, context, down = 'down') %}{% trim %}{% autoescape false %}
+    <img src="{{ context.baseUrl }}/images/email/newdesign/double-arrow-{{ down }}@2x.png" style="{{
+        {
+            'vertical-align': 'middle',
+            'width': '8px',
+            'height': '11.69px'
+        }|merge(styles|default({}))|joinAssociative(":", ";")
+    }}">
+{% endautoescape %}{% endtrim %}{% endmacro %}

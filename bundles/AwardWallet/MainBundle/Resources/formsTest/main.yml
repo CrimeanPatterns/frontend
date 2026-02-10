@@ -1,0 +1,187 @@
+text:
+  type: 'text'
+  options:
+    required: false
+    help: 'Help Option'
+    header: 'Header Option'
+    attr:
+      notice: 'Notice Attribute'
+
+text_length:
+  type: text
+  options:
+    required: false
+    attr:
+      minlength: 3
+      maxlength: 6
+
+text_pattern:
+  type: text
+  error: Text Error
+  options:
+    required: false
+    attr:
+      pattern: '\d+'
+      notice: 'Only numbers'
+
+text_required:
+  extend: text
+  options:
+    required: true
+    attr:
+      notice: 'Notice Attribute <a href="#">with HTML</a>'
+
+text_disabled:
+  extend: text
+  options:
+    disabled: true
+    data: 'Text Data'
+
+text_readonly:
+  extend: text
+  options:
+    read_only: true
+    data: 'Text Data'
+
+text_error:
+  extend: text
+  error: Text Error
+
+text_multi_error:
+  extend: text
+  options:
+    attr:
+      notice: 'Notice Attribute <a href="#">with HTML</a>'
+  error:
+    - Text Error One
+    - Text Error Two
+
+textarea:
+  type: 'textarea'
+  options:
+    required: false
+
+textarea_required:
+  extend: textarea
+  options:
+    required: true
+
+textarea_error:
+  extend: textarea
+  error: TextArea Error
+
+email:
+  type: 'email'
+
+password:
+  type: 'password'
+
+checkbox:
+  type: 'checkbox'
+  options:
+    required: false
+
+checkbox_required:
+  type: 'checkbox'
+  options:
+    required: true
+
+checkbox_checked:
+  type: 'checkbox'
+  options:
+    required: false
+    data: true
+    attr:
+      notice: 'Notice Attribute'
+
+checkbox_error:
+  type: 'checkbox'
+  options:
+    required: false
+  error: Error Text
+
+
+checkbox_lorem:
+  type: 'checkbox'
+  options:
+    required: false
+    label: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.'
+
+checkbox_lorem_error:
+  type: 'checkbox'
+  options:
+    required: false
+    label: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.'
+    attr:
+      notice: 'Notice Attribute'
+  error: Error Text
+
+radio:
+  type: 'radio'
+  options:
+    required: false
+
+radio_required:
+  type: 'radio'
+  options:
+    required: true
+
+radio_checked:
+  type: 'radio'
+  options:
+    required: false
+    data: true
+    value: 1
+
+radio_error:
+  type: 'radio'
+  options:
+    required: false
+  error: Error Text
+
+select:
+  type: 'choice'
+  options:
+    empty_value: select value
+    choices:
+      1: value 1
+      2: value 2
+
+select_error:
+  extend: select
+  error: 'Select Error'
+
+select2:
+  type: 'select2'
+  options:
+    label: 'select2'
+    choices:
+      1: value 1
+      2: value 2
+
+aw-datepicker:
+  type: datepicker
+  options:
+    required: true
+    label: 'aw.form.type.datepicker'
+
+lorem:
+  type: 'text'
+  options:
+    label: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.'
+    required: true
+    
+lorem_unwrap:
+  type: 'text'
+  options:
+    label: 'Lorem_ipsum_dolor_sit_amet,_consectetur_adipisicing_elit'
+    required: true    
+
+button:
+  type: button
+
+reset:
+  type: reset
+
+submit:
+  type: submit

@@ -1,0 +1,18 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+    <meta http-equiv='refresh' content='3;url={{ url | raw }}'>
+    <script type='text/javascript'>
+        function execRedirect() {
+            document.forms[0].submit();
+        }
+    </script>
+</head>
+<body onload='execRedirect();'>
+    <form action="{{ url | raw }}" method="post">
+        {% for key, value in form %}
+            <input type="hidden" name="{{ key }}" value="{{ value }}"/>
+        {% endfor %}
+    </form>
+</body>
+</html>

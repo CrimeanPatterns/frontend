@@ -1,0 +1,50 @@
+{% form_theme form with ['@AwardWalletMain/FormTheme/fields.html.twig'] %}
+{% extends "@AwardWalletMain/Layout/profile.html.twig" %}
+
+{% block title %}{{ 'menu.convert-to-business'|trans({}, 'menu')|desc('Create business account') }}{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        require([
+            'lib/design'
+        ], function () {
+//            $('#submit-form').on('click', function () {
+//                $(this).addClass('loader');
+//            });
+//
+            $('.main-form').on('submit', function(){
+                $('#submit-form').addClass('loader').prop('disabled', true);
+            })
+        });
+    </script>
+{% endblock %}
+
+{% block content %}
+    <div class="main-blk shortened">
+        <h1>{{ 'menu.convert-to-business'|trans({}, 'menu')|desc('Create business account') }}</h1>
+
+        {% if saved %}
+            <div class="main-blk-content">
+                <p>{{ 'create.business.text1'|trans|desc('Thank you, your business account has been created.') }}</p>
+
+                <p>{{ 'create.business.text2'|trans({'%link%': '<a href="' ~ url('aw_security_switch_site') ~ '">https://'~business_host~'</a>'})|desc('From now on please login to %link% with your AwardWallet username and password.')|raw }}</p>
+            </div>
+            <div class="row-submit">
+                <div class="row-submit-item">
+                    <a href="{{ url('aw_security_switch_site') }}" class="btn-blue">{{ 'proceed.to.business'|trans|desc('Proceed to business interface') }}</a>
+                </div>
+            </div>
+        {% else %}
+            {{ form_start(form, {'attr': {'class': 'main-form', 'novalidate': 'true'}}) }}
+            {{ form_widget(form, {'noSubmit':true}) }}
+            <div class="row-submit">
+                <div class="row-submit-item">
+                    <button type="submit" id="submit-form"
+                            class="btn-blue">{{ 'form.button.proceed'|trans|desc('Proceed') }}</button>
+                </div>
+            </div>
+            {{ form_end(form) }}
+        {% endif %}
+    </div>
+{% endblock %}

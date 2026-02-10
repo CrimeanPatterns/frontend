@@ -1,0 +1,91 @@
+{% form_theme form with ['@AwardWalletMain/FormTheme/profileFields.html.twig', '@AwardWalletMain/FormTheme/fields.html.twig'] %}
+{% extends "@AwardWalletMain/Layout/profile.html.twig" %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        require(['jquery-boot', 'pages/userProfile/personal']);
+    </script>
+{% endblock %}
+
+{% block content %}
+    <div class="main-blk shortened">
+        <h1>{{ 'user.personal.title' | trans | desc("Edit Personal Info") }}</h1>
+        {% if app.session.flashbag.has('notice') %}
+            <div class="main-blk-content">
+                {% for flash_message in app.session.flashbag.get('notice') %}
+                    <div class="success-title">
+                        <i class="icon-white-check-b"></i>
+                        <span>{{ flash_message }}</span>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+        <form class="main-form spinnerable"
+              enctype="multipart/form-data"
+              action="{{ path('aw_profile_personal') }}"
+              method="post"
+              autocomplete="off"
+              id="personal_info"
+              data-user-email="{{ user.email }}"
+              novalidate>
+            {% if form.vars.errors|length or form.Avatar.vars.errors|length %}
+            <div class="error-message-blk">
+                {% for error in form.vars.errors %}
+                    <i class="icon-warning-small"></i>
+                    <p>{{ error.message|raw }}</p>
+                {% endfor %}
+                {% for error in form.Avatar.vars.errors %}
+                    <i class="icon-warning-small"></i>
+                    <p>{{ error.message|raw }}</p>
+                {% endfor %}
+            </div>
+            {% endif %}
+            <div class="main-form-item">
+                {% for key, field in form %}
+                    {% if key != 'Avatar' %}
+                        {{ form_row(field) }}
+                    {% endif %}
+                {% endfor %}
+                <div class="row">
+                    <div class="row-item">
+                        <label for="profile_personal_Avatar">{{ 'personal_info.avatar' | trans }}</label>
+                        <div class="input">
+                            <div class="input-item">
+                                <div class="photo-blk new">
+                                    <div class="js-avatar photo-prev" style="height: 64px; width: 64px; overflow: hidden">
+                                        <img src="{{ user.avatarSrc ?: '/assets/awardwalletnewdesign/img/no-avatar.gif' }}" alt="avatar" style="height: 64px; width: 64px;">
+                                    </div>
+                                    <div class="photo-action" style="position: relative">
+                                        <span class="btn-silver">{{ 'personal_info.avatar.upload' | trans | desc('Upload picture') }}</span>
+                                        <input id="profile_personal_Avatar" name="profile_personal[Avatar]" type="file" style="position: absolute; cursor: pointer; height: 32px; width: 100%; opacity: 0; top: 0px; left: 0px;">
+                                        <div class="delete-photo">
+                                            <a href="#" class="js-avatar-delete"><i class="icon-delete"></i><span>{{ 'personal_info.avatar.delete' | trans | desc("Delete picture") }}</span></a>
+                                        </div>
+                                    </div>
+                                    <div class="get-picture">
+                                        <span class="silver">{{ 'personal_info.avatar.import' | trans | desc('or get picture from') }}</span>
+                                        <div class="other-picture">
+                                            <a href="#" class="js-import-facebook btn-silver f-left" style="width: 130px"><i class="icon-fb"></i>Facebook</a></li>
+                                            <div class="js-loader loader big show" style="display: none;"></div>
+                                            <a href="#" class="js-import-gravatar btn-silver f-right" style="width: 130px"><i class="icon-gravatar"></i>Gravatar</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="info">
+                        <div class="info-icon"></div>
+                        <div class="info-description"><p></p></div>
+                    </div>
+                </div>
+            </div>
+            <div class="row-submit">
+                <div class="row-submit-item">
+                    <button type="submit" class="btn-blue">{{ 'form.button.update'|trans }}</button>
+                </div>
+            </div>
+        </form>
+    </div>
+{% endblock %}

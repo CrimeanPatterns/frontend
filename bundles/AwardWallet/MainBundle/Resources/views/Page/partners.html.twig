@@ -1,0 +1,90 @@
+{% set MOBILE_NAV = true %}
+{% set MAIN_BODY_CLASSES = {
+    'manual-hidden': true,
+    'responsive': true
+}|merge(MAIN_BODY_CLASSES|default({})) %}
+{% extends app.user is not null ? "@AwardWalletMain/Layout/common.html.twig" : "@AwardWalletMain/Layout/not_logged.html.twig" %}
+
+{% block title %}{{ 'page.partners.title'|trans }}{% endblock %}
+
+{% block meta %}
+    {{ parent() }}
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0, viewport-fit=cover">
+{% endblock %}
+
+{% block content %}
+    <div class="static-page" id="partners-and-developers">
+        <div class="main-blk">
+            <h1>{{ 'page.partners.title'|trans }}</h1>
+
+            <div class="main-blk-content">
+
+                <p>Through AwardWallet partners, like <a href="http://points.com" target="_blank" rel="noopener noreferrer">Points.com</a>, over
+                   2.9 million consumers and businesses can use AwardWallet&rsquo;s services to track and manage their
+                   rewards balances with loyalty programs &ndash; spanning credit card, air, hotel, car rental, retail,
+                   casino, gift card, and more. AwardWallet can power your mobile app or website via API or a
+                   white-label version of the <a href="/">AwardWallet.com</a> website.</p>
+
+                <h3>Why Partner with AwardWallet?</h3>
+
+                <ul>
+                    <li>Respected leader in award tracking and management</li>
+                    <li>Multiple ways to access AwardWallet services and data</li>
+                    <li>Flexible business model</li>
+                    <li>White-label solutions</li>
+                </ul>
+
+                <h3>Benefits:</h3>
+
+                <ul>
+                    <li>Increased site stickiness and member engagement</li>
+                    <li>Deliver value and cost savings</li>
+                </ul>
+
+                <h3>Partnering Examples:</h3>
+
+                <p>
+                    All major airlines offer rewards programs for businesses, such as <a
+                            href="http://skybonus.delta.com" target="_blank" rel="noopener noreferrer">Delta SkyBonus&reg;&nbsp;Rewards</a>,&nbsp;
+                    <a href="http://www.britishairways.com/travel/on-business-travel/public/en_gb" target="_blank" rel="noopener noreferrer">British Airways (On Business)</a>,
+                    and <a href="http://www.bluebiz.com/" target="_blank" rel="noopener noreferrer">KLM BlueBiz</a>, in which businesses can earn
+                    rewards from their employees&rsquo; business travel, in addition to the rewards earned by the
+                    employees themselves. However, this is a huge untapped resource. Many companies don&rsquo;t know
+                    these business rewards programs exist and the information is fragmented across various airlines.
+                    AwardWallet offers a single interface that informs businesses about these programs, facilitates
+                    account signup, and tracks award balances at a company-wide level.
+                </p>
+
+                <p>
+                    Additionally, this capability can be expanded to help businesses understand the value of their
+                    reward balances and assist them in deciding on the optimal use for these balances&nbsp;- when to pay
+                    with cash and when to redeem miles.&nbsp;&nbsp;
+                </p>
+
+                <p> AwardWallet helps travel agencies and travel management providers such as <a
+                                href="http://cwt.awardwallet.com" target="_blank" rel="noopener noreferrer">Carlson Wagonlit Travel</a> deliver measurable savings for business accounts as described above, and these services can be provided through the interface and branding of the travel agency or travel management provider.&nbsp;Users can access their accounts via mobile apps utilizing the&nbsp;AwardWallet API or a white-label version of the <a href="/">AwardWallet.com</a> website.
+                </p>
+
+                <p>
+                    Add stickiness and engagement to your loyalty program website by leveraging AwardWallet&rsquo;s services. Consumers are typically members of numerous reward programs and they will value your site for helping them track and manage their reward balances with your program, in addition to their other loyalty program accounts.
+                </p>
+
+                <p>
+                    AwardWallet can power your loyalty program mobile app or website via an AwardWallet API or a white-label version of the <a href="/">AwardWallet.com</a> website.
+                </p>
+
+                <p>
+                    Your mobile app can access your users&rsquo; mileage balances and upcoming trip info using AwardWallet&rsquo;s API.
+                </p>
+
+                <ul class="red-list">
+                    <li>Corporate</li>
+                    <li>Travel Agency and Travel Management</li>
+                    <li>Loyalty Programs</li>
+                    <li>Mobile Apps</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+

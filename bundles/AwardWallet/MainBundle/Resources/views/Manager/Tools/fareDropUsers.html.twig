@@ -1,0 +1,78 @@
+{% extends '@AwardWalletMain/Manager/layout.html.twig' %}
+
+{% block content %}
+    <style>
+        .hightlight {
+            display: inline-block;
+            background: #ddd;
+            padding: 4px 8px;
+            font-weight: bold;
+        }
+
+        .fd-form {
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: dotted 1px #999;
+        }
+
+        .fd-form input {
+            border-radius: 5px;
+            box-shadow: none;
+            border: solid 1px #ddd;
+            margin-right: 10px;
+        }
+    </style>
+    <h1>FareDrop Users</h1>
+
+    <form class="fd-form" method="post" enctype="multipart/form-data">
+        HashFile: <input name="hashFile" type="file">
+        <button type="submit">Submit</button>
+    </form>
+
+
+    {% if channel is not null %}
+        <h2>Results</h2>
+
+
+        {% if loading is defined %}
+            <div id="fdResult" style="display: flex;padding:10px;">
+                Loading. Please wait...
+            </div>
+            <b id="processed"></b>
+        {% endif %}
+
+        <script>
+            require(['centrifuge'], function(Centrifuge) {
+                const client = new Centrifuge({{ centrifuge_config | json_encode | raw }});
+                client.on('connect', function() {
+
+                    const onMessage = function onMessage(data) {
+                        if ('processed' === data.data.type) {
+                            $('#processed').html(data.data.html);
+                        } else {
+                            $('#fdResult').html(data.data.html);
+                            $('#processed').hide();
+                        }
+                    };
+
+                    const subscription = client.subscribe({{ channel | json_encode | raw }}, onMessage);
+                    subscription.history()
+                        .then(function(response) {
+
+                            $.each(response.data.reverse(), function(index, value) {
+                                onMessage(value);
+                            });
+
+                        }, function(err) {
+                            console.log('failed', err);
+                        });
+
+                });
+                client.connect();
+            });
+        </script>
+
+    {% endif %}
+
+{% endblock %}
+

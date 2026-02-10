@@ -1,0 +1,117 @@
+<div class="row">
+    <div class="heading silver">
+        <i class="icon-silver-arrow-down"></i>
+
+        <h3>{{ 'menu.header.accounts.persons' | trans({}, 'menu') | desc('Persons') }}</h3>
+        <ul>
+            <li>
+                <a href="{{ path('aw_user_connections') }}"
+                   class="add btn-light-white"
+                   data-role="tooltip"
+                   title="{{ 'menu.header.persons.manage' | trans({}, 'menu') | desc('Manage connected persons') }}" tabindex="798">
+                    <i class="icon-settings"></i>
+                    {% if pendingCount is defined and pendingCount %}<span class="count-small">{{ pendingCount }}</span>{% endif %}
+                </a>
+            </li>
+            <li><a href="" class="add btn-light-white" data-role="tooltip" title="{{ 'menu.header.persons.add-person' | trans({}, 'menu') | desc('Add another person') }}" id="add-person-btn" tabindex="799"><i class="icon-add-dark"></i></a></li>
+        </ul>
+    </div>
+    <ul class="persons js-persons-menu">
+        {% for item in items %}
+            {{ widget_render(item) }}
+        {% endfor %}
+        <li style="display: none">
+            <div class="row-item">
+                <a href="#" id="users_showmore" tabindex="800">
+                    <h3>{{ 'show.more.travelers'|trans|desc('Show More Travelers') }} <i class="icon-double-arrow-right-light-silver"></i></h3>
+                </a>
+            </div>
+        </li>
+    </ul>
+</div>
+
+{% if not webpack|default(false) %}
+    <script>
+        require(['jquery-boot'], function ($) {
+
+            var countWithNull;
+            var showWithNull = false;
+            var isTimeline = ['aw_timeline', 'aw_timeline_html5'].includes('{{ app.request.attributes.get('_route') }}');
+
+            if (isTimeline) {
+                $(document).on('update.hidden.users', function () {
+                    countWithNull = 0;
+
+                    if (!showWithNull) {
+                        $('.js-persons-menu').find('li').each(function (id, el) {
+                            if ($(el).find('.count').length) {
+                                if ($(el).find('.count').text() === '0' && !$(el).hasClass('active') && $(el).find('a[data-id=my]').length === 0) {
+                                    $(el).slideUp();
+                                    countWithNull++;
+                                } else {
+                                    $(el).slideDown();
+                                }
+                            }
+                        });
+
+                        if (countWithNull) {
+                            $('#users_showmore').closest('li').slideDown();
+                        } else {
+                            $('#users_showmore').closest('li').slideUp();
+                        }
+                    }
+                });
+
+                $(document).on('click', '#users_showmore', function (e) {
+                    e.preventDefault();
+                    $('.js-persons-menu').find('li:hidden').slideDown();
+                    $('#users_showmore').closest('li').slideUp();
+                    showWithNull = true;
+                });
+            }
+            $(window).on('person.activate', function (event, id) {
+                let $persons = $('.js-persons-menu'), $person = null;
+                if (!(id instanceof jQuery)) {
+                    if (-1 !== id.indexOf('_'))
+                        id = id.split('_')[1] || 'my';
+                    if ('' == id) id = 'my';
+                    $person = $persons.find('a[data-id="' + id + '"]');
+                    0 === $person.length ? $person = $persons.find('a[data-agentid="' + id + '"]:first') : null;
+                    0 === $person.length ? $person = $persons.find('a[data-id="my"]') : null;
+                }
+                if ($person instanceof jQuery) {
+                    $persons.children().removeClass('active');
+                    $persons.find('a span.count').removeClass('blue').addClass('silver');
+                    $person.parents('li').addClass('active');
+                    $person.find('span.count').removeClass('silver').addClass('blue');
+                    $(window).trigger('person.active', $($person).data('id'));
+                }
+
+                $(document).trigger('update.hidden.users');
+            });
+
+            $(window).on('persons.update', function (event, data) {
+                var all = 0;
+                for (var id in data) {
+                    var $count = $('.js-persons-menu').find('a[data-id="' + id + '"]').find('span.count');
+                    $count.text(data[id]);
+                    if (data[id] == 0) {
+                        $count.hide();
+                    } else {
+                        $count.show();
+                    }
+                    all += data[id];
+                }
+
+                // Accounts button counter
+                // $('#account-btn-counter').text(all);
+
+                // All button counter
+                $('.js-persons-menu a.all span').text(all);
+                $(document).trigger('update.hidden.users');
+            });
+        });
+    </script>
+{% else %} 
+    {{ encore_entry_script_tags('person-activate', null, '_default', {'defer': true}) }}   
+{% endif %}

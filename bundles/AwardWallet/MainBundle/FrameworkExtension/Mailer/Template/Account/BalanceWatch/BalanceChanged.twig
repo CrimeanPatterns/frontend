@@ -1,0 +1,36 @@
+{% extends '@MailTemplate/Layout/base.twig' %}
+{% trans_default_domain "email" %}
+
+{% block subject %}{% apply spaceless %}{% autoescape false %}
+    {% set balanceChange = (account.getBalance() - account.getLastBalance()) %}
+    {{ 'account.balancewatch.balance-change.subject'
+    |trans({
+        '%balanceChange%' : (account.getBalance() >= account.getLastBalance() ? '+' : '-')~balanceChange|abs|formatNumber,
+        '%providerName%'  : account.getProviderid.getDisplayname(),
+        '%accountLogin%'  : account.getAccountNumber(),
+    }, 'email', lang)
+    |desc('%balanceChange% change was detected on %providerName% account %accountLogin%') }}
+{%  endautoescape %}{% endapply %}{% endblock subject %}
+
+{% block content %}
+    {% import '@MailTemplate/CommonMacro.twig' as commonMacro %}
+
+    {{ commonMacro.hello(user.firstname, _context) }}
+    {% set balanceChange = (account.getBalance() - account.getLastBalance()) %}
+    {% set accountEdit = absolute_url(path('aw_account_edit', {'accountId' : account.getAccountid() ?? 0})) %}
+
+    {{ commonMacro.paragraph('account.balancewatch.balance-change.message'|trans({
+        '%balanceChange%' : (account.getBalance() >= account.getLastBalance() ? '<b style="color:#00a67c">+' : '<b style="color:#4684c4">-')~balanceChange|abs|formatNumber~'</b>',
+        '%balanceFrom%'   : '<b>'~account.getLastBalance()|formatNumber~'</b>',
+        '%balanceTo%'     : '<b>'~account.getBalance()|formatNumber~'</b>',
+        '%providerName%'  : '<b>'~account.getProviderid.getDisplayname()~'</b>',
+        '%accountLogin%'  : '<b>'~account.getAccountNumber()~'</b>',
+        '%accountEdit%'   : '<a href="'~accountEdit~'" style="color:#4684c4;line-height:20px;font-weight:bold;text-decoration:none;" target="_blank">'~accountEdit~'</a>',
+    }, 'email', lang)|desc('A change of %balanceChange% has been detected on %providerName% account %accountLogin%! 
+<br>The original balance was %balanceFrom% and the new balance is now %balanceTo%. 
+<br>This account was reverted to a normal background updating schedule. 
+<br>If you wish to enable Balance Watch on this account again you can do that here:
+<br>
+<br>%accountEdit%'|raw), _context, {escape: false}) }}
+
+{% endblock content %}

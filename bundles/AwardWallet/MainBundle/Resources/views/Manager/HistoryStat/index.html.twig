@@ -1,0 +1,182 @@
+{% extends "@AwardWalletMain/Manager/layout.html.twig" %}
+{% set title = 'History stats for provider ' ~ providerName %}
+{% import _self as macros %}
+
+{% block content %}
+    <h1>{{ title }}</h1>
+    <script type="text/javascript" src="//www.gstatic.com/charts/loader.js"></script>
+    <script src="{{ asset('bundles/fosjsrouting/js/router.js') }}"></script>
+    {# TODO: load "routing" module with require.js, because routes.js migrated to routes.json on new fosjs bundle #}
+    <script src="{{ asset('js/routes.js') }}"></script>
+    <script src="{{ asset('assets/manager/js/asyncProcess.js') }}"></script>
+
+    <div>
+        Provider:
+        <select id="provider-select">
+            {% for code in supportedProviders %}
+                <option value="{{ code }}"{% if code == providerCode %} selected{% endif %}>{{ code }}</option>
+            {% endfor %}
+        </select>
+    </div>
+
+    <h2>Redemptions by status</h2>
+    <table>
+        <tr>
+            <td id="redemptions-by-status"></td>
+            <td id="redemptions-by-status-chart"></td>
+        </tr>
+    </table>
+
+    <h2>Redemptions by type</h2>
+    <table>
+        <tr>
+            <td id="redemptions-by-type"></td>
+            <td id="redemptions-by-type-chart"></td>
+        </tr>
+    </table>
+
+    <h2>Hotel stays by nights</h2>
+    <table>
+        <tr>
+            <td id="stays-by-nights"></td>
+            <td id="stays-by-nights-chart"></td>
+        </tr>
+    </table>
+
+    <h2>Hotel stays by category</h2>
+    <table>
+        <tr>
+            <td id="stays-by-category"></td>
+            <td id="stays-by-category-chart"></td>
+        </tr>
+    </table>
+
+    <h2>Earnings by type</h2>
+    <table>
+        <tr>
+            <td id="earnings-by-type"></td>
+            <td id="earnings-by-type-chart"></td>
+        </tr>
+    </table>
+
+    <h2>Expired miles</h2>
+    <div id="expired"></div>
+
+    <script type="text/javascript">
+
+        google.charts.load('current', {'packages':['corechart']});
+
+        $(document).ready(function(){
+
+            $('#provider-select').on('change', null, null, function(){
+                // not using Routing.generate to not expose manager routes
+               document.location.href = '/manager/history/stat/' + $('#provider-select').val();
+            });
+
+            queryDataAndRenderPieChart('{{ path('aw_manager_history_redemptions_by_status', {code: providerCode, requestId: requestId}) }}', 'redemptions-by-status');
+            queryDataAndRenderPieChart('{{ path('aw_manager_history_redemptions_by_type', {code: providerCode, requestId: requestId}) }}', 'redemptions-by-type', true);
+            queryDataAndRenderPieChart('{{ path('aw_manager_history_stays_by_night', {code: providerCode, requestId: requestId}) }}', 'stays-by-nights', true);
+            queryDataAndRenderPieChart('{{ path('aw_manager_history_stays_by_category', {code: providerCode, requestId: requestId}) }}', 'stays-by-category', true);
+            queryDataAndRenderPieChart('{{ path('aw_manager_history_earnings_by_type', {code: providerCode, requestId: requestId}) }}', 'earnings-by-type', true);
+            queryDataAndRenderPieChart('{{ path('aw_manager_history_expired', {code: providerCode, requestId: requestId}) }}', 'expired', true);
+
+        });
+
+        function queryDataAndRenderPieChart(url, containerId, showRawData){
+            var container = $('#' + containerId);
+
+            asyncProcess.addProcess(
+                url,
+                container,
+                function(data, time){
+                    var notes = '';
+                    if(showRawData)
+                        notes += '<div class="raw-data">* click on row to see raw data</div>';
+
+                    container.html(renderTable(data) + notes + renderTime(time));
+
+                    if(showRawData){
+                        container.find('table:first tr.row').addClass('clickable');
+                        var rawDataContainer = $('#' + containerId + ' .raw-data');
+                        container.find('table:first').on('click', 'tr.row', null, function(event){
+                            event.preventDefault();
+                            var filter = $(this).find('td:first').text();
+                            rawDataContainer.html('<img src="/lib/images/progressCircle.gif" style="width: 16px; height: 16px;"> Loading ' + filter + ' raw data..');
+                            asyncProcess.addProcess(
+                                url + '?rawData=true&filter=' + encodeURIComponent(filter),
+                                rawDataContainer,
+                                function(data, time){
+                                    rawDataContainer.html('<h3>Raw data for ' + filter + '</h3>' + renderTable(data));
+                                }
+                            );
+                        });
+                    }
+
+                    if(data.rows.length > 0 && $('#' + containerId + '-chart').length > 0)
+                        google.charts.setOnLoadCallback(function(){ renderPieChart(data.rows, data.columns, containerId + '-chart'); });
+                }
+            );
+        }
+
+        function renderTable(data){
+            var result;
+
+            if(data.rows.length > 0){
+                result = '<table class="stats">';
+
+                result += '<tr class="head">';
+                $.each(data.columns, function(index, caption){
+                    result += '<td>' + caption + '</td>';
+                });
+                result += '</tr>';
+
+                $.each(data.rows, function(index, row){
+                    if(row[0] == '')
+                        rowClass = 'total';
+                    else
+                        rowClass = 'row';
+                    result += '<tr class="' + rowClass + '">';
+                    $.each(row, function(index, value){
+                        if((value + '').match(/^\d+$/))
+                            value = numberWithCommas(value);
+                        result += '<td>' + value + '</td>';
+                    });
+                    result += '</tr>';
+                });
+
+                result += '</table>';
+            }
+            else
+                result = 'No data';
+
+            return result;
+        }
+
+        function renderPieChart(rows, columns, containerId) {
+            var data = new google.visualization.DataTable();
+            data.addColumn('string', columns[0]);
+            data.addColumn('number', columns[1]);
+            var converted = [];
+            $.each(rows, function(index, row){
+                if(row[0] != '')
+                    converted.push([row[0], Math.round(row[1])]);
+            });
+            data.addRows(converted);
+            var options = {
+                height: 400,
+                width: 700
+            };
+            var chart = new google.visualization.PieChart(document.getElementById(containerId));
+            chart.draw(data, options);
+        }
+
+        function renderTime(time){
+            return  '<br/>Processing time: ' + time + ' seconds';
+        }
+
+        function numberWithCommas(x) {
+            return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+        }
+
+    </script>
+{% endblock %}

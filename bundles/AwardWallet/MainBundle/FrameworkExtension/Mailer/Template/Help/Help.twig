@@ -1,0 +1,630 @@
+{% extends '@MailTemplate/Layout/base.twig' %}
+{% trans_default_domain "email" %}
+
+{% block subject %}{% apply spaceless %}{% autoescape false %}
+    Macro Help
+{% endautoescape %}{% endapply %}{% endblock subject %}
+
+{% block content_row %}
+    {% import '@MailTemplate/CommonMacro.twig' as commonMacro %}
+    {% import _self as selfMacro %}
+
+    {{ selfMacro.header('Приветствие с именем') }}
+    {{ selfMacro.macroStart() }}
+    {{ commonMacro.hello('Billy', _context) }}
+    {{ selfMacro.macroEnd() }}
+    {{ selfMacro.code("{{ commonMacro.hello('Billy', _context) }}") }}
+
+    {{ selfMacro.header('Приветствие анонимное') }}
+    {{ selfMacro.macroStart() }}
+    {{ commonMacro.hello(null, _context) }}
+    {{ selfMacro.macroEnd() }}
+    {{ selfMacro.code("{{ commonMacro.hello(null, _context) }}") }}
+
+    {{ selfMacro.header('Приветствие для важных писем') }}
+    {{ selfMacro.macroStart() }}
+    {{ commonMacro.dear('Billy', _context) }}
+    {{ selfMacro.macroEnd() }}
+    {{ selfMacro.code("{{ commonMacro.dear('Billy', _context) }}") }}
+
+    {{ selfMacro.header('Приветствие с отступом') }}
+    {{ selfMacro.macroStart() }}
+    {{ commonMacro.hello('Billy', _context, {
+        'padding-left': '20px'
+    }) }}
+    {{ selfMacro.macroEnd() }}
+    {{ selfMacro.code(
+"{{ commonMacro.hello('Billy' {# имя экранируется по-умолчанию #}, _context, {
+    'padding-left': '20px' {# можно задавать любые стили #}
+}) }}"
+    ) }}
+
+    {{ selfMacro.header('Блок рекламы', 'Реклама извлекается из базы с версткой, ссылки стилизуются') }}
+    {{ selfMacro.macroStart() }}
+    {{ commonMacro.ad(advt, _context) }}
+    {{ commonMacro.ad(
+        advt, _context,
+        {
+            'border': '1px solid #84b92f',
+            'margin-top': '20px'
+        }, {
+            'color': '#3b9028'
+        }
+    ) }}
+    {{ selfMacro.macroEnd() }}
+    {{ selfMacro.code(
+"{{ commonMacro.ad(advt, _context) }}
+{{ commonMacro.ad(
+    advt {# реклама не экранируется #}, _context,
+    {
+        'border': '1px solid #84b92f', {# стили для блока в целом #}
+        'margin-top': '20px'
+    }, {
+        'color': '#3b9028' {# стили для блока с текстом #}
+    }
+) }}"
+    ) }}
+
+    {{ selfMacro.header('Кнопка-ссылка') }}
+    {{ selfMacro.macroStart() }}
+    {{ commonMacro.button(
+        'Lorem ipsum dolor sit amet',
+        'http://site.com',
+        {
+            'font-size': '16px'
+        }
+    ) }}
+    {{ selfMacro.macroEnd() }}
+    {{ selfMacro.code(
+"{{ commonMacro.button(
+    'Lorem ipsum dolor sit amet',
+    'http://site.com',
+    {
+        'font-size': '16px'
+    }
+) }}"
+    ) }}
+
+    {{ selfMacro.header('Кнопка-ссылка с иконкой') }}
+    {{ selfMacro.macroStart() }}
+    {{ commonMacro.buttonWithImg(
+        'Lorem ipsum dolor sit amet',
+        'http://site.com',
+        {},
+        baseImagesPath ~ '/double-arrow-w.png',
+        12,
+        7,
+        {'margin-left': '12px'}
+    ) }}
+    {{ selfMacro.macroEnd() }}
+    {{ selfMacro.code(
+"{{ commonMacro.buttonWithImg(
+    'Lorem ipsum dolor sit amet',
+    'http://site.com',
+    {}, {# стили для ссылки #}
+    baseImagesPath ~ '/double-arrow-w.png', {# путь к иконке #}
+    12, {# ширина иконки #}
+    7, {# высота иконки #}
+    {'margin-left': '12px'} {# стили для img #}
+) }}"
+    ) }}
+
+    {{ selfMacro.header('Параграф, извлеченный из базы', 'Например, нужно отобразить текст из базы с версткой и стилизацией ссылок') }}
+    {{ selfMacro.macroStart() }}
+    {{ commonMacro.paragraph(
+        '<p>
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla scelerisque vestibulum feugiat.
+            Sed ac mauris nec quam aliquet semper.
+            <a href=\"http://site.com\">Link</a>. Praesent pharetra placerat tincidunt. Aliquam erat volutpat.
+            Duis luctus leo in felis ultricies mattis.
+        </p>', _context, {escape:false, fix_link:true}
+    ) }}
+    {{ selfMacro.macroEnd() }}
+    {{ selfMacro.code(
+"{{ commonMacro.paragraph(
+    '<p>
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla scelerisque vestibulum feugiat.
+        Sed ac mauris nec quam aliquet semper.
+        <a href=\"http://site.com\">Link</a>. Praesent pharetra placerat tincidunt. Aliquam erat volutpat.
+        Duis luctus leo in felis ultricies mattis.
+    </p>', _context {# необходим для доступа к переменным #},
+    {escape:false, fix_link:true} {# escape - опция экранирования (по-умолчанию true) #}
+) }}"
+    ) }}
+
+    {{ selfMacro.header('Блок рекламы в рамке') }}
+    {{ selfMacro.macroStart() }}
+    {{ commonMacro.adFrame(advt, _context) }}
+    {{ commonMacro.adFrame(
+        advt, _context,
+        {
+            'border-color': 'brown'
+        }, {
+            'color': '#3b9028'
+        }
+    ) }}
+    {{ selfMacro.macroEnd() }}
+    {{ selfMacro.code(
+"{{ commonMacro.adFrame(advt, _context) }}
+{{ commonMacro.adFrame(
+    'advt {# не экранируется #}, _context,
+    {
+        'border-color': 'brown' {# стили для блока в целом #}
+    }, {
+        'color': '#3b9028' {# стили для блока текста #}
+    }
+) }}"
+    ) }}
+
+    {{ selfMacro.header('Параграф') }}
+    {{ selfMacro.macroStart() }}
+    {{ commonMacro.paragraph(
+        'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla scelerisque vestibulum feugiat.
+         Sed ac mauris nec quam aliquet semper. Praesent pharetra placerat tincidunt.',
+        _context
+    ) }}
+    {{ commonMacro.paragraph(
+        'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla scelerisque vestibulum feugiat.
+             Sed ac mauris nec quam aliquet semper. Praesent pharetra placerat tincidunt.',
+        _context, {}, {
+            'font-size': '16px'
+        }
+    ) }}
+    {{ selfMacro.macroEnd() }}
+    {{ selfMacro.code(
+"{{ commonMacro.paragraph(
+    'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla scelerisque vestibulum feugiat.
+     Sed ac mauris nec quam aliquet semper. Praesent pharetra placerat tincidunt.',
+    _context
+) }}
+{{ commonMacro.paragraph(
+    'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla scelerisque vestibulum feugiat.
+         Sed ac mauris nec quam aliquet semper. Praesent pharetra placerat tincidunt.',
+    _context, {} {# опция экранирования escape (true), fix_link - стилизация ссылок #}, {
+        'font-size': '16px' {# стили для блока #}
+    }
+) }}"
+    ) }}
+
+    {{ selfMacro.header('Выделение текста') }}
+    {{ selfMacro.macroStart() }}
+    {{ commonMacro.span('Test selection') }} <br/><br>
+    {% set selection = commonMacro.span('$$')|split('$$') %}
+    {{ 'Your login ID is: %span_on%%login%%span_off%'|replace({
+        '%login%': 'MyLogin',
+        '%span_on%': selection[0],
+        '%span_off%': selection[1]
+    })|raw }}
+    {{ selfMacro.macroEnd() }}
+    {{ selfMacro.code(
+    "{{ commonMacro.span('Test selection') }} <br/><br>
+{% set selection = commonMacro.span('$$')|split('$$') %}
+{{ 'Your login ID is: %span_on%%login%%span_off%'|replace({
+    '%login%': 'MyLogin',
+    '%span_on%': selection[0],
+    '%span_off%': selection[1]
+})|raw }}"
+    ) }}
+
+    {{ selfMacro.header('Приветствие с параграфом') }}
+    {{ selfMacro.macroStart() }}
+    {{ commonMacro.hello('Billy', _context) }}
+    {{ commonMacro.paragraph(
+        'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla scelerisque vestibulum feugiat.
+             Sed ac mauris nec quam aliquet semper. Praesent pharetra placerat tincidunt.',
+        _context
+    ) }}
+    {{ selfMacro.macroEnd() }}
+    {{ selfMacro.code(
+"{{ commonMacro.hello('Billy', _context) }}
+{{ commonMacro.paragraph(
+    'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla scelerisque vestibulum feugiat.
+     Sed ac mauris nec quam aliquet semper. Praesent pharetra placerat tincidunt.',
+    _context
+) }}"
+    ) }}
+
+    {{ selfMacro.header('Ссылка') }}
+    {{ selfMacro.macroStart() }}
+    {{ commonMacro.link('http://site.com', 'Link1') }}<br>
+    {{ commonMacro.link('http://site.com', 'Link2', {'color': 'red'}) }}<br>
+    {{ commonMacro.link('http://site.com', 'Link1 <b style="color:black">(desc)</b>', {}, {escape: false}) }}<br>
+    {{ selfMacro.macroEnd() }}
+    {{ selfMacro.code(
+"{{ commonMacro.link('http://site.com', 'Link1') }}<br>
+{{ commonMacro.link('http://site.com', 'Link2', {'color': 'red'} {# стили для ссылки #}) }}<br>
+{{ commonMacro.link('http://site.com', 'Link1 <b style=\"color:black\">(desc)</b>', {}, {escape: false} {# опции текста ссылки #}) }}"
+    ) }}
+
+    {{ selfMacro.header('Блок со ссылкой') }}
+    {{ selfMacro.macroStart() }}
+    {% set link = baseUrl ~ path('aw_share_all', {'code': 'abcdef'}) %}
+    {{ commonMacro.dottedLink(link, link, _context) }}
+    {{ commonMacro.dottedLink(link, 'Link', _context, {
+        'color': 'red'
+    }, {
+        'margin-top': '20px'
+    }) }}
+    {{ selfMacro.macroEnd() }}
+    {{ selfMacro.code(
+"{% set link = baseUrl ~ path('aw_share_all', {'code': 'abcdef'}) %}
+{{ commonMacro.dottedLink(link, link, _context) }}
+{{ commonMacro.dottedLink(link, 'Link' {# текст ссылки #}, _context, {
+    'color': 'red' {# стили ссылки #}
+}, {
+    'margin-top': '20px' {# стили блока в целом #}
+}) }}"
+    ) }}
+
+    {{ selfMacro.header('Параграф с блоком со ссылкой') }}
+    {{ selfMacro.macroStart() }}
+    {{ commonMacro.paragraph(
+        'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla scelerisque vestibulum feugiat.
+         Sed ac mauris nec quam aliquet semper. Praesent pharetra placerat tincidunt.',
+        _context
+    ) }}
+    {% set link = baseUrl ~ path('aw_share_all', {'code': 'abcdef'}) %}
+    {{ commonMacro.dottedLink(link, link, _context) }}
+    {{ selfMacro.macroEnd() }}
+    {{ selfMacro.code(
+"{{ commonMacro.paragraph(
+    'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla scelerisque vestibulum feugiat.
+     Sed ac mauris nec quam aliquet semper. Praesent pharetra placerat tincidunt.',
+    _context
+) }}
+{% set link = baseUrl ~ path('aw_share_all', {'code': 'abcdef'}) %}
+{{ commonMacro.dottedLink(link, link, _context) }}"
+    ) }}
+
+    {{ selfMacro.header('Автологин блок') }}
+    {{ selfMacro.macroStart() }}
+    {% set link = baseUrl ~ path('aw_account_redirect', {
+        'itID': 12345,
+        'table': 'T'
+    }) %}
+    {{ commonMacro.autologinLink(
+        link,
+        'You can use the following link to automatically log into the <b>Delta</b> website:',
+        _context, {escape: false}
+    ) }}
+    {{ commonMacro.autologinLink(
+        link,
+        'You can use the following link to automatically log into the <b>Delta</b> website:',
+        _context, {escape: false}, {
+            'color': 'red'
+        }, {
+            'font-size': '16px'
+        }, {
+            'margin-top': '25px'
+        }
+    ) }}
+    {{ selfMacro.macroEnd() }}
+    {{ selfMacro.code(
+"{% set link = baseUrl ~ path('aw_account_redirect', {
+    'itID': 12345,
+    'table': 'T'
+}) %}
+{{ commonMacro.autologinLink(
+    link,
+    'You can use the following link to automatically log into the <b>Delta</b> website:',
+    _context, {escape: false}
+) }}
+{{ commonMacro.autologinLink(
+    link {# ссылка #},
+    'You can use the following link to automatically log into the <b>Delta</b> website:' {# текст #},
+    _context, {escape: false}, {
+        'color': 'red' {# стили ссылки #}
+    }, {
+        'font-size': '16px' {# стили блока с текстом #}
+    }, {
+        'margin-top': '25px' {# стили блока в целом #}
+    }
+) }}"
+    ) }}
+
+    {{ selfMacro.header('Warning блок') }}
+    {{ selfMacro.macroStart() }}
+    {{ commonMacro.smallWarning(
+        'According to our records your <b style="color:#3d424d">AwardWallet Plus</b> membership is going to expire on <b style="color:#cc3d5e">10/02/2018</b>.',
+        _context, {escape: false}
+    ) }}
+    {{ commonMacro.smallWarning(
+        'According to our records your <b style="color:#3d424d">AwardWallet Plus</b> membership is going to expire on <b style="color:#cc3d5e">10/02/2018</b>.',
+        _context, {escape: false}, {
+            'color': 'red'
+        }, {
+            'margin-top': '20px'
+        }, {}
+    ) }}
+    {{ commonMacro.warning(
+        '<b>Lorem ipsum dolor</b> sit amet, consectetur adipiscing elit.',
+        'Sed ac mauris nec quam aliquet semper. Praesent pharetra placerat tincidunt.',
+        _context, {escape: false}
+    ) }}
+    {{ commonMacro.warning(
+        '<b>Lorem ipsum dolor</b> sit amet, consectetur adipiscing elit.',
+        'Sed ac mauris nec quam aliquet semper. Praesent pharetra placerat tincidunt.',
+        _context, {escape: false}, {
+            'color': 'red'
+        }, {
+            'margin-top': '20px'
+        }, {}
+    ) }}
+    {{ selfMacro.macroEnd() }}
+    {{ selfMacro.code(
+"{{ commonMacro.smallWarning(
+    'According to our records your <b style=\"color:#3d424d\">AwardWallet Plus</b> membership
+    is going to expire on <b style=\"color:#cc3d5e\">10/02/2018</b>.',
+    _context, {escape: false}
+) }}
+{{ commonMacro.smallWarning(
+    'According to our records your <b style=\"color:#3d424d\">AwardWallet Plus</b> membership
+    is going to expire on <b style=\"color:#cc3d5e\">10/02/2018</b>.',
+    _context, {escape: false}, {
+        'color': 'red' {# стили для блока с текстом #}
+    }, {
+        'margin-top': '20px' {# стили для блока в целом #}
+    }, {{# стили для блока с картинкой #}}
+) }}
+{{ commonMacro.warning(
+    '<b>Lorem ipsum dolor</b> sit amet, consectetur adipiscing elit.',
+    'Sed ac mauris nec quam aliquet semper. Praesent pharetra placerat tincidunt.',
+    _context, {escape: false}
+) }}
+{{ commonMacro.warning(
+    '<b>Lorem ipsum dolor</b> sit amet, consectetur adipiscing elit.',
+    'Sed ac mauris nec quam aliquet semper. Praesent pharetra placerat tincidunt.' {# всегда экранируется #},
+    _context, {escape: false}, {
+        'color': 'red' {# стили для блока с текстом #}
+    }, {
+        'margin-top': '20px' {# стили для блока в целом #}
+    }, {{# стили для блока с картинкой #}}
+) }}"
+    ) }}
+
+    {{ selfMacro.header('Info блок') }}
+    {{ selfMacro.macroStart() }}
+    {{ commonMacro.info(
+        'Sed ac mauris nec quam aliquet semper. Praesent pharetra placerat tincidunt.',
+        _context
+    ) }}
+    {{ commonMacro.info(
+        'Sed ac mauris nec quam aliquet semper. <b style="color:red;">Praesent pharetra placerat tincidunt</b>. Sed ac mauris nec quam aliquet semper. Praesent pharetra placerat tincidunt.',
+        _context, {escape: false}, {
+            'color': 'red'
+        }, {
+            'margin-top': '20px'
+        }, {}
+    ) }}
+    {{ selfMacro.macroEnd() }}
+    {{ selfMacro.code(
+"{{ commonMacro.info(
+    'Sed ac mauris nec quam aliquet semper. Praesent pharetra placerat tincidunt.',
+    _context
+) }}
+{{ commonMacro.info(
+    'Sed ac mauris nec quam aliquet semper. <b style=\"color:red;\">Praesent pharetra placerat tincidunt</b>.
+    Sed ac mauris nec quam aliquet semper. Praesent pharetra placerat tincidunt.',
+    _context, {escape: false}, {
+        'color': 'red' {# стили для блока с текстом #}
+    }, {
+        'margin-top': '20px' {# стили для блока в целом #}
+    }, {{# стили для блока с картинкой #}}
+) }}"
+    ) }}
+
+    {{ selfMacro.header('Info блок с кнопкой') }}
+    {{ selfMacro.macroStart() }}
+    {{ commonMacro.infoWithButton(
+        'Sed ac mauris nec quam aliquet semper. Praesent pharetra placerat tincidunt.',
+        'Details',
+        'http://site.com',
+        _context,
+        {'escape': false},
+        {},
+        {
+            cellStyles: {},
+            wrapperStyles: {},
+            imgStyles: {},
+        },
+        {
+            linkStyles: {},
+            imgStyles: {},
+            width: 12,
+            height: 7,
+            imgPath: baseImagesPath ~ '/double-arrow-w.png',
+        }
+    ) }}
+    {{ selfMacro.macroEnd() }}
+    {{ selfMacro.code(
+"{{ commonMacro.infoWithButton(
+    'Sed ac mauris nec quam aliquet semper. Praesent pharetra placerat tincidunt.', {# текст #}
+    'Details', {# текст на кнопке #}
+    'http://site.com', {# ссылка кнопки #}
+    _context,
+    {'escape': false}, {# опции для текста из блока информации #}
+    {}, {# стили для контейнера #}
+    { {# стили блока текста, аргументы макроса info #}
+        cellStyles: {},
+        wrapperStyles: {},
+        imgStyles: {},
+    },
+    {
+        linkStyles: {}, {# стили ссылки кнопки #}
+        imgStyles: {}, {# стили иконки на кнопке #}
+        width: 12, {# ширина иконки на кнопке #}
+        height: 7, {# высота иконки на кнопке #}
+        imgPath: baseImagesPath ~ '/double-arrow-w.png', {# путь к иконке на кнопке #}
+    }
+) }}"
+    ) }}
+
+    {{ selfMacro.header('Вывод списка аккаунтов/купонов провайдеров', 'Необходим массив сущностей доктрины Account или Providercoupon') }}
+    {{ selfMacro.macroStart() }}
+    {{ commonMacro.accountList(accounts, _context) }}
+    {{ selfMacro.macroEnd() }}
+    {{ selfMacro.code(
+        "{{ commonMacro.accountList(accounts, _context) }}"
+    ) }}
+
+    {{ selfMacro.header('Заголовок') }}
+    {{ selfMacro.macroStart() }}
+    {{ commonMacro.header('Your Order', _context) }}
+    {{ commonMacro.header(
+        'Booking Request <span style="font-size:25px;color:#828b99">#12345</span>',
+        _context, {escape: false}, {
+            'font-size': '25px',
+            'color': '#cc3d5e',
+            'line-height': '30px'
+        }, {
+            'margin-top': '35px'
+        }, {
+            'padding-top': '18px'
+        }
+    ) }}
+    {{ selfMacro.macroEnd() }}
+    {{ selfMacro.code(
+"{{ commonMacro.header('Your Order', _context) }}
+{{ commonMacro.header(
+    'Booking Request <span style=\"font-size:25px;color:#828b99\">#12345</span>',
+    _context, {escape: false}, {
+        'font-size': '25px', {# стили для блока надписи #}
+        'color': '#cc3d5e',
+        'line-height': '30px'
+    }, {
+        'margin-top': '35px' {# стили для блока в целом #}
+    }, {
+        'padding-top': '18px' {# стили для блока стрелки #}
+    }
+) }}"
+    ) }}
+
+    {{ selfMacro.header('Базовая ссылка на отписку от писем') }}
+    {{ selfMacro.macroStart() }}
+    {{ commonMacro.baseUnsubscribeLink('https://awardwallet.com/unsubscribe-link', _context, {
+        'color': '#cc3d5e'
+    }) }}
+    {{ selfMacro.macroEnd() }}
+    {{ selfMacro.code(
+"{{ commonMacro.baseUnsubscribeLink('https://awardwallet.com/unsubscribe-link', _context, {
+    'color': '#cc3d5e'
+}) }}"
+    ) }}
+
+    {{ selfMacro.header('Ссылка на отписку от писем для family member') }}
+    {{ selfMacro.macroStart() }}
+    {{ commonMacro.familyMemberUnsubscribeLink(familyMember, 'https://awardwallet.com/unsubscribe-link', _context, {
+        'color': '#cc3d5e'
+    }) }}
+    {{ selfMacro.macroEnd() }}
+    {{ selfMacro.code(
+"{{ commonMacro.familyMemberUnsubscribeLink(familyMember, 'https://awardwallet.com/unsubscribe-link', _context, {
+    'color': '#cc3d5e'
+}) }}"
+    ) }}
+
+    {{ selfMacro.header('Превью писем', 'Показывается в списке писем рядом с subject письма') }}
+    {{ selfMacro.macroStart() }}
+    {{ commonMacro.emailPreview('Test preview') }}
+    {{ selfMacro.macroEnd() }}
+    {{ selfMacro.code("{{ commonMacro.emailPreview('Test preview') }}") }}
+
+    {{ selfMacro.header('Ремарка про партнеров') }}
+    {{ selfMacro.macroStart() }}
+    {{ commonMacro.offerRemark(_context) }}
+    {{ commonMacro.offerRemark(_context, null, {
+        'color': 'red'
+    }, {
+        'color': 'green'
+    }) }}
+    {{ selfMacro.macroEnd() }}
+    {{ selfMacro.code("
+{{ commonMacro.offerRemark(_context) }}
+{{ commonMacro.offerRemark(_context, null, {
+    'color': 'red'
+}, {
+    'color': 'green'
+}) }}
+") }}
+
+    <tr>
+        <td style="line-height:18px;font-size:14px; border: solid 1px #a6aab3;background:#fff;border-top:0;" class="email-white">
+            &nbsp;
+        </td>
+    </tr>
+{% endblock content_row %}
+
+{% block restore_row %}{% endblock restore_row %}
+
+{% macro header(text, comment) %}{% trim %}
+    <tr>
+        <td style="line-height:18px;font-size:14px; border:solid 1px #a6aab3;background:#fb7118;color:snow;border-top:0;border-bottom:0;">
+            <h3 style="background:#fb7118;padding:5px 10px;margin:5px 0;">{{ text }}</h3>
+            {% if comment is defined and comment is not empty %}
+                <div style="
+                    padding: 10px;
+                    color: #909090;
+                    background: #fbf7f7;">{{ comment }}</div>
+            {% endif %}
+        </td>
+    </tr>
+{% endtrim %}{% endmacro %}
+
+{% macro code(text) %}{% trim %}
+    {% set text = text|htmlencode %}
+    {% set text = text|preg_replace('/\{\#[^\#]+\#\}/ims', '<b style="color:#5d6d73;">${0}</b>') %}
+    {% set text = text|preg_replace('/\'[^\']*+\'/ims', '<b style="color:rgb(79, 138, 79);">${0}</b>') %}
+    {% set text = text|preg_replace('/\{\%|\%\}|\{\{|\}\}|\{(?!#)|(?<!#)\}|_context/ims', '<b style="color:#484242;">${0}</b>') %}
+    <tr>
+        <td style="border:solid 1px #a6aab3;background:#fff;border-top:0;border-bottom:0;padding:0 10px 20px;" class="email-white">
+            <pre style="
+                color:#336479;font-family:SFMono-Regular, Consolas, 'Liberation Mono', Menlo, Courier, monospace;
+                font-size:0.75em;
+                line-height:2;
+                padding:0 5px;background:#e8f0f8;border-radius:3px;">{{ text|raw }}</pre>
+        </td>
+    </tr>
+{% endtrim %}{% endmacro %}
+
+{% macro macroStart() %}{% trim %}
+    {% import '@MailTemplate/CommonMacro.twig' as commonMacro %}
+
+    <tr>
+        <td style="border:solid 1px #a6aab3;background:#fff;border-top:0;border-bottom:0;" class="email-white">
+            &nbsp;
+        </td>
+    </tr>
+    <tr>
+        <td style="line-height:18px;font-size:14px;border: solid 1px #a6aab3;background:#fff;
+            border-top:solid 1px #f4f5f7;border-bottom:solid 1px #f4f5f7;padding:0 10px 20px" class="email-white">
+
+            {{ commonMacro.paragraph('
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla scelerisque vestibulum feugiat.
+                Sed ac mauris nec quam aliquet semper. http://site.com. Praesent pharetra placerat tincidunt. Aliquam erat volutpat.
+                Duis luctus leo in felis ultricies mattis.
+                ', _context, {}, {
+                    color: '#dbdee4'
+                }
+            ) }}
+
+{% endtrim %}{% endmacro %}
+
+{% macro macroEnd() %}{% trim %}
+    {% import '@MailTemplate/CommonMacro.twig' as commonMacro %}
+
+            {{ commonMacro.paragraph('
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla scelerisque vestibulum feugiat.
+                Sed ac mauris nec quam aliquet semper. http://site.com. Praesent pharetra placerat tincidunt. Aliquam erat volutpat.
+                Duis luctus leo in felis ultricies mattis.
+                ', _context, {}, {
+                    color: '#dbdee4'
+                }
+            ) }}
+        </td>
+    </tr>
+    <tr>
+        <td style="border:solid 1px #a6aab3;background:#fff;border-top:0;border-bottom:0;" class="email-white">
+            &nbsp;
+        </td>
+    </tr>
+{% endtrim %}{% endmacro %}

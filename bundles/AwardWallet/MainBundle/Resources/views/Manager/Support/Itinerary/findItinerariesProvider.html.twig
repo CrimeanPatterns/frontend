@@ -1,0 +1,327 @@
+{% set title = "Find Itineraries Accounts" %}
+{% use '@AwardWalletMain/FormTheme/oldFields.html.twig' %}
+{% extends '@AwardWalletMain/Manager/layout.html.twig' %}
+{% block content %}
+    <style>
+        .box {
+            float: left;
+            margin-left: 5px;
+            /*height: 40px;*/
+        }
+        select {
+            margin-left: 5px;
+        }
+        input {
+            /*margin-top: 7px;*/
+            border-width: 1px;
+        }
+        td {
+            vertical-align: text-top;
+        }
+
+        table.tableRes th {
+            background-color: whitesmoke;
+            font-weight: bold;
+            border-top: #D0D0D0 1px solid;
+            border-bottom: #D0D0D0 1px solid;
+            text-align: center;
+            padding: 7px;
+        }
+
+        table.tableRes td {
+            padding: 4px;
+        }
+
+        table.tableRes {
+            border-width: 0 !important;
+            vertical-align: middle;
+        }
+
+        table.tableRes .bothBorder {
+            border-left: #D0D0D0 1px solid;
+            border-right: #D0D0D0 1px solid;
+        }
+
+        table.tableRes .leftBorder {
+            border-left: #D0D0D0 1px solid;
+        }
+
+        table.tableRes .rightBorder {
+            border-right: #D0D0D0 1px solid;
+        }
+
+        table.tableRes .topBorder {
+            border-top: #D0D0D0 1px solid;
+        }
+
+        table.tableRes .bottomBorder {
+            border-bottom: #D0D0D0 1px solid;
+        }
+    </style>
+    <script>
+        function setColor(el) {
+            if ($(el).attr('checked'))
+                $(el).parent().parent().css('background-color', 'lavender');
+            else
+                $(el).parent().parent().css('background-color', '');
+        }
+        function getRegion(code) {
+            $.ajax({
+                url: '{{ path('aw_manager_accountByRegion_login') }}',
+                type: "POST",
+                data: {id: code, renderTwig: 'findItinerariesProvider'},
+                async: false,
+                success: function (data) {
+                    $('#region').html(data.data);
+                    if (data.javascript) {
+                        require(['pages/support/desktopForm'],
+                            /**
+                             * @param {DesktopForm} desktopForm
+                             */
+                            function (desktopForm) {
+                                var form = $('form[name=s]');
+                                (function () {
+                                    //  form logic customizations
+                                    eval(data.javascript);
+                                    desktopForm.init(addFormExtension);
+                                })();
+                            });
+                    }
+                }
+            });
+        }
+        function run(type_search) {
+            $('input[name="type_search"]').val(type_search);
+        }
+        function copy(e) {
+            var text = e.previousElementSibling.innerText;
+            var input = document.createElement('input');
+            document.body.appendChild(input);
+            input.value = text;
+            input.select();
+            document.execCommand("copy");
+            document.body.removeChild(input);
+        }
+        function  refreshCancel(){
+            if($('select[name="providerID"]').find('option:selected').attr("data-cancel-show") == '1') {
+                $('#cancel').show();
+            } else {
+                $('#cancel').find('input').removeProp('checked');
+                $('#cancel').hide();
+            }
+        }
+        $(document).ready(function () {
+            $('#kind').change(function(){
+                if($('#kind').val() == 'T') {
+                    $('#category').show();
+                } else {
+                    $('#category').hide();
+                    $('select[name="category"]').prop('selectedIndex',0);
+                }
+                if($('#kind').val() == 'E') {
+                    $('#etype').show();
+                } else {
+                    $('#etype').hide();
+                    $('select[name="etype"]').prop('selectedIndex',0);
+                }
+            });
+
+            getRegion(document.forms['s'].elements['providerID'].value);
+            refreshCancel();
+            var l2 = $("#login2");
+            {% if inputValue.login2 is defined and not inputValue.login2 is empty %}
+            if (l2.find('option').length > 0)
+                l2.find('option[value="{{ inputValue.login2 }}"]').prop('selected', true);
+            else
+                l2.val("{{ inputValue.login2 }}");
+            {% endif %}
+            var l3 = $("#login3");
+            {% if inputValue.login3 is defined and  not inputValue.login3 is empty %}
+            if (l3.find('option').length > 0)
+                l3.find('option[value="{{ inputValue.login3 }}"]').prop('selected', true);
+            else
+                l3.val("{{ inputValue.login3 }}");
+            {% endif %}
+            if (window.location.search.length > 0) {
+                var txt;
+                {% if not data.data is empty %}
+                txt = 'Result for ';
+                {% else %}
+                txt = 'Empty result for ';
+                {% endif %}
+                txt += '<b>' + $("select[name='UnusedID']").find('option:selected').get(0).innerText
+                    + ' / '
+                    + $("select[name='providerID']").find('option:selected').get(0).innerText
+                    + '</b>'
+                ;
+                {% if inputValue.login2 is defined and  not inputValue.login2 is empty %}
+                if (l2.find('option:selected').length > 0)
+                    txt += ' login2: ' + '<b>' + l2.find('option:selected').get(0).innerText + '</b>';
+                else if (l2.length > 0)
+                    txt += ' login2: ' + '<b>' + l2.val() + '</b>';
+                {% endif %}
+                {% if inputValue.login3 is defined and  not inputValue.login3 is empty %}
+                if (l3.find('option:selected').length > 0)
+                    txt += ' login3: ' + '<b>' + l3.find('option:selected').get(0).innerText + '</b>';
+                else if (l3.length > 0)
+                    txt += ' login3: ' + '<b>' + l3.val() + '</b>';
+                {% endif %}
+                $('#hResult').html(txt);
+            } else
+                $('#hResult').html('');
+            $('#kind').trigger('change');
+            $('form').submit(function () {
+                var l2 = $("#login2:visible");
+                if (l2.length > 0) {
+                    if (l2.find('option:selected').length > 0)
+                        $('input[name="login2"]').val(l2.find('option:selected').val());
+                    else
+                        $('input[name="login2"]').val(l2.val());
+                } else
+                    $('input[name="login2"]').val('');
+                var l3 = $("#login3:visible");
+                if (l3.length > 0) {
+                    if (l3.find('option:selected').length > 0)
+                        $('input[name="login3"]').val(l3.find('option:selected').val());
+                    else
+                        $('input[name="login3"]').val(l3.val());
+                } else
+                    $('input[name="login3"]').val('');
+                return true;
+            });
+        });
+
+    </script>
+
+    <form method="get" action="{{ path('aw_manager_finditinerariesprovider') }}" name="s">
+        <input type="hidden" name="search" value="1">
+        <input type="hidden" name="login2" value="">
+        <input type="hidden" name="login3" value="">
+        <input type="hidden" name="type_search" value="">
+        <div class="block"  style="display: flex">
+            <label>Select Provider:</label>
+            <div class="block">
+                <select name="UnusedID"
+                        onchange="document.forms['s'].elements['providerID'].value=this.value;refreshCancel();getRegion(this.value);">
+                    {% for row in providerName %}
+                        <option value='{{ row.ID }}' {% if inputValue.providerID is defined and row.ID==inputValue.providerID %} selected {% endif %}>{{ row.Description }}</option>
+                    {% endfor %}
+                </select>
+                <select style="width: 200px;" name="providerID"
+                        onchange="document.forms['s'].elements['UnusedID'].value=this.value;refreshCancel();getRegion(this.value);">
+                    {% for row in providerCode %}
+                        <option value='{{ row.ID }}'
+                                data-cancel-show='{{ row.CanCheckCancelled }}' {% if inputValue.providerID is defined and row.ID==inputValue.providerID %} selected {% endif %}>{{ row.Description }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div id="region" style="display: flex"></div>
+        </div>
+        <br>
+        <div class="block" style="display: flex">
+            <label>Kind:</label>
+            <select name="kind" id="kind">
+                <option value="All">All</option>
+                {% for row in kind %}
+                    <option value="{{ row.ID }}" {% if inputValue.kind is defined and row.ID==inputValue.kind %} selected {% endif %}>{{ row.Description }}</option>
+                {% endfor %}
+            </select><br/>
+            <div id="category" style="display: none; margin-left: 5px;">
+                <label> Category:</label>
+                <select name="category">
+                    <option value="All">All</option>
+                    {% for row in category %}
+                        <option value="{{ row.ID }}" {% if inputValue.category is defined and row.ID==inputValue.category %} selected {% endif %}>{{ row.Description }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div id="etype" style="display: none; margin-left: 5px;">
+                <label>Type:</label>
+                <select name="etype">
+                    <option value="All">All</option>
+                    {% for row in etype %}
+                        <option value="{{ row.ID }}" {% if inputValue.etype is defined and row.ID==inputValue.etype %} selected {% endif %}>{{ row.Description }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div id='cancel' style='display: none; margin-left: 5px;'>
+                <input type="checkbox" name="cancelled" id="cancelled" title="Cancelled"
+                        {% if inputValue.cancelled is defined and inputValue.cancelled=='on' %} checked {% endif %}
+                       onchange="if (this.checked) this.value = 'on'; else this.value='off';"/>
+                <label for="cancelled">Cancelled</label>
+            </div>
+        </div>
+        <!--Limit:-->
+        <input type="hidden" value="100" disabled="disabled" size="6"><br>
+        <button type="submit" onclick="run('Find accounts');" title="Find accounts with itineraries">Find accounts</button>
+        <button type="submit" onclick="run('Find retrieved');" title="Find itineraries retrieved by conf #">Find retrieved</button>
+    </form>
+    </br>
+    <span id="hResult">Result for </span>
+    {% if not data.message is empty %}
+        <div>{{ data.message|raw }}</div>
+    {% endif %}
+    </br>
+    {% if not data.data is empty %}
+        <table class="tableRes" cellspacing="0" cellpadding="0">
+            <tr>
+                <th class="bothBorder">Trip ID</th>
+                <th class="rightBorder" title="Category">?</th>
+                <th class="rightBorder" title="Itineraries count">#</th>
+                <th class="rightBorder">UserID</th>
+                <th class="rightBorder">{% if inputValue.type_search == 'Find accounts' %}Account{% else %}Conf #{% endif %}</th>
+                <th class="rightBorder" title="Tool for convenience">v</th>
+            </tr>
+        {% for row in data.data %}
+            <tr>
+                <td class="bothBorder bottomBorder">
+                    {% if kind[row.Kind] is defined %}
+                        {% set pref = "<abbr title="~kind[row.Kind]~">"~row.Kind~"</abbr>" %}
+                    {% else %}
+                        {% set pref = row.Kind %}
+                    {% endif %}
+
+                    {% if inputValue.cancelled=='on' %}
+                        {{ pref|raw }}{{ row.ID }}
+                    {% else %}
+                        <a href="{{ row.link }}" title="timeline" target="_blank">{{ pref|raw }}{{ row.ID }}</a>
+                    {% endif %}
+                </td>
+                <td class="rightBorder bottomBorder">
+                    {% if row.Kind=='T' %}
+                        {{ _self.drawDescription(row.Category, category) }}
+                    {% elseif row.Kind=='E' %}
+                        {{ _self.drawDescription(row.Category, etype) }}
+                    {% endif  %}
+                </td>
+                <td class="rightBorder bottomBorder">{{ row.Counter }}</td>
+                <td class="rightBorder bottomBorder">
+                    <a title="Impersonate" href="{{ path('aw_manager_impersonate') }}?UserID={{ row.UserID }}&amp;AutoSubmit&amp;AwPlus=1" target="_blank">{{ row.UserID }}</a>
+                </td>
+                <td class="rightBorder bottomBorder" style="text-align: end;">
+                    {% if not row.AccountID is empty %}
+                        <a title="Password request" href="/manager/passwordVault/requestPassword.php?ID={{ row.AccountID }}" target="_blank" style="float: left;color:gray;">PR</a> &nbsp;&nbsp;
+                        <a href="/manager/loyalty/logs?AccountID={{ row.AccountID }}" title="See logs" target="_blank">{{ row.AccountID }}</a> &nbsp;
+                        <button style='font-size: 110%;padding:0;background:none;border:none;color:gray;' onclick="copy(this)">&nbsp;❒ Copy</button>
+                    {% else %}
+                        <span>{{ row.ConfirmationNumber }}</span>&nbsp;
+                        <a href="/manager/loyalty/logs?ConfNo={{ row.ConfirmationNumber }}&Partner=awardwallet" title="See logs" target="_blank">log</a>
+                    {% endif %}
+                </td>
+                <td class="rightBorder bottomBorder"><input type="checkbox" onclick="setColor(this);"/></td>
+            </tr>
+        {% endfor %}
+        </table>
+    {% endif %}
+
+{% endblock %}
+
+{% macro drawDescription(field, source) %}
+    {% set break = false %}
+    {% for r in source %}
+        {% if not break and r.ID == field %}
+            {{ r.Description }}
+            {% set break = true %}
+        {% endif %}
+    {% endfor %}
+{% endmacro drawDescription %}

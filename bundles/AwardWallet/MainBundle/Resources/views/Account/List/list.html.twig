@@ -1,0 +1,151 @@
+{% extends "@AwardWalletMain/Layout/accounts_list.html.twig" %}
+{% import '@AwardWalletMain/TwigMacros/extension.html.twig' as extension %}
+{% import '@AwardWalletMain/TwigMacros/common.html.twig' as common %}
+{% import "@AwardWalletMain/TwigMacros/environment.html.twig" as environmentMacros %}
+{% use '@AccountList/elements.html.twig' %}
+{% use '@AccountList/toolbar.html.twig' %}
+{% use '@AccountList/popups.html.twig' %}
+{% use '@AccountList/updater.html.twig' %}
+
+{% if limit is same as(false) %}
+    {% set limitAsString = 'false' %}
+{% else %}
+    {% set limitAsString = limit %}
+{% endif %}
+
+{% block javascripts %}
+    {{ parent() }}
+    {{ common.angularLinkConverter() }}
+    {# Need to decide how to load comfortably lang files #}
+    <script>
+    {% if grab_fingerprints %}
+      setTimeout(function(){
+          require(['lib/fingerprints'], function() {
+              console.log('fp checked');
+          })
+      }, 10000);
+      {% endif %}
+                 {% if not app.user.wpDisableAll and not is_granted('SITE_BUSINESS_AREA') %}
+                    {% if not webpack|default(false) %}
+                        require(['common/web-push'], function(webPush){
+                        webPush.init('{{ vapid_public_key }}', '{{ webpush_id }}', {{ app.user.userId }}, {{ is_granted('ROLE_STAFF') ? 'true' : 'false' }});
+                    });
+                    {% else %}
+                        window.listWebPushPublicKey = '{{ vapid_public_key }}';
+                        window.listWebPushId = '{{ webpush_id }}';
+                        window.listWebPushUserId = {{ app.user.userId }};
+                        window.listWebPushIsUserStuff = {{ is_granted('ROLE_STAFF') ? 'true' : 'false' }};
+                    {% endif %}
+                {% endif %}
+
+    </script>
+    {{ encore_entry_script_tags('trans/' ~ app.request.locale) }}
+    {{ encore_entry_script_tags('account-list') }}
+    {% if not app.user.wpDisableAll and not is_granted('SITE_BUSINESS_AREA') and webpack|default(false) %}
+        {{ encore_entry_script_tags('account-list-web-push') }}
+    {% endif %}
+    
+{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    {{ encore_entry_link_tags('account') }}
+    {{ encore_entry_link_tags('account-list') }}
+{% endblock %}
+
+{% block popup %}
+    {{ parent() }}
+    {{ block('old_site_popups') }}
+    {% if offerData is not null %}
+        {{ render(controller('AwardWallet\\MainBundle\\Controller\\OfferController::renderOfferAction', {'offerData': offerData})) }}
+    {% endif %}
+{% endblock %}
+
+{% block content %}
+    {# Details popup #}
+    <div id="update-all-account-container" {{ environmentMacros.dataAttr({limit:limitAsString, adsData:adsData, accountsData:accountsData, isBusiness:'false', isIE:'false'}) }}></div>
+    {{ block('account_details_popup') }}
+
+    <div data-ng-controller="mainCtrl as main">
+        {{ block('action_popups') }}
+        {{ block('upgrade_popup') }}
+        {% if upgradeNotifyPopup is defined and upgradeNotifyPopup is not empty %}
+            <div data-ng-controller="upgradeNotifyPopup">{{ block('upgrade_notify_popup') }}</div>
+        {% endif %}
+
+        {# Start Navigation start #}
+        <ul data-ng-cloak2 class="tabs-navigation middle">
+            <li>
+                <a href="" ui-sref="list({active: undefined, recent: undefined, archive: undefined})" data-ng-class="{ active: !main.stateParams.active && !main.stateParams.archive && main.routeState.current.name == 'list'}" tabindex="993">
+                    {{ "award.account.list.tab.active"|trans|desc("ACTIVE ACCOUNTS") }}
+                    <span class="amount">[[ main.counters.actives ]]</span>
+                </a>
+            </li>
+            <li>
+                <a href="" ui-sref="list({active: undefined, recent: undefined, archive: 'on'})" data-ng-class="{ active: main.stateParams.archive && main.routeState.current.name == 'list' }" tabindex="994">
+                    {{ "award.account.list.tab.archived"|trans|desc("ARCHIVED ACCOUNTS") }}
+                    <span class="amount">[[ main.counters.archives ]]</span>
+                </a>
+            </li>
+            <li class="ml-auto align-self-center">
+                <div class="portfolio-cash-balance">
+                    {{ 'portfolio-balance'|trans|desc("Portfolio Balance") }}: <b>[[ main.formatCurrency(main.totals.mileValue.sumTotalCashEquivalent, 0) ]]</b>
+                </div>
+            </li>
+            <li class="align-self-center">
+                {# Last update accounts start #}
+                <div data-ng-cloak class="last-update" data-ng-show="main.view.lastUpdated.LastUpdatedDate">
+                    <i class="icon-silver-refresh"></i>
+                    <span>{{ "award.account.list.last-updated.text"|trans|desc('Last updated')|raw }}: <abbr
+                                data-role="tooltip" data-tip title="[[ main.view.lastUpdated.LastUpdatedDate.datetime ]]">[[ main.view.lastUpdated.LastUpdatedDate.ago ]]</abbr></span>
+                    <br>
+                    <span style="font-size: 80%;">
+                    <a class="auto-skip" style="color: #8E9199;"
+                       href=""
+                       ng-href="/account/list/?account=[[ main.view.lastUpdated.ID ]]"
+                       data-ng-click="main.view.showDetails(main.view.lastUpdated.FID)"
+                       data-ng-bind-html="main.view.lastUpdated.DisplayName + ' &ndash; ' + main.view.lastUpdated.LoginFieldFirst | unsafe"></a>
+                    </span>
+                </div>
+                {# Last update accounts end #}
+            </li>
+        </ul>
+        {# Start Navigation end #}
+
+
+        <div class="tabs-content" style="min-height: {{ 350 + 46 * (accountsData.agents|length) }}px" data-ng-hide="main.routeState.current.name != 'list'">
+            {{ block('account_updater') }}
+            {# Loader start #}
+            <div class="ajax-loader" data-ng-hide="main.state.loaded">
+                <div class="loading"></div>
+            </div>
+            {# Loader end #}
+
+            {# Content #}
+            {{ block('list_toolbar') }}
+            {{ block('list_elements') }}
+
+        </div>
+
+        {# Add account button (bottom of the list) start #}
+        <div class="add-button text-center" data-ng-hide="main.routeState.current.name != 'list'">
+
+            <ul class="dropdown-menu">
+                <li>
+                    <a href="{{ url('aw_select_provider') }}" class="btn-light-white-small"{# data-target="add-account-menu"#}><i class="icon-add-dark"></i></a>
+{#
+                    <ul class="dropdown-submenu" data-menu data-id="add-account-menu">
+                        <li><a href="">{{ "award.account.list.link.add-account-for-new-person"|trans|desc("Add account for new person") }}</a></li>
+                    </ul>
+#}
+                </li>
+            </ul>
+
+            <p>{{ "award.account.list.link.add-account"|trans|desc("Add Award Program to Track") }}</p>
+        </div>
+        {# Add account button (bottom of the list) end #}
+    </div>
+
+    {{ extension.load() }}
+
+{% endblock %}

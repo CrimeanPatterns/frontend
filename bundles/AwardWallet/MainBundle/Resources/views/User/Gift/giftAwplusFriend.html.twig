@@ -1,0 +1,52 @@
+{% set MOBILE_NAV = true %}
+{% set HIDE_NAV = false %}
+{% set MAIN_BODY_CLASSES = {
+    'manual-hidden': true,
+    'responsive': true,
+    'hide-menu': true
+}|merge(MAIN_BODY_CLASSES|default({})) %}
+
+{% form_theme form with ['@AwardWalletMain/FormTheme/fields.html.twig'] %}
+{% extends "@AwardWalletMain/Layout/common.html.twig" %}
+
+{% block title %}
+    {{ 'give-gift-awplus-to-friend'|trans|desc('Give the Gift of Awardwallet Plus to a Friend!') }}
+{% endblock %}
+
+{% block meta %}
+    {{ parent() }}
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0, viewport-fit=cover">
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>require(['pages/userGift']);</script>
+{% endblock %}
+
+{% block content %}
+    <div class="main-blk gift-friend">
+        <h1 class="t-center">{{ 'give-gift-awplus-to-friend'|trans }}</h1>
+        <div class="main-blk-content">
+            <p>{{ 'perfect-gift-friend-awplus'|trans({
+                    '%break%' : '<br><br>',
+                    '%link_on%' : '<a href="' ~ url('aw_contactus_index') ~ '">',
+                    '%link_off%' : '</a>'
+                })|desc('AwardWallet Plus is the perfect gift for your favorite travel enthusiast! Just enter the email address associated with the AwardWallet account you’d like to upgrade and choose whether to make this a one-time gift or a recurring subscription.
+    %break%If you opt for an ongoing subscription, we’ll renew your gift each year and send your lucky friend an email reminding them how awesome you are. You can cancel your recurring gift at any time by contacting us via our %link_on%Contact Us%link_off% form.')|raw }}</p>
+            {{ form(form, {'attr' : {'id': 'giftForm', 'class':'main-form white'}, 'text_submit_button': 'Continue'}) }}
+            <div id="headEmailPreview">
+                <div class="js-yearly-title">
+                    <p class="t-center">{{ 'gift-awplus-email-send-friend'|trans|desc('When you gift AwardWallet Plus each year we will send an email to your friend that looks like this') }}:</p>
+                </div>
+                <div class="js-once-title" hidden>
+                    <p class="t-center">{{ 'following-email-sent-to'|trans|desc('The following email will be sent to "%email%"') }}:</p>
+                </div>
+            </div>
+        </div>
+
+        <div id="previewEmail">
+            <iframe id="previewFrame" src="{{ path('aw_user_giftawplus_preview') }}" scrolling="no"></iframe>
+        </div>
+
+    </div>
+{% endblock %}

@@ -1,0 +1,64 @@
+services:
+    _defaults:
+        public: true
+
+    aw.diff.tracker:
+        public: true
+        autowire: true
+        class: AwardWallet\MainBundle\Timeline\Diff\Tracker
+
+    AwardWallet\MainBundle\Timeline\Diff\Tracker: '@aw.diff.tracker'
+
+    aw.diff.it_tracker:
+        public: true
+        autowire: true
+        class: AwardWallet\MainBundle\Timeline\Diff\ItineraryTracker
+
+    AwardWallet\MainBundle\Timeline\Diff\ItineraryTracker: '@aw.diff.it_tracker'
+
+    aw.diff.source.trip:
+        public: true
+        lazy: true # prepares queries in constructor
+        class: AwardWallet\MainBundle\Timeline\Diff\TripSource
+        arguments: ["@doctrine.orm.entity_manager"]
+        tags:
+            -  { name: aw.tracker.source }
+
+    aw.diff.source.reservation:
+        public: true
+        lazy: true # prepares queries in constructor
+        class: AwardWallet\MainBundle\Timeline\Diff\ReservationSource
+        arguments: ["@doctrine.orm.entity_manager"]
+        tags:
+            -  { name: aw.tracker.source }
+
+    aw.diff.source.restaurant:
+        public: true
+        lazy: true # prepares queries in constructor
+        class: AwardWallet\MainBundle\Timeline\Diff\RestaurantSource
+        arguments: ["@doctrine.orm.entity_manager"]
+        tags:
+            -  { name: aw.tracker.source }
+
+    aw.diff.source.rental:
+        public: true
+        lazy: true # prepares queries in constructor
+        class: AwardWallet\MainBundle\Timeline\Diff\RentalSource
+        arguments: ["@doctrine.orm.entity_manager"]
+        tags:
+            -  { name: aw.tracker.source }
+    aw.diff.source.parking:
+        public: true
+        lazy: true # prepares queries in constructor
+        class: AwardWallet\MainBundle\Timeline\Diff\ParkingSource
+        arguments: ["@doctrine.orm.entity_manager"]
+        tags:
+            -  { name: aw.tracker.source }
+
+    AwardWallet\MainBundle\Timeline\Diff\Query:
+        public: true
+        autowire: true
+
+    aw.diff.query:
+        alias: AwardWallet\MainBundle\Timeline\Diff\Query
+

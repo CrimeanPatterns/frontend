@@ -1,0 +1,23 @@
+<div id="queue" style="position: absolute; top: 50px; right: 25px;">
+    <h3>Queue Info</h3>
+    <table>
+        <tbody>
+        <tr id="loyaltyClick" style="background-color: #ffebeb; cursor: pointer;">
+            <th colspan="2">Loyalty [+]</th>
+        </tr>
+        {{ loyaltyProvidersQueue | raw }}
+        </tbody>
+    </table>
+</div>
+<script>
+    $('#loyaltyClick').click(function(){
+        var text = $(this).text().trim();
+        if (text === 'Loyalty [+]') {
+            $(this).children('th').text('Loyalty [-]');
+        } else {
+            $(this).children('th').text('Loyalty [+]');
+        }
+        $(this).next().nextAll(':not(:has(b))').toggle();
+    });
+    $('#loyaltyClick').next().nextAll(':not(:has(b))').hide();
+</script>

@@ -1,0 +1,69 @@
+{% trans_default_domain "email" %}
+
+{% block body_html %}
+    <html lang="{{ lang }}">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="format-detection" content="telephone=no">
+        <meta http-equiv="x-rim-auto-match" content="none">
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <meta name="viewport" content="width=device-width"/>
+        <title>{{ block('subject') }}</title>
+        {% block headStyle %}
+        <!--[if mso]>
+            <style type="text/css">
+            body, table, td {font-family: Arial, Helvetica, serif !important;}
+            </style>
+        <![endif]-->
+        {% endblock headStyle %}
+    </head>
+        <body style="padding: 0; margin:0; font-size: 14px; font-family: Arial, sans-serif; -webkit-font-smoothing:antialiased; -webkit-text-size-adjust:none;">
+        {% block mailPreview %}
+            {% if preview is defined  %}
+                {{ preview|raw }}
+            {% endif %}
+        {% endblock mailPreview %}
+        <link href="https://fonts.googleapis.com/css?family=Lato:400,700" rel="stylesheet" type="text/css">
+        <table width="100%" cellpadding="0" border="0" cellspacing="0" style="min-width:300px;">
+            <!-- content -->
+            <tr>
+                <td>
+                    {% block offer_content %}{% endblock offer_content %}
+                </td>
+            </tr>
+            <!-- /content -->
+            <!-- footer -->
+            <tr>
+                <td style="padding: 25px 20px; background: #000; color: #fff; text-align: center">
+                    <table width="100%" cellpadding="0" border="0" cellspacing="0">
+                        <tr>
+                            <td align="center">
+                                <img src="{{ baseImagesPath }}/logo_white.png" width="200" style="vertical-align: top; border: 0; height: auto !important;">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td align="center" style="font-family: Arial, sans-serif; font-size: 12px; color: #fff; padding: 20px 0">
+                                FOR MORE INFORMATION CONTACT US.
+                            </td>
+                        </tr>
+                        <tr>
+                            <td align="center" style="font-family: Arial, sans-serif; font-size: 11px; color: #fff; line-height: 16px">
+                                {% block unsubscribe %}
+                                    {% import '@MailTemplate/CommonMacro.twig' as commonMacro %}
+                                    {{ commonMacro.baseUnsubscribeLink(unsubscribeLink, _context, {'font-weight': 'bold', 'color': '#fff'}) }}
+                                {% endblock unsubscribe %}
+                                {% block physical_address_row %}
+                                {% endblock physical_address_row %}
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+            <!-- /footer -->
+        </table>
+        <img src="{{ path('aw_email_tracking_pixel', {trackingId: '0000'}) }}" width="1" height="1" border="0"/>
+        {% block bodyStyle %}
+        {% endblock bodyStyle %}
+    </body>
+    </html>
+{% endblock body_html %}

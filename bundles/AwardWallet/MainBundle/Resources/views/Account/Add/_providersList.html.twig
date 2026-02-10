@@ -1,0 +1,109 @@
+{% set route = app.request.attributes.get('_route') | replace({"_locale": ""}) %}
+
+<div data-ng-controller="selectProviderCtrl">
+    {% if route == 'aw_trips_add' and email is defined %}
+        <div class="block wide gray" ng-non-bindable="">
+			<i class="icon-info-small"></i>
+            {#<p>{{ 'forwarding.title'|trans|desc('Or, try forwarding your travel plans to your personal mailbox at AwardWallet:') }}</p>#}
+			<p>{{ 'hint-link-or-forward'|trans({
+                    '%link_on%': '<a href="https://awardwallet.com/mailboxes/" class="blue-link">',
+                    '%link_off%': '</a>',
+                    '%email%': '<span class="badge red">' ~ email|htmlencode ~ '</span>'
+            })|desc('Did you know you can %link_on%link your mailbox to AwardWallet%link_off% and we will import all of your travel reservations automatically if they are in your email? Alternatively, you can just forward your reservations to %email%.')|raw }}</p>
+        </div>
+    {% endif %}
+
+    {% if route == 'aw_trips_add' %}
+        {% include('@AwardWalletMain/Trips/_retrievePopup.html.twig') %}
+    {% endif %}
+
+    <div class="search">
+        <div class="row">
+            {% if route == 'aw_supported' or route == 'aw_trips_add' %}
+                <label>{{ 'suported-programs.search'|trans()|desc('Search for a program:') }}</label>
+            {% else %}
+                <label>{{ "track.search.explain"|trans|desc("Start typing the name of program you wish to add:") }}</label>
+            {% endif %}
+            <div class="input">
+                <div>
+                    <input name="search-provider" data-ng-class="{'empty-query': ! providerQuery}"
+                           data-ng-change="activateProviderTab(defaultTab)" data-ng-model="providerQuery"
+                           type="text" auto-focus autocomplete="off" spellcheck="false">
+                    <a href="#" data-ng-hide=" ! providerQuery" data-ng-click="providerQuery = ''"
+                       class="reset-input"><i class="icon-close-silver"></i></a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="nav-search">
+        <ul>
+            <li data-ng-repeat="tab in providerTabs" data-ng-class="{'active': currentTab==tab}">
+                <a data-ng-click="activateProviderTab(tab)" data-ng-bind="tab.name" href="#"></a>
+            </li>
+        </ul>
+    </div>
+    <div class="search-content" data-ng-class="{'search-result': !emptyQuery()}"
+         data-infinite-scroll-container="window" data-infinite-scroll="loadMore()"
+         data-infinite-scroll-distance="2">
+        <a data-ng-repeat="provider in shown"
+                {% if route == 'aw_select_provider' %}
+                    data-ng-href="{{ "[[ defaultUser == 'my' || ! defaultUser ? Routing.generate('aw_account_add', {providerId: provider.ProviderID}) : Routing.generate('aw_account_add', {providerId: provider.ProviderID, agentId: defaultUser}) ]]" }}"
+                {% elseif route == 'aw_trips_add' %}
+                    data-ng-click="retrieveTrip(provider)"
+                {% elseif route == 'aw_supported' %}
+                    data-ng-href="[[ redirectToReview(provider) ]]"
+                {% endif %}
+           data-popularity="{{ '[[ provider.Popularity ]]' }}">
+            <div class="row">
+                <div class="name">
+                    <h3 data-ng-bind-html="provider.DisplayName | highlight:providerQuery:caseSens:matchClass | displayName:emptyQuery() | unsafe"></h3>
+                    <p data-ng-if="provider.Name != ''"
+                       data-ng-bind-html="provider.Name | highlight:providerQuery:caseSens:matchClass | unsafe"></p>
+                    <p ng-if="provider.ExtendedProgramName"
+                       data-ng-bind-html="provider.ExtendedProgramName | highlight:providerQuery:caseSens:matchClass | unsafe"></p>
+                </div>
+                {% if ('aw_supported' != route) and not is_granted('SITE_BUSINESS_AREA') %}
+                    {% if 'aw_trips_add' in route == 1 %}
+                        <div class="result">
+                            <i data-ng-if="provider.Has" class="icon-green-check"></i><span
+                                    data-ng-if="provider.Has"
+                                    class="added">{{ "track.program.added"|trans|desc("Added") }}</span>
+                            <i data-ng-if="!provider.Has" class="icon-silver-error"></i><span
+                                    data-ng-if="!provider.Has"
+                                    class="not-added">{{ "track.program.notadded"|trans|desc("Not Added") }}</span>
+                        </div>
+                    {% else %}
+                        <div class="result">
+                            <i data-ng-if="provider.Has" class="icon-green-check"></i><span
+                                    data-ng-if="provider.Has > 0"
+                                    class="added">[[nAccounts(provider.Has)]]</span>
+                            <i data-ng-if="!provider.Has" class="icon-silver-error"></i><span
+                                    data-ng-if="provider.Has == 0"
+                                    class="not-added">{{ "track.program.no_accounts"|trans|desc("No accounts") }}</span>
+
+                        </div>
+                    {% endif %}
+                {% endif %}
+            </div>
+        </a>
+
+        <p data-ng-if="!isLoading && !isWait && shown.length == 0 && !checkStatusProgramResult" class="no-result">
+            <span class="description">
+                <i class="icon-warning-small"></i>
+                {{ "lp-not-found"|trans({
+                    '%name%': '<span>[[providerQuery|limitTo:35]][[providerQuery.length > 35 ? "..." : ""]]</span>',
+                    '%link_on%': '<a target="_blank" href="' ~ path('aw_contactus_index') ~ '" rel="noopener">',
+                    '%link_off%': '</a>',
+                })|desc('We did not find a loyalty program that has "%name%" in its name. If you wish to track this program please %link_on%contact our support%link_off% and provide the following (1) name of the program you wish to track (2) URL where you can see your loyalty balance.')|raw }}</span>
+        </p>
+
+{#        <p data-ng-if="shown.length == 0 && checkStatusProgramResult === null" class="no-result">#}
+{#            <i class="icon-warning-small"></i>#}
+
+{#            <span class="description">{{ "track.program.notfound"|trans|desc("No accounts found that match your search criteria") }}</span>#}
+{#        </p>#}
+
+        <p data-ng-if="!isLoading && !isWait && shown.length == 0 && checkStatusProgramResult != ''" data-ng-bind-html="checkStatusProgramResult || '' | unsafe" class="no-result check-status"></p>
+        <div class="ajax-loader" ng-show="isLoading && shown.length == 0" style="min-height: 0;padding-top: 79px;"><div class="loading"></div></div>
+    </div>
+</div>

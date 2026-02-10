@@ -1,0 +1,68 @@
+<div id="bestcardsPopup" class="bestcards-popup loading">
+    <div class="bestcards-popup-content">
+        <div class="bestcards-head bestcards-row" ng-hide="loading">
+            <div class="bestcards-points-chart">
+                <div class="bestcards-circle">
+                    <div class="bestcards-chart-inner"></div>
+                    <svg width="40px" height="40px">
+                        <circle cx="20" cy="20" r="19"/>
+                    </svg>
+                </div>
+            </div>
+            <div class="bestcards-label">
+                You Earned:
+            </div>
+            <div class="bestcards-points">
+                <div class="bestcards-state">
+                    <div class="bestcards-miles"><span></span></div>
+                    <div class="bestcards-multiplier transactions-points-multiplier"><span></span></div>
+                </div>
+                <div class="bestcards-point-name"></div>
+            </div>
+            <div class="bestcards-cash-eq">
+                <div class="bestcards-cash-box">
+                    <strong></strong>
+                    <span>Cash Equivalent</span>
+                </div>
+            </div>
+        </div>
+        <div class="bestcards-error" ng-if="isError && !loading">
+            <strong>{{ 'status.error-occurred'|trans }}</strong>
+            <span>{{ 'booking.filters.no-match'|trans({}, 'booking') }}</span>
+        </div>
+        <div class="bestcards-row"
+             data-ng-repeat="card in bestCards"
+             ng-if="card.cardId && !loading">
+            <div class="bestcards-thumb"><img ng-src="[[card.picturePath]]" alt=""></div>
+            <div class="bestcards-info">
+                <strong ng-bind="card.name"></strong>
+                <div class="bestcard-best-value" ng-if="card.isBestValue">
+                    <i class="ico-dollar-svg"></i>Best Value Card
+                </div>
+                <div class="bestcard-best-have" ng-if="card.isBestHave">
+                    <i class="ico-wallet-svg"></i>Best Value Card You Have
+                </div>
+                <div class="bestcard-best-aw" ng-if="card.isAwPick"><i class="ico-aw-pick"></i>AwardWallet Pick</div>
+            </div>
+            <div class="bestcards-points">
+                <div class="bestcards-state">
+                    <div class="bestcards-miles"><span data-ng-bind="card.potentialPontValue"></span></div>
+                    <div class="bestcards-multiplier" data-ng-class="{
+                        ['bestcards-multiplier--' + card.potential.earningPotentialColor]: true,
+                    }"><span data-ng-bind="card.multiplier"></span>x
+                    </div>
+                </div>
+                <div class="bestcards-point-name" data-ng-bind="card.pointName"></div>
+            </div>
+            <div class="bestcards-cash-eq">
+                <div class="bestcards-cash-box" ng-if="card.cashEquivalent">
+                    <strong data-ng-bind="card.cashEquivalent.formatted"></strong>
+                    <span>Cash Equivalent</span>
+                </div>
+            </div>
+        </div>
+        <div class="bestcards-footer" ng-if="!loading && !isError && bestCards">
+            <a href="#">See Other Card Options</a>
+        </div>
+    </div>
+</div>

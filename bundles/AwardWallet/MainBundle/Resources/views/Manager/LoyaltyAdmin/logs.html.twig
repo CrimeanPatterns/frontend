@@ -1,0 +1,41 @@
+{% extends '@AwardWalletMain/Manager/layout.html.twig' %}
+{% set title = "Loyalty API admin logs" %}
+{% set contentTitle = "" %}
+
+{% block content %}
+
+    {% if link is defined %}
+        {% set logLink = "<a target='_blank' href='/manager/loyalty/logs?" ~ link ~ "' target='_blank'>Logs</a>" %}
+    {% else %}
+        {% set logLink = "Logs" %}
+    {% endif %}
+    <h2>Loyalty API {{ logLink|raw }}</h2>
+    <br/>
+    <form action="{{ path('aw_manager_loyalty_logs') }}" method="post">
+        {{ form_widget(form) }}
+    </form>
+    {% if files is defined %}
+    <div>
+        {% if files is not empty %}
+            <table class='detailsTable' cellpadding='5'>
+                <tr>
+                    <td><b>№</td>
+                    <td><b>Update Date</b></td>
+                    <td><b>Log File</b></td>
+                    <td><b><div align="center">v</div></b></td>
+                </tr>
+            {% for file in files %}
+                <tr>
+                    <td><b>{{ loop.index }}</b></td>
+                    <td>{{ file.date }}</td>
+                    <td><a href='{{ path('aw_manager_loyalty_logs_item', {'cluster': file.cluster, 'filename': file.filename}) }}' target='_blank'>{{ file.filename|e }}</a></td>
+                    <td><input type="checkbox"></td>
+                </tr>
+            {% endfor %}
+            </table>
+        {% else %}
+            No logs found
+        {% endif %}
+    </div>
+    {% endif %}
+{% endblock %}

@@ -1,0 +1,422 @@
+{% extends app.user is not null ? '@AwardWalletMain/Layout/common.html.twig' : '@AwardWalletMain/Layout/not_logged.html.twig' %}
+
+{% block title %}{{ 'travel-statistics'|trans }}{% endblock %}
+
+{% block meta %}
+    {{ parent() }}
+    <meta name="description" content="meta-description">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0, viewport-fit=cover">
+{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>require(['pages/charts/travel-statistics']);</script>
+{% endblock %}
+
+{% block content %}
+    <div ng-scope>
+        {% if not noAvailable %}
+            <main id="mainBox" class="main-blk travel-trends"
+                  data-user-auth="{% if is_granted('ROLE_USER') %}1{% else %}0{% endif %}"
+                  data-user-awplus="{% if is_granted('ROLE_USER') and constant('ACCOUNT_LEVEL_AWPLUS') == user.accountlevel %}1{% else %}0{% endif %}">
+                <h1 id="numberReservationsHead" data-suffix="{{ suffix }}">{{ 'travel-statistics'|trans }}</h1>
+                <div class="main-blk-content" data-ng-controller="travelCtrl">
+                    <div class="ajax-loader" ng-if="isLoading">
+                        <div class="loading"></div>
+                    </div>
+                    <div class="chart-wrap">
+                        <div class="chart-body">
+                            <canvas id="chart"></canvas>
+                        </div>
+                        <div class="chart-control">
+                            <div id="chartSwitch" class="chart-switch">
+                                <input class="radio" id="dateTypeMonth" name="dateType" type="radio" value="months"><label class="label" for="dateTypeMonth">{{ 'by-month'|trans }}</label>
+                                <input class="radio" id="dateTypeDay" name="dateType" type="radio" value="days"><label class="label" for="dateTypeDay">{{ 'by-day'|trans }}</label>
+
+                                <div id="typeToggle" class="control-box">
+                                    <label><strong>{{ 'by-type'|trans }}:</strong></label>
+                                    <br><input class="checkbox" id="typeFlights" type="checkbox"><label class="label" ng-click="typeToggle($event, 0)" for="typeFlights"><s class="boxColor" style="background-color: #4285f4"></s> {{ 'air-trips'|trans }}</label>
+                                    <br><input class="checkbox" id="typeHotels" type="checkbox"><label class="label disabled" ng-click="typeToggle($event, 1)" for="typeHotels"><s class="boxColor" style="background-color: #ea3c48"></s> {{ 'hotel-stays'|trans }}</label>
+                                    <br><input class="checkbox" id="typeRentedCars" type="checkbox"><label class="label disabled" ng-click="typeToggle($event, 2)" for="typeRentedCars"><s class="boxColor" style="background-color: #30d178"></s> {{ 'car-rentals'|trans }}</label>
+                                </div>
+
+                                <div id="providerToggle">
+                                    <label><strong>{{ 'by-provider'|trans }}:</strong></label>
+                                    <br><input class="radio" id="providerTypeFlights" name="providerType" type="radio" value="flights"><label class="label" for="providerTypeFlights"> {{ 'air-carriers'|trans }}</label>
+                                    <br><input class="radio" id="providerTypeHotels" name="providerType" type="radio" value="hotels"><label class="label" for="providerTypeHotels"> {{ 'hotel-chains'|trans }}</label>
+                                    <br><input class="radio" id="providerTypeRentedCars" name="providerType" type="radio" value="rentedCars"><label class="label" for="providerTypeRentedCars"> {{ 'car-rentals'|trans }}</label>
+                                </div>
+
+                                <div id="providerToggleList" hidden></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="aw-copyright">
+                        <p>{{ 'data-based-user.reference-aw-direct-link'|trans({
+                                '%break%' : '<br><br>',
+                                '%bold_on%' : '<b>',
+                                '%bold_off%':'</b>',
+                                '%link_on%' : '<a href="' ~ url('aw_charts_travel_trends', {}, true) ~ '">',
+                                '%link_off%' : '</a>',
+                            })|raw }}</p>
+                        <i class="icon-info-small"></i>
+                    </div>
+                </div>
+
+                <div class="main-blk-content" data-ng-controller="cancelledCtrl">
+                    <div class="ajax-loader" ng-if="isLoading4">
+                        <div class="loading"></div>
+                    </div>
+                    <div class="chart-wrap">
+                        <div class="chart-body">
+                            <canvas id="cancelledChart"></canvas>
+                        </div>
+                        <div class="chart-control">
+                            <div id="cancelledChartSwitch" class="chart-switch">
+                                <div id="cancelledTypeToggle" class="control-box">
+                                    <label><strong>{{ 'by-type'|trans }}:</strong></label>
+                                    <br><input class="checkbox" id="cancelledTypeFlights" type="checkbox"><label class="label" ng-click="typeToggle($event, 0)" for="cancelledTypeFlights"><s class="boxColor" style="background-color: #4285f4"></s> {{ 'air-tickets-cancelled'|trans }}</label>
+                                    <br><input class="checkbox" id="cancelledTypeHotels" type="checkbox"><label class="label disabled" ng-click="typeToggle($event, 1)" for="cancelledTypeHotels"><s class="boxColor" style="background-color: #ea3c48"></s> {{ 'hotel-bookings-cancelled'|trans }}</label>
+                                    <br><input class="checkbox" id="cancelledTypeRentedCars" type="checkbox"><label class="label disabled" ng-click="typeToggle($event, 2)" for="cancelledTypeRentedCars"><s class="boxColor" style="background-color: #30d178"></s> {{ 'rental-cars-cancelled'|trans }}</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                {% if is_granted('ROLE_STAFF') and debugData is defined and debugData is not empty %}
+                    <style type="text/css">
+                        #debugtable {padding: 1rem; display: inline-block;}
+
+                        #debugtable table {width: auto !important;}
+
+                        #debugtable td, #debugtable th {
+                            padding: .5rem 1rem !important;
+                            border: solid 1px #8e9199 !important;
+                            border-spacing: 0;
+                        }
+
+                        #debugtable td, #debugtable th {white-space: nowrap;}
+
+                        #debugtable th {font-weight: bold;color: #666;}
+
+                        #debugtable tr:hover {background-color: #ddd !important;}
+                    </style>
+                    <div id="debugtable">{{ debugData|raw }}</div>
+                {% endif %}
+
+                <a href="" id="longHaulHead"></a>
+                <div class="main-blk-content" data-ng-controller="longhaulCtrl">
+                    <div class="ajax-loader" ng-if="isLoading2">
+                        <div class="loading"></div>
+                    </div>
+                    <div class="chart-wrap">
+                        <div class="chart-body">
+                            <canvas id="longhaulChart"></canvas>
+                        </div>
+                        <div class="chart-control">
+                            <div id="longHaulSwitch" class="chart-switch">
+                                <div class="control-box">
+                                    <label><strong>{{ 'by-type'|trans }}:</strong></label>
+                                    <br><input id="longHaulFlights" class="checkbox" type="checkbox"><label class="label disabled" ng-click="typeToggle($event, 1)" for="longHaulFlights"><s class="boxColor" style="background-color: #316395"></s> {{ 'long-haul'|trans }}</label>
+                                    <br><input id="shortHaulFlights" class="checkbox" type="checkbox"><label class="label" ng-click="typeToggle($event, 0)" for="shortHaulFlights"><s class="boxColor" style="background-color: #0099c6"></s> {{ 'short-haul'|trans }}</label>
+                                    <br><br><input id="flightHaulStacked" class="checkbox" type="checkbox"><label class="label" ng-click="stackedToggle($event)" for="flightHaulStacked">{{ 'stack'|trans }}</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <a href="#" id="earningRedemptionHead"></a>
+                <div class="main-blk-content" data-ng-controller="earningRedemptionCtrl">
+                    <div class="ajax-loader" ng-if="isLoading3">
+                        <div class="loading"></div>
+                    </div>
+                    <div class="chart-wrap">
+                        <div class="chart-body">
+                            <canvas id="earningRedemptionChart"></canvas>
+                        </div>
+                        <div class="chart-control">
+                            <div id="earningRedemptionSwitch" class="chart-switch">
+                                <div class="control-box">
+                                    <label><strong>{{ 'by-type'|trans }}:</strong></label>
+                                    <br>
+                                    {% if earningRedemptions.banksList|length > 0 %}
+                                        <input id="earningRedemptionBanks" class="radio" type="radio" name="earningRedemption" checked data-index="0" value="banks"><label class="label" for="earningRedemptionBanks"> {{ 'banks'|trans }}</label>
+                                        {% for id, name in earningRedemptions.banksList %}
+                                            <label for="earningRedemptionBanks"><span class="list-name">{{ name }}</span></label>
+                                        {% endfor %}
+                                    {% endif %}
+                                    <input id="earningRedemptionHotels" class="radio" type="radio" name="earningRedemption" data-index="2" value="hotels"
+                                            {% if earningRedemptions.banksList|length == 0 %} checked{% endif %}
+                                    ><label class="label disabled" for="earningRedemptionHotels"> {{ 'track.group.hotel'|trans }}</label>
+                                    {% for id, name in earningRedemptions.hotelsList %}
+                                        <label for="earningRedemptionHotels"><span class="list-name">{{ name }}</span></label>
+                                    {% endfor %}
+                                    <input id="earningRedemptionAirlines" class="radio" type="radio" name="earningRedemption" data-index="4" value="airlines"><label class="label disabled" for="earningRedemptionAirlines"> {{ 'track.group.airline'|trans }}</label>
+                                    {% for id, name in earningRedemptions.airlinesList %}
+                                        <label for="earningRedemptionAirlines"><span class="list-name">{{ name }}</span></label>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <a href="" id="topTravelHead"></a>
+                <div id="topTravels" class="main-blk-content" data-ng-controller="topTravelCtrl">
+
+                    <div id="topTravelHotels" class="chart-wrap" style="min-height: 0;">
+                        <div class="chart-body">
+                            <h1>{{ 'hotels-top-travel-destinations'|trans }}</h1>
+
+                            {%- for continentId, dataByYears in topHotels %}
+                                {% for year, data in dataByYears %}
+                                    <div id="topHotels-{{ year }}-{{ continentId }}" class="topTravels-box{% if 'now'|date('Y') == year and 0 == continentId %} topTravels-box--active{% endif %}">
+                                        <div class="toptravel-wrap">
+                                            <div class="toptravel-list">
+
+                                                <table class="main-table edit-account notifications">
+                                                    <tbody>
+                                                    <tr class="caption-tr">
+                                                        <td>
+                                                            <div class="caption"><span>{{ year }} {% if 0 == continentId %}{{ 'track.group.all'|trans }}{% else %}{{ (attribute(continents, continentId)).name }}{% endif %}</span></div>
+                                                        </td>
+                                                    </tr>
+                                                    {% for top in data.top %}
+                                                        <tr class="row-hover">
+                                                            <td class="caption-row toptravel-name">
+                                                                {{ top.formatName }} <span class="count silver">{{ top.countByPercent }}%</span>
+                                                            </td>
+                                                        </tr>
+                                                    {% endfor %}
+                                                    </tbody>
+                                                </table>
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="toptravel-citys">
+                                        {% for countryCode, item in data.insideCountry %}
+                                            <div class="toptravel-citys-list toptravel-city-{{ year }}-{{ continentId }}-{{ countryCode }}">
+                                                <table class="main-table edit-account notifications">
+                                                    <tbody>
+                                                    <tr class="caption-tr">
+                                                        <td>
+                                                            <div class="caption"><span>{{ year }} {% if attribute(countryByCode, countryCode) is defined %}{{ (attribute(countryByCode, countryCode)).Name }}{% endif %}</span></div>
+                                                        </td>
+                                                    </tr>
+                                                    {% for city, count in item %}
+                                                        <tr class="row-hover">
+                                                            <td class="caption-row toptravel-name">{{ city }} <span class="count silver">{{ count.countByPercent }}%</span></td>
+                                                        </tr>
+                                                    {% endfor %}
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        {% endfor %}
+                                    </div>
+                                {% endfor %}
+                            {% endfor -%}
+
+                        </div>
+                        <div class="chart-control">
+                            <div class="chart-switch" style="padding-top:35px">
+                                <div class="control-box">
+                                    <label><strong>{{ 'year'|trans }}:</strong></label>
+                                    {% for topYear in topYears %}
+                                        <br><input id="topHotelsYear{{ topYear }}" class="radio" name="topHotelsYear" type="radio" value="{{ topYear }}"{% if 'now'|date('Y') == topYear %} checked{% endif %}><label class="label" for="topHotelsYear{{ topYear }}"> {{ topYear }}</label>
+                                    {% endfor %}
+
+                                    {%- for continentId, dataByYears in topHotels %}
+                                        {% for year, data in dataByYears %}
+                                            <div class="topTravel-switch topTravel-switch-{{ year }}-{{ continentId }}{% if 'now'|date('Y') == year and 0 == continentId %} topTravel-switch--active{% endif %}">
+                                                <br><br><label style="margin-left: -1rem"><strong>{{ 'by-continent'|trans }}:</strong></label>
+                                                <br><input id="topHotelsContinent-{{ year }}-{{ continentId }}" class="radio" name="topHotelsSetContinent-{{ year }}" type="radio" value="{{ year }}-0"{% if 0 == continentId %} checked="checked"{% endif %}><label class="label" for="topHotelsContinent-{{ year }}-{{ continentId }}"> {{ 'track.group.all'|trans }}</label>
+                                                {% for key,item in continents %}
+                                                    <br><input id="topHotelsContinent-{{ year }}-{{ key }}" class="radio" name="topHotelsSetContinent-{{ year }}" type="radio" value="{{ year }}-{{ key }}"><label class="label" for="topHotelsContinent-{{ year }}-{{ key }}"> {{ item.name }}</label>
+                                                {% endfor %}
+                                                <br><br><label style="display:inline-block;margin-left: -1rem;margin-bottom: 5px;"><strong>{{ 'by-country'|trans }}:</strong></label>
+
+                                                {% for regionId, yearCitys in data.citys %}
+                                                    <div class="topTravel-countrys-list topTravel-countrys-list-{{ year }}-{{ regionId }} {% if 0 == regionId %} topTravel-countrys-list--active{% endif %}">
+                                                        <div class="styled-select" style="width: 100%;overflow:hidden;">
+                                                            <select id="topHotelsCitys-{{ year }}-{{ regionId }}" name="countryCity">
+                                                                <option value=""></option>
+                                                                {% for item in yearCitys %}
+                                                                    <option value="{{ year }}-{{ regionId }}-{{ item.countryCode }}">{{ item.countryName }} ({{ item.totalsByPercent }}%)</option>
+                                                                {% endfor %}
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                {% endfor %}
+                                            </div>
+                                        {% endfor %}
+                                    {% endfor -%}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="topTravelRental" class="chart-wrap" style="min-height: 0;padding-top: 1rem;">
+                        <div class="chart-body">
+                            <h1>{{ 'rental-cars-top-travel-destinations'|trans }}</h1>
+
+                            {%- for continentId, dataByYears in topRentedCars %}
+                                {% for year, data in dataByYears %}
+                                    <div id="topRented-{{ year }}-{{ continentId }}" class="topTravels-box{% if 'now'|date('Y') == year and 0 == continentId %} topTravels-box--active{% endif %}">
+                                        <div class="toptravel-wrap">
+                                            <div class="toptravel-list">
+
+                                                <table class="main-table edit-account notifications">
+                                                    <tbody>
+                                                    <tr class="caption-tr">
+                                                        <td>
+                                                            <div class="caption"><span>{{ year }} {% if 0 == continentId %}{{ 'track.group.all'|trans }}{% else %}{{ (attribute(continents, continentId)).name }}{% endif %}</span></div>
+                                                        </td>
+                                                    </tr>
+                                                    {% for top in data.top %}
+                                                        <tr class="row-hover">
+                                                            <td class="caption-row toptravel-name">
+                                                                {{ top.formatName }} <span class="count silver">{{ top.countByPercent }}%</span>
+                                                            </td>
+                                                        </tr>
+                                                    {% endfor %}
+                                                    </tbody>
+                                                </table>
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="toptravel-citys">
+                                        {% for countryCode, item in data.insideCountry %}
+                                            <div class="toptravel-citys-list toptravel-city-{{ year }}-{{ continentId }}-{{ countryCode }}">
+                                                <table class="main-table edit-account notifications">
+                                                    <tbody>
+                                                    <tr class="caption-tr">
+                                                        <td>
+                                                            <div class="caption"><span>{{ year }} {% if attribute(countryByCode, countryCode) is defined %}{{ (attribute(countryByCode, countryCode)).Name }}{% endif %}</span></div>
+                                                        </td>
+                                                    </tr>
+                                                    {% for city, count in item %}
+                                                        <tr class="row-hover">
+                                                            <td class="caption-row toptravel-name">{{ city }} <span class="count silver">{{ count.countByPercent }}%</span></td>
+                                                        </tr>
+                                                    {% endfor %}
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        {% endfor %}
+                                    </div>
+                                {% endfor %}
+                            {% endfor -%}
+
+                        </div>
+                        <div class="chart-control">
+                            <div class="chart-switch" style="padding-top:35px">
+                                <div class="control-box">
+                                    <label><strong>{{ 'year'|trans }}:</strong></label>
+                                    {% for topYear in topYears %}
+                                        <br><input id="topRentedYear{{ topYear }}" class="radio" name="topRentedYear" type="radio" value="{{ topYear }}"{% if 'now'|date('Y') == topYear %} checked{% endif %}><label class="label" for="topRentedYear{{ topYear }}"> {{ topYear }}</label>
+                                    {% endfor %}
+
+                                    {%- for continentId, dataByYears in topRentedCars %}
+                                        {% for year, data in dataByYears %}
+                                            <div class="topTravel-switch topTravel-switch-{{ year }}-{{ continentId }}{% if 'now'|date('Y') == year and 0 == continentId %} topTravel-switch--active{% endif %}">
+                                                <br><br><label style="margin-left: -1rem"><strong>{{ 'by-continent'|trans }}:</strong></label>
+                                                <br><input id="topRentedContinent-{{ year }}-{{ continentId }}" class="radio" name="topRentedSetContinent-{{ year }}" type="radio" value="{{ year }}-0"{% if 0 == continentId %} checked="checked"{% endif %}><label class="label" for="topRentedContinent-{{ year }}-{{ continentId }}"> {{ 'track.group.all'|trans }}</label>
+                                                {% for key,item in continents %}
+                                                    <br><input id="topRentedContinent-{{ year }}-{{ key }}" class="radio" name="topRentedSetContinent-{{ year }}" type="radio" value="{{ year }}-{{ key }}"><label class="label" for="topRentedContinent-{{ year }}-{{ key }}"> {{ item.name }}</label>
+                                                {% endfor %}
+                                                <br><br><label style="display:inline-block;margin-left: -1rem;margin-bottom: 5px;"><strong>{{ 'by-country'|trans }}:</strong></label>
+
+                                                {% for regionId, yearCitys in data.citys %}
+                                                    <div class="topTravel-countrys-list topTravel-countrys-list-{{ year }}-{{ regionId }} {% if 0 == regionId %} topTravel-countrys-list--active{% endif %}">
+                                                        <div class="styled-select" style="width: 100%;overflow:hidden;">
+                                                            <select id="topRentedCitys-{{ year }}-{{ regionId }}" name="countryCity">
+                                                                <option value=""></option>
+                                                                {% for item in yearCitys %}
+                                                                    <option value="{{ year }}-{{ regionId }}-{{ item.countryCode }}">{{ item.countryName }} ({{ item.totalsByPercent }}%)</option>
+                                                                {% endfor %}
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                {% endfor %}
+                                            </div>
+                                        {% endfor %}
+                                    {% endfor -%}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="topFlightRoutes" class="chart-wrap" style="padding-top: 1rem">
+                        <div class="chart-body">
+                            <h1>{{ 'top-routes-by-year.v2'|trans({'%number%': 10, '%count%': 10}) }}</h1>
+
+                            {%- for year, types in topFlightRoutes %}
+                                {% for type, data in types %}
+                                    <div id="topFlightRoutes{{ year }}{{ type }}" class="topTravels-box{% if 'now'|date('Y') == year and 'long' == type %} topTravels-box--active{% endif %}">
+                                        <table class="main-table edit-account notifications">
+                                            <tbody>
+                                            <tr class="caption-tr">
+                                                <td>
+                                                    <div class="caption"><span>{{ year }} {% if 'long' == type %}{{ 'trips.long-haul-flights'|trans([], 'trips') }}{% else %}{{ 'trips.short-haul-flights'|trans([], 'trips') }}{% endif %}</span></div>
+                                                </td>
+                                            </tr>
+                                            {% for route, item in data %}
+                                                <tr class="row-hover">
+                                                    <td class="caption-row toptravel-name">
+                                                        {% if item.dep is defined %}
+                                                            {{ item.dep.airportName }}
+                                                        {% endif %}
+                                                        &mdash;
+                                                        {% if item.arr is defined %}
+                                                            {{ item.arr.airportName }}
+                                                        {% endif %}
+
+                                                        (<b>{{ route }}</b>)
+
+                                                        <span class="count silver">{{ item.percent }}%</span>
+                                                    </td>
+                                                </tr>
+                                            {% endfor %}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                {% endfor %}
+                            {% endfor -%}
+
+                        </div>
+                        <div class="chart-control">
+                            <div class="chart-switch" style="padding-top:35px">
+                                <div class="control-box">
+                                    <label><strong>{{ 'year'|trans }}:</strong></label>
+                                    {% for topYear in topYears %}
+                                        <br><input id="topFlightRoutesYear{{ topYear }}" class="radio" name="topFlightRoutesYear" type="radio" value="{{ topYear }}"{% if 'now'|date('Y') == topYear %} checked{% endif %}><label class="label" for="topFlightRoutesYear{{ topYear }}"> {{ topYear }}</label>
+                                    {% endfor %}
+
+                                    <br><br>
+                                    <label style="margin-left:-1rem"><strong>{{ 'coupon.type'|trans }}:</strong></label>
+                                    <br><input id="topFlightRoutesTypeLong" class="radio" name="topFlightRoutesType" type="radio" value="long" checked><label class="label" for="topFlightRoutesTypeLong"> {{ 'long-haul'|trans }}</label>
+                                    <br><input id="topFlightRoutesTypeShort" class="radio" name="topFlightRoutesType" type="radio" value="short"><label class="label" for="topFlightRoutesTypeShort"> {{ 'short-haul'|trans }}</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+            </main>
+        {% else %}
+            <main class="main-blk">
+                <h1>{{ 'travel-statistics'|trans }}</h1>
+                <h2>{{ 'account.balancewatch.no-available'|trans }}</h2>
+            </main>
+        {% endif %}
+    </div>
+{% endblock %}

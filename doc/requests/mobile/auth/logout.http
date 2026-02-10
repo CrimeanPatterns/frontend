@@ -1,0 +1,9 @@
+GET {{scheme}}{{host}}/m/api/logout?{{xdebugParamName}}={{xdebugParamValue}}
+Content-Type: application/json
+X-Aw-Version: {{clientVersion}}
+X-Aw-Platform: {{clientPlatform}}
+X-Symfony-Env: {{symfonyEnv}}
+Authorization: Basic {{basicAuthLogin}} {{basicAuthPassword}}
+X-XSRF-TOKEN: {{csrfToken}}
+
+> ../../scripts/csrfToken.js

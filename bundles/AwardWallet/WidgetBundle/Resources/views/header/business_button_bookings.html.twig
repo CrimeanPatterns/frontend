@@ -1,0 +1,39 @@
+{% if is_granted("SITE_BOOKER_AREA") %}
+    <a href="{{ url('aw_booking_list_queue') }}" class="btn-light-silver {{ active }}">{{ 'menu.button.bookings' | trans({}, 'menu') | desc('Bookings') }}<span>{{ bookings }}</span></a>{% if is_granted('BUSINESS_ACCOUNTS') %}<a href="{{ path('aw_booking_add_index') }}" class="add btn-light-silver" data-role="tooltip" title="{{ 'menu.button.bookings.add' | trans({}, 'menu') | desc('Add New Booking Request') }}"><i class="icon-add-dark"></i></a>{% endif %}
+{% else %}
+    <div class="bookingAdv">
+        <a href="#" onclick="return false;" class="btn-light-silver {{ active }}">{{ 'menu.button.bookings' | trans({}, 'menu') | desc('Bookings') }}<span>{{ bookings }}</span></a>
+        <a href="#" onclick="return false;" class="add btn-light-silver" data-role="tooltip" title="{{ 'menu.button.bookings.add' | trans({}, 'menu') | desc('Add New Booking Request') }}"><i class="icon-add-dark"></i></a>
+    </div>
+    {% if not webpack|default(false) %}
+        <script>
+            require(['jquery-boot', 'lib/dialog', 'jqueryui', 'translator-boot'], function ($, dialog) {
+                $(function() {
+                    $(".bookingAdv a").on('click', function (event) {
+                        dialog.fastCreate(
+                            '{{ 'booking.adv.popup.title'|trans|desc("AwardWallet booking interface") }}',
+                            '{{ 'booking.adv.popup'|trans({'%link%': path('aw_contactus_index')})|desc("AwardWallet booking interface allows you to manage reward booking requests for your members. It is not enabled by default. If you wish to have it enabled <a href=\"%link%\">please send us a note</a>")|raw }}',
+                            true, false, [{
+                                text: '{{ 'button.ok'|trans }}',
+                                click: function () {
+                                    $(this).dialog('close');
+                                },
+                                'class': 'btn-blue'
+                            }], 500
+                        );
+                    });
+                });
+            });
+        </script>
+    {% else %}
+        <script>
+            window.booking_adv_title = '{{ 'booking.adv.popup.title'|trans|desc("AwardWallet booking interface") }}'
+            window.booking_adv_body = '{{ 'booking.adv.popup'|trans({'%link%': path('aw_contactus_index')})|desc("AwardWallet booking interface allows you to manage reward booking requests for your members. It is not enabled by default. If you wish to have it enabled <a href=\"%link%\">please send us a note</a>")|raw }}'
+            window.booking_adv_button = '{{ 'button.ok'|trans }}'
+        </script>
+
+        
+        {{ encore_entry_script_tags('booking-adv', null, '_default', {'defer': true}) }}
+        
+    {% endif %}
+{% endif %}

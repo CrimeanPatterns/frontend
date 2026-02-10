@@ -1,0 +1,63 @@
+{% set MAIN_BODY_CLASSES = {
+    'hide-menu': true,
+    'manual-hidden': true,
+    'responsive': false,
+}|merge(MAIN_BODY_CLASSES|default({})) %}
+
+{% extends "@AwardWalletMain/Layout/default.html.twig" %}
+
+{% block title %} Found emails {% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    {{ encore_entry_link_tags('scanner') }}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        require([
+            'lib/design'
+        ], function (um, customizer) {
+        });
+    </script>
+{% endblock %}
+
+{% block body_left_widgets %}
+    {{ widget_render('left_top') }}
+    {{ widget_render('left_bottom') }}
+{% endblock %}
+
+{% block content %}
+    <div class="scanner">
+        <div class="title">
+            <h1>{{ 'award.mailbox.email.found-emails'|trans|desc('Found emails') }}</h1>
+        </div>
+        <div class="scanner-item">
+            {% if emails|length > 0 %}
+                <p>{{ 'award.mailbox.email.we-have'|trans({'%login%':login |htmlencode})|desc('We have found following emails in your <strong>%login%</strong> mailbox')|raw }}:</p>
+            {% endif %}
+            <table class="main-table scanner-list">
+                {% if emails|length > 0 %}
+                <thead>
+                <tr>
+                    <th>{{ 'award.mailbox.email.th1'|trans|desc('Loyalty / Travel Provider') }}</th>
+                    <th>{{ 'award.mailbox.email.th2'|trans|desc('Email Subject') }}</th>
+                    <th>{{ 'award.mailbox.email.th3'|trans|desc('Date') }}</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for i, email in emails %}
+                    <tr>
+                        <td>{{ email.provider | raw }}</td>
+                        <td><a class="blue-link" href="{{ path('aw_usermailbox_view_mailBody', {'historyId': email.historyId}) }}">{{ email.subject | raw }}</a></td>
+                        <td>{{ email.date }}</td>
+                    </tr>
+                {% endfor %}
+                {% endif %}
+                </tbody>
+            </table>
+            <a href="{{ fromPendings }}" class="btn-blue return"><i class="icon-arrow-left-w"></i><span>{{ 'button.back'|trans|desc('Back') }}</span></a>
+        </div>
+    </div>
+{% endblock %}

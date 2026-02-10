@@ -1,0 +1,54 @@
+{% extends "@AwardWalletMain/Layout/hidden_left_menu.html.twig" %}
+{% form_theme form with ['@AwardWalletMain/FormTheme/fields.html.twig'] %}
+{% trans_default_domain "messages" %}
+
+{% block title %}
+    {{ 'business-pay.title'|trans|desc('Buy AwardWallet Credit') }}
+{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        require([
+            'lib/design'
+        ], function () {
+        });
+    </script>
+{% endblock %}
+
+{% block content %}
+    <div class="main-blk shortened">
+            <h1>
+                {{ 'business-pay.title'|trans|desc('Buy AwardWallet Credit') }}
+            </h1>
+
+            <form action="{{ path('aw_business_pay') }}" method="post" class="main-form spinnerable">
+                {{ form_widget(form._token) }}
+                <div class="main-form-item">
+                    <table class="main-table payment-business">
+                        <tbody>
+                        <tr>
+                            <td>
+                                {{ 'aw.credit.amount'|trans({
+                                    '%silver_on%': '<span class="silver">',
+                                    '%silver_off%': '</span>',
+                                    '%monthlyEstimate%': monthlyEstimate
+                                })|desc('AwardWallet Credit Amount: %silver_on%(Your estimated monthly cost is about $%monthlyEstimate% per month)%silver_off%') | raw }}
+                            </td>
+                            <td class="t-right">
+                                {{ form_widget(form.credit_amount) }}
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="row-submit">
+                    <button type="submit" class="btn-blue">{{ 'payment-proceed'|trans|desc('Proceed to payment options') }}</button>
+                </div>
+            </form>
+    </div>
+{% endblock %}

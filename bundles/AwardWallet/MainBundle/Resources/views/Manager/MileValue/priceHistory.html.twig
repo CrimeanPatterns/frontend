@@ -1,0 +1,35 @@
+<html lang="en">
+    <head>
+        <style>
+            table td {
+                border: 1px solid black;
+                padding: 2px;
+            }
+            table {
+                border-collapse: collapse;
+            }
+        </style>
+    </head>
+    <body>
+        <h1>Prices found for trip {{ tripId }}</h1>
+        <p><a href="?csv=1">Download csv</a></p>
+        <table>
+            <thead>
+                <tr>
+                    {% for column in columns %}
+                        <td>{{ column }}</td>
+                    {% endfor %}
+                </tr>
+            </thead>
+            <tbody>
+                {% for row in rows %}
+                    <tr>
+                        {% for value in row %}
+                            <td>{{ value | raw }}</td>
+                        {% endfor %}
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </body>
+</html>

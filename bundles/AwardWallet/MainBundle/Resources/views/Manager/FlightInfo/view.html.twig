@@ -1,0 +1,261 @@
+{% set title = "FlightInfo statistics" %}
+{% extends '@AwardWalletMain/Manager/layout.html.twig' %}
+
+{% block content %}
+    <style type="text/css">
+        table {
+            border-collapse: collapse;
+        }
+        table td {
+            border: lightgray solid 1px;
+            padding: 7px;
+        }
+        thead td {
+            font-weight: bold;
+        }
+    </style>
+    <h3>FlightInfo {{ flightInfo.airline }} {{ flightInfo.flightNumber }} at {{ flightInfo.flightDate|formatDatetime('long', 'none') }}</h3>
+
+    <table>
+        <tbody>
+            <tr>
+                <td>Flight Date</td>
+                <td>{{ flightInfo.flightDate|formatDatetime('long', 'none') }}</td>
+            </tr>
+            <tr>
+                <td>IATA Code</td>
+                <td>{{ flightInfo.airline }}</td>
+            </tr>
+            <tr>
+                <td>Flight Number</td>
+                <td>{{ flightInfo.flightNumber }}</td>
+            </tr>
+            <tr>
+                <td>Departure</td>
+                <td>{{ flightInfo.depCode }}</td>
+            </tr>
+            <tr>
+                <td>Arrival</td>
+                <td>{{ flightInfo.arrCode }}</td>
+            </tr>
+            <tr>
+                <td>State</td>
+                <td>{% if flightInfo.state == 0 %}New
+                    {% elseif flightInfo.state == 1 %}Checked
+                    {% elseif flightInfo.state == 2 %}Done
+                    {% elseif flightInfo.state == 3 %}Error
+                    {% else %}Unknown
+                    {% endif %}
+                </td>
+            </tr>
+            <tr>
+                <td>Flight State</td>
+                <td>{% if flightInfo.flightState == 0 %}Unknown
+                    {% elseif flightInfo.flightState == 1 %}Schedule
+                    {% elseif flightInfo.flightState == 2 %}Depart
+                    {% elseif flightInfo.flightState == 3 %}Arrive
+                    {% elseif flightInfo.flightState == 4 %}Cancel
+                    {% elseif flightInfo.flightState == 11 %}Error:Airline
+                    {% elseif flightInfo.flightState == 12 %}Error:Number
+                    {% elseif flightInfo.flightState == 13 %}Error:Departure
+                    {% elseif flightInfo.flightState == 14 %}Error:Arrival
+                    {% elseif flightInfo.flightState == 15 %}Error:Not Found
+                    {% elseif flightInfo.flightState == 16 %}Error:Not Exists
+                    {% elseif flightInfo.flightState == 21 %}Error:Other
+                    {% else %}Unknown
+                    {% endif %}
+                </td>
+            <tr>
+                <td>Create Date</td>
+                <td>{{ flightInfo.createDate|formatDatetime('long') }}</td>
+            </tr>
+            <tr>
+                <td>Update Date</td>
+                <td>{% if flightInfo.updateDate %}{{ flightInfo.updateDate|formatDatetime('long') }}{% endif %}</td>
+            </tr>
+            <tr>
+                <td>Checks count</td>
+                <td>{{ flightInfo.checksCount }}</td>
+            </tr>
+            <tr>
+                <td>Subscribes count</td>
+                <td>{{ flightInfo.subscribesCount }}</td>
+            </tr>
+            <tr>
+                <td>Updates count</td>
+                <td>{{ flightInfo.updatesCount }}</td>
+            </tr>
+            <tr>
+                <td>Errors count</td>
+                <td>{{ flightInfo.errorsCount }}</td>
+            </tr>
+            <tr>
+                <td>API Error Message</td>
+                <td>{{ flightInfo.errorMessage }}</td>
+            </tr>
+            <tr>
+                <td>Segments count</td>
+                <td>{{ flightInfo.segments.count }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h3>Schedule</h3>
+
+    <table>
+        <thead>
+        <tr>
+            <td>Task</td><td>Published</td><td>Finalized</td><td>Result</td>
+            <td>Type</td><td>Service</td>
+            <td>Enable</td><td>Schedule</td><td>Debug</td>
+            <td>AWPlus</td><td>Region</td>
+            <td></td>
+        </tr>
+        </thead>
+        <tbody>
+        {% for row in schedule %}
+            <tr>
+                <td>{{ row.task }}</td>
+                <td>{{ row.published }}</td>
+                <td>{{ row.finalized }}</td>
+                <td>{{ row.result }}</td>
+                {% if row.config is defined %}
+                    <td>{% if row.config.type == 1 %}Check Exists{% elseif row.config.type == 2 %}Subscribe{% elseif row.config.type == 3 %}Update{% else %}?{% endif %}</td>
+                    <td>{{ row.config.service }}</td>
+                    {#<td>{{ row.config.scheduleRules|nl2br }}</td>#}
+                    {#<td>{{ row.config.ignoreFields|nl2br }}</td>#}
+                    <td>{% if row.config.isEnable %}+{% else %}-{% endif %}</td>
+                    <td>{% if row.config.isSchedule %}+{% else %}-{% endif %}</td>
+                    <td>{% if row.config.isDebug %}+{% else %}-{% endif %}</td>
+                    <td>{% if row.config.awPlus == 0 %}All{% elseif row.config.awPlus == 1 %}Regular Only{% elseif row.config.awPlus == 2 %}Plus Only{% else %}?{% endif %}</td>
+                    <td>{% if row.config.region == 0 %}All{% elseif row.config.region == 1 %}Domestic Only{% elseif row.config.region == 2 %}International Only{% else %}?{% endif %}</td>
+                {% else %}
+                    <td colspan="7">Unknown task</td>
+                {% endif %}
+                <td>
+                    {% if not row.finalized and row.config is defined and row.config.isEnable %}
+                        <a href="{{ url('aw_manager_flightinfo_update', {id: flightInfo.flightInfoID, rule: row.task}) }}">run now</a>
+                    {% endif %}
+                </td>
+            </tr>
+        {% endfor %}
+        <tr>
+            <td colspan="14"></td>
+        </tr>
+        {% for configRule in config %}
+            <tr>
+                <td colspan="4">{{ configRule.name }}</td>
+                <td>{% if configRule.type == 1 %}Check Exists{% elseif configRule.type == 2 %}Subscribe{% elseif configRule.type == 3 %}Update{% else %}?{% endif %}</td>
+                <td>{{ configRule.service }}</td>
+                {#<td>{{ row.config.scheduleRules|nl2br }}</td>#}
+                {#<td>{{ row.config.ignoreFields|nl2br }}</td>#}
+                <td>{% if configRule.isEnable %}+{% else %}-{% endif %}</td>
+                <td>{% if configRule.isSchedule %}+{% else %}-{% endif %}</td>
+                <td>{% if configRule.isDebug %}+{% else %}-{% endif %}</td>
+                <td>{% if configRule.awPlus == 0 %}All{% elseif configRule.awPlus == 1 %}Regular Only{% elseif configRule.awPlus == 2 %}Plus Only{% else %}?{% endif %}</td>
+                <td>{% if configRule.region == 0 %}All{% elseif configRule.region == 1 %}Domestic Only{% elseif configRule.region == 2 %}International Only{% else %}?{% endif %}</td>
+                <td>
+                    {% if configRule.isEnable %}
+                        <a href="{{ url('aw_manager_flightinfo_schedule', {id: flightInfo.flightInfoID, rule: configRule.name}) }}">schedule</a> &middot;
+                        <a href="{{ url('aw_manager_flightinfo_update', {id: flightInfo.flightInfoID, rule: configRule.name}) }}">run now</a>
+                    {% endif %}
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <h3>Segments</h3>
+
+    <table>
+        <thead>
+        <tr><td>Segment ID</td><td>Trip ID</td><td>User ID</td>
+            <td>Airline</td><td>Flight Number</td>
+            <td>Departure</td><td>Arrival</td>
+            </tr>
+        </thead>
+        <tbody>
+        {% for row in flightInfo.segments %}
+            <tr>
+                <td>{{ row.tripsegmentid }}</td>
+                <td>{{ row.tripid.id }}</td>
+                <td>{{ row.tripid.user.userid }}</td>
+                <td>{{ row.airlinename }}</td>
+                <td>{{ row.flightnumber }}</td>
+                <td>{{ row.depcode }}<br/>{{ row.depname }}<br/>{{ row.depdate|formatDatetime('long')  }}</td>
+                <td>{{ row.arrcode }}<br/>{{ row.arrname }}<br/>{{ row.arrdate|formatDatetime('long')  }}</td>
+                <td>
+                    <a href="/manager/impersonate?UserID={{ row.tripid.user.userid }}" target="_blank">impersonate</a>
+                    <a href="{{ url('aw_timeline_shared', {shareCode: (row.tripid.kind ~ '.' ~ row.tripid.id ~ '.' ~ row.tripid.shareCode)|base64encode}) }}" target="_blank">share link</a></td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    {% if flightInfo.loaded %}
+    <h3>Data</h3>
+
+    <table>
+        <thead>
+        <tr>
+            <td></td>
+            {% for col in diffCols %}<td>{{ col }}</td>{% endfor %}
+        </tr>
+        </thead>
+        <tbody>
+        {% for key, value in diff.info %}
+            <tr><td>{{ key }}</td>
+                {% for col in diffCols %}
+                    {% if diff[col][key] is defined %}
+                        {% if key in ['DepDate', 'ArrDate', 'DepDateUtc', 'ArrDateUtc'] %}
+                            <td {% if col != 'info' %}{% if diff[col][key]|date('U', false) != value|date('U', false) %}bgcolor="red" {% else %}bgcolor="#90ee90"{% endif %}{% endif %}>{{ diff[col][key]|date('c', false) }}</td>
+                        {% else %}
+                            <td {% if col != 'info' %}{% if diff[col][key] != value %}bgcolor="red" {% else %}bgcolor="#90ee90"{% endif %}{% endif %}>{{ diff[col][key] }}</td>
+                        {% endif %}
+                    {% else %}
+                        <td bgcolor="yellow"></td>
+                    {% endif %}
+                {% endfor %}
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <h3>Raw Data</h3>
+
+    <table>
+        <tbody>
+        <tr>
+            <td>
+                <pre>{{ flightInfo.properties|json_encode(constant('JSON_PRETTY_PRINT')) }}</pre>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+    {% endif %}
+
+    <h3>Requests</h3>
+
+    <table>
+        <thead>
+        <tr>
+            <td></td><td>Service</td><td>Create Date</td><td>Expire Date</td>
+            <td>Request</td>
+        </tr>
+        </thead>
+        <tbody>
+        {% for row in logs %}
+            <tr>
+                <td rowspan="2">&nbsp;</td>
+                <td>{{ row.service }}</td>
+                <td>{% if row.createDate %}{{ row.createDate|formatDatetime('long') }}{% endif %}</td>
+                <td>{% if row.expireDate %}{{ row.expireDate|formatDatetime('long') }}{% endif %}</td>
+                <td>{{ row.request }}</td>
+            </tr>
+            <tr>
+                <td colspan="4"><pre>{{ row.json|json_encode(constant('JSON_PRETTY_PRINT')) }}</pre></td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

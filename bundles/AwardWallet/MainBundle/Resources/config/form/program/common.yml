@@ -1,0 +1,31 @@
+services:
+    _defaults:
+        public: true
+
+    # Helpers
+
+    aw.mobile.form_helper.program:
+        autowire: true
+        public: true
+        class: AwardWallet\MobileBundle\Form\Type\Helpers\AccountHelper
+        arguments:
+            - "@aw.security.token_storage"
+            - "@aw.api.versioning"
+            - "@translator"
+            - "@doctrine.orm.entity_manager"
+            - "@aw.mobile.url_transformer"
+    AwardWallet\MobileBundle\Form\Type\Helpers\AccountHelper: '@aw.mobile.form_helper.program'
+
+    AwardWallet\MainBundle\Form\Type\Helpers\CurrencyHelper:
+        autowire: true
+
+    # Subscribers
+
+    # Validators
+
+    aw.form.validator.account:
+        autowire: true
+        public: true
+        class: AwardWallet\MainBundle\Validator\Constraints\AccountValidator
+        tags:
+            - { name: validator.constraint_validator, alias: account }

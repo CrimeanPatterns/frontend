@@ -1,0 +1,37 @@
+{# Issue #111111 #}
+
+{% extends popup is defined and popup ? "@AwardWalletMain/Offer/_offerPopup.html.twig" : "@AwardWalletMain/Offer/standard.html.twig" %}
+{% import '@AwardWalletMain/Offer/offerMacros.html.twig' as offerMacros %}
+{% import '@AwardWalletMain/TwigMacros/assets.html.twig' as assets %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    {{ encore_entry_link_tags('offer') }}
+    {{ encore_entry_link_tags('offers/marriottcrackingoffer') }}
+    {% if popup is not defined %}
+        {{ assets.assets_form('css') }}
+    {% endif %}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        {{ offerMacros.jsOfferYes(_context, ApplyURL, Code, OfferUserID, defaultRedirectLocation) }}
+        {{ offerMacros.jsOfferNo(_context, Code, OfferUserID, defaultRedirectLocation) }}
+    </script>
+{% endblock %}
+
+{% block content %}
+    <div id="offer_wrap">
+        <div class="marriott-offer">
+            <div class="marriott-premier-card-offer">
+                <h3>Cracking Offer <br>80,000 Bonus Points!</h3>
+                <h4>There's a new limited time offer <br>on this top hotel credit card!</h4>
+                <p>This is the highest points offer ever for the card. <br>But before you apply for this card, you should <br>brush up on the
+                <a href="https://awardwallet.com/blog/why-you-should-apply-for-the-chase-sapphire-preferred/" target="_blank">new rules for some cards</a>.</p>
+                <a onclick="offerYes();" href="#" class="btn-blue-offer">Learn More</a>
+            </div>
+        </div>
+        {{ offerMacros.offerButtons(_context) }}
+    </div>
+{% endblock %}

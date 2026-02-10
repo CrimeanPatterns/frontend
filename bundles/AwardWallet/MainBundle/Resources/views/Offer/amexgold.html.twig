@@ -1,0 +1,48 @@
+{# Issue #7305 #}
+
+{% extends "@AwardWalletMain/Offer/standard.html.twig" %}
+{% import '@AwardWalletMain/Offer/offerMacros.html.twig' as offerMacros %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    {{ encore_entry_link_tags('offer') }}
+    {{ encore_entry_link_tags('offers/amexgold') }}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        {{ offerMacros.jsOfferYes(_context, ApplyURL, Code, OfferUserID, defaultRedirectLocation) }}
+        {{ offerMacros.jsOfferNo(_context, Code, OfferUserID, defaultRedirectLocation) }}
+    </script>
+{% endblock %}
+
+{% block content %}
+    <div id="offer_wrap">
+        <div id="offer_bg" class="amexgold_bg">
+            <div class="offer_title amexgold_title">
+                American Express<div class="offer_sup">®</div> Gold Card
+            </div>
+            <div class="amexgold_image">
+            </div>
+            <div id="div_ul" class="amexgold_ul">
+                <ul class="offer_list amexgold_list">
+                    <li>Access to Exclusive Benefits: Baggage Insurance Plan* when you travel, and shop with confidence with Extended Warranty* and Return Protection
+                    <li>Get discounts and low rates at hotels and resorts, plus a $75 hotel credit when you book through Gold Hotel Collection
+                    <li>Use points for gift cards for dining, entertainment, and to shop over 300 of some of your favorite merchants
+                    <li>$0 introductory annual fee for the first year, then $125
+                    <li>Terms and Restrictions Apply.
+                </ul>
+            </div>
+            <div class="offer_btn amexgold_btn" onclick="offerYes();">
+                Yes, I want to learn more
+            </div>
+        </div>
+        <div class="offer_declinekind" onclick="offerNo();">
+            Never show this ad again
+        </div>
+        <div class="offer_toaccount amexgold_toaccount" onclick="window.location = '{{ defaultRedirectLocation }}'">
+            Proceed to my account
+        </div>
+    </div>
+{% endblock %}

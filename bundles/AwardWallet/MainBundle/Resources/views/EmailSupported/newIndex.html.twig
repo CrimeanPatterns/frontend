@@ -1,0 +1,178 @@
+{% set MOBILE_NAV = true %}
+{% set HIDE_NAV = true %}
+{% set MAIN_BODY_CLASSES = {
+    'manual-hidden': true,
+    'responsive': true,
+    'hide-menu': true
+}|merge(MAIN_BODY_CLASSES|default({})) %}
+
+{% extends app.user is not null ? "@AwardWalletMain/Layout/common.html.twig" : "@AwardWalletMain/Layout/not_logged.html.twig" %}
+{% import '@AwardWalletMain/Faq/macro.html.twig' as macro %}
+{% import '@AwardWalletMain/TwigMacros/common.html.twig' as menuMacros %}
+{% set lang_names = {
+    'en' : 'language.en' | trans | desc('English'),
+    'de' : 'language.de' | trans | desc('German'),
+    'fr' : 'language.fr' | trans | desc('French'),
+    'es' : 'language.es' | trans | desc('Spanish'),
+    'zh' : 'language.zh' | trans | desc('Chinese'),
+    'ja' : 'language.ja' | trans | desc('Japanese'),
+    'pt' : 'language.pt' | trans | desc('Portuguese'),
+    'ru' : 'language.ru' | trans | desc('Russian'),
+    'he' : 'language.he' | trans | desc('Hebrew'),
+    'da' : 'language.da' | trans | desc('Danish'),
+    'nl' : 'language.nl' | trans | desc('Dutch'),
+    'it' : 'language.it' | trans | desc('Italian'),
+    'sv' : 'language.sv' | trans | desc('Swedish'),
+    'no' : 'language.no' | trans | desc('Norwegian'),
+    'fi' : 'language.fi' | trans | desc('Finnish'),
+    'et' : 'language.et' | trans | desc('Estonian'),
+    'ro' : 'language.ro' | trans | desc('Romanian'),
+    'tr' : 'language.tr' | trans | desc('Turkish'),
+    'pl' : 'language.pl' | trans | desc('Polish'),
+    'vi' : 'language.vi' | trans | desc('Vietnamese'),
+    'cs' : 'language.cs' | trans | desc('Czech'),
+    'hu' : 'language.hu' | trans | desc('Hungarian'),
+    'id' : 'language.id' | trans | desc('Indonesian'),
+    'ca' : 'language.ca' | trans | desc('Catalan'),
+    'bg' : 'language.bg' | trans | desc('Bulgarian'),
+    'ko' : 'language.ko' | trans | desc('Korean'),
+    'sr' : 'language.sr' | trans | desc('Serbian'),
+    'uk' : 'language.uk' | trans | desc('Ukrainian'),
+    'lv' : 'language.lv' | trans | desc('Latvian'),
+    'lt' : 'language.lt' | trans | desc('Lithuanian'),
+    'sl' : 'language.sl' | trans | desc('Slovenian'),
+    'el' : 'language.el' | trans | desc('Greek (modern)'),
+    'az' : 'language.az' | trans | desc('Azerbaijani'),
+    'is' : 'language.is' | trans | desc('Icelandic'),
+    'ar' : 'language.ar' | trans | desc('Arabic'),
+    'th' : 'language.th' | trans | desc('Thai'),
+    'sk' : 'language.sk' | trans | desc('Slovak'),
+    'gl' : 'language.gl' | trans | desc('Galician'),
+    'ms' : 'language.ms' | trans | desc('Malay'),
+    'hr' : 'language.hr' | trans | desc('Croatian'),
+    'bs' : 'language.bs' | trans | desc('Bosnian'),
+    'kk' : 'language.kk' | trans | desc('Kazakh')
+} %}
+{% set cnt = 0 %}
+{% for lang in stats.languages %}
+    {% if lang_names[lang] is defined %}
+        {% set cnt = cnt + 1 %}
+    {% endif %}
+{% endfor %}
+
+{% block title %}List of supported travel providers | Email Parsing API{% endblock %}
+
+{% block meta %}
+    {{ parent() }}
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0, viewport-fit=cover">
+    <meta name="description" content="AwardWallet currently supports email itineraries for more than 700 travel providers">
+{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('/assets/awardwalletmain/css/flags.css') }}?id=132"/>
+{% endblock %}
+
+{% block content %}
+{% include '@AwardWalletMain/Page/_apiNav.html.twig' %}
+<div class="main-blk has-additionl-menu">
+    <h1>
+        {% if ignore %}
+            {{ mainTextTitle }}
+        {% else %}
+            {{ 'mailbox.supported.list.header' | trans | desc( 'AwardWallet currently supports email itineraries for the travel providers listed below' ) }}:
+        {% endif %}
+    </h1>
+    <div class="main-blk-content">
+    {% for key, caption in kinds %}
+        {% if providers[key] is defined %}
+            <div class='supported-emails'>
+                <div class="title-note"><h3>{{ caption | trans }}</h3></div>
+                <div class='list-emails'>
+                    {% set rows = (providers[key] | length) // 4 %}
+                    {% if rows * 4 < (providers[key] | length) %}
+                        {%  set rows = rows + 1 %}
+                    {% endif %}
+                    <ul class="full">
+                        {% set idx = rows %}
+                        <li>
+                            <ul>
+                                {% for provider in providers[key] %}
+                                <li>
+                                    <table>
+                                        <tr>
+                                            <td>
+                                                {% if provider.url is empty %}
+                                                    <span><nobr>{{ provider.name }} {% if provider.count > 1 %}({{ provider.count }}){% endif %}</nobr></span>
+                                                {% else %}
+                                                    <a href="{{ url('aw_out', {url: provider.url}) }}" rel="nofollow"
+                                                       target="_blank">
+                                                        <nobr>{{ provider.name }} {% if provider.count > 1 %}({{ provider.count }}){% endif %}</nobr>
+                                                    </a> &nbsp;
+                                                {% endif %}
+                                            </td>
+                                            <td>
+                                                {% if provider.lang | length > 1 or provider.lang | length == 1 and provider.lang[0] != "en" %}
+                                                    {% for lang in provider.lang %}
+                                                        {% if lang_names[lang] is defined %}
+
+                                                            <div class="flag_mini {{ lang }}" title="{{ lang_names[lang] }}"></div>
+    {#
+                                                            <i class="flag-{{ lang }}" title="{{ lang_names[lang] }}"></i>
+    #}
+                                                        {% endif %}
+                                                    {% endfor %}
+                                                {% endif %}
+                                            </td>
+                                        </tr>
+                                    </table>
+
+                                </li>
+                                {% set idx = idx - 1 %}
+                                {% if idx == 0 %}
+                                {% set idx = rows %}
+                            </ul></li><li><ul>
+                                {% endif %}
+                                {% endfor %}
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <br clear="all">
+        {% endif %}
+    {% endfor %}
+
+    <table class="e_stats">
+        <tr>
+            <td class="e_stats_top e_stats_left">
+                {{ 'mailbox.supported.list.total-providers' | trans | desc('Total number of supported providers') }}:
+            </td><td class="e_stats_top e_stats_right e_stats_bold">{{ stats.totalProviders | number_format }}</td>
+        </tr>
+        <tr>
+            <td class="e_stats_left">
+                {{ 'mailbox.supported.list.total-formats' | trans | desc('Total number of supported email formats') }}:
+            </td><td class="e_stats_right e_stats_bold">{{ stats.totalFormats | number_format }}</td>
+        </tr>
+        <tr>
+            <td class="e_stats_left">
+                {{ 'mailbox.supported.list.total-languages' | trans | desc('Total number of different languages supported') }}:
+            </td><td class="e_stats_right e_stats_bold">{{ cnt }}</td>
+        </tr>
+        <tr>
+            <td class="e_stats_left">
+                {{ 'mailbox.supported.list.languages' | trans | desc('List of supported languages') }}
+            </td>
+            <td class="e_stats_right">
+                {% for lang in stats.languages %}
+                    {% if lang_names[lang] is defined %}
+                        {{ lang_names[lang] }}{% if not loop.last %}, {% endif %}
+                    {% endif %}
+
+                {% endfor %}
+            </td>
+        </tr>
+    </table>
+    </div>
+</div>
+{% endblock %}

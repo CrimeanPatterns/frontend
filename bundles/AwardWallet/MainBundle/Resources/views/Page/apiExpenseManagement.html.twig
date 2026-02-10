@@ -1,0 +1,56 @@
+{% set MOBILE_NAV = true %}
+{% set HIDE_NAV = true %}
+{% set MAIN_BODY_CLASSES = {
+    'manual-hidden': true,
+    'responsive': true,
+    'hide-menu': true
+}|merge(MAIN_BODY_CLASSES|default({})) %}
+
+{% extends app.user is not null ? "@AwardWalletMain/Layout/common.html.twig" : "@AwardWalletMain/Layout/not_logged.html.twig" %}
+
+{% block title %}How to build a expense management app with AwardWallet | Expense API{% endblock %}
+
+{% block meta %}
+    {{ parent() }}
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0, viewport-fit=cover">
+    <meta name="description" content="Learn how AwardWallet help with building expense management services using
+powerful APIs - email parsing and web parsing">
+{% endblock %}
+
+{% block content %}
+    {% include '@AwardWalletMain/Page/_apiNav.html.twig' %}
+    <div class="main-blk content-page has-additionl-menu">
+        <h1>How the AwardWallet APIs help with building expense management apps and services</h1>
+        <picture class="preview-image">
+            <source srcset="../../assets/awardwalletnewdesign/img/api/expense-management/image.png?v=2" media="(min-width: 768px)">
+            <img src="../../assets/awardwalletnewdesign/img/api/expense-management/image-mobile.png" alt="expense management">
+        </picture>
+        <div class="main-blk-content">
+            <div class="title-note no-border bold">
+                <h2>What is expense management?</h2>
+            </div>
+            <p>Expense management is how a business processes, pays and audits employee expenses. Travel and entertainment are the two biggest categories of expense claims by employees and can involve multiple items that an employee needs to claim for on a single trip. As well as the physical process of claiming for expenses, there is also the need to ensure that procedures and policies have been followed.  <br>Most companies will need to use an expense management company or technology to process and analyse data resulting from expense management. Expense management companies, such as <a href="https://www.expensify.com/" target="_blank" class="blue-link" rel="noopener noreferrer">Expensify</a>, offer businesses the option to automate the process of employees claiming expenses. This allows companies to reduce the cost associated with the management of expenses by streamlining the process. The software can simplify and automate many of the administrative tasks related to expense management both for the claimant and for the administrator. Expense management companies usually include a way for employees to add their expenses autonomously through a website or app. This reduces the amount of time that employees need to spend submitting their expenses. It also allows claimants to comply with company procedures and limits by helping them track their expenses.  Other benefits of expense governance providers include easier approvals by managers and a reduction in actual paperwork. Expense programs allow expense controllers to track and analyse all their employee expense data in order to reduce costs and control spending.  <br>The main challenge for expense management companies, especially start-ups, is in obtaining and integrating data from employees and diverse clients’ company software. Building bespoke solutions can be prohibitively expensive for a start-up company and involve numerous different requirements to gather data. This is especially true given the number of different systems and programs used by their prospective customers. By using readily available solutions, start-up companies can help clients to fully optimise their expense systems at a competitive price and give a high ROI to ensure customer retention.</p>
+            <div class="title-note no-border bold">
+                <h2>What technologies are the basis for successful expense management apps/services building?</h2>
+            </div>
+            <p>One of the most important features for a successful expense management tool is integration with other software, apps and systems. This can include time tracking, travel management, payroll or accounting software, and workforce management programs. Having easy to use apps and websites for employees to enter data and automation of time-consuming tasks is key. Retrieving information from employees without manual input is the gold standard and where APIs can be most of use.</p>
+            <p>An API is an acronym for Application Programming Interface which in simple terms allows two applications to talk to each other. In effect, an API can request information requests to one system and deliver the data to another.</p>
+            <div class="title-note no-border bold">
+                <h2>What solutions does AwardWallet offer?</h2>
+            </div>
+            <p>AwardWallet offers a technological solution to extrapolate the required data from employees to help submit expense information automatically. Our email parsing API is able to extract data from emails automatically and translate this into useable information for expense management companies. We currently work with online travel management and itinerary management companies who use our technology. This allows them to retrieve travel reservations from any travel confirmation email.</p>
+            <br>
+            <div class="picture">
+                <img class="picture__light" src="../../assets/awardwalletnewdesign/img/api-pic.png" srcset="../../assets/awardwalletnewdesign/img/api-pic@2x.png 2x" alt="Email Parsing API">
+                <img class="picture__dark" src="../../assets/awardwalletnewdesign/img/api-pic-dark.png" srcset="../../assets/awardwalletnewdesign/img/api-pic-dark@2x.png 2x" alt="Email Parsing API">
+            </div>
+            <p>More relevantly, AwardWallet is able to extract the costs of a trip that an employee takes into useable data for expense management by using our email parsing technology. Our Email Parsing (or scraping as it is sometimes known) API allows expense management companies to simplify the expense claim process for their clients’ employees. The user simply forwards their travel reservation emails to the provided email address and the rest is done automatically. The costs of the trip can then be broken down into relevant categories and sent as data to the expense management company’s system.</p>
+            <p>So how does this work in practise? Once an email is received for our parsing service it enters a queue for retrieval of the data. The required information is then extracted automatically in a matter of seconds. These details are then converted into a structured format (JSON) for you to use with your expense management system. We are able to parse thousands of different email formats (<a href="/supportedEmail" class="blue-link">you can see our list of supported email formats here</a>) to allow you to support your clients’ needs.</p>
+            <p>For further information or to request a trial, <a href="{{ path('aw_contactus_index') }}?API" class="blue-link">contact us using this form</a>. We will be able to provide you with more information such as pricing and can offer you a chance to try our services by setting up your test access credentials.</p>
+        </div>
+        <div class="row-submit">
+            <a href="{{ path('aw_contactus_index') }}?API" class="btn-blue">Contact Us</a>
+            <a href="/api/email" class="btn-blue">Documentation</a>
+        </div>
+    </div>
+{% endblock %}

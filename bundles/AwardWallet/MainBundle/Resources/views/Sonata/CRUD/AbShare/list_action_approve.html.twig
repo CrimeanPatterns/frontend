@@ -1,0 +1,6 @@
+{% if not object.isapproved %}
+    <a class="btn btn-sm btn-default" href="{{ admin.generateObjectUrl('approve', object) }}">
+        <i class="fas fa-check-circle-o" aria-hidden="true"></i>
+        Approve
+    </a>
+{% endif %}

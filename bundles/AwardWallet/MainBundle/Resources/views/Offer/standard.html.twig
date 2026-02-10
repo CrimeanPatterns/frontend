@@ -1,0 +1,43 @@
+{#
+Parameters passed to this page:
+preview, src, OfferUserID, ApplyURL, FirstName, Description, PicturePath, Params
+#}
+
+{% extends '@AwardWalletMain/Layout/common.html.twig' %}
+{% if returnLocation is defined %}
+    {% set defaultRedirectLocation = returnLocation %}
+{% else %}
+    {% set defaultRedirectLocation = '/account/list.php?UserAgentID=All' %}
+{% endif %}
+
+{% block permanent %}
+
+{% import '@AwardWalletMain/TwigMacros/common.html.twig' as menuMacros %}
+
+{% block title %}
+    {{ 'about-site.text' | trans({'%site_name%': vars.SiteName}) | raw }}
+{% endblock %}
+
+{% block styles %}
+	{{ parent() }}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script language="JavaScript">
+        window.datePickerI18n = {{ services.StandartViewCreator.getDatepickerI18nFile(app.request.locale)|json_encode|raw }};
+    </script>
+{% endblock %}
+
+{% block readyScripts %}
+	{{ parent() }}
+{% endblock %}
+
+{% block leftBar %}
+{% endblock %}
+
+{% block loadScripts %}
+	{{ parent() }}
+{% endblock %}
+
+{% endblock %}

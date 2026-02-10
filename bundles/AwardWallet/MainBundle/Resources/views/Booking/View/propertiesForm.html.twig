@@ -1,0 +1,39 @@
+{# todo: move styles in css #}
+<div class="booker-block js-properties-form can-show-block">
+    <div class="booker-title">
+        {{ 'booking.request.properties'|trans({}, 'booking') }}
+        <div id="propertes-update-indicator" class="successful-block" style="display: none;">
+            <i class="old-icon-check-white"></i><span>Successfully updated</span>
+        </div>
+    </div>
+    <div class="booking-form">
+        {{ form_start(propertiesForm, {'attr': {'action':  path('aw_booking_view_ajaxproperties', {id: request.abrequestid}) } } ) }}
+        {{ form_errors(propertiesForm) }}
+        <fieldset style="margin-top: 0px;">
+            <div style="width: 50%; float: left; padding: 10px; min-width: 400px;">
+                {{ form_row(propertiesForm.Assigned) }}
+                {{ form_row(propertiesForm.Status) }}
+                {{ form_row(propertiesForm.CancelReason) }}
+                {{ form_row(propertiesForm.UntilDate) }}
+				{% if propertiesForm.offsetExists('InternalStatus') %}
+                	{{ form_row(propertiesForm.InternalStatus) }}
+				{% endif %}
+            </div>
+            <div style="width: 50%; float: left; padding: 10px; min-width: 400px;">
+                {{ form_row(propertiesForm.outboundAirline) }}
+                {{ form_row(propertiesForm.inboundAirline) }}
+            </div>
+        </fieldset>
+        <div style="clear: both; height:32px; margin-bottom:20px">
+            <div class="buttons" style="float:right; margin-left:30px;">
+                <a href="#" class="btn spec wide" id="propertiesFormSubmitButton">{{ 'form.button.update'|trans|desc('Update') }}</a>
+            </div>
+            <div class="prefer" style="float:right; padding-top:5px; margin-top: 0px">
+                <div class="input">
+                    {{ form_widget(propertiesForm.MarkAsUnread) }}{{ form_label(propertiesForm.MarkAsUnread) }}
+                </div>
+            </div>
+        </div>
+        {{ form_end(propertiesForm) }}
+    </div>
+</div>

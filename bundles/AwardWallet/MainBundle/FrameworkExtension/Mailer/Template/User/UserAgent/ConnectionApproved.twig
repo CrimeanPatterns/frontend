@@ -1,0 +1,27 @@
+{% extends '@MailTemplate/Layout/base.twig' %}
+{% trans_default_domain "email" %}
+
+{% block subject %}{% apply spaceless %}{% autoescape false %}
+    {{ 'connection_approved.subject'|trans({
+        "%userName%": connection.agentid.fullname
+    }, 'email', lang)|desc('%userName% connected with you on AwardWallet!') }}
+{% endautoescape %}{% endapply %}{% endblock subject %}
+
+{% block content %}
+    {% import '@MailTemplate/CommonMacro.twig' as commonMacro %}
+
+    {{ commonMacro.hello(user.firstname, _context) }}
+
+    {{ commonMacro.paragraph(
+        'connection_approved.decide'|trans({
+            "%userName%": connection.agentid.firstname|htmlencode,
+            "%bold_on%": "<b>",
+            "%bold_off%": "</b>",
+            "%awardwallet%": "AwardWallet"
+        }, 'email', lang)|desc("%userName% just approved your connection request, now you can decide what parts of your %bold_on%%awardwallet%%bold_off% profile you wish to share. This page summarizes what you and %userName% are sharing with each other right now:"),
+        _context, {escape: false}
+    ) }}
+
+    {% set link = baseUrl ~ path('aw_user_connection_edit', {userAgentId: connection.useragentid}) %}
+    {{ commonMacro.dottedLink(link, link, _context) }}
+{% endblock content %}

@@ -1,0 +1,23 @@
+{% form_theme form '@AwardWalletMain/Booking/fields.html.twig' %}
+{% trans_default_domain "booking" %}
+
+<div class="booking-form item">
+    {{ form_start(form) }}
+        <div class="booker-item">
+            <div class="booker-item-title">{{ 'create.seat_assignments.title'|trans|desc('Airline phone numbers for seat assignments') }}</div>
+            <table id="seat-assignments-list" data-prototype="{{ form_widget(form.PhoneNumbers.vars.prototype)|e }}">
+                {% set a = form.PhoneNumbers.setRendered %}
+                {% for child in form.PhoneNumbers %}
+                    {{ form_widget(child) }}
+                {% endfor %}
+            </table>
+        </div>
+        <div class="add-block">
+            <a href="#"><i class="old-icon-add-another-block"></i>{{ "create.seat_assignments.add-another"|trans|desc("Add another phone") }}</a>
+        </div>
+        <div class="buttons" style="float:right">
+            <a href="#" onclick="$(this).closest('form').submit();return false;" class="btn spec wide submitButton">{{ 'send.btn'|trans|desc('Send') }}</a>
+        </div>
+        <div class="clear"></div>
+    {{ form_end(form) }}
+</div>

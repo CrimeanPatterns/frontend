@@ -1,0 +1,67 @@
+{% extends '@MailTemplate/Layout/base.twig' %}
+{% trans_default_domain "email" %}
+
+{% block subject %}Credit Card Spend Analytics ({{ dateRange }}){% apply spaceless %}
+
+{% endapply %}{% endblock subject %}
+
+{% block headStyle %}
+    {{ parent() }}
+    <style type="text/css">
+        @media (max-width: 690px) {
+            #mobile, .mobile {
+                display: block !important;
+            }
+
+            #desktop, .desktop,
+            #desktop img, .desktop img {
+                display: none !important;
+                overflow: hidden;
+                width: 1px !important;
+                height: 1px !important;
+            }
+        }
+
+        @media (min-width: 700px) {
+            #desktop, .desktop {
+                display: block !important;
+            }
+
+            #mobile, .mobile,
+            #mobile img, .mobile img {
+                display: none !important;
+                overflow: hidden;
+                width: 1px !important;
+                height: 1px !important;
+            }
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+    {% import '@MailTemplate/CommonMacro.twig' as commonMacro %}
+
+    {{ commonMacro.hello(user.firstname, _context) }}
+
+    <div style="padding-top: 10px; line-height: 24px; color: #535457; font-size: 16px">
+        Last month, you spent the most on the <b>{{ top.category }}</b> category, and you earned <b>{{ top.earned|formatNumber(null, null, user.getLocale()) }}</b> points. By our calculations, you could have earned {{ top.potential|formatNumber(null, null, user.getLocale()) }} points by using a different credit card.
+    </div>
+
+    {% if top.blogUrl is defined and top.blogUrl is not empty %}
+        <div style="padding-top: 10px; line-height: 24px; color: #535457; font-size: 16px">
+            Here are the cards that give you the highest return for travel spending. <a href="{{ top.blogUrl }}" style="font-size:16px; color:#4684c4; text-decoration:none; font-weight:bold" target="_blank">{{ top.blogUrl }}</a>
+        </div>
+    {% endif %}
+
+    <div style="padding-top: 10px; line-height: 24px; color: #535457; font-size: 16px">
+        And here is a quick recap of your credit card spend for the last month:
+    </div>
+
+    <div id="desktop" class="desktop" style="display: none"><img src="{{ absolute_url(path('aw_spent_analysis_chart', {'device' : 'desktop'})) }}?{{ queryChart }}" border="0" style="margin-top: 25px; vertical-align: top; width: 100% !important; max-width: 100% !important; height: auto !important;" alt="Desktop Graphic" class="desktop-chart"></div>
+    <div id="mobile" class="mobile" style="display: none"><img src="{{ absolute_url(path('aw_spent_analysis_chart', {'device' : 'mobile'})) }}?{{ queryChart }}" border="0" style="margin-top: 25px; vertical-align: top; width: 100% !important; max-width: 100% !important; height: auto !important;" alt="Mobile Graphic" class="mobile-chart"></div>
+
+    <div style="padding-top: 10px; line-height: 24px; color: #535457; font-size: 16px">
+        Your full spending report can be viewed here: <a href="{{ path('aw_spent_analysis_index') }}" style="font-size:16px; color:#4684c4; text-decoration:none; font-weight:bold" target="_blank">{{ absolute_url(path('aw_spent_analysis_index')) }}</a>
+    </div>
+
+{% endblock content %}

@@ -1,0 +1,289 @@
+{% extends '@MailTemplate/Layout/base.twig' %}
+{% trans_default_domain "email" %}
+
+{% block subject %}{% apply spaceless %}{% autoescape false %}
+    {% if subscriptionType == constant('AwardWallet\\MainBundle\\Entity\\Usr::SUBSCRIPTION_TYPE_AWPLUS') %}
+        {% set planName = 'account_type.awplus'|trans({}, 'messages', lang) %}
+    {% else %}
+        {% set planName = 'subscription.awardtravel-201'|trans({}, 'messages', lang) %}
+    {% endif %}
+
+    {{ 'subscription_renewal_reminder.subject'|trans({
+        '%subscription_name%': planName
+    }, 'email', lang)|desc('Your %subscription_name% subscription is about to renew') }}
+{% endautoescape %}{% endapply %}{% endblock subject %}
+
+{% block headStyle %}{% trim %}
+    {{ parent() }}
+    <style>
+        span.bold, .bold {
+            font-weight: 600 !important;
+        }
+        .important-info-list li::marker {
+            color: #4684C4 !important;
+            font-size: 1.3em !important;
+        }
+        @media only screen and (min-width: 620px) {
+            .container-1 {
+                padding: 14px 30px 20px !important;
+            }
+            .greeting {
+                font-size: 42px !important;
+                line-height: 48.77px !important;
+            }
+            .paragraph {
+                font-size: 16px !important;
+                line-height: 28px !important;
+                margin-top: 16.11px !important;
+            }
+            .paragraph-2 {
+                font-size: 18px !important;
+            }
+            .paragraph-3 {
+                font-size: 18px !important;
+                margin-top: 16.11px !important;
+            }
+            .sub-header {
+                font-size: 20px !important;
+                margin-top: 20px !important;
+            }
+            .important-info-list {
+                margin: 20px 0 23px !important;
+            }
+            .important-info-item {
+                font-size: 16px !important;
+                padding-left: 8px !important;
+            }
+            .important-info-item-marker {
+                font-size: 2em !important;
+            }
+            .blue-header {
+                margin: 25px 0 18px !important;
+            }
+            .blue-header a {
+                font-size: 20px !important;
+            }
+            .feature-list {
+                margin: 14px 0 30px !important;
+            }
+            .feature-item-marker {
+                padding: 11px 0 !important;
+            }
+            .feature-item {
+                font-size: 16px !important;
+                line-height: 22px !important;
+            }
+            .thanks {
+                margin-top: 50px !important;
+            }
+            .signature {
+                font-size: 16px !important;
+            }
+        }
+    </style>
+{% endtrim %}{% endblock headStyle %}
+
+{% block content_row %}
+    {% import '@MailTemplate/CommonMacro.twig' as commonMacro %}
+    {% import _self as macro %}
+
+    {% if subscriptionType == constant('AwardWallet\\MainBundle\\Entity\\Usr::SUBSCRIPTION_TYPE_AWPLUS') %}
+        {% set planName = 'account_type.awplus'|trans({}, 'messages', lang) %}
+    {% else %}
+        {% set planName = 'subscription.awardtravel-201'|trans({}, 'messages', lang) %}
+    {% endif %}
+
+    <tr>
+        <td style="line-height:24px; font-size:16px; border-left: solid 1px #a6aab3; border-right: solid 1px #a6aab3; border-bottom: solid 1px #a6aab3; background:#fff;padding:0;" class="email-white">
+            <div class="container-1" style="padding: 4px 20px 21px;">
+                <div class="greeting" style="font-family:Trebuchet MS, Arial, sans-serif; color: #3D424D; font-size: 22px; line-height: 25.54px; font-weight: 700; margin: 0;">
+                    {{ 'hi.span'|trans({
+                        '%span_on%': '<b style="color:#3d424d;">',
+                        '%span_off%': '</b>',
+                        '%name%': user.firstname|htmlencode
+                    }, 'email', lang)|raw }},
+                </div>
+
+                <div class="paragraph" style="font-family: Trebuchet MS, Arial, sans-serif; color: #3D424D; font-size: 12px; line-height: 22px; font-weight: 400; margin-top: 10.11px;">
+                    {{ 'subscription_renewal_reminder.intro'|trans({
+                        '%plan_name%': planName,
+                        '%date%': '<b style="color:#3d424d;">' ~ expirationDate|formatDatetime('short', 'none', locale) ~ '</b>'
+                    }, 'email', lang)|desc('We wanted to let you know that your %plan_name% subscription will automatically renew on %date%.')|raw }}
+                </div>
+
+                <h3 class="sub-header" style="font-family: Trebuchet MS, Arial, sans-serif; color: #3D424D; font-size: 16px; line-height: 20px; font-weight: 400; margin-top: 17px;">
+                    {{ 'subscription_renewal_reminder.details_header'|trans({}, 'email', lang)|desc('Here are the details of your upcoming renewal:') }}
+                </h3>
+
+                <table class="important-info-list" cellpadding="0" cellspacing="0" style="margin: 15px 0 18px;">
+                    {{ macro.listItem(
+                        'subscription_renewal_reminder.plan'|trans({}, 'email', lang)|desc('Plan:') ~ ' <span class="bold">' ~ planName ~ '</span>',
+                        _context
+                    ) }}
+                    {{ macro.listItem(
+                        'subscription_renewal_reminder.renewal_date'|trans({}, 'email', lang)|desc('Renewal Date:') ~ ' <span class="bold">' ~ expirationDate|formatDatetime('medium', 'none', locale) ~ '</span>',
+                        _context
+                    ) }}
+                    {{ macro.listItem(
+                        'subscription_renewal_reminder.amount'|trans({}, 'email', lang)|desc('Amount to be charged:') ~ ' <span class="bold">' ~ amount ~ '</span>',
+                        _context
+                    ) }}
+                    {{ macro.listItem(
+                        'subscription_renewal_reminder.payment_method'|trans({}, 'email', lang)|desc('Payment Method:') ~ ' <span class="bold">' ~ paymentMethod ~ '</span>',
+                        _context
+                    ) }}
+                </table>
+
+                <div class="paragraph" style="font-family: Trebuchet MS, Arial, sans-serif; color: #3D424D; font-size: 12px; line-height: 22px; font-weight: 400; margin-top: 10.11px;">
+                    {{ 'subscription_renewal_reminder.no_action'|trans({}, 'email', lang)|desc('You don\'t need to do anything - your subscription will renew automatically using the payment method on file.') }}
+                </div>
+
+                {% set pricing_link = baseUrl ~ path('aw_pricing') %}
+
+                <div class="blue-header" style="margin: 20px 0 13px;">
+                    <a href="{{ pricing_link }}" target="_blank" style="font-family: Trebuchet MS, Arial, sans-serif; color: #0168CA; font-size: 22px; line-height: 1.2; font-weight: 700; text-decoration: none;">
+                        {{ 'subscription_renewal_reminder.why_continue'|trans({'%plan_name%': planName}, 'email', lang)|desc('Why continue with %plan_name%?') }}
+                    </a>
+                </div>
+
+                <div class="paragraph-2" style="font-family: Trebuchet MS, Arial, sans-serif; color: #3D424D; font-size: 16px; line-height: 1.2; font-weight: 400;">
+                    {{ 'subscription_renewal_reminder.awplus_intro'|trans({}, 'email', lang)|desc('Your subscription unlocks a suite of powerful features designed to enhance your travel rewards experience:') }}
+                </div>
+
+                <!-- Features list -->
+                <table class="feature-list" cellpadding="0" cellspacing="0" border="0" style="margin: 13px 0 25px;">
+                    {{ macro.feature(
+                        'refresh',
+                        'subscription_renewal_reminder.unlimited_updates'|trans({}, 'email', lang)|desc('Unlimited account updates'),
+                        'subscription_renewal_reminder.unlimited_updates_desc'|trans({}, 'email', lang)|desc('Keep all your loyalty accounts current without daily limits.'),
+                        _context
+                    ) }}
+                    {{ macro.feature(
+                        'fire-alert',
+                        'subscription_renewal_reminder.expiration_tracking'|trans({}, 'email', lang)|desc('Comprehensive expiration tracking'),
+                        'subscription_renewal_reminder.expiration_tracking_desc'|trans({}, 'email', lang)|desc('Monitor all your points and miles to prevent unexpected expirations.'),
+                        _context
+                    ) }}
+                    {{ macro.feature(
+                        'star',
+                        'subscription_renewal_reminder.elite_status'|trans({}, 'email', lang)|desc('Elite status progress'),
+                        'subscription_renewal_reminder.elite_status_desc'|trans({}, 'email', lang)|desc('View your advancement towards elite tiers across programs.'),
+                        _context
+                    ) }}
+                    {{ macro.feature(
+                        'chart',
+                        'subscription_renewal_reminder.balance_history'|trans({}, 'email', lang)|desc('Balance history'),
+                        'subscription_renewal_reminder.balance_history_desc'|trans({}, 'email', lang)|desc('Analyze how your account balances have evolved over time.'),
+                        _context
+                    ) }}
+                    {{ macro.feature(
+                        'undo-action',
+                        'subscription_renewal_reminder.transaction_history'|trans({}, 'email', lang)|desc('Transaction history'),
+                        'subscription_renewal_reminder.transaction_history_desc'|trans({}, 'email', lang)|desc('Access detailed records of points earned and redeemed.'),
+                        _context
+                    ) }}
+                    {{ macro.feature(
+                        'export',
+                        'subscription_renewal_reminder.data_export'|trans({}, 'email', lang)|desc('Data export'),
+                        'subscription_renewal_reminder.data_export_desc'|trans({}, 'email', lang)|desc('Download your rewards data as Excel or PDF files for personal records.'),
+                        _context
+                    ) }}
+                    {{ macro.feature(
+                        'speedometer',
+                        'subscription_renewal_reminder.accelerated_updates'|trans({}, 'email', lang)|desc('Accelerated updates'),
+                        'subscription_renewal_reminder.accelerated_updates_desc'|trans({}, 'email', lang)|desc('Refresh multiple accounts simultaneously, up to 5x faster.'),
+                        _context
+                    ) }}
+                    {{ macro.feature(
+                        'ad-free',
+                        'subscription_renewal_reminder.ad_free'|trans({}, 'email', lang)|desc('Ad-free experience'),
+                        'subscription_renewal_reminder.ad_free_desc'|trans({}, 'email', lang)|desc('Enjoy AwardWallet without any advertisements.'),
+                        _context
+                    ) }}
+                    {{ macro.feature(
+                        'notifications',
+                        'subscription_renewal_reminder.custom_notifications'|trans({}, 'email', lang)|desc('Custom notifications'),
+                        'subscription_renewal_reminder.custom_notifications_desc'|trans({}, 'email', lang)|desc('Opt to receive only essential updates, minimizing inbox clutter.'),
+                        _context
+                    ) }}
+                    {{ macro.feature(
+                        'airline',
+                        'subscription_renewal_reminder.extended_history'|trans({}, 'email', lang)|desc('Extended travel history'),
+                        'subscription_renewal_reminder.extended_history_desc'|trans({}, 'email', lang)|desc('Review up to 10 years of your travel activities.'),
+                        _context
+                    ) }}
+                </table>
+
+                <h4 style="font-family: Trebuchet MS, Arial, sans-serif; color: #3D424D; font-size: 18px; margin: 0 0 10px 0; padding: 0; font-weight: 700;">
+                    {{ 'subscription_renewal_reminder.want_change'|trans({}, 'email', lang)|desc('Want to make a change?') }}
+                </h4>
+
+                <div class="paragraph" style="font-family: Trebuchet MS, Arial, sans-serif; color: #3D424D; font-size: 12px; line-height: 22px; font-weight: 400; margin-top: 10.11px;">
+                    {{ 'subscription_renewal_reminder.manage_subscription_desc'|trans({}, 'email', lang)|desc('You can update your billing info, switch plans, or cancel your subscription anytime by visiting your account here:') }}
+                </div>
+
+                {% set manage_link = baseUrl ~ path('aw_profile_overview') %}
+
+                <a href="{{ manage_link }}" target="_blank" class="user-profile-button"
+                   style="display:block; max-width: 300px; margin: 19px auto 26px; text-decoration: none; background-color: #0168CA; color: #FFFFFF; border-radius: 8px; padding: 12px; text-align: center; white-space: nowrap; font-family: Trebuchet MS, Arial, sans-serif; font-size: 14px; line-height: 26px; font-weight: 700;">
+                    {{ 'subscription_renewal_reminder.manage_link'|trans({}, 'email', lang)|desc('Manage My Subscription') }}
+                </a>
+
+                {% set contact_link = commonMacro.link(baseUrl ~ path('aw_contactus_index'), '$$')|split('$$') %}
+
+                <div class="paragraph-3" style="font-family: Trebuchet MS, Arial, sans-serif; color: #3D424D; font-size: 14px; line-height: 1.2; font-weight: 400; margin-top: 10.11px;">
+                    {{
+                        'subscription_renewal_reminder.support'|trans({
+                            '%link_on%': contact_link[0],
+                            '%link_off%': contact_link[1],
+                            '%contact_us_url%': baseUrl ~ path('aw_contactus_index')
+                        }, 'email', lang)|desc('If you have any questions or need help, our support team is here for you at %link_on%%contact_us_url%%link_off%')|raw
+                    }}
+                </div>
+
+                <div style="margin-top: 42px;" class="thanks">
+                    <h4 style="font-family: Trebuchet MS, Arial, sans-serif; color: #3D424D; font-size: 18px; margin: 0 0 10px 0; padding: 0; font-weight: 700;">
+                        {{ 'subscription_renewal_reminder.thanks'|trans({}, 'email', lang)|desc('Thanks for being a part of the AwardWallet community!') }}
+                    </h4>
+                </div>
+
+                <table cellpadding="0" cellspacing="0" border="0" style="width: 100%; margin-top: 20px;">
+                    <tr>
+                        <td width="20" style="padding-right: 7px;">
+                            <img src="{{ baseImagesPath }}/aw.png" alt="aw" width="20" height="20">
+                        </td>
+                        <td style="font-family: Trebuchet MS, Arial, sans-serif; color: #3D424D; font-size: 14px; line-height: 1.3; font-weight: 400;" class="signature">
+                            {{ 'subscription_renewal_reminder.signature'|trans({}, 'email', lang)|desc('The AwardWallet Team') }}
+                        </td>
+                    </tr>
+                </table>
+
+            </div>
+        </td>
+    </tr>
+{% endblock content_row %}
+
+{% block signature %}
+    <tr><td>&nbsp;</td></tr>
+{% endblock signature %}
+
+{% macro feature(icon, header, desc, context) %}{% trim %}{% autoescape false %}
+    <tr>
+        <td class="feature-item-marker"  style="vertical-align: top; width: 32px; padding: 9px 0;">
+            <img src="{{ context.baseImagesPath }}/{{ icon }}.png" alt="{{ icon }}" width="20" height="20" style="display: block;">
+        </td>
+        <td class="feature-item" style="padding: 10px 0;font-family: Trebuchet MS, Arial, sans-serif; color: #3D424D; font-size: 13px; line-height: 18px; font-weight: 400;">
+            <strong>{{ header }}</strong><br>
+            {{ desc }}
+        </td>
+    </tr>
+{% endautoescape %}{% endtrim %}{% endmacro %}
+
+{% macro listItem(text, context) %}{% trim %}{% autoescape false %}
+    <tr>
+        <td valign="top" style="color: #4684C4; vertical-align: middle; font-size: 1.5em; padding-right: 6px; line-height: 0;" class="important-info-item-marker">•</td>
+        <td style="font-family: Trebuchet MS, Arial, sans-serif; font-size: 12px; line-height: 1.9; font-weight: 400; color: #3D424D; padding-left: 3px;" class="important-info-item">
+            {{ text|raw }}
+        </td>
+    </tr>
+{% endautoescape %}{% endtrim %}{% endmacro %}

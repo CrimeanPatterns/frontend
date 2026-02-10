@@ -1,0 +1,30 @@
+{% block sharing_timelines_widget %}
+    {% for idx, checkbox in form %}
+        {% set timeline = form.vars[idx] %}
+        <tr {% if checkbox.vars.checked %}class="focused"{% endif %}>
+            <td class="check">
+                {{ form_widget(checkbox) }}
+            </td>
+            <td><strong>{{ timeline.name }}</strong></td>
+        </tr>
+    {% endfor %}
+{% endblock %}
+
+{% block sharing_timelines_row %}
+    {% apply spaceless %}
+        {% if form|length %}
+            <table class="main-table share-accounts">
+                <thead>
+                <tr>
+                    <th>{{ 'share'|trans() }}</th>
+                    <th>{{ 'entire.timeline.of'|trans()|desc('The entire timeline of') }}</th>
+                </tr>
+                </thead>
+                <tbody>
+                {{ form_widget(form) }}
+                </tbody>
+            </table>
+        {% endif %}
+    {% endapply %}
+{% endblock %}
+

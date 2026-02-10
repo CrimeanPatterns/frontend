@@ -1,0 +1,49 @@
+{# Issue #111111 #}
+
+{% extends "@AwardWalletMain/Offer/standard.html.twig" %}
+{% import '@AwardWalletMain/Offer/offerMacros.html.twig' as offerMacros %}
+{% import '@AwardWalletMain/TwigMacros/assets.html.twig' as assets %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    {{ encore_entry_link_tags('offer') }}
+    {{ encore_entry_link_tags('offers/marriottendssoonoffer') }}
+    {{ assets.assets_form('css') }}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        {{ offerMacros.jsOfferYes(_context, ApplyURL, Code, OfferUserID, ApplyURL) }}
+        {{ offerMacros.jsOfferNo(_context, Code, OfferUserID, defaultRedirectLocation) }}
+    </script>
+{% endblock %}
+
+{% block content %}
+    <div id="offer_wrap">
+        <div class="marriott-offer">
+            <div class="marriott-premier-card-offer">
+                <h3>Ends Soon!</h3>
+                <h4>
+                    This limited time offer<br/>
+                    of over 70,000 hotel points<br/>
+                    ends soon.
+                </h4>
+                <p>
+                    This is the highest points offer ever<br/>
+                    for the card. <br>
+                    But before you apply for this card,<br/>
+                    you should brush up on the <br/>
+                    <a href="https://awardwallet.com/blog/why-you-should-apply-for-the-chase-sapphire-preferred/" target="_self">new rules for some cards</a>.
+                </p>
+                <a onclick="offerYes(false);" href="#" class="btn-blue-offer">Learn More</a>
+            </div>
+        </div>
+        <div class="offer_declinekind" style="margin-top: 5px" onclick="offerNo();">
+            Never show this ad again
+        </div>
+        <div class="offer_toaccount" style="margin-top: 5px" onclick="window.location = '{{ defaultRedirectLocation }}'">
+            Proceed to my account
+        </div>
+    </div>
+{% endblock %}

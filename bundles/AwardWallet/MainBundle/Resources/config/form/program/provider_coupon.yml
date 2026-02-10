@@ -1,0 +1,150 @@
+parameters:
+
+services:
+    _defaults:
+        public: true
+
+    # Types
+
+    aw.mobile.form.providercoupon:
+        public: true
+        class: AwardWallet\MobileBundle\Form\Type\ProviderCouponType
+        arguments:
+            - "@aw.mobile.form_helper.program"
+            - "@aw.mobile.url_transformer"
+            - '@AwardWallet\MainBundle\Form\Transformer\ProviderCouponMobileFormTransformer'
+            - "@aw.form.attach_providercoupon_to_account_helper"
+            - "@aw.api.versioning"
+            - '@AwardWallet\MainBundle\Entity\Repositories\AccountRepository'
+            - '@AwardWallet\MainBundle\Entity\Repositories\ProviderRepository'
+            - "@aw.security.token_storage"
+            - '@AwardWallet\MainBundle\Form\Helper\MobileExtensionLoader'
+            - "@doctrine.orm.default_entity_manager"
+            - "@translator"
+            - '@AwardWallet\MainBundle\Form\Type\Helpers\CurrencyHelper'
+            - '@Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface'
+        tags:
+            - {name: form.type}
+
+    aw.form.type.providercoupon:
+        public: true
+        class: AwardWallet\MainBundle\Form\Type\ProvidercouponType
+        arguments:
+            - "@security.authorization_checker"
+            - '@AwardWallet\MainBundle\Entity\Repositories\UseragentRepository'
+            - "@translator"
+            - "@doctrine.orm.default_entity_manager"
+            - '@AwardWallet\MainBundle\Manager\AccountManager'
+            - "@aw.form.transformer.generic.providercoupon"
+            - "@aw.form.attach_providercoupon_to_account_helper"
+            - '@AwardWallet\MainBundle\Form\Type\Helpers\CurrencyHelper'
+        tags:
+            - { name: form.type }
+
+    AwardWallet\MainBundle\Form\Type\DocumentType:
+        autowire: true
+        public: true
+        tags:
+            - { name: form.type }
+        arguments:
+            $projectPath: "%kernel.project_dir%"
+
+    AwardWallet\MainBundle\Form\Type\Mobile\Loyalty\DocumentType:
+        public: true
+        autowire: true
+        arguments:
+            $mobileUrlGenerator: '@AwardWallet\MobileBundle\Form\View\UrlTransformer'
+            $projectPath: "%kernel.project_dir%"
+        tags:
+            - { name: form.type }
+
+    AwardWallet\MainBundle\Form\Type\DatalistType:
+        public: true
+        autowire: true
+        tags:
+            - { name: form.type }
+
+    # Transformers
+
+    aw.form.transformer.generic.providercoupon:
+        autowire: true
+        public: true
+        class: AwardWallet\MainBundle\Form\Transformer\ProviderCouponFormTransformer
+    AwardWallet\MainBundle\Form\Transformer\ProviderCouponFormTransformer: '@aw.form.transformer.generic.providercoupon'
+    AwardWallet\MainBundle\Form\Transformer\ProviderCouponMobileFormTransformer:
+        autowire: true
+
+    AwardWallet\MainBundle\Form\Transformer\DocumentTransformer:
+        autowire: true
+        class: AwardWallet\MainBundle\Form\Transformer\DocumentTransformer
+        arguments: ["@aw.form.handler_helper"]
+
+    # Helpers
+
+    aw.form.attach_providercoupon_to_account_helper:
+        public: true
+        class: AwardWallet\MainBundle\Form\Type\Helpers\AttachProvidercouponToAccountHelper
+        arguments:
+            - '@AwardWallet\MainBundle\Entity\Repositories\ProviderRepository'
+            - '@AwardWallet\MainBundle\Entity\Repositories\AccountRepository'
+            - "@aw.extension.twig.aw_extension"
+            - "@aw.security.token_storage"
+            - "@doctrine.orm.default_entity_manager"
+
+    AwardWallet\MainBundle\Form\Type\Helpers\DocumentHelper:
+        autowire: true
+        arguments:
+            $geoReader: "@aw.geoip.city"
+
+    # Handlers
+
+    aw.form.providercoupon.subscriber.generic:
+        public: true
+        class: AwardWallet\MainBundle\Form\Handler\Subscriber\ProviderCouponGeneric
+        arguments:
+            - "@security.authorization_checker"
+            - "@aw.security.token_storage"
+            - '@AwardWallet\MainBundle\Manager\AccountManager'
+            - "@aw.form.transformer.generic.providercoupon"
+            - "@aw.form.handler_helper"
+            - "@doctrine.orm.default_entity_manager"
+
+    aw.form.providercoupon.handler.mobile:
+        public: true
+        parent: aw.form.generic_request_handler
+        calls:
+            - [setChannels, [['form.mobile', 'form.generic.providercoupon', 'form.mobile.providercoupon', 'form.generic']]]
+            - [addHandlerSubscriber, ["@aw.form.providercoupon.subscriber.generic"]]
+            - [addHandlerSubscriber, ["@aw.form.subscriber.mobile.partial_form"]]
+            - [addHandlerSubscriber, ["@aw.form.subscriber.mobile.request_data_transformer"]]
+            - [addHandlerSubscriber, ["@aw.form.card_image.subscriber.mobile"]]
+
+    aw.form.providercoupon.handler.desktop:
+        public: true
+        parent: aw.form.generic_request_handler
+        calls:
+            - [setChannels, [['form.generic.providercoupon']]]
+            - [addHandlerSubscriber, ["@aw.form.providercoupon.subscriber.generic"]]
+
+    AwardWallet\MainBundle\Form\Handler\Subscriber\DocumentGeneric:
+        arguments:
+            - "@aw.form.handler_helper"
+            - "@doctrine.orm.entity_manager"
+            - "@aw.security.token_storage"
+
+    aw.form.document.handler.desktop:
+        public: true
+        parent: aw.form.generic_request_handler
+        calls:
+            - [setChannels, [['form.generic.document']]]
+            - [addHandlerSubscriber, ['@AwardWallet\MainBundle\Form\Handler\Subscriber\DocumentGeneric']]
+
+    aw.form.document.handler.mobile:
+        public: true
+        parent: aw.form.generic_request_handler
+        calls:
+            - [setChannels, [['form.mobile', 'form.generic.document', 'form.generic']]]
+            - [addHandlerSubscriber, ['@AwardWallet\MainBundle\Form\Handler\Subscriber\DocumentGeneric']]
+            - [addHandlerSubscriber, ["@aw.form.subscriber.mobile.partial_form"]]
+            - [addHandlerSubscriber, ["@aw.form.subscriber.mobile.request_data_transformer"]]
+            - [addHandlerSubscriber, ["@aw.form.card_image.subscriber.mobile"]]

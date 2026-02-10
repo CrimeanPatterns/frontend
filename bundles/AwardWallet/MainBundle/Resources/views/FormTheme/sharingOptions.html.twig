@@ -1,0 +1,34 @@
+{% block sharing_options_widget %}
+	{% for idx, checkbox in form %}
+		{% set agent = form.vars[idx] %}
+		<tr>
+			<td>
+				{{ form_widget(checkbox, {attr: {disabled: true}}) }}
+				<label for="{{ checkbox.vars.id }}">{{ checkbox.vars.label|htmldecode }}</label>
+			</td>
+			<td>
+                {% if agent.ClientID is empty %}
+                    {% set link = path('aw_user_family', {ID: agent.value}) %}
+				{% else %}
+                    {% set link = path('aw_user_connection_edit', {userAgentId: agent.value}) %}
+				{% endif %}
+				<a href="{{ link }}">{{ agent.notice }}</a>
+			</td>
+		</tr>
+	{% endfor %}
+{% endblock %}
+
+{% block sharing_options_row %}
+	{% apply spaceless %}
+		{% if form|length %}
+		<div class="account-list js-share-account-list" style="display: none">
+			<a href="#" class="show js-share-account-toggle">{{ 'account.sharing-options.show'|trans|desc('Show Account Sharing Options') }}<i class="icon-arrow-bottom-dark"></i></a>
+			<a href="#" class="show js-share-account-toggle" style="display: none">{{ 'account.sharing-options.hide'|trans|desc('Hide Account Sharing Options') }}<i class="icon-arrow-top-dark"></i></a>
+			<div class="js-share-account-table" style="display: none"><table>
+				{{ form_widget(form) }}
+			</table></div>
+		</div>
+		{% endif %}
+	{% endapply %}
+{% endblock %}
+

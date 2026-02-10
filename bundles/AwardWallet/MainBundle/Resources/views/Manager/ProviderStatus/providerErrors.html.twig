@@ -1,0 +1,439 @@
+{% extends '@AwardWalletMain/Manager/layout.html.twig' %}
+
+{% block content %}
+    <style type="text/css">
+        i[class^="icon-"],
+        i[class*=" icon-"] {
+            display: inline-block;
+            text-align: center;
+            text-decoration: none;
+            vertical-align: middle;
+            background-image: url({{ asset('assets/awardwalletnewdesign/img/sprite.png') }}?v=2);
+            background-repeat: no-repeat;
+        }
+
+        .assignee {
+            float: right;
+            font-size: 140%;
+            margin: 8px 0 3px 5px;
+        }
+
+        span.name {
+            color: black;
+        }
+        span.name > span {
+            color: #9C9C9C;
+        }
+
+        .icon-blue-info {
+            width: 13px;
+            height: 13px;
+            background-position: -111px -99px;
+        }
+
+        #icon-ext {
+            display: inline-block;
+            text-align: left;
+            text-decoration: none;
+            vertical-align: top;
+            background-image: url({{ asset('assets/awardwalletnewdesign/img/sprite.png') }}?v=2);
+            background-repeat: no-repeat;
+            width: 11px;
+            height: 9px;
+            background-position: -129px -65px;
+            margin-top: 5px;
+            margin-left: -4px;
+            margin-right: -2px;
+        }
+
+        div#askUserIDBox {
+            min-width: 200px !important;
+            width: 317px !important;
+        }
+        #askUserIDBox .ui-button .ui-button-text {display: none}
+        #askUserIDBox input {
+            width: 280px !important;
+        }
+        #askUserIDBox .btn-blue {
+            cursor: pointer;
+            padding: 5px 8px !important;
+        }
+        #askUserIDBox a[href="#"] {
+            display: inline-block;
+            margin: 5px 0 0 25px;
+        }
+    </style>
+
+    {# User IDs box #}
+    {% set boxStyle = 'display: none; min-width: 370px; height: 240px; position: absolute; z-index: 50;' %}
+
+    {# Begin Box #}
+    <div id="askUserIDBox" style="display: none; min-width: 370px; height: 240px; position: absolute; z-index: 50;"
+         class="ui-dialog ui-widget ui-widget-content ui-corner-all ui-front ui-draggable ui-resizable ui-dialog-buttons"
+         role="dialog">
+        <div>
+            <div class="ui-dialog-titlebar ui-widget-header ui-corner-all ui-helper-clearfix"><span id="ui-id-1"
+                                                                                                    class="ui-dialog-title">Add UserIDs&nbsp;</span>
+                <button class="ui-button ui-widget ui-state-default ui-corner-all ui-button-icon-only ui-dialog-titlebar-close"
+                        role="button" aria-disabled="false" title="close" onclick="cancelPopup(); return false;"><span
+                            class="ui-button-icon-primary ui-icon ui-icon-closethick"></span><span
+                            class="ui-button-text">close</span></button>
+            </div>
+            <div class="ng-isolate-scope ui-dialog-content ui-widget-content">
+                <div style="padding: 0px;">
+                    <div style="margin-bottom: 10px;"><p id='providerName' style='font-weight: bold;'></p>
+                        <p id='note'>Here you may add User IDs that you would like to be in the Mailer list</p>
+                        <p>Format: <b id="regExp"></b></p>
+                        <p id='example'>Example: 7, 349414, 61266, 428036</p>
+                        <p id='justLink' style="display: none"></p><input type="text" id="userIDs"
+                                                                          style="margin-top: 15px; width: 290px;"
+                                                                          class="inputTxt"><input type="hidden"
+                                                                                                  id="newState"><input
+                                type="hidden" id="providerID"></div>
+                </div>
+                <button type="submit" class="btn-blue" style="float:left;"
+                        onclick="changeProviderState('addUsers'); return false;">Add to mailer list
+                </button>
+                <button type="submit" class="btn-blue"
+                        style="float:right; background: #125da3; border-color: #125da3; color: #fff!important;"
+                        onclick="changeProviderState('noThanks'); return false;">Just send emails
+                </button>
+                <div style="clear: both;">&nbsp;</div>
+                <a href="#" onclick='changeProviderState("dontSendEmails"); return false;'>Dont send emails, just change
+                    state</a>
+                <div style="clear: both;">&nbsp;</div>
+                <a href="#" onclick='changeProviderState("justLink"); return false;'>Dont send emails, just make a
+                    link</a>
+                <div class='clear'></div>
+            </div>
+        </div>
+    </div>
+    {# End Box #}
+    
+    {# Provider information section #}
+    <div class='providerStatus assignee'>
+        {{ assignee|raw }}
+    </div>
+    <h1 class='providerStatus' style='float:left; margin-top:5px;'>
+        <a target='_blank' href='{{ path('aw_manager_accountByRegion', {'search': 1, 'login2': '', 'login3': '', 'UnusedID': providerData.ProviderID, 'providerID': providerData.ProviderID, 'errorCode': constant('ACCOUNT_ENGINE_ERROR')}) }}' title='All unknown errors'>Errors</a> for provider
+        <a id='providerCode' target='_blank' href='{{ path('aw_manager_list', {'Schema': 'Provider', 'ProviderID': providerData.ProviderID}) }}' title='Provider settings'>{{ providerData.Code }}</a> {{ extCheckIndicator|raw }}
+        {{ providerStatistics|raw }} {{ copyProviderCode|raw }}
+    </h1>
+    <div style='color:lightgray; font-size:180%; float:left; margin-top:6px;'>
+        [{{ displayName | raw }} / {{ providerKindMap[providerData.Kind] }} |
+        <nobr>
+            <a target='_blank' href='{{ path('aw_manager_list', {'ProviderPropertyID': '', 'ProviderID': providerData.ProviderID, 's1.x': 6, 's1.y': 6, 'Name': '', 'Code': '', 'Required': '', 'SortIndex': '', 'Kind': '', 'Visible': '', 'Schema': 'ProviderProperty'}) }}' style='color:lightgray; text-decoration:none;' title='Provider properties'>Properties</a>]
+            <a target='_blank' href='{{ path('aw_manager_operations', {'ID': providerData.ProviderID}) }}' style='color:lightgray; text-decoration:none;' title='Operations'><img src="/images/manager/operations.png" width="26" height="20" alt="внедренная иконка папки"/></a>
+        </nobr>
+    </div>
+    <div style='clear:both;'></div>
+
+    {# Accounts with errors section #}
+    {% if rows|length == 0 %}
+        <p>No accounts</p>
+    {% else %}
+        <span class='providerStatus'>
+            {{ unknownErrors }} out of {{ rows|length }} errors {{ unknownErrors == 1 ? 'is' : 'are' }} unknown ({{ showKilledLink|raw }}
+            <a href="{{ path('aw_manager_provider_errors', {'providerId': providerData.ProviderID, 'KE': (showWithErrors == 0 ? 1 : 0), 'L': limit, 'HK': hideKilled}) }}">show {{ showErrorsText }}</a>
+            / errors on page:
+            <a href="{{ path('aw_manager_provider_errors', {'providerId': providerData.ProviderID, 'KE': showWithErrors, 'L': 15, 'HK': hideKilled}) }}">15</a>,
+            <a href="{{ path('aw_manager_provider_errors', {'providerId': providerData.ProviderID, 'KE': showWithErrors, 'L': 30, 'HK': hideKilled}) }}">30</a>,
+            <a href="{{ path('aw_manager_provider_errors', {'providerId': providerData.ProviderID, 'KE': showWithErrors, 'L': 50, 'HK': hideKilled}) }}">50</a>,
+            <a href="{{ path('aw_manager_provider_errors', {'providerId': providerData.ProviderID, 'KE': showWithErrors, 'L': 100, 'HK': hideKilled}) }}">100</a>,
+            <a href="{{ path('aw_manager_provider_errors', {'providerId': providerData.ProviderID, 'KE': showWithErrors, 'L': 200, 'HK': hideKilled}) }}">200</a>)
+        </span>
+
+        <table class="detailsTable providerStatus" id="1" cellpadding="4">
+            <tr>
+                {% set displayFields = ['UpdateDate', 'AccountID', 'UserID', 'Login', 'Login2', 'ErrorCode', 'ErrorMessage', 'DebugInfo', 'Balance', 'SavePassword', 'CheckedBy'] %}
+                {% for fieldName in displayFields %}
+                    <td><b>{{ fieldName }}</b></td>
+                {% endfor %}
+                <td>
+                    <p style='text-align: right; margin: 0; padding: 0'>
+                        <span id="select1">
+                            <a id="selectAll" href="javascript:selectAll(1)">Select all</a> / <a id="selectUE" href="javascript:selectUE()">unknown</a>
+                        </span>
+                        <a style="display: none;" id="unselect1" href="javascript:unselectAll(1)">Unselect all</a>
+                    </p>
+                </td>
+                <td>
+                    <p style='text-align: right; margin: 0; padding: 0'>
+                        <a href="javascript:checkAccounts()">Check</a>
+                    </p>
+                </td>
+            </tr>
+
+            {% for row in rows %}
+                <tr>
+                    {% for fieldName in displayFields %}
+                        <td>
+                            {% if fieldName == 'DebugInfo' %}
+                                {{ row[fieldName]|escape|replace({'&lt;li&gt;': '<li>', '&lt;/li&gt;': '</li>', '&lt;ul&gt;': '<ul style="margin:1%; padding: 1% 0 1% 7%;font-size: 11px;">', '&lt;/ul&gt;': '</ul>', '&lt;strong&gt;': '<strong>', '&lt;/strong&gt;': '</strong>'})|raw }}
+                            {% elseif fieldName == 'Login' %}
+                                <a title="Password request" href="{{ path('aw_manager_password_vault_request_password', {'ID': row.AccountID}) }}" target='_blank'>{{ row[fieldName] }}</a>
+                            {% elseif fieldName == 'UpdateDate' %}
+                                <span rel='accountInfo{{ row.AccountID }}' id='accountInfo'>{{ row.UpdateDate }}</span>
+                                <div style='display: none;'>
+                                    <table>
+                                        <tr>
+                                            <td lab='accountInfo{{ row.AccountID }}'>
+                                                <ul style='padding: 0; margin-left: 30px; margin-top: 0; margin-bottom: 2px; margin-rigth: 0;'>
+                                                    <li> Login: {{ row.Login }} </li>
+                                                    <li> Login2: {{ row.Login2 }} </li>
+                                                    <li> Login3: {{ row.Login3 }} </li>
+                                                </ul>
+                                                <ul style='padding: 0; margin-left: 30px; margin-top: 10px; margin-bottom: 2px; margin-rigth: 0;'>
+                                                    <li> SuccessCheckDate: {{ row.SuccessCheckDate }} </li>
+                                                    <li> UpdateDate: {{ row.UpdateDate }} </li>
+                                                    <li> ExpirationDate: {{ row.ExpirationDate }} </li>
+                                                    <li> ExpirationAutoSet: {{ row.ExpirationAutoSet }} </li>
+                                                    <li> SubAccounts: {{ row.SubAccounts }} </li>
+                                                </ul>
+                                                <ul style='padding: 0; margin-left: 30px; margin-top: 10px; margin-bottom: 2px; margin-rigth: 0;'>
+                                                    <li> DisableExtension: {{ row.DisableExtension }} </li>
+                                                    <li> DisableClientPasswordAccess: {{ row.DisableClientPasswordAccess }} </li>
+                                                </ul>
+                                                <ul style='padding: 0; margin-left: 30px; margin-top: 10px; margin-bottom: 2px; margin-rigth: 0;'>
+                                                    <li> PassChangeDate: {{ row.PassChangeDate }} </li>
+                                                    <li> CreationDate: {{ row.CreationDate }} </li>
+                                                </ul>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            {% elseif fieldName == 'SavePassword' %}
+                                {{ savePasswordMap[row[fieldName]] }}
+                            {% elseif fieldName == 'CheckedBy' %}
+                                {{ row[fieldName] ? checkedByMap[row[fieldName]] : '' }}
+                            {% else %}
+                                {{ row[fieldName] }}
+                            {% endif %}
+                        </td>
+                    {% endfor %}
+
+                    <td>
+                        {% set links = [] %}
+                        {% set noLocalPass = (row.SavePassword == constant('SAVE_PASSWORD_DATABASE') and providerData.State != constant('PROVIDER_CHECKING_EXTENSION_ONLY')) %}
+
+                        {% if noLocalPass or providerData.PasswordRequired != 1 %}
+                            {% set links = links|merge(['<a href="' ~ path('aw_manager_check_account', {'ID': row.AccountID}) ~ '">Check</a>']) %}
+                        {% endif %}
+
+                        {% set links = links|merge(['<a href="' ~ path('aw_manager_impersonate', {'UserID': row.UserID, 'AutoSubmit': '', 'AwPlus': 1}) ~ '" target="_blank">Impersonate</a>']) %}
+
+                        {% if is_granted('ROLE_MANAGE_LOGS') %}
+                            {% set links = links|merge(['<a href="' ~ path('aw_manager_loyalty_logs', {'AccountID': row.AccountID, 'ShowLatest': 1}) ~ '">Logs</a>']) %}
+                        {% endif %}
+
+                        {{ links|join(' | ')|raw }}
+                    </td>
+
+                    <td style='text-align: center'>
+                        {% set ec = (row.ErrorMessage != 'Killed') ? row.ErrorCode : 'Killed' %}
+                        {% if noLocalPass %}
+                            <label style='display: block; margin: 0; padding: 0; cursor: pointer;' for='checkbox{{ row.AccountID }}'>
+                                <input type='checkbox' value='{{ row.AccountID }}' id='checkbox{{ row.AccountID }}ec{{ ec }}' name='checkboxes[]' onclick='check(this)'>
+                            </label>
+                        {% endif %}
+                    </td>
+                </tr>
+            {% endfor %}
+        </table>
+    {% endif %}
+
+    {# Internal Note section #}
+    <h1>Internal Note:</h1>
+    <table class="detailsTable providerStatus" cellpadding="4">
+        <tr>
+            <td>
+                {% if providerData.InternalNote is not empty %}
+                    {{ providerData.InternalNote|raw }}
+                {% else %}
+                    No notes to display
+                {% endif %}
+            </td>
+        </tr>
+    </table>
+
+    {# Modal/popup fader #}
+    <div id="fader" style="opacity: 0.75; z-index: 10; position: absolute; top: 0; left: 0; right: 0; background-color: white;" onclick="cancelPopup()"></div>
+
+    <script type='text/javascript'>
+        var ids = [];
+
+        function check(obj) {
+            let value = obj.value;
+            if (obj.checked) {
+                ids.push(value);
+                $('#unselect'+value).show();
+                $('#select'+value).hide();
+            }
+            else {
+                ids.splice(ids.indexOf(value), 1);
+                if (ids.length == 0) {
+                    $('#select'+value).show();
+                    $('#unselect'+value).hide();
+                }
+            }
+        }
+
+        function checkAccounts() {
+            if( ids.length != 0 ){
+                window.open("{{ path('aw_manager_check_account') }}?ID="+ids.join(), "_self");
+            }
+        }
+
+        function selectAll(k) {
+            var checkboxes = document.evaluate("//input[contains(@name, 'checkbox') and ancestor::table[@id="+k+"]]", document, null, XPathResult.UNORDERED_NODE_ITERATOR_TYPE, null);
+            var checkbox = checkboxes.iterateNext();
+            while( checkbox ){
+                checkbox.checked = true;
+                if (ids.indexOf(checkbox.value) == -1)
+                    ids.push(checkbox.value);
+                checkbox = checkboxes.iterateNext();
+            }
+            $('#unselect'+k).show();
+            $('#select'+k).hide();
+        }
+
+        function selectUE($obj) {
+            var checkboxes = document.evaluate("//input[contains(@name, 'checkbox') and (contains(@id, 'ec6') or contains(@id, 'ec0') or contains(@id, 'ecKilled'))]", document, null, XPathResult.UNORDERED_NODE_ITERATOR_TYPE, null);
+            var checkbox = checkboxes.iterateNext();
+            while( checkbox ){
+                checkbox.checked = true;
+                if (ids.indexOf(checkbox.value) == -1)
+                    ids.push(checkbox.value);
+                checkbox = checkboxes.iterateNext();
+            }
+            $('#unselect1').show();
+            $('#select1').hide();
+        }
+
+        function unselectAll(k) {
+            var checkboxes = document.evaluate("//input[contains(@name, 'checkbox') and ancestor::table[@id="+k+"]]", document, null, XPathResult.UNORDERED_NODE_ITERATOR_TYPE, null);
+            var checkbox = checkboxes.iterateNext();
+            while( checkbox ){
+                checkbox.checked = false;
+                ids.splice(ids.indexOf(checkbox.value), 1);
+                checkbox = checkboxes.iterateNext();
+            }
+            $('#select'+k).show();
+            $('#unselect'+k).hide();
+        }
+
+        $("#accountInfo, #Statistic").hover(
+            function(event) {
+                if (typeof($(this).attr('rel')) != 'undefined') {
+                    var label = $(this).attr('rel');
+                    var text = $('td[lab=' + label + ']').html();
+                    if ($('#helper').length == 0) {
+                        $('body').append("<div id='helper'></div>");
+                    } else {
+                        $('#helper').show();
+                    }
+                    var data = {
+                        position: 'fixed',
+                        left: $('body').width() / 2 - 550,
+                        top: 150,
+                        border: '2px solid #000',
+                        background: '#e9e9e9',
+                        color: '#000',
+                        padding: '10px',
+                        width: 'auto'
+                    };
+                    $('#helper').css(data).html(text);
+                }
+            },
+            function() {
+                $('#helper').hide();
+            }
+        );
+
+        function copyText(id) {
+            try {
+                var aux = document.createElement("input");
+                var html = document.querySelector(id).innerHTML;
+                html = htmlspecialchars_decode(html);
+                aux.setAttribute("value", html);
+                document.body.appendChild(aux);
+                aux.select();
+                var successful = document.execCommand('copy');
+                var msg = successful ? 'successful' : 'unsuccessful';
+                console.log('Copy command was ' + msg);
+                // Remove it from the body
+                document.body.removeChild(aux);
+            } catch (err) {
+                console.log('Oops, unable to copy');
+            }
+        }
+
+        function htmlspecialchars_decode(html) {
+            html = html.replace(/\&amp;/g, "&");
+            html = html.replace(/\&lt;/g, "<");
+            html = html.replace(/\&gt;/g, ">");
+            html = html.replace(/\&quot;/g, "\"");
+            if (html.indexOf('target="_blank" title="Login URL">') !== -1) {
+                html = html.replace(/(<([^>]*)>)/ig, "");
+            }
+            return html;
+        }
+
+        function setAssignee(providerId, newUserId, cell, providerName){
+            cell = $(cell);
+            var oldUserId = cell.find('span.name').attr('userId');
+            $.ajax({
+                url: "{{ path('aw_manager_set_assignee') }}",
+                type: "POST",
+                data: {
+                    providerId: providerId,
+                    newUserId: newUserId,
+                    oldUserId: oldUserId
+                },
+                success: function(response){
+                    if(response != "OK"){
+                        window.alert(response);
+                        return false;
+                    }
+                    var newName = '';
+                    var newState = cell.find('a.clear').attr('stateprev');
+                    '' == newState || undefined == newState ? newState = 'Enabled' : null;
+                    if(newUserId != ''){
+                        newName = 'Assignee: <span>{{ app.user.login }}</span>';
+                        newState = 'Fixing';
+                        cell.find('a.clear').attr('stateprev', $(cell).parent().find('td.state').text());
+                    }
+                    cell.find('span.name').html(newName).attr('userId', newUserId);
+                    updateAssigneeCell(cell);
+                    cell.siblings('td.state').html(newState);
+                    if(newUserId == ''){
+                        changeProviderState('openDialog', 'fixed', providerId, cell, providerName);
+                    }
+                }
+            });
+        }
+
+        function updateAssigneeCell(cell){
+            if(cell.find('span.name').attr('userId') == ''){
+                cell.find('a.set').show();
+                cell.find('a.clear').hide();
+                cell.find('span.name').attr('style', 'display: none');
+            }
+            else{
+                cell.find('a.set').hide();
+                cell.find('a.clear').show();
+                cell.find('span.name').attr('style', 'display:inline');
+            }
+        }
+
+        $(document).ready(function () {
+            updateAssigneeCell($('.assignee'));
+        });
+
+        function cancelPopup() {
+            // This function should be defined elsewhere or implemented here
+            // It's referenced in the "fader" div onclick event
+        }
+    </script>
+{% endblock %}
+

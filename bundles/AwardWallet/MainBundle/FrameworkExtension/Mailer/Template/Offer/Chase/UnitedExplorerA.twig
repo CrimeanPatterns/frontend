@@ -1,0 +1,68 @@
+{% extends '@MailTemplate/Offer/Chase/BaseTemplate.twig' %}
+{% trans_default_domain "email" %}
+
+{% block subject %}{% apply spaceless %}{% autoescape false %}
+    {{ location }} - {{ date|date('F jS') }} - Are You Paying Checked Bag Fees?
+{% endautoescape %}{% endapply %}{% endblock subject %}
+
+{% block content %}
+    {% import '@MailTemplate/CommonMacro.twig' as commonMacro %}
+
+    <div style="padding: 0 10px">
+        {{ commonMacro.link(link, 'Save on Checked Bags with the United Explorer Card', {
+            'color': '#1D6CB5',
+            'font-size': '25px',
+            'line-height': '1.2',
+            'margin': '0',
+            'padding': '5px 0 10px 0',
+            'font-weight': 'normal'
+        }) }}
+        {{ commonMacro.offerRemark(_context) }}
+
+        {{ commonMacro.dear(user.firstname, _context) }}
+
+        {{ commonMacro.paragraph(
+            'If you often pay fees for checked bags when you fly with United, you might want to check out the <a href="' ~ link ~ '">United℠ Explorer Card</a> which offers a free first checked bag for you and one companion.', _context, {escape: false, fix_link: true}
+        ) }}
+        {{ commonMacro.paragraph(
+            'You’ll also get other great benefits including:', _context
+        ) }}
+
+        <div style="padding: 10px 0">
+            <table border="0" cellpadding="0" cellspacing="0" width="100%">
+                <tr>
+                    <td style="line-height:12px;padding-top:12px" valign="top" width="15">
+                        <img src="{{ baseImagesPath }}/check-mark.png" border="0" height="7" width="9" />
+                    </td>
+                    <td style="font-size:16px;color:#535457;padding-top:7px;" valign="top">Priority boarding</td>
+                </tr>
+                <tr>
+                    <td style="line-height:12px;padding-top:12px" valign="top" width="15">
+                        <img src="{{ baseImagesPath }}/check-mark.png" border="0" height="7" width="9" />
+                    </td>
+                    <td style="font-size:16px;color:#535457;padding-top:7px;" valign="top">2 United Club℠ passes</td>
+                </tr>
+                <tr>
+                    <td style="line-height:12px;padding-top:12px" valign="top" width="15">
+                        <img src="{{ baseImagesPath }}/check-mark.png" border="0" height="7" width="9" />
+                    </td>
+                    <td style="font-size:16px;color:#535457;padding-top:7px;" valign="top">Up to $100 Global Entry or TSA Pre✓® fee credit</td>
+                </tr>
+                <tr>
+                    <td style="line-height:12px;padding-top:12px" valign="top" width="15">
+                        <img src="{{ baseImagesPath }}/check-mark.png" border="0" height="7" width="9" />
+                    </td>
+                    <td style="font-size:16px;color:#535457;padding-top:7px;" valign="top">25% back on United Inflight Wi-Fi, food and drinks</td>
+                </tr>
+            </table>
+        </div>
+
+        {{ commonMacro.paragraph(
+            'If you fly with United at least a few times per year, this card is a great value. To learn more, check out our <a href="' ~ link ~ '">complete card review</a> on the blog.', _context, {escape: false, fix_link: true}
+        ) }}
+
+        <div style="text-align: center; margin-top: 15px;">
+            {{ commonMacro.button('Learn more', link) }}
+        </div>
+    </div>
+{% endblock content %}

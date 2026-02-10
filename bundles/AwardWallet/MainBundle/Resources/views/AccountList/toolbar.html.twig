@@ -1,0 +1,159 @@
+{% block list_toolbar %}
+    <div data-ng-cloak2 class="nav-row" data-ng-show="main.state.toolbar && main.state.loaded">
+        <div class="row t-left">
+            <ul class="dropdown-menu" data-ng-controller="actionsCtrl as actions">
+                {{ block('toolbar_checker') }}
+                {{ block('toolbar_actions') }}
+            </ul>
+        </div>
+        <div class="row t-right">
+            <ul class="search-menu dropdown-menu">
+                {{ block('toolbar_options') }}
+                {{ block('toolbar_update_all') }}
+                {{ block('toolbar_search') }}
+            </ul>
+        </div>
+        <div class="clear"></div>
+    </div>
+{% endblock %}
+
+{% block toolbar_checker %}
+    <li data-ng-controller="checkerCtrl as checker">
+        <div class="btn-silver-w rel-this">
+            <input id="mark" type="checkbox" data-ng-model='checker.view.mark' data-ng-change="checker.toggleAll()" class="checkbox" tabindex="995"/>
+            <label data-ng-if="!checker.view.reset" for="mark" class="label" data-tip title="Select all"></label>
+            <label data-ng-click="checker.resetAll()" data-ng-if="checker.view.reset" class="label minus" data-tip title="Reset selected"></label>
+            <a href="" data-target="select-accounts"><i class="icon-arrow-bottom-dark"></i></a>
+        </div>
+        <ul class="dropdown-submenu" data-menu data-id="select-accounts">
+            <li data-ng-repeat="(type, data) in checker.checks track by type"
+                data-ng-show="data.cnt || type == 'all'"><a href="" data-ng-click="checker.select(type)"><span class="dropdown-submenu__icon"><i data-ng-class="data.icon"></i></span><span>[[data.text]]<span class="bold">([[data.cnt]])</span></span></a></li>
+        </ul>
+    </li>
+{% endblock %}
+
+{% block toolbar_actions %}
+    <li>
+
+        <a class="btn-silver-w disable"
+           ng-show="!actions.view.dropdown"
+           data-tip
+           title="{{ "award.account.list.select-account"|trans|desc("Please select at least one account below") }}"
+        >
+            <i class="icon-actions"></i>
+            <span>{{ 'award.account.list.actions-button'|trans|desc('Actions') }}</span>
+            <i class="icon-arrow-bottom-dark"></i>
+        </a>
+
+        <a class="btn-silver-w rel-this"
+           data-target="selected-actions"
+           tabindex="996"
+           ng-show="actions.view.dropdown"
+        >
+            <i class="icon-actions"></i>
+            <span>{{ 'award.account.list.actions-button'|trans|desc('Actions') }}</span>
+            <i class="icon-arrow-bottom-dark"></i>
+        </a>
+        <ul class="dropdown-submenu" data-menu data-id="selected-actions">
+            <li data-ng-repeat="(action, data) in actions.state track by action"
+                data-ng-show="data.active"><a href="" data-ng-click="actions.action(action)"><span class="dropdown-submenu__icon"><i data-ng-class="data.icon"></i></span><span>[[data.text]]</span></a></li>
+        </ul>
+    </li>
+
+    <li>
+        <a class="btn-silver-w disable"
+           data-tip
+           ng-show="!actions.view.delete"
+           title="{{ "award.account.list.select-account"|trans|desc("Please select at least one account below") }}"
+        >
+            <i class="icon-delete"></i>
+        </a>
+
+        <a class="btn-silver-w"
+           data-ng-click="actions.action('deleteAction')"
+           data-tip
+           ng-show="actions.view.delete"
+           title="{{ "award.account.list.delete-selected"|trans|desc("Remove selected accounts") }}" tabindex="997">
+            <i class="icon-delete"></i>
+        </a>
+    </li>
+
+    <li>
+        <a class="btn-silver-w disable"
+           data-tip
+           ng-show="!actions.view.update"
+           title="{{ "award.account.list.select-account"|trans|desc("Please select at least one account below") }}"
+        >
+            <i class="icon-dark-refresh"></i>
+        </a>
+
+        <a class="btn-silver-w"
+           data-ng-click="actions.action('updateAction')"
+           data-tip
+           ng-show="actions.view.update"
+           title="{{ "award.account.list.update-selected"|trans|desc("Update selected accounts") }}"
+           tabindex="998">
+            <i class="icon-dark-refresh"></i>
+        </a>
+    </li>
+{% endblock %}
+
+{% block toolbar_options %}
+    <li data-ng-controller="optionsCtrl as options">
+        <a href="" class="btn-silver-w rel-this" data-target="list-options" tabindex="998"><i class="icon-views"></i><span>{{ 'award.account.list.options-button'|trans|desc('Views') }}</span><i class="icon-arrow-bottom-dark"></i></a>
+        <ul class="dropdown-submenu" data-menu data-id="list-options">
+            <li data-ng-show="!main.view.grouped"><a href="" data-ng-click="main.setOptions({ungroup: 'off'})"><span class="dropdown-submenu__icon"><i class="icon-group"></i></span><span>{{ "award.account.list.menu.options.group"|trans|desc("Group Rewards") }}</span></a></li>
+            <li data-ng-show="main.view.grouped"><a href="" data-ng-click="main.setOptions({ungroup: 'on'})"><span class="dropdown-submenu__icon"><i class="icon-ungroup"></i></span><span>{{ "award.account.list.menu.options.ungroup"|trans|desc("Ungroup Rewards") }}</span></a></li>
+            <li data-ng-show="main.stateParams.recent"><a href="" data-ng-click="main.setOptions({recent: undefined})"><span class="dropdown-submenu__icon"><i class="icon-full-list"></i></span><span>{{ "award.account.list.menu.options.changed-clean"|trans|desc("Full list") }}</span></a></li>
+            <li data-ng-show="main.stateParams.recent != '7'"><a href="" data-ng-click="main.setOptions({recent: 7})"><span class="dropdown-submenu__icon"><i class="icon-change-week"></i></span><span>{{ "award.account.list.menu.options.changed-within-week"|trans|desc("Changed within 1 week") }}</span></a></li>
+            <li data-ng-show="main.stateParams.recent != '31'"><a href="" data-ng-click="main.setOptions({recent: 31})"><span class="dropdown-submenu__icon"><i class="icon-change-month"></i></span><span>{{ "award.account.list.menu.options.changed-within-month"|trans|desc("Changed within 1 month") }}</span></a></li>
+            <li data-ng-show="main.totals.balance > 0"><a data-ng-click="options.view.needPaymentPopup($event)" href="/account/export/excel"><span class="dropdown-submenu__icon"><i class="icon-excel"></i></span><span>{{ "award.account.list.menu.options.download-excel"|trans|desc("Download in Excel") }}</span></a></li>
+            <li data-ng-show="main.totals.balance > 0"><a data-ng-click="options.view.needPaymentPopup($event)" href="/account/export/pdf"><span class="dropdown-submenu__icon"><i class="icon-pdf"></i></span><span>{{ "award.account.list.menu.options.download-pdf"|trans|desc("Download in PDF") }}</span></a></li>
+            <li data-ng-show="main.counters.accounts > 0"><a id="account-expirations-import-link" 
+            {% if not webpack|default(false) %}
+                onclick="require(['pages/accounts/calendarImport'], function (clickHandler) { clickHandler(); }); return false;"
+            {% endif %}
+            ><span class="dropdown-submenu__icon"><i class="icon-expire-calendar"></i></span><span>{{ 'calendar.expire.auto.import'|trans|desc('Account Expirations Calendar Import') }}</span></a></li>
+            <li data-ng-show="main.totals.balance > 0"><a data-ng-click="options.view.needPaymentPopup($event)" href="/account/export/travelPlanner.xls"><span class="dropdown-submenu__icon"><i class="icon-grid-view m-t-2"></i></span><span>{{ "award.account.list.menu.options.download-trip-planner-table"|trans|desc("Trip Planner (Pivot Table)") }}</span></a></li>
+            <li data-ng-show="!main.view.showInactive && main.counters.coupons"><a href="" data-ng-click="main.view.toggleInactive()"><span class="dropdown-submenu__icon"><i class="icon-transparent-check-s m-t-2"></i></span><span>{{ "award.account.list.menu.options.show-inactive"|trans|desc("Show inactive coupons") }}</span></a></li>
+            <li data-ng-show="main.view.showInactive && main.counters.coupons"><a href="" data-ng-click="main.view.toggleInactive()"><span class="dropdown-submenu__icon"><i class="icon-transparent-check-s m-t-2"></i></span><span>{{ "award.account.list.menu.options.hide-inactive"|trans|desc("Hide inactive coupons") }}</span></a></li>
+            <li data-ng-show="!main.view.showSubaccounts"><a href="" data-ng-click="main.view.toggleSubaccounts()"><span class="dropdown-submenu__icon"><i class="icon-transparent-check-s m-t-2"></i></span><span>{{ 'show-subaccounts'|trans|desc("Show sub-accounts") }}</span></a></li>
+            <li data-ng-show="main.view.showSubaccounts"><a href="" data-ng-click="main.view.toggleSubaccounts()"><span class="dropdown-submenu__icon"><i class="icon-transparent-check-s m-t-2"></i></span><span>{{ 'hide-subaccounts'|trans|desc("Hide sub-accounts") }}</span></a></li>
+            <li data-ng-show="!main.view.showErrors"><a href="" data-ng-click="main.view.toggleErrors()"><span class="dropdown-submenu__icon"><i class="icon-show-errors"></i></span><span>{{ 'show-errors-warnings'|trans|desc("Show errors and warnings") }}</span></a></li>
+            <li data-ng-show="main.view.showErrors"><a href="" data-ng-click="main.view.toggleErrors()"><span class="dropdown-submenu__icon"><i class="icon-hide-errors"></i></span><span>{{ 'hide-errors-warnings'|trans|desc("Hide errors and warnings") }}</span></a></li>
+{#
+            <li data-ng-show="!main.view.showLastUpdateAgo"><a href="" data-ng-click="main.view.toggleLastUpdate()"><span class="dropdown-submenu__icon"><i class="icon-"></i></span><span>{{ "award.account.list.menu.options.lastupdate-ago"|trans|desc("Show last update timeago") }}</span></a></li>
+            <li data-ng-show="main.view.showLastUpdateAgo"><a href="" data-ng-click="main.view.toggleLastUpdate()"><span class="dropdown-submenu__icon"><i class="icon-"></i></span><span>{{ "award.account.list.menu.options.lastupdate-date"|trans|desc("Show last update date") }}</span></a></li>
+#}
+{#
+            {% if app.debug %}
+                <li><a href="" data-ng-click="options.view.reload()"><span class="dropdown-submenu__icon"><i class="icon-"></i></span><span>Debug: Reload list</span></a></li>
+            {% endif %}
+#}
+        </ul>
+    </li>
+
+    {% if webpack|default(false) %}
+	    {{ encore_entry_script_tags('on-account-expiration-import', null, '_default', {'defer': true}) }}
+    {% endif %}
+{% endblock %}
+
+{% block toolbar_update_all %}
+    <li data-ng-controller="updateAllCtrl as updateAll">
+        <a data-tip title="{{ "award.account.list.update-all.tip"|trans|desc("Update all accounts") }}" class="btn-silver-w" href="" data-ng-click="updateAll.go()" tabindex="999">
+            <i class="icon-dark-refresh"></i>
+            <span>{{ "award.account.list.button.update-all"|trans|desc("Update all") }}</span>
+        </a>
+       <div data-confirmation open="isModalOpen" on-close="onClose" all-accounts-count="allAccountsCount" outdated-accounts-count="outdatedAccountsCount" on-update-all-accounts="onUpdateAllAccounts" on-update-outdated-accounts="onUpdateOutdatedAccounts"></div> 
+    </li>
+{% endblock %}
+
+{% block toolbar_search %}
+    <li data-ng-controller="searchCtrl as search" ng-if="main.state.loaded">
+        <input type="text" class="search-row" autocomplete="off" spellcheck="false" placeholder="{{ "award.account.list.search.placeholder"|trans|desc("Accounts Filter") }}" data-ng-model="search.search" data-ng-model-options="{ debounce: 330 }" data-ng-change="search.change()" data-ng-class="{focus: search.search}" required auto-focus tabindex="1000" autofocus data-ng-focus="search.accountMenuToggle()" data-ng-blur="search.accountMenuUpdate()" data-ng-init="init({{ search_hints|json_encode|escape('html_attr') }})">
+        <a href="" data-ng-click="search.reset()" class="reset-input"><i class="icon-close-silver"></i></a>
+        <ul class="dropdown-submenu" data-id="list-accounts" data-ng-click="search.accountMenuToggle()">
+            <li ng-repeat="hint in hintsArray track by $index"><a href="" data-ng-click="search.accountMenuSearch(hint)" data-ng-bind-html="search.formatContent(hint)"></a></li>
+        </ul>
+    </li>
+{% endblock %}

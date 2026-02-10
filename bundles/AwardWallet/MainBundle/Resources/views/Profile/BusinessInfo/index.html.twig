@@ -1,0 +1,167 @@
+{% form_theme form with ['@AwardWalletMain/FormTheme/profileFields.html.twig', '@AwardWalletMain/FormTheme/fields.html.twig'] %}
+{% extends "@AwardWalletMain/Layout/profile.html.twig" %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        require(['jquery-boot', 'pages/userProfile/personal']);
+    </script>
+{% endblock %}
+
+{% block content %}
+    <div class="main-blk shortened">
+        <h1>{{ 'user.business.title' | trans | desc("Edit Business Info") }}</h1>
+        {% if app.session.flashbag.has('notice') %}
+            <div class="main-blk-content">
+                {% for flash_message in app.session.flashbag.get('notice') %}
+                    <div class="success-title">
+                        <i class="icon-white-check-b"></i>
+                        <span>{{ flash_message }}</span>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+        <form class="main-form spinnerable"
+              enctype="multipart/form-data"
+              action="{{ path('aw_profile_business_edit') }}"
+              method="post"
+              autocomplete="off"
+              id="business_info"
+              data-user-email="{{ business.email }}"
+              novalidate>
+            {% if form.vars.errors|length or form.Avatar.vars.errors|length %}
+            <div class="error-message-blk">
+                {% for error in form.vars.errors %}
+                    <i class="icon-warning-small"></i>
+                    <p>{{ error.message|raw }}</p>
+                {% endfor %}
+                {% for error in form.Avatar.vars.errors %}
+                    <i class="icon-warning-small"></i>
+                    <p>{{ error.message|raw }}</p>
+                {% endfor %}
+            </div>
+            {% endif %}
+            <div class="main-form-item">
+                {#{% for key, field in form %}#}
+                    {#{% if key != 'Avatar' %}#}
+                        {#{{ form_row(field) }}#}
+                    {#{% endif %}#}
+                {#{% endfor %}#}
+                {{ form_row(form.company) }}
+                <div class="row">
+                    <div class="row-item">
+                        <label>
+                            {{ 'login.login'|trans({}) }}
+                        </label>
+                        <div class="input">
+                           <div class="input-text fix-width">
+                               {#<strong>{{ user.login }}</strong>&nbsp;&nbsp;<a class="blue-link f-right" target="_blank" href="{{ path('aw_security_switch_site', {'Goto': path('aw_profile_personal')}) }}">(change)</a>#}
+                               <strong>{{ user.login }}</strong>&nbsp;&nbsp;<a class="blue-link f-right" href="{{ path('aw_profile_personal') }}">(change)</a>
+                           </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="row-item">
+                        <label>
+                            {{ 'login.pass'|trans({}) }}
+                        </label>
+                        <div class="input">
+                            <div class="input-text fix-width">
+                                {#<strong>••••••••</strong>&nbsp;&nbsp;<a class="blue-link f-right" target="_blank" href="{{ path('aw_security_switch_site', {'Goto': path('aw_profile_change_password')}) }}">(change)</a>#}
+                                <strong>••••••••</strong>&nbsp;&nbsp;<a class="blue-link f-right" href="{{ path('aw_profile_change_password') }}">(change)</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="row-item">
+                        <label>
+                            {{ 'login.first'|trans({}) }}
+                        </label>
+                        <div class="input">
+                            <div class="input-text fix-width">
+                                {#<strong>{{ user.firstname }}</strong>&nbsp;&nbsp;<a class="blue-link f-right" target="_blank" href="{{ path('aw_security_switch_site', {'Goto': path('aw_profile_personal')}) }}">(change)</a>#}
+                                <strong>{{ user.firstname }}</strong>&nbsp;&nbsp;<a class="blue-link f-right" href="{{ path('aw_profile_personal') }}">(change)</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% if user.midname %}
+                    <div class="row">
+                        <div class="row-item">
+                            <label>
+                                {{ 'personal_info.middle_name'|trans({}) }}
+                            </label>
+                            <div class="input">
+                                <div class="input-text fix-width">
+                                    {#<strong>{{ user.midname }}</strong>&nbsp;&nbsp;<a class="blue-link f-right" target="_blank" href="{{ path('aw_security_switch_site', {'Goto': path('aw_profile_personal')}) }}">(change)</a>#}
+                                    <strong>{{ user.midname }}</strong>&nbsp;&nbsp;<a class="blue-link f-right" href="{{ path('aw_profile_personal') }}">(change)</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endif %}
+                <div class="row">
+                    <div class="row-item">
+                        <label>
+                            {{ 'login.name'|trans({}) }}
+                        </label>
+                        <div class="input">
+                            <div class="input-text fix-width">
+                                {#<strong>{{ user.lastname }}</strong>&nbsp;&nbsp;<a class="blue-link f-right" target="_blank" href="{{ path('aw_security_switch_site', {'Goto': path('aw_profile_personal')}) }}">(change)</a>#}
+                                <strong>{{ user.lastname }}</strong>&nbsp;&nbsp;<a class="blue-link f-right" href="{{ path('aw_profile_personal') }}">(change)</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="row-item">
+                        <label>
+                            {{ 'login.email'|trans({}) }}
+                        </label>
+                        <div class="input">
+                            <div class="input-text fix-width">
+                                {#<strong>{{ user.email }}</strong>&nbsp;&nbsp;<a class="blue-link f-right" target="_blank" href="{{ path('aw_security_switch_site', {'Goto': path('aw_user_change_email')}) }}">(change)</a>#}
+                                <strong>{{ user.email }}</strong>&nbsp;&nbsp;<a class="blue-link f-right" href="{{ path('aw_user_change_email') }}">(change)</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {{ form_row(form.login) }}
+                <div class="row">
+                    <div class="row-item">
+                        <label for="profile_business_Avatar">{{ 'personal_info.avatar' | trans }}</label>
+                        <div class="input">
+                            <div class="input-item">
+                                <div class="photo-blk new">
+                                    <div class="js-avatar photo-prev" style="height: 64px; width: 64px; overflow: hidden">
+                                        <img src="{{ business.avatarSrc ?: '/assets/awardwalletnewdesign/img/no-avatar.gif' }}" alt="avatar" style="height: 64px; width: 64px;">
+                                    </div>
+                                    <div class="photo-action" style="position: relative">
+                                        <span class="btn-silver">{{ 'personal_info.avatar.upload' | trans | desc('Upload picture') }}</span>
+                                        <input id="profile_personal_Avatar" name="profile_business[Avatar]" type="file" style="position: absolute; cursor: pointer; height: 32px; width: 100%; opacity: 0; top: 0px; left: 0px;">
+                                        <div class="delete-photo">
+                                            <a href="#" class="js-avatar-delete"><i class="icon-delete"></i><span>{{ 'personal_info.avatar.delete' | trans | desc("Delete picture") }}</span></a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="info">
+                        <div class="info-icon"></div>
+                        <div class="info-description"><p></p></div>
+                    </div>
+                </div>
+            </div>
+            <div class="row-submit">
+                <div class="row-submit-item">
+                    <button type="submit" class="btn-blue">{{ 'form.button.update'|trans }}</button>
+                </div>
+            </div>
+        {{ form_row(form.AvatarDelete) }}
+        {{ form_row(form._token) }}
+        </form>
+    </div>
+{% endblock %}

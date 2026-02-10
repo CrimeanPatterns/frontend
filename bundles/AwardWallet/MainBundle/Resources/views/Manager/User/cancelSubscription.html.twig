@@ -1,0 +1,27 @@
+{% set title = "Cancel Subscription for " ~ user.fullName %}
+{% extends '@AwardWalletMain/Manager/layout.html.twig' %}
+{% if form is defined %}
+    {% form_theme form with ['form_table_layout.html.twig'] %}
+{% endif %}
+
+{% block content %}
+    {% if error is defined %}
+        <p style="color: #b83c3c; font-size: 1.2em;">
+            {{ error }}
+        </p>
+    {% else %}
+        {% if user.hasActiveStripeSubscription() %}
+            {% set subscriptionType = 'stripe' %}
+        {% elseif user.hasActiveAndroidSubscription() %}
+            {% set subscriptionType = 'android' %}
+        {% else %}
+            {% set subscriptionType = 'PayPal' %}
+        {% endif %}
+
+        <p>
+            You are about to cancel {{ subscriptionType }} subscription for {{ user.fullName }} (UserID: {{ user.id }})
+        </p>
+
+        {{ form(form) }}
+    {% endif %}
+{% endblock %}

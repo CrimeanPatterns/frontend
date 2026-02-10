@@ -1,0 +1,43 @@
+<div class="row">
+	{#<div class="heading silver">#}
+		{#<i class="icon-silver-arrow-down"></i>#}
+		{#<h3>{{ 'menu.header.booking'|trans({}, 'menu')|desc('AWARD BOOKING REQUESTS') }}</h3>#}
+	{#</div>#}
+	<ul class="persons">
+        {% if is_granted("SITE_BOOKER_AREA") %}
+            <li{% if activeItem == 'queue' %} class="active"{% endif %}>
+                <div class="row-item">
+                    <a href="{{ url('aw_booking_list_queue') }}">
+                        <h3>{{ 'menu.booking.queue'|trans({}, 'menu')|desc('Booking Requests Queue') }}</h3>
+                        <span class="count silver">{{ queue }}</span>
+                    </a>
+                </div>
+            </li>
+        {% else %}
+            <li{% if activeItem == 'active' %} class="active"{% endif %}>
+                <div class="row-item">
+                    <a href="{{ url('aw_booking_list_requests', {'active': 1}) }}">
+                        <h3>{{ 'menu.booking.active'|trans({}, 'menu')|desc('Active requests') }}</h3>
+                        <span class="count silver">{{ active }}</span>
+                    </a>
+                </div>
+            </li>
+            <li{% if activeItem == 'archive' %} class="active"{% endif %}>
+                <div class="row-item">
+                    <a href="{{ url('aw_booking_list_requests', {'archive': 1}) }}">
+                        <h3>{{ 'menu.booking.previous'|trans({}, 'menu')|desc('Past requests') }}</h3>
+                        <span class="count silver">{{ archive }}</span>
+                    </a>
+                </div>
+            </li>
+        {% endif %}
+        <li{% if activeItem == 'add' %} class="active"{% endif %}>
+            <div class="row-item">
+                <a href="{{ url('aw_booking_add_index') }}" class="add"><i class="icon-add-dark"></i></a>
+                <a href="{{ url('aw_booking_add_index') }}">
+                    <h3 class="wide">{{ 'menu.booking.add'|trans({}, 'menu')|desc('Add New Booking Request') }}</h3>
+                </a>
+            </div>
+        </li>
+	</ul>
+</div>

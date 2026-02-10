@@ -1,0 +1,181 @@
+{% extends "@AwardWalletMain/Layout/trips.html.twig" %}
+{% import "@AwardWalletMain/TwigMacros/new.html.twig" as macros %}
+
+{% set providersTabs = [
+{name: "track.group.all"|trans},
+{name: "track.group.airline"|trans, kind: constant('PROVIDER_KIND_AIRLINE')},
+{name: "track.group.hotel"|trans, kind: constant('PROVIDER_KIND_HOTEL')},
+{name: "track.group.card"|trans, kind: constant('PROVIDER_KIND_CREDITCARD')},
+{name: "track.group.shop"|trans, kind: constant('PROVIDER_KIND_SHOPPING')},
+{name: "track.group.rent"|trans, kind: constant('PROVIDER_KIND_CAR_RENTAL')},
+{name: "track.group.dining"|trans, kind: constant('PROVIDER_KIND_DINING')},
+{name: "track.group.train"|trans, kind: constant('PROVIDER_KIND_TRAIN')},
+{name: "track.group.cruise"|trans, kind: constant('PROVIDER_KIND_CRUISES')},
+{name: "track.group.survey"|trans, kind: constant('PROVIDER_KIND_SURVEY')},
+{name: "track.group.parking"|trans, kind: constant('PROVIDER_KIND_PARKING')},
+{name: "track.group.other"|trans, kind: constant('PROVIDER_KIND_OTHER')},
+] %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        window.providersTabsData = {{ providersTabs|json_encode|raw }};
+        window.business = {% if is_granted('SITE_BUSINESS_AREA') %}true{% else %}false{% endif %};
+        window.providersData = {{ providers|json_encode|raw }};
+        {% if selectedClient %}
+            window.selectedClient = {{ selectedClient.useragentid }};
+        {% endif %}
+
+        require([
+            'pages/addAccount/main'
+        ], function () {
+            $(function () {
+                $(window).scrollTop(0);
+                if (document.location.hash) {
+                    setTimeout(function() {
+                        $(window).scrollTop(0);
+                    }, 1);
+                }
+
+                $('#tabs').tabs({
+                    activate: function (e, ui) {
+                        // var scrollTop = $(window).scrollTop(); // save current scroll position
+                        document.location.hash = ui.newPanel.attr('id');
+                        $(window).scrollTop(0);
+                    }
+                });
+
+                $(document).on('dblclick', 'span.email', function (event) {
+                    if (window.getSelection) {
+                        var sel = window.getSelection();
+                        sel.removeAllRanges();
+                        var range = document.createRange();
+                        range.selectNodeContents(event.target);
+                        sel.addRange(range);
+                    } else if (document.selection) {
+                        var textRange = document.body.createTextRange();
+                        textRange.moveToElementText(event.target);
+                        textRange.select();
+                    }
+                })
+            });
+        });
+    </script>
+{% endblock %}
+
+{% block title %}
+    {{ 'add.plans.title'|trans|desc('Retrieve reservation') }}
+{% endblock %}
+
+{% block content %}
+    {{ macros.drawSplashScreen(true, 250 + 46 * agents) }}
+
+    <div data-ng-cloak id="tabs">
+        <ul class="tabs-navigation">
+            <li>
+                <a href="#/via_account">{{ "retrieve.rservation.tab"|trans|desc("RETRIEVE VIA MY ACCOUNTS<br>OR CONFIRMATION NUMBER")|raw }}</a>
+            </li>
+            <li>
+                <a href="#/manually">{{ "add.plans.manually"|trans|desc("MANUALLY ENTER<br>YOUR TRAVEL PLANS")|raw }}</a>
+            </li>
+        </ul>
+        <div class="tabs-content" style="min-height: {{ 220 + 46 * agents }}px">
+            <div id="/manually" style="display: none">
+				<div class="block wide gray" ng-non-bindable="">
+					<i class="icon-info-small"></i>
+					<p>{{ 'hint-link-or-forward'|trans({
+					                    '%link_on%': '<a href="https://awardwallet.com/mailboxes/" class="blue-link">',
+					                    '%link_off%': '</a>',
+					                    '%email%': '<span class="badge red">' ~ email|htmlencode ~ '</span>'
+					            })|desc('Did you know you can %link_on%link your mailbox to AwardWallet%link_off% and we will import all of your travel reservations automatically if they are in your email? Alternatively, you can just forward your reservations to %email%.')|raw }}</p>
+				</div>
+                <div class="list-content">
+                    <a href="{{ selectedClient ? path('itinerary_create', { 'type': 'flight', 'agentId': selectedClient.useragentid }) : path('itinerary_create', { 'type': 'flight' }) }}">
+                        <div class="row">
+                            <div class="prev">
+                                <i class="icon-fly"></i>
+                            </div>
+                            <div class="title">{{ 'add-flight'|trans|desc("Add a Flight") }}</div>
+                        </div>
+                    </a>
+                    <a href="{{ selectedClient ? path('itinerary_create', { 'type': 'reservation', 'agentId': selectedClient.useragentid }) : path('itinerary_create', { 'type': 'reservation' }) }}">
+                        <div class="row">
+                            <div class="prev">
+                                <i class="icon-hotel"></i>
+                            </div>
+                            <div class="title">{{ 'add-hotel-reservation'|trans|desc("Add a Hotel Reservation") }}</div>
+                        </div>
+                    </a>
+                    <a href="{{ selectedClient ? path('itinerary_create', { 'type': 'rental', 'agentId': selectedClient.useragentid }) : path('itinerary_create', { 'type': 'rental' }) }}">
+                        <div class="row">
+                            <div class="prev">
+                                <i class="icon-car"></i>
+                            </div>
+                            <div class="title">{{ 'add-car-rental'|trans|desc("Add a Car Rental") }}</div>
+                        </div>
+                    </a>
+                    <a href="{{ selectedClient ? path('itinerary_create', { 'type': 'event', 'agentId': selectedClient.useragentid }) : path('itinerary_create', { 'type': 'event' }) }}">
+                        <div class="row">
+                            <div class="prev">
+                                <i class="icon-events"></i>
+                            </div>
+                            <div class="title">{{ 'add-event'|trans|desc("Add an Event") }} <span class="silver">({{ 'add-event.desc'|trans|desc("Restaurant, Show, Meeting, etc.") }})</span></div>
+                        </div>
+                    </a>
+                    <a href="{{ selectedClient ? path('itinerary_create', { 'type': 'bus-ride', 'agentId': selectedClient.useragentid }) : path('itinerary_create', { 'type': 'bus-ride' }) }}">
+                        <div class="row">
+                            <div class="prev">
+                                <i class="icon-bus"></i>
+                            </div>
+                            <div class="title">{{ 'add-bus-ride'|trans|desc("Add a Bus Ride") }}</div>
+                        </div>
+                    </a>
+                    <a href="{{ selectedClient ? path('itinerary_create', { 'type': 'train-ride', 'agentId': selectedClient.useragentid }) : path('itinerary_create', { 'type': 'train-ride' }) }}">
+                        <div class="row">
+                            <div class="prev">
+                                <i class="icon-train"></i>
+                            </div>
+                            <div class="title">{{ 'add-train-ride'|trans|desc("Add a Train Ride") }}</div>
+                        </div>
+                    </a>
+                    <a href="{{ selectedClient ? path('itinerary_create', { 'type': 'cruise', 'agentId': selectedClient.useragentid }) : path('itinerary_create', { 'type': 'cruise' }) }}">
+                        <div class="row">
+                            <div class="prev">
+                                <i class="icon-boat"></i>
+                            </div>
+                            <div class="title">{{ 'add-cruise'|trans|desc("Add a Cruise") }}</div>
+                        </div>
+                    </a>
+                    <a href="{{ selectedClient ? path('itinerary_create', { 'type': 'taxi-ride', 'agentId': selectedClient.useragentid }) : path('itinerary_create', { 'type': 'taxi-ride' }) }}">
+                        <div class="row">
+                            <div class="prev">
+                                <i class="icon-taxi"></i>
+                            </div>
+                            <div class="title">{{ 'taxi_ride.add'|trans({}, 'trips') }}</div>
+                        </div>
+                    </a>
+                    <a href="{{ selectedClient ? path('itinerary_create', { 'type': 'ferry-ride', 'agentId': selectedClient.useragentid }) : path('itinerary_create', { 'type': 'ferry-ride' }) }}">
+                        <div class="row">
+                            <div class="prev">
+                                <i class="icon-passage-boat"></i>
+                            </div>
+                            <div class="title">{{ 'add-ferry-ride'|trans|desc("Add a Ferry Ride") }}</div>
+                        </div>
+                    </a>
+                    <a href="{{ selectedClient ? path('itinerary_create', { 'type': 'parking', 'agentId': selectedClient.useragentid }) : path('itinerary_create', { 'type': 'parking' }) }}">
+                        <div class="row">
+                            <div class="prev">
+                                <i class="icon-parking"></i>
+                            </div>
+                            <div class="title">{{ 'parking.add'|trans({}, 'trips')|desc("Add a Parking Reservation") }}</div>
+                        </div>
+                    </a>
+                </div>
+            </div>
+
+            <div id="/via_account" style="display: none">
+                {% include('@AwardWalletMain/Account/Add/_providersList.html.twig') %}
+            </div>
+        </div>
+    </div>
+{% endblock %}

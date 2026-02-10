@@ -1,0 +1,98 @@
+{% set MOBILE_NAV = true %}
+{% set MAIN_BODY_CLASSES = {
+    'manual-hidden': true,
+    'responsive': true
+}|merge(MAIN_BODY_CLASSES|default({})) %}
+{% extends app.user is not null ? "@AwardWalletMain/Layout/common.html.twig" : "@AwardWalletMain/Layout/not_logged.html.twig" %}
+
+{% block title %}Privacy Policy{% endblock %}
+
+{% block meta %}
+    {{ parent() }}
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0, viewport-fit=cover">
+{% endblock %}
+
+{% block content %}
+        <div id="privacy-policy-page" class="static-page">
+            <div class="main-blk">
+                <h1>Privacy Policy Statement</h1>
+
+                <div class="main-blk-content">
+                    <p>
+                        
+                        Thank you for your interest in AwardWallet.com.<br><br>
+
+                        We can be reached via e-mail at <a
+                                href="mailto:support@awardwallet.com">support@awardwallet.com</a><br><br>
+
+                        For each visitor to our web page, our web server automatically recognizes IP Address.<br><br>
+
+                        We collect information volunteered by the consumer, such as survey information and/or site
+                        registrations.<br><br>
+
+                        The information we collect is used to improve the content of our web pages, it is used to
+                        customize
+                        the
+                        content and/or layout of our pages for each individual visitor, and it is used to notify our
+                        customers
+                        about updates to our web site. We do not share your information with other organizations for
+                        commercial
+                        purposes.<br><br>
+
+                        With respect to cookies: we use cookies to customize web page content based on visitors' browser
+                        type or
+                        other information that the visitor sends.<br><br>
+
+                        If you do not want to receive e-mail from us in the future, please update your profile at
+                        AwardWallet.com.<br><br>
+
+                        From time to time, we may use customer information for new, unanticipated uses not previously
+                        disclosed
+                        in our privacy notice. If our information practices change at some time in the future we will
+                        use
+                        for
+                        these new purposes only data collected from the time of the policy change forward.<br><br>
+
+                        Upon request we offer visitors the ability to have inaccuracies corrected in contact
+                        information,
+                        communications that the customer/visitor has directed to the site. Customers can have this
+                        information
+                        corrected by sending us e-mail at the above address, visiting us at awardwallet.com.<br><br>
+
+                        With respect to security: We always use industry-standard encryption technologies when
+                        transferring
+                        and
+                        receiving customer's data exchanged with our site. We have appropriate security measures in
+                        place in
+                        our
+                        physical facilities to protect against the loss, misuse or alteration of information that we
+                        have
+                        collected from you at our site.<br><br>
+
+                        If you feel that this site is not following its stated information policy, you may contact us at
+                        the
+                        above email addresses.
+                        
+                    </p>
+                </div>
+            </div>
+            <div class="main-blk white">
+                <h1>Safe Harbor</h1>
+
+                <div class="main-blk-content">
+                    <p>AwardWallet LLC complies with the U.S.-EU Safe Harbor Framework and the U.S.-Swiss
+                                  Safe Harbor Framework as set forth by the U.S. Department of Commerce regarding
+                                  the
+                                  collection, use, and retention of personal information from European Union member
+                                  countries and Switzerland. AwardWallet LLC has certified that it adheres to the
+                                  Safe
+                                  Harbor Privacy Principles of notice, choice, onward transfer, security, data
+                                  integrity, access, and enforcement. To learn more about the Safe Harbor program,
+                                  and
+                                  to view AwardWallet LLC ’s certification, please visit <a
+                                href="http://www.export.gov/safeharbor/" target="_blank" rel="noopener noreferrer">http://www.export.gov/safeharbor/</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+{% endblock %}

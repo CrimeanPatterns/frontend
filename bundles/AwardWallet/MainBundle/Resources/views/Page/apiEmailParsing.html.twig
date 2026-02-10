@@ -1,0 +1,75 @@
+{% set MOBILE_NAV = true %}
+{% set HIDE_NAV = true %}
+{% set MAIN_BODY_CLASSES = {
+    'manual-hidden': true,
+    'responsive': true,
+    'hide-menu': true
+}|merge(MAIN_BODY_CLASSES|default({})) %}
+
+{% extends app.user is not null ? "@AwardWalletMain/Layout/common.html.twig" : "@AwardWalletMain/Layout/not_logged.html.twig" %}
+
+{% block title %}AwardWallet Travel API - Extract Travel Data From Emails{% endblock %}
+
+{% block meta %}
+    {{ parent() }}
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0, viewport-fit=cover">
+    {% if currentRoute is defined and 'aw_emailTestParse' == currentRoute %}
+    <meta name="description" content="AwardWallet Email Parsing API Testing Page (v2)">
+    {% else %}
+    <meta name="description" content="Email Parsing API extracts flight, hotel, car rental, cruise travel reservations from booking confirmation emails.">
+    {% endif %}
+{% endblock %}
+
+{% block content %}
+    {% include '@AwardWalletMain/Page/_apiNav.html.twig' %}
+    <div class="api-container has-additionl-menu">
+        <div class="title-wrap">
+            <div class="title">
+                <h1 class="title-blue">Email Parsing API for Travel Management Companies (TMC). <br>Extract Travel Data From Emails.</h1>
+            </div>
+        </div>
+        <div class="content-wrap">
+            <div class="picture">
+                <img class="picture__light" src="{{ asset('assets/awardwalletnewdesign/img/api-pic.png') }}" srcset="{{ asset('assets/awardwalletnewdesign/img/api-pic@2x.png') }} 2x" alt="Email Parsing API">
+                <img class="picture__dark" src="{{ asset('assets/awardwalletnewdesign/img/api-pic-dark.png') }}" srcset="{{ asset('assets/awardwalletnewdesign/img/api-pic-dark@2x.png') }} 2x" alt="Email Parsing API">
+            </div>
+        </div>
+        <div class="apis-list">
+            <div class="container">
+                <div class="content-wrap">
+                    <h2>Parsing Reservations Out of Emails Provides You With Visibility Into Bookings That Were Made Off-Channel</h2>
+                    <p>AwardWallet Email Parsing API can parse travel data from emails and return it in a structured format (via a REST API). All of our parsing technology is built in-house, we have a large team of developers who develop new email parsers as well as improve and fix existing ones full time. We pay close attention to all of the attributes of a given travel reservation. For example, if an email with a hotel reservation contains a cancelation policy we will grab it and return it in the cancellation policy attribute. If the actual cancelation policy describes the terms under which a full refund would be given (for example, reservations can be canceled for a full refund three days before check-in) we would do the math and record that date into a cancellation deadline attribute. For air travel reservations we augment our parsing API results with data from third-party services like FlightStats. For example, if an air travel reservation does not have IATA airport
+                        codes we can look up that route by airline name, date and flight number and get the IATA airport codes that way.</p>
+                </div>
+            </div>
+            <div class="container">
+                <div class="content-wrap">
+                    <h2>Email Parsing API Is Ideal for Travel Apps and TMCs</h2>
+                    <p>All these features make our Email Parsing API particularly useful for travel management companies who realize that not all bookings are going to be made with in-house booking tools. Sometimes travelers book travel directly with suppliers (airlines and hotels) or through their favorite OTAs. Now all those bookings don't have to be invisible to the company, they can all be integrated into their existing travel itinerary management system. Our detailed approach toward tracking pricing details of an itinerary makes the API very useful for any expense management company. For that, we don't only track the total amount spent on an itinerary but we also track all the fees and taxes that get paid on a reservation, including currency information. Even if a booking was made with miles or points we still record how many miles or points were used to make that booking. Having all that travel data organized in a structured format makes corporate travel management a
+                        breeze.</p>
+                </div>
+            </div>
+            <div class="container">
+                <div class="content-wrap">
+                    <h2>Mailbox Scanning Is the Most Efficient Way to Gather Travel Reservations From Your Users</h2>
+                    <p>In addition to parsing emails that our clients POST to our endpoints, we can do end-user mailbox scanning. In other words, we are parsing incoming emails in real time as they arrive at the end user mailbox. This obviously can only happen if the end users opt-in and provide you with read-only access to their mailboxes. This way we are able to grab any travel reservation that arrives at their mailbox in real-time, parse it and send the results to your endpoint. This approach of mailbox scanning works great for end users too, as they no longer need to proactively forward travel reservation emails to you, they just book travel with any travel provider and you get all those travel reservations in a structured format sent to you in real-time.</p>
+                    <p>With mailbox scanning, we can go back in time (as far back as you want to go) and scan the users' mailboxes for travel reservations that were booked in the past. So if your travel service required you to know where and when your clients traveled in the past you can easily achieve that with mailbox scanning by simply scanning the mailbox for travel reservations one, two, three or more years into the past.</p>
+                </div>
+            </div>
+            <div class="container">
+                <div class="content-wrap">
+                    <h2>Travel Companies Use Email Parsing to Capture All of the Off-Channel Bookings</h2>
+                    <p>Many travel apps today rely on the AwardWallet Email Parsing API as it provides them with an instant way to import any travel itinerary regardless of where it was booked into their system. Best of all, a single integration covers all travel providers, whereas, in the past, businesses had to rely on individual API integrations with various GDSes and other travel providers. We provide email parsing for the most comprehensive list of travel companies. Our parsers are written in many (40+) different languages, so it doesn't matter what language preferences your users have we can still capture their reservations.</p>
+                    <p>Maintaining Email Parsing Infrastructure Is a Continuous Effort.</p>
+                    <p>Supporting email parsing is a laborious task, emails can be forwarded differently by different email clients which end up changing the body text, our technology has to account for that. Also, travel providers often change their travel confirmation emails, they introduce new languages, they play around with A-B testing, etc. The parsers that we develop have to account for all those changes, which is why we have 10+ developers working on email parsers 8 hours per day. Also, email parsing API is not something you can just leave unattended, as new formats get added and as existing formats get changed in order for this API to work it constantly requires fine-tuning. We provide the highest success rate and we find the most travel-related emails in users' mailboxes compared to anyone else in the industry. The best way to test it is to send a line to our support staff and request your own API access credentials.</p>
+                </div>
+            </div>
+        </div>
+        <div class="content-wrap">
+            <div class="btn-wrap">
+                <a href="{{ path('aw_api_doc', {item: 'email'}) }}" class="btn-blue">Email Parsing API documentation <i class="icon-double-arrow-right-white"></i></a>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

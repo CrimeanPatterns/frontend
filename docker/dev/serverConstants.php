@@ -1,0 +1,2 @@
+<?php
+$Config[CONFIG_SITE_STATE] = SITE_STATE_DEBUG;

@@ -1,0 +1,187 @@
+{% extends '@AwardWalletMain/Manager/layout.html.twig' %}
+{% set title = "RA Register Auto" %}
+{% set contentTitle = "RA Register Auto" %}
+{% set urlAutoReg = path('aw_manager_loyalty_ra_accounts_register_auto_post') %}
+
+{% block content %}
+    {% include '@AwardWalletMain/Manager/LoyaltyAdmin/style/ra-register_style.html.twig' %}
+    <select onchange="checkCluster(this);">
+        {% for c in clustersList %}
+            <option value="{{ c }}" {% if cluster==c %}selected="selected"{% endif %}>{{ c }}</option>
+        {% endfor %}
+    </select>
+
+    <section class="container">
+        <div class="form-container">
+            <form class="form" action="{{ urlAutoReg }}" method="POST">
+                <h2>Auto-registration form</h2>
+                <input type="hidden" name="cluster" value="{{ cluster }}">
+                <span>
+                    <label for="provider_auto">Provider</label>
+                    <select id="provider" name="provider" required>
+                        {% if providerList %}
+                            {% for prov in providerList %}
+                                <option value="{{ prov.provider }}">{{ prov.name }}</option>
+                            {% endfor %}
+                        {% else %}
+                            <option>No registered configurations</option>
+                        {% endif %}
+                    </select>
+                </span>
+                <span>
+                    <label for="email">Email</label>
+                    <input id="email" name="email">
+{#                   <input type="email" id="email" name="email">#}
+                </span>
+                <span>
+                    <label for="delay">Delay (sec)</label>
+                    <input type="number" id="delay" name="delay" min="0" value="120" required>
+                </span>
+                <span>
+                    <label for="count">Count accounts</label>
+                    <input type="number" id="count" name="count" min="1" required>
+                </span>
+                <button>Отправить</button>
+            </form>
+            <div class="queue">
+                <h2>Queue statistic</h2>
+                {% if queue %}
+                    {% for provider, count in queue%}
+                        <span>{{ provider }} : <a href="{{ path('aw_manager_loyalty_ra_accounts_register_queue', {'provider': provider, 'cluster': cluster}) }}">{{ count }} request</a></span>
+                    {% endfor %}
+                {% else %}
+                    Empty
+                {% endif %}
+            </div>
+            <div class="result">
+                <h2>Log</h2>
+                <code>
+                    {{ log }}
+                </code>
+            </div>
+        </div>
+        <div class="report-container">
+            <div class="report">
+                <h2>Report of fails registration</h2>
+                {% if report %}
+                    <span class="cnt-records">Count records: {{ report|length }}</span>
+                    <table>
+                        <tbody>
+                            <tr>
+                                <th>Provider</th>
+                                <th>ID Ra Account</th>
+                                <th>Log</th>
+                                <th>Email</th>
+                                <th>Error message</th>
+                                <th>Auto</th>
+                                <th colspan="2">Action</th>
+                            </tr>
+                            {% for record in report%}
+                                {% set urlLog = path('aw_manager_loyalty_logs', {Method: record.method, RequestID: record.requestId, Partner: record.partner, Cluster: cluster}) %}
+                                {% set urlLogLast = path('aw_manager_loyalty_logs', {Method: record.method, RequestID: record.requestId, Partner: record.partner, Cluster: cluster, ShowLatest: 1}) %}
+                                <tr>
+                                    <td>{{ record.provider }}</td>
+                                    {% if record.accountId is defined %}
+                                        {% set urlRaAcc = path('aw_manager_loyalty_ra_accounts_edit', {id: record.accountId, cluster: cluster}) %}
+                                        <td><a class="link" target="_blank" href="{{ urlRaAcc }}">{{ record.accountId }}</a></td>
+                                    {% else %}
+                                        <td id="account{{ record.requestId }}">
+                                            add with
+                                            {% for code,name in states %}
+                                                {% if code != 1 %}
+                                                <button class="gray" title="{{ name }}" onclick="saveToDB('{{ record.requestId }}',{{ code }}); return false;">&nbsp;[{{ code }}]</button>
+                                                {% endif %}
+                                            {% endfor %}
+                                            state
+                                        </td>
+                                    {% endif %}
+                                    <td>
+                                        <div style="text-align: right;margin-right: 60px;">
+                                            <a class="link" target="_blank" href="{{ urlLog }}">{{ record.requestId }}</a>&nbsp;&nbsp;
+                                            <a class="link" target="_blank" href="{{ urlLogLast }}">last</a>
+                                        </div>
+                                    </td>
+                                    <td title="{{ record.fields|json_encode(constant('JSON_PRETTY_PRINT')) }}">{{ record.fields.Email }}
+                                        <button class="gray" title="Copy password" onclick="copy('{{ record.fields.Password }}'); return false;">&nbsp;❒ Copy</button>
+                                    </td>
+                                    <td>{{ record.message }}</td>
+                                    <td>{{ record.isAuto }}</td>
+                                    <td colspan="2">
+                                        <form action="{{ urlAutoReg }}" method="post">
+                                            <input type="hidden" name="requestId" value="{{ record.requestId }}">
+                                            <input type="hidden" name="cluster" value="{{ cluster }}">
+                                            {% if record.accountId is not defined %}
+                                                <button type="submit" name="checked">Checked</button>
+                                                <button type="submit" name="retry">Retry</button>
+                                            {% else %}
+                                                <button type="submit" name="checked">Checked</button>
+                                            {% endif %}
+                                        </form>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                {% else %}
+                    Empty
+                {% endif %}
+            </div>
+        </div>
+    </section>
+    <script>
+        function saveToDB(id, state) {
+            if(!confirm('Are you sure you want to create an account? then you will not be able to repeat the request with the current parameters')){
+                return;
+            }
+            try {
+                $.ajax({
+                    url: "{{ path('aw_manager_loyalty_ra_accounts_register_auto_add_account') }}",
+                    type: "POST",
+                    data: {
+                        requestId: id,
+                        state: state,
+                        cluster: '{{ cluster }}'
+                    },
+                    async: true,
+                    success: function (data) {
+                        let kkk;
+                        if (data.link)
+                            kkk = '<a class="link" target="_blank" href="'+data.link+'">' + data.accountId + '</a>';
+                        if (data.status == 'ok') {
+                            let retryBtn = $('#account' + id).parent().find('td:last').find('button:first').next().get(0);
+                            if (typeof retryBtn !=='undefined')
+                                retryBtn.remove()
+                            $('#account' + id).html(kkk);
+                            return;
+                        }
+                        if (data.accountId) {
+                            alert(data.message + "\ncheck account: " + data.accountId);
+                            $('#account' + id).html('check account '+kkk);
+                            return;
+                        }
+                        alert(data.message);
+                    }
+                });
+            } catch (ex) {
+                console.log(ex.message);
+                $('#account' + id).html("error");
+            }
+        }
+        function copy(text) {
+            var input = document.createElement('input');
+            document.body.appendChild(input);
+            input.value = text;
+            input.select();
+            document.execCommand("copy");
+            document.body.removeChild(input);
+        }
+        function checkCluster(e) {
+            document.location = '{{ path('aw_manager_loyalty_ra_accounts_register_auto') }}' + '?cluster=' + e.value;
+        }
+        $('#email').change(function () {
+            if ($(this).val() !== ''){
+                alert("Убедитесь, что данный ящик сканируется. Иначе, в случае 2FA, нужно самостоятельно закончить регистрацию.")
+            }
+        })
+    </script>
+{% endblock %}

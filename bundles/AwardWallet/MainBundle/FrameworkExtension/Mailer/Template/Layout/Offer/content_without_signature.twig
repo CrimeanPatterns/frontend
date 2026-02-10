@@ -1,0 +1,13 @@
+{% extends '@MailTemplate/Layout/Offer/content.twig' %}
+
+{% block signature %}
+{% endblock signature %}
+
+{% block bodyStyle %}
+    {{ parent() }}
+    <style>
+        .emailBody {
+            padding: 0 10px 10px !important;
+        }
+    </style>
+{% endblock bodyStyle %}

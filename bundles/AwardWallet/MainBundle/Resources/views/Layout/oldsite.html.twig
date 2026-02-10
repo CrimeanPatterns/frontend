@@ -1,0 +1,49 @@
+{% extends app.request.attributes.has('layout') ? app.request.attributes.get('layout') : ( is_granted('SITE_BUSINESS_AREA') ? "@AwardWalletMain/Layout/business_default.html.twig" : "@AwardWalletMain/Layout/accounts.html.twig") %}
+{% block content %}
+    <div class="main-blk {% if (faq is defined and faq) or (shortened is defined and shortened) %}shortened{% endif %}">
+        {{ app.request.attributes.get('marker') }}content
+        <div style="clear: both; height: 1px;"></div>
+    </div>
+    {% if faq is defined and faq %}
+        <div class="faq">
+            <div class="faq-blk">
+                <div class="heading">
+                    <i class="icon-info-small"></i>
+                    <p>{{ faq|raw }}</p>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+{% endblock %}
+
+{% block title %}{{ app.request.attributes.get('title') }}{% endblock %}
+
+{% block meta %}
+    {{ parent() }}
+    <meta name="keywords" content="Incentive reward center, Marriott reward, cheap airfare, reward incentive program,  American Express rewards, trip reward, air miles reward program, frequent flyer miles, track award program balances, air mile reward, award software, award program, delta sky miles, reward program reward network"/>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+{% endblock %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="/design/mainStyle.css"/>
+    {{ parent() }}
+    <link rel="stylesheet" href="/assets/awardwalletnewdesign/css/base/oldsite.css?v={{ assets_version }}"/>
+    {{ app.request.attributes.get('cssFiles') | raw }}
+{% endblock %}
+
+{% block footer %}
+    {{ parent() }}
+    {{ app.request.attributes.get('marker') }}footer
+    {% if not webpack|default(false) %}
+        <script type="text/javascript">
+            require(['awardwallet', 'libscripts', 'cookie', 'browserext', 'lib/design'], function(){
+                require(['awardwallet'{{ app.request.attributes.get('marker') }}scripts_files], function(){
+                    {{ app.request.attributes.get('marker') }}footer_scripts
+                })
+            });
+        </script>
+    {% endif %}
+{% endblock %}

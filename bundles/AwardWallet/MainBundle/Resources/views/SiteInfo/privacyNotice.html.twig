@@ -1,0 +1,872 @@
+{% trans_default_domain "privacy" %}
+
+{% set queryExtend = [] %}
+{% set contentLinkClick = ' onclick="location.hash = this.getAttribute(\'data-href\'); return false;"' %}
+{% if is_granted('SITE_MOBILE_APP') %}
+    {% set queryExtend = { fromapp : 1, KeepDesktop: 1 } %}
+    {% set contentLinkClick = '' %}
+{% endif %}
+
+	<div class="main-blk">
+		{% if heading is defined %}{{ heading|raw }} {% endif %}
+		<!-- mobile native app style -->
+		<style>
+			.wrapper .content.static-page .main-blk ul li:after{
+				background: #535457;
+			}
+			.wrapper .content.static-page .main-blk ul{
+				background: transparent !important;
+			}
+			.wrapper .content.static-page .main-blk .number-list li{
+				padding-left: 20px;
+			}
+			.wrapper .content.static-page .main-blk .number-list li:first-child{
+				margin-top:10px;
+			}
+			.content .scroll-links a[data-href],
+			.content .scroll-links span[data-href] {
+				font-size: 16px;
+				text-decoration: none;
+
+				font-weight: bold;
+				color: #4684c4;
+				cursor: pointer;
+				font-family: 'open_sansbold', 'open_sansregular', sans-serif;
+			}
+			.wrapper .content.static-page {
+				background: #fff;
+			}
+			.wrapper .content.static-page h4 {
+				font-size: 20px;
+				line-height: 1.3;
+				color: #535457;
+			}
+			.wrapper .content.static-page section {
+				padding-top: 30px;
+			}
+			.wrapper .content.static-page section:first-child {
+				padding-top: 0;
+			}
+			.wrapper .content.static-page .privacy-table{
+				display: block;
+				border-top: 2px solid #bec2cc !important;
+			}
+			.wrapper .content.static-page .privacy-table th{
+				display: none;
+			}
+			.wrapper .content.static-page .privacy-table td,
+			.wrapper .content.static-page .privacy-table tr{
+				display: block;
+			}
+			.wrapper .content.static-page .privacy-table tr{
+				border-top: 2px solid #bec2cc;
+				margin-top: -1px;
+			}
+			.wrapper .content.static-page .privacy-table tr:first-child{
+				border-top: 0;
+			}
+			.wrapper .content.static-page .privacy-table td{
+				display: flex;
+				flex-direction: row;
+				flex-wrap: nowrap;
+				align-items: center;
+				padding-left: 0;
+				padding-right: 0;
+			}
+			.wrapper .content.static-page .privacy-table td:before{
+				content: attr(data-title);
+				font-size: 13px;
+				color: #8e9199;
+				display: block;
+				width: 100px;
+				padding-right: 10px;
+			}
+			.wrapper .content.static-page .privacy-table td span{
+				width: calc(100% - 100px);
+			}
+			.main-blk-content > section[id] {
+				padding-top:0;
+			}
+			.main-blk-content > section[id] h4 {
+				padding-top: 20px;
+			}
+			{% if is_granted('SITE_MOBILE_AREA') %}
+				@font-face {
+		            font-family: 'Open Sans', sans-serif;
+		            src: url('https://awardwallet.com/assets/awardwalletnewdesign/font/opensans-regular-webfont.eot?v=2');
+		            src: url('https://awardwallet.com/assets/awardwalletnewdesign/font/opensans-regular-webfont.eot?#iefix') format('embedded-opentype'),
+		                 url('https://awardwallet.com/assets/awardwalletnewdesign/font/opensans-regular-webfont.woff?v=2') format('woff'),
+		                 url('https://awardwallet.com/assets/awardwalletnewdesign/font/opensans-regular-webfont.ttf?v=2') format('truetype');
+		            font-weight: normal;
+		            font-style: normal;
+		        }
+
+		        @font-face {
+		            font-family: 'Open Sans', sans-serif;
+		            src: url('https://awardwallet.com/assets/awardwalletnewdesign/font/opensans-bold-webfont.eot?v=2');
+		            src: url('https://awardwallet.com/assets/awardwalletnewdesign/font/opensans-bold-webfont.eot?#iefix') format('embedded-opentype'),
+		                 url('https://awardwallet.com/assets/awardwalletnewdesign/font/opensans-bold-webfont.woff?v=2') format('woff'),
+		                 url('https://awardwallet.com/assets/awardwalletnewdesign/font/opensans-bold-webfont.ttf?v=2') format('truetype');
+		            font-weight: 700;
+		            font-style: normal;
+		        }
+
+		        body,html{
+		            margin: 0;
+		            padding: 0;
+		            font-family: 'Open Sans', sans-serif;
+		        }
+
+		        * {
+		            margin:0;
+		            padding: 0;
+		            box-sizing: border-box;
+		        }
+
+		        .main-blk {
+		            font-family: 'Open Sans', sans-serif;
+		        }
+
+		        .main-blk h1,
+		        .main-blk h2,
+		        .main-blk h3,
+		        .main-blk h4{
+		            font-weight: normal;
+		        }
+
+		        .main-blk .bold,
+		        .main-blk strong {
+		            font-weight: bold;
+		        }
+
+		        .main-blk p {
+		            font-size: 16px;
+		            color: #535457;
+		            padding-top: 20px;
+		            line-height: 1.625;
+		        }
+
+		        .main-blk p:empty {
+		            display: none
+		        }
+
+		        .main-blk p span.red {
+		            color: #cc3d5e;
+		            font-weight: 700
+		        }
+
+		        .main-blk p:first-child {
+		            padding-top: 0
+		        }
+
+		        .main-blk h2 {
+		            display: block;
+		            margin: -15px -15px 0;
+		            padding: 15px;
+		            background: #f8f9fa;
+		            position: relative;
+		            font-size: 20px;
+		            color: #5c6373;
+		            text-align: center;
+		            border-bottom: 1px solid #dfe1e6
+		        }
+
+		        .main-blk h3 {
+		            display: block;
+		            margin: 10px -15px 0;
+		            padding: 30px 15px 10px;
+		            background: #fff;
+		            position: relative;
+		            font-size: 20px;
+		            color: #5c6373;
+		            border-bottom: 2px solid #bec2cc;
+		            border-top: 1px solid #dfe1e6
+		        }
+
+		        .main-blk h4 {
+		            font-size: 20px;
+		            line-height: 1.3;
+		            color: #535457
+		        }
+
+		        .main-blk section {
+		            padding-top: 30px
+		        }
+
+		        .main-blk section:first-child {
+		            padding-top: 0
+		        }
+
+		        .main-blk .row-blk {
+		            margin-top: 45px
+		        }
+
+		        .main-blk .row-blk:first-child {
+		            margin-top: 25px
+		        }
+
+		        .main-blk .row-blk:last-child {
+		            margin-bottom: 5px
+		        }
+
+		        .main-blk .row-blk .title {
+		            height: auto!important
+		        }
+
+		        .main-blk .row-blk .prev {
+		            margin-bottom: 20px
+		        }
+
+		        .main-blk .row-blk .prev img {
+		            width: 100px;
+		            vertical-align: top
+		        }
+
+		        .main-blk .row-blk h4 {
+		            font-size: 20px;
+		            color: #5c6373
+		        }
+
+		        .main-blk .row-blk span.red {
+		            font-size: 20px;
+		            color: #cc3d5e;
+		            margin-top: 5px;
+		            display: block
+		        }
+
+		        .main-blk {
+		            background: #f8f9fa;
+		            padding: 15px
+		        }
+
+		        .main-blk ul {
+		            background: #fff;
+		            margin: 0 -15px -15px;
+		            padding: 15px 15px 20px
+		        }
+
+		        .main-blk ul li {
+		            display: block;
+		            position: relative;
+		            padding-left: 15px;
+		            color: #535457;
+		            font-size: 16px;
+		            margin-top: 10px;
+		            line-height: 1.625;
+		        }
+
+		        .main-blk ul li:after {
+		            position: absolute;
+		            content: "";
+		            left: 0;
+		            top: 11px;
+		            width: 6px;
+		            height: 6px;
+		            border-radius: 50%;
+		            -webkit-border-radius: 50%;
+		            -moz-border-radius: 50%;
+		            background: #535457
+		        }
+
+		        .main-blk ul li:first-child {
+		            margin-top: 0
+		        }
+
+		        .main-blk .number-list li {
+		            font-size: 16px;
+		            margin-top: 10px;
+		            line-height: 1.625;
+		            padding-left: 23px;
+		        }
+
+		        .main-blk .main-table {
+		            border-spacing: 0;
+		            border-collapse: separate;
+		            width: 100%;
+		            margin-top: 20px;
+		            border-top: 2px solid #bec2cc
+		        }
+
+		        .main-blk .main-table th {
+		            font-size: 16px;
+		            color: #8e9199;
+		            text-align: left;
+		            font-weight: 400;
+		            padding: 8px 12px;
+		            border-bottom: 1px dotted #8e9199
+		        }
+
+				.main-blk .main-table td {
+				    font-size: 16px;
+				    line-height: 1.5;
+				    border-bottom: 1px dotted #8e9199;
+				    color: #5c6373;
+				    padding: 12px 10px
+				}
+
+		        .main-blk.white {
+		            background: #fff;
+		            border-top: 1px solid #dfe1e6
+		        }
+
+		        .main-blk.white p:first-child {
+		            padding-top: 15px
+		        }
+
+		        .main-blk a {
+		            font-weight: 700;
+		            font-size: 16px;
+		            text-decoration: none;
+		            color: #4684c4
+		        }
+
+		        .main-blk a:active {
+		            text-decoration: underline
+		        }
+
+		        .main-blk .privacy-table {
+		            display: block;
+		            width: 100%;
+		        }
+
+		        .main-blk .main-table tbody{
+		        	display: block;
+		        	width: 100%;
+		        }
+
+		        .main-blk .privacy-table th {
+		            display: none;
+		        }
+
+		        .main-blk .privacy-table tr {
+		        	width: 100%;
+		            display: -webkit-flex;
+					display: -ms-flexbox;
+					display: -ms-flex;
+					display: flex;
+					-webkit-flex-flow: column nowrap;
+					-ms-flex-flow: column nowrap;
+					flex-flow: column nowrap;
+		            border-top: 2px solid #bec2cc;
+		        }
+
+		        .main-blk .privacy-table tr:first-child {
+		            border-top: 0
+		        }
+
+		        .main-blk .privacy-table tr:not(:last-child) td:last-child {
+		            border-bottom: 0;
+		        }
+
+		        .main-blk .privacy-table td {
+		            display: block;
+		            position: relative;
+		            padding-left: 0;
+		            padding-right: 0;
+		            width: 100%;
+		        }
+
+		        .main-blk .privacy-table td span {
+		            display: block;
+		            width: 100%;
+		            padding-left: 110px;
+		        }
+
+		        .main-blk .privacy-table td:before {
+		            content: attr(data-title);
+		            font-size: 13px;
+		            color: #8e9199;
+		            display: block;
+		            width: 100px;
+		            top: 15px;
+		            position: absolute;
+		            left: 0;
+		            padding-right: 10px;
+		        }
+
+		        .account-blk .prev,
+		        .account-blk .title {
+		            display: inline-block;
+		            vertical-align: middle
+		        }
+
+		        .main-blk p.silver {
+		            text-align: center;
+		            font-size: 12px;
+		            color: #a6a9b3;
+		            margin: -10px 0
+		        }
+
+		        .main-blk ul li:after{
+					background: #535457;
+				}
+
+				.main-blk ul{
+					background: transparent !important;
+				}
+
+				.main-blk .number-list li{
+					padding-left: 20px;
+				}
+
+				.main-blk .number-list li:first-child{
+					margin-top:10px;
+				}
+
+				.main-blk .scroll-links a[data-href],
+				.main-blk .scroll-links span[data-href] {
+					font-size: 16px;
+					text-decoration: none;
+					font-weight: bold;
+					color: #4684c4;
+					cursor: pointer;
+				}
+
+				.main-blk h4 {
+					font-size: 20px;
+					line-height: 1.3;
+					color: #535457;
+				}
+
+				.main-blk section {
+					padding-top: 30px;
+				}
+
+				.main-blk section:first-child {
+					padding-top: 0;
+				}
+
+				.main-blk-content > section[id] {
+					padding-top:30px;
+				}
+
+				.main-blk-content > section[id] h4 {
+					padding-top: 20px;
+				}
+
+				.main-blk .number-list {
+				    counter-reset: myCounter;
+				}
+
+				.main-blk .number-list li{
+					display: block;
+					position: relative;
+				}
+
+				.main-blk .number-list li:before {
+				    position: absolute;
+				    left: 0;
+				    font-size: 16px;
+				    top: 5px;
+				    line-height: 1;
+				    color: #535457;
+				    display: inline-block;
+				    counter-increment: myCounter;
+				    content: counter(myCounter) ". ";
+				}
+
+				/*dark mode*/
+
+		        .dark-mode body,
+		        .dark-mode .main-blk,
+		        .dark-mode .main-blk h2{
+		            background: #1c1c1e;
+		        }
+
+		        .dark-mode .main-blk ul,
+		        .dark-mode .main-blk.white,
+		        .dark-mode .main-blk h3{
+		            background: #141414;
+		        }
+
+		        .dark-mode .main-blk ul li:after{
+		            background: #fff;
+		        }
+
+		        .dark-mode .main-blk p,
+		        .dark-mode .main-blk ul li,
+		        .dark-mode .main-blk h3,
+		        .dark-mode .main-blk h2,
+		        .dark-mode .main-blk .row-blk h4,
+		        .dark-mode .main-blk h4,
+		        .dark-mode .main-blk .number-list li:before,
+		        .dark-mode .main-blk .privacy-table td:before,
+		        .dark-mode .main-blk .main-table td{
+		            color: #fff;
+		        }
+
+		        .dark-mode .main-blk p span.red,
+		        .dark-mode .main-blk .row-blk span.red{
+		            color: #0984FF;
+		        }
+
+		        .dark-mode .main-blk h2,
+		        .dark-mode .main-blk h3,
+		        .dark-mode .main-blk .privacy-table tr,
+		        .dark-mode .main-blk.white,
+		        .dark-mode .main-blk .main-table,
+		        .dark-mode .main-blk .main-table th {
+		            border-color: #5a5a5f;
+		        }
+
+		        .dark-mode .main-blk p.silver{
+		            color: #8e8e93;
+		        }
+
+		        .dark-mode .main-blk .scroll-links a[data-href],
+		        .dark-mode .main-blk .scroll-links span[data-href],
+		        .dark-mode .main-blk a {
+		            color: #0984FF;
+		        }
+			{% endif %}
+		</style>
+		<!-- end -->
+		<div class="main-blk-content">
+			<section>
+				<h4>{{ 'intro.header'|trans|desc('Introduction') }}</h4>
+				<p>{{ 'intro.pp_info'|trans|desc('This Privacy Policy will help you understand what information we collect and use at AwardWallet, and the choices you have associated with that information. When we refer to “AwardWallet,” “we,” “our,” or “us” in this policy, we are referring to AwardWallet, LLC which provides the Services to you. The “Services” refers to the applications, services, and websites (marketing and product) provided by AwardWallet. AwardWallet may, from time to time, introduce new products and services. To the extent that these new products and services affect this policy, we will notify you as described in Section 10 below. The use of information collected through our service shall be limited to the purpose of providing the Services for our customers and as specified herein.') }}</p>
+				<p>
+                    {{ 'intro.contact_info'|trans({
+                        '%link_on%': '<a href="' ~ url('aw_contactus_index', queryExtend) ~ '">',
+                        '%link_off%': '</a>',
+                        '%link2_on%': '<a href="https://go.adr.org/dpf_irm.html" target="_blank" rel="noopener noreferrer">',
+                        '%link2_off%': '</a>'
+                    })|desc('If you have any questions about this privacy policy or our practices, please %link_on%contact us%link_off%. If you are from the European Economic Area (“EEA”) and you have an unresolved privacy or data use concern that we have not addressed satisfactorily, please contact our U.S.-based third party dispute resolution provider (free of charge) at %link2_on%https://go.adr.org/dpf_irm.html%link2_off%.')|raw }}
+                </p>
+			</section>
+			<section>
+				<h4>{{ 'contents.header'|trans|desc('Contents:') }}</h4>
+				<ol class="number-list scroll-links">
+					<li><span class="blue-link" data-href="#information-we-collect-and-receive"{{ contentLinkClick|raw }}>{{ 'data_collection_info.header'|trans|desc('Information We Collect and Receive') }}</span></li>
+					<li><span class="blue-link" data-href="#use-information-we-collect-and-receive"{{ contentLinkClick|raw }}>{{ 'info_usage_policy.header'|trans|desc('How We Use the Information We Collect and Receive') }}</span></li>
+					<li><span class="blue-link" data-href="#analytics-cookies-and-other-website-technologies"{{ contentLinkClick|raw }}>{{ 'web_tech_terms.header'|trans|desc('Analytics, Cookies and Other Web Site Technologies') }}</span></li>
+					<li><span class="blue-link" data-href="#information-sharing"{{ contentLinkClick|raw }}>{{ 'info_sharing.header'|trans|desc('Information Sharing') }}</span></li>
+					<li><span class="blue-link" data-href="#communicating"{{ contentLinkClick|raw }}>{{ 'communicating.header'|trans|desc('Communications') }}</span></li>
+					<li><span class="blue-link" data-href="#accessing-your-data"{{ contentLinkClick|raw }}>{{ 'accessing_your_data.header'|trans|desc('Accessing Your Data') }}</span></li>
+					<li><span class="blue-link" data-href="#california-privacy-rights"{{ contentLinkClick|raw }}>{{ 'california_privacy_rights.header'|trans|desc('California Consumer Privacy Act') }}</span></li>
+					<li><span class="blue-link" data-href="#privacy-shield-compliance"{{ contentLinkClick|raw }}>{{ 'privacy_shield_compliance.header'|trans|desc('Data Privacy Framework Compliance') }}</span></li>
+					<li><span class="blue-link" data-href="#security"{{ contentLinkClick|raw }}>{{ 'security.header'|trans|desc('Security') }}</span></li>
+					<li><span class="blue-link" data-href="#changes-statement"{{ contentLinkClick|raw }}>{{ 'statement_changes.header'|trans|desc('Changes to this Statement') }}</span></li>
+                    <li><span class="blue-link" data-href="#questions-or-complaints"{{ contentLinkClick|raw }}>{{ 'question_complaint.header'|trans|desc('Questions or Complaints') }}</span></li>
+				</ol>
+			</section>
+			<section id="information-we-collect-and-receive">
+				<h4>1. {{ 'data_collection_info.header'|trans|desc('Information We Collect and Receive') }}</h4>
+				<p>{{ 'data_collection_info.1'|trans|desc('We collect several different types of information to provide Services to you, including:') }}</p>
+				<p>
+                    {{ 'data_collection_info.2'|trans({
+                        '%bold_on%': '<strong>',
+                        '%bold_off%': '</strong>'
+                    })|desc('%bold_on%Customer Account and Registration Data:%bold_off% This includes information you provide to create your account with us and may include, first and last name, third party loyalty reward program information (which includes account access information), travel reservation information, a password and a valid email address.')|raw }}
+                </p>
+				<p>
+                    <strong>
+                        {{ 'data_collection_info.3'|trans|desc('Service Data (including Session and Usage data):') }}
+                    </strong>
+                </p>
+				<p>{{ 'data_collection_info.4'|trans|desc('When you use our Services, we receive information generated through the use of the Service, or from the Service infrastructure itself, (for example, duration of session, connection information, etc.)  We may also collect usage and log data about how the services are accessed and used, including information about the device you are using the Services on, IP addresses, location information, language settings, what operating system you are using, unique device identifiers and other diagnostic data to help us support the Services. Please see Section 3 "Analytics, Cookies and other Website Technologies," for more information on Service Data.') }}</p>
+				<p>
+                    {{ 'data_collection_info.5'|trans({
+                        '%bold_on%': '<strong>',
+                        '%bold_off%': '</strong>'
+                    })|desc('%bold_on%Third Party Data:%bold_off% We may receive information about you from other sources, including third party reward or loyalty programs (of which you have given us permission to access) publicly available databases or third parties from whom we have purchased data, and combine this data with information we already have about you. We may also receive information from other affiliated companies that are a part of our corporate group. This helps us to update, expand and analyze our records, identify new prospects for marketing, and provide products and services that may be of interest to you.')|raw }}
+                </p>
+                <p>
+                    {{ 'data_collection_info.6'|trans({
+                        '%bold_on%': '<strong>',
+                        '%bold_off%': '</strong>'
+                    })|desc('%bold_on%Location Information:%bold_off% We collect your location-based information and IP address for the purpose of providing and supporting the service and for fraud prevention and security monitoring.')|raw }}
+                </p>
+				<p>
+                    {{ 'data_collection_info.7'|trans({
+                        '%bold_on%': '<strong>',
+                        '%bold_off%': '</strong>'
+                    })|desc('%bold_on%Device Information:%bold_off% When you use our Services, we automatically collect information on the type of device you use, operating system version, and the unique device identifier (or "UDID").')|raw }}
+                </p>
+				<p>
+                    {{ 'data_collection_info.8'|trans({
+                        '%bold_on%': '<strong>',
+                        '%bold_off%': '</strong>'
+                    })|desc('%bold_on%Legal Basis for Processing (EEA Individuals Only):%bold_off% If you are from the EEA, our legal basis for collecting and using the personal information described above will depend on the personal information concerned and the specific context in which we collect it. If you are from the EEA, “personal information” is defined as any personally identifiable information or other data collected that could directly or indirectly identify you.')|raw }}
+                </p>
+				<p>{{ 'data_collection_info.9'|trans|desc('However, we will normally collect personal information from you where we have your consent to do so, where we need the personal information to perform Services, or where the processing is in our legitimate interests and not overridden by your data protection interests or fundamental rights and freedoms. In some cases, we may also have a legal obligation to collect the personal information in question.') }}</p>
+				<p>{{ 'data_collection_info.10'|trans|desc('If we ask you to provide personal information to comply with a legal requirement or to provide you with Services, we will make this clear at the relevant time and advise you whether the provision of your personal information is mandatory or not (as well as of the possible consequences if you do not provide your personal information).') }}</p>
+				<p>{{ 'data_collection_info.11'|trans|desc('Similarly, if we collect and use your personal information in reliance on our or a third party\'s legitimate interests and those interests are not already listed above, we will make clear to you at the relevant time what those legitimate interests are.') }}</p>
+				<p>
+                    {{ 'data_collection_info.12'|trans({
+                        '%link_on%': '<a href="' ~ url('aw_contactus_index', queryExtend) ~ '">',
+                        '%link_off%': '</a>'
+                    })|desc('If you have questions about or need further information concerning the legal basis on which we collect and use your personal information, please %link_on%contact us%link_off%.')|raw }}</p>
+			</section>
+			<section id="use-information-we-collect-and-receive">
+				<h4>2. {{ 'info_usage_policy.header'|trans|desc('How We Use the Information We Collect and Receive') }}</h4>
+                <p>{{ 'info_usage_policy.1'|trans|desc('AwardWallet may access (which may include, with your consent, limited viewing or listening) and use the data we collect as necessary (a) to provide and maintain the Services; (b) to address and respond to service, security, and customer support issues; (c) to detect, prevent, or otherwise address fraud, security, unlawful, or technical issues; (d) as required by law; (e) to fulfill our contracts; (f) to improve and enhance the Services; (g) to provide analysis or valuable information back to our customers and users.') }}</p>
+				<p>{{ 'info_usage_policy.2'|trans|desc('Some specific examples of how we use the information:') }}</p>
+				<ul>
+					<li>{{ 'info_usage_policy.2.1'|trans|desc('Create and administer your account') }}</li>
+					<li>{{ 'info_usage_policy.2.2'|trans|desc('Send you an order confirmation') }}</li>
+					<li>{{ 'info_usage_policy.2.3'|trans|desc('Facilitate and improve the usage of the services you have ordered') }}</li>
+					<li>{{ 'info_usage_policy.2.4'|trans|desc('Send you product updates, marketing communication, and service information') }}</li>
+					<li>{{ 'info_usage_policy.2.5'|trans|desc('Respond to customer inquiries and support requests') }}</li>
+					<li>{{ 'info_usage_policy.2.6'|trans|desc('Conduct research and analysis') }}</li>
+					<li>{{ 'info_usage_policy.2.7'|trans|desc('Display content based upon your interests') }}</li>
+					<li>{{ 'info_usage_policy.2.8'|trans|desc('Analyze data, including through automated systems and machine learning to improve our services and/or your experience') }}</li>
+					<li>{{ 'info_usage_policy.2.9'|trans|desc('Provide you information about your use of the services and benchmarks, insights and suggestions for improvements') }}</li>
+					<li>{{ 'info_usage_policy.2.10'|trans|desc('Market services of our third-party business partners') }}</li>
+				</ul>
+				<p>{{ 'info_usage_policy.3'|trans|desc('AwardWallet will retain your information as long as your account with us is active, to comply with our legal obligations, to resolve disputes, and enforce our agreements.') }}</p>
+				<p>
+                    {{ 'info_usage_policy.4'|trans({
+                        '%link_on%': '<a href="' ~ url('aw_user_delete', queryExtend) ~ '">',
+                        '%link_off%': '</a>'
+                    })|desc('If you wish to cancel your account or for us to stop providing you services, or if we hold personal information about you and you want it to be removed from our database or inactivated, you may do so %link_on%here%link_off%.')|raw }}
+                </p>
+			</section>
+			<section id="analytics-cookies-and-other-website-technologies">
+				<h4>3. {{ 'web_tech_terms.header'|trans|desc('Analytics, Cookies and Other Web Site Technologies') }}</h4>
+				<p>{{ 'web_tech_terms.1'|trans|desc('AwardWallet is continuously improving our websites and products through the use of various third party web analytics tools, which help us understand how visitors use our websites, desktop tools, and mobile applications, what they like and dislike, and where they may have problems.') }}</p>
+				<p>{{ 'web_tech_terms.2'|trans|desc('Geolocation and Other Data:') }}</p>
+				<p>{{ 'web_tech_terms.3'|trans|desc('We may utilize precise geolocation data but only if you specifically opt-in to collection of that data in connection with a particular service. We also use information such as IP addresses to determine the general geographic locations areas of our visitors. The web beacons used in conjunction with these web analytics tools may gather data such as what browser or operating system a person uses, as well as, domain names, MIME types, and what content, products and services are reviewed or downloaded when visiting or registering for services at one of our websites or using one of our mobile applications.') }}</p>
+				<p>{{ 'web_tech_terms.4'|trans|desc('Google Analytics and Adobe Marketing Cloud:') }}</p>
+				<p>
+                    {{ 'web_tech_terms.5'|trans({
+                        '%link_on%': '<a href="https://www.google.com/policies/privacy/partners/" target="_blank" rel="noopener noreferrer">',
+                        '%link_off%': '</a>',
+                        '%link2_on%': '<a href="https://tools.google.com/dlpage/gaoptout" target="_blank" rel="noopener noreferrer">',
+                        '%link2_off%': '</a>',
+                        '%link3_on%': '<a href="https://www.google.com/policies/privacy/partners/" target="_blank" rel="noopener noreferrer">',
+                        '%link3_off%': '</a>',
+                    })|desc('We use Google Analytics as described in %link_on%“How Google uses data when you use our partners\' sites or apps.”%link_off% You can prevent your data from being used by Google Analytics on websites by installing the Google Analytics opt-out browser add-on %link2_on%here%link2_off%. We also employ IP address masking, a technique used to truncate IP addresses collected by %link3_on%Google Analytics%link3_off% and store them in an abbreviated form to prevent them from being traced back to individual users.')|raw }}
+                </p>
+				<p>{{ 'web_tech_terms.6'|trans|desc('Tracking Technologies:') }}</p>
+				<p>{{ 'web_tech_terms.7'|trans|desc('AwardWallet and our partners use cookies and similar tracking technologies to track user traffic patterns and hold certain registration information. Tracking technologies also used are beacons, tags and scripts to collect and track information and to improve and analyze our service. If you wish to not have the information these technologies collect used for the purpose of serving you targeted ads, you may opt-out in your account profile. The Help menu on the menu bar of most browsers will tell you how to prevent your browser from accepting new cookies, how to have the browser notify you when you receive a new cookie and how to disable cookies altogether. You can still review the website if you choose to set your browser to refuse all cookies; however, you must enable cookies to establish an account and to install the Services.') }}</p>
+				<p>{{ 'web_tech_terms.8'|trans|desc('Examples of Cookies We Use:') }}</p>
+				<table class="main-table privacy-table">
+					<thead>
+						<tr>
+							<th>{{ 'web_tech_terms.8.1.label'|trans|desc('Cookie Type') }}</th>
+							<th>{{ 'web_tech_terms.8.2.label'|trans|desc('Purpose') }}</th>
+							<th>{{ 'web_tech_terms.8.3.label'|trans|desc('Description') }}</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td data-title="Cookie Type"><span>{{ 'web_tech_terms.8.1.value.11'|trans|desc('Session Cookies') }}</span></td>
+							<td data-title="Purpose"><span>{{ 'web_tech_terms.8.1.value.12'|trans|desc('We use these cookies to operate our websites.') }}</span></td>
+							<td data-title="Description"><span>{{ 'web_tech_terms.8.1.value.13'|trans|desc('Some cookies are essential for the operation of AwardWallet websites. If a user chooses to disable these cookies, the user will not be able to access all of the content and features.') }}</span></td>
+						</tr>
+						<tr>
+							<td data-title="Cookie Type"><span>{{ 'web_tech_terms.8.1.value.21'|trans|desc('Preference Cookies') }}</span></td>
+							<td data-title="Purpose"><span>{{ 'web_tech_terms.8.1.value.22'|trans|desc('We use these cookies to remember your preferences.') }}</span></td>
+							<td data-title="Description"><span>{{ 'web_tech_terms.8.1.value.23'|trans|desc('When you register at an AwardWallet website, we use cookies to store unique, randomly assigned user IDs that we generate for administrative purposes. These cookies enable you to enter the AwardWallet sites without having to log on each time.') }}</span></td>
+						</tr>
+						<tr>
+							<td data-title="Cookie Type"><span>{{ 'web_tech_terms.8.1.value.31'|trans|desc('Advertising Cookies') }}</span></td>
+							<td data-title="Purpose"><span>{{ 'web_tech_terms.8.1.value.32'|trans|desc('These cookies are used to serve you with advertisements that may be relevant to you and your interests.') }}</span></td>
+							<td data-title="Description"><span>{{ 'web_tech_terms.8.1.value.33'|trans|desc('We use cookies to make advertising more engaging to users, as well as to assist in reporting on marketing program performance and analytics.') }}</span></td>
+						</tr>
+						<tr>
+							<td data-title="Cookie Type"><span>{{ 'web_tech_terms.8.1.value.41'|trans|desc('Security Cookies') }}</span></td>
+							<td data-title="Purpose"><span>{{ 'web_tech_terms.8.1.value.42'|trans|desc('These cookies are used for general security purposes and user authentication.') }}</span></td>
+							<td data-title="Description"><span>{{ 'web_tech_terms.8.1.value.43'|trans|desc('We use security cookies to authenticate users, prevent fraudulent use of login credentials, and protect user data from access by unauthorized parties.') }}</span></td>
+						</tr>
+					</tbody>
+				</table>
+				<p><strong>{{ 'web_tech_terms.9'|trans|desc('Mobile Analytics') }}</strong></p>
+				<p>{{ 'web_tech_terms.10'|trans|desc('We use mobile analytics software to allow us to better understand the functionality of our mobile software on your phone. This software may record information such as how often you use the application, the events that occur within the application, aggregated usage, performance data, and where the application was downloaded from. We do not link the information we store within the analytics software to any personally identifiable information you submit within the mobile application.') }}</p>
+				<p>{{ 'web_tech_terms.11'|trans|desc('Social Media: Our sites include social media features, such as joining our group page on Facebook. These features may collect your IP address, which page you are visiting on our site, and may set a cookie to enable the feature to function properly. These services will also authenticate your identity and provide you the option to share certain personal information with us such as your name and email address to pre-populate our sign-up form or provide feedback. Your interactions with these features are governed by the privacy policy of the company providing them.') }}</p>
+			</section>
+			<section id="information-sharing">
+				<h4>4. {{ 'info_sharing.header'|trans|desc('Information Sharing') }}</h4>
+					<p>{{ 'info_sharing.1'|trans|desc('Ensuring your privacy is important to us, we take our responsibility to protect your personal information very seriously. As permitted, we may share certain information and aggregated research data with third parties as described in this Privacy Policy. These third parties include the following:') }}</p>
+					<p>
+                        {{ 'info_sharing.2'|trans({
+                            '%bold_on%': '<strong>',
+                            '%bold_off%': '</strong>'
+                        })|desc('%bold_on%Third party service providers and vendors.%bold_off% We use third party services which help us run our day-to-day business operations, here are some examples of such operations:')|raw }}
+                    </p>
+				<ul>
+					<li>{{ 'info_sharing.2.1'|trans|desc('Hosting and delivering AwardWallet services') }}</li>
+					<li>{{ 'info_sharing.2.2'|trans|desc('Providing customer support') }}</li>
+					<li>{{ 'info_sharing.2.3'|trans|desc('Delivering email communications') }}</li>
+					<li>{{ 'info_sharing.2.4'|trans|desc('Performing data storage, data analytics and maintenance') }}</li>
+					<li>{{ 'info_sharing.2.5'|trans|desc('Providing cloud computing infrastructure') }}</li>
+				</ul>
+				<p>{{ 'info_sharing.3'|trans|desc('Such third-party service providers have access to personal information only as needed to perform their functions and they must process the personal information in accordance with this Privacy Policy. If we transfer any of your personal information to a third party acting as an agent, we will be responsible for any acts of those third-party agents that are inconsistent with this Privacy Policy, unless otherwise provided by law.') }}</p>
+				<p>
+                    {{ 'info_sharing.4'|trans({
+                        '%bold_on%': '<strong>',
+                        '%bold_off%': '</strong>'
+                    })|desc('%bold_on%Marketing and Analytics Partners.%bold_off% We use certain marketing and analytics partners such as Google Analytics, Facebook Analytics, Sparkpost, etc. to help us market our products and to help us understand how our users use our services to make our services better. Such third-party partners may receive information about your use of our services and potentially information about your visits to other online services. These third-party providers are only authorized to use your information to provide their services to us.')|raw }}
+                </p>
+				<p>
+                    {{ 'info_sharing.5'|trans({
+                        '%bold_on%': '<strong>',
+                        '%bold_off%': '</strong>'
+                    })|desc('%bold_on%Advertising Partners.%bold_off% We work with advertising partners to enable us to customize the advertising content you may receive on our Services. Please see Section 3 “Tracking Technologies,” for more information on this topic.')|raw }}
+                </p>
+				<p>
+                    {{ 'info_sharing.6'|trans({
+                        '%bold_on%': '<strong>',
+                        '%bold_off%': '</strong>',
+                        '%link_on%': '<a target="_blank" href="https://developers.google.com/terms/api-services-user-data-policy#additional_requirements_for_specific_api_scopes" rel="noopener noreferrer">',
+                        '%link_off%': '</a>'
+                    })|desc('%bold_on%AwardWallet Research.%bold_off% We may share anonymized and de-identified data (that does not contain any personally identifiable information) with third parties. For example, we conduct research using aggregate data collected from our users to create, use and share certain industry reports such as analyzing well-being of a loyalty program or overall analysis of travel trends. The aggregate data does not identify you personally, and will not be treated as personal information under this Privacy Policy. We may also disclose your personal information to any third party, but only with your prior consent. AwardWallet\'s use of information received from Google APIs or Verizon Media oAuth APIs will adhere to %link_on%Google API Services User Data Policy%link_off%, including the Limited Use requirements and Verizon Media Limited Use Requirements, respectively.')|raw }}
+                </p>
+				<p>
+                    {{ 'info_sharing.7'|trans({
+                        '%bold_on%': '<strong>',
+                        '%bold_off%': '</strong>'
+                    })|desc('%bold_on%Legal Compliance.%bold_off% In certain cases, AwardWallet may be required by law to disclose personal information. For example, we may disclose your information to comply with a valid subpoena or other legal process; when we believe in good faith that disclosure is necessary to protect our rights, or to protect your safety (or the safety of others); to investigate fraud; to respond to a government request; or to meet national security or law enforcement requests. We may also disclose your information to a third-party as part of a merger, sale of company assets, financing or acquisition of all or a portion of our business by another company where customer information will be one of the transferred assets.')|raw }}
+                </p>
+                <p>
+                    {{ 'info_sharing.8'|trans({
+                        '%bold_on%': '<strong>',
+                        '%bold_off%': '</strong>'
+                    })|desc('%bold_on%Choice Regarding Information Sharing.%bold_off% AwardWallet does not disclose your personal information to third parties for purposes other than those necessary to provide and improve our services or as required by law. However, in the unlikely event that AwardWallet were to share your personal information with third parties for purposes not outlined in this policy, we will provide you with clear and conspicuous mechanisms to opt out of such disclosures. Additionally, for any sharing of sensitive information, AwardWallet will obtain your affirmative express consent (opt-in) before proceeding.')|raw }}
+                </p>
+			</section>
+			<section id="communicating">
+				<h4>5. {{ 'communicating.header'|trans|desc('Communications') }}</h4>
+				<p>{{ 'communicating.1'|trans|desc('AwardWallet may need to communicate with you for a variety of different reasons, including:') }}</p>
+				<ul>
+					<li>{{ 'communicating.1.1'|trans|desc('Responding to your questions and requests. If you contact us with a problem or question, we will use your information to respond.') }}</li>
+					<li>{{ 'communicating.1.2'|trans|desc('Sending you Service and administrative emails and messages. We may contact you to inform you about changes in our Services, our Service offerings, and important Service related notices, such as security and fraud notices. These emails and messages are considered a necessary part of the Services and you may not opt-out of them.') }}</li>
+					<li>{{ 'communicating.1.3'|trans|desc('Sending emails about new products or other news about AwardWallet that we think you’d like to hear about either from us or from our business partners. You can always opt out of these types of messages at any time by clicking the unsubscribe link at the bottom of each communication.') }}</li>
+					<li>{{ 'communicating.1.4'|trans|desc('Offering referral programs and incentives, which allow you to utilize email, text, or URL links that you can share with friends or colleagues.') }}</li>
+				</ul>
+			</section>
+			<section id="accessing-your-data">
+				<h4>6. {{ 'accessing_your_data.header'|trans|desc('Accessing Your Data') }}</h4>
+                <p>
+                    {{ 'accessing_your_data.1'|trans({
+                        '%link_on%': '<a href="' ~ url('aw_contactus_index', queryExtend) ~ '">',
+                        '%link_off%': '</a>'
+                    })|desc('Our customers can always review, update or change personal information from within their account. AwardWallet will also, when you request, provide you with information about whether we hold, or process on behalf of a third party, any of your personal information. Please %link_on%contact us here%link_off% if you need assistance in reviewing your information. AwardWallet will respond to your access request to review the information we have on file for you within a reasonable time.')|raw }}
+                </p>
+				<p>{{ 'accessing_your_data.2'|trans|desc('If you are from the EEA, “personal information” is defined as any personally identifiable information or other data collected that could directly or indirectly identify you. You may have additional rights under their data protection laws, such as the following:') }}</p>
+				<ul>
+					<li>{{ 'accessing_your_data.2.1'|trans|desc('Access: Right to request access to and a copy of your personal information;') }}</li>
+					<li>{{ 'accessing_your_data.2.2'|trans|desc('Restriction: You can ask us to restrict processing of your personal information in certain circumstances;') }}</li>
+					<li>{{ 'accessing_your_data.2.3'|trans|desc('Rectification: You can have any inaccuracies in your personal information corrected;') }}</li>
+					<li>{{ 'accessing_your_data.2.4'|trans|desc('Deletion: You can ask us to delete your personal information in certain circumstances (e.g. if the information is no longer necessary for the purposes for which it was collected);') }}</li>
+					<li>{{ 'accessing_your_data.2.5'|trans|desc('Objection: You can object to further processing your personal information in certain circumstances;') }}</li>
+					<li>{{ 'accessing_your_data.2.6'|trans|desc('Withdrawal of consent: Where we rely on your consent to process your personal information, you have the right to decline consent and/or if provided, to withdraw it at any time. This will not affect the lawfulness of processing prior to the withdrawal of your consent.') }}</li>
+					<li>{{ 'accessing_your_data.2.7'|trans|desc('Portability: You can ask us to provide your personal information in a structured, commonly used and machine-readable format in certain circumstances.') }}</li>
+				</ul>
+				<p>
+                    {{ 'accessing_your_data.3'|trans({
+                        '%link_on%': '<a href="' ~ url('aw_contactus_index', queryExtend) ~ '">',
+                        '%link_off%': '</a>'
+                    })|desc('You can exercise the above rights by %link_on%contacting us%link_off% and we will consider such requests in accordance with applicable data protection laws. We may ask you to verify your identity before we respond to your request.')|raw }}
+                </p>
+				<p>{{ 'accessing_your_data.4'|trans|desc('You may also have the right to raise questions or complaints with your data protection authority at any time.') }}</p>
+				<p>{{ 'accessing_your_data.5'|trans|desc('We may transfer personal information to companies that help us provide our service, and when we do, these transfers to subsequent third parties are covered by appropriate transfer agreements. We will retain personal data we process on behalf of our customer as needed to provide services to our customer. Also, we will retain this personal information as necessary to comply with our legal obligations, resolve disputes, and enforce our agreements.') }}</p>
+				<p>{{ 'accessing_your_data.6'|trans|desc('AwardWallet is headquartered in the United States of America. Information that we collect and maintain may be transferred to, or controlled and processed in, the United States and/or other countries around the world. When you provide us with information, or use our website(s) and services, you consent to this transfer.  We will protect the privacy and security of personal information we collect in accordance with this privacy policy, regardless of where it is processed or stored.') }}</p>
+			</section>
+			<section id="california-privacy-rights">
+				<h4>7. {{ 'california_privacy_rights.header'|trans|desc('California Consumer Privacy Act') }}</h4>
+				<p><a href="https://awardwallet.com/page/ccpa">{{ 'california_privacy_rights.link'|trans|desc('Click here to read additional disclosures required under the California Consumer Privacy Act.') }}</a></p>
+			</section>
+			<section id="privacy-shield-compliance">
+				<h4>8. {{ 'privacy_shield_compliance.header'|trans|desc('Data Privacy Framework Compliance') }}</h4>
+				<p>
+                    {{ 'privacy_shield_compliance.2'|trans|desc('Pursuant to the EU-U.S. DPF, the EU-U.S. Privacy Shield Framework Principles have been amended as the “EU-U.S. Data Privacy Framework Principles”; and pursuant to the Swiss-U.S. DPF, the Swiss-U.S. Privacy Shield Framework Principles have been amended as the “Swiss-U.S. Data Privacy Framework Principles”. Organizations that self-certified their commitment to comply with the EU-U.S. Privacy Shield Framework Principles and/or the Swiss-U.S. Privacy Shield Framework Principles that wish to enjoy the benefits of participating in the EU-U.S. DPF and/or the Swiss-U.S. DPF (as applicable) must comply with the amended Principles (i.e., the EU-U.S. DPF Principles and/or the Swiss-U.S. DPF Principles (as applicable)). Such organizations’ commitment to comply with the EU-U.S. DPF Principles with regard to transfers of personal data from the European Union and, as applicable, the United Kingdom, and/or with the Swiss-U.S. DPF Principles with regard to transfer of personal data from Switzerland must be reflected in their self-certification submissions to the U.S. Department of Commerce, and in their privacy policies.')|raw }}
+                </p>
+                <p>
+                    {{ 'privacy_shield_compliance.3'|trans({
+                        '%link_on%': '<a href="https://www.dataprivacyframework.gov/" target="_blank" rel="noopener noreferrer">',
+                        '%link_off%': '</a>',
+                    })|desc('AwardWallet, LLC complies with the EU-U.S. Data Privacy Framework (EU-U.S. DPF) and the UK Extension to the EU-U.S. DPF, and the Swiss-U.S. Data Privacy Framework (Swiss-U.S. DPF) as set forth by the U.S. Department of Commerce. AwardWallet, LLC has certified to the U.S. Department of Commerce that it adheres to the EU-U.S. Data Privacy Framework Principles (EU-U.S. DPF Principles) with regard to the processing of personal data received from the European Union and the United Kingdom in reliance on the EU-U.S. DPF and the UK Extension to the EU-U.S. DPF. AwardWallet, LLC has certified to the U.S. Department of Commerce that it adheres to the Swiss-U.S. Data Privacy Framework Principles (Swiss-U.S. DPF Principles) with regard to the processing of personal data received from Switzerland in reliance on the Swiss-U.S. DPF. If there is any conflict between the terms in this privacy policy and the EU-U.S. DPF Principles and/or the Swiss-U.S. DPF Principles, the Principles shall govern. To learn more about the Data Privacy Framework (DPF) Program, and to view our certification, please visit %link_on%https://www.dataprivacyframework.gov/%link_off%')|raw }}
+                </p>
+                <p>
+                    {{ 'privacy_shield_compliance.4'|trans({
+                        '%link_on%': '<a href="https://go.adr.org/dpf_irm.html" target="_blank" rel="noopener noreferrer">',
+                        '%link_off%': '</a>',
+                    })|desc('In compliance with the EU-U.S. DPF and the Swiss-U.S. DPF, AwardWallet, LLC commits to refer unresolved complaints concerning our handling of personal data received in reliance on the EU-U.S. DPF and the Swiss-U.S. DPF to AAA-ICDR, an alternative dispute resolution provider based in the United States. If you do not receive timely acknowledgment of your DPF Principles-related complaint from us, or if we have not addressed your DPF Principles-related complaint to your satisfaction, please visit %link_on%https://go.adr.org/dpf_irm.html%link_off% for more information or to file a complaint. The services of AAA-ICDR are provided at no cost to you.')|raw }}
+                </p>
+			</section>
+			<section id="security">
+				<h4>9. {{ 'security.header'|trans|desc('Security') }}</h4>
+				<p>
+                    {{ 'security.1'|trans({
+                        '%link_on%': '<a href="'~ url('aw_profile_2factor', queryExtend) ~ '">',
+                        '%link_off%': '</a>'
+                    })|desc('AwardWallet follows generally accepted standards to protect the personal information submitted to us, both during transmission and once it is received, however, no security measure is perfect. We recommend safeguarding your password and %link_on%implementing two-factor authentication on your account%link_off%, as it is one of the easiest ways you can manage the security of your own account – remember that if you lose control over your password, you may lose control over your personal information.')|raw }}
+                </p>
+			</section>
+			<section id="changes-statement">
+				<h4>10. {{ 'statement_changes.header'|trans|desc('Changes to this Statement') }}</h4>
+				<p>{{ 'statement_changes.1'|trans|desc('We may update this Privacy Policy to reflect changes to our information practices. If we make any material changes we will provide notice on this website, and we may notify you by email (sent to the e-mail address specified in your account), prior to the change becoming effective. We encourage you to periodically review this page for the latest information on our privacy practices. If you continue to use the Services after those changes are in effect, you agree to the revised policy.') }}</p>
+			</section>
+            <section id="questions-or-complaints">
+                <h4>11. {{ 'question_complaint.header'|trans|desc('Questions or Complaints') }}</h4>
+                <p>
+                    {{ 'question_complaint.1'|trans({
+                        '%link_on%': '<a href="' ~ url('aw_contactus_index', queryExtend) ~ '">',
+                        '%link_off%': '</a>'
+                    })|desc('In compliance with the Data Privacy Framework Principles, AwardWallet commits to resolve complaints about our collection or use of your personal information. EU and Swiss individuals with inquiries or complaints regarding our Data Privacy Framework policy should first %link_on%contact AwardWallet here%link_off%.')|raw }}
+                </p>
+                <p>
+                    {{ 'question_complaint.2'|trans({
+                        '%link_on%': '<a href="https://go.adr.org/dpf_irm.html" target="_blank" rel="noopener noreferrer">',
+                        '%link_off%': '</a>',
+                        '%link2_on%': '<a href="https://www.adr.org/" target="_blank" rel="noopener noreferrer">',
+                        '%link2_off%': '</a>'
+                    })|desc('AwardWallet has further committed to refer unresolved Data Privacy Framework complaints to the %link_on%AAA-ICDR%link_off%, an alternative dispute resolution provider located in the United States. If you do not receive timely acknowledgment of your complaint from us, or if we have not addressed your complaint to your satisfaction, please contact or visit %link2_on%https://www.adr.org/%link2_off% for more information or to file a complaint. The services of the AAA-ICDR are provided at no cost to you.')|raw }}
+                </p>
+                <p>
+                    {{ 'question_complaint.3'|trans({
+                        '%link_on%': '<a href="https://www.dataprivacyframework.gov/" target="_blank" rel="noopener noreferrer">',
+                        '%link_off%': '</a>'
+                    })|desc('You may, under limited circumstances, invoke binding arbitration for complaints not resolved by the above mechanisms. Additional information can be found at %link_on%https://www.dataprivacyframework.gov/%link_off%.')|raw }}
+                </p>
+                <p>{{ 'question_complaint.4'|trans|desc('AwardWallet is subject to the investigatory and enforcement powers of the U.S. Federal Trade Commission with regards to our compliance with the EU–U.S. Data Privacy Framework and the Swiss-U.S. Data Privacy Framework.') }}</p>
+            </section>
+
+			<p>
+                {{ 'other_questions'|trans({
+                    '%link_on%': '<a href="' ~ url('aw_contactus_index', queryExtend) ~ '">',
+                    '%link_off%': '</a>'
+                })|desc('If you have any other questions about this Privacy Policy please %link_on%contact us%link_off%.')|raw }}
+            </p>
+		</div>
+	</div>
+
+<script>
+{% if is_granted('SITE_MOBILE_APP') %}
+		$('.scroll-links span[data-href]')
+				.prop('onclick', null)
+				.off('click')
+				.on('click.scroll', function(e) {
+					e.preventDefault();
+					var $section = $($(e.target).data('href'));
+					if ($section.length === 0)
+						return false;
+					$section.get(0).scrollIntoView();
+				});
+{% else %}
+	{% if not is_granted("SITE_MOBILE_AREA") %}
+		require(['jquery-boot'], function($) {
+	{% endif %}
+			if(typeof $ !== 'undefined') {
+				$('.scroll-links span[data-href]')
+						.prop('onclick', null)
+						.off('click')
+						.on('click.scroll', function (e) {
+							e.preventDefault();
+							var hash = $(e.target).data('href').substr(1);
+							var $section = $('#' + hash);
+							if ($section.length === 0)
+								return false;
+
+							$('html,body').animate({scrollTop: $section.offset().top - 10}, 500);
+							location.hash = hash;
+							return false;
+						});
+			}
+	{% if not is_granted("SITE_MOBILE_AREA") %}
+	});
+	{% endif %}
+{% endif %}
+</script>

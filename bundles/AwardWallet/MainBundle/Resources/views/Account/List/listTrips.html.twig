@@ -1,0 +1,66 @@
+{% extends "@AwardWalletMain/Layout/trips.html.twig" %}
+{% import '@AwardWalletMain/TwigMacros/extension.html.twig' as extension %}
+{% import "@AwardWalletMain/TwigMacros/environment.html.twig" as environmentMacros %}
+{% use '@AccountList/elementsTrips.html.twig' %}
+{% use '@AccountList/popups.html.twig' %}
+{% use '@AccountList/updaterTrips.html.twig' %}
+
+{% if agentId == 'my' %}
+    {% set nextUrl = path('aw_timeline') %}
+{% else %}
+    {% set nextUrl = path('aw_timeline_html5', {'agentId': agentId}) %}
+{% endif %}
+
+{% block meta %}
+    {{ parent() }}
+    <base href="{{ path('aw_trips_update') }}">
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    {# Need to decide how to load comfortably lang files #}
+    {{ encore_entry_script_tags('trans/' ~ app.request.locale) }}
+    {{ encore_entry_script_tags('account-list') }}
+{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    {{ encore_entry_link_tags('account') }}
+    {{ encore_entry_link_tags('account-list') }}
+{% endblock %}
+
+{% block popup %}
+    {{ parent() }}
+    {{ block('old_site_popups') }}
+{% endblock %}
+
+{% block content %}
+    {# Details popup #}
+    <div id="update-all-account-container" {{ environmentMacros.dataAttr({limit:'false', accountsData:accountsData, isBusiness:'false', isIE:'false', isTrips:'true', nextUrl:nextUrl, agentId: agentId}) }}></div>
+    {{ block('account_details_popup') }}
+
+    <div data-ng-controller="mainCtrl as main">
+        {{ block('upgrade_popup') }}
+
+        <div class="tabs-content" style="min-height: {{ 250 + 46 * agents }}px">
+            {{ block('account_updater') }}
+            {# Loader start #}
+            <div class="ajax-loader" data-ng-hide="main.state.loaded">
+                <div class="loading"></div>
+            </div>
+            {# Loader end #}
+
+            {# Content #}
+            {% if block('list_toolbar') is defined %}
+                {{ block('list_toolbar') }}
+            {% endif %}
+            {{ block('list_elements') }}
+
+        </div>
+
+
+    </div>
+
+    {{ extension.load() }}
+
+{% endblock %}

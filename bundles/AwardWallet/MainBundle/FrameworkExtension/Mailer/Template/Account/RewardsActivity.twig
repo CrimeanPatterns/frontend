@@ -1,0 +1,160 @@
+{% extends '@MailTemplate/Layout/base.twig' %}
+{% trans_default_domain "email" %}
+
+{% block subject %}{% apply spaceless %}{% autoescape false %}
+    {% set providers = {} %}
+    {% for account in accounts %}
+        {% if providers|length < 4 and account["ProviderCode"] is defined and providers[account["ProviderCode"]] is not defined %}
+            {% set providers = providers|merge({(account["ProviderCode"]): account["ProviderName"]}) %}
+        {% endif %}
+    {% endfor %}
+
+    {% if period == constant('\\AwardWallet\\MainBundle\\FrameworkExtension\\Mailer\\Template\\Account\\RewardsActivity::PERIOD_DAY') %}
+        {% set datePattern = "EEEE, LLL d, yy" %}
+        {% if accounts|length == 1 %}
+            {{ 'rewards_activity.day.one-account.subject'|trans({
+                '%date%': fromDate|patternDatetime(datePattern, locale),
+                '%providerName%': accounts|first["ProviderName"],
+                '%change%': accounts|first["LastChange"],
+                '%fromBalance%': accounts|first['LastBalance'],
+                '%toBalance%': accounts|first['Balance']
+            }, 'email', lang)|desc('Rewards Activity (%date%): %providerName%: %change% (from %fromBalance% to %toBalance%)') }}
+        {% elseif providers|length == 1 %}
+            {{ 'rewards_activity.day.one-provider.subject'|trans({
+                '%date%': fromDate|patternDatetime(datePattern, locale),
+                '%providerName%': providers|first
+            }, 'email', lang)|desc('Rewards Activity (%date%): %providerName% accounts changed') }}
+        {% elseif providers|length == 2 %}
+            {{ 'rewards_activity.day.multiple-providers.subject'|trans({
+                '%date%': fromDate|patternDatetime(datePattern, locale),
+                '%providerName%': providers|first,
+                '%providerName2%': providers|last
+            }, 'email', lang)|desc('Rewards Activity (%date%): %providerName% and %providerName2% accounts changed') }}
+        {% elseif providers|length == 3 %}
+            {{ 'rewards_activity.day.multiple-providers.subject'|trans({
+                '%date%': fromDate|patternDatetime(datePattern, locale),
+                '%providerName%': providers|first ~ ", " ~ providers[providers|keys[1]],
+                '%providerName2%': providers|last,
+            }, 'email', lang)|desc('Rewards Activity (%date%): %providerName% and %providerName2% accounts changed') }}
+        {% elseif providers|length > 3 %}
+            {{ 'rewards_activity.day.many-providers.subject'|trans({
+                '%date%': fromDate|patternDatetime(datePattern, locale),
+                '%providerNames%': providers|first ~ ", " ~ providers[providers|keys[1]]
+            }, 'email', lang)|desc('Rewards Activity (%date%): %providerNames% and other accounts changed') }}
+        {% else %}
+            {{ 'rewards_activity.day.subject'|trans({}, 'email', lang)|desc('Rewards activity for the last day') }}
+        {% endif %}
+    {% elseif period == constant('\\AwardWallet\\MainBundle\\FrameworkExtension\\Mailer\\Template\\Account\\RewardsActivity::PERIOD_WEEK') %}
+        {% set datePattern = "LLL d, yy" %}
+        {% if accounts|length == 1 %}
+            {{ 'rewards_activity.week.one-account.subject'|trans({
+                '%fromDate%': fromDate|patternDatetime(datePattern, locale),
+                '%toDate%': toDate|patternDatetime(datePattern, locale),
+                '%providerName%': accounts|first["ProviderName"],
+                '%change%': accounts|first["LastChange"],
+                '%fromBalance%': accounts|first['LastBalance'],
+                '%toBalance%': accounts|first['Balance']
+            }, 'email', lang)|desc('Rewards Activity (%fromDate% - %toDate%): %providerName%: %change% (from %fromBalance% to %toBalance%)') }}
+        {% elseif providers|length == 1 %}
+            {{ 'rewards_activity.week.one-provider.subject'|trans({
+                '%fromDate%': fromDate|patternDatetime(datePattern, locale),
+                '%toDate%': toDate|patternDatetime(datePattern, locale),
+                '%providerName%': providers|first
+            }, 'email', lang)|desc('Rewards Activity (%fromDate% - %toDate%): %providerName% accounts changed') }}
+        {% elseif providers|length == 2 %}
+            {{ 'rewards_activity.week.multiple-providers.subject'|trans({
+                '%fromDate%': fromDate|patternDatetime(datePattern, locale),
+                '%toDate%': toDate|patternDatetime(datePattern, locale),
+                '%providerName%': providers|first,
+                '%providerName2%': providers|last
+            }, 'email', lang)|desc('Rewards Activity (%fromDate% - %toDate%): %providerName% and %providerName2% accounts changed') }}
+        {% elseif providers|length == 3 %}
+            {{ 'rewards_activity.week.multiple-providers.subject'|trans({
+                '%fromDate%': fromDate|patternDatetime(datePattern, locale),
+                '%toDate%': toDate|patternDatetime(datePattern, locale),
+                '%providerName%': providers|first ~ ", " ~ providers[providers|keys[1]],
+                '%providerName2%': providers|last,
+            }, 'email', lang)|desc('Rewards Activity (%fromDate% - %toDate%): %providerName% and %providerName2% accounts changed') }}
+        {% elseif providers|length > 3 %}
+            {{ 'rewards_activity.week.many-providers.subject'|trans({
+                '%fromDate%': fromDate|patternDatetime(datePattern, locale),
+                '%toDate%': toDate|patternDatetime(datePattern, locale),
+                '%providerNames%': providers|first ~ ", " ~ providers[providers|keys[1]]
+            }, 'email', lang)|desc('Rewards Activity (%fromDate% - %toDate%): %providerNames% and other accounts changed') }}
+        {% else %}
+            {{ 'rewards_activity.week.subject'|trans({}, 'email', lang)|desc('Rewards activity for the last week') }}
+        {% endif %}
+    {% elseif period == constant('\\AwardWallet\\MainBundle\\FrameworkExtension\\Mailer\\Template\\Account\\RewardsActivity::PERIOD_MONTH') %}
+        {% set datePattern = "LLLL yyyy" %}
+        {% if accounts|length == 1 %}
+            {{ 'rewards_activity.month.one-account.subject'|trans({
+                '%date%': fromDate|patternDatetime(datePattern, locale),
+                '%providerName%': accounts|first["ProviderName"],
+                '%change%': accounts|first["LastChange"],
+                '%fromBalance%': accounts|first['LastBalance'],
+                '%toBalance%': accounts|first['Balance']
+            }, 'email', lang)|desc('Rewards Activity (%date%): %providerName%: %change% (from %fromBalance% to %toBalance%)') }}
+        {% elseif providers|length == 1 %}
+            {{ 'rewards_activity.month.one-provider.subject'|trans({
+                '%date%': fromDate|patternDatetime(datePattern, locale),
+                '%providerName%': providers|first
+            }, 'email', lang)|desc('Rewards Activity (%date%): %providerName% accounts changed') }}
+        {% elseif providers|length == 2 %}
+            {{ 'rewards_activity.month.multiple-providers.subject'|trans({
+                '%date%': fromDate|patternDatetime(datePattern, locale),
+                '%providerName%': providers|first,
+                '%providerName2%': providers|last
+            }, 'email', lang)|desc('Rewards Activity (%date%): %providerName% and %providerName2% accounts changed') }}
+        {% elseif providers|length == 3 %}
+            {{ 'rewards_activity.month.multiple-providers.subject'|trans({
+                '%date%': fromDate|patternDatetime(datePattern, locale),
+                '%providerName%': providers|first ~ ", " ~ providers[providers|keys[1]],
+                '%providerName2%': providers|last,
+            }, 'email', lang)|desc('Rewards Activity (%date%): %providerName% and %providerName2% accounts changed') }}
+        {% elseif providers|length > 3 %}
+            {{ 'rewards_activity.month.many-providers.subject'|trans({
+                '%date%': fromDate|patternDatetime(datePattern, locale),
+                '%providerNames%': providers|first ~ ", " ~ providers[providers|keys[1]]
+            }, 'email', lang)|desc('Rewards Activity (%date%): %providerNames% and other accounts changed') }}
+        {% else %}
+            {{ 'rewards_activity.month.subject'|trans({}, 'email', lang)|desc('Rewards activity for the last month') }}
+        {% endif %}
+    {% endif %}
+{%  endautoescape %}{% endapply %}{% endblock subject %}
+
+{% block content %}
+    {% import '@MailTemplate/CommonMacro.twig' as commonMacro %}
+    {% import '@MailTemplate/AccountMacro.twig' as accountMacro %}
+
+    {{ commonMacro.hello(user.firstname, _context) }}
+    {{ commonMacro.paragraph(
+        'rewards_activity.balance_changes'|trans({
+            '%bold_on1%': '<b style="color:#3d424d;">',
+            '%bold_off1%': '</b>',
+            '%bold_on2%': '<b style="color:#3d424d;">',
+            '%bold_off2%': '</b>',
+            '%from%': fromDate|formatDatetime('medium', 'none', locale),
+            '%to%': toDate|formatDatetime('medium', 'none', locale),
+        }, 'email', lang)|desc("this report shows your %bold_on1%balance changes%bold_off1% from %bold_on2%%from%%bold_off2% to %bold_on2%%to%%bold_off2%"),
+        _context, {escape: false}
+    ) }}
+
+    {% for account in accounts %}
+        {{ accountMacro.renderAccount(account, user, _context) }}
+
+        {% if loop.first and advt is defined and advt is not null %}
+            {{ commonMacro.adFrame(advt, _context) }}
+        {% endif %}
+    {% endfor %}
+{% endblock content %}
+
+{% block unsubscribe %}
+    {% import '@MailTemplate/CommonMacro.twig' as commonMacro %}
+    {{ commonMacro.familyMemberUnsubscribeLink(user, unsubscribeLink ~ '#rewardsActivity', _context) }}
+{% endblock unsubscribe %}
+
+{% block restore_row %}
+    {% if businessRecipient is null %}
+        {{ parent() }}
+    {% endif %}
+{% endblock restore_row %}

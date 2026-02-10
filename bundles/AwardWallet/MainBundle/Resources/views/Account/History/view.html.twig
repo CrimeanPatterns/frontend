@@ -1,0 +1,295 @@
+{% extends is_granted('SITE_BUSINESS_AREA') ? "@AwardWalletMain/Layout/business_check_balance.html.twig" : "@AwardWalletMain/Layout/accounts_list.html.twig" %}
+
+{% block javascripts %}
+    {{ parent() }}
+    {# Need to decide how to load comfortably lang files #}
+    <script>
+        require(['jquery-boot', 'angular-boot', 'directives/retooltipAfter', 'pages/accounts/controllers/accountHistory'],
+            function ($, angular) {
+                angular.module('accountHistoryApp').constant('HistoryConfig', {
+                    'accountId': {{ accountId }},
+                    'total': {{ total ? total : 0 }},
+                    'perPage': {{ perPage ? perPage : 100 }},
+                    'subAccountId': '{{ subAccountId }}'
+                });
+                angular.module('accountHistoryApp').constant('HistoryData', {{ historyData|json_encode|default('false')|raw }});
+
+                $(function () {
+                    angular.bootstrap($('body').get(), ['accountHistoryApp', 'retooltip-after-directive']);
+                });
+            });
+    </script>
+{% endblock %}
+
+{% block popup %}
+    {{ parent() }}
+
+{% endblock %}
+
+{% block content %}
+    <div class="main-blk" data-ng-controller="mainCtrl as main">
+        <h1>
+            {{ 'history-transaction.provider-header'|trans({'%providerName%': displayName})|desc('Transactions for %providerName%')|raw }}
+            {% if subAccountName %}
+                {{ subAccountName }}
+            {% endif %}
+            <span class="silver">{{ 'history-transaction.account-header'|trans({'%accountNumber%': accountNumber, '%userName%': userName})|desc('account %accountNumber% belonging to %userName%') }}</span>
+        </h1>
+
+        {% if not awFree %}
+            <div class="ajax-loader" data-ng-hide="main.state.loaded"><div class="loading"></div></div>
+            <div class="overlay" data-ng-cloak data-ng-show="main.state.loading && main.state.loaded"></div>
+            <div class="main-blk-content" data-ng-cloak>
+                <div data-ng-cloak data-ng-show="main.state.loaded" class="transaction-top">
+                    <ul class="dropdown-menu" data-ng-controller="actionsCtrl as actions">
+                        <li data-ng-controller="checkerCtrl as checker" data-ng-show="main.historyItems.length">
+                            <div class="btn-silver-w rel-this">
+                                <input id="mark" type="checkbox" data-ng-model='checker.view.mark' data-ng-change="checker.toggleAll()" class="checkbox"/>
+                                <label data-ng-if="!checker.view.reset" for="mark" class="label" data-tip title="Select all"></label>
+                                <label data-ng-click="checker.resetAll()" data-ng-if="checker.view.reset" class="label minus" data-tip title="Reset selected"></label>
+                                {#<a href="" data-target="select-accounts"><i class="icon-arrow-bottom-dark"></i></a>#}
+                            </div>
+                        </li>
+                        <li data-ng-show="actions.view.note">
+                            <a class="btn-silver-w" href="" data-ng-click="actions.action('noteAction')" data-tip title="{{ "transaction-history.note-selected"|trans|desc("Set notes to selected transactions") }}"><i class="icon-edit"></i> <span>{{ "notes"|trans }}</span></a>
+                        </li>
+                        <li data-ng-show="actions.view.delete">
+                            <a class="btn-silver-w" href="" data-ng-click="actions.action('deleteAction')" data-tip title="{{ "transaction-history.delete-selected"|trans|desc("Remove selected transactions") }}"><i class="icon-delete"></i></a>
+                        </li>
+
+                        {#
+                            <li>
+                                <a href="#" class="btn-silver-w">
+                                    <i class="icon-label"></i>
+                                    <span>Assign Labels</span>
+                                </a>
+                            </li>
+                        #}
+                    </ul>
+                    {% if providerCode == 'delta' %}
+                        <div class="transaction-info provider">
+                            {{ 'account-history.delta.info'|trans({
+                                '%linkStart%': '<a href="' ~ autologinUrl ~ '" class="blue-link" target="_blank">',
+                                '%linkEnd%': '</a>',
+                                '%action%': '<a href="" data-ng-click="main.uploadHistory.upload()" class="blue-link">'
+                            })|desc('To import your account history please set your filters and use the "print to pdf" button in the top right corner of the
+                            %linkStart%account history page%linkEnd% and %action%upload it%linkEnd%.') | raw }}
+                        </div>
+                    {% elseif providerCode == 'mileageplus' %}
+                        <div class="transaction-info provider">
+                            {{ 'account-history.mileageplus.info'|trans({
+                                '%linkStart%': '<a href="' ~ autologinUrl ~ '" class="blue-link" target="_blank">',
+                                '%linkEnd%': '</a>',
+                                '%action%': '<a href="" data-ng-click="main.uploadHistory.upload()" class="blue-link">'
+                            })|desc('To import your account history please download your account activity via
+                                    %linkStart%this page%linkEnd% as a single csv file (there is a link ‘Download activity’ at the
+                                    top of the page) and %action%upload it%linkEnd%.') | raw }}
+                        </div>
+                    {% elseif providerCode == 'rapidrewards' %}
+                        <div class="transaction-info provider">
+                            {{ 'account-history.rapidrewards.info'|trans({
+                                '%linkStart%': '<a href="' ~ autologinUrl ~ '" class="blue-link" target="_blank">',
+                                '%linkEnd%': '</a>',
+                                '%action%': '<a href="" data-ng-click="main.uploadHistory.upload()" class="blue-link">',
+                                '%mailTo%': '<a href="mailto:' ~ user.login ~ (familyMember ? '.' ~ familyMember.alias : '') ~ '@awardwallet.com" class="blue-link">' ~ user.login ~ (familyMember ? '.' ~ familyMember.alias : '') ~ '@awardwallet.com</a>'
+                            })|desc(' To import your account history please save / print %linkStart%this page%linkEnd% into a pdf file and
+                            %action%upload it%linkEnd%. You can also copy-paste this entire page into an email and send it to %mailTo%') | raw }}
+                        </div>
+                    {% endif %}
+                    <div class="transaction-info success" style="display: none;">
+                        <i class="icon-green-check"></i><strong class="green">{{ "thank.you"|trans }}</strong>.
+                        {{ "account-history.upload_success"|trans|desc('Your file has been uploaded and placed into a queue for processing.
+                        Please give it up to 5 minutes to be processed. After that you can refresh this page to see the results.') }}
+                    </div>
+                    <div class="transaction-info error" style="display: none;">
+                        <i class="icon-red-error"></i>
+                        <strong class="red">{{ "account-history.upload_error"|trans|desc('Error occurred, invalid file format, please try again.') }}</strong>
+                    </div>
+                    <div class="progress-bar" style="width: 250px; display: none;">
+                        <input accept="{{ providerCode == 'delta' or providerCode == 'rapidrewards' ? 'application/pdf,text/html' : '.csv'  }}" type="file" name="uploadHistory" id="uploadHistory" file-model="main.uploadHistory.file" style="display: none;">
+                        <div class="progress-bar-row">
+                            <p style="overflow: hidden; text-overflow: ellipsis;"></p>
+                            <span style="width:10%"></span>
+                        </div>
+                    </div>
+                </div>
+{#
+                <div class="selected-labels">
+                    <span class="label-element orange">First Label</span>
+                    <span class="label-element light-orange">Second Label</span>
+                    <span class="label-element yellow">Third Label</span>
+                    <span class="add-label">+ New Label</span>
+                </div>
+#}
+                <div class="not-found t-border" data-ng-cloak data-ng-show="!main.historyItems.length && main.state.loaded">
+                    <i class="icon-warning-small"></i>
+                    <p>{{ "account.history.not-exist"|trans|desc("History does not exist yet")|raw }}</p>
+                </div>
+
+                <table class="main-table transaction" data-ng-show="main.historyItems.length">
+                    <thead>
+                    <tr>
+                        <th></th>
+                        <th data-ng-class="{'balance-cell': main.balanceCell.indexOf(index) > -1}" data-ng-style="{width: ($index == 1)?'30%':'auto'}" data-ng-repeat="(index, column) in main.historyColumns track by index">[[ column ]]</th>
+                        <th>{{ "notes"|trans }}</th>
+                        <th></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {#<tr class="filter white">
+                        <td>
+                            <div><input type="text" placeholder="Search"></div>
+                        </td>
+                        <td data-ng-class="{'balance-cell': main.balanceCell.indexOf(index) > -1}" data-ng-style="{width: ($index == 1)?'30%':'auto'}" data-ng-repeat="(index, column) in main.historyColumns track by index"></td>
+                        <td></td>
+                        <td></td>
+                    </tr>#}
+                    <tr data-ng-repeat="(k, item) in main.historyItems track by k"
+                        data-ng-class="{
+                            green: (main.historyMiles && (''+main.getMilesValue(item)).charAt(0) == '+' || main.getMilesValue(item) == 0),
+                            blue: (main.historyMiles && (''+main.getMilesValue(item)).charAt(0) == '-'),
+                            focused: main.checker[k].checked
+                        }">
+                        <td class="check">
+                            <input type="checkbox" class="checkbox" id="[[ main.historyExtra[k].uuid ]]" data-ng-model="main.checker[k].checked"
+                                   data-ng-click="main.view.selectOne($event, k)">
+                            <label for="[[ main.historyExtra[k].uuid ]]" class="label"></label>
+                        </td>
+                        <td data-ng-class="historyCellClassName(item, k, col)" data-ng-repeat="(col, field) in item track by col" data-ng-click="main.showCcOfferPopup(field)">
+                            <div data-ng-if="!$last || !field.isEp">
+                                {% if is_granted('ROLE_STAFF') %}
+                                    <span data-ng-if="main.historyExtra[k]['tripId'] && main.historyColumns[col] == 'Description'">
+                                        <span data-ng-if="!field.multiplier" data-ng-class="{bold: main.historyMiles && col === item.length-1}" data-ng-bind-html="field.value | unsafe"></span>
+                                    </span>
+                                    <span data-ng-if="!(main.historyExtra[k]['tripId'] && main.historyColumns[col] == 'Description') && !field.multiplier" data-ng-class="{bold: main.historyMiles && col === item.length-1}" data-ng-bind-html="field.value | unsafe"></span>
+                                {% else %}
+                                    <span data-ng-if="!field.multiplier" data-ng-class="{bold: main.historyMiles && col === item.length-1}" data-ng-bind-html="field.value | unsafe"></span>
+                                {% endif %}
+                                <span data-ng-if="field.multiplier && !field.unprocess" data-ng-class="{bold: main.historyMiles && col === item.length-1}">
+                                    [[ field.value ]]&nbsp;
+                                    <div class="up-block">
+                                        <div class="up-counter" data-ng-bind="field.multiplier"></div>
+                                    </div>
+                                </span>
+                            </div>
+                            <div data-ng-if="field.isEp && field.unprocess"><span>{{ "account.history.earning-potential-unprocess"|trans|desc("check back later") }}</span></div>
+                            <div data-ng-if="$last && field.isEp && !field.unprocess">
+                                <div class="inner">
+                                    <i data-ng-if="null == field.offerData.potential && (''+main.getMilesValue(item)).charAt(0) !== '-'" class="icon-like"></i>
+                                    <div>[[ field.value ]]&nbsp;</div>
+                                    <div data-ng-if="field.multiplier">
+                                        <div class="up-counter">[[field.multiplier]]</div>
+                                    </div>
+                                </div>
+                                <div data-ng-if="field.isEp && field.multiplier" class="arrow"><i class="icon-double-arrow-right-white"></i></div>
+                            </div>
+                        </td>
+                        <td class="note">
+                            [[ main.historyExtra[k].note|limitTo:20 ]][[ main.historyExtra[k].note.length>20?'...':'' ]]
+                        </td>
+                        <td class="actions">
+                            <ul class="list-actions">
+                                {#<li><a href="#"><i class="icon-lock"></i></a></li>#}
+                                {% if is_granted('ROLE_STAFF') %}
+                                <li data-ng-if="main.historyExtra[k]['tripId']" data-tip title="{{ 'go_to_timeline_segment'|trans|desc("Go to Timeline Segment") }}">
+                                    <a href="[[main.tripLink(main.historyExtra[k]['tripId']) ]]">
+                                        <i class="icon-go-timeline"></i>
+                                    </a>
+                                </li>
+                                {% endif %}
+                                <li data-ng-if="main.historyExtra[k].custom" data-tip title="{{ "button.delete"|trans }}"><a data-ng-click="main.view.removeItem(k)" href=""><i class="icon-delete"></i></a></li>
+                                <li data-ng-if="main.historyExtra[k].custom" data-tip title="{{ "button.edit"|trans }}"><a href="[[ main.view.getEditLink(k) ]]"><i class="icon-edit"></i></a></li>
+                                <li data-ng-if="!main.historyExtra[k].custom" data-tip title="{{ "button.edit-note"|trans|desc("Edit note") }}"><a data-ng-click="main.view.editNote(k)" href=""><i class="icon-edit"></i></a></li>
+                            </ul>
+                        </td>
+                    </tr>
+{#
+                    <tr class="green focused">
+                        <td class="date">12/21/15</td>
+                        <td class="caption">
+                            <div class="title">SPG AX BASE SPEND - OPEN</div>
+                            <div class="selected-labels">
+                                <span class="label-element orange">FL</span>
+                                <span class="label-element light-orange">AL</span>
+                            </div>
+                        </td>
+                        <td class="bonus">Bonus</td>
+                        <td class="detail">-</td>
+                        <td class="balance">+1,259</td>
+                        <td class="note"></td>
+                        <td class="actions">
+                            <ul class="list-actions">
+                                <li><a href="#"><i class="icon-lock"></i></a></li>
+                                <li><a href="#"><i class="icon-edit"></i></a></li>
+                            </ul>
+                        </td>
+                    </tr>
+#}
+
+                    </tbody>
+                </table>
+            </div>
+            <ul data-ng-cloak class="pagination" data-ng-show="main.pager.pages > 1">
+                <li data-ng-if="main.pager.page - 6 > 0">
+                    <a data-ng-click="main.setActivePage(1)"><</a>
+                </li>
+                <li data-ng-repeat="page in main.pager.pagesIndex" data-ng-class="{'active': page == main.pager.page}">
+                    <a data-ng-click="main.setActivePage(page)">[[ page ]]</a>
+                </li>
+                <li data-ng-if="(main.pager.pages > 11) && ((main.pager.pages - main.pager.page) > 5)">
+                    <a data-ng-click="main.setActivePage(main.pager.pages)">></a>
+                </li>
+            </ul>
+            <div class="row-submit">
+                <a href="{{ path("aw_account_history_add", {"accountId": accountId, 'subAccountId': subAccountId}) }}" class="btn-blue">{{ 'history-transaction.add-new'|trans|desc('Add New') }}</a>
+            </div>
+
+            <div data-ng-cloak2 data-ng-controller="deleteActionCtrl as deleteAction">
+                <dialog id="delete-action" data-title="'{{ 'history-transaction.popup.delete.title'|trans|desc('Delete selected transactions') }}'" data-auto-open="false" data-modal="true" data-width="500">
+                    <p id="delete-action-text">{{ 'history-transaction.popup.delete'|trans({count: 1, transactions: 1})|desc('{1}Are you sure you wish to delete <span class="bold">1 transaction</span>?|[2,Inf]Are you sure you wish to delete <span class="bold">%transactions% transactions</span>?')|raw }}</p>
+                </dialog>
+            </div>
+
+            <div data-ng-cloak2 data-ng-controller="noteActionCtrl as noteAction">
+                <dialog id="note-action" data-auto-open="false" data-title="'{{ 'history-transaction.popup.note.title'|trans|desc('Set transaction notes') }}'" data-modal="true" data-width="500">
+                    <label id="note-action-text" for="note-action-note">{{ 'award.account.note'|trans }}</label>
+                    <textarea name="note" data-ng-model="noteAction.note" id="note-action-note" style="margin-top: 20px"></textarea>
+                </dialog>
+            </div>
+            <dialog data-ng-cloak2 id="credit-card-offer-popup" data-auto-open="false" data-modal="true" data-width="700">
+                <p data-ng-bind-html="main.ccOfferData.info | unsafe"></p>
+                {#<p>You spent <strong>$25.50</strong> at <strong>Shell Oil #256</strong> and earned <strong>25</strong> Ultimate Rewards <span class="up-counter">1x</span> using your Chase Freedom card. Based on the data we've collected and what other AwardWallet members have earned from <strong>SHELL OIL</strong>, which appears to be coded as a <strong>Gas Station</strong>, you may be able to increase your rewards earning with this merchant by instead using a credit card that receives additional bonus points.</p>#}
+                <div class="credit-card-info">
+                    <a href="[[ main.ccOfferData.blogUrl ]]" target="_blank">
+                        <span data-ng-bind-html="main.ccOfferData.offer | unsafe"></span>
+                        <i class="icon-double-arrow-right-blue"></i>
+                    </a>
+
+                    {#<a href="#">How to Earn up to <span class="up-counter">3x</span> points per dollar at <span class="blue-text">dining</span> <i class="icon-double-arrow-right-blue"></i></a>#}
+                </div>
+                <div class="remark-info small">
+                    <i>
+                        {{ 'credit-card.offer.popup.remark.info'|trans({
+                            '%advertisers-link-begin%': '<a target="_blank" href="https://awardwallet.com/blog/advertiser-disclosure/">',
+                            '%advertisers-link-end%': '</a>'
+                        })| raw }}
+                    </i>
+                </div>
+
+                {#<p data-ng-bind-html="main.ccOfferData.info | unsafe"></p>#}
+                {#<div class="credit-card-info" data-ng-repeat="card in main.ccOfferData.cards">#}
+                    {#<a href="[[ card.url ]]" data-ng-bind="card.name"></a> earns <span class="up-counter" data-ng-bind="card.multiplier"></span>#}
+                    {#<span data-ng-if="card.freedomMessage" data-ng-bind="card.freedomMessage" class="silver"></span>#}
+                {#</div>#}
+            </dialog>
+
+        {% else %}
+            <div class="main-blk-content">
+                <p class="warning-block">
+                    <i class="icon-warning-small"></i>
+                    <span>{{ 'please-upgrade-detail'|trans({'%link%': path('aw_users_pay')})|raw }}</span>
+                </p>
+            </div>
+        {% endif %}
+    </div>
+{% endblock %}

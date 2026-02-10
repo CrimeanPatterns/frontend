@@ -1,0 +1,61 @@
+{% apply spaceless %}
+{% if message.fromBooker and usrRep.getBookerByUser(message.user) %}
+    {% set author = message.user.fullName %}
+{% else %}
+    {% set author = message.request.contactname %}
+{% endif %}
+{% if message.type == constant('\\AwardWallet\\MainBundle\\Entity\\AbMessage::TYPE_UPDATE_REQUEST') %}
+    {{ 'booker.message.post.update-request'|trans({'%user_name%': author }, 'booking') }}
+{% elseif message.type == constant('\\AwardWallet\\MainBundle\\Entity\\AbMessage::TYPE_STATUS_REQUEST') %}
+    {% set m_status = message.metadata.status %}
+    {% set m_status_verbose %}
+        <span class="booking-status {{ reqRep.getStatusCode(m_status) }}">
+            <div>
+                {{ reqRep.getStatusDescription(m_status)|trans({}, 'booking') }}
+            </div>
+        </span>
+    {% endset %}
+    {% if m_status == constant('\\AwardWallet\\MainBundle\\Entity\\AbRequest::BOOKING_STATUS_PENDING') and not message.fromBooker %}
+        {{ 'booker.message.post.status-request.pending'|
+            trans(
+            {
+                '%user_name%': author
+            },
+            'booking'
+            )
+        }}
+    {% else %}
+        {{ 'booker.message.post.status-request.other'|trans({
+            '%user_name%': '$$',
+            '%request_status%': '$$$'
+        }, 'booking')|replace({'"': ""})|replace({'$$': author|htmlencode, '$$$': m_status_verbose})|raw }}
+    {% endif %}
+{% elseif message.type == constant('\\AwardWallet\\MainBundle\\Entity\\AbMessage::TYPE_INVOICE_PAID') %}
+    {% if message.metadata.invoiceId %}
+        {% set invoiceId = message.metadata.invoiceId %}
+    {% elseif message.request.lastInvoice %}
+        {% set invoiceId = message.request.lastInvoice.id %}
+    {% else %}
+        {% set invoiceId = '-' %}
+    {% endif %}
+    {% set amount = message.metadata.totalInvoice ? message.metadata.totalInvoice|formatCurrency(message.request.booker.bookerinfo.currency.code) : '-' %}
+    {{ 'booker.message.post.invoice-paid'|trans({
+        '%user_name%': author,
+        '%amount%': amount,
+        '%invoiceId%': invoiceId
+    }, 'booking')|desc('%user_name% submitted a payment in the amount of %amount% for the award ticket booking invoice #%invoiceId%')
+    }}
+{% elseif message.type == constant('\\AwardWallet\\MainBundle\\Entity\\AbMessage::TYPE_WRITE_CHECK') %}
+    {{ 'booker.message.post.write-check'|
+        trans(
+            {
+                '%user_name%': author |htmlencode,
+                '%booker_name%': message.request.booker.fullName |htmlencode,
+                '%booker_address%': message.request.booker.bookerInfo.address,
+                '%check_amount%': message.metadata.totalInvoice ? message.metadata.totalInvoice|formatCurrency(message.request.booker.bookerinfo.currency.code) : '-'
+            },
+            'booking'
+        )|raw
+    }}
+{% endif %}
+{% endapply %}

@@ -1,0 +1,23 @@
+{% trans_default_domain "promotions" %}
+
+<div id="promotions-choose-person">
+    <p>{{ 'promotion.choose-person' | trans | desc('Please choose the person you want to use for this promotion:') }}</p>
+    <table class="main-table t-left">
+        <thead>
+            <tr>
+                <th>{{ 'award.account.owner'|trans({}, 'messages')|desc('Owner') }}</th>
+                <th>{{ 'award.account.balance'|trans({}, 'messages')|desc('Balance') }}</th>
+                <th>{{ 'award.account.number'|trans({}, 'messages')|desc('Account Number') }}</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for account in accountsData %}
+            <tr>
+                <td><a target="_blank" href="/promos/redirect/{{ dealID }}?Goto={{ link|url_encode() }}&AccountID={{ account.AccountID }}">{{ account.UserName }}</a></td>
+                <td>{{ account.Balance }}</td>
+                <td>{{ account.AccountNumber }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>

@@ -1,0 +1,26 @@
+<html>
+    <head>
+        <script src="//cdn.jsdelivr.net/sockjs/1.0.3/sockjs.min.js"></script>
+        <script src="/assets/common/vendors/centrifuge/centrifuge.min.js"></script>
+
+        <script type="text/javascript">
+
+            var centrifuge = new Centrifuge({
+                url: 'https://comet.awardwallet.com/connection',
+                user: "{{ userId }}",
+                timestamp: "{{ time }}",
+                token: "SHA-256 HMAC TOKEN"
+            });
+
+            centrifuge.subscribe("news", function(message) {
+                console.log(message);
+            });
+
+            centrifuge.connect();
+
+        </script>
+    </head>
+    <body>
+
+    </body>
+</html>

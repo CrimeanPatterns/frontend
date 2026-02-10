@@ -1,0 +1,12 @@
+<div class="row">
+	<div class="heading">
+		<i class="icon-silver-arrow-down"></i>
+		<h3>{{ 'menu.header.accounts.display-options' | trans({}, 'menu') | desc('Display Options') }}</h3>
+	</div>
+	<ul class="default-list"{# data-ng-controller="groupModeButtonCtrl"#}>
+		{#<li data-ng-cloak data-ng-if="currentGroupMode"><a href="" data-ng-click="toggle()"><div class="prev"><i class="icon-ungroup"></i></div><span>{{ 'menu.ungroup-rewards'|trans({}, 'menu')|desc('Ungroup Rewards') }}</span></a></li>#}
+		{#<li data-ng-cloak data-ng-if="!currentGroupMode"><a href="" data-ng-click="toggle()"><div class="prev"><i class="icon-group"></i></div><span>{{ 'menu.group-rewards'|trans({}, 'menu')|desc('Group Rewards') }}</span></a></li>#}
+		<li><a href="#"><div class="prev"><i class="icon-excel"></i></div><span>{{ 'menu.download-excel'|trans({}, 'menu')|desc('Download in Excel') }}</span></a></li>
+		<li><a href="#"><div class="prev"><i class="icon-pdf"></i></div><span>{{ 'menu.download-pdf'|trans({}, 'menu')|desc('Download in PDF') }}</span></a></li>
+	</ul>
+</div>

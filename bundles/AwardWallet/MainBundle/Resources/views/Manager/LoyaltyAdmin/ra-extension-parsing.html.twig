@@ -1,0 +1,123 @@
+{% extends '@AwardWalletMain/Manager/layout.html.twig' %}
+{% set title = "RA Extension Parsing" %}
+{% set contentTitle = "RA Extension Parsing" %}
+{% set postUrl = path('aw_manager_ra_extension_parsing_request') %}
+{% set apiUrl = url('aw_manager_ra_extension_parsing_response') %}
+
+{% block content %}
+    <section class="container">
+        <div class="form-container">
+            <form class="form" action="{{ postUrl }}" method="POST">
+                <h2>Open new tab</h2>
+                <input type="hidden" id="request" name="request" value="newTab">
+                <span>
+                    <label for="url">Url</label>
+                    <input type="text" id="url" name="url" required>
+                </span>
+                <button>Отправить</button>
+            </form>
+            <form class="form" action="{{ postUrl }}" method="POST">
+                <h2>Find elements</h2>
+                <input type="hidden" id="request" name="request" value="findElements">
+                <span>
+                    <label for="tabId">Chrome tab ID</label>
+                    <input type="text" id="tabId" name="tabId" required>
+                </span>
+                <span>
+                    <label for="selector">Css selector</label>
+                    <input type="text" id="selector" name="selector" required>
+                </span>
+                <button>Отправить</button>
+            </form>
+            <form class="form" action="{{ postUrl }}" method="POST">
+                <h2>Click element</h2>
+                <input type="hidden" id="request" name="request" value="clickElement">
+                <span>
+                    <label for="tabId">Chrome tab ID</label>
+                    <input type="text" id="tabId" name="tabId" required>
+                </span>
+                <span>
+                    <label for="selector">Css selector</label>
+                    <input type="text" id="selector" name="selector" required>
+                </span>
+                <button>Отправить</button>
+            </form>
+        </div>
+        <div class="log-container">
+            <div class="result">
+                <h2>Log</h2>
+                <code>
+                    {{ log }}
+                </code>
+            </div>
+        </div>
+    </section>
+    <script id="centrifugeConfig">{{ centrifuge_config | raw }}</script>
+    <script id="apiUrl">{{ apiUrl }}</script>
+    <style>
+        body {
+            margin: 0;
+        }
+
+        h2 {
+            margin: 0 0 1em 0;
+        }
+
+        button {
+            width: 120px;
+            padding: 4px 12px;
+        }
+
+        .container {
+            display: flex;
+            flex-direction: row;
+        }
+
+        .form-container {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            width: 20%;
+        }
+
+        .log-container {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            width: 80%;
+        }
+
+        .form, .result {
+            display: flex;
+            flex-direction: column;
+            box-sizing: border-box;
+            margin: 1em;
+            padding: 1em;
+            box-shadow: 0 0 5px 1px rgba(0, 0, 0, 0.3);
+            border-radius: 10px;
+        }
+
+        .form {
+            height: fit-content;
+            min-width: 15%;
+        }
+
+        .form > * {
+            margin-bottom: 1em;
+        }
+
+        .result {
+            flex: 1;
+        }
+
+        .result > code {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            background-color: #dbdbdb;
+            border-radius: 10px;
+            overflow: scroll;
+        }
+    </style>
+{% endblock %}

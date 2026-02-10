@@ -1,0 +1,16 @@
+{% macro drawFaq(faq, isOpen) %}
+    <div class="faq-blk{% if isOpen|default(false) %} active{% endif %}" data-id="#{{ faq.faqid }}" data-faq-toggle itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
+        <div class="question">
+            <div class="question-item">
+                <i class="icon-plus"></i>
+                <i class="icon-minus"></i>
+                <span class="b">{{ 'question-shorthand'|trans({}, "messages")|desc("q") }}:</span>
+                <span itemprop="name"><a href="{{ url('aw_faq_index_locale', {}, true) }}#{{ faq.faqid }}" itemprop="url">{{ faq|entrans('question', {'%locale%': app.request.locale})|raw }}</a></span>
+            </div>
+        </div>
+        <div class="answer"{% if isOpen|default(false) %} style="display: block;"{% endif %} itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
+            <span class="b">{{ 'answer-shorthand'|trans({}, "messages")|desc("a") }}:</span>
+            <div itemprop="text"><p>{{ faq|entrans('answer', {'%locale%': app.request.locale})|raw }}</p></div>
+        </div>
+    </div>
+{% endmacro %}

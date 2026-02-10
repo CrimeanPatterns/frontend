@@ -1,0 +1,130 @@
+{% set MOBILE_NAV = true %}
+{% set HIDE_NAV = true %}
+{% set MAIN_BODY_CLASSES = {
+    'manual-hidden': true,
+    'responsive': true,
+    'hide-menu': true
+}|merge(MAIN_BODY_CLASSES|default({})) %}
+
+{% extends app.user is not null ? "@AwardWalletMain/Layout/common.html.twig" : "@AwardWalletMain/Layout/not_logged.html.twig" %}
+
+{% import "@AwardWalletMain/Cart/macros.html.twig" as macro %}
+
+{% block title %}
+    {% if pending is defined and pending %}
+        {{ 'cart.coin_payments.pending'|trans|desc('Payment pending') }}
+    {% else %}
+        {{ 'cart.success'|trans|desc('Success') }}
+    {% endif %}
+{% endblock %}
+
+{% block meta %}
+    {{ parent() }}
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0, viewport-fit=cover">
+{% endblock %}
+
+{% block content %}
+         <div class="main-blk shortened">
+            <h1>{{ 'cart.success'|trans }}</h1>
+            <form action="/" class="main-form">
+                <div class="main-form-event">
+                    <div class="success-payment">
+                        <div class="success-blk">
+                            <div class="prev"><i class="{{ mobileSubscrWarning ? "icon-warning-b" : "icon-green-check-b"}}"></i></div>
+                            {% if mobileSubscrWarning %}
+                                {% if mobileSubscrWarning == 'ios' %}
+                                    <p>
+                                        {{ 'cart.cancel_ios_subscription_warning'|trans({
+                                            '%link_start%': '<a href="' ~ url('aw_user_applesubscription_cancel') ~ '" target="_blank" rel="noopener noreferrer">',
+                                            '%link_end%': '</a>'
+                                        })|desc('Important! You need to %link_start%cancel your AwardWallet Apple app store subscription!%link_end% Currently, this account already has an Apple app store AwardWallet subscription. Unfortunately, we are not able to cancel it for you, as Apple doesn`t give us a way to do that, so you need to %link_start%do it yourself%link_end%.') | raw }}
+                                    </p>
+                                {% endif %}
+                            {% endif %}
+                            {% if is_granted('ROLE_STAFF')  %}
+                                <p>{{ 'cart.success-submit'
+                                    |trans({'%email%': payer.email, '%number%': cart.getCartid})
+                                    |desc('Order #%number% has been successfully submitted.
+                                    Order details have been emailed to %email% and are shown below.') }}</p>
+                            {% elseif scheduledPayment is not empty and cart.immediateAmount == 0 %}
+                                <p>{{ 'cart.success-scheduled-paid'
+                                    |trans({'%price%': cart.getScheduledTotal|formatCurrency("USD", false), '%number%': cart.getCartid, '%scheduledDate%' : scheduledPayment|formatDatetime('long', 'none')})
+                                    |desc('You have scheduled to pay <span class="red">%price%</span> on %scheduledDate% for order #%number%') | raw }}</p>
+                                <p>{{ 'cart.success.email-notice'|trans }}</p>
+                            {% else %}
+                                <p>{{ 'cart.success-paid'
+                                    |trans({'%price%': cart.getTotalPrice|formatCurrency("USD", false), '%number%': cart.getCartid})
+                                    |desc('You have successfully paid <span class="red">%price%</span> for order #%number%') | raw }}</p>
+                                <p>{{ 'cart.success.email-notice'|trans|desc("An email with this invoce has been sent to the email that you have in your profile") }}</p>
+                            {% endif %}
+                             {% if cart.hasItemsByType([constant('\\AwardWallet\\MainBundle\\Entity\\CartItem\\Booking::TYPE')]) and bookingRequestId != null %}
+                                <p>{{ 'cart.success.booking-notice'
+                                |trans({'%link%': path('aw_booking_view_index', {'id': bookingRequestId})})
+                                |desc("At this point we notified the booking service that you paid. You should hear from them shortly. If not you can contact the booking service from your <a href='%link%'>award booking request page</a>")|raw }}
+                                </p>
+                            {% endif %}
+                        </div>
+
+                        {% if cart.hasItemsByType([constant('\\AwardWallet\\MainBundle\\Entity\\CartItem\\Booking::TYPE')]) %}
+                            {% if bookingRequestId != null %}
+                                <a class="btn-blue" href="{{ path('aw_booking_view_index', {'id': bookingRequestId}) }}">{{ 'cart.success.go-booking'|trans|desc("Proceed to your booking request") }}</a>
+                            {% else %}
+                                <a class="btn-blue" href="{{ path('aw_booking_list_requests') }}">{{ 'cart.success.go-booking'|trans }}</a>
+                            {% endif %}
+                        {% elseif cart.hasItemsByType([constant('\\AwardWallet\\MainBundle\\Entity\\CartItem\\OneCard::TYPE')]) and is_granted('NOT_SITE_BUSINESS_AREA') %}
+                            <a class="btn-blue" href="{{ path('aw_one_card') }}">{{ 'cart.success.go-onecard'|trans|desc("Proceed to ordering your OneCard") }}</a>
+                        {% elseif app.request.get('forceId') and app.request.get('forceId')|number_format(0) > 0 %}
+                            <a class="btn-blue" href="{{ path('aw_account_edit', {accountId : app.request.get('forceId')}) }}">{{ 'continue'|trans }}</a>
+{#                        {% else %}#}
+{#                            <a class="btn-blue" href="{{ path('aw_account_list') }}">{{ 'cart.success.go-accounts'|trans|desc("Proceed to Accounts") }}</a>#}
+                        {% endif %}
+
+                    </div>
+                </div>
+
+                <div class="main-form-item">
+                    <div class="title-note transparent">
+                        <h3>{{ 'cart.order'|trans({'%number%': cart.cartid}) }}</h3>
+                    </div>
+                    {{ macro.drawCart(cart) }}
+                    {% if cart.getPaymenttype == constant('\\AwardWallet\\MainBundle\\Entity\\Cart::PAYMENTTYPE_CREDITCARD') or cart.getPaymenttype == constant('\\AwardWallet\\MainBundle\\Entity\\Cart::PAYMENTTYPE_TEST_CREDITCARD') %}
+                        {{ macro.drawCardInfo(cart) }}
+                    {% endif %}
+                </div>
+
+            </form>
+         </div>
+        {% if cart.getPaymenttype == constant('\\AwardWallet\\MainBundle\\Entity\\Cart::PAYMENTTYPE_CREDITCARD') or cart.getPaymenttype == constant('\\AwardWallet\\MainBundle\\Entity\\Cart::PAYMENTTYPE_TEST_CREDITCARD') %}
+            <div class="faq">
+                <div class="faq-blk">
+                    <div class="heading">
+                        <i class="icon-blue-info"></i>
+                        <p>{{ 'cart.success.note'|trans({'%merchant%': manager.merchant(cart)})|desc("This charge will appear on your credit card statement as %merchant%") }}</p>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+    {% if cart.hasItemsByType([constant('\\AwardWallet\\MainBundle\\Entity\\CartItem\\AwPlusGift::TYPE')]) %}
+        <script>
+            require(['lib/dialog', 'translator-boot'], function(dialog) {
+                const dlg = dialog.fastCreate(null, Translator.trans('gift-payment-complete', {'email' : '{{ cart.user.email }}'}), true, true, [
+                    {
+                        id : 'btnOk',
+                        text : Translator.trans('button.ok'),
+                        'class' : 'btn-blue',
+                        click : function() {
+                            dlg.destroy();
+                        }
+                    }
+                ], 450);
+                $(dlg.element).parent().find('.ui-dialog-titlebar').hide();
+            });
+        </script>
+    {% endif %}
+{% endblock %}
+
+{% block footer %}
+    {{ parent() }}
+    {% if is_granted('SITE_LOCAL_PROD_MODE') == false %}
+    {% endif %}
+{% endblock %}

@@ -1,0 +1,208 @@
+services:
+    _defaults:
+        public: true
+        autowire: true
+
+    _instanceof:
+        \AwardWallet\MainBundle\Entity\Repositories\ItineraryRepositoryInterface:
+            tags: ['aw.itinerary_repository']
+
+    AwardWallet\MainBundle\Entity\Repositories\AccountRepository:
+        factory: [ "@doctrine.orm.entity_manager", getRepository ]
+        arguments: [ AwardWallet\MainBundle\Entity\Account ]
+        calls:
+            - method: setOwnerRepository
+              arguments:
+                  - '@AwardWallet\MainBundle\Entity\Repositories\OwnerRepository'
+
+    AwardWallet\MainBundle\Entity\Repositories\AccountshareRepository:
+        factory: [ "@doctrine.orm.entity_manager", getRepository ]
+        arguments: [ AwardWallet\MainBundle\Entity\Accountshare ]
+
+    AwardWallet\MainBundle\Repository\ProvidercouponRepository:
+        factory: [ "@doctrine.orm.entity_manager", getRepository ]
+        arguments: [ AwardWallet\MainBundle\Entity\Providercoupon ]
+
+    AwardWallet\MainBundle\Entity\Repositories\ProvidercouponshareRepository:
+        factory: [ "@doctrine.orm.entity_manager", getRepository ]
+        arguments: [ AwardWallet\MainBundle\Entity\Providercouponshare ]
+
+    AwardWallet\MainBundle\Entity\Repositories\AccountpropertyRepository:
+        factory: [ "@doctrine.orm.entity_manager", getRepository ]
+        arguments: [ AwardWallet\MainBundle\Entity\Accountproperty ]
+
+    AwardWallet\MainBundle\Entity\Repositories\UseragentRepository:
+        factory: [ "@doctrine.orm.entity_manager", getRepository ]
+        arguments: [ AwardWallet\MainBundle\Entity\Useragent ]
+
+    AwardWallet\MainBundle\Entity\Repositories\ProviderRepository:
+        factory: [ "@doctrine.orm.entity_manager", getRepository ]
+        arguments: [ AwardWallet\MainBundle\Entity\Provider ]
+
+    AwardWallet\MainBundle\Entity\Repositories\ElitelevelRepository:
+        factory: [ "@doctrine.orm.entity_manager", getRepository ]
+        arguments: [ AwardWallet\MainBundle\Entity\Elitelevel ]
+
+    AwardWallet\MainBundle\Entity\Repositories\ProviderpropertyRepository:
+        factory: [ "@doctrine.orm.entity_manager", getRepository ]
+        arguments: [ AwardWallet\MainBundle\Entity\Providerproperty ]
+
+    AwardWallet\MainBundle\Entity\Repositories\OnecardRepository:
+        factory: [ "@doctrine.orm.entity_manager", getRepository ]
+        arguments: [ AwardWallet\MainBundle\Entity\Onecard ]
+
+    AwardWallet\MainBundle\Entity\Repositories\TimelineShareRepository:
+        factory: [ "@doctrine.orm.entity_manager", getRepository ]
+        arguments: [ AwardWallet\MainBundle\Entity\TimelineShare ]
+
+    AwardWallet\MainBundle\Entity\Repositories\RewardsTransferRepository:
+        factory: [ "@doctrine.orm.entity_manager", getRepository ]
+        arguments: [ AwardWallet\MainBundle\Entity\RewardsTransfer ]
+
+    AwardWallet\MainBundle\Entity\Repositories\PasswordVaultRepository:
+        factory: [ "@doctrine.orm.entity_manager", getRepository ]
+        arguments: [ AwardWallet\MainBundle\Entity\Passwordvault ]
+
+    AwardWallet\MainBundle\Entity\Repositories\UsrRepository:
+        factory: [ "@doctrine.orm.entity_manager", getRepository ]
+        arguments: [ AwardWallet\MainBundle\Entity\Usr ]
+
+    AwardWallet\MainBundle\Entity\Repositories\CartRepository:
+        factory: [ "@doctrine.orm.entity_manager", getRepository ]
+        arguments: [ AwardWallet\MainBundle\Entity\Cart ]
+
+    AwardWallet\MainBundle\Entity\Repositories\CartItemRepository:
+        factory: [ "@doctrine.orm.entity_manager", getRepository ]
+        arguments: [ AwardWallet\MainBundle\Entity\CartItem ]
+
+    AwardWallet\MainBundle\Entity\Repositories\ParameterRepository:
+        factory: [ "@doctrine.orm.entity_manager", getRepository ]
+        arguments: [ AwardWallet\MainBundle\Entity\Parameter ]
+
+    AwardWallet\MainBundle\Entity\Repositories\AbRequestRepository:
+        factory: [ "@doctrine.orm.entity_manager", getRepository ]
+        arguments: [ AwardWallet\MainBundle\Entity\AbRequest ]
+
+    AwardWallet\MainBundle\Entity\Repositories\TripRepository:
+        factory: [ "@doctrine.orm.entity_manager", getRepository ]
+        arguments: [ AwardWallet\MainBundle\Entity\Trip ]
+
+    AwardWallet\MainBundle\Entity\Repositories\ReservationRepository:
+        factory: [ "@doctrine.orm.entity_manager", getRepository ]
+        arguments: [ AwardWallet\MainBundle\Entity\Reservation ]
+
+    AwardWallet\MainBundle\Entity\Repositories\RentalRepository:
+        factory: [ "@doctrine.orm.entity_manager", getRepository ]
+        arguments: [ AwardWallet\MainBundle\Entity\Rental ]
+
+    AwardWallet\MainBundle\Entity\Repositories\RestaurantRepository:
+        factory: [ "@doctrine.orm.entity_manager", getRepository ]
+        arguments: [ AwardWallet\MainBundle\Entity\Restaurant ]
+
+    AwardWallet\MainBundle\Entity\Repositories\TripsegmentRepository:
+        factory: [ "@doctrine.orm.entity_manager", getRepository ]
+        arguments: [ AwardWallet\MainBundle\Entity\Tripsegment ]
+        calls:
+            - method: setAirlineConverter
+              arguments:
+                  - '@AwardWallet\MainBundle\Service\FlightStats\AirlineConverter'
+
+    AwardWallet\MainBundle\Entity\Repositories\InvitesRepository:
+        factory: [ "@doctrine.orm.entity_manager", getRepository ]
+        arguments: [ AwardWallet\MainBundle\Entity\Invites ]
+
+    AwardWallet\MainBundle\Entity\Repositories\CardImageRepository:
+        factory: [ "@doctrine.orm.entity_manager", getRepository ]
+        arguments: [ AwardWallet\MainBundle\Entity\CardImage ]
+
+    AwardWallet\MainBundle\Entity\Repositories\DocumentImageRepository:
+        factory: [ "@doctrine.orm.entity_manager", getRepository ]
+        arguments: [ AwardWallet\MainBundle\Entity\DocumentImage ]
+
+    AwardWallet\MainBundle\Entity\Repositories\CountryRepository:
+        factory: [ "@doctrine.orm.entity_manager", getRepository ]
+        arguments: [ AwardWallet\MainBundle\Entity\Country ]
+
+    AwardWallet\MainBundle\Entity\Repositories\StateRepository:
+        factory: [ "@doctrine.orm.entity_manager", getRepository ]
+        arguments: [ AwardWallet\MainBundle\Entity\State ]
+
+    AwardWallet\MainBundle\Entity\Repositories\AircodeRepository:
+        factory: [ "@doctrine.orm.entity_manager", getRepository ]
+        arguments: [ AwardWallet\Common\Entity\Aircode ]
+
+    AwardWallet\MainBundle\Entity\Repositories\AircraftRepository:
+        factory: [ "@doctrine.orm.entity_manager", getRepository ]
+        arguments: [ AwardWallet\MainBundle\Entity\Aircraft ]
+
+    AwardWallet\MainBundle\Entity\Repositories\AirlineRepository:
+        factory: [ "@doctrine.orm.entity_manager", getRepository ]
+        arguments: [ AwardWallet\MainBundle\Entity\Airline ]
+
+    #AwardWallet\MainBundle\Entity\Repositories\OwnerRepository:
+    #    factory: [ "@doctrine.orm.entity_manager", getRepository ]
+    #    arguments:
+    #         - "@doctrine.orm.entity_manager"
+        #    - '@AwardWallet\MainBundle\Entity\Repositories\UsrRepository'
+        #    - '@AwardWallet\MainBundle\Entity\Repositories\UseragentRepository'
+        #    - '@AwardWallet\MainBundle\Entity\Repositories\TimelineShareRepository'
+
+    AwardWallet\MainBundle\Entity\Repositories\BonusConversionRepository:
+        factory: [ "@doctrine.orm.entity_manager", getRepository ]
+        arguments: [ AwardWallet\MainBundle\Entity\BonusConversion ]
+
+    AwardWallet\MainBundle\Entity\Repositories\LocationRepository:
+        factory: [ "@doctrine.orm.entity_manager", getRepository ]
+        arguments: [ AwardWallet\MainBundle\Entity\Location ]
+
+    AwardWallet\MainBundle\Entity\Repositories\CurrencyRepository:
+        factory: [ "@doctrine.orm.entity_manager", getRepository ]
+        arguments: [ AwardWallet\MainBundle\Entity\Currency ]
+
+    AwardWallet\MainBundle\Entity\Repositories\AnswerRepository:
+        factory: [ "@doctrine.orm.entity_manager", getRepository ]
+        arguments: [ AwardWallet\MainBundle\Entity\Answer ]
+
+    AwardWallet\MainBundle\Entity\Repositories\ParkingRepository:
+        factory: [ "@doctrine.orm.entity_manager", getRepository ]
+        arguments: [ AwardWallet\MainBundle\Entity\Parking ]
+
+    AwardWallet\MainBundle\Entity\Repositories\OneTimeCodeRepository:
+        factory: [ "@doctrine.orm.entity_manager", getRepository ]
+        arguments: [ AwardWallet\MainBundle\Entity\OneTimeCode ]
+
+    AwardWallet\MainBundle\Entity\Repositories\LoungeRepository:
+        factory: [ "@doctrine.orm.entity_manager", getRepository ]
+        arguments: [ AwardWallet\MainBundle\Entity\Lounge ]
+
+    AwardWallet\MainBundle\Entity\Repositories\FaqRepository:
+        factory: [ "@doctrine.orm.entity_manager", getRepository ]
+        arguments: [ AwardWallet\MainBundle\Entity\Faq ]
+
+    AwardWallet\MainBundle\Entity\Repositories\FaqCategoryRepository:
+        factory: [ "@doctrine.orm.entity_manager", getRepository ]
+        arguments: [ AwardWallet\MainBundle\Entity\Faqcategory ]
+
+    AwardWallet\MainBundle\Entity\Repositories\AbBookerInfoRepository:
+        factory: [ "@doctrine.orm.entity_manager", getRepository ]
+        arguments: [ AwardWallet\MainBundle\Entity\AbBookerInfo ]
+
+    AwardWallet\MainBundle\Entity\Repositories\InvitecodeRepository:
+        factory: [ "@doctrine.orm.entity_manager", getRepository ]
+        arguments: [ AwardWallet\MainBundle\Entity\Invitecode ]
+
+    AwardWallet\MainBundle\Entity\Repositories\SocialadRepository:
+        factory: [ "@doctrine.orm.entity_manager", getRepository ]
+        arguments: [ AwardWallet\MainBundle\Entity\Socialad ]
+
+    AwardWallet\MainBundle\Entity\Repositories\CouponRepository:
+        factory: [ "@doctrine.orm.entity_manager", getRepository ]
+        arguments: [ AwardWallet\MainBundle\Entity\Coupon ]
+
+    AwardWallet\MainBundle\Entity\Repositories\DonotsendRepository:
+        factory: [ "@doctrine.orm.entity_manager", getRepository ]
+        arguments: [ AwardWallet\MainBundle\Entity\Donotsend ]
+
+    AwardWallet\MainBundle\Entity\Repositories\MobileDeviceRepository:
+        factory: [ "@doctrine.orm.entity_manager", getRepository ]
+        arguments: [ AwardWallet\MainBundle\Entity\MobileDevice ]

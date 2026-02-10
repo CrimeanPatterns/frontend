@@ -1,0 +1,10 @@
+{% extends "@AwardWalletWidget/menu.html.twig" %}
+
+{% block item %}
+    <li>{{ widget_render(item, {class: 'btn-light-silver'}) }}</li>
+{% endblock %}
+{% block menu %}
+    <ul class="user-menu">
+        {{ block('items') }}
+    </ul>
+{% endblock %}

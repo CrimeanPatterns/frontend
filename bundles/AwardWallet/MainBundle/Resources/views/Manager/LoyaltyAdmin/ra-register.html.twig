@@ -1,0 +1,294 @@
+{% extends '@AwardWalletMain/Manager/layout.html.twig' %}
+{% set title = "RA Request" %}
+{% set contentTitle = "" %}
+
+{% set url = path('aw_manager_loyalty_ra_accounts_register_post') %}
+{% set urlRequest = path('aw_manager_loyalty_ra_accounts_register_provider_request', {provider:':provider'}) %}
+{% set urlFields = path('aw_manager_loyalty_ra_accounts_register_provider_fields', {provider:':provider'}) %}
+{% set urlCheck = path('aw_manager_loyalty_ra_accounts_register_get', {id:':request_id'}) %}
+
+{% block content %}
+    <style>
+        body{
+            font-size: 11pt;
+        }
+
+        table.form td{
+            vertical-align: top;
+            text-align: left;
+            padding: 3px;
+        }
+
+        .panel-blocks{
+            display: grid;
+        }
+        textarea{
+            width: 48%;
+            border: 2px solid gray;
+            font-family: monospace;
+        }
+        body #content pre, body #content .pre{
+            white-space: pre;
+            font-family: monospace;
+        }
+        body h1{
+            padding-bottom: 10px;
+        }
+        pre{
+            background-color: white;
+            border: 1px solid gray;
+            padding: 5px;
+        }
+        .provider {
+            float:left; display: block;
+            font-size: 1.17em;
+            margin-block-start: 1em;
+            margin-block-end: 1em;
+            margin-inline-start: 30px;
+            margin-inline-end: 0px;
+            font-weight: bold;
+        }
+        .field {
+            float:right; display: block;
+            font-size: 1.17em;
+            margin-block-start: 1em;
+            margin-block-end: 1em;
+            margin-inline-start: 30px;
+            margin-inline-end: 20px;
+            font-weight: bold;
+        }
+    </style>
+    <form id="testForm">
+        <input type="hidden" value="{{ cluster }}" name="cluster" id="cluster">
+        <select onchange="checkCluster(this);">
+            {% for c in clustersList %}
+                <option value="{{ c }}" {% if cluster==c %}selected="selected"{% endif %}>{{ c }}</option>
+            {% endfor %}
+        </select>
+
+    <div class="row">
+        <div class="col-md-6">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title" style="float: left;">Request</h3>
+                    <div class="provider">
+                        <input id="provider" class="inputTxt" type="search" autofocus="" size="30" list="providerslist"  onchange="refresh();">
+                        <input type="button" value="Load empty request" onclick="getRequest()">
+                    </div>
+                    <h3 style="float: right;">Fields details</h3>
+                    <div class="field">
+                    <input type="button" style="float:right;" value="Load fields" onclick="getFields()">
+                    </div>
+                    <datalist id="providerslist">
+                        {% for prov in providerList %}
+                            <option>{{ prov.provider }}</option>
+                        {% endfor %}
+                    </datalist>
+                    <div class="clearfix"></div>
+                </div>
+                <div class="panel-body" style="padding-top: 60px;">
+                    <textarea id="request" class="pre" style="height: 300px;">
+{
+    "provider": "testprovider",
+    "callbackUrl": "",
+    "userData": "",
+    "fields": {
+        "FirstName": "Etienne",
+        "LastName": "Isbell",
+        "Address": "100",
+        "City": "Toronto",
+        "Email": "fake144067163308@yahoo.com",
+        "Password": "7lU5nD1xG5"
+    }
+}
+                    </textarea>
+                    <textarea id="fields" class="pre" style="height: 300px;"></textarea>
+                </div>
+                <br/>
+                <button type="button" class="btn btn-primary" onclick="send()" style="float: left; ">Submit</button>
+                <br/>
+            </div>
+            </div>
+
+        </div>
+
+        <div class="col-md-6">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Response</h3>
+                </div>
+                <div class="panel-body">
+                    <pre id="response">
+                    </pre>
+                </div>
+            </div>
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Check by RequestId</h3>
+                </div>
+                <div class="panel-body">
+                    <h3 class="panel-title" id="check_request_url" style="margin-bottom: 10px;"></h3>
+                    <div class="input-group" style="margin-bottom: 10px;">
+                        <div class="input-group-addon" style="width: 90px;">RequestId</div>
+                        <input id="request_id" type="text" class="form-control" placeholder="RequestId" style="width: 250px;"/>
+                    </div>
+                    <pre id="response_check">
+                    </pre>
+                    <br/>
+                    <button type="button" class="btn btn-primary" onclick="Check()" style="float: left;">Check</button>
+                    <br/>
+                    <br/>
+                </div>
+            </div>
+        </div>
+    </div>
+    </form>
+    <script>
+        function checkCluster(e) {
+            document.location = '{{ path('aw_manager_loyalty_ra_accounts_register') }}' + '?cluster=' + e.value;
+        }
+        function IsJsonString(str) {
+            try {
+                JSON.parse(str);
+            } catch (e) {
+                return false;
+            }
+            return true;
+        }
+        function refresh(){
+            $('#request').text('');
+            $('#fields').text('');
+            return false;
+        }
+        function getRequest(){
+            provider = $('#provider').val();
+            if (provider.length === 0) {
+                alert('Check provider');
+                return;
+            }
+            url = "{{ urlRequest }}".replace(':provider', provider) + "?cluster={{ cluster }}";
+
+            $.ajax({
+                url: url,
+                type: 'GET',
+                contentType: 'application/json',
+                success: function (response) {
+                    console.log(typeof (response));
+                    if (typeof (response) == 'object') {
+                        $('#request').text(JSON.stringify(response, null, 4));
+                    }
+
+                    return true;
+                },
+                error: function (response) {
+                    if (response.responseText.substr(0, 1) == '<')
+                        $('#request').html(response.responseText);
+                    else
+                        $('#request').text(JSON.stringify(response.responseJSON, null, 4));
+                    return true;
+                }
+            });
+
+        }
+        function getFields(){
+            provider = $('#provider').val();
+            if (provider.length === 0) {
+                alert('Check provider');
+                return;
+            }
+            url = "{{ urlFields }}".replace(':provider', provider) + "?cluster={{ cluster }}";
+
+            $.ajax({
+                url: url,
+                type: 'GET',
+                contentType: 'application/json',
+                success: function (response) {
+                    if (typeof (response)) {
+                        $('#fields').text(JSON.stringify(response, null, 4));
+                    }
+
+                    return true;
+                },
+                error: function (response) {
+                    if (response.responseText.substr(0, 1) == '<')
+                        $('#fields').html(response.responseText);
+                    else
+                        $('#fields').text(JSON.stringify(response.responseJSON, null, 4));
+                    return true;
+                }
+            });
+
+        }
+        function Check() {
+            var requestId = $('#request_id').val(),
+                url = "{{ urlCheck }}".replace(':request_id', requestId) + "?cluster={{ cluster }}";
+
+            if (requestId.trim() == '') {
+                alert("requestId error");
+                return;
+            }
+
+            $('#response_check').html('Loading...');
+            // $('#check_request_url').text('GET '+url);
+            $.ajax({
+                url: url,
+                type: 'GET',
+                contentType: 'application/json',
+                success: function (response) {
+                    if (typeof(response)){
+                        $('#response_check').text(JSON.stringify(response, null, 4));
+                    }
+
+                    return true;
+                },
+                error: function (response) {
+                    if(response.responseText.substr(0, 1) == '<')
+                        $('#response_check').html(response.responseText);
+                    else
+                        $('#response_check').text(JSON.stringify(response.responseJSON, null, 4));
+                    return true;
+                }
+            });
+        }
+        function send() {
+            var dataRequest = $('#request').val();
+            if (!IsJsonString(dataRequest)){
+                $('#response').html('bad request: wrong JSON format');
+                return false;
+            }
+            var url = "{{ url }}";
+            $('#url').html('POST ' + url).slideDown();
+            $('#response').html('Loading...');
+            $('#request_id').text('');
+            $('#response_check').text('');
+
+            $.ajax({
+                url: url,
+                type: 'POST',
+                data: {data: JSON.parse(dataRequest), cluster: $('#cluster').val()},
+                // contentType: 'application/json',
+                success: function (response) {
+                    if (typeof(response)){
+                        $('#response').text(JSON.stringify(response, null, 4));
+                        if (response.request_id !== undefined)
+                            $('#request_id').val(response.request_id);
+                    }
+
+                    return true;
+                },
+                error: function (response) {
+                    if(response.responseText.substr(0, 1) == '<')
+                        $('#response').html(response.responseText);
+                    else
+                        $('#response').text(JSON.stringify(response.responseJSON, null, 4));
+                    return true;
+                },
+                complete: function () {
+                }
+            });
+        }
+
+        var data = {};
+
+    </script>
+{% endblock %}

@@ -1,0 +1,299 @@
+{% extends "@AwardWalletMain/Layout/booking.html.twig" %}
+{% import '@AwardWalletMain/Booking/macros.html.twig' as macros %}
+{% import '@AwardWalletMain/TwigMacros/assets.html.twig' as assets %}
+{% import '@AwardWalletMain/TwigMacros/form.html.twig' as formMacros %}
+
+{% block title %} {{ 'booking.page.title.queue'|trans({}, 'booking')|desc('Queue') }} ({{ requestRep.getUnreadCountForUser(app.user, true, vars.businessUser) }}){% endblock %}
+
+{% block mainContent %}
+    {% set futureStatusMode = false %}
+    {% if app.request.query.get("status_filter") == constant("\\AwardWallet\\MainBundle\\Entity\\AbRequest::BOOKING_STATUS_FUTURE") %}
+        {% set futureStatusMode = true %}
+    {% endif %}
+
+    <div class="booking-requests">
+        <form id="filter">
+            <table class="js-queue-table">
+                <thead>
+                <tr>
+                    <td colspan="9">
+                        {{ 'booking.table.title'|trans({}, 'booking') }} {{ pagination.totalItemCount ? '(' ~ pagination.totalItemCount ~ ')' : '' }}
+                    </td>
+                </tr>
+                </thead>
+                <tr class="booking-requests-caption">
+                    <td>
+                        <div>{{ aw_pagination_sortable(pagination, 'booking.table.headers.id'|trans({}, 'booking'), 'id') }}</div>
+                    </td>
+                    <td>
+                        <div>{{ aw_pagination_sortable(pagination, 'booking.table.headers.name'|trans({}, 'booking'), 'contactName') }}</div>
+                    </td>
+                    <td>
+                        <div>{{ aw_pagination_sortable(pagination, 'booking.table.headers.assigned-to'|trans({}, 'booking'), 'assigned') }}</div>
+                    </td>
+                    <td>
+                        <div>{{ aw_pagination_sortable(pagination, 'booking.table.headers.last-update'|trans({}, 'booking'), 'lastUpdate') }}</div>
+                    </td>
+                    <td>
+                        <div>{{ aw_pagination_sortable(pagination, 'booking.table.headers.status'|trans({}, 'booking'), 'status') }}</div>
+                    </td>
+                    <td>
+                        <div>{{ aw_pagination_sortable(pagination, 'booking.table.headers.internal-status'|trans({}, 'booking'), 'internalStatus') }}</div>
+                    </td>
+                    {% if futureStatusMode %}
+                        <td>
+                            <div>{{ aw_pagination_sortable(pagination, 'booking.table.headers.until-date'|trans({}, 'booking')|desc("Future Until"), 'until') }}</div>
+                        </td>
+                    {% else %}
+                        <td>
+                            <div>{{ 'booking.table.headers.fees'|trans({}, 'booking') }}</div>
+                        </td>
+                    {% endif %}
+                    <td>
+                        <div>{{ 'booking.table.headers.airline'|trans({}, 'booking') }}</div>
+                    </td>
+                    <td></td>
+                </tr>
+                <tr class="booking-requests-text-fields">
+                    <td><input type="text" name="id_filter" value="{{ req.get('id_filter') }}"/></td>
+                    <td><input type="text" name="name_filter" value="{{ req.get('name_filter') }}"/></td>
+                    <td>
+                        <div class="styled-select">
+                            <select name="assiged_filter">
+                                <option value="">{{ 'not-selected'|trans }}</option>
+                                {% for key, user in userRep.getBusinessManagers(bookerInfo.getUserID) %}
+                                    <option value="{{ user.userid }}" {{ (user.userid == req.get('assiged_filter') ? 'selected=selected' : '') }}>{{ user.getFullName }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </td>
+                    <td>{{ formMacros.datepicker_input('lastupdate_filter', req.get('lastupdate_filter'), {'class': 'datepicker', 'data-role': 'datepicker'}) }}</td>
+                    <td>
+                        <div class="styled-select">
+                            <select name="status_filter">
+                                <option value="">{{ 'not-selected'|trans }}</option>
+                                {% for key, status in requestRep.statuses %}
+                                    <option value="{{ key }}" {{ ((req.get('status_filter') is not null ) and (req.get('status_filter') != '') and (key == req.get('status_filter'))) ? 'selected=selected' : '' }}>{{ status|trans({}, 'booking') }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="styled-select">
+                            <select name="internal_status_filter" class="colored">
+                                <option value="">{{ 'not-selected'|trans }}</option>
+                                {% for status in requestStatusRep.statusesForBooker(bookerInfo.getUserID) %}
+                                    <option value="{{ status.AbRequestStatusID }}" {{ ((req.get('internal_status_filter') is not null ) and (req.get('internal_status_filter') != '') and (status.AbRequestStatusID == req.get('internal_status_filter'))) ? 'selected=selected' : '' }} style="color: #{{ status.TextColor }}; background-color: #{{ status.BgColor }}">{{ status.status }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </td>
+                    <td class="clear-filters" colspan="3">
+                        <a class="btn spec" href="#" id="find_btn">{{ 'business.members.table_filter.go_filters'|trans({}, 'messages') }}</a>
+                        <a class="btn light "
+                           href="{{ url('aw_booking_list_queue') }}?status_filter=">{{ 'booking.table.filters.clear'|trans({}, 'booking') }}</a>
+
+                    </td>
+                </tr>
+                {% if pagination.count > 0 %}
+                    {% for request in pagination %}
+                        {% set LastUpdate = request.LastUpdateDate %}
+                        {% set isRequestReadByUser = requestRep.isRequestReadByUser(request, app.user, true) %}
+                        {% set detailsLink = url('aw_booking_view_index', {'id' : request.abrequestid }) %}
+                        {% set detailsLinkWithScroll = detailsLink %}
+                        {% if isRequestReadByUser == false %}
+                            {% set detailsLinkWithScroll = detailsLink ~ '?new' %}
+                        {% endif %}
+
+                        <tr class="{% if isRequestReadByUser == false %}new {% endif %}{{ macros.requestListClassRow(request, true) }} tablebody" data-id="{{ request.abrequestid }}">
+                            <td class="booking-id">
+                                <a href="{{ detailsLinkWithScroll }}">
+                                    <img src="{{ asset(requestRep.getRefIcon(request, 'small', bookerInfo.userID)) }}" alt="cameIcon" width="19" height="19"/>
+
+                                    <p>{{ request.abrequestid }}</p>
+                                </a>
+                            </td>
+                            <td>
+                                <a href="{{ detailsLinkWithScroll }}">
+                                    <p><span class="offline status-indicator" data-id="{{ request.abrequestid }}"></span>{{ request.contactname|escape }}</p>
+                                </a>
+                            </td>
+                            <td>
+                                <a href="{{ detailsLinkWithScroll }}">
+                                    <p>{{ request.getAssignedUser is not null ? request.getAssignedUser.getFullName : 'booking.table.not-assigned'|trans({}, 'booking') }}</p>
+                                </a>
+                            </td>
+                            <td>
+                                <a href="{{ detailsLinkWithScroll }}" class="js-lastupdate" data-time="{{ LastUpdate|date('c') }}">
+                                    {{ LastUpdate|leadTZ|formatDatetime('medium', 'none') }}
+                                    <span class="last-date">{{ LastUpdate|leadTZ|formatDatetime('none', 'short') }}</span>
+                                </a>
+                            </td>
+                            <td class="queue-status">
+                                {#<a href="{{ detailsLinkWithScroll }}">#}
+                                {% apply spaceless %}
+                                    <p>{{ requestRep.getStatusDescription(request.status)|trans({}, 'booking') }}</p>
+
+                                    <p>({{ allMessageCount[request.abrequestid] }}{% set int_count = internalMessageCount[request.abrequestid] %}{% if int_count > 0 %}
+                                        + <a class="jumpto-last-internal" href="{{ detailsLink }}#last_internal_message">{{ int_count }} {{ 'booking.messages.internal'|trans({}, 'booking') }}{% if (isNewInternal[request.abrequestid] > 0) %}
+                                            <i class="old-icon-booking-new"></i>{% endif %}</a>{% endif %})
+                                    </p>
+                                    {% set reason = requestRep.getCancelReason(request) %}
+                                    {% if reason is not null %}
+                                        <p>({{ reason|trans({}, 'booking') }})</p>
+                                    {% endif %}
+                                {% endapply %}
+                                {#</a>#}
+                            </td>
+                            <td{% if request.internalStatus %} style="background-color: #{{ request.internalStatus.BgColor }} !important;"{% endif %} class="internal-status">
+                                <a href="{{ detailsLinkWithScroll }}" {% if request.internalStatus %} style="color:#{{ request.internalStatus.TextColor }} !important;"{% endif %}>
+                                    {{ request.internalStatus ? request.internalStatus.status : '' }}
+                                </a>
+                            </td>
+                            {% if futureStatusMode %}
+                                <td>
+                                    <a href="{{ detailsLinkWithScroll }}">
+                                        {{ request.RemindDate|formatDatetime('medium', 'none') }}
+                                    </a>
+                                </td>
+                            {% else %}
+                                <td class="fees">
+                                    <a href="{{ detailsLinkWithScroll }}">
+                                        {% set fees = request.fees %}
+                                        {% if fees > 0 %}
+                                            <div>
+                                                <p>{{ fees|formatCurrency(bookerInfo.currency.code) }}</p>
+                                            </div>
+                                        {% endif %}
+                                    </a>
+                                </td>
+                            {% endif %}
+                            <td>
+                                <a href="{{ detailsLinkWithScroll }}">
+                                    {% if request.getOutboundAirline() is not null %}
+                                        <p>out: {{ request.getOutboundAirline().getCode() }}</p>
+                                    {% endif %}
+                                    {% if request.getInboundAirline() is not null %}
+                                        <p>in: {{ request.getInboundAirline().getCode() }}</p>
+                                    {% endif %}
+                                </a>
+                            </td>
+                            <td class="booking-btn">
+                                <a href="{{ detailsLink }}#respond-block"><i class="old-icon-booking-back" title="{{ 'booking.table.tooltip.reply'|trans({}, 'booking') }}"></i></a>
+                                <span></span>
+                                <a href="{{ path('aw_booking_view_markread', {id: request.abrequestid}) }}"
+                                   class="read-button"><i
+                                            class="{{ isRequestReadByUser ? 'old-icon-booking-read-message' : 'old-icon-booking-message' }}"
+                                            title="{{ 'booking.table.tooltip.mark-as'|trans({}, 'booking') }}"></i></a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                {% else %}
+                    <tr>
+                        <td colspan="8" class="empty-filter text-center">
+                            <i class="old-icon-information"></i> {{ 'booking.filters.no-match'|trans({}, 'booking') }}
+                        </td>
+                    </tr>
+                {% endif %}
+            </table>
+        </form>
+        <div class="navigation">
+            {{ aw_pagination_render(pagination) }}
+        </div>
+    </div>
+    <input name="back_button_fix" id="back_button_fix" value="" type="hidden"/>
+{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    {{ assets.assets_form('css') }}
+    {{ encore_entry_link_tags('booking') }}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script type="text/javascript">
+        require([
+            'jquery-boot', 'lib/customizer', 'centrifuge', 'sockjs',
+            'translator-boot', 'vendor/jquery.browser/dist/jquery.browser.min',
+            // assets_form
+            'awardwalletmain/js/form/validator',
+            'select2',
+            'awardwalletmain/js/select2_colored',
+            // bookingJs
+            'awardwalletmain/js/booking/common',
+            'awardwalletmain/js/booking/autocomplete',
+            // page
+            'awardwalletmain/js/booking/list'
+        ], function ($, customizer, fuge, sockjs) {
+
+            window.SockJS = sockjs;
+
+            $(function () {
+                if ($.browser.webkit) {
+                    if ($("#back_button_fix").val() == 'yes') {
+                        window.location.reload();
+                    } else {
+                        $('#back_button_fix').val('yes');
+                    }
+                }
+
+                var locale     = ($('html').attr('lang')).replace('_', '-'), usrTime;
+                var dateFormat = new Intl.DateTimeFormat(locale, {day : 'numeric', month : 'short', year : 'numeric'}),
+                    timeFormat = new Intl.DateTimeFormat(locale, {hour : 'numeric', minute : 'numeric'});
+                $('.js-lastupdate', '.js-queue-table').each(function() {
+                    usrTime = new Date($(this).data('time'));
+                    usrTime = new Date(Date.UTC(usrTime.getUTCFullYear(), usrTime.getUTCMonth(), usrTime.getUTCDate(), usrTime.getUTCHours(), usrTime.getUTCMinutes(), usrTime.getUTCSeconds()));
+                    $(this).empty().html(dateFormat.format(usrTime) + '<span class="last-date">' + timeFormat.format(usrTime) + '</span>');
+                });
+
+
+                var client = new (fuge)({{ messaging|raw }});
+
+                function presence(action, user, requestId) {
+                    if (!user.impersonated && !user.isBooker) {
+                        if (action === 'join') {
+                            userStatus.setOnline(requestId);
+                        } else {
+                            userStatus.setOffline(requestId);
+                        }
+                    }
+                }
+
+                {% for request in pagination %}
+
+                var subscription_{{ request.abrequestid }} = client.subscribe('{{ channel ~ '_' ~ request.abrequestid }}', {
+                    join:  function (mess) {
+                        presence('join', mess.data.default_info, {{ request.abrequestid }});
+                    },
+                    leave: function (mess) {
+                        presence('leave', mess.data.default_info, {{ request.abrequestid }});
+                    },
+                    subscribe: function () {
+                        userStatus.updatePresence({{ request.abrequestid }}, subscription_{{ request.abrequestid }});
+                    }
+                });
+
+                {% endfor %}
+
+                var userStatus = {
+                    setOnline: function (requestId) {
+                        $('.status-indicator[data-id=' + requestId + ']').attr('class', 'status-indicator online');
+                    },
+                    setOffline: function (requestId) {
+                        $('.status-indicator[data-id=' + requestId + ']').attr('class', 'status-indicator offline');
+                    },
+                    updatePresence: function (requestId, subscription) {
+                        subscription.presence().then(function (mess) {
+                            for (var item in mess.data) {
+                                presence('join', mess.data[item].default_info, requestId);
+                            }
+                        })
+                    }
+                };
+
+                client.connect();
+            });
+        });
+    </script>
+{% endblock %}

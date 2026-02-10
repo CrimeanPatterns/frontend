@@ -1,0 +1,203 @@
+{% extends "@AwardWalletMain/Layout/contact_us_faq_health.html.twig" %}
+
+{% block title %}
+    {{ 'status.page-title'|trans }}
+{% endblock %}
+
+
+{% block javascripts %}
+    {{ parent() }}
+
+    {{ encore_entry_script_tags('page-status') }}
+    <script>
+        require([
+            'pages/status/main',
+            'lib/design'
+        ], function($) {
+        });
+    </script>
+{% endblock %}
+
+{% block content %}
+    <ul class="tabs-navigation middle">
+        <li><a class="active" href="#all">{{ 'status.all'|trans }}</a></li>
+        <li><a href="#broken">{{ broken.caption }}{% if broken.list|length > 0 %}<span class="stats">{{ broken.list|length }}</span>{% endif %}</a></li>
+        <li><a href="#consideringAdd">{{ consideringAdd.caption }}{% if consideringAdd.list|length > 0 %}<span class="stats">{{ consideringAdd.list|length }}</span>{% endif %}</a></li>
+        <li><a href="#working">{{ working.caption }}{% if working.list|length > 0 %}<span class="stats">{{ working.list|length }}</span>{% endif %}</a></li>
+        <li><a href="#cannotAdd">{{ cannotAdd.caption }}{% if cannotAdd.list|length > 0 %}<span class="stats">{{ cannotAdd.list|length }}</span>{% endif %}</a></li>
+    </ul>
+    <div class="tabs-content fixed-width" data-ng-controller="statusCtrl">
+        <div id="statusTables">
+            <table id="t_broken" class="main-table status-table fixed-header{% if broken.list|length == 0 %} hidden{% endif %}">
+                <thead>
+                <tr>
+                    <th class="title" colspan="5">
+                        <div class="title-note"><h3>{{ broken.caption }}</h3></div>
+                    </th>
+                </tr>
+                {% if broken.list|length > 0 %}
+                    <tr>
+                        <th class="js-sort">{{ 'status.display-name'|trans }}<i class="icon-arrow-down-silver"></i></th>
+                        <th class="js-sort">{{ 'status.program-type'|trans }}<i class="icon-arrow-down-silver hidden"></i></th>
+                        <th>{{ 'status.comments'|trans }}</th>
+                        <th class="t-center js-sort">{{ 'status.complaints'|trans }}<i class="icon-arrow-down-silver hidden"></i></th>
+                        <th class="t-center btn">{{ 'status.email-when-fixed'|trans }}</th>
+                    </tr>
+                {% endif %}
+                </thead>
+                <tbody>
+                {% for provider in broken.list %}
+                    <tr>
+                        <td data-shortname="{{ provider.ShortName }}">
+                            <div class="name-block">
+                                <i class="icon-error-small"></i>
+                                <strong>{{ provider.Name|raw }}</strong>
+                                {% if provider.ProgramName is not empty %}<span class="silver">{{ provider.ProgramName|raw }}</span>{% endif %}
+                            </div>
+                        </td>
+                        <td>{{ provider._kind }}</td>
+                        <td class="comments">{{ provider.Note|raw }}</td>
+                        <td class="t-center js-votes">{{ provider.Votes }}</td>
+                        <td class="t-center btn">{% if provider.IsVote %}<i class="icon-dark-check"></i>{% else %}<a href="#{{ provider.ProviderID }}" class="js-vote btn-blue btn-add">1</a>{% endif %}</td>
+                    </tr>
+                {% else %}
+                    <tr>
+                        <td colspan="5">{{ 'status.not-found'|trans }}</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+            <table id="t_consideringAdd" class="main-table status-table fixed-header">
+                <thead>
+                <tr>
+                    <th class="title" colspan="5">
+                        <div class="title-note"><h3>{{ consideringAdd.caption }}</h3></div>
+                    </th>
+                </tr>
+                <tr>
+                    <th class="js-sort">{{ 'status.display-name'|trans }}<i class="icon-arrow-down-silver"></i></th>
+                    <th class="js-sort">{{ 'status.program-type'|trans }}<i class="icon-arrow-down-silver hidden"></i></th>
+                    <th>{{ 'status.comments'|trans }}</th>
+                    <th class="t-center js-sort">{{ 'status.requests'|trans }}<i class="icon-arrow-down-silver hidden"></i></th>
+                    <th class="t-center btn">{{ 'status.i-need-program'|trans }}</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for provider in consideringAdd.list %}
+                    <tr>
+                        <td data-shortname="{{ provider.ShortName }}">
+                            <div class="name-block">
+                                <i class="icon-info-small"></i>
+                                <strong>{{ provider.Name|raw }}</strong>
+                                {% if provider.ProgramName is not empty %}<span class="silver">{{ provider.ProgramName|raw }}</span>{% endif %}
+                            </div>
+                        </td>
+                        <td>{{ provider._kind }}</td>
+                        <td class="comments">{{ provider.Note|raw }}</td>
+                        <td class="t-center js-votes">{{ provider.Votes }}</td>
+                        <td class="t-center btn">{% if provider.IsVote %}<i class="icon-dark-check"></i>{% else %}<a href="#{{ provider.ProviderID }}" class="js-vote btn-blue btn-add">1</a>{% endif %}</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+            <table id="t_working" class="main-table status-table fixed-header">
+                <thead>
+                <tr>
+                    <th class="title" colspan="6">
+                        <div class="title-note"><h3>{{ working.caption }}</h3></div>
+                    </th>
+                </tr>
+                <tr>
+                    <th class="js-sort">{{ 'status.display-name'|trans }}<i class="icon-arrow-down-silver hidden"></i></th>
+                    <th class="js-sort">{{ 'status.program-type'|trans }}<i class="icon-arrow-down-silver"></i></th>
+                    <th>{{ 'status.comments'|trans }}</th>
+                    <th class="t-center js-sort">{{ 'status.support-added'|trans }}<i class="icon-arrow-down-silver hidden"></i></th>
+                    <th class="t-center js-sort">{{ 'status.complaints'|trans }}<i class="icon-arrow-down-silver hidden"></i></th>
+                    <th class="t-center t-center">{{ 'status.mark-broken'|trans }}</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for provider in working.list %}
+                    <tr>
+                        <td data-shortname="{{ provider.ShortName }}">
+                            <div class="name-block">
+                                <i class="icon-green-check"></i>
+                                <strong>{{ provider.Name|raw }}</strong>
+                                {% if provider.ProgramName is not empty %}<span class="silver">{{ provider.ProgramName|raw }}</span>{% endif %}
+                            </div>
+                        </td>
+                        <td>{{ provider._kind }}</td>
+                        <td class="comments">{{ provider.Note|raw }}</td>
+                        <td class="t-center" data-date="{{ provider.date|date('Ymd') }}">{{ provider.date|formatDatetime('short', 'none') }}</td>
+                        <td class="t-center js-votes">{{ provider.Votes }}</td>
+                        <td class="t-center btn">{% if provider.IsVote %}<i class="icon-dark-check"></i>{% else %}<a href="#{{ provider.ProviderID }}" class="js-vote btn-blue btn-add">1</a>{% endif %}</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+            <table id="t_cannotAdd" class="main-table status-table status-table-xh fixed-header">
+                <thead>
+                <tr>
+                    <th class="title" colspan="2">
+                        <div class="title-note"><h3>{{ cannotAdd.caption }}</h3></div>
+                    </th>
+                </tr>
+                <tr>
+                    <th class="js-sort">{{ 'status.display-name'|trans }}<i class="icon-arrow-down-silver"></i></th>
+                    <th>{{ 'status.comments'|trans }}</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for provider in cannotAdd.list %}
+                    <tr>
+                        <td>
+                            <div class="name-block">
+                                <i class="icon-warning-small"></i>
+                                <strong>{{ provider.Name|raw }}</strong>
+                                {% if provider.ProgramName is not empty %}<span class="silver">{{ provider.ProgramName|raw }}</span>{% endif %}
+                            </div>
+                        </td>
+                        <td class="comments">{{ provider.Note|raw }}</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <script id="statusConfirmMsg" type="text/x-template">
+            <div>
+                <span data-ng-bind-html="message | unsafe"></span>
+                <div ng-show="accounts">
+                    <br><span data-ng-bind-html="programmError | unsafe"></span>
+                    <table class="main-table status-table dialog-status-accounts">
+                        <thead>
+                        <tr>
+                            <th>{{ 'status.account'|trans }}</th>
+                            <th>{{ 'status.owner'|trans }}</th>
+                            <th>{{ 'status.error'|trans }}</th>
+                            <th>{{ 'status.last-update-attempt'|trans }}</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr data-ng-repeat="prop in accounts">
+                            <td>[[ prop.AccountID ]]</td>
+                            <td>[[ prop.UserName ]]</td>
+                            <td data-ng-bind-html="prop.ErrorMessage | unsafe"></td>
+                            <td>[[ prop._lastUpdate ]]</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                    {{ 'status.still-have-problem'|trans }}
+                </div>
+                <div ng-show="showComment" class="row-inline js-comment">
+                    <label for="statusProviderComment">{{ 'status.error-program.comment-account'|trans }}<span class="required">*</span>:</label>
+                    <div class="input"><textarea id="statusProviderComment" class="dialog-field-comment" required="required"></textarea></div>
+                    <div class="error-message">
+                        <i class="icon-warning-small"></i>
+                        <span>{{ 'status.please-add-comments'|trans }}</span>
+                    </div>
+                </div>
+            </div>
+        </script>
+    </div>
+{% endblock %}

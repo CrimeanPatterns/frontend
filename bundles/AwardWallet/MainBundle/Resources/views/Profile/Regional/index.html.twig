@@ -1,0 +1,75 @@
+{% form_theme form with ['@AwardWalletMain/FormTheme/fields.html.twig'] %}
+{% extends "@AwardWalletMain/Layout/profile.html.twig" %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        require(['jquery-boot'],
+            function($) {
+                $(function () {
+                    var $lang = $('.js-user-regional-language'),
+                        $country = $('.js-user-regional-country'),
+                        $hint = $country.parents('.row').find('.info-description');
+                    var langHints = $lang.data('hints'),
+                        localeHints = $country.data('hints');
+
+                    function getLocale() {
+                        var region = $country.val();
+                        var lang = $lang.val();
+
+                        if (region) {
+                            if (['zh_CN', 'zh_TW'].indexOf(lang) > -1 || (typeof(lang) === 'string' && lang.length > 2)) {
+                                return lang;
+                            }
+
+                            var locale = lang + '_' + region;
+
+                            if (localeHints.hasOwnProperty(locale)) {
+                                return locale;
+                            }
+                        }
+
+                        return lang;
+                    }
+                    function changeLocaleHint() {
+                        var locale = getLocale();
+
+                        $hint.html(localeHints[locale]);
+                        console.log(locale, localeHints[locale]);
+                    }
+                    if (typeof langHints == 'object' && typeof localeHints == 'object') {
+                        $lang.on('change', changeLocaleHint);
+                        $country.on('change', changeLocaleHint);
+                    }
+                })
+            });
+    </script>
+{% endblock %}
+
+{% block content %}
+    <div class="main-blk shortened">
+        <h1>{{ 'user.regional.title' | trans | desc("Edit Regional Settings") }}</h1>
+        {% if app.session.flashbag.has('notice') %}
+            <div class="main-blk-content">
+                {% for flash_message in app.session.flashbag.get('notice') %}
+                    <div class="success-title">
+                        <i class="icon-white-check-b"></i>
+                        <span>{{ flash_message }}</span>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+        <form class="main-form spinnerable"
+              action="{{ path('aw_profile_regional') }}"
+              method="post"
+              autocomplete="off"
+              novalidate>
+            {{ form_widget(form, {'noSubmit':true}) }}
+            <div class="row-submit">
+                <div class="row-submit-item">
+                    <button type="submit" class="btn-blue">{{ 'form.button.update'|trans }}</button>
+                </div>
+            </div>
+        </form>
+    </div>
+{% endblock %}

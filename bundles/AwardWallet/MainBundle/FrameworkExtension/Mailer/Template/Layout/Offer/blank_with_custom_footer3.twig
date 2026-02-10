@@ -1,0 +1,19 @@
+{% extends '@MailTemplate/Layout/Offer/content.twig' %}
+
+{% block unsubscribe_row %}
+    <table border="0" cellpadding="0" cellspacing="0" width="100%" style="margin: 5px 0">
+		<tbody>
+			<tr>
+				<td style="background:#f9f9fa; font-size: 11px; color: #828b99; text-align: center; line-height: 1.5; padding: 10px 30px" class="email-silver">
+					<i>The value of this offer will be reported to the IRS and the recipient is responsible for any federal, state or local taxes on this offer. <br>Bask Bank and BankDirect are divisions of Texas Capital Bank, N.A. Member FDIC. The sum of your total deposits with (i) Bask Bank; (ii) BankDirect; and (iii) Texas Capital Bank, N.A. are insured up to $250,000. Additional coverage may be available depending on how your assets are held.</i>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+
+	{{ parent() }}
+{% endblock unsubscribe_row %}
+
+{% block physical_address_row %}
+    <span>{{ constant('EMAIL_PHYSICAL_ADDRESS_PLAIN') }}</span>
+{% endblock physical_address_row %}

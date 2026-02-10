@@ -1,0 +1,58 @@
+{% extends '@MailTemplate/Layout/base.twig' %}
+{% trans_default_domain "email" %}
+
+{% block subject %}{% apply spaceless %}{% autoescape false %}
+    {{ 'plus_expires_soon.subject'|trans({}, 'email', lang)|desc('AwardWallet Plus membership expires soon') }}
+{% endautoescape %}{% endapply %}{% endblock subject %}
+
+{% block content %}
+    {% import '@MailTemplate/CommonMacro.twig' as commonMacro %}
+
+    {{ commonMacro.hello(user.firstname, _context) }}
+
+    {{ commonMacro.smallWarning(
+        'plus_expires_soon.desc'|trans({
+            '%span_on%': '<b style="color:#3d424d">',
+            '%span_off%': '</b>',
+            '%span2_on%': '<b style="color:#cc3d5e">',
+            '%span2_off%': '</b>',
+            '%date%': expireDate|formatDatetime('medium', 'none', locale)
+        }, 'email', lang)|desc('According to our records your %span_on%AwardWallet Plus%span_off% membership is going to expire on %span2_on%%date%%span2_off%.'),
+        _context, {escape: false}
+    ) }}
+
+    {{ commonMacro.paragraph(
+        'plus_expires_soon.link'|trans({}, 'email', lang)|desc('You can follow this link to upgrade your account today:'),
+        _context, {},
+        {
+            'margin-top': '20px'
+        }
+    ) }}
+
+    {% if lastType in [
+        constant('\\AwardWallet\\MainBundle\\Entity\\CartItem\\AT201Subscription1Month::TYPE'),
+        constant('\\AwardWallet\\MainBundle\\Entity\\CartItem\\AT201Subscription6Months::TYPE'),
+        constant('\\AwardWallet\\MainBundle\\Entity\\CartItem\\AT201Subscription1Year::TYPE')
+    ] %}
+        {% set link = baseUrl ~ path('aw_at201_payment', {type: lastType}) %}
+    {% else %}
+        {% set link = baseUrl ~ path('aw_users_pay') %}
+    {% endif %}
+
+    {{ commonMacro.dottedLink(link, link, _context) }}
+
+    {% set pricing_link = commonMacro.link(baseUrl ~ path('aw_pricing'), '$$')|split('$$') %}
+    {{ commonMacro.paragraph(
+        'plus_expires_soon.note-1-year.v2'|trans({
+            '%date%': expireDate|formatDatetime('medium', 'none', locale),
+            '%span_on%': '<b>',
+            '%span_off%': '</b>',
+            '%link_on%': pricing_link[0],
+            '%link_off%': pricing_link[1]
+        }, 'email', lang)|desc('Please note that by upgrading today you will extend your membership by 1 year from %date%, and not from today’s date. You can also choose to let your Plus membership expire, in that case none of your data will be deleted but some features will not be available to you. Please refer to the following %link_on% page %link_off% to find out the differences between %span_on%AwardWallet regular%span_off% accounts and %span_on%AwardWallet Plus%span_off% accounts.'),
+        _context, {escape: false},
+        {
+            'margin-top': '20px'
+        }
+    ) }}
+{% endblock content %}

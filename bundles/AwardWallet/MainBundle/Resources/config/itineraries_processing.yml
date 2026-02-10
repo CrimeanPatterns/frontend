@@ -1,0 +1,74 @@
+services:
+  _defaults:
+    autowire: true
+    public: true
+  _instanceof:
+    \AwardWallet\MainBundle\Entity\Repositories\ItineraryRepositoryInterface:
+      tags: ['aw.itinerary_repository']
+    \AwardWallet\MainBundle\Loyalty\AccountSaving\Processors\Itineraries\ItineraryProcessorInterface:
+      tags: ['aw.itinerary_processor']
+    \AwardWallet\MainBundle\Loyalty\AccountSaving\History\PlanLinker\MatcherInterface:
+      tags: ['aw.plan_linker.matcher']
+    \AwardWallet\MainBundle\Loyalty\AccountSaving\History\PlanLinker\DataSourceInterface:
+      tags: ['aw.plan_linker.data_source']
+    \AwardWallet\MainBundle\FrameworkExtension\Command:
+      tags: ['console.command']
+    \AwardWallet\MainBundle\Loyalty\AccountSaving\Sources\ValidatorInterface:
+      tags: ['aw.itinerary_sources.validator']
+
+  AwardWallet\MainBundle\Loyalty\AccountSaving\:
+    resource: '../../Loyalty/AccountSaving/*'
+    exclude: '../../Loyalty/AccountSaving/{History/PlanLinker/Match.php,History/PlanLinker/Matcher/PregMatcher.php,History/PlanLinker/DataSource/LikeDataSource.php,Processors/Itineraries/ItinerarySavedEvent.php,AccountUpdateEvent.php,ItineraryUpdateEvent.php,Itinerary/*Exception.php}'
+
+  aw.planlinker.matcher.qantas:
+    class: AwardWallet\MainBundle\Loyalty\AccountSaving\History\PlanLinker\Matcher\PregMatcher
+    arguments:
+      $pattern: '#REF (\w{6})\b#ims'
+      $provider: 'qantas'
+
+  aw.planlinker.matcher.virgin:
+    class: AwardWallet\MainBundle\Loyalty\AccountSaving\History\PlanLinker\Matcher\PregMatcher
+    arguments:
+      $pattern: '#Ref (\w{6})\b#ims'
+      $provider: 'virgin'
+
+  aw.planlinker.datasource.qantas:
+    class: AwardWallet\MainBundle\Loyalty\AccountSaving\History\PlanLinker\DataSource\LikeDataSource
+    arguments:
+      $pattern: '%%REF %%'
+      $provider: 'qantas'
+
+  aw.planlinker.datasource.virgin:
+    class: AwardWallet\MainBundle\Loyalty\AccountSaving\History\PlanLinker\DataSource\LikeDataSource
+    arguments:
+      $pattern: '%%Ref %%'
+      $provider: 'virgin'
+
+  AwardWallet\MainBundle\Loyalty\AccountSaving\Processors\AccountProcessor:
+    public: true
+    arguments:
+        $repositories: !tagged aw.itinerary_repository
+  aw.loyalty.account_saving.processor: '@AwardWallet\MainBundle\Loyalty\AccountSaving\Processors\AccountProcessor'
+
+  AwardWallet\MainBundle\Loyalty\AccountSaving\Processors\HistoryProcessor:
+    public: true
+    lazy: true # prepares queries at startup
+
+  aw.loyalty.account_saving.history: '@AwardWallet\MainBundle\Loyalty\AccountSaving\Processors\HistoryProcessor'
+
+  AwardWallet\MainBundle\Loyalty\AccountSaving\Processors\ItinerariesProcessor:
+    arguments:
+      $processors: !tagged aw.itinerary_processor
+
+  AwardWallet\MainBundle\Loyalty\AccountSaving\History\PlanLinker\DataSourceFactory:
+    arguments:
+      $dataSources: !tagged aw.plan_linker.data_source
+
+  AwardWallet\MainBundle\Loyalty\AccountSaving\History\PlanLinker\MatcherFactory:
+    arguments:
+      $matchers: !tagged aw.plan_linker.matcher
+
+  AwardWallet\MainBundle\Loyalty\AccountSaving\Sources\Validator:
+    public: true
+    arguments:
+        $validators: !tagged aw.itinerary_sources.validator

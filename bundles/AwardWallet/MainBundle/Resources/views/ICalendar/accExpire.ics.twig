@@ -1,0 +1,17 @@
+BEGIN:VCALENDAR
+PRODID:-//AwardWallet LLC//Account Expiry Calendar//EN
+VERSION:2.0
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+X-WR-RELCALID:{{ CalendarID }}
+X-WR-CALNAME:AW Expirations ({{ firstName|raw }})
+X-WR-CALDESC:AW Expirations ({{ firstName|raw }})
+DESCRIPTION:AW Expirations ({{ firstName|raw }})
+NAME:AW Expirations ({{ firstName }})
+X-PUBLISHED-TTL:P1D
+{% for event in events %}
+BEGIN:VEVENT
+{{ event|raw }}
+END:VEVENT
+{% endfor %}
+END:VCALENDAR

@@ -1,0 +1,17 @@
+parameters:
+
+services:
+    _defaults:
+        public: true
+
+    # TODO: remove
+    aw.handler.left_menu:
+        public: true
+        class: AwardWallet\MainBundle\Globals\LeftMenuHandler
+        arguments: ["@translator", "@router", "@doctrine"]
+        shared:    true
+
+    aw.client_verification:
+            public: true
+            class: AwardWallet\MainBundle\Globals\ClientVerificationHandler
+            arguments: ["@session"]

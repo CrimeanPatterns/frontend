@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=Edge"/>
+        <title>Index</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    </head>
+    <body>
+        {% block javascripts %}
+        <script>
+            var classNames = [];
+            var html = document.getElementsByTagName('html')[0];
+
+            {% if is_granted("SITE_MOBILE_APP_IOS") %}
+                classNames.push('device-ios');
+            {% elseif is_granted("SITE_MOBILE_APP_ANDROID") %}
+                classNames.push('device-android');
+            {% elseif is_granted("SITE_MOBILE_AREA") %}
+                classNames.push('device-ios');
+            {% endif %}
+
+            if (html.classList) html.classList.add.apply(html.classList, classNames);
+        </script>
+        {% endblock %}
+
+        {% block body %}{% endblock %}
+    </body>
+</html>

@@ -1,0 +1,32 @@
+{% extends "@AwardWalletMain/Layout/profile.html.twig" %}
+{% form_theme form with ['@AwardWalletMain/FormTheme/fields.html.twig'] %}
+
+{% block stylesheets %}
+    {{ parent() }}
+{% endblock %}
+
+{% block content %}
+    <div class="main-blk shortened">
+        <h1>{{ 'profile.business.api'|trans }}</h1>
+        <form class="main-form spinnerable"
+              action="{{ path('aw_profile_business_api_settings') }}"
+              method="post"
+              autocomplete="off"
+              novalidate>
+            {{ form_widget(form, {'noSubmit':true}) }}
+            <div class="row-submit">
+                <div class="row-submit-item">
+                    <button type="submit" class="btn-blue">{{ 'form.button.update'|trans }}</button>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="faq">
+        <div class="faq-blk">
+            <div class="heading">
+                <i class="icon-info-small"></i>
+                <p>{{ 'profile.business.api-doc'|trans({'%url%': 'https://awardwallet.com/api/AccountAccess/'})|raw }}</p>
+            </div>
+        </div>
+    </div>
+{% endblock %}

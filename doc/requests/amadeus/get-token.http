@@ -1,0 +1,8 @@
+POST https://test.api.amadeus.com/v1/security/oauth2/token
+Content-Type: application/x-www-form-urlencoded
+
+grant_type=client_credentials&client_id={{client_id}}&client_secret={{client_secret}}
+
+> {%
+    client.global.set("access_token", response.body.access_token);
+%}

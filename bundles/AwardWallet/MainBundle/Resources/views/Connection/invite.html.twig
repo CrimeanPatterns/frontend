@@ -1,0 +1,122 @@
+{% extends app.user is not null ? "@AwardWalletMain/Layout/common.html.twig" : "@AwardWalletMain/Layout/not_logged.html.twig" %}
+
+{% set inviter = invite.inviterid.isBusiness() ? invite.inviterid.company : invite.inviterid.fullName %}
+{% set invitee = invite.familyMember ? invite.familyMember.fullName : (invite.inviteeid ? invite.inviteeid.fullName : null) %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        require(['jquery-boot'], function ($) {
+            $(function () {
+                $('#rejectInvite').on('click', function(e) {
+                    $.post(
+                        Routing.generate('aw_invite_reject', {'shareCode': '{{ invite.code }}' }),
+                        {},
+                        function () {window.location.href = '/';}
+                    );
+                });
+            })
+        });
+    </script>
+{% endblock %}
+
+{% block page %}
+    {% if app.user is null and invite.invitedate < date('-3 days') %}
+        <div class="invite-container">
+            <div class="invite-container-content">
+                <p>{{ 'greeting'|trans({
+                        '%bold_on%' : '<strong>',
+                        '%name%'    : invitee,
+                        '%bold_off%': '</strong>',
+                    })|raw }}</p>
+                <p>{{ 'invitation.expired'|trans({
+                        '%bold_on%' : '<strong>',
+                        '%name%'    : inviter,
+                        '%bold_off%': '</strong>',
+                    })|raw }}</p>
+            </div>
+        </div>
+    {% elseif app.user is null %}
+        <div class="invite-container">
+            <div class="invite-container-content">
+                <p>{{ 'greeting'|trans({
+                        '%bold_on%' : '<strong>',
+                        '%name%'    : invitee,
+                        '%bold_off%': '</strong>',
+                    })|raw }}</p>
+                <p>{{ 'invite.to.register'|trans({
+                        '%bold_on%' : '<strong>',
+                        '%name%'    : inviter,
+                        '%bold_off%': '</strong>',
+                        '%br%'      : '<br>',
+                    })|raw }}</p>
+            </div>
+            <div class="row-submit">
+                <form action="" method="post">
+                    <button type="submit" class="btn-blue">{{ 'invitation.accept'|trans }}</button>
+                </form>
+            </div>
+        </div>
+    {% else %}
+        {{ parent() }}
+    {% endif %}
+{% endblock %}
+
+{% block content %}
+    {% if inviteYourSelf is defined and inviteYourSelf is same as true %}
+        <div class="invite-container">
+            <div class="invite-container-content">
+                <p>{{ 'greeting'|trans({
+                        '%bold_on%' : '<strong>',
+                        '%name%'    : user.firstname,
+                        '%bold_off%': '</strong>',
+                    })|raw }}</p>
+                <p>{{ 'invitation-intended-someone-else'|trans({
+                        '%link_on%': '',
+                        '%link_off%': ''
+                    })|desc('The invitation link you are opening is intended for someone else. Either open this link on another device that belongs to the user that was invited (recommended) or %link_on%log out%link_off% of AwardWallet and then open this link again.')|raw }}
+                </p>
+            </div>
+            <div class="row-submit">
+                <a class="btn-blue" href="{{ path('aw_users_logout') }}">{{ 'session.logout'|trans }}</a>
+            </div>
+        </div>
+    {% elseif invite.invitedate < date('-3 days') %}
+        <div class="invite-container">
+            <div class="invite-container-content">
+                <p>{{ 'greeting'|trans({
+                        '%bold_on%' : '<strong>',
+                        '%name%'    : user.firstname,
+                        '%bold_off%': '</strong>',
+                    })|raw }}</p>
+                <p>{{ 'invitation.expired'|trans({
+                        '%bold_on%' : '<strong>',
+                        '%name%'    : inviter,
+                        '%bold_off%': '</strong>',
+                    })|raw }}</p>
+            </div>
+        </div>
+    {% else %}
+        <div class="invite-container">
+            <div class="invite-container-content">
+                <p>{{ 'greeting'|trans({
+                        '%bold_on%' : '<strong>',
+                        '%name%'    : user.firstname,
+                        '%bold_off%': '</strong>',
+                    })|raw }}</p>
+                <p>{{ 'invite.to.connect'|trans({
+                        '%bold_on%' : '<strong>',
+                        '%name%'    : inviter,
+                        '%bold_off%': '</strong>',
+                        '%br%'      : '<br>'
+                    })|raw }}</p>
+            </div>
+            <div class="row-submit">
+                <form action="" method="post">
+                    <button type="submit" class="btn-blue">{{ 'connect.with.person'|trans({'%name%': inviter}) }}</button>
+                    <a class="btn-blue" id="rejectInvite">{{ 'connection.reject'|trans }}</a>
+                </form>
+            </div>
+        </div>
+    {% endif %}
+{% endblock %}

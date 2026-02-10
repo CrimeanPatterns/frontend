@@ -1,0 +1,36 @@
+{% set title = 'Push Copies' %}
+{% extends "@AwardWalletMain/Manager/layout.html.twig" %}
+{% form_theme form with ['form_table_layout.html.twig'] %}
+
+{% block content %}
+    <h1>Send copies of pushes to these devices</h1>
+    <form method="POST">
+    {{ form_errors(form) }}
+    <table border="0" cellpadding="2" cellspacing="0">
+        <tr style="font-weight: bold;">
+            <td></td>
+            <td>User</td>
+            <td>Device type</td>
+            <td>Alias</td>
+            <td>Target</td>
+            <td>IP</td>
+        </tr>
+        {% for typeId, typeName in types %}
+            <tr><td colspan="6"><b>{{ typeName }}</b></td></tr>
+            {% for device in devices[typeId] %}
+                <tr>
+                    <td>{{ form_widget(form['type_' ~ typeId ~ '_' ~ device.mobileDeviceId]) }}</td>
+                    <td>{{ device.user.firstname ~ ' ' ~ device.user.lastname }}</td>
+                    <td>{{ device.name }}</td>
+                    <td>{{ device.alias }}</td>
+                    <td>{% if device.isMobile %}Mobile{% else %}Desktop{% endif %}</td>
+                    <td>{{ device.ip }}</td>
+                </tr>
+            {% endfor %}
+        {% endfor %}
+    </table>
+    {{ form_widget(form.save) }}
+    {{ form_rest(form) }}
+    <br/><br/>
+    </form>
+{% endblock %}

@@ -1,0 +1,70 @@
+{% set title = "Send Notifications" %}
+{% extends '@AwardWalletMain/Manager/layout.html.twig' %}
+
+{% block content %}
+    {% import '@AwardWalletMain/Manager/SendNotification/macro.twig' as macro %}
+    <style type="text/css">
+        table {
+            border-collapse: collapse;
+        }
+        table td {
+            border: lightgray solid 1px;
+            padding: 7px;
+        }
+        thead td {
+            font-weight: bold;
+        }
+    </style>
+
+    <a href="{{ url('aw_manager_sendnotification_index') }}">List of push notifications</a>
+
+    <hr size="2"/>
+
+    <h1>
+        Notifications ({{ notificationsCount }})
+        <small> &nbsp; <a href="{{ url('aw_manager_sendnotification_add') }}">Add New</a></small>
+    </h1>
+
+    {% if notifications|length %}
+        <br/>
+        <table>
+            <thead>
+            <tr>
+                <td>Title</td>
+                <td>State</td>
+                <td>Content Type</td>
+                <td>Created</td>
+                <td>TTL</td>
+                <td>Updated</td>
+                <td>Queued Users</td>
+                <td>Sent Users</td>
+                <td></td>
+            </tr>
+            </thead>
+            <tbody>
+            {% for row in notifications %}
+                <tr>
+                    <td><a href="{{ url('aw_manager_sendnotification_view', {id: row.notificationTemplateID }) }}">{{ row.title }}</a></td>
+                    <td>{% if row.state == 0 %}New{% elseif row.state == 1 %}Tested{% elseif row.state == 2 %}Sending{% else %}Done{% endif %}</td>
+                    <td>{{ macro.contentTypeText(row.Type) }}</td>
+                    <td>{{ row.createDate|formatDatetime('long') }}</td>
+                    <td{% if row.TTL < date() %} style="background-color: red; color: white;"{% endif %}>{{ row.TTL|formatDatetime('long') }}{% if row.TTL < date() %} Expired, will not be sent{% endif %}</td>
+                    <td>{{ row.updateDate|formatDatetime('long') }}</td>
+                    <td>{{ row.queueStat }}</td>
+                    <td>{{ row.sendStat }}</td>
+                    <td><nobr>
+                        <a href="{{ url('aw_manager_sendnotification_view', {id: row.notificationTemplateID}) }}">view</a> &middot;
+                        <a href="{{ url('aw_manager_sendnotification_edit', {id: row.notificationTemplateID}) }}">edit</a> &middot;
+                        <a href="{{ url('aw_manager_sendnotification_delete', {id: row.notificationTemplateID}) }}">delete</a>
+                    </nobr></td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+        <div class="navigation">
+            {{ aw_pagination_render(pagination) }}
+        </div>
+    {% else %}
+    {% endif %}
+
+{% endblock %}

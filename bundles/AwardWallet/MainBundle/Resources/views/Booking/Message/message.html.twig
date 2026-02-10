@@ -1,0 +1,223 @@
+{% import _self as selfMacro %}
+{% if readed is not defined %}{% set readed = null %}{% endif %}
+{% for message in messages %}
+    {% set index = request.messages.indexOf(message) %}
+    {% if message.user and message.type >= 0 and message.type != 7 %}
+        <a name="{{ message.abMessageID }}"></a>
+        <table class="message-block
+        {{ message.fromBooker ? 'inbox' : 'send' }}
+        {{ message.isInternal() ? 'inner' : '' }}
+        {{ message.isService() ? 'system' : '' }}
+        {{ message.isInvoice() ? 'invoice' : '' }}
+        {{ message.isNotReaded(readed) ? 'new' : '' }}
+        {{ is_granted('USER_BOOKING_REFERRAL') and message.color ? 'border-' ~ message.color.color : '' }}
+        " id="message_{{ message.abmessageid }}" data-id="{{ message.abmessageid }}" data-last-updated="{% if message.lastUpdateDate is not null %}{{ message.lastUpdateDate.timestamp }}{% else %}0{% endif %}">
+            <tr>
+                {% if message.fromBooker %}
+                    {{ selfMacro.author(message, request, app, reqRep, agentsRep, usrRep, index) }}
+                    {{ selfMacro.message(message, request, app, reqRep, agentsRep, usrRep, index, msgReplacedVars) }}
+                {% else %}
+                    {{ selfMacro.message(message, request, app, reqRep, agentsRep, usrRep, index, msgReplacedVars) }}
+                    {{ selfMacro.author(message, request, app, reqRep, agentsRep, usrRep, index) }}
+                {% endif %}
+            </tr>
+        </table>
+    {% endif %}
+{% endfor %}
+
+{% macro message(message, request, app, reqRep, agentsRep, usrRep, index = 0, msgReplacedVars) %}
+    {% if message.fromBooker and message.user.isBooker() %}
+        {% set author = message.user.company %}
+    {% elseif message.fromBooker %}
+        {% set author = message.user.fullName %}
+    {% else %}
+        {% set author = message.request.contactname %}
+    {% endif %}
+    <td class="message">
+    {% if message.isInvoice() %}
+        <div class="message-text invoice">
+            <div class="rounded">
+                {% if message.isAutoreplyInvoice() %}
+                <div class="item">
+                    {{ message.post|html_purifier|raw('html') }}
+                </div>
+                {% endif %}
+                <div class="item">{% include "@AwardWalletMain/Booking/Message/invoiceMessage.html.twig" %}</div>
+            </div>
+        </div>
+    {% elseif message.isShareRequest() %}
+        <div class="message-text">
+            <div class="rounded">
+                <div class="item">{% include "@AwardWalletMain/Booking/Message/shareRequestMessage.html.twig" %}</div>
+            </div>
+        </div>
+    {% elseif message.isShareResponse() %}
+        <div class="message-text">
+            <div class="rounded">
+                <div class="item">{% include "@AwardWalletMain/Booking/Message/shareResponseMessage.html.twig" %}</div>
+            </div>
+        </div>
+    {% elseif message.isSeatAssignments() %}
+        <div class="message-text">
+            <div class="rounded">
+                <div class="item">{% include "@AwardWalletMain/Booking/Message/seatAssignmentsMessage.html.twig" %}</div>
+            </div>
+        </div>
+    {% elseif message.isUserText() %}
+        <div class="message-text">
+            <div class="rounded">
+                <div class="item">
+                    {% if message.fromBooker %}
+                        {{ message.post|html_purifier|replace(msgReplacedVars)|raw('html') }}
+                    {% else %}
+                        {{ message.post|auto_link }}
+                    {% endif %}
+                </div>
+            </div>
+            {% if is_granted('USER_BOOKING_REFERRAL') and message.color %}
+                <div class="message-info">{{ message.color.description }}</div>
+            {% endif %}
+        </div>
+    {% elseif message.isYcbMessage() %}
+        <div class="message-text">
+            <div class="rounded">
+                <div class="item">
+                     {{ message.post|html_purifier|raw('html') }}
+                </div>
+            </div>
+        </div>
+    {% else %}
+        <div class="message-text">
+            <div class="rounded">
+                <div class="item">
+                    {% if message.type == constant('\\AwardWallet\\MainBundle\\Entity\\AbMessage::TYPE_UPDATE_REQUEST') %}
+                        {{ 'booker.message.post.update-request'
+                        |trans({'%user_name%': author }, 'booking')
+                        |desc('%user_name% has updated this award ticket booking request')
+                        }}
+                    {% elseif message.type == constant('\\AwardWallet\\MainBundle\\Entity\\AbMessage::TYPE_STATUS_REQUEST') %}
+                        {% set m_status = message.metadata.status %}
+                        {% set m_status_verbose = reqRep.getStatusDescription(m_status)|trans({}, 'booking') %}
+                        {% if m_status == constant('\\AwardWallet\\MainBundle\\Entity\\AbRequest::BOOKING_STATUS_PENDING') and not message.fromBooker %}
+                            {{ 'booker.message.post.status-request.pending'
+                            |trans({'%user_name%': author }, 'booking')
+                            |desc('%user_name% has re-opened this request')
+                            }}
+                        {% else %}
+                            {{ 'booker.message.post.status-request.other'
+                            |trans({'%user_name%': author, '%request_status%': m_status_verbose }, 'booking')
+                            |desc('%user_name% has changed the status to "%request_status%"')
+                            }}
+                        {% endif %}
+                    {% elseif message.type == constant('\\AwardWallet\\MainBundle\\Entity\\AbMessage::TYPE_INVOICE_PAID') %}
+                        {% if message.metadata.invoiceId %}
+                            {% set invoiceId = message.metadata.invoiceId %}
+                        {% elseif message.request.lastInvoice %}
+                            {% set invoiceId = message.request.lastInvoice.id %}
+                        {% else %}
+                            {% set invoiceId = '-' %}
+                        {% endif %}
+                        {% set amount = message.metadata.totalInvoice ? message.metadata.totalInvoice|formatCurrency(message.request.booker.bookerinfo.currency.code) : '-' %}
+                        {{ 'booker.message.post.invoice-paid'|trans({
+                            '%user_name%': author,
+                            '%amount%': amount,
+                            '%invoiceId%': invoiceId
+                        }, 'booking')|desc('%user_name% submitted a payment in the amount of %amount% for the award ticket booking invoice #%invoiceId%')
+                        }}
+                    {% elseif message.type == constant('\\AwardWallet\\MainBundle\\Entity\\AbMessage::TYPE_WRITE_CHECK') %}
+                        {{ 'booker.message.post.write-check'
+                        |trans({'%user_name%': author |htmlencode,
+                            '%booker_name%': message.request.booker.fullName |htmlencode,
+                            '%booker_address%': message.request.booker.bookerInfo.address,
+                            '%check_amount%': message.metadata.totalInvoice ? message.metadata.totalInvoice |formatCurrency(message.request.booker.bookerinfo.currency.code) : '-'}, 'booking')
+                        |desc('%user_name% has identified that a check written to <b>%booker_name%</b> in the amount of <b>%check_amount%</b> is being sent to:<br> <address>%booker_address%</address>')
+                        |raw }}
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    {% endif %}
+    </td>
+{% endmacro %}
+
+{% macro author(message, request, app, reqRep, agentsRep, usrRep, index = 0) %}
+    <td class="author-message">
+        <div class="author">
+            <div class="photo">
+                {% set avatar = userAvatar(message.user) %}
+                {% if avatar is null and message.fromBooker %}
+                    {% set booker = usrRep.getBookerByUser(message.user) %}
+                    {% if booker is not null %}
+                        {% set avatar = userAvatar(booker) %}
+                    {% endif %}
+                {% endif %}
+                {% if is_granted('SITE_BUSINESS_AREA') %}
+                    {% set profileLink = url('aw_profile_business_edit') %}
+                {% else %}
+                    {% set profileLink = url('aw_profile_personal') %}
+                {% endif %}
+                {% set showProfileLink = message.user == app.user or message.user == usrRep.getBusinessByUser(app.user) %}
+
+                {% if avatar is not null %}
+                    {% if showProfileLink %}
+                        <a class="tipped" title="{{ 'button.set-avatar' | trans }}"
+                           href="{{ profileLink }}?BackURL={{ url('aw_booking_view_index', {'id': request.AbRequestID})|url_encode }}">
+                            <img src="{{ avatar }}">
+                        </a>
+                    {% else %}
+                        <img src="{{ avatar }}">
+                    {% endif %}
+                {% else %}
+                    {% if showProfileLink %}
+                        <a class="tipped" title="{{ 'button.set-avatar' | trans }}"
+                           href="{{ profileLink }}?BackURL={{ url('aw_booking_view_index', {'id': request.AbRequestID})|url_encode }}">
+                        </a>
+                    {% endif %}
+                {% endif %}
+            </div>
+
+            <p>{{ message.createdate|formatTimeAgoTag(message.createdate|leadTZ|formatDatetime('short', 'short')) }}</p>
+            {% if message.lastupdatedate %}
+                <p class="updated">{{ message.lastupdatedate|formatTimeAgoTag(message.lastupdatedate|leadTZ|formatDatetime('short', 'short')) }}</p>
+            {% endif %}
+            <p class="name">
+                {% if message.user.isBooker() %}
+                    {% if message.user.company is not empty %}
+                        {{ message.user.company }}
+                    {% else %}
+                        {{ message.user.fullName }}
+                    {% endif %}
+                {% elseif message.fromBooker %}
+                    {{ message.user.getFullName() }} {% if defaultBooker != message.request.booker.bookerInfo.getUserID().getUserid() %}@ {{ message.request.booker.bookerInfo.serviceName }}{% endif %} {# hide for AwardWallet LLC #}
+                {% else %}
+                    {{ message.request.contactname }}
+                {% endif %}
+            </p>
+            {% if is_granted('EDIT', message) or is_granted('DELETE', message) %}
+            <ul>
+                {% if is_granted('EDIT', message) %}
+                <li>
+                        <a href="#"
+                           data-url="{{ path('aw_booking_message_ajaxeditmessage', {id: request.abrequestid, messageId: message.abmessageid}) }}"
+                           data-id="{{ message.abmessageid }}" class="js-message-edit"
+                                ><i class="old-icon-edit-thick"></i></a>
+                </li>
+                {% endif %}
+                {% if is_granted('DELETE', message) %}
+                <li>
+                        <a href="#"
+                           data-url="{{ path('aw_booking_message_ajaxdeletemessage', {id: request.abrequestid, messageId: message.abmessageid}) }}"
+                           data-id="{{ message.abmessageid }}" class="js-message-delete"
+                                ><i class="old-icon-trash"></i></a>
+                </li>
+                {% endif %}
+            </ul>
+           {% endif %}
+
+            {% if 116000 == message.request.booker.bookerInfo.getUserID().getUserid() and not message.user.isBooker() and message.fromBooker %}
+                <div class="logo-bya-condenast small"></div>
+            {% endif %}
+
+        </div>
+    </td>
+{% endmacro %}

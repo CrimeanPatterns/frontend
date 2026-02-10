@@ -1,0 +1,9 @@
+{% extends is_granted('SITE_BUSINESS_AREA')
+?  "@AwardWalletMain/Layout/business_check_balance.html.twig"
+:  "@AwardWalletMain/Layout/default.html.twig" %}
+
+    {% block body_left_widgets %}
+        {{ widget_render('left_top') }}
+        {{ widget_render('trips') }}
+        {{ widget_render('left_bottom') }}
+    {% endblock %}

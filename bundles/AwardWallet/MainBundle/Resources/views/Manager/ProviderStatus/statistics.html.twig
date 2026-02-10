@@ -1,0 +1,66 @@
+<i class='icon-blue-info' rel='Statistic{{ statistics.providerId }}' id='Statistic'> </i>
+<div style='display: none;'>
+    <table>
+        <tr>
+            <td lab='Statistic{{ statistics.providerId }}'>
+            <strong style='text-decoration: underline;'>Provider's statistic:</strong>
+            <br/>
+            Success rate: {{ statistics.successRate }}%
+            <br/>
+            <br/>
+            <strong style='text-decoration: underline;'>For the last hour:</strong>
+            <br/>
+            Total errors: {{ statistics.lastHour.total }}
+            <br/>
+            <ul style='padding: 0; margin-left: 30px; margin-top: 0; margin-bottom: 2px; margin-rigth: 0;'>
+                <li>
+                    Provider errors: {{ statistics.lastHour.providerErrors }}
+                </li>
+                <li>
+                    Invalid credentials: {{ statistics.lastHour.invalidCredentials }}
+                </li>
+                <li>
+                    Account lockouts: {{ statistics.lastHour.accountLockouts }}
+                </li>
+                <li>
+                    Questions: {{ statistics.lastHour.questions }}
+                </li>
+                <li>
+                    Warnings: {{ statistics.lastHour.warnings }}
+                </li>
+                <li>
+                    Unknown errors: {{ statistics.lastHour.unknownErrors }}
+                </li>
+                <li>
+                    Killed: {{ statistics.lastHour.killed }}
+                </li>
+            </ul>
+            Successfully checked: {{ statistics.lastHour.successfullyChecked }}
+            <br/>
+            Total checked: {{ statistics.lastHour.totalChecked }}
+            <br/>
+            <br/>
+            <strong style='text-decoration: underline;'>Total:</strong>
+            <br/>
+            Checked: {{ statistics.total.checked }}
+            <br/>
+            Successfully checked: {{ statistics.total.successfullyChecked }}
+            <br/>
+            Unknown errors: {{ statistics.total.unknownErrors }}
+            <br/>
+            Provider errors: {{ statistics.total.providerErrors }}
+            <br/>
+            Invalid credentials: {{ statistics.total.invalidCredentials }}
+            <br/>
+            Account lockouts: {{ statistics.total.accountLockouts }}
+            <br/>
+            Questions: {{ statistics.total.questions }}
+            <br/>
+            Warnings: {{ statistics.total.warnings }}
+            <br/>
+            Killed: {{ statistics.total.killed }}
+            <br/>
+            </td>
+        </tr>
+    </table>
+</div>

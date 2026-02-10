@@ -1,0 +1,42 @@
+{% extends "@AwardWalletMain/Layout/index.html.twig" %}
+
+{% block title %}
+    {{ title }}
+{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    {{ encore_entry_link_tags('page-manager') }}
+
+    {#  todo: remove  #}
+    {% include '@AwardWalletMain/Manager/headerMenu.html.twig' %}
+    {% if customEntryPoint is defined %}
+        {{ encore_entry_link_tags(customEntryPoint) }}
+    {% endif %}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    {{ encore_entry_script_tags('page-manager', null, '_default', {'defer': true}) }}
+
+    {% if customEntryPoint is defined %}
+        {{ encore_entry_script_tags(customEntryPoint) }}
+    {% endif %}
+{% endblock %}
+
+{% block body_class %}
+    {{ parent() }} {{ bem('page-manager') }}
+{% endblock %}
+
+{% block body %}
+    {#  todo: remove  #}
+    {% include '@AwardWalletMain/Manager/headerMenuBody.html.twig' %}
+    <div id="filterBoxContainer"></div>
+
+    <div class="{{ bem('page-manager', 'container') }}">
+        <div class="row">
+            {% block content %}
+            {% endblock %}
+        </div>
+    </div>
+{% endblock %}

@@ -1,0 +1,94 @@
+{% extends popup is defined and popup ? "@AwardWalletMain/Offer/_offerPopup.html.twig" : "@AwardWalletMain/Offer/standard.html.twig" %}
+{% import '@AwardWalletMain/Offer/offerMacros.html.twig' as offerMacros %}
+{% import '@AwardWalletMain/TwigMacros/assets.html.twig' as assets %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    {{ encore_entry_link_tags('offer') }}
+    {{ encore_entry_link_tags('offers/aircanadastatusmatch') }}
+    {% if popup is not defined %}
+        {{ assets.assets_form('css') }}
+    {% endif %}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    {{ encore_entry_script_tags('trans/' ~ app.request.locale) }}
+    {{ encore_entry_script_tags('offers/aircanadastatusmatch') }}
+    <script>
+        {{ offerMacros.jsOfferYes(_context, ApplyURL, Code, OfferUserID, OfferData.redirectUrl) }}
+        {{ offerMacros.jsOfferNo(_context, Code, OfferUserID, defaultRedirectLocation) }}
+    </script>
+{% endblock %}
+
+{% block content %}
+    <div id="offer_wrap" data-offer-uid="{{ OfferData.OfferUserID }}">
+        <div class="offer-block">
+            <div class="offer-wrap">
+                <a class="offer-close" href="" onclick="$('#offerPopup').dialog('close');return false;"><i
+                            class="icon-close-white"></i>{{ 'close.btn'|trans }}</a>
+                <div class="offer-image"></div>
+                <h3>Hi {{ OfferData.name }},</h3>
+                {% if OfferData.providerId == constant('\AwardWallet\\MainBundle\\Entity\\Provider::AA_ID') %}
+                    <p>Congratulations! You qualify for a complimentary upgrade to
+                        <mark>{{ OfferData.upgradeProgram }}</mark>
+                        elite level. We've partnered up with StatusMatch.com to fulfill this upgrade request for you. To
+                        take advantage of this limited-time opportunity, please check the "I agree ..." checkbox below,
+                        and the following information will be sent to our partners at StatusMatch.com on your behalf:
+                    </p>
+                {% else %}
+                    <p>Congratulations! You qualify for a complimentary upgrade to
+                        <mark>{{ OfferData.upgradeProgram }}</mark>
+                        elite level because you have
+                        <mark>{{ OfferData.matchProgram }} {{ OfferData.matchStatus }}</mark>
+                        status. We've partnered up with StatusMatch.com to fulfill this upgrade request for you.
+                        To take advantage of this limited-time opportunity, please check the "I agree ..." checkbox
+                        below,
+                        and the following information will be sent to our partners at StatusMatch.com on your behalf:
+                    </p>
+                {% endif %}
+
+                <div class="offer-data">
+                    <div class="offer-status">
+                        <div class="offer-data-wrap">
+                            <div class="offer-data-row">
+                                <div class="offer-data-name">Name:</div>
+                                <div class="offer-data-value">{{ OfferData.fullName }}</div>
+                            </div>
+                            <div class="offer-data-row">
+                                <div class="offer-data-name">Email:</div>
+                                <div class="offer-data-value">{{ OfferData.email }}</div>
+                            </div>
+                            {% if OfferData.providerId != constant('\AwardWallet\\MainBundle\\Entity\\Provider::AA_ID') %}
+                                <div class="offer-data-row">
+                                    <div class="offer-data-name">Member ID:</div>
+                                    <div class="offer-data-value">{{ OfferData.member_id }}</div>
+                                </div>
+                                <div class="offer-data-row">
+                                    <div class="offer-data-name">Elite Status to Match:</div>
+                                    <div class="offer-data-value">
+                                        {{ OfferData.matchProgram }}, {{ OfferData.matchStatus }}
+                                    </div>
+                                </div>
+                            {% endif %}
+                            {% if OfferData.existsAirCanadaId is not empty %}
+                                <div class="offer-data-row">
+                                    <div class="offer-data-name">Current Aeroplan Number:</div>
+                                    <div class="offer-data-value">{{ OfferData.existsAirCanadaId }}</div>
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="offer-action">
+                        <div class="check"><input id="offerAgree" class="checkbox" type="checkbox" value="1"><label class="label" for="offerAgree"></label></div>I agree to send my personal information listed
+                        here to StatusMatch.com to receive a free upgrade to
+                        <mark>{{ OfferData.upgradeProgram }}</mark>
+                        elite level.
+
+                        <button id="offerProceed" class="btn-blue" disabled>Proceed to StatusMatch.com</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

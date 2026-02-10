@@ -1,0 +1,17 @@
+imports:
+    - { resource: config_dev.yml }
+
+monolog:
+    handlers:
+        main:
+            type:  stream
+            path:  %kernel.logs_dir%/%kernel.environment%.log
+            level: warning
+        grouped: false
+        warnings: false
+        push: false
+        fluent: false
+
+parameters:
+    requires_channel: https
+

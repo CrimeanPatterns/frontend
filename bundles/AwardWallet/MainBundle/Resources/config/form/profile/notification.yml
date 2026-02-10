@@ -1,0 +1,62 @@
+services:
+    _defaults:
+        public: true
+
+    # Types
+    aw.desktop.notification:
+        public: true
+        class: AwardWallet\MainBundle\Form\Type\NotificationType
+        arguments:
+            - "@aw.form.transformer.generic.notification"
+            - "@translator"
+        tags:
+            - { name: form.type}
+
+    aw.mobile.notification:
+        public: true
+        class: AwardWallet\MobileBundle\Form\Type\Profile\NotificationType
+        arguments:
+            - "@aw.api.versioning"
+            - "@translator"
+            - "@aw.form.transformer.generic.notification"
+            - '@AwardWallet\MainBundle\Form\Helper\MobileExtensionLoader'
+        tags:
+            - { name: form.type}
+
+    # Transformers
+    AwardWallet\MainBundle\Form\Transformer\Profile\NotificationTransformer:
+        public: true
+        class: AwardWallet\MainBundle\Form\Transformer\Profile\NotificationTransformer
+        arguments:
+            - "@doctrine.orm.default_entity_manager"
+
+    aw.form.transformer.generic.notification:
+        alias: AwardWallet\MainBundle\Form\Transformer\Profile\NotificationTransformer
+        public: true
+
+    # Handlers
+    aw.form.notification.subscriber.generic:
+        public: true
+        class: AwardWallet\MainBundle\Form\Handler\Subscriber\Profile\NotificationGeneric
+        arguments:
+            - "@doctrine.orm.default_entity_manager"
+            - "@monolog.logger.stat"
+            - "@aw.form.handler_helper"
+            - "@aw.form.transformer.generic.notification"
+            - "@event_dispatcher"
+
+    aw.form.notification.handler.desktop:
+        public: true
+        parent: aw.form.generic_request_handler
+        calls:
+            - [setChannels, [["form.generic.notification"]]]
+            - [addHandlerSubscriber, ["@aw.form.notification.subscriber.generic"]]
+
+    aw.form.notification.handler.mobile:
+        public: true
+        parent: aw.form.generic_request_handler
+        calls:
+            - [setChannels, [["form.mobile", "form.generic.notification"]]]
+            - [addHandlerSubscriber, ["@aw.form.notification.subscriber.generic"]]
+            - [addHandlerSubscriber, ["@aw.form.subscriber.mobile.request_data_transformer"]]
+

@@ -1,0 +1,254 @@
+{% extends '@AwardWalletMain/Manager/layout.html.twig' %}
+
+{% macro showStatus(value) %}
+    {% if 'N' == value %}
+        New
+    {% elseif 'N_live' == value %}
+        New (live)
+    {% elseif 'N_pending' == value %}
+        New (pending)
+    {% elseif 'G' == value %}
+        Good
+    {% elseif 'R' == value %}
+        Review
+    {% elseif 'A' == value %}
+        AutoReview
+    {% elseif 'E' == value %}
+        Error
+    {% elseif 'P' == value %}
+        Reported
+    {% endif %}
+{% endmacro %}
+
+
+{% block content %}
+    <h1>Mile Value - Report Status</h1>
+
+    <style>
+        .mvstat {
+            border-collapse: collapse;
+        }
+
+        .mvstat th,
+        .mvstat td {
+            padding: 5px 10px;
+            border: solid 1px #333;
+        }
+
+        .mvstat .brs {
+            border-right: solid 4px #666;
+        }
+
+        form {
+            padding: 10px 0;
+        }
+
+        .status-N,
+        .status-N_live {
+            background: #d9ead3;
+        }
+
+        .status-G {
+            background: #c9daf8;
+        }
+
+        .status-R,
+        .status-A,
+        .status-E,
+        .status-P {
+            background: #fff2cc;
+        }
+
+        .status-all {
+            background: #eee;
+        }
+
+        .get-by-date {
+            padding-top: 2rem;
+        }
+
+        .get-by-date input[type="number"],
+        .get-by-date input[type="month"] {
+            width: 60px;
+        }
+
+        .js-remove-box {
+            float: none;
+            clear: both;
+            display: inline-block;
+            margin: 10px auto;
+            color: darkred;
+            border-radius: 5px;
+            background: #eee;
+            text-decoration: none !important;
+            padding: 4px 8px;
+        }
+
+        .js-remove-box:hover {
+            background: darkred;
+            color: #fff;
+        }
+    </style>
+    <style id="dynamicStyle">.js-remove-box {
+            display: none
+        }</style>
+
+    <div id="mvstat">
+        <form method="get">
+            <select name="providerId" required>
+                <option value="">Select Provider</option>
+                {% for provider in providers %}
+                    <option value="{{ provider.ProviderID }}"{% if app.request.query.get('providerId') and app.request.query.get('providerId') == provider.ProviderID %} selected{% endif %}>{{ provider.DisplayName|html_entity_decode }}</option>
+                {% endfor %}
+            </select>
+            <button type="submit">Submit</button>
+        </form>
+        <a class="btn" href="{{ url('aw_manager_milevalue_report_calc') }}" style="float: right">Get MileValue Transferable Calc</a>
+        <table id="mvData" class="table mvstat">
+            <thead>
+            <tr>
+                <th>Certified Date</th>
+                <th class="brs"></th>
+                <th>#RE</th>
+                <th>Avg. RE</th>
+                <th>#RB</th>
+                <th>Avg. RB</th>
+                <th>#GE</th>
+                <th>Avg. GE</th>
+                <th>#GB</th>
+                <th>Avg. GB</th>
+                <th title="count records">#Total</th>
+                <th>Avg. Total</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% if data is defined %}
+                <tr>
+                    <th rowspan="{{ data|length + 1 }}">{{ certificationDate }}</th>
+                    <th class="brs">Status</th>
+                    <td colspan="10"></td>
+                </tr>
+                {% for key,items in data %}
+                    <tr class="status-{{ key }}">
+                        <th class="brs">{{ _self.showStatus(key) }}</th>
+                        <td>{{ items.RegionalEconomyMileValue._count }}</td>
+                        <td>{{ items.RegionalEconomyMileValue._avg }}</td>
+                        <td>{{ items.RegionalBusinessMileValue._count }}</td>
+                        <td>{{ items.RegionalBusinessMileValue._avg }}</td>
+                        <td>{{ items.GlobalEconomyMileValue._count }}</td>
+                        <td>{{ items.GlobalEconomyMileValue._avg }}</td>
+                        <td>{{ items.GlobalBusinessMileValue._count }}</td>
+                        <td>{{ items.GlobalBusinessMileValue._avg }}</td>
+                        <td>{{ items.total.count }}</td>
+                        <td>{{ items.total.avg }}</td>
+                    </tr>
+                {% endfor %}
+                <tr class="status-all">
+                    <th></th>
+                    <th class="brs">All Statuses</th>
+                    <td>{{ all.RegionalEconomyMileValue_count }}</td>
+                    <td></td>
+                    <td>{{ all.RegionalBusinessMileValue_count }}</td>
+                    <td></td>
+                    <td>{{ all.GlobalEconomyMileValue_count }}</td>
+                    <td></td>
+                    <td>{{ all.GlobalBusinessMileValue_count }}</td>
+                    <td></td>
+                    <td>{{ all.count }}</td>
+                    <td>{{ all.avg }}</td>
+                </tr>
+            {% endif %}
+            </tbody>
+            <tfoot></tfoot>
+        </table>
+
+        {% if app.request.query.has('providerId') %}
+            <div class="get-by-date">
+                <input id="dateYear" type="number" value="{{ 'now'|date('Y') }}">
+                <input id="dateMonth" type="month" value="{{ 'now'|date('m') }}">
+                <button id="fetchDataByDate" type="button">Get Data</button>
+                <br><br><label><input id="isShowRemoveButton" type="checkbox"> Show Remove Button</label>
+            </div>
+        {% endif %}
+    </div>
+
+    <script>
+        $(document).ready(function() {
+            const $fetchDataByDate = $('#fetchDataByDate');
+            $fetchDataByDate.click(function() {
+                $fetchDataByDate.attr('disabled', 'disabled');
+                const providerId = '{{ app.request.query.get('providerId') }}';
+                const year = $('#dateYear').val();
+                const month = $('#dateMonth').val();
+
+                $.get('/manager/mile-value/report-status/get-by-date', { providerId, year, month }, function(response) {
+                    $('#mvData tfoot:last').after('<tfoot>' + response.html + '</tfoot>');
+                    $fetchDataByDate.removeAttr('disabled');
+                }, 'JSON');
+            });
+
+            $('#isShowRemoveButton').change(function() {
+                if ($(this).is(':checked')) {
+                    $('#dynamicStyle').html('.js-remove-box {display:block;}');
+                } else {
+                    $('#dynamicStyle').html('.js-remove-box {display:none;}');
+                }
+            });
+
+            $(document).on('click', '.js-remove-box', function(e) {
+                e.preventDefault();
+                $(this).closest('tfoot').remove();
+            });
+        });
+    </script>
+
+
+
+    {% if channel is defined and channel is not null %}
+        <h2>Results</h2>
+
+        <div style="display: flex;padding:10px;">
+            <div id="tstat1t">
+                <h3>Loading...</h3>
+                <table id="tstat1" class="table tstat">
+                    <thead></thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <script>
+            require(['centrifuge'], function(Centrifuge) {
+                const client = new Centrifuge({{ centrifuge_config | json_encode | raw }});
+                client.on('connect', function() {
+
+                    const onMessage = function onMessage(data) {
+                        if ('table1' == data.data.type) {
+                            $('#tstat1t').html(data.data.html);
+                        }
+                        if ('table2' == data.data.type) {
+                            $('#tstat2t').html(data.data.html);
+                        }
+                    };
+
+                    const subscription = client.subscribe({{ channel | json_encode | raw }}, onMessage);
+                    subscription.history()
+                        .then(function(response) {
+
+                            $.each(response.data.reverse(), function(index, value) {
+                                onMessage(value);
+                            });
+
+                        }, function(err) {
+                            console.log('failed', err);
+                        });
+
+                });
+                client.connect();
+            });
+        </script>
+
+    {% endif %}
+
+{% endblock %}

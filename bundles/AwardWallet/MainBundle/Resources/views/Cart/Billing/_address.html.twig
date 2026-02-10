@@ -1,0 +1,10 @@
+<p><span class="red bold">{{ address.firstname }} {{ address.lastname }}</span> {% if changeLink %}<a id="change-billing" href="#">{{ 'button.change'|trans|desc('Change') }}</a>{% endif %}</p>
+
+<p>{{ address.address1 }}</p>
+{% if address.address2 is not null %}<p>{{ address.address2 }}</p>{% endif %}
+
+<p>{{ address.city }}, {{ address.stateid.codeorname }} {{ address.zip }} </p>
+<p>{{ address.countryid.name }}</p>
+{% if changeLink %}
+    <input type="hidden" name="billingAddressID" value="{{ address.billingaddressid }}"/>
+{% endif %}

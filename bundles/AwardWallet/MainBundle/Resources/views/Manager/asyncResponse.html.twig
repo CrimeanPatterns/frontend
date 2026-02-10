@@ -1,0 +1,119 @@
+{% extends '@AwardWalletMain/Manager/layout.html.twig' %}
+
+{% block content %}
+
+    <script>
+
+        // globals, because we will execute loaded scripts in global context
+        function documentWrite(str)
+        {
+            console.log('document.write');
+            document.getElementById('response-written').innerHTML = document.getElementById('response-written').innerHTML + str;
+        }
+
+        function documentWriteln(str)
+        {
+            documentWrite(str + "\n");
+        }
+
+        require(['centrifuge'], function(Centrifuge) {
+
+            const client = new Centrifuge({{ centrifuge_config | json_encode | raw }});
+            client.on('connect', function () {
+                console.log('centrifuge connected');
+
+                function evalScript(script)
+                {
+                    console.log('eval script');
+                    script = script.replace(/document\.write/g, 'documentWrite');
+                    $.globalEval(script);
+                }
+
+                function executeScripts()
+                {
+                    var scripts = [];
+
+                    $("#response").find("script").each(function() {
+                        let script = $(this);
+                        if (script.attr('src')) {
+                            scripts.push({'type': 'remote', 'url': script.attr('src')});
+                        } else {
+                            scripts.push({'type': 'inline', 'script': script.text()});
+                        }
+                    });
+
+                    console.log('received ' + scripts.length + ' scripts');
+
+                    const executeScript = function() {
+                        if (scripts.length === 0) {
+                            return;
+                        }
+
+                        let script = scripts.shift();
+
+                        if (script.type === 'inline') {
+                            console.log('executing inline script');
+                            evalScript(script['script']);
+                            setTimeout(executeScript, 10);
+                        }
+
+                        if (script.type === 'remote') {
+                            console.log('loading remote script', script['url']);
+                            $.ajax({
+                                url: script['url'],
+                                dataType: 'text',
+                                success: function(data) {
+                                    evalScript(data);
+                                    executeScript();
+                                }
+                            })
+                        }
+                    }
+
+                    executeScript();
+                }
+
+                const onMessage = function onMessage(message) {
+                    console.log(message.data);
+                    let data = message.data;
+
+                    if (data.type === 'log') {
+                        $('#logs').append("<div>" + data.message + "</div>");
+                        return;
+                    }
+
+                    if (data.type === 'response') {
+                        $('#logs').append("<div>done, got response</div>");
+                        document.getElementById('response').innerHTML = data.message;
+                        setTimeout(executeScripts, 10);
+
+                        return;
+                    }
+
+                    console.log('UNKNOWN MESSAGE TYPE');
+                };
+
+                var subscription = client.subscribe({{ channel | json_encode | raw }}, onMessage);
+                subscription.history().then(function (message) {
+                    console.log('history messages received', message);
+                    $.each(message.data.reverse(), function (index, value) {
+                        onMessage(value);
+                    });
+                }, function (err) {
+                    console.log('history call failed', err);
+                });
+            });
+            client.connect();
+
+        });
+
+    </script>
+
+    <div id="response"></div>
+    <div id="logs">
+        <div>loading...</div>
+    </div>
+
+    <div id="response-written"></div>
+
+{% endblock %}

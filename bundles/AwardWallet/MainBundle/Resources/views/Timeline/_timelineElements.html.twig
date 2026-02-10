@@ -1,0 +1,1109 @@
+{% block user_title %}
+    <div class="title-note">
+        <h3>
+            <span data-ng-bind-html="fullName"></span> <span class="blue" style="font-size: 18px" data-ng-show="forwardingEmail">(<b>[[forwardingEmail]]</b>)</span>
+        </h3>
+    </div>
+{% endblock %}
+
+{% block forwarding_email %}
+    <div class="trip-travel-timeline" data-ng-if="forwardingEmail">
+        <div class="col-title">{{ 'title_travel_timeline'|trans|desc('Travel timeline') }}</div>
+        <div class="col-buttons">
+            <ul class="actions">
+                <li>
+                    {% if linkedBoxes > 0 %}
+                        <a class="btn" href="{{ path('aw_usermailbox_view') }}">
+                            <div class="btn-icon">
+                                <span class="btn-count blue">{{ linkedBoxes }}</span>
+                            </div>
+                            <div class="btn-text">
+                                <span class="btn-text-top">{{ 'you_have_linked_mailboxes'|trans({'%count%': linkedBoxes, '%space%': '</span><br /><span class="btn-text-bottom">'})|desc('You have already%space%Linked mailbox|You have already%space%Linked mailboxes')|raw }}</span>
+                            </div>
+                            <div class="btn-icon-additional">
+                                <span class="btn-plus">+</span>
+                            </div>
+                        </a>
+                    {% else %}
+                        <a class="btn" href="{{ path('aw_usermailbox_view') }}">
+                            <div class="btn-icon">
+                                <span class="btn-count grey">{{ linkedBoxes }}</span>
+                            </div>
+                            <div class="btn-text">
+                                <span class="btn-text-bottom">{{ 'timeline_button_link'|trans|desc('Link your mailbox') }}</span>
+                            </div>
+                            <div class="btn-icon-additional">
+                                <span class="btn-plus">+</span>
+                            </div>
+                        </a>
+                    {% endif %}
+                </li>
+                <li>
+                    {% if not tripitHasAccessToken %}
+                        <a class="btn" href="{{ path('aw_timeline_tripit_authorize') }}">
+                            <div class="btn-icon">
+                                <span class="btn-tripit"></span>
+                            </div>
+                            <div class="btn-text">
+                                <span class="btn-text-top">{{ 'tripit_import_travel'|trans({'%space%': '</span><br /><span class="btn-text-bottom">'})|desc('Import travel from your%space%TripIt Account')|raw }}</span>
+                            </div>
+                        </a>
+                    {% else %}
+                        <a class="btn" href="{{ path('aw_profile_overview', {'_fragment': 'websiteSettings'}) }}">
+                            <div class="btn-icon">
+                                <span class="btn-tripit linked"></span>
+                            </div>
+                            <div class="btn-text">
+                                <span class="btn-text-bottom">{{ 'tripit_account_linked'|trans|desc('TripIt Account Linked') }}</span>
+                            </div>
+                        </a>
+                    {% endif %}
+                </li>
+            </ul>
+        </div>
+        <div class="col-forwarding">
+            {{ 'setup_filter_or_forward_reservation'|trans({
+                '%link_on%': '<a href="' ~ path('aw_gmail_forwarding') ~ '" class="blue-link">',
+                '%link_off%': '</a>'
+            }, 'trips')|desc('Set up a %link_on%Gmail filter%link_off% or forward reservations to:')|raw }}<br />
+            <span class="user-email-highlight">[[forwardingEmail]]</span>
+        </div>
+    </div>
+{% endblock %}
+
+{% block past_travel %}
+    <a data-ui-sref="timeline({before: segments[0].startDate})" class="past-travel" data-ng-if="(showPast || (segments|filter:{visible:false}).length > 0) && ('timeline'|isState)">
+        <i class="icon-double-arrow-up-dark"></i>
+        <span data-ng-if="!pastSpinner">{{ 'timeline.past.travel'|trans|desc('Past travel') }}</span>
+    </a>
+
+    <a href="" class="past-travel" data-ng-if="pastSpinner">
+        <div class="loader"></div>
+    </a>
+{% endblock %}
+
+{% block show_deleted %}
+    <a data-ui-sref="{showDeleted: showDeleted == 0 ? 1 : 0}" class="deleted f-right" data-ng-if="('timeline'|isState) && !pastSpinner">
+        <span data-ng-if="showDeleted == 0">{{ 'show.deleted.segments'|trans|desc('Show Deleted Segments') }}</span>
+        <span data-ng-if="showDeleted == 1">{{ 'hide.deleted.segments'|trans|desc('Hide Deleted Segments') }}</span>
+    </a>
+{% endblock %}
+
+{% block add_trip %}
+    <div data-ng-if="segments && canAdd && !(('shared'|isState) || ('shared-plan'|isState))">
+        <div class="add-more-trips-text" data-ng-show="mailboxes[agentId || 'my'] > 0">
+            <a href="{{ path('aw_trips_add') ~ '?agentId='}}[[agentId]]"
+               class="add-more-trips">
+                <i class="icon-double-arrow-down-dark"></i>
+                <i class="icon-add-dark"></i>
+                <span>{{ 'trips.segment.add-more-1'|trans|desc('Click to add plans') }}</span>
+            </a>
+            <span data-ng-show="forwardingEmail">
+                {{ 'scanner.or_link_or_forward'|trans({
+                    '<link>': '<a href="' ~ path('aw_usermailbox_view') ~ '" class="blue-link">',
+                    '</link>': "</a>",
+                    '<email>': '<span class="user-email">[[forwardingEmail]]</span>'
+                })|desc('or <link>link your mailbox</link> and we will import all of your travel reservations automatically (alternatively you can just forward your reservations to <email> to get them added to your travel timeline)')|raw }}
+            </span>
+        </div>
+        <div class="add-more-trips-text" data-ng-show="mailboxes[agentId || 'my'] == 0">
+            <i class="icon-double-arrow-down-dark"></i>
+            <span data-ng-show="!haveFutureSegments">{{ 'please_link_mailbox.no_future_segments'|trans|desc('Please link your mailbox to start using the trip management part of AwardWallet!') }}</span>
+            <span data-ng-show="haveFutureSegments">{{ 'please_link_mailbox.has_future_segments'|trans|desc('For the best experience please link your mailbox now and your travel plans will always be up-to-date') }}:</span>
+        </div>
+    </div>
+{% endblock %}
+
+{% block trip_list %}
+    <div class="trip-list" data-ng-hide="res.length == 0">
+        <div data-ng-class="{
+                    'trip-blk': (segment.type == 'date'),
+                    'disable': segment.getState(),
+                    'no-hand': !segment.details && !(segment.type == 'planEnd'),
+                    'deleted-segment': segment.deleted,
+                    'new-trip': (segment.type == 'planStart'),
+                    'blue-blk end': (segment.type == 'planEnd'),
+                    'undgraggable': !(segment.type == 'planStart' || segment.type == 'planEnd'),
+                    'undroppable': segment.undroppable
+                    }"
+             data-ng-repeat="segment in segments|filter:{visible:true} as res"
+             data-on-finish-render="timelineFinishRender"
+             data-ng-mousedown="methods.tossingFill(segment, res)"
+             data-ng-mouseup="methods.tossingDrop(segment, res, $event)"
+             data-wrapper>
+            {{ block('segment_date') }}
+            {{ block('segment_deleted') }}
+            {{ block('segment_create_plan') }}
+            {{ block('segment_plan_start') }}
+            {{ block('segment_plan_end') }}
+            {{ block('segment_trip') }}
+        </div>
+    </div>
+    {{ block('trip_list_empty') }}
+{% endblock %}
+
+{% block trip_list_empty %}
+    <div data-ng-if="res.length == 0" class="no-result">
+        <div class="no-result-item">
+            <i class="icon-warning-small"></i>
+
+            <p>{{ 'trips.no-trips.text'|trans|desc("Your travel plans are empty.") }}</p>
+        </div>
+    </div>
+{% endblock %}
+
+{% block segment_date %}
+    <div class="date-blk" data-ng-if="segment.type == 'date'" data-id="[[segment.id]]">
+        <div data-ng-if="segment.getDaysNumberFromToday() <= 30">
+            [[ segment.getRelativeDate()|capitalize ]]
+            <span class="date">[[segment.localDate|capitalize]]</span>
+        </div>
+        <div data-ng-if="segment.getDaysNumberFromToday() > 30">
+            [[ segment.localDate|capitalize ]]
+            <span class="date">[[segment.getRelativeDate()|capitalize]]</span>
+        </div>
+    </div>
+{% endblock %}
+
+{% block segment_deleted %}
+    <div class="deleted-message" data-ng-if="segment.deleted">
+        <span>{{ 'segment.deleted'|trans|desc('Deleted') }}</span>
+    </div>
+{% endblock %}
+
+{% block segment_create_plan %}
+    <a href="" class="create-trip date" data-ng-if="segment.type == 'date' && segment.createPlan && stateParams.showDeleted == 0" data-ng-click="methods.createPlan(segment)">
+        <span data-ng-if="!segment.createPlanState">
+            <i class="icon-add-b"></i><span>{{ 'create.plan'|trans|desc('Create Travel Plan') }}</span>
+        </span>
+        <div data-ng-if="segment.createPlanState" class="loader"></div>
+    </a>
+    <div class="create-trip-container" data-ng-if="segment.type !== 'date' && segment.createPlan && stateParams.showDeleted == 0">
+        <a href="" class="create-trip" data-ng-click="methods.createPlan(segment)">
+            <span data-ng-if="!segment.createPlanState">
+                <i class="icon-add-b"></i><span>{{ 'create.plan'|trans|desc('Create Travel Plan') }}</span>
+            </span>
+            <div data-ng-if="segment.createPlanState" class="loader"></div>
+        </a>
+    </div>
+{% endblock %}
+
+{% block segment_plan_start %}
+    <div data-trip-start data-ng-if="segment.type == 'planStart'" data-segment="segment" data-plans="plans" data-id="[[segment.id]]">
+        <div class="day">[[segment.localDate|capitalize]]</div>
+        <div data-ng-if="(('timeline'|isState) && !embeddedData && segment.canEdit)" class="blue-blk begin draggable" data-tip="inViewportOnly" title="{{ "tooltip.plan.start"|trans|desc("Drag me, to change when trip begins") }}">
+
+            <form data-ng-if="segment.changeNameState" data-ng-submit="methods.changeName(segment, $event)" name="renamePlan">
+                <input type="text" data-ng-model="segment.name" data-ng-required="true" data-ng-maxlength="250" maxlength="250" name="name" data-ng-keyup="methods.escape($event, segment)" data-auto-focus>
+                <button class="btn-blue small" data-ng-disabled="renamePlan.name.$error.required || enamePlan.name.$error.maxlength" data-ng-class="{loader: segment.renamingState}">{{ 'update.button'|trans|desc('Update') }}</button>
+            </form>
+
+            <div class="title" data-ng-if="!segment.changeNameState">
+                [[segment.name]]<a href="" data-tip="inViewportOnly" title="{{ "tooltip.plan.rename"|trans|desc("Click to change the name") }}" class="edit" data-ng-click="segment.changeNameState = true"><i class="icon-edit-w"></i></a>
+                <span class="duration" data-ng-if="segment.duration" data-ng-bind-html="segment.planDuration()"></span>
+            </div>
+            <div class="last-updated" data-ng-show="segment.lastUpdated">
+                <i class="icon-update-b"></i>
+                <span>{{ 'award.account.list.last-updated.text'|trans|desc('Last updated') }}: [[segment.lastUpdated]]</span>
+            </div>
+            <a href="" class="remove"><i class="icon-close-white" data-tip="inViewportOnly" title="{{ 'plans.delete.grouping'|trans|desc('Delete travel plan grouping') }}" data-ng-click="methods.deletePlan($event, segment)"></i></a>
+        </div>
+        <div data-ng-if="!(('timeline'|isState) && !embeddedData && segment.canEdit)" class="blue-blk begin" data-id="[[segment.id]]">
+
+            <div class="title">[[segment.name]]</div>
+            <div class="last-updated">
+                <i class="icon-update-b"></i>
+                <span>{{ 'award.account.list.last-updated.text'|trans|desc('Last updated') }}: [[segment.lastUpdated]]</span>
+            </div>
+        </div>
+        <div class="plan-tools">
+            <div data-notes data-segment="segment" data-opened="false" ng-if="segment.notes"></div>
+            <ul class="buttons" data-ng-if="('timeline'|isState) && !embeddedData">
+                <li data-ng-if="segment.canEdit"><a data-ng-click="segment.printDialog = true" class="btn-silver small"><i class="icon-print"></i><span>{{ "print"|trans|desc("Print") }}</span></a></li>
+                <li data-ng-if="segment.canEdit"><a class="btn-silver small" data-ng-click="segment.shareTravelplanDialog = true"><i class="icon-share"></i><span>{{ "share"|trans|desc("Share") }}</span></a></li>
+            </ul>
+        </div>
+        <div class="map">
+            <img
+                data-image-lazy-src="[[segment.getMapUrl()]]"
+                src="/assets/awardwalletnewdesign/img/map@2x.png"
+                data-on-error="/assets/awardwalletnewdesign/img/map@2x.png"
+                alt="map"
+            >
+        </div>
+        {{ block('popup_share_travelplan') }}
+        {{ block('popup_print') }}
+    </div>
+{% endblock %}
+
+{% block segment_plan_end %}
+    <div data-trip-end data-ng-if="segment.type == 'planEnd'" data-segment="segment" data-plans="plans" data-segments="res" data-id="[[segment.id]]">
+        <div class="title draggable" data-ng-if="(('timeline'|isState) && !embeddedData && segment.canEdit)" data-tip="inViewportOnly" title="{{ 'tooltip.plan.end'|trans|desc('Drag me, to change when trip ends') }}">[[segment.name]]</div>
+        <div class="title" data-ng-if="!(('timeline'|isState) && !embeddedData && segment.canEdit)">[[segment.name]]</div>
+        <div class="day">[[segment.localDate|capitalize]]</div>
+    </div>
+{% endblock %}
+
+{% block segment_trip %}
+    <div class="trip-row trip--[[segment.icon.split(' ').shift()]]" data-ng-if="segment.type == 'segment'"
+         data-ng-class="{error: segment.changed, active: segment.opened, hover: activeSegmentNumber === segment.group }"
+         data-ng-mouseenter="methods.hoverInSegment(segment)"
+         data-ng-mouseleave="methods.hoverOutSegment()">
+        <div class="time">
+            <div class="time-zone">[[::segment.startTimezone]]</div>
+            <div class="time-item">
+                <p class="old-time" data-ng-if="segment.prevTime && segment.changed">[[::segment.prevTime]]</p>
+
+                <p data-ng-bind-html="segment.getLocalTime()"></p>
+            </div>
+        </div>
+        <i class="icon-monitored" data-ng-if="segment.details.monitoredStatus && !segment.getState()" data-tip="inViewportOnly" title="[[ segment.details.monitoredStatus ]]"></i>
+        {{ block('segment_trip_title') }}
+        {{ block('segment_trip_content') }}
+    </div>
+{% endblock %}
+
+{% block segment_trip_title %}
+    <div class="trip-title" data-ng-if="segment.icon === 'boat'" data-trip-expand="segment" data-id="[[::segment.id]]" data-ng-class="segment.segmentClasses">
+        <div class="container">
+            <div class="item">
+                <div class="arrow"><i class="icon-silver-arrow-down"></i></div>
+                <div class="prev">
+                    <div class="prev-item">
+                        <i class="icon-[[::segment.icon]]"></i>
+                    </div>
+                </div>
+                <div class="title">
+                    <h3>
+                        [[segment.dep]]
+                        <i class="icon-arrow-right-b"></i>
+                        [[segment.arr]]
+                        ([[segment.title]])
+                    </h3>
+                    {{ block('header_ai_icon') }}
+                </div>
+                <div class="way" data-ng-if="segment.map.points.length > 1">
+                    <div data-ng-repeat="point in segment.map.points track by $index">
+                        <div class="place">[[point]]</div>
+                        <div class="arrival-time-row">
+                            <div class="arrival-time" data-ng-if="$last && segment.map.arrTime" data-ng-bind-html="segment.getArrDate()"></div>
+                        </div>
+                        <i class="icon-arrow-right-b" data-ng-if="!$last"></i>
+                        <div data-ng-if="$last && segment.map.arrTime" class="time-zone">[[segment.endTimezone]]</div>
+                    </div>
+                </div>
+                <div class="number">
+                    <div data-ng-if="segment.confNo">
+                        <span ng-if="segment.confirmationNumberAirline">[[segment.confirmationNumberAirline]]</span>
+                        {{ 'timeline.section.conf'|trans }}
+                        [[::segment.confNo]]
+                    </div>
+                </div>
+                <div class="map" data-ng-if="segment.map && !('itineraries'|isState)">
+                    <img
+                        style="width: 44px; height: 44px"
+                        data-image-lazy-src="[[segment.getImgSrc('88x88')]]"
+                        src="/assets/awardwalletnewdesign/img/map-small@2x.png"
+                        data-on-error="/assets/awardwalletnewdesign/img/map-small@2x.png"
+                        alt="map"
+                    >
+                </div>
+                <div class="button-set" data-ng-if="('itineraries'|isState) && segment.details">
+                    <a
+                        target="_self"
+                        data-ng-href="[[methods.segmentLink(segment.id)]]"
+                        class="btn btn-blue">{{ 'trips.segment.show_on_timeline.btn'|trans|desc('Show on the timeline') }}</a>
+                </div>
+            </div>
+        </div>
+        <div class="ticked" ng-if="segment.ticketed">
+            <div class="caption">{{ 'timeline.section.ticketed.as'|trans }}:</div>
+            <div>[[segment.ticketed.airline.name]] ([[segment.ticketed.airline.code]]) [[segment.ticketed.flightNumber]]</div>
+            <div ng-if="segment.ticketed.confirmationNumber && segment.ticketed.confirmationNumber != segment.confNo">Conf # [[segment.ticketed.confirmationNumber]]</div>
+        </div>
+    </div>
+    <div class="trip-title" data-ng-if="segment.icon !== 'boat'" data-trip-expand="segment" data-id="[[::segment.id]]" data-ng-class="segment.segmentClasses">
+        <div class="container">
+            <div class="item">
+                <div class="arrow"><i class="icon-silver-arrow-down"></i></div>
+                <div class="prev">
+                    <div class="prev-item">
+                        <i class="icon-[[::segment.icon]]"></i>
+                    </div>
+                </div>
+                <div class="title" data-ng-if="!segment.isTransferFormat()" data-ng-class="{
+                        'lounge-button-container': segment.isLayoverHasLounges()
+                    }">
+                    <h3 data-ng-if="!segment.dep && !segment.arr" data-ng-bind-html="segment.getTitle()"></h3>
+                    <h3 class="route-container" data-ng-if="segment.dep && segment.arr">
+                        <span class="route-station">[[segment.dep]]</span>
+                        <i class="route-arrow icon-arrow-right-b"></i>
+                        <span class="route-station">[[segment.arr]]</span>
+                    </h3>
+                    <div class="arrival-time-container" data-ng-if="segment.map.arrTime">
+                        <div class="arrival-time-row">
+                            <div class="arrival-time" data-ng-bind-html="segment.getArrDate()"></div>
+                        </div>
+                        <div class="time-zone">[[segment.endTimezone]]</div>
+                    </div>
+                    {{ block('header_ai_icon') }}
+                    <h3 data-ng-if="segment.duration" class="duration">([[segment.duration]])</h3>
+                    <div class="layover-lounge-badge" ng-if="segment.isLayoverHasLounges()" ng-click="segment.showPopupNativeApps()">
+                        <i class="info-circle">i</i>
+                        <div><b>{{ 'available-lounges'|trans|desc('Available lounges') }}</b>{{ 'by-awardwallet'|trans|desc('by AwardWallet') }}</div>
+                        <i class="icon-arrow-right-dark"></i>
+                    </div>
+                </div>
+                <div class="way" data-ng-if="segment.map.points.length > 1 || segment.map.stationCodes.length > 1">
+                    <div data-ng-if="segment.isAirSegment()" data-ng-repeat="point in segment.map.points track by $index">
+                        <div class="place">[[point]]</div>
+                        <div class="arrival-time-row">
+                            <div class="arrival-time" data-ng-if="$last && segment.map.arrTime" data-ng-bind-html="segment.getArrDate()"></div>
+                        </div>
+                        <i class="icon-arrow-right-b" data-ng-if="!$last"></i>
+                        <div data-ng-if="$last && segment.map.arrTime" class="time-zone">[[segment.endTimezone]]</div>
+                    </div>
+                    <div data-ng-if="!segment.isAirSegment()" data-ng-repeat="stationCode in segment.map.stationCodes track by $index">
+                        <div class="place">[[stationCode]]</div>
+                        <div class="arrival-time-row">
+                            <div class="arrival-time" data-ng-if="$last && segment.map.arrTime" data-ng-bind-html="segment.getArrDate()"></div>
+                        </div>
+                        <i class="icon-arrow-right-b" data-ng-if="!$last"></i>
+                        <div data-ng-if="$last && segment.map.arrTime" class="time-zone">[[segment.endTimezone]]</div>
+                    </div>
+                </div>
+                <div class="title air" data-ng-if="segment.isTransferFormat()">
+                    <h3 data-ng-bind-html="segment.getTitle()"></h3>
+                    {{ block('header_ai_icon') }}
+                    <h3 data-ng-if="segment.duration" class="duration">([[segment.duration]])</h3>
+                </div>
+                <div class="number">
+                    <div data-ng-if="segment.confNo">
+                        <span ng-if="segment.confirmationNumberAirline">[[segment.confirmationNumberAirline]]</span>
+                        {{ 'timeline.section.conf'|trans }}
+                        [[::segment.confNo]]
+                    </div>
+                </div>
+                <div class="map" data-ng-if="segment.map && !('itineraries'|isState)">
+                    <img
+                        style="width: 44px; height: 44px"
+                        data-image-lazy-src="[[segment.getImgSrc('88x88')]]"
+                        src="/assets/awardwalletnewdesign/img/map-small@2x.png"
+                        data-on-error="/assets/awardwalletnewdesign/img/map-small@2x.png"
+                        alt="map"
+                    >
+                </div>
+                <div class="button-set" data-ng-if="('itineraries'|isState) && segment.details">
+                    <a
+                        target="_self"
+                        data-ng-href="[[methods.segmentLink(segment.id)]]"
+                        class="btn btn-blue">{{ 'trips.segment.show_on_timeline.btn'|trans|desc('Show on the timeline') }}</a>
+                </div>
+            </div>
+        </div>
+        <div class="ticked" ng-if="segment.ticketed">
+            <div class="caption">{{ 'timeline.section.ticketed.as'|trans }}:</div>
+            <div>[[segment.ticketed.airline.name]] ([[segment.ticketed.airline.code]]) [[segment.ticketed.flightNumber]]</div>
+            <div ng-if="segment.ticketed.confirmationNumber && segment.ticketed.confirmationNumber != segment.confNo">Conf # [[segment.ticketed.confirmationNumber]]</div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block segment_trip_content %}
+    <div class="trip-content" data-ng-if="segment.opened" style="display: none;">
+        <div class="item">
+            <div class="item-row" data-ng-if="segment.details">
+                <div>
+                    {{ block('segment_ai_warning') }}
+                    {{ block('segment_trip_buttons') }}
+                    {{ block('segment_trip_info') }}
+                    {{ block('segment_trip_details') }}
+                </div>
+                <div class="map" data-ng-if="segment.map">
+                    <img
+                        data-image-lazy-src="[[segment.getImgSrc('240x240')]]"
+                        src="/assets/awardwalletnewdesign/img/map@2x.png"
+                        data-on-error="/assets/awardwalletnewdesign/img/map@2x.png"
+                        alt="map"
+                    >
+                    <div class="last-sync" data-ng-if="segment.lastSync">
+                        <p>{{ 'trips.segment.last-sync'|trans|desc('Last sync:') }} <span data-tooltip="">[[segment.getDiffTimeAgo(segment.lastSync)]]</span></p>
+                    </div>
+                </div>
+                <div class="map" data-ng-if="!segment.map && segment.lastSync">
+                    <div class="last-sync" data-ng-if="segment.lastSync">
+                        <p>{{ 'trips.segment.last-sync'|trans }} <span data-tooltip="">[[segment.getDiffTimeAgo(segment.lastSync)]]</span></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {{ block('segment_booking_form') }}
+    </div>
+{% endblock %}
+
+{% block segment_booking_form %}
+    <form action="/" class="trip-form" ng-if="segment.future && segment.isAirSegment()">
+        <div class="trip-form__caption">{{ 'airbnb.ad.1'|trans|desc("Need a place to stay?") }}</div>
+        <div class="trip-form__row">
+            <div class="trip-form__col">
+                <input type="text"
+                       class="trip-form__input airport-name"
+                       placeholder="e.g. country, city, district or landmark"
+                       ng-value="segment.details.bookingLink.formFields.destination"
+                >
+            </div>
+            <div class="trip-form__col">
+                <input type="hidden" id="checkinDate_[[$index]]" ng-value="segment.details.bookingLink.formFields.checkinDate">
+                <div class="datepicker-container">
+                    <input type="text"
+                           class="trip-form__input checkin-date"
+                           placeholder="Check-in Date"
+                           autocomplete="off"
+                           spellcheck="false"
+                           id="checkinDate_[[$index]]_datepicker"
+                           data-dp-opt="{yearRange: '0:+10', minDate: new Date()}"
+                    >
+                </div>
+            </div>
+            <div class="trip-form__col">
+                <input type="hidden" id="checkoutDate_[[$index]]" ng-value="segment.details.bookingLink.formFields.checkoutDate">
+                <div class="datepicker-container">
+                    <input type="text"
+                           class="trip-form__input checkout-date"
+                           placeholder="Check-out Date"
+                           autocomplete="off"
+                           spellcheck="false"
+                           id="checkoutDate_[[$index]]_datepicker"
+                           data-dp-opt="{yearRange: '0:+10', minDate: new Date()}"
+                    >
+                </div>
+            </div>
+            <div class="trip-form__col">
+                <a class="btn-silver" ng-click="segment.redirectToBooking()" ng-disabled="!segment.details.bookingLink.formFields.selectedIata">
+                    {{ 'search'|trans }}
+                </a>
+            </div>
+        </div>
+    </form>
+{% endblock %}
+
+{% block segment_ai_warning %}
+    <div class="segment-ai-warning" data-ng-if="segment.showAIWarning">
+        {{ block('header_ai_icon') }}
+
+        {% if readonly|default(false) %}
+            <p>
+                {{ 'ai-warning-readonly'|trans({}, 'trips')|desc('This reservation was processed using AI. Please check the details below for accuracy.') }}
+            </p>
+        {% else %}
+            <p data-ng-if="segment.details.canEdit">
+                {{ 'ai-warning-with-delete'|trans({
+                    '%link_on%': '<a href="" data-ng-click="segment.deleteConfirm = true">',
+                    '%link_off%': '</a>'
+                }, 'trips')|desc('This reservation was processed using AI. Please check the details below for accuracy. If there\'s a problem, please %link_on%remove this reservation%link_off% from your timeline.')|raw }}
+            </p>
+            <p data-ng-if="!segment.details.canEdit">
+                {{ 'ai-warning-readonly'|trans({}, 'trips')|desc('This reservation was processed using AI. Please check the details below for accuracy.') }}
+            </p>
+            <a data-ng-if="segment.details.canEdit" href="" class="close" data-ng-click="methods.hideAiWarn(segment)"><i class="icon-close-silver"></i></a>
+        {% endif %}
+    </div>
+{% endblock %}
+
+{% block segment_trip_buttons %}
+    <ul class="buttons" data-ng-if="('timeline'|isState) && !embeddedData">
+        <li data-ng-if="segment.details.autoLoginLink && !segment.deleted">
+            <a target="_blank" data-ng-href="[[segment.details.autoLoginLink]]" class="btn-silver small">
+                <i class="icon-login"></i><span>{{ 'trips.segment.login.btn'|trans|desc('Login') }}</span>
+            </a>
+        </li>
+        <li data-ng-if="segment.details.canEdit && !segment.deleted && sharableAgents.length > 0">
+            <a href="" class="btn-silver small" data-ng-click="segment.moveDialog = true">
+                <i class="icon-move"></i><span>{{ 'trips.segment.move.btn'|trans|desc('Move') }}</span>
+            </a>
+        </li>
+        <li data-ng-if="segment.details.refreshLink && !segment.deleted">
+            <a href="" class="btn-silver small" data-ng-click="methods.goRefresh(segment.details.refreshLink)">
+                <i class="icon-dark-refresh"></i><span>{{ 'form.button.update'|trans|desc('Update') }}</span>
+            </a>
+        </li>
+        <li data-ng-if="segment.details.canEdit && !segment.deleted">
+            <a href="[[segment.getEditLink()]]" class="btn-silver small">
+                <i class="icon-edit"></i><span>{{ 'trips.segment.edit.btn'|trans|desc('Edit') }}</span>
+            </a>
+        </li>
+        <li data-ng-if="segment.details.canEdit && !segment.deleted">
+            <a href="" class="btn-silver small" data-ng-click="segment.deleteConfirm = true">
+                <i class="icon-delete"></i><span>{{ 'trips.segment.delete.btn'|trans|desc('Delete') }}</span>
+            </a>
+        </li>
+        <li data-ng-if="segment.details.canEdit && segment.deleted">
+            <a href="" class="btn-silver small" data-ng-click="methods.deleteOrUndelete(segment, true)" data-ng-hide="segment.deleteLoader">
+                <i class="icon-delete"></i><span>{{ 'trips.segment.undelete.btn'|trans|desc('Undelete') }}</span>
+            </a>
+            <a href="" class="btn-silver small" style="width: 91px" data-ng-if="segment.deleteLoader"><span class="loader"></span></a>
+        </li>
+        <li data-ng-if="segment.details.shareCode && !segment.deleted">
+            <a href="" class="btn-silver small" data-ng-click="segment.shareDialog = true">
+                <i class="icon-share"></i><span>{{ 'trips.segment.share.btn'|trans|desc('Share') }}</span>
+            </a>
+        </li>
+        <li data-ng-if="segment.details.canEdit && !segment.deleted && segment.changed">
+            <a href="" class="btn-silver small" data-ng-if="!segment.confirmLoader" data-ng-click="methods.confirmChanges(segment)">
+                <i class="icon-confirm-changes"></i><span>{{ 'trips.segment.confirm_change.btn'|trans|desc('Confirm Changes') }}</span>
+            </a>
+            <a href="" class="btn-silver small" style="width: 91px" data-ng-if="segment.confirmLoader"><span class="loader"></span></a>
+        </li>
+        <li data-ng-if="segment.lowPriceMonitoring && !segment.deleted">
+            <price-monitoring-button></price-monitoring-button>
+        </li>
+    </ul>
+    <ul class="buttons" data-ng-if="('itineraries'|isState) && !embeddedData">
+        <li data-ng-if="segment.details.canEdit && !segment.deleted">
+            <a href="" class="btn-silver small" data-ng-click="segment.deleteConfirm = true">
+                <i class="icon-delete"></i><span>{{ 'trips.segment.delete.btn'|trans|desc('Delete') }}</span>
+            </a>
+        </li>
+
+        <li data-ng-if="segment.details.canEdit && segment.deleted">
+            <a href="" class="btn-silver small" data-ng-click="methods.deleteOrUndelete(segment, true)" data-ng-hide="segment.deleteLoader">
+                <i class="icon-delete"></i><span>{{ 'trips.segment.undelete.btn'|trans|desc('Undelete') }}</span>
+            </a>
+            <a href="" class="btn-silver small" style="width: 91px" data-ng-if="segment.deleteLoader"><span class="loader"></span></a>
+        </li>
+    </ul>
+{% endblock %}
+
+{% block segment_trip_info %}
+    <div class="info">
+        <div class="item">
+            <div class="item-row">
+                <div data-ng-class="{'info-blk': column.type == 'info', 'arrow': column.type == 'arrow'}"
+                     data-ng-repeat="column in ::segment.details.columns">
+
+                    <div class="row"
+                         data-ng-class="{'silver': (row.type == 'datetime' || row.type == 'airport')}"
+                         data-ng-repeat="row in column.rows"
+                         data-ng-if="column.type == 'info'">
+
+                        <div class="row-item row-airport" data-ng-if="row.type == 'airport'">
+                            <div class="airport" data-ng-if="row.text.code">
+                                <div class="place">
+                                    [[::row.text.code]]
+                                </div>
+                            </div>
+                            <span>[[::row.text.place]]</span>
+                        </div>
+
+                        <div class="row-item row-date" data-ng-if="row.type == 'datetime' && segment.details.columns.length == 3">
+                            <div>
+                                <div class="time-row" data-ng-if="segment.getTimeDiffFormated(row)">
+                                    <span class="big">[[segment.getTimeDiffFormated(row)]]</span>
+                                    <span class="hound">@</span>
+                                    <span class="date" data-ng-if="!segment.getTimeDiffFormated(row)">[[::row.date]]</span>
+                                </div>
+
+                                <div class="date-row">
+                                    <span class="silver strike" data-ng-if="row.prevTime && segment.changed">[[::row.prevTime]]</span>
+                                    <span class="red">[[::row.time]]</span>
+                                    <span class="time-zone">[[::row.timezone]]</span>
+                                </div>
+
+                                <div class="date-row" data-ng-if="!segment.getTimeDiffFormated(row)">
+                                    <span class="date strike" data-ng-if="row.prevDate && segment.changed">[[::row.prevDate]]</span>
+                                    <span class="date">[[::row.date]]</span>
+                                </div>
+
+                            </div>
+                        </div>
+
+                        <div class="row-item row-date" data-ng-if="row.type == 'datetime' && segment.details.columns.length != 3">
+                            <span class="silver strike" data-ng-if="row.prevTime && segment.changed">[[row.prevTime]]</span>
+                            <span class="date" data-ng-if="row.prevDate && segment.changed">[[row.prevDate]]</span>
+                            <i class="icon-arrow-right-dark" data-ng-if="row.prevTime && segment.changed"></i>
+                            <span class="red">[[row.time]]</span>
+                            <span class="date">[[row.date]]</span>
+                        </div>
+
+                        <p data-ng-if="row.type == 'text'">[[::row.text]]</p>
+
+                        <p data-ng-if="row.type == 'pairs'" data-ng-repeat="(name, pair) in ::row.pairs">
+                            [[name]]: <span class="silver">[[pair]]</span>
+                        </p>
+
+                        <div class="row-item" data-ng-if="row.type == 'pair'">
+                            <div class="prev-icon" data-ng-if="row.icon">
+                                <i data-ng-if="row.prevValue && segment.changed"
+                                   class="icon-warning-small"></i>
+                                <i class="icon-[[row.icon]]"></i>
+                            </div>
+                            <p>
+                                [[::row.name]]:
+                                <span data-ng-if="row.prevValue && segment.changed"
+                                      class="silver strike">[[::row.prevValue]]</span>
+                                <i data-ng-if="row.prevValue && segment.changed"
+                                   class="icon-arrow-right-dark"></i>
+                                <span class="silver">[[::row.value]]</span>
+                            </p>
+                        </div>
+
+                        <div class="row-item"
+                             data-ng-if="row.type == 'checkin' || row.type == 'pickup' || row.type == 'parkingStart'">
+                            <span data-ng-if="row.type == 'checkin'">{{ 'itineraries.reservation.check-in-date'|trans({}, 'trips') }}</span>
+                            <span data-ng-if="row.type == 'pickup'">{{ 'timeline.section.pickup'|trans }}</span>
+                            <span data-ng-if="row.type == 'parkingStart'">{{ 'timeline.section.start'|trans|desc("Start") }}</span>
+                            <span class="big">[[segment.getBetween(row)]]</span>
+
+                            <div data-ng-bind-html="segment.getBetweenText(row)"></div>
+                        </div>
+
+                        <div class="row-item row-date" data-ng-if="row.type == 'pickup.taxi'">
+                            {{ 'timeline.section.pickup'|trans }} &nbsp;&nbsp; [[segment.getBetween(row)]]<span class="hound">@</span>
+                            <div class="date-row"><span class="red">[[row.time]]</span></div>
+                        </div>
+                        <div class="row-item row-date" data-ng-if="row.type == 'dropoff'">
+                            {{ 'timeline.section.drop'|trans }} &nbsp;&nbsp; [[row.date]]<span class="hound">@</span>
+                            <div class="date-row"><span class="red">[[row.time]]</span></div>
+                        </div>
+
+                        <div class="row-item row-date" data-ng-if="row.type == 'parkingEnd'">
+                            {{ 'timeline.section.end'|trans|desc("End") }} &nbsp;&nbsp; [[row.date]]<span class="hound">@</span>
+                            <div class="date-row"><span class="red">[[row.time]]</span></div>
+                        </div>
+
+                        {#<p data-ng-if="row.type == 'pickup'" data-ng-bind-html="segment.getPickUpText(row)"></p>#}
+                        {#<p data-ng-if="row.type == 'checkin'" data-ng-bind-html="segment.getCheckInText(row)"></p>#}
+                    </div>
+                    <i class="icon-arrow-right-b" data-ng-if="column.type == 'arrow'"></i>
+                </div>
+            </div>
+        </div>
+
+        {{ block('short_notes') }}
+        {{ block('popup_move') }}
+        {{ block('popup_share_trip') }}
+        {{ block('popup_delete') }}
+    </div>
+{% endblock %}
+
+{% block segment_trip_details %}
+    <div class="details">
+        <div class="details-top">
+            <div ng-if="segment.details.phones">
+                <div class="phone" ng-repeat="item in segment.details.phones">
+                    <i class="icon-phone"></i>
+                    <div class="phone__details" data-ng-if="item.provider">
+                        <span>[[item.provider]]</span>
+                        <span class="phone__silver" ng-if="item.section">[[item.section]]</span>
+                    </div>
+                    <div class="phone__number">
+                        <ul>
+                            <li>[[item.phone]] <span class="phone__silver" data-ng-if="item.level">([[segment.getEliteLevel(item)]])</span></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div data-ng-if="segment.isShowMoreLinks()">
+                <a href="" data-ng-show="!segment.isShownInfo"
+                   data-ng-click="segment.isShownInfo = true"
+                   class="f-right read-more">
+                    {{ 'trips.segment.more.btn'|trans|desc('More Info') }}
+                    <i class="icon-double-arrow-right-silver"></i>
+                </a>
+                <a href="" data-ng-show="segment.isShownInfo"
+                   data-ng-click="segment.isShownInfo = false"
+                   class="f-right less-info">
+                    <i class="icon-double-arrow-left-silver"></i>
+                    {{ 'trips.segment.less.btn'|trans|desc('Less details') }}
+                </a>
+            </div>
+        </div>
+
+        <div class="details-info"
+             data-ng-class="{'collapsed': !segment.isShownInfo}"
+             style="margin-top: 0">
+            <div>
+
+                <div class="ui-dialog-content hidden">
+                    <div class="alternative-flight alternative-flight-tpl">
+                        <div class="alternative-flight_block" ng-repeat="flight in segment.alternativeFlights.flights">
+                            <div class="alternative-flight_block__check">
+                                <input name="customPick" type="radio" ng-attr-id="[['customPick' + $index]]" ng-attr-value="[['cheapest' == flight.type ? {{ constant('AwardWallet\\MainBundle\\Entity\\MileValue::CUSTOM_PICK_CHEAPEST') }} : {{ constant('AwardWallet\\MainBundle\\Entity\\MileValue::CUSTOM_PICK_YOUR_AWARD') }} ]]"
+                                       ng-checked="[[ ('cheapest' == flight.type && segment.alternativeFlights.customPick == {{ constant('AwardWallet\\MainBundle\\Entity\\MileValue::CUSTOM_PICK_CHEAPEST') }}) || ('exactMatch' == flight.type && segment.alternativeFlights.customPick == {{ constant('AwardWallet\\MainBundle\\Entity\\MileValue::CUSTOM_PICK_YOUR_AWARD') }}) ]]"
+                                        required>
+                                <label ng-attr-for="[['customPick' + $index]]" class="label"></label>
+                            </div>
+                            <div class="alternative-flight_block__details">
+                                <div class="alternative-flight_block__row first">
+                                    <span class="alternative-flight_block__name" ng-bind="flight.airline"></span>
+                                    <div class="alternative-flight_block__status green" ng-if="'cheapest' == flight.type">{{ 'cheapest'|trans({}, 'trips')|desc('Cheapest') }}</div>
+                                    <div class="alternative-flight_block__status gray" ng-if="'exactMatch' == flight.type">{{ 'your-award-flight'|trans({}, 'trips')|desc('Your Award Flight') }}</div>
+                                </div>
+                                <div class="alternative-flight_block__row" ng-repeat="route in flight.routes">
+                                    <div><span class="alternative-flight_block__row_date" ng-bind="route.date"></span><span ng-bind="route.day"></span></div>
+                                    <div>
+                                        <div class="alternative-flight_block__trip">
+                                            <div class="alternative-flight_block__place">
+                                                <span ng-bind="route.depCode"></span><b ng-bind="route.depTime"></b>
+                                            </div>
+                                            <i class="icon-arrow-right-b"></i>
+                                            <div class="alternative-flight_block__place">
+                                                <span ng-bind="route.arrCode"></span><b ng-bind="route.arrTime"></b>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <div ng-repeat="lo in route.timing.lo"><span ng-bind="lo.duration"></span> {{ 'layover'|trans({}, 'trips') }} <strong ng-bind="lo.code"></strong></div>
+                                        <div class="alternative-flight_block__row_silver">{{ 'itineraries.trip.duration'|trans({}, 'trips') }}: <span ng-bind="route.timing.totalDuration"></span></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="alternative-flight_block__cost">
+                                <div class="alternative-flight_block__price" ng-bind="flight.price"></div>
+                                <div class="alternative-flight_block__cost_row" ng-if="'' != flight.operating"><strong ng-bind="flight.operating"></strong></div>
+                                <div class="alternative-flight_block__cost_row" ng-if="'' != flight.service"><span ng-bind="flight.service"></span></div>
+                                <div class="alternative-flight_block__cost_row" ng-if="segment.alternativeFlights.travelersCount"><span ng-bind-html="segment.getTravelersCount(segment.alternativeFlights.travelersCount)"></span></div>
+                            </div>
+                        </div>
+                        <div class="alternative-flight_block">
+                            <div class="alternative-flight_block__check">
+                                <input id="customPickInput" name="customPick" type="radio" value="{{ constant('AwardWallet\\MainBundle\\Entity\\MileValue::CUSTOM_PICK_USER_INPUT') }}" ng-checked="{{ constant('AwardWallet\\MainBundle\\Entity\\MileValue::CUSTOM_PICK_USER_INPUT') }} == segment.alternativeFlights.customPick">
+                                <label for="customPickInput" class="label"></label>
+                            </div>
+                            <div class="alternative-flight_block__details">
+                                <div class="alternative-flight_block__add">
+                                    <span>{{ 'enter-custom-value'|trans|desc('Enter a custom value') }}:</span>
+                                    <div class="curr-block">
+                                        <input id="customValue" type="text" name="customValue" ng-value="{{ constant('AwardWallet\\MainBundle\\Entity\\MileValue::CUSTOM_PICK_USER_INPUT') }} == segment.alternativeFlights.customPick ? segment.alternativeFlights.customAlternativeCost : ''">
+                                        <div class="curr-block__val">$</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="alternative-flight_block__btn">
+                                <a href="#" class="btn-blue js-btn-save" ng-click="segment.updateAlternativeFlight($event)">{{ 'form.button.save'|trans({}, 'messages') }}</a>
+                            </div>
+                        </div>
+                        <div class="customset-errors"></div>
+                    </div>
+                </div>
+
+                <div class="details-info__row">
+                    <div class="details-info__row-item">
+                        <div class="details-extproperties">
+                            <div class="details-extproperties-row"
+                                 data-ng-repeat="(name, value) in ::segment.details.extProperties"
+                                 data-ng-bind-html="segment.printPropertiesValue(name, value)">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="details-info__row-item" ng-if="segment.details.pricing">
+                        <table class="main-table">
+                            <tr data-ng-repeat="(name, cost) in ::segment.details.pricing" ng-class="{'total' : 'total' === name.toLowerCase()}">
+                                <td class="ellipsis-text" title="[[name]]" data-role="tooltip" data-tip>[[name]]</td><td>[[cost]]</td>
+                            </tr>
+                            <tr ng-if="segment.alternativeFlights">
+                                <td><a href="#" ng-click="segment.alternativeFlight($event)" class="dark-link">{{ 'savings'|trans }} <i class="icon-question-small"></i></a></td>
+                                <td>
+                                    <div class="total-amout">
+                                        <span ng-if="{{ constant('AwardWallet\\MainBundle\\Entity\\MileValue::CUSTOM_PICK_CHEAPEST') }} == segment.alternativeFlights.customPick" class="total-amout__price">$<span ng-bind="segment.formatCost(segment.alternativeFlights.alternativeCost)"></span></span>
+                                        <span ng-if="{{ constant('AwardWallet\\MainBundle\\Entity\\MileValue::CUSTOM_PICK_CHEAPEST') }} != segment.alternativeFlights.customPick" class="total-amout__price">$<span ng-bind="segment.formatCost(segment.alternativeFlights.customAlternativeCost)"></span></span>
+                                        <span>
+                                            <strong ng-if="{{ constant('AwardWallet\\MainBundle\\Entity\\MileValue::CUSTOM_PICK_CHEAPEST') }} == segment.alternativeFlights.customPick" style="margin-right: 5px"><span ng-bind="segment.alternativeFlights.mileValue"></span> ¢</strong>
+                                            <strong ng-if="{{ constant('AwardWallet\\MainBundle\\Entity\\MileValue::CUSTOM_PICK_CHEAPEST') }} != segment.alternativeFlights.customPick" style="margin-right: 5px"><span ng-bind="segment.alternativeFlights.customMileValue"></span> ¢</strong>
+                                            {{ 'per-mile'|trans({}, 'trips')|desc('per mile') }}
+                                        </span>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr class="info" ng-if="segment.alternativeFlights">
+                                <td colspan="2">{{ 'we-estimated-savings-flight'|trans({
+                                        '%link_on%' : '<a href="#" class="blue-link" ng-click="segment.alternativeFlight($event)">',
+                                        '%link_off%' : '</a>'
+                                    }, 'trips')|desc('We estimated your savings based on a similar flight, %link_on%click here%link_off% to view it or to set your own value of an alternative flight')|raw }}</td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+
+                {{ block('long_notes') }}
+
+                {{ block('no_foreign_fees_cards') }}
+
+                <div class="details-sources" data-ng-if="segment.isAutoAddedSegment()">
+                    <div class="details-sources__info">
+                        <i class="icon-info-small"></i>
+                        <div class="details-sources__info-text">
+                            <span data-ng-if="segment.origins.auto.length > 1">{{ 'trips.segment.auto-added-from'|trans({}, 'trips')|desc('This trip segment was automatically added from the following multiple sources:') }}</span>
+                            <span data-ng-if="segment.origins.auto.length === 1" data-ng-bind-html="methods.getOriginText(segment.origins.auto[0], false)"></span>
+                        </div>
+                    </div>
+                    <ul data-ng-if="segment.origins.auto.length > 1" class="details-sources__details">
+                        <li data-ng-repeat="row in ::segment.origins.auto">
+                            <span data-ng-bind-html="methods.getOriginText(row, true)"></span>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="details-sources" data-ng-if="segment.isManualSegment()">
+                    <div class="details-sources__info">
+                        <i class="icon-info-small"></i>
+                        <div class="details-sources__info-text">{{ 'trips.segment.manually-added'|trans({}, 'trips')|desc('This reservation was manually added to your travel timeline.') }}</div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <div class="details-bottom" data-ng-if="['hotel', 'event', 'restaurant'].indexOf(segment.icon) + 1">
+        {{ 'uber.ad.1'|trans|desc("Need a free ride?") }}
+        <a target="_blank" href="https://awardwallet.com/blog/link/uber" class="blue-link">
+            {{ 'uber.ad.2'|trans|desc(" Get $15 off of your first Uber ride") }}
+        </a>
+    </div>
+{% endblock %}
+
+{% block popup_share_travelplan %}
+    {# Share travelplan #}
+    <div data-ext-dialog data-ng-if="segment.shareTravelplanDialog"
+         onclose="segment.shareTravelplanDialog = false" modal="true"
+         width="600"
+         data-ng-init="methods.focusShareInput()">
+        <div data-dialog-header>
+            {{ 'trips.sharing'|trans()|desc('Share travel plan') }}&nbsp;"[[ segment.name ]]"
+        </div>
+        <div class="sharing-reservation">
+            <p>{{ 'trips.share_plan.link.label'|trans()|desc('Direct link to this travel plan:') }}</p>
+            <input type="text" class="share-input"
+                   value="[[segment.shareUrl]]" onclick="this.select()"
+                   readonly>
+        </div>
+        <div data-dialog-footer>
+            <button type="button" class="btn-blue" role="button"
+                    data-ng-click="dialogClose()">{{ 'button.ok'|trans }}</button>
+        </div>
+    </div>
+{% endblock %}
+
+{% block popup_print %}
+    {# Print dialog #}
+    <div data-ext-dialog data-ng-if="segment.printDialog"
+         onclose="segment.printDialog = false" modal="true"
+         width="600">
+        <div data-dialog-header>
+            {{ 'save.tree'|trans()|desc('Save a tree') }}
+        </div>
+        <div>
+            <p>{{ 'plan.print.1'|trans()|desc('Did you know we have mobile apps for iOS and Android?') }}</p>
+            <p>{{ 'plan.print.2'|trans()|desc('This trip is available there and will work even if there is no internet connection.') }}</p>
+            <p>{{ 'plan.print.3'|trans()|desc('Please consider downloading and using the AwardWallet app instead of printing this page. We don\'t know if it\'s helping to reduce waste, but we know it\'s worth trying.') }}</p>
+        </div>
+        <div data-dialog-footer>
+            <button type="button" class="btn-blue" role="button"
+                    data-ng-click="segment.printTravelPlan()">{{ 'button.print'|trans|desc('Print') }}</button>
+            <button type="button" class="btn-silver" role="button"
+                    data-ng-click="dialogClose()">{{ 'button.close'|trans }}</button>
+        </div>
+    </div>
+{% endblock %}
+
+{% block popup_move %}
+    {# Move/Copy dialog #}
+    <div data-ext-dialog data-ng-if="segment.moveDialog"
+         onclose="segment.moveDialog = false"
+         modal="true"
+         width="600">
+        <div data-dialog-header>{{ 'move-copy.segment'|trans|desc('Move/Copy segment') }}</div>
+        <div data-ng-if="segment.segments > 1" data-ng-bind="methods.getMoveText(segment.segments, segment.confNo)">
+
+        </div>
+        <form name="setOwnerActionForm" class="main-form">
+            <div class="row">
+                <div class="row-item">
+                    <label for="set-owner">{{ 'choose.user'|trans|desc('Choose target user') }}:</label>
+
+                    <div class="input">
+                        <div class="input-item">
+                            {% if is_granted('SITE_BUSINESS_AREA') %}
+                                <input id="set-owner" autocomplete="off" spellcheck="false" class="autocomplete" type="text"
+                                       name="newowner" data-ng-data="agent.newowner" placeholder="Start typing..." data-owner-autocomplete>
+                            {% else %}
+                                <div class="styled-select">
+                                    <div>
+                                    <select id="set-owner" name="newowner" data-ng-model="agent.newowner">
+                                        <option value="" selected="selected">Please select...</option>
+                                        <option value="[[agent.id]]" data-ng-repeat="agent in agents|filter:{sharable: true}">[[agent.name]]</option>
+                                    </select>
+                                    </div>
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                <div class="info">
+                    <div class="info-icon"></div>
+                    <div class="info-description"><p></p></div>
+                </div>
+                <div class="error-message">
+                    <div class="warning"><i class="icon-warning-small"></i>
+                    </div>
+                    <div class="error-message-description">This field is required</div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="row-item flag">
+                    <div class="flag-item">
+                        <input type="checkbox" id="copy" name="copy" data-ng-model="agent.copy" class="checkbox">
+                         <label class="label" for="copy"></label>
+                    </div>
+                    <div class="input">
+                        <div class="input-item">
+                            <label for="copy">{{ 'copy.segment'|trans|desc('Copy this segment instead of moving') }}</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="info">
+                    <div class="info-icon"></div>
+                    <div class="info-description"><p></p></div>
+                </div>
+                <div class="error-message"></div>
+            </div>
+        </form>
+        <div data-dialog-footer>
+            <button data-ng-click="methods.move(segment, agent, $event)" ng-disabled="!agentIsSet && !agent.newowner" class="btn-blue">{{ 'ok.button'|trans|desc('Ok') }}</button>
+        </div>
+    </div>
+{% endblock %}
+
+{% block popup_share_trip %}
+    {# Share dialog #}
+    <div data-ext-dialog data-ng-if="segment.shareDialog"
+         onclose="segment.shareDialog = false" modal="true"
+         width="600"
+         data-ng-init="methods.focusShareInput()">
+        <div data-dialog-header>
+            {{ 'trips.share.resertvation'|trans()|desc('Sharing reservation #') }}
+            [[segment.confNo]]
+        </div>
+        <div class="sharing-reservation">
+            <p>{{ 'trips.share.link.label'|trans()|desc('Direct link to this reservation:') }}</p>
+            <input type="text" class="share-input"
+                   value="[[segment.shareUrl]]" onclick="this.select()"
+                   readonly>
+            {#<p>#}
+            {#<i class="icon-info-small"></i>{{ 'trips.share.hint'|trans()|desc('For more sharing options please place this reservation into a travel plan') }}#}
+            {#</p>#}
+        </div>
+        <div data-dialog-footer>
+            <button type="button" class="btn-blue" role="button"
+                    data-ng-click="dialogClose()">{{ 'button.ok'|trans }}</button>
+        </div>
+    </div>
+{% endblock %}
+
+{% block popup_delete %}
+    <div data-ext-dialog modal="true" data-ng-if="segment.deleteConfirm"
+         onclose="segment.deleteConfirm = false" width="400">
+        <div data-dialog-header>Confirmation</div>
+        <div>{{ 'trips.delete.confirmation'|trans|desc('Are you sure you want to delete this travel plan?') }}</div>
+        <div data-dialog-footer>
+            <button type="button" class="btn-blue"
+                    data-ng-disabled="segment.deleteLoader"
+                    data-ng-class="{loader: segment.deleteLoader}"
+                    data-ng-click="methods.deleteOrUndelete(segment, false)">{{ 'button.yes'|trans }}</button>
+            <button type="button" class="btn-silver"
+                    data-ng-disabled="segment.deleteLoader"
+                    data-ng-click="dialogClose()">{{ 'button.no'|trans }}</button>
+        </div>
+    </div>
+{% endblock %}
+
+{% block short_notes %}
+    <dl class="notes" data-ng-if="segment.details.notes && segment.isShowMoreLinks() && !segment.isShownInfo"
+        data-ng-class="{'notes-with-files' : segment.details.Files.length > 0}">
+        <dt>{{ 'notes'|trans|desc("Notes") }}:</dt>
+        <dd class="notes-html" data-ng-bind-html="segment.getNotes(true)"></dd>
+    </dl>
+    <div class="notes-container it-notes-files" data-ng-if="segment.details.Files.length && !segment.isShownInfo"
+         data-ng-class="{'files-no-notes' : undefined === segment.details.notes || segment.details.notes.length === 0}">
+        {{ block('notes_files') }}
+    </div>
+{% endblock %}
+
+{% block long_notes %}
+    <div class="notes border" data-ng-if="segment.details.notes"
+         data-ng-class="{'notes-with-files' : segment.details.Files.length > 0}">
+        <h3>{{ 'notes'|trans|desc("Notes") }}:</h3>
+        <div class="notes-html" data-ng-bind-html="segment.getNotes(false)"></div>
+    </div>
+    <div class="notes-container it-notes-files-more" data-ng-if="segment.details.Files.length"
+         data-ng-class="{'files-no-notes' : undefined === segment.details.notes || segment.details.notes.length === 0}">
+        {{ block('notes_files') }}
+    </div>
+{% endblock %}
+
+{% block notes_files %}
+    <div class="plan-files">
+        <div class="plan-file" ng-repeat="file in segment.details.Files">
+            <a href="[[segment.getFileLink(file.id)]]" target="itineraryFile"><i class="icon-clip"></i>[[ file.fileName ]]</a>
+            <span class="file-desc">[[file.description]]</span>
+            <span class="file-size">(<u data-ng-bind="segment.formatFileSize(file.fileSize)"></u>)</span>
+            <span class="file-date" data-ng-bind="segment.formatDateTime(file.uploadDate)"></span>
+        </div>
+    </div>
+{% endblock %}
+
+{% block no_foreign_fees_cards %}
+    <div class="cards-notfees" data-ng-if="segment.isShowNoForeignFeesCards && noForeignFeesCards">
+        <div data-ng-if="!noForeignFeesCards.isFlat">
+            <div class="notfees-head">{{ 'overseas-trip-cards-not-fees'|trans|desc("For your overseas trip, please note the credit cards that don't have foreign transaction fees*") }}:</div>
+            <div class="notfees-body">
+                <div>
+                    <div class="notfees-title">{{ 'personal-cards'|trans|desc("Personal Cards") }}</div>
+                    <div class="notfees-card" ng-repeat="card in noForeignFeesCards.personal">
+                        <img ng-src="[[card.image]]" alt="">
+                        <span data-ng-bind-html="segment.trustHtml(card.name)"></span>
+                    </div>
+                </div>
+                <div>
+                    <div class="notfees-title">{{ 'business-cards'|trans|desc("Business Cards") }}</div>
+                    <div class="notfees-card" ng-repeat="card in noForeignFeesCards.business">
+                        <img ng-src="[[card.image]]" alt="">
+                        <span data-ng-bind-html="segment.trustHtml(card.name)"></span>
+                    </div>
+                </div>
+            </div>
+            <div class="notfees-foot">
+                {{ 'have-these-cards-not-fees'|trans|desc("* According to our records, you have all these credit cards. We make the best effort to verify which cards don't have foreign transaction fees, but ultimately you need to confirm it with your bank. AwardWallet is not liable if you get charged a fee by your bank.") }}
+            </div>
+        </div>
+        <div data-ng-if="noForeignFeesCards.isFlat">
+            <div class="notfees-head">
+                <span data-ng-if="noForeignFeesCards.isOne">{{ 'overseas-trip-one-card-not-fees'|trans|desc("For your overseas trip, please note that the following credit card does not have foreign transaction fees*") }}:</span>
+                <span data-ng-if="!noForeignFeesCards.isOne">{{ 'overseas-trip-cards-not-fees'|trans }}:</span>
+            </div>
+            <div class="notfees-body notfees-list">
+                <div>
+                    <div class="notfees-card" ng-repeat="card in noForeignFeesCards.list">
+                        <img ng-src="[[card.image]]" alt="">
+                        <span data-ng-bind-html="segment.trustHtml(card.name)"></span>
+                    </div>
+                </div>
+            </div>
+            <div class="notfees-foot">
+                <span data-ng-if="noForeignFeesCards.isOne">{{ 'have-these-one-card-not-fees'|trans|desc("* According to our records, you have this credit card. We make the best effort to verify which cards don't have foreign transaction fees, but ultimately you need to confirm it with your bank. AwardWallet is not liable if you get charged a fee by your bank.") }}</span>
+                <span data-ng-if="!noForeignFeesCards.isOne">{{ 'have-these-cards-not-fees'|trans }}</span>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block header_ai_icon %}
+    <img
+        class="ai-icon"
+        data-ng-if="segment.showAIWarning"
+        src="/assets/awardwalletnewdesign/img/icon/ai@1x.png"
+        srcset="/assets/awardwalletnewdesign/img/icon/ai@1x.png 1x, /assets/awardwalletnewdesign/img/icon/ai@2x.png 2x, /assets/awardwalletnewdesign/img/icon/ai@3x.png 3x"
+        alt="AI">
+{% endblock %}

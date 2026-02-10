@@ -1,0 +1,115 @@
+{% set MOBILE_NAV = true %}
+{% set HIDE_NAV = true %}
+{% set MAIN_BODY_CLASSES = {
+    'manual-hidden': true,
+    'responsive': true,
+    'hide-menu': true
+}|merge(MAIN_BODY_CLASSES|default({})) %}
+
+{% extends app.user is not null ? "@AwardWalletMain/Layout/common.html.twig" : "@AwardWalletMain/Layout/not_logged.html.twig" %}
+{% form_theme form with ['@AwardWalletMain/FormTheme/fields.html.twig', _self] %}
+
+{% block meta %}
+    {{ parent() }}
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0, viewport-fit=cover">
+{% endblock %}
+
+{% block choice_row %}
+    <ul class="select-payment" {{ block('widget_container_attributes') }}>
+        {% for child in form %}
+            <li>
+                {{ form_widget(child) }}
+                <label for="{{ child.vars.id }}" class="label">
+                    {% if child.vars.value == constant('\\AwardWallet\\MainBundle\\Entity\\Cart::PAYMENTTYPE_CREDITCARD') or child.vars.value == constant('\\AwardWallet\\MainBundle\\Entity\\Cart::PAYMENTTYPE_STRIPE_INTENT') %}
+                        <img src="{{ asset('assets/awardwalletnewdesign/img/visa.png') }}" alt="Visa" width="74" height="47">
+                        <img src="{{ asset('assets/awardwalletnewdesign/img/mastercard.png') }}" alt="Mastercard" width="74" height="47">
+                        <img src="{{ asset('assets/awardwalletnewdesign/img/american-express.png') }}" alt="American Express" width="74" height="47">
+                        <img src="{{ asset('assets/awardwalletnewdesign/img/discover.png') }}" alt="Discover" width="74" height="47">
+                    {% elseif child.vars.value == constant('\\AwardWallet\\MainBundle\\Entity\\Cart::PAYMENTTYPE_PAYPAL') %}
+                        <img src="{{ asset('assets/awardwalletnewdesign/img/paypal.png') }}" alt="PayPal" width="74" height="47">
+                        <p>{{ 'cart.paypal-selection.label'|trans|desc("Save time. Check out securely. <br>Pay without sharing your financial information.")|raw }}</p>
+                    {% elseif child.vars.value == constant('\\AwardWallet\\MainBundle\\Entity\\Cart::PAYMENTTYPE_TEST_CREDITCARD') %}
+                        <p>{{ child.vars.label }}</p>
+                    {% elseif child.vars.value == constant('\\AwardWallet\\MainBundle\\Entity\\Cart::PAYMENTTYPE_TEST_PAYPAL') %}
+                        <p>{{ child.vars.label }}</p>
+                    {% elseif child.vars.value == constant('\\AwardWallet\\MainBundle\\Entity\\Cart::PAYMENTTYPE_ETHEREUM') %}
+                        <div class="picture ethereum-image">
+                            <img class="picture__dark" src="{{ asset('assets/awardwalletnewdesign/img/ethereum-dark.png?v=2') }}" alt="Ethereum" width="35" height="56">
+                            <img class="picture__light" src="{{ asset('assets/awardwalletnewdesign/img/ethereum.png?v=2') }}" alt="Ethereum" width="35" height="56">
+                        </div>
+                        <p>Pay with Ethereum</p>
+                    {% elseif child.vars.value == constant('\\AwardWallet\\MainBundle\\Entity\\Cart::PAYMENTTYPE_BITCOIN') %}
+                        <img src="{{ asset('assets/awardwalletnewdesign/img/bitcoin.png') }}" class="bitcoin-image" alt="Bitcoin" width="56" height="56">
+                        <p>{{ 'cart.bitcoin-selection.label'|trans|desc("Pay with Bitcoin") }}</p>
+                    {% endif %}
+                </label>
+            </li>
+        {% endfor %}
+    </ul>
+{% endblock %}
+
+{% block title %}
+    {{ 'cart.select-type'|trans|desc('Select Payment Type') }}
+{% endblock %}
+
+{% block header_metatags %}
+    {% include '@AwardWalletMain/Utility/scalableViewport.html.twig' %}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        var oldonload = window.onload;
+        var newonload = function () {
+            if (window.devicePixelRatio == 2) {
+                $("form img").each(function () {
+                    var retinaSrc = $(this).attr('src').replace('.png', '@2x.png');
+                    $(this).attr('src', retinaSrc);
+                });
+            }
+        };
+        if (typeof window.onload != 'function') {
+            window.onload = newonload;
+        } else {
+            window.onload = function() {
+                if (oldonload) {
+                    oldonload();
+                }
+                newonload();
+            }
+        }
+
+        require([
+            'lib/design', 'lib/customizer', 'vendor/jquery.browser/dist/jquery.browser.min'
+        ], function () {
+            $('form[name="paymentType"] button[type="submit"]').on('click', function (e) {
+                $(this).attr('disabled', 'disabled')
+                    .addClass('loader')
+                    .delay(200)
+                    .queue(function (next) {
+                        $('form[name="paymentType"]').submit();
+                        next();
+                    });
+            });
+        });
+
+    </script>
+{% endblock %}
+
+{% block content %}
+    <div class="main-blk shortened select-payment-type">
+        <h1>{{ 'cart.select-type'|trans }}</h1>
+        <form name="paymentType" action="" method="post" data-cart-id="{{ cart.cartid }}">
+            <div class="main-blk-content t-center">
+                {{ form_row(form.type) }}
+            </div>
+            <div class="row-submit t-right">
+                {% if payBack is not null %}
+                    <a href="{{ payBack }}" class="btn-silver">{{ 'button.back'|trans|desc("Back") }}</a>
+                {% endif %}
+                <button type="submit" class="btn-blue">{{ 'continue'|trans|desc("Continue") }}</button>
+            </div>
+            {{ form_rest(form) }}
+        </form>
+    </div>
+{% endblock %}

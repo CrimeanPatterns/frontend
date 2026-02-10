@@ -1,0 +1,10 @@
+#!/usr/bin/env php
+<?php
+
+$branch = $argv[1] ?? null;
+
+if (!isset($branch) || ('' === $branch)) {
+    $branch = trim(`git rev-parse --abbrev-ref HEAD`);
+}
+
+echo "https://jenkins.awardwallet.com/job/Frontend/job/tests/parambuild/?branch=" . urlencode($branch) . "\n";

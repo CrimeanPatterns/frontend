@@ -1,0 +1,15 @@
+{# Issue #5857 #}
+
+{% extends "@AwardWalletMain/Offer/promotionCard.html.twig" %}
+{% import '@AwardWalletMain/TwigMacros/common.html.twig' as menuMacros %}
+
+{% block permanent %}
+	{{ parent() }}
+{% endblock %}
+
+{% block popups %}
+	{{ menuMacros.DrawBeginBox('id = "offer" style="width: 700px; position: absolute; z-index: 60; display: none"', 'Special offer') }}
+	<div style = "padding-left: 20px; padding-right: 20px;">
+	<div align = "justify" style = "margin-top: 16px">Dear {{ FirstName }}, we have a special TESTOFFER just for you.</div>
+	{{ parent() }}
+{% endblock %}

@@ -1,0 +1,22 @@
+{% extends '@MailTemplate/Layout/base.twig' %}
+
+{% block headStyle %}
+    {{ parent() }}
+{% endblock headStyle %}
+
+{% block bodyStyle %}
+    {{ parent() }}
+{% endblock bodyStyle %}
+
+{% block content_row %}
+    {% block offer_content %}
+        <tr>
+            <td style="line-height:18px;font-size:14px; border: solid 1px #a6aab3;background:#fff;border-top:0;padding:0 10px 20px" class="email-white">
+                <!-- content -->
+                {% block content %}
+                {% endblock content %}
+                <!-- end -->
+            </td>
+        </tr>
+    {% endblock offer_content %}
+{% endblock content_row %}

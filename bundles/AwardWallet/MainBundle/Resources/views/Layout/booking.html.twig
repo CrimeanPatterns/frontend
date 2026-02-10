@@ -1,0 +1,52 @@
+{% if app.user is not null %}
+    {% if is_granted('SITE_BUSINESS_AREA') %}
+        {% set template = "@AwardWalletMain/Layout/business_booking_check_balance.html.twig" %}
+    {% else %}
+        {% set template = "@AwardWalletMain/Layout/booking_personal.html.twig" %}
+    {% endif %}
+{% else %}
+    {% set template = "@AwardWalletMain/Layout/not_logged.html.twig" %}
+{% endif %}
+
+{% extends template %}
+
+{% block left_menu %}
+    {% block hide_menu_button %}
+        <div class="menu-close"></div>
+    {% endblock %}
+    <aside class="user-blk">
+        <div class="user-blk-item">
+            {% block body_left_widgets %}
+                {{ widget_render('left_top') }}
+                {{ widget_render('bookings') }}
+                {{ widget_render('left_bottom') }}
+            {% endblock %}
+        </div>
+    </aside>
+{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    {% if app.user is not null %}
+        {{ encore_entry_link_tags('booking') }}
+    {% endif %}
+{% endblock %}
+
+
+{% block javascripts %}
+    {{ parent() }}
+    {% if not webpack|default(false) %}
+        <script>
+            require(['jquery-boot'], function(){
+                $(function() {
+                    if(window.devicePixelRatio && window.devicePixelRatio == 2){
+                        $("div.booker-aw img, td.booking-id img, td.fees img").each(function(){
+                            var retinaSrc = $(this).attr('src').replace('.png', '@2x.png');
+                            $(this).attr('src', retinaSrc);
+                        });
+                    }
+                });
+            });
+        </script>
+    {% endif %}
+{% endblock %}

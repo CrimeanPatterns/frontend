@@ -1,0 +1,519 @@
+{% extends '@SonataAdmin/CRUD/edit.html.twig' %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        .nav-tabs-custom {
+            display: none;
+        }
+    </style>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        var asyncProcess = {
+
+        	addProcess: function(dataUrl, options, container, onComplete){
+
+        		var startTime = new Date();
+
+        		var showProgress = function(status, diff){
+        			container.html('<img src="/lib/images/progressCircle.gif" style="width: 16px; height: 16px;"> ' + status + ', ' + diff + ' seconds');
+        		};
+
+        		var pollResponse = function() {
+        			$.ajax($.extend({
+        				url: dataUrl,
+
+        				success: function (response) {
+        					var time = new Date();
+        					var diff = Math.floor((time.getTime() - startTime.getTime()) / 1000);
+
+        					if(response.status == 'ready') {
+        						onComplete(response, diff);
+        					}
+        					else{
+        						showProgress(response.status, diff);
+        						setTimeout(function () {
+        							pollResponse();
+        						}, 3000);
+        					}
+        				},
+
+        				'error': ajaxError
+        			}, options
+        			));
+        		};
+
+        		showProgress('sending request', 0);
+        		pollResponse();
+        	}
+
+        };
+
+        function ajaxError() {}
+
+        function setHash(id) {
+            location.hash = '#!' + id.substr(1);
+        }
+
+        function getHash() {
+            return location.hash.replace(/^#!/, '#');
+        }
+
+        function showHelp() {
+            var dataProvider = $("form select[name$='[dataProvider]']").val();
+            var code = $("form input[name$='[code]']").val();
+            if (typeof replacements[dataProvider] != 'undefined' && replacements[dataProvider] != null) {
+                $('#step-2-replacement .box-body').html(
+                    '<div style="overflow-y: scroll; max-height:250px;">' + replacements[dataProvider] + '</div>'
+                );
+            } else {
+                $('#step-2-replacement .box-body').html('<p>No information</p>');
+            }
+
+            if (typeof testInfo[dataProvider] != 'undefined' && testInfo[dataProvider] != null) {
+                $('#step-3-info .box-body').html(
+                    testInfo[dataProvider]
+                );
+            } else {
+                $('#step-3-info .box-body').html('<p>No information</p>');
+            }
+
+            $.each($("span.command-code"), function(i, el) { $(el).text(code); });
+            $.each($("a.command-code"), function (i, el) { $(el).attr('href', $(el).text()); });
+            $('#dataProviderDesc').html(descriptions[dataProvider]);
+        }
+
+        function handleServerError(jqXHR) {
+            preview = window.open("", jqXHR.statusText, "toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=yes, resizable=yes, width=1024, height=600");
+            preview.document.write(jqXHR.responseText);
+            preview.focus();
+        }
+
+        function handleErrors(data) {
+            if (typeof(data['errors']) == 'undefined') return;
+            clearMessages();
+            addErrorMessage(data['errors'].join(", "));
+        }
+
+        function clearMessages() {
+            $('#test-form-error, #test-form-success').remove();
+        }
+
+        function addErrorMessage(text) {
+            $('section.content').children(":eq(0)").before($('' +
+                '<div id="test-form-error" class="alert alert-danger alert-dismissible">' +
+                    '<button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>' +
+                    text +
+                '</div>' +
+            ''));
+        }
+
+        function addSuccessMessage(text) {
+            $('section.content').children(":eq(0)").before($('' +
+                '<div id="test-form-success" class="alert alert-success alert-dismissible">' +
+                    '<button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>' +
+                    text +
+                '</div>' +
+            ''));
+        }
+
+        function activateTabByHash(force) {
+            force = force || false;
+            var hash = getHash(), form, action;
+            var errorTab = $('li .has-errors:not(.hide)');
+            if (force && errorTab.length == 1) {
+                hash = errorTab.parent('a').attr('href');
+            }
+            if (hash != "") {
+                var tab = $("a[href='"+hash+"']");
+                if (tab.length === 1) {
+                    tab.tab('show');
+                    form = $('form');
+                    if (form.attr('action').indexOf('#') === -1) {
+                        action = form.attr('action') + hash;
+                    } else {
+                        action = form.attr('action').substr(0, form.attr('action').indexOf('#')) + hash;
+                    }
+                    form.attr('action', action)
+                }
+            }
+        }
+
+        $(function(){
+            var step1info = $('#step-1-info');
+            $('form div[class^=tab-pane]:eq(0) .row')
+                .append(step1info);
+            step1info.show();
+
+            var step2repl = $('#step-2-replacement');
+            $('form div[class^=tab-pane]:eq(1) .row')
+                .children(":eq(0)").after(step2repl);
+            step2repl.show();
+
+            var step2info = $('#step-2-info');
+            $('form div[class^=tab-pane]:eq(1) .row:eq(0)')
+                .children(":eq(1)").after(step2info);
+            step2info.show();
+
+            var step3warn = $('#step-3-warn');
+            $('form div[class^=tab-pane]:eq(2) .row:eq(0)')
+                .children(":eq(0)").before(step3warn);
+            step3warn.show();
+
+            var actions = $('#step-3-actions');
+            $('form div[class^=tab-pane]:eq(2) .row:eq(0)')
+                .children(":last").after(actions);
+            actions.show();
+
+            var step3info = $('#step-3-info');
+            $('form div[class^=tab-pane]:eq(2) .row:eq(0)')
+                .children(":eq(2)").after(step3info);
+            step3info.show();
+
+            var stats = $('#step-3-stats');
+            $('form div[class^=tab-pane]:eq(2) .row:eq(0)')
+                .children(":eq(2)").after(stats);
+            stats.show();
+
+            showHelp();
+            $("form select[name$='[dataProvider]']").change(showHelp);
+
+            // tabs
+            activateTabByHash(true);
+            setTimeout(function(){
+                $('.nav-tabs-custom').show();
+            }, 150);
+
+            $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
+                setHash(e.target.hash);
+            });
+            if ("onhashchange" in window) {
+                $(window).on('hashchange', function() {
+                    activateTabByHash();
+                });
+            }
+
+            // testing
+            var overlay = $('#step-3-actions .overlay'),
+                showOverlay = function() {overlay.show();},
+                hideOverlay = function() {overlay.hide();};
+            var testFormData = function() {
+                return {
+                    users: $('#email_template_testUsers').val(),
+                    emails: $('#email_template_testEmails').val(),
+                    fixture: $('#email_template_testFixture').is(':checked'),
+                    limit: $('#email_template_testLimit').val(),
+                    form: (() => {
+                        let serialized = $('form').serializeArray();
+                        const EDITORS = [
+                            ['email_template_logo',  'logo'],
+                            ['email_template_head',  'head'],
+                            ['email_template_style', 'style'],
+                            ['email_template_body',  'body'],
+                        ];
+
+                        let data = {};
+
+                        for (const {name, value} of serialized) {
+                            const bracketStart = name.indexOf('[');
+                            data[name.substr(bracketStart + 1, name.length - bracketStart - 2)] = value;
+                        }
+
+                        for (const [editorName, fieldName] of EDITORS) {
+                            data[fieldName] = CKEDITOR.instances[editorName].getData();
+                        }
+
+                        return data;
+                    })(),
+                    // form: $('form').serialize(),
+                };
+            };
+
+            $('#show-email-action').on('click', function(){
+                $.ajax({
+                    url: $(this).data('href'),
+                    method: "POST",
+                    data: testFormData(),
+                    dataType: 'json',
+                    beforeSend: showOverlay,
+                    complete: hideOverlay
+                }).done(function( data ) {
+                    handleErrors(data);
+                    if (typeof(data.success) != 'undefined') {
+                        clearMessages();
+                        if (data.success) {
+                            preview = window.open("", "Preview", "toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=yes, resizable=yes, width=650, height=400");
+                            preview.document.write(data.preview);
+                            $(preview.document).find('title').text(data.subject);
+                            preview.focus();
+                        } else {
+                            clearMessages();
+                            addErrorMessage(data.message);
+                        }
+                    }
+                }).fail(handleServerError);
+            });
+            $('#send-email-action').on('click', function(){
+                $.ajax({
+                    url: $(this).data('href'),
+                    method: "POST",
+                    data: testFormData(),
+                    dataType: 'json',
+                    beforeSend: showOverlay,
+                    complete: hideOverlay
+                }).done(function( data ) {
+                    handleErrors(data);
+
+                    if (typeof(data.success) != 'undefined') {
+                        clearMessages();
+
+                        if (data.success) {
+                            for (const message of data.messages) {
+                                addSuccessMessage(message);
+                            }
+                        } else {
+                            for (const message of data.messages) {
+                                addErrorMessage(message);
+                            }
+                        }
+                    }
+                }).fail(handleServerError);
+            });
+
+            $('#stats-action').on('click', function () {
+                var elem = $(this);
+                elem.toggleClass('disabled');
+                document.createElement('div');
+                asyncProcess.addProcess(
+                    elem.data('href'),
+                    {
+                        method: "POST",
+                        data: testFormData(),
+                        dataType: 'json',
+                        beforeSend: showOverlay,
+                    },
+                    $(document.createElement('div')),
+                    function (data, time) {
+                        data = data.data;
+                        hideOverlay();
+                        handleErrors(data);
+                        elem.toggleClass('disabled');
+
+                        if (typeof(data.success) != 'undefined') {
+                            if (data.success) {
+                                addSuccessMessage('Stats received!');
+                                var statsMessage =
+                                        '<b>audience:</b> ' + data.count + '<br/>' +
+                                        '<b>code:</b> ' + data.code + '<br/><br/>' +
+                                        '<b>users:</b> ' + data.dataProvider + '<br/><br/>' +
+                                        '<b>ids:</b> ' + data.exampleUsers.join(', ') + '<br/><br/>' +
+                                        'execution time: ' + time + ' second(s)';
+                                $('#stats-info').html(statsMessage);
+                                // animate window title making it blink with [!!!] in the beginning every second
+                                const title = document.title;
+                                const blink = function() {
+                                    document.title = (document.title === title) ? '[!!!] ' + title : title;
+                                };
+                                let interval;
+
+                                if (!document.hasFocus()) {
+                                    blink();
+                                    interval = setInterval(blink, 1000);
+                                    $(window).on('focus', function() {
+                                        clearInterval(interval);
+                                        document.title = title;
+                                    });
+                                }
+                            } else {
+                                clearMessages();
+                                addErrorMessage(data.message);
+                            }
+                        }
+                    }
+                )
+            });
+
+            $('#search-user-action').on('click', function () {
+                var elem = $(this);
+                elem.toggleClass('disabled');
+                document.createElement('div');
+                asyncProcess.addProcess(
+                    elem.data('href'),
+                    {
+                        method: "POST",
+                        data: testFormData(),
+                        dataType: 'json',
+                        beforeSend: showOverlay,
+                    },
+                    $(document.createElement('div')),
+                    function (data, time) {
+                        data = data.data;
+                        hideOverlay();
+                        handleErrors(data);
+                        elem.toggleClass('disabled');
+
+                        if (typeof(data.success) != 'undefined') {
+                            if (data.success) {
+                                $('#email_template_testUsers').val(data.users.join("\n") + "\n" + $('#email_template_testUsers').val());
+                            } else {
+                                clearMessages();
+                                addErrorMessage(data.message);
+                            }
+                        }
+                    }
+                )
+            });
+
+            $('.collapsed-box .box-title').after('' +
+                '<div class="box-tools pull-right">' +
+                    '<button class="btn btn-box-tool" data-widget="collapse">' +
+                        '<i class="fas fa-plus"></i>' +
+                    '</button>' +
+                '</div>' +
+            '');
+
+            $('#email_template_layout').change(function() {
+                let extendFields = '#sonata-ba-field-container-email_template_ListBlogPostID,#sonata-ba-field-container-email_template_CID,#sonata-ba-field-container-email_template_MID';
+                let extendInputs = '#email_template_CID,#email_template_MID';
+                if ('blog_newsletter' === $(this).val()) {
+                    $(extendFields).show();
+                    $(extendInputs).prop('required', true);
+                } else {
+                    $(extendFields).hide();
+                    $(extendInputs).prop('required', false);
+                }
+            });
+            $('#email_template_layout').trigger('change');
+        });
+    </script>
+{% endblock %}
+
+{% block sonata_page_content %}
+    {{ parent() }}
+
+    <div id="step-1-info" style="display: none;" class="col-md-6">
+        <div class="alert alert-warning alert-dismissible">
+            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+            Temporarily TWIG Render Engine unavailable
+        </div>
+    </div>
+
+    <div id="step-2-replacement" style="display: none;" class="col-md-6">
+        <div class="box box-info">
+            <div class="box-header with-border">
+                <h3 class="box-title">
+                    <i class="fas fa-crop"></i>
+                    Replacements
+                </h3>
+                <div class="box-tools pull-right">
+                    <button class="btn btn-box-tool" data-widget="collapse"><i class="fas fa-minus"></i></button>
+                </div>
+            </div>
+            <div class="box-body" style="display: block;">
+
+            </div>
+        </div>
+    </div>
+
+    <div id="step-2-info" style="display: none;" class="col-md-12">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="alert alert-warning alert-dismissible">
+                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                    <h4><i class="icon fas fa-warning"></i> Attention!</h4>
+                    Uploaded pictures are synchronized between servers within 10 minutes!
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="alert alert-info alert-dismissible">
+                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                    Upload of pictures is possible. Do not upload pictures for all templates into one folder.
+                    Create a separate one for each template.
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="step-3-warn" style="display: none;" class="col-md-12">
+        <div class="alert alert-warning alert-dismissible">
+            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+            {% if admin.id(object) is null %}
+                Form not saved. Save it with button <kbd>Create</kbd> and then test.
+            {% else %}
+                Don't forget before clicking on <kbd>Show/Send</kbd> save form (button <kbd>Update</kbd>) if something was changed on other tabs.
+            {% endif %}
+        </div>
+    </div>
+
+    <div id="step-3-info" style="display: none;" class="col-md-4">
+        <div class="box box-info">
+            <div class="box-header with-border">
+                <h3 class="box-title">
+                    <i class="fas fa-info"></i>
+                    Test Info
+                </h3>
+                <div class="box-tools pull-right">
+                    <button class="btn btn-box-tool" data-widget="collapse"><i class="fas fa-minus"></i></button>
+                </div>
+            </div>
+            <div class="box-body" style="display: block;">
+
+            </div>
+        </div>
+    </div>
+
+    <div id="step-3-actions" style="display: none;" class="col-md-4">
+        <div class="box">
+            <div class="box-header">
+                <h3 class="box-title">Actions</h3>
+            </div>
+            <div class="box-body">
+                <a id="search-user-action" {% if admin.id(object) is not null %}data-href="{{ admin.generateObjectUrl('searchUser', object, {requestId: admin.asyncRequestId})  }}" {% endif %}class="btn btn-app {% if admin.id(object) is null %}disabled{% endif %}">
+                    <i class="fas fa-user"></i> Find users
+                </a>
+                <a id="show-email-action" {% if admin.id(object) is not null %}data-href="{{ admin.generateObjectUrl('showEmail', object)  }}" {% endif %}class="btn btn-app {% if admin.id(object) is null %}disabled{% endif %}">
+                    <i class="fas fa-eye"></i> Show
+                </a>
+                <a id="send-email-action" {% if admin.id(object) is not null %}data-href="{{ admin.generateObjectUrl('send', object)  }}" {% endif %}class="btn btn-app {% if admin.id(object) is null %}disabled{% endif %}">
+                    <i class="fas fa-paper-plane"></i> Save and Send
+                </a>
+                <a id="stats-action" {% if admin.id(object) is not null %}data-href="{{ admin.generateObjectUrl('stats', object, {requestId: admin.asyncRequestId})  }}" {% endif %}class="btn btn-app {% if admin.id(object) is null %}disabled{% endif %}">
+                    <i class="fas fa-signal"></i> Stats
+                </a>
+            </div>
+            <div class="overlay" style="display:none;">
+                <i class="fas fa-sync-alt fa-spin"></i>
+            </div>
+        </div>
+    </div>
+
+    <div id="step-3-stats" style="display: none;" class="col-md-4">
+        <div class="box box-info">
+            <div class="box-header with-border">
+                <h3 class="box-title">
+                    <i class="fas fa-signal"></i>
+                    Stats
+                </h3>
+                <div class="box-tools pull-right">
+                    <button class="btn btn-box-tool" data-widget="collapse"><i class="fas fa-minus"></i></button>
+                </div>
+            </div>
+            <div class="box-body" style="display: block;" id="stats-info">
+                Press "<i class="fas fa-signal"></i> Stats" button above to get audience info
+            </div>
+        </div>
+    </div>
+
+
+{% endblock %}
+
+{% block sonata_form_actions %}
+    {{ parent() }}
+    {% if admin.id(object) is not null %}
+        <a class="btn btn-info" href="{{ admin.generateObjectUrl('duplicate', object) }}"><i class="fas fa-clipboard"></i> Duplicate</a>
+    {% endif %}
+{% endblock %}

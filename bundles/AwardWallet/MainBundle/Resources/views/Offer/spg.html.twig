@@ -1,0 +1,81 @@
+{# Issue #5857 #}
+
+{% extends "@AwardWalletMain/Offer/standard.html.twig" %}
+{% import '@AwardWalletMain/TwigMacros/common.html.twig' as menuMacros %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    {{ encore_entry_link_tags('offers/spg') }}
+    {{ encore_entry_link_tags('offers/default') }}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        function offerYes() {
+            {% autoescape false %}
+            window.open('{{ ApplyURL }}');
+            {% if (preview != 1) and (src != 1) %}
+            {% if vars.isLocalProd == false %}
+            _gaq = _gaq || [];
+            _gaq.push(['_trackEvent', 'offer-spg', 'Agreed']);
+            {% endif %}
+            $.post(
+                    "{{ url('aw_offer_agree', { 'offerUserId': OfferUserID, 'agreed': '1' }) }}",
+                    window.setTimeout(function () {
+                        window.location = '/account/list.php?UserAgentID=All';
+                    }, 500)
+            );
+            {% endif %}
+            {% endautoescape %}
+        }
+    </script>
+{% endblock %}
+
+{% block permanent %}
+    {{ parent() }}
+{% endblock %}
+
+{% block content %}
+    <div id="spg_wrap">
+        <div id="spg_bg">
+            <div id="spg_title">
+                Get {{ Nights }} night{% if Nights > 1 %}s{% endif %} at a hotel similar
+                to<br/>{{ Hotel }} for free!
+            </div>
+            <div id="spg_ul">
+                <ul class="offer_list">
+                    <li>Limited Time Offer: earn up to 30K bonus Starpoints&reg;:10K after your first purchase and 20K
+                        after you spend $5K in purchases on the card within the first 6 months. Offer expires 9/3/2013
+                    <li>That&#8217;s enough for a weekend getaway to a Category 4 hotel.
+                    <li>Free Hotel Nights: redeem Starpoints at over 1,100 hotels in nearly 100 countries worldwide -
+                        with no blackout dates. Some hotels may have mandatory service and resort charges.
+                    <li>Free Flights: redeem Starpoints on over 350 airlines with SPG Flights - with no blackout dates
+                    <li>No limits on the number of Starpoints you can earn
+                    <li>$0 introductory annual fee for the first year, then $65
+                    <li>Terms and Restrictions Apply.
+                </ul>
+                <div id="spg_card"></div>
+            </div>
+            <div id="spg_conclusion">
+                30,000 points that you will receive is enough to stay at this hotel
+                (or any other Category {{ Category }} hotel)
+                for {{ Nights }} night{% if Nights > 1 %}s{% endif %}
+                at the price of {{ Points }} points
+            </div>
+            <div class="offer_btn" id="spg_btn" onclick='offerYes()'>
+                Yes, I want 30,000 SPG points, apply now
+            </div>
+        </div>
+    </div>
+    <div id="spg_bottom">
+			<span id="spg_account">
+			<a class="spg_a" href="/account/list.php?UserAgentID=All">Proceed to my Account</a>
+			</span>
+    </div>
+    {#</div>#}
+    <div class="offer_preload1">
+    </div>
+    <div class="offer_preload2">
+    </div>
+{% endblock %}

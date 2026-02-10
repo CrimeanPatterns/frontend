@@ -1,0 +1,104 @@
+services:
+    _defaults:
+        public: true
+
+    # Types
+    aw.form.type.family_member:
+        public: true
+        class: AwardWallet\MainBundle\Form\Type\FamilyMemberType
+        arguments:
+            - "@translator"
+            - "@aw.form.transformer.generic.family_member"
+        tags:
+            - { name: form.type }
+
+    aw.mobile.form.type.family_member:
+        public: true
+        class: AwardWallet\MainBundle\Form\Type\Mobile\FamilyMemberType
+        arguments:
+            - "@translator"
+            - "@aw.form.transformer.generic.family_member"
+        tags:
+            - { name: form.type }
+
+    aw.form.type.sharing_timelines:
+        public: true
+        class: AwardWallet\MainBundle\Form\Type\SharingTimelinesType
+        arguments:
+            - '@AwardWallet\MainBundle\Form\Transformer\SharedTimelinesTransformerFactory'
+        tags:
+            - { name: form.type }
+
+    aw.form.type.connection_edit:
+        public: true
+        class: AwardWallet\MainBundle\Form\Type\ConnectionEditType
+        autowire: true
+        tags:
+            - { name: form.type }
+
+    AwardWallet\MainBundle\Form\Type\Mobile\ConnectionEditType:
+        autowire: true
+        public: true
+        tags:
+            - { name: form.type }
+    # Transformers
+
+    aw.form.transformer.generic.family_member:
+        public: true
+        class: AwardWallet\MainBundle\Form\Transformer\FamilyMemberTransformer
+
+    AwardWallet\MainBundle\Form\Transformer\SharedTimelinesTransformerFactory:
+        autowire: true
+
+    AwardWallet\MainBundle\Form\Transformer\EditConnectionTransformerFactory:
+        autowire: true
+
+    # Handlers
+
+    AwardWallet\MainBundle\Form\Handler\Subscriber\EditConnectionGeneric:
+        autowire: true
+
+    aw.form.family_member.subscriber.generic:
+        public: true
+        class: AwardWallet\MainBundle\Form\Handler\Subscriber\Useragent\FamilyMemberGeneric
+        arguments:
+            - "@aw.manager.useragent_manager"
+            - "@translator"
+            - '@AwardWallet\MainBundle\Entity\Repositories\UseragentRepository'
+            - "@logger"
+            - "@doctrine.orm.default_entity_manager"
+            - '@AwardWallet\MainBundle\Form\Handler\FormHandlerHelper'
+
+    aw.form.family_member.handler.desktop:
+        public: true
+        lazy: true
+        parent: aw.form.generic_request_handler
+        calls:
+            - [setChannels, [["form.family_member.generic", "form.generic"]]]
+            - [addHandlerSubscriber, ["@aw.form.family_member.subscriber.generic"]]
+
+    aw.form.family_member.handler.mobile:
+        public: true
+        lazy: true
+        parent: aw.form.generic_request_handler
+        calls:
+            - [setChannels, [["form.mobile", "form.family_member.generic", "form.generic"]]]
+            - [addHandlerSubscriber, ["@aw.form.family_member.subscriber.generic"]]
+            - [addHandlerSubscriber, ["@aw.form.subscriber.mobile.request_data_transformer"]]
+
+    aw.form.edit_connection.handle.mobile:
+        public: true
+        lazy: true
+        parent: aw.form.generic_request_handler
+        calls:
+            - [setChannels, [["form.mobile", "form.generic.edit_connection"]]]
+            - [addHandlerSubscriber, ['@AwardWallet\MainBundle\Form\Handler\Subscriber\EditConnectionGeneric']]
+            - [addHandlerSubscriber, ["@aw.form.subscriber.mobile.request_data_transformer"]]
+
+    aw.form.edit_connection.handle.desktop:
+        public: true
+        lazy: true
+        parent: aw.form.generic_request_handler
+        calls:
+            - [setChannels, [["form.generic.edit_connection"]]]
+            - [addHandlerSubscriber, ['@AwardWallet\MainBundle\Form\Handler\Subscriber\EditConnectionGeneric']]

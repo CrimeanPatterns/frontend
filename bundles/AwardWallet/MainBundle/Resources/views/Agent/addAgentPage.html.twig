@@ -1,0 +1,95 @@
+{% form_theme form with ['@AwardWalletMain/FormTheme/fields.html.twig'] %}
+{% extends is_granted('SITE_BUSINESS_AREA') ? "@AwardWalletMain/Layout/business_default.html.twig" : "@AwardWalletMain/Layout/edit_connections.html.twig" %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        require(['jquery-boot'], function ($) {
+            $(function () {
+                $('.main-body:not(.business)').on('change', '#desktop_add_agent_invite', function(e) {
+                    var required = $('label[for=desktop_add_agent_email]').find('.required');
+                    $(e.target).is(':checked') ? required.fadeIn() : required.fadeOut();
+                    $('#desktop_add_agent_email').trigger('click');
+                });
+
+                $('#desktop_add_agent_invite').trigger('change');
+            })
+        });
+    </script>
+{% endblock %}
+
+{% block title %}
+    {{ 'agents.title'|trans|desc('Just add a new name') }}
+{% endblock %}
+
+{% block content %}
+    <div class="add-account">
+        <div class="main-blk">
+            <h1>{{ 'agents.title'|trans|desc('Just add a new name') }}</h1>
+
+            {% if quantityError is defined and quantityError %}
+                <div class="main-blk-content">
+
+                    <p>
+                        {{ 'agents.add.qantity.error'|trans({'%users%': maxUsers})|desc('AwardWallet.com is a personal interface for managing loyalty programs and is not intended for
+                    business use. There is another business interface that we offer: <a
+                            href="http://business.AwardWallet.com" target="_blank">http://business.AwardWallet.com</a>.
+                    Your account looks like a business account based on the fact that you have added a total
+                    of %users% users to your profile.')|raw }}
+                    </p>
+
+                    {% if not isBusinessAdmin %}
+                        <p>{{ 'agents.add.convert.header'|trans|desc('Please convert this personal account to a business account.') }}</p>
+                        {% set href = path('aw_user_convert_to_business') %}
+                        {% set link = 'agents.add.convert.btn'|trans|desc('Convert to Business Account') %}
+                    {% else %}
+                        <p>{{ 'agents.add.login.header'|trans|desc('Please login to your business account.') }}</p>
+                        {% set href = 'http://business.' ~ app.request.host ~ path('aw_home') ~ '#login' %}
+                        {% set link = 'agents.add.login.btn'|trans|desc('Login to Business Account') %}
+                    {% endif %}
+                </div>
+                <div class="row-submit">
+                    <a class="btn-blue" href="{{ href }}">{{ link }}</a>
+                </div>
+            {% else %}
+                <form name="add-agent" class="main-form"
+                      action="{{ path('aw_add_agent') }}"
+                      method="post"
+                      autocomplete="off"
+                      novalidate
+                      onsubmit="$('[type=submit]').addClass('loader')">
+                    {{ form_widget(form, {'noSubmit':true}) }}
+                    <div class="row-submit">
+                        <div class="row-submit-item">
+                            <button type="submit"
+                                    class="btn-blue">{{ 'agents.buttons.add'|trans|desc('Add your profile') }}</button>
+                        </div>
+                    </div>
+                </form>
+            {% endif %}
+        </div>
+        <div class="faq">
+            <div class="faq-blk">
+                <div class="heading">
+                    <i class="icon-info-small"></i>
+                    {% if is_granted("SITE_BUSINESS_AREA") %}
+                        <p>{{ 'agents.header.business-text'|trans|desc('On this page you can add a new member by entering their name. This person doesn\'t have to have an account on AwardWallet.com, so basically this is just a name you will use to track loyalty programs, travel plans, or booking request.') }}</p>
+                    {% else %}
+                        <p>{{ 'agents.header.text'|trans|desc('On this page you can add a new person to track award programs for. This person may be an existing
+                    user of AwardWallet.com, as well as a new user. It could also be just a name that you associate with
+                    award programs that you add to your profile. Most common uses of this feature would be:') }}</p>
+
+                        <ul>
+                            <li>
+                                {{ 'agents.header.option1'|trans|desc('Head of household keeping track of Award Programs for the whole family.') }}
+                            </li>
+                            <li>
+                                {{ 'agents.header.option2'|trans|desc('Travel Agent keeping track of award program account numbers and balances to book travel.') }}
+                            </li>
+                        </ul>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

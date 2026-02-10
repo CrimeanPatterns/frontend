@@ -1,0 +1,58 @@
+{% set title = "FlightInfo Rules Config" %}
+{% extends '@AwardWalletMain/Manager/layout.html.twig' %}
+{% form_theme form with ['form_table_layout.html.twig'] %}
+
+{% block content %}
+    <style type="text/css">
+        table {
+            border-collapse: collapse;
+        }
+        table td {
+            border: lightgray solid 1px;
+            padding: 7px;
+        }
+        thead td {
+            font-weight: bold;
+        }
+    </style>
+
+    <a href="{{ url('aw_manager_flightinfoconfig_index') }}">FlightInfo Config</a>
+    <a href="{{ url('aw_manager_flightinfoconfig_view', {id: configRule.flightInfoConfigID }) }}">{{ configRule.name }}</a>
+
+    <hr size="2"/>
+
+    <h1>Rule {{ configRule.name }}</h1>
+
+    <br/>
+    <form name="edit" method="post" autocomplete="off">
+        {{ form_widget(form) }}
+        <br/>
+        <input class="buttonBg" value="Edit" type="submit">
+    </form>
+
+    <br/>
+    <hr size="1"/>
+
+    <p>
+        <b>Schedule rules:</b>
+        <br/>One rule per line, in {DateVariable DateInterval} format (eg "DepDate +1 hour", "ArrDate -1 day").
+        <br/>Empty = now.
+        <br/>Supported DateVariables: DepDate (checked departure date-time), ArrDate (checked arrival date-time), FlightDate (non-checked flight date)
+    </p>
+    <p>
+        <b>Ignore fields:</b>
+        <br/>One field per line.
+        <br/>Empty = none.
+        <br/>Supported values: DepDate, ArrDate, Gate, DepartureTerminal, ArrivalTerminal, ArrivalGate, BaggageClaim
+    </p>
+    <p>
+        <b>Enable:</b> Only enabled rules execute
+    </p>
+    <p>
+        <b>Schedule:</b> Schedule this rules in normal workflow
+    </p>
+    <p>
+        <b>Debug:</b> Ignore workflow checks, segments count, and awplus/region filters (means: request executed in 99% cases)
+    </p>
+{% endblock %}
+

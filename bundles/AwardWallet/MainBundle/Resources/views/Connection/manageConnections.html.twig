@@ -1,0 +1,265 @@
+{% extends '@AwardWalletMain/Layout/edit_connections.html.twig' %}
+
+{% block title %}{{ 'user.connections.page_title'|trans()|desc('My Connections') }}{% endblock %}
+
+{% block header_metatags %}
+    {% include '@AwardWalletMain/Utility/scalableViewport.html.twig' %}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        require([
+            'pages/userConnections/main',
+            'lib/design',
+            'lib/customizer'
+        ], function(){
+
+        });
+    </script>
+{% endblock %}
+
+{% block content %}
+    <div class="main-blk" data-ng-controller="userConnectionsPageCtrl">
+
+        <h1>{{ 'user.connections.page_heading'|trans()|desc('Manage Users') }}</h1>
+
+        <div class="main-blk-content">
+            <div class="title-note">
+                <h3>{{ 'user.connections.heading.table'|trans()|desc('My connections') }}</h3>
+            </div>
+
+            {% if (connections|length > 0 or emailInvites|length > 0) %}
+
+            <table class="main-table manage-users">
+                <thead>
+                <tr>
+                    <th>{{ 'user.connections.heading.connection' | trans() | desc('Connection') }}</th>
+                    <th>{{ 'user.connections.heading.connection_type' | trans() | desc('Connection Type') }}<span
+                                class="required">*</span></th>
+                    <th>{{ 'user.connections.heading.status' | trans() | desc('Status') }}</th>
+                    <th>{{ 'user.connections.heading.email' | trans() | desc('Email') }}</th>
+                    <th></th>
+                </tr>
+                </thead>
+
+                <tbody>
+                {% for connection in connections %}
+                    <tr data-useragent-id="{{ connection.UserAgentID }}">
+                        <td data-title="{{ 'user.connections.heading.connection' | trans() | desc('Connection') }}">{{ connection.FullName | htmldecode }}</td>
+                        <td data-title="{{ 'user.connections.heading.connection_type' | trans() | desc('Connection Type') }}">
+                            {% if connection.ClientID is not null %}
+                                {{ 'connected.user' | trans() | desc('Connected User') }}
+                            {% else %}
+                                {{ 'user.connections.family_member' | trans() | desc('Family member') }}
+                            {% endif %}
+                        </td>
+                        <td data-title="{{ 'user.connections.heading.status' | trans() | desc('Status') }}" class="status">
+                            {% if connection.ClientID is not null and connection.IsApproved %}
+                                <div class="prev">
+                                    <i class="icon-green-check"></i>
+                                </div>
+                                <p>{{ 'user.connections.approved' | trans() | desc('Approved') }}</p>
+                            {% elseif connection.ClientID is not null %}
+                                <div class="prev">
+                                    <i class="icon-not-updated"></i>
+                                </div>
+                                <p>{{ 'user.connections.waiting_approval' | trans() | desc('Waiting for approval') }}</p>
+                            {% elseif connection.ShareDate != ''%}
+                                {% if ("now"|date('U') - connection.ShareDate|date('U')) <= (24*60*60*3) %}
+                                    <div class="prev">
+                                        <i class="icon-not-updated"></i>
+                                    </div>
+                                    <p>{{ 'user.connections.waiting_approval' | trans() | desc('Waiting for approval') }}</p>
+                                {% else %}
+                                    <div class="prev">
+                                        <i class="icon-invitation-expired"></i>
+                                    </div>
+                                    <p class="expired">{{ 'user.connections.invitation_expired' | trans() | desc('Invitation expired. Feel free to invite again') }}</p>
+                                {% endif %}
+                            {% endif %}
+                        </td>
+                        <td class="js-email" data-title="{{ 'user.connections.heading.email' | trans() | desc('Email') }}">
+                            {% if connection.Email is not null %}
+                                <span class="blue bold">{{ connection.Email }}</span>
+                            {% else %}
+                                <span class="blue bold">{{ connection.UserEmail }}</span>
+                            {% endif %}
+
+                            {#{% if connection.IsApproved == '1' %}#}
+                                {#<span class="blue bold">{{ connection.UserEmail }}</span>#}
+                            {#{% endif %}#}
+                        </td>
+                        <td class="actions">
+                            <ul class="list-actions">
+                                {% if connection.ClientID is null %}
+                                    <li>
+                                        <a href="/user/family/{{ connection.UserAgentID }}" data-role=tooltip
+                                           title="{{ 'user.connections.edit' | trans() | desc('Edit') }}">
+                                            <i class="icon-edit"></i>
+                                        </a>
+                                    </li>
+                                {% endif %}
+
+                                {% if connection.IsApproved == '0' %}
+                                    <li>
+                                        <a data-ng-click="resendInvite({{ connection.UserAgentID ~ ',' ~ connection.AgentID }})" data-role=tooltip
+                                           title="{{ 'user.connections.resend' | trans() | desc('Resend') }}">
+                                            <i class="icon-user-update"></i>
+                                        </a>
+                                    </li>
+                                {% elseif connection.IsApproved == '1' %}
+                                    <li>
+                                        <a href="{{ path('aw_user_connection_edit', {'userAgentId': connection.UserAgentID }) }}" data-role=tooltip
+                                           title="{{ 'user.connections.edit' | trans() | desc('Edit') }}">
+                                            <i class="icon-edit"></i>
+                                        </a>
+                                    </li>
+                                {% endif %}
+
+                                {% if not connection.ClientID %}
+                                    {% if connection.ShareDate != '' and ("now"|date('U') - connection.ShareDate|date('U')) <= (24*60*60*3) %}
+                                        <li>
+                                            <a data-role="tooltip" title="{{ 'user.connections.waiting_approval' | trans }}">
+                                                <i class="icon-not-updated"></i>
+                                            </a>
+                                        </li>
+                                    {% else %}
+                                    <li>{% set data = {'UserAgentID' : connection.UserAgentID, 'AgentID': connection.AgentID, 'Email': connection.Email} %}
+                                        <a data-ng-click="inviteFamilyMember({{ connection.UserAgentID }}, {{ data|json_encode }})" data-role="tooltip" title="{{ 'user.connections.invite' | trans() | desc('Invite') }}">
+                                            <i class="icon-user-add"></i>
+                                        </a>
+                                    </li>
+                                    {% endif %}
+                                {% endif %}
+
+                                {% if connection.ClientID is not null %}
+                                    <li>{% set data = {'UserAgentID' : connection.UserAgentID, 'FullName': connection.FullName, 'ClientID': connection.ClientID} %}
+                                        <a data-ng-click="deleteUserAgent({{ data|json_encode }})" data-role=tooltip
+                                           title="{{ 'user.connections.disconnect' | trans() | desc('Disconnect') }}" >
+                                            <i class="icon-pending"></i>
+                                        </a>
+                                    </li>
+                                {% elseif connection.ShareDate != '' and ("now"|date('U') - connection.ShareDate|date('U')) <= (24*60*60*3) %}
+                                    <li>
+                                        <a data-ng-click="cancelInvite({{ connection.UserAgentID }})" data-role="tooltip" title="{{ 'user.connections.invitation_cancel' | trans() | desc('Cancel') }}"><i class="icon-pending"></i></a>
+                                    </li>
+                                {% else %}
+                                    <li>{% set data = {'UserAgentID' : connection.UserAgentID, 'FullName': connection.FullName, 'ClientID': connection.ClientID} %}
+                                        <a data-ng-click="deleteUserAgent({{ data|json_encode }})" data-role=tooltip
+                                           title="{{ 'user.connections.delete' | trans() | desc('Delete') }}" >
+                                            <i class="icon-delete"></i>
+                                        </a>
+                                    </li>
+                                {% endif %}
+
+                            </ul>
+                        </td>
+                    </tr>
+                {% endfor %}
+
+                {% for emailInvite in emailInvites %}
+                    <tr data-emailinvite-id="{{ emailInvite.InviteCodeID }}">
+                        <td data-title="{{ 'user.connections.heading.connection' | trans() | desc('Connection') }}">
+                            <span class="bold blue">{{ emailInvite.Email }}</span>
+                        </td>
+                        <td data-title="{{ 'user.connections.heading.connection_type' | trans() | desc('Connection Type') }}">
+                            {{ 'connected.user' | trans() | desc('Connected User') }}
+                        </td>
+                        <td data-title="{{ 'user.connections.heading.status' | trans() | desc('Status') }}" class="status">
+                            <div class="prev">
+                                <i class="icon-not-updated"></i>
+                            </div>
+                            <p>{{ 'user.connections.waiting_approval' | trans() | desc('Waiting for approval') }}</p>
+                        </td>
+                        <td>
+                        </td>
+                        <td class="actions">
+                            <ul class="list-actions">
+
+                                <li>
+                                    <a data-ng-click="resendEmailInvite({{ emailInvite.InviteCodeID }}, '{{ emailInvite.Source }}')" data-role=tooltip
+                                       title="{{ 'user.connections.resend' | trans() | desc('Resend') }}">
+                                        <i class="icon-user-update"></i>
+                                    </a>
+                                </li>
+
+                                <li>
+                                    <a data-ng-click="deleteEmailInvite({{ emailInvite.InviteCodeID }}, '{{ emailInvite.Email }}')" data-role=tooltip
+                                       title="{{ 'user.connections.delete' | trans() | desc('Delete') }}" >
+                                        <i class="icon-delete"></i>
+                                    </a>
+                                </li>
+
+                            </ul>
+                        </td>
+
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+                <div class="not-found">
+                    <i class="icon-info-small"></i>
+                    <p>{{ 'no-connections'|trans|desc("At this point you have no connections or family member names added to your profile") }}</p>
+                </div>
+            {% endif %}
+
+            {% if pendingConnections|length > 0 %}
+
+            <div class="title-note" ng-if="pendingVisible">
+                <h3>{{ 'user.connections.heading.pending_table'|trans()|desc('Pending requests') }}</h3>
+            </div>
+
+            <table class="main-table manage-users pending-table" ng-if="pendingVisible">
+                <thead>
+                <tr>
+                    <th>{{ 'business.members.table_header.name' | trans() }}</th>
+                    <th></th>
+                </tr>
+                </thead>
+
+                <tbody>
+                {% for request in pendingConnections %}
+                    <tr data-agent-id="{{ request.AgentID }}">
+                        <td data-title="{{ 'business.members.table_header.name' | trans() }}">
+                            {{ request.FullName }}
+                        </td>
+                        <td class="actions">
+                            <ul class="list-buttons">
+                                <li>
+                                    <a class="btn-blue" data-ng-click="approvePendingConnection({{ request.AgentID }}, '{{ url("aw_user_connection_edit", {userAgentId: request.UserAgentID}) }}')">
+                                        {{ 'user.connections.button.approve' | trans() | desc('Approve') }}
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="btn-silver-w" data-ng-click="denyPendingConnection({{ request.AgentID ~ ',' ~ request.UserAgentID}})">
+                                        {{ 'user.connections.button.deny' | trans() | desc('Deny') }}
+                                    </a>
+                                </li>
+                            </ul>
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+
+            </table>
+
+            {% endif %}
+
+        </div>
+
+        <div class="row-submit">
+            <button class="btn-blue js-add-new-person">
+                {{ 'user.connections.btn.new_connection' | trans() | desc('Add new connection') }}
+            </button>
+        </div>
+    </div>
+
+    <div class="remark-info">
+        <span class="required">*</span>
+        {{ 'user.connections.sharing_message' | trans() | desc('By default, your award information is never shared. Connection only indicates that you can share something if
+        you choose to do so.') }}
+    </div>
+{% endblock %}
+

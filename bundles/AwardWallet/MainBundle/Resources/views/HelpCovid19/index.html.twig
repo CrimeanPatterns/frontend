@@ -1,0 +1,51 @@
+{% set MOBILE_NAV = true %}
+{% set HIDE_NAV = true %}
+{% set MAIN_BODY_CLASSES = {
+    'manual-hidden': true,
+    'responsive': true,
+    'hide-menu': true
+}|merge(MAIN_BODY_CLASSES|default({})) %}
+
+{% extends app.user is not null ? "@AwardWalletMain/Layout/common.html.twig" : "@AwardWalletMain/Layout/not_logged.html.twig" %}
+
+{% block title %}Awardwallet Is Committed to Helping Travelers{% endblock %}
+
+{% block meta %}
+    {{ parent() }}
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0, viewport-fit=cover">
+{% endblock %}
+
+{% block content %}
+    <div class="main-blk">
+        <h1>Awardwallet Is Committed to Helping Travelers</h1>
+
+        {% if not isAwPlus %}
+            <form action="" method="post" class="main-form">
+                <div class="corona">
+                    <div class="corona__item">
+                        <div class="corona__logo"></div>
+                        <div class="corona__list">
+                            <span class="corona__icon-1"></span>
+                            <span class="corona__icon-2"></span>
+                            <span class="corona__icon-3"></span>
+                            <span class="corona__icon-4"></span>
+                        </div>
+                        <p>We at AwardWallet wanted to help you stay on top of your travel plans during the COVID-19 pandemic. When you track your travel reservations with AwardWallet, we monitor them for schedule changes and cancelations. For that reason, we wanted to offer you a free upgrade to AwardWallet Plus for the next three months. At the end of this period, your account will be automatically downgraded to AwardWallet Free, and you will not be charged. If you wish to take advantage of this offer, please click the button below:</p>
+                    </div>
+                </div>
+                <div class="row-submit">
+                    <input type="hidden" name="use-covid19-coupon" value="1">
+                    <button type="submit" class="btn-blue" {% if isUsedCoupon %}disabled="disabled"{% endif %}>Upgrade my account to AwardWallet Plus for three months</button>
+                </div>
+            </form>
+        {% else %}
+            <div class="main-form-item">
+                <div class="info-title">
+                    <i class="icon-info-white"></i>
+                    <p>This offer is currently not available to you, as you already have an AwardWallet Plus account.</p>
+                </div>
+            </div>
+        {% endif %}
+
+    </div>
+{% endblock %}

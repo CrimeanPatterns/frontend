@@ -1,0 +1,7 @@
+{% macro render(pageName) %}
+    {% import '@AwardWalletMain/Blog/components/icons.html.twig' as icons %}
+
+    <div class="{{ bem(pageName, 'content-loader') }}" style="display: none;">
+        {{ icons.spinnerIcon() }}
+    </div>
+{% endmacro %}

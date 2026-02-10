@@ -1,0 +1,13 @@
+{% set title = "Merchant Category Detector Test" %}
+{% extends '@AwardWalletMain/Manager/layout.html.twig' %}
+{% form_theme form with ['form_table_layout.html.twig'] %}
+
+{% block content %}
+
+    {{ form(form) }}
+
+    {% for record in logs %}
+        <div>{{ record['message'] }}</div>
+    {% endfor %}
+
+{% endblock %}

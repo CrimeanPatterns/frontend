@@ -1,0 +1,27 @@
+Index: bundles/AwardWallet/MainBundle/Service/FlightStats/TripAlerts/API/Model/TripImportResponse.php
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/bundles/AwardWallet/MainBundle/Service/FlightStats/TripAlerts/API/Model/TripImportResponse.php b/bundles/AwardWallet/MainBundle/Service/FlightStats/TripAlerts/API/Model/TripImportResponse.php
+--- a/bundles/AwardWallet/MainBundle/Service/FlightStats/TripAlerts/API/Model/TripImportResponse.php	(revision 39dfc332494349b303198b6e5e063c0f5dd4aea0)
++++ b/bundles/AwardWallet/MainBundle/Service/FlightStats/TripAlerts/API/Model/TripImportResponse.php	(date 1648465077607)
+@@ -48,7 +48,7 @@
+     public const STATUS_SUCCESS = 'Success';
+     public const STATUS_IMPORT_FAILURE = 'Import Failure';
+     public const STATUS_VALIDATION_ERROR_S = 'Validation Error(s)';
+-    public const STATUS_NOT_MONITORABLE__SOME_PART_OF_THE_TRIP_MAY_NOT_BE_MONITORABLE = 'Not Monitorable (some part of the trip may not be monitorable)';
++    public const STATUS_NOT_MONITORABLE__SOME_PART_OF_THE_TRIP_MAY_NOT_BE_MONITORABLE = 'Not Monitorable';
+
+     /**
+      * The original name of the model.
+@@ -246,7 +246,8 @@
+
+         if (!is_null($this->container['status']) && !in_array($this->container['status'], $allowedValues, true)) {
+             $invalidProperties[] = sprintf(
+-                "invalid value for 'status', must be one of '%s'",
++                "Invalid value '%s' for 'status', must be one of '%s'",
++                $this->container['status'],
+                 implode("', '", $allowedValues)
+             );
+         }

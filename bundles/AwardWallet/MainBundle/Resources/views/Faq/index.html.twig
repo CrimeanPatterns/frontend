@@ -1,0 +1,82 @@
+{% set MOBILE_NAV = true %}
+{% set MAIN_BODY_CLASSES = {
+    'manual-hidden': true,
+    'responsive': true
+}|merge(MAIN_BODY_CLASSES|default({})) %}
+
+{% extends "@AwardWalletMain/Layout/contact_us_faq_health.html.twig" %}
+{% import '@AwardWalletMain/Faq/macro.html.twig' as macro %}
+
+{% block stylesheets %}
+    {{ parent() }}
+
+    <style type="text/css">
+        .faq-list .answer .new-table td{
+            padding-top: 30px;
+        }
+        .faq-list .answer .flex__info{
+            flex: 1;
+        }
+        /*.faq-list .answer .main-table th{
+            font-family: 'open_sansbold';
+        }*/
+    </style>
+{% endblock %}
+
+{% block title %}
+    {{ 'faq-awardwallet'|trans|desc('FAQs | AwardWallet') }}
+{% endblock %}
+
+{% block meta %}
+    {{ parent() }}
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0, viewport-fit=cover">
+    <meta name="description" content="{{ 'have-question-visit-faq'|trans|desc("Do you have any question about the AwardWallet service? Please, visit our FAQs to find your answers.") }}">
+    <script type="application/ld+json">{{ jsonld|json_encode|raw }}</script>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        require([
+            'pages/faq/main',
+            'lib/design'
+        ], function($){
+
+        });
+    </script>
+{% endblock %}
+
+{% block content %}
+    <div data-ng-controller="indexCtrl">
+        {% for category in categories %}
+            <div class="main-blk mob-pad">
+                {% if loop.first %}
+                    <h1>{{ 'faq-about-awardwallet'|trans|desc("AwardWallet FAQs") }}</h1>
+                {% endif %}
+                <div class="main-blk-content">
+                    <div class="title-note no-border">
+                        <h3>{{ category|entrans('categorytitle') }}</h3>
+                    </div>
+                    <div class="faq-list">
+                        {% for faq in category.getVisibleFaqs() %}
+                            {% if true == isEnglish or (false == isEnglish and 0 == faq.englishonly) %}
+                                {{ macro.drawFaq(faq, true) }}
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+
+        <dialog title="'{{ 'onecard.sample-image'|trans({}, 'messages')|desc('AwardWallet OneCard sample image') }}'" data-ng-cloak id="oneCardSampleImage" data-auto-open="false" data-modal="true" data-width="700" data-draggable="true">
+            <div data-tabs>
+                <div data-pane data-pane-id="front" data-enable="1" data-title="{{ 'onecard.front-side'|trans({}, 'messages')|desc('Front side') }}">
+                    <img src="/images/onecardFront.png" style="width: 600px; height: 380px;"/>
+                </div>
+                <div data-pane data-pane-id="back" data-enable="1" data-title="{{ 'onecard.back-side'|trans({}, 'messages')|desc('Back side') }}">
+                    <img src="/images/onecardBack.png" style="width: 600px; height: 380px;"/>
+                </div>
+            </div>
+        </dialog>
+    </div>
+{% endblock %}

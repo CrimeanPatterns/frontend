@@ -1,0 +1,100 @@
+{% extends '@MailTemplate/Layout/base.twig' %}
+{% trans_default_domain "email" %}
+
+{% block subject %}{% apply spaceless %}{% autoescape false %}
+    {{ 'reservation_new.subject'|trans(
+        {'%count%': itineraries|length}, 'email', lang
+    )|desc('{1} ✈ The following travel reservation has been added|[2,Inf[ ✈ The following travel reservations have been added') }}
+{% endautoescape %}{% endapply %}{% endblock subject %}
+
+{% block content %}
+    {% import '@MailTemplate/CommonMacro.twig' as commonMacro %}
+    {% import '@MailTemplate/ItineraryMacro.twig' as itineraryMacro %}
+
+    {% if originalRecipient is defined and originalRecipient is not null %}
+        {% set text = 'reservation_new.added_to_ua'|trans({
+            '%bold_on%': '<b>',
+            '%bold_off%': '</b>',
+            '%uaName%': originalRecipient.fullname|htmlencode
+        }, 'email', lang)|desc('The following reservation that belongs to %bold_on%%uaName%%bold_off% has been added, please review the information below.') %}
+    {% else %}
+        {% set text = 'reservation_new.added'|trans({
+            '%bold_on%': '<b>',
+            '%bold_off%': '</b>'
+        }, 'email', lang)|desc('You have a new travel reservation that was automatically added to %bold_on%AwardWallet%bold_off% Trips.') %}
+    {% endif %}
+
+    {{ commonMacro.hello(user.firstname, _context) }}
+    {{ commonMacro.paragraph(text, _context, {escape: false}) }}
+
+    {% for itinerary in itineraries %}
+        {% set ads = '' %}
+        {% set ad_option = {} %}
+
+        {% if loop.first %}
+            {% if variant is defined and variant is not null %}
+                {% set ads = ads ~ block('ad_variant') %}
+            {% endif %}
+            {% if hasMailbox is defined and hasMailbox == false %}
+                {% set ads = ads ~ block('mailbox_offer') %}
+            {% endif %}
+            {% if advt is defined and advt is not null %}
+                {% set ads = ads ~ commonMacro.ad(advt, _context) %}
+            {% endif %}
+        {% endif %}
+
+        {% if ads != '' %}
+            {% set ad_option = {after_first_segment: ads} %}
+        {% endif %}
+
+        {{ itineraryMacro.renderItinerary(itinerary, _context, {'higher_property_style': 'color:#3d424d'}|merge(ad_option|default({}))) }}
+    {% endfor %}
+
+    {% if noForeignFeesCards is defined and noForeignFeesCards is not null %}
+        {{ itineraryMacro.renderNoForeignFeesCards(noForeignFeesCards, baseUrl) }}
+    {% endif %}
+
+{% endblock content %}
+
+{% block unsubscribe %}
+    {% import '@MailTemplate/CommonMacro.twig' as commonMacro %}
+    {% if user is instanceof("\\AwardWallet\\MainBundle\\Entity\\Useragent") and (originalRecipient is not defined or originalRecipient is null) %}
+        {{ commonMacro.familyMemberUnsubscribeLink(user, unsubscribeLink, _context) }}
+    {% else %}
+        {% set copy = originalRecipient is defined and originalRecipient is not null %}
+        {% set hash = copy ? '#notConnectedMemberAlerts' : block('unsubscribe_hash') %}
+
+        {% if originalRecipient is defined and originalRecipient is not null %}
+            {% set option = 'notification.not-connected-alerts'|trans({}, 'messages', lang) %}
+        {% else %}
+            {% set option = block('unsubscribe_option') %}
+        {% endif %}
+        {% set unsubscribe_link = commonMacro.link(unsubscribeLink ~ hash, '$$')|split('$$') %}
+
+        {{ 'unsubscribe.profile-checkbox'|trans({
+            '%link_on%': unsubscribe_link[0],
+            '%link_off%': unsubscribe_link[1],
+            '%option%': option|htmlencode
+        }, 'email', lang)|desc('If you do not want to receive these reminders you can %link_on%disable them in your profile%link_off%, please uncheck the following checkbox: "%option%"')|raw }}
+    {% endif %}
+{% endblock unsubscribe %}
+
+{% block unsubscribe_option %}{{ 'notification.new-travel-plan'|trans({}, 'messages', lang) }}{% endblock unsubscribe_option %}
+
+{% block unsubscribe_hash %}{{ '#newTravelReservations' }}{% endblock unsubscribe_hash %}
+
+{% block mailbox_offer %}
+    {% import '@MailTemplate/CommonMacro.twig' as commonMacro %}
+    {{ commonMacro.infoWithButton(
+        'reservation_new.mailbox_offer'|trans({}, 'email', lang)|desc('Did you know that the best way to import your travel plans (as well as updating your Delta, United, and Southwest accounts) is to link your mailbox to AwardWallet?'),
+        'link_mailbox_now.btn'|trans({}, 'email', lang)|desc('Link My Mailbox Now'),
+        personalHost ~ path('aw_usermailbox_view', {utm_source: 'automatedEmails', utm_medium: 'email', utm_campaign: 'ReservationAdded'}),
+        _context,
+        {}, {}, {},
+        {
+            width: 12,
+            height: 7,
+            imgPath: baseImagesPath ~ '/double-arrow-w.png'
+        }
+    ) }}
+{% endblock mailbox_offer %}

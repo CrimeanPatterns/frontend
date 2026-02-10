@@ -1,0 +1,20 @@
+{% set MOBILE_NAV = true %}
+{% set MAIN_BODY_CLASSES = {
+    'manual-hidden': true,
+    'responsive': true
+}|merge(MAIN_BODY_CLASSES|default({})) %}
+{% extends app.user is not null ? "@AwardWalletMain/Layout/common.html.twig" : "@AwardWalletMain/Layout/not_logged.html.twig" %}
+
+{% block body_left_widgets %}
+    {{ widget_render('left_top') }}
+    {{ widget_render('contact_us') }}
+{% endblock %}
+
+{% block content %}
+    <div class="main-blk">
+        <div class="success-message">
+            <i class="icon-green-check-b"></i>
+            <p>{{ 'you-unsubscribed'|trans({}, 'messages')|desc('You have successfully unsubscribed') }}</p>
+        </div>
+    </div>
+{% endblock %}

@@ -1,0 +1,291 @@
+{% block header %}
+    {% set provider = account.providerid %}
+    {% set isPerksplus = provider.code == 'perksplus' %}
+
+    {{ _self.linked_mailboxes(account, mailboxes, providerLinks) }}
+
+    {% if not isPerksplus %}
+        {{ _self.copy_pasting(account, autologinTargetUrl, autologinSignature) }}
+    {% endif %}
+
+    {{ _self.statement_notice(account) }}
+{% endblock %}
+
+{% block footer %}
+    {{ _self.linked_mailboxes(account, mailboxes, providerLinks) }}
+{% endblock %}
+
+{% macro linked_mailboxes(account, mailboxes, providerLinks) %}
+    {% set countMailboxes = mailboxes|length %}
+    {% set provider = account.providerid %}
+
+    <div style="margin-left: -15px; margin-right: -15px; margin-top: -15px; padding: 15px 20px;">
+        <div class="mailbox-container">
+            <div class="mailbox-block">
+                <div class="mailbox-content">
+                    {% if countMailboxes > 0 %}
+                        <i class="mailbox-connected-icon"></i>
+                    {% else %}
+                        <i class="mailbox-warn-icon"></i>
+                    {% endif %}
+
+                    <div class="mailbox-text">
+                        <div class="mailbox-header">
+                            <h2 class="mailbox-title">{{ 'personal_info.site_settings.email_scanner.mailboxes'|trans }}</h2>
+                            <span class="mailbox-count{{ countMailboxes == 0 ? ' zero' : '' }}">
+                                {{ countMailboxes }}
+                            </span>
+                            <a class="mailbox-button" href="{{ path('aw_usermailbox_view') }}">
+                                {% if countMailboxes > 0 %}
+                                    {{ 'link-another-mailbox'|trans|desc('Link another mailbox') }}
+                                {% else %}
+                                    {{ 'timeline_button_link'|trans }}
+                                {% endif %}
+                                <span>+</span>
+                            </a>
+                        </div>
+                        <div class="mailbox-description">
+                            {% if countMailboxes > 0 %}
+                                {{ 'account-form.mailbox-sync-ready'|trans({
+                                    '%provider_name%': provider.name,
+                                    '%program_name%': provider.programname,
+                                    '%short_name%': provider.shortname,
+                                    '%email_list%': _self.format_list(mailboxes|map(m => '<span class="email-list-item">' ~ m ~ '</span>')),
+                                    '%link_on%': '<br><a class="mailbox-learn-more" href="javascript:void(0)">',
+                                    '%link_off%': '</a>'
+                                })|desc('If %provider_name% emails your %program_name% statements to %email_list%, you\'re all set - AwardWallet will automatically extract your balance and keep your %short_name% account up to date. %link_on%Learn more%link_off% about syncing your %short_name% account.')|raw }}
+                            {% else %}
+                                {{ 'account-form.mailbox-instruction'|trans({
+                                    '%provider_name%': provider.name,
+                                    '%program_name%': provider.programname,
+                                    '%short_name%': provider.shortname,
+                                    '%link_on%': '<br><a class="mailbox-learn-more" href="javascript:void(0)">',
+                                    '%link_off%': '</a>'
+                                })|desc('Link the email address where %provider_name% sends your %program_name% statements to AwardWallet, and we’ll automatically extract your balance to keep your %short_name% account up to date. %link_on%Learn more%link_off% about syncing your %short_name% account.')|raw }}
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {{ _self.instructions(account, providerLinks) }}
+{% endmacro %}
+
+{% macro instructions(account, providerLinks) %}
+    {% set provider = account.providerid %}
+    {% set isPerksplus = provider.code == 'perksplus' %}
+    {% set isEdit = account.id is not empty %}
+    {% set userAgent = app.request.headers.get('user-agent') %}
+    {% set isMac = userAgent matches '/Macintosh|Mac OS|macOS/i' %}
+    {% set keys = isMac ? 'Cmd-A, Cmd-C, Cmd-V' : 'Ctrl-A, Ctrl-C, Ctrl-V' %}
+
+    <div class="info-blk hidden-block" style="display: none; margin-left: -15px; margin-right: -15px;">
+        <div>
+            {{ _self.warning_provider(account.providerid.code) }}
+        </div>
+    </div>
+    <div class="info-blk hidden-block" style="display: none; margin-left: -15px; margin-right: -15px;">
+        <div>
+            The best and simplest way to automate the tracking of your {{ provider.shortname }} account is to <a href="{{ url('aw_usermailbox_view') }}">link your mailbox to AwardWallet</a>, the one where {{ provider.shortname }} sends its monthly statements. However, you need to do that after you add your {{ provider.shortname }} account via this page.
+            <br><br>
+            If you are uncomfortable linking your mailbox to AwardWallet, the second-best option to track your {{ provider.shortname }} account is to set up auto-forwarding of your {{ provider.shortname }} statements to us.
+            Your email address on AwardWallet is <span class="userEmail">{{ account.user.login }}@email.AwardWallet.com</span>. You will need to add this address as a forwarding address to your email.
+            Please note that we auto-approve forwarding requests from Google (Gmail), so there is no need to contact our support for that.
+            Also, <a href='https://awardwallet.com/blog/how-to-track-delta-southwest-united-accounts-awardwallet/' target='_blank'>our blog post</a> goes into detail (with screenshots) on how to set this up.
+            When setting up a forwarding rule inside Gmail, we recommend using the <a href="{{ url('aw_gmail_forwarding') }}" target='_blank'>following guide</a>, which will also forward any travel reservations you book to your AwardWallet account. If you are not interested in AwardWallet tracking your travel plans, you can simply set up the following search query (with curly brackets):
+
+            <br><br>
+            <b>{from:delta.com from:united.com from:southwest.com from:aa.com}</b>
+            <br><br>
+
+            and set up forwarding of all emails from these domains to your AwardWallet address <span class="userEmail">{{ account.user.login }}@email.AwardWallet.com</span>.
+
+            <br><br>
+
+            {% if not isPerksplus %}
+                In either case, you need to make sure you opt-in to receive {{ provider.shortname }} statements by subscribing for html emails under
+                the <a href="{{ providerLinks['emailProfileLink'] }}" target='_blank'>{{ account.providerid.programname }} Statement</a> heading.
+                <br><br>
+            {% endif %}
+
+            <span id="update-manual"></span>
+
+            {% set loginPart = account.login is not empty
+                ? account.login
+                : '[Your' ~ (account.providerid.programname|replace({' ': ''})) ~ 'Login]' %}
+
+            If you have multiple {{ provider.shortname }} accounts you can specify your email as your AwardWallet login name dot your {{ provider.shortname }} account login, i.e.:
+            <span class="userEmail"><nobr>{{ account.user.login }}.{{ loginPart }}@email.awardwallet.com</nobr></span>
+
+            {% if not isPerksplus and not isEdit %}
+                <br><br>
+                If you don't want to wait for the statement to arrive you can test this functionality by simply copy-pasting ({{ keys }}) the entire account details page from the {{ account.providerid.programname }} website
+                into a new email message and send it to <span class="userEmail">{{ account.user.login }}@email.AwardWallet.com</span>.
+            {% endif %}
+        </div>
+    </div>
+{% endmacro %}
+
+{% macro format_list(list) %}{% autoescape false %}{% trim %}
+    {% if list|length == 1 %}
+        {{ list[0] }}
+    {% elseif list|length == 2 %}
+        {{ list|join('email_list_final_separator'|trans|desc(' or ')) }}
+    {% else %}
+        {{ list|slice(0, -1)|join('email_list_separator'|trans|desc(', ')) }}{{ 'email_list_final_separator'|trans|desc(' or ') }}{{ list|last }}
+    {% endif %}
+{% endtrim %}{% endautoescape %}{% endmacro %}
+
+{% macro statement_notice(account) %}
+    {% set hasRecentUpdate = false %}
+
+    {% if account.emailparsedate %}
+        {% set diffInDays = date(date()).diff(account.emailparsedate).days %}
+        {% set hasRecentUpdate = diffInDays <= 30 %}
+    {% endif %}
+
+    <div class="info-blk info-message statementNotice" style="margin-left: -15px; margin-right: -15px;">
+        <i class="{% if hasRecentUpdate %}icon-green-check-b{% else %}icon-warning-b{% endif %}"></i>
+        <div>
+            {% set programName = account.providerid.programname %}
+
+            {% if account.emailparsedate %}
+                {% if hasRecentUpdate %}
+                    Last time we received a valid statement for this {{ programName }} account
+                    <span class='days'><nobr>{{ account.emailparsedate|formatTimeAgo(true, true) }}.</nobr></span>
+                    <br>Your updates seem to be working.
+                {% else %}
+                    Last time we received a valid statement for this {{ programName }} account
+                    <span class='days'><nobr>{{ account.emailparsedate|formatTimeAgo(true, true) }}.</nobr></span>
+                    It's been more than a month, probably your statements are not being automatically forwarded to {{ account.user.login }}@email.awardwallet.com
+                {% endif %}
+            {% else %}
+                At this point we have not received any valid {{ programName }} statements for this account into your personal mailbox.
+            {% endif %}
+        </div>
+    </div>
+{% endmacro %}
+
+{% macro copy_pasting(account, autologinTargetUrl, autologinSignature) %}
+    {% set userAgent = app.request.headers.get('user-agent') %}
+    {% set isMac = userAgent matches '/Macintosh|Mac OS|macOS/i' %}
+    {% set keys = isMac ? 'Cmd-A, Cmd-C, Cmd-V' : 'Ctrl-A, Ctrl-C, Ctrl-V' %}
+    {% set autologinLink = url('aw_account_redirect', {'ID': account.id ?? 0, 'TargetURL': autologinTargetUrl, 'Signature': autologinSignature}) %}
+
+    <div class="info-blk" style="margin-left: -15px; margin-right: -15px;">
+        <div>
+            If you don't want to wait for the statement to arrive you can test this functionality by simply copy-pasting ({{ keys }})
+            <a href="{{ autologinLink }}" id="autologin_link" target="_blank">the entire account details page</a> from the website into this window:
+
+            <div id="emailParse" class="email-parse">
+                <iframe id="emailBody" class="email-body" src="javascript:''"></iframe>
+                <div class="email-files"></div>
+                <div id="emailWrap" class="email-wrap main-blk full-width" style="display: none">
+                    <div class="main-form-event">
+                        <div class="update">
+                            <i class="icon-silver-arrow-down"></i><p>{{ 'award.account.form.checking.title'|trans }}</p>
+                            <div class="progress-bar">
+                                <div class="progress-bar-row">
+                                    <p>1%</p><span style="width:1%"></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="email-error">
+                            <div class="error-message"><i class="icon-red-error-b"></i><p><span class="red">{{ 'award.account.form.failed.title'|trans }}</span></p></div>
+                            <div class="error-message-blk"><p></p></div>
+                        </div>
+                        <div class="email-success">
+                            <div class="success">
+                                <div class="success-blk">
+                                    <i id="email-account-icon-changed"></i>
+                                    <h5>{{ 'award.account.form.success.text'|trans }}</h5>
+                                    <table>
+                                        <tbody>
+                                        <tr>
+                                            <td>{{ 'award.account.form.changed.old-balance'|trans }}:</td>
+                                            <td class="email-account-lastbalance"></td>
+                                        </tr>
+                                        <tr>
+                                            <td>{{ 'award.account.form.changed.changed'|trans }}:</td>
+                                            <td><span id="email-account-balance-changed"></span></td>
+                                        </tr>
+                                        <tr>
+                                            <td><span class="bold">{{ 'award.account.form.success.balance'|trans }}:</span></td>
+                                            <td><span class="balance"></span></td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="email-done">
+                            <button class="btn-blue" type="button">{{ 'button.ok'|trans }}</button>
+                        </div>
+                    </div>
+                </div>
+                <p class="email-submit">
+                    <button class="btn-blue" type="button" disabled>{{ 'button.process'|trans|desc('Process') }}</button>
+                </p>
+            </div>
+        </div>
+    </div>
+{% endmacro %}
+
+{% macro warning_delta(containerStyles) %}
+    <ul style="{{
+        {
+            'padding-left': '15px'
+        }|merge(containerStyles|default({}))|joinAssociative(":", ";")
+    }}">
+        <li>We have written a <a href="https://awardwallet.com/blog/how-to-track-delta-southwest-united-accounts-awardwallet/" target="_blank">comprehensive blog post</a> on how to track your Delta accounts; please read it first.</li>
+        <li>Please sign a <a href="http://www.change.org/petitions/delta-airlines-reverse-your-recent-lockout-of-awardwallet-service" target="_blank">change.org petition</a> letting Delta know you disagree with their decision.</li>
+        <li>In addition to signing change.org, please <a href="https://twitter.com/Delta" target="_blank">tweet at Delta</a> to let them know your opinion.</li>
+    </ul>
+{% endmacro %}
+
+{% macro warning_deltacorp(containerStyles) %}
+    {{ _self.warning_delta(containerStyles) }}
+{% endmacro %}
+
+{% macro warning_rapidrewards(containerStyles) %}
+    <ul style="{{
+        {
+            'padding-left': '15px'
+        }|merge(containerStyles|default({}))|joinAssociative(":", ";")
+    }}">
+        <li>We have written a <a href="https://awardwallet.com/blog/how-to-track-delta-southwest-united-accounts-awardwallet/" target="_blank">comprehensive blog post</a> on how to track your Southwest accounts; please read it first.</li>
+        <li>Please <a href="https://twitter.com/SouthwestAir" target="_blank">tweet at Southwest</a> to let them know your opinion.</li>
+    </ul>
+{% endmacro %}
+
+{% macro warning_perksplus(containerStyles) %}
+    <ul style="{{
+        {
+            'padding-left': '15px'
+        }|merge(containerStyles|default({}))|joinAssociative(":", ";")
+    }}">
+        <li>We have written a <a href="https://awardwallet.com/blog/how-to-track-delta-southwest-united-accounts-awardwallet/" target="_blank">comprehensive blog post</a> on how to track your United accounts; please read it first.</li>
+        <li>Please sign a <a href="https://www.change.org/petitions/united-airlines-inc-restore-awardwallet-balance-tracking-for-frequent-flyer-miles" target="_blank">change.org petition</a> letting United know you disagree with their decision.</li>
+        <li>In addition to signing change.org, please <a href="https://twitter.com/united" target="_blank">tweet at United</a> to let them know your opinion.</li>
+    </ul>
+{% endmacro %}
+
+{% macro warning_mileageplus(containerStyles) %}
+    {{ _self.warning_perksplus() }}
+{% endmacro %}
+
+{% macro warning_provider(providerCode, containerStyles) %}
+    {% if providerCode == 'delta' %}
+        {{ _self.warning_delta(containerStyles) }}
+    {% elseif providerCode == 'deltacorp' %}
+        {{ _self.warning_deltacorp(containerStyles) }}
+    {% elseif providerCode == 'rapidrewards' %}
+        {{ _self.warning_rapidrewards(containerStyles) }}
+    {% elseif providerCode == 'perksplus' %}
+        {{ _self.warning_perksplus(containerStyles) }}
+    {% elseif providerCode == 'mileageplus' %}
+        {{ _self.warning_mileageplus(containerStyles) }}
+    {% endif %}
+{% endmacro %}

@@ -1,0 +1,380 @@
+{% extends '@AwardWalletMain/Manager/layout.html.twig' %}
+{% import _self as macro %}
+
+{% macro table_lookup(table, index, helper) %}{% apply spaceless %}
+    {% set value = helper.tableLookup(table, index) %}
+    {% if value == constant('\\AwardWallet\\MainBundle\\Controller\\Manager\\User\\ViewBasicInfoController::ERR_BASIC_INFO_INDEX_NOT_FOUND') %}
+        <span style="color: red; font-weight: bold">TABLE LOOKUP FAILED, CONTACT DEVS!</span>
+    {% else %}
+        {{ value }}
+    {% endif %}
+{% endapply %}{% endmacro %}
+
+{% macro link_to_cart(cartItem, cartItemFQCNTable, cartItemShortTable, paymentTypesTable, helper) %}
+    {% if cartItem %}
+        {% set cart = cartItem.cart %}
+        {% set fqcnClass = macro.table_lookup(cartItemFQCNTable, constant('TYPE', cartItem), helper) %}
+        <span style="font-weight: bold">CartID:</span> <a href="/manager/cart/contents.php?CartID={{ cart.cartid }}" target="_blank">{{ cart.cartid }}</a>,<br/>
+        <span style="font-weight: bold">Cart.PaymentType:</span> {% if cart.paymenttype %}{{ macro.table_lookup(paymentTypesTable, cart.paymenttype, helper) }} ({{ cart.paymenttype }}){% else %}{{ macro.print_null() }}{% endif %},<br/>
+        <span style="font-weight: bold">Cart.PayDate:</span> {{ macro.print_date(cart.paydate) }},<br/>
+        <span style="font-weight: bold">CartItemID:</span> {{ cartItem.cartitemid }},<br/>
+        <span style="font-weight: bold">CartItem.TypeID:</span> {{ constant('TYPE', cartItem) }}
+        <span style="color: gray" class="fqcn-class" title="{{ fqcnClass }}" data-filename="{{ helper.getFileName(fqcnClass) }}"><a href="#">&lt;{{ macro.table_lookup(cartItemShortTable, constant('TYPE', cartItem), helper) }}&gt;</a></span>
+    {% else %}
+        {{ macro.print_null() }}
+    {% endif %}
+{% endmacro %}
+
+{% macro maybe_val(value) %}
+    {% if value is not null %}
+        {% if value is typeof('string') %}
+            {% if value == '' %}
+                <span style="color: gray;">&lt;empty string&gt;</span>
+            {% elseif value|trim == '' %}
+                <span style="color: gray;">&lt;string of {{ value|length }} space(s)&gt;</span>
+            {% else %}
+                <span title="{{ value|var_dump }}">{{ value }}</span>
+            {% endif %}
+        {% else %}
+            <span title="{{ value|var_dump }}">{{ value }}</span>
+        {% endif %}
+    {% else %}
+        {{ macro.print_null() }}
+    {% endif %}
+{% endmacro %}
+
+{% macro print_null() %}
+    <span style="color: gray;">&lt;null&gt;</span>
+{% endmacro %}
+
+{% macro print_date(date) %}{% apply spaceless %}
+    {% if date is not null %}
+        {{ date|date('Y-m-d H:i:s') }} UTC <span style="color: gray">({{ date|formatTimeAgo }})</span>
+    {% else %}
+        {{ macro.print_null() }}
+    {% endif %}
+{% endapply %}{% endmacro %}
+
+{% macro flag(value) %}{% apply spaceless %}
+    {% if value %}
+        ✅ yes
+    {% else %}
+        ❌ no
+    {% endif %}
+{% endapply %}{% endmacro %}
+
+{% macro positive_is_bad_flag(value) %}
+    {% if value %}
+        ❌ yes
+    {% else %}
+        ✅ no
+    {% endif %}
+{% endmacro %}
+
+{% block content %}
+    <style>
+        .container {
+            display: ruby;
+            justify-content: space-between;
+        }
+        .table-info {
+            text-align: left;
+            border-collapse: collapse;
+            width: 48%;
+        }
+
+        .table-info tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+
+        .table-info tr:nth-child(odd) {
+            background-color: #ffffff;
+        }
+
+        .table-info th, .table-info td {
+            padding: 5px;
+            height: 10px;
+            max-height: 10px;
+        }
+
+        .section-header {
+            text-align: center;
+            border: 2px solid black;
+            font-weight: bold;
+        }
+
+        .plus-cart-info-container {
+            position: relative;
+            text-align: center;
+        }
+
+        .plus-cart-info-label {
+            font-weight: bold;
+            color: gray;
+            position: absolute;
+            width: 80%;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: rgba(255, 255, 255, 0.8);
+            border: 2px solid gray;
+            padding: 5px;
+            cursor: pointer;
+            z-index: 1;
+            user-select: none;
+        }
+
+        .plus-cart-info {
+            text-align: left;
+            transition: opacity 0.3s;
+        }
+
+        .plus-cart-info.show {
+            opacity: 100% !important;
+        }
+    </style>
+    <script>
+        function showCartInfo() {
+            const label = document.querySelector('.plus-cart-info-label');
+            const cartInfo = document.querySelector('.plus-cart-info');
+
+            label.style.display = 'none';
+            cartInfo.style.display = 'block';
+            cartInfo.classList.add('show');
+        }
+
+        // on document load, load all span's with class: fqcn-class, then extract theirs titles, and put it into href
+        // attribute of the internal link
+        document.addEventListener('DOMContentLoaded', () => {
+            document.querySelectorAll('.fqcn-class').forEach(fqcnClass => {
+                const frontendProjectName = localStorage.getItem('frontendProjectName') ?? 'frontend';
+                const filename = fqcnClass.getAttribute('data-filename');
+                const link = fqcnClass.querySelector('a');
+                if (link) {
+                    link.setAttribute('href', `jetbrains://php-storm/navigate/reference?project=${frontendProjectName}&path=${filename}:1`);
+                }
+        })});
+    </script>
+    <div class="container">
+        <table class="table-info">
+            <tr>
+                <th colspan="2" class="section-header">Basic Info</th>
+            </tr>
+            <tr>
+                <th>UserID:</th>
+                <td>{{ user.id }}</td>
+            </tr>
+            <tr>
+                <th>Full Name:</th>
+                <td>{{ macro.maybe_val(user.fullName) }}</td>
+            </tr>
+            <tr>
+                <th>Email:</th>
+                <td>{{ user.email }}</td>
+            </tr>
+            <tr>
+                <th>Email Verified:</th>
+                <td>{{ macro.table_lookup(emailVerifiedNamesTable, user.emailverified, helper) }}, ({{ user.emailverified }})</td>
+            </tr>
+            <tr>
+                <th>Registration Date:</th>
+                <td>{{ macro.print_date(user.creationdatetime) }}</td>
+            </tr>
+            <tr>
+                <th>Registration IP:</th>
+                <td>{{ macro.maybe_val(user.registrationIp) }}</td>
+            </tr>
+            <tr>
+                <th>Last Logon Date:</th>
+                <td>{{ macro.print_date(user.lastlogondatetime) }}</td>
+            </tr>
+            <tr>
+                <th>Last Logon IP:</th>
+                <td>{{ macro.maybe_val(user.lastlogonip) }}</td>
+            </tr>
+            <tr>
+                <th>Last Logon Point:</th>
+                <td>
+                    {% if lastLogonPoint %}
+                        <a href="https://maps.google.com/?q={{ lastLogonPoint.lat }},{{ lastLogonPoint.lng }}&ll={{ lastLogonPoint.lat }},{{ lastLogonPoint.lng }}&z=7" target="_blank">lat={{ lastLogonPoint.lat }}, lng={{ lastLogonPoint.lng }}</a>
+                    {% else %}
+                        {{ macro.print_null() }}
+                    {% endif %}
+                </td>
+            </tr>
+            <tr>
+                <th>Logon Count:</th>
+                <td>{{ user.logoncount }}</td>
+            </tr>
+            <tr>
+                <th>Country (Detected):</th>
+                <td>
+                    {% if country %}
+                        {{ country.name }}, {{ country.code }} ({{ country.countryid }})
+                    {% else %}
+                        {{ macro.maybe_val() }}
+                    {% endif %}
+                </td>
+            </tr>
+            <tr>
+                <th>State (Detected):</th>
+                <td>
+                    {% if state %}
+                        {{ state.name }}, {{ state.code }} ({{ state.stateid }})
+                    {% else %}
+                        {{ macro.maybe_val() }}
+                    {% endif %}
+                </td>
+            </tr>
+            <tr>
+                <th>City (Detected):</th>
+                <td>{{ macro.maybe_val(user.city) }}</td>
+            </tr>
+            <tr>
+                <th>Zip:</th>
+                <td>{{ macro.maybe_val(user.zip) }}</td>
+            </tr>
+            <tr>
+                <th>Zip Code Update Date:</th>
+                <td>{{ macro.print_date(user.zipCodeUpdateDate) }}</td>
+            </tr>
+            <tr>
+                <th>Company:</th>
+                <td>{{ macro.maybe_val(user.company) }}</td>
+            </tr>
+            <tr>
+                <th><span {% if user.fraud %}style="font-weight: bold; color: red"{% endif %}>Fraud:</span></th>
+                <td>{{ macro.flag(user.fraud) }}</td>
+            </tr>
+            <tr>
+                <th>Accounts:</th>
+                <td>{{ macro.maybe_val(user.accounts) }}</td>
+            </tr>
+            <tr>
+                <th>Providers:</th>
+                <td>{{ macro.maybe_val(user.providers) }}</td>
+            </tr>
+            <tr>
+                <th>User Agents:</th>
+                <td>{{ macro.maybe_val(user.useragents) }}</td>
+            </tr>
+            <tr>
+                <th>Two-Factor Auth Enabled:</th>
+                <td>{{ macro.flag(user.enabled2Factor) }}</td>
+            </tr>
+            <tr>
+                <th>Has Password (Two-Factor Auth Allowed):</th>
+                <td>{{ macro.flag(user.twoFactorAllowed) }}</td>
+            </tr>
+            <tr>
+                <th>Reset Password Date:</th>
+                <td>{{ macro.print_date(user.resetpassworddate) }}</td>
+            </tr>
+            <tr>
+                <th colspan="2" class="section-header">
+                    Subscription\Plus Info
+                </th>
+            </tr>
+            <tr>
+                <th>Account Level:</th>
+                <td>{{ macro.table_lookup(accountLevelNamesTable, user.accountlevel, helper) }}, ({{ user.accountlevel }})</td>
+            </tr>
+            <tr>
+                <th>Last Non-Subscription Plus Cart:</th>
+                <td>
+                    {% if lastPlusItem %}
+                        <div class="plus-cart-info-container">
+                            {% if user.subscription %}<div class="plus-cart-info-label" onclick="showCartInfo()">Subscription info below is more relevant.<br/> Click here to see cart details anyway.</div>{% endif %}
+                            <div class="plus-cart-info" {% if user.subscription %}style="opacity: 10%"{% endif %}>
+                                <span style="font-weight: bold">Trial:</span> {{ macro.flag(isTrial) }},<br/>
+                                {{ macro.link_to_cart(lastPlusItem, cartItemFQCNTable, cartItemShortTable, paymentTypesTable, helper) }}
+                            </div>
+                        </div>
+                    {% else %}
+                        {{ macro.print_null() }}
+                    {% endif %}
+                </td>
+            </tr>
+            <tr>
+                <th>Plus Expiration Date:</th>
+                <td>{{ macro.print_date(user.plusExpirationDate) }}</td>
+            </tr>
+            <tr>
+                <th>AT201 Expiration Date:</th>
+                <td>{{ macro.print_date(user.at201ExpirationDate) }}</td>
+            </tr>
+            <tr>
+                <th>Subscription:</th>
+                <td>
+                    {% if user.subscription %}
+                        {{ macro.table_lookup(constant('AwardWallet\\MainBundle\\Entity\\Usr::SUBSCRIPTION_NAMES'), user.subscription, helper) }}, ({{ user.subscription }})
+                    {% else %}
+                        {{ macro.print_null() }}
+                    {% endif %}
+                </td>
+            </tr>
+            <tr>
+                <th>Subscription Type:</th>
+                <td>
+                    {% if user.subscriptionType %}
+                        {{ macro.table_lookup(subscriptionTypeNamesTable, user.subscriptionType, helper) }}, ({{ user.subscriptionType }})
+                    {% else %}
+                        {{ macro.print_null() }}
+                    {% endif %}
+                </td>
+            </tr>
+            <tr>
+                <th>First Subscription Cart:</th>
+                <td>{{ macro.link_to_cart(user.firstSubscriptionCartItem, cartItemFQCNTable, cartItemShortTable, paymentTypesTable, helper) }}</td>
+            </tr>
+            <tr>
+                <th>Last Subscription Cart:</th>
+                <td>{{ macro.link_to_cart(user.lastSubscriptionCartItem, cartItemFQCNTable, cartItemShortTable, paymentTypesTable, helper) }}</td>
+            </tr>
+            <tr>
+                <th>Subscription Price:</th>
+                <td>{{ user.subscriptionPrice ? user.subscriptionPrice ~ " USD" : macro.print_null() }}</td>
+            </tr>
+            <tr>
+                <th>Subscription Period:</th>
+                <td>
+                    {% if user.SubscriptionPeriod %}
+                        {{ macro.table_lookup(constant('AwardWallet\\MainBundle\\Globals\\Cart\\SubscriptionPeriod::DAYS_TO_DURATION'), user.SubscriptionPeriod, helper) }}, ({{ user.SubscriptionPeriod }}d)
+                    {% else %}
+                        {{ macro.print_null() }}
+                    {% endif %}
+                </td>
+            </tr>
+            <tr>
+                <th>Next Billing Date:</th>
+                <td>{{ macro.print_date(user.NextBillingDate) }}</td>
+            </tr>
+            <tr>
+                <th>Paypal Suspended Until Date:</th>
+                <td>{{ macro.print_date(user.paypalSuspendedUntilDate) }}</td>
+            </tr>
+            <tr>
+                <th>Discounted Upgrade Before:</th>
+                <td>{{ macro.print_date(user.discountedUpgradeBefore) }}</td>
+            </tr>
+        </table>
+        <table class="table-info">
+            <tr>
+                <th colspan="3" class="section-header">Groups</th>
+            </tr>
+            {% if groups|length > 0 %}
+                {% for group in groups %}
+                    <tr>
+                        <td>{{ group.sitegroupid }}</td>
+                        <th>{{ group.groupname }}</th>
+                        <td>{{ group.description }}</td>
+                    </tr>
+                {% endfor %}
+            {% else %}
+                <tr>
+                    <td colspan="3"><span style="color: gray;">No groups</span></td>
+                </tr>
+            {% endif %}
+        </table>
+    </div>
+{% endblock %}

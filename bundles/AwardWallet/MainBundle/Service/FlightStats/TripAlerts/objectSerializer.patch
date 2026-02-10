@@ -1,0 +1,25 @@
+Index: bundles/AwardWallet/MainBundle/Service/FlightStats/TripAlerts/API/ObjectSerializer.php
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/bundles/AwardWallet/MainBundle/Service/FlightStats/TripAlerts/API/ObjectSerializer.php b/bundles/AwardWallet/MainBundle/Service/FlightStats/TripAlerts/API/ObjectSerializer.php
+--- a/bundles/AwardWallet/MainBundle/Service/FlightStats/TripAlerts/API/ObjectSerializer.php	(revision 368b47c7ad31b6c41ec0158aebb467a40b40d3d7)
++++ b/bundles/AwardWallet/MainBundle/Service/FlightStats/TripAlerts/API/ObjectSerializer.php	(date 1648800955680)
+@@ -274,7 +274,15 @@
+             // be interpreted as a missing field/value. Let's handle
+             // this graceful.
+             if (!empty($data)) {
+-                return new \DateTime($data);
++                try {
++                    return new \DateTime($data);
++                } catch (\Exception $e) {
++                    if (preg_match($pattern = '/\.(\d{6})\d+Z$/', $data)) {
++                        return new \DateTime(preg_replace($pattern, '.$1Z', $data));
++                    }
++
++                    return null;
++                }
+             } else {
+                 return null;
+             }

@@ -1,0 +1,96 @@
+services:
+    _defaults:
+        public: true
+
+    admin.email_template:
+        public: true
+        class: AwardWallet\MainBundle\Admin\EmailTemplateAdmin
+        arguments:
+            - "@router"
+            - '@AwardWallet\MainBundle\Service\EmailTemplate\DataProviderLoader'
+            - "@doctrine.orm.default_entity_manager"
+            - "@aw.security.token_storage"
+            - '@AwardWallet\MainBundle\Globals\Localizer\LocalizeService'
+        calls:
+            - [ setTemplate, [edit, '@@AwardWalletMain/Sonata/CRUD/EmailTemplate/EmailTemplateEdit.html.twig']]
+        tags:
+            - { name: sonata.admin, manager_type: orm, label: "Email template", group: "AwardWallet Email", model_class: AwardWallet\MainBundle\Entity\EmailTemplate, controller: AwardWallet\MainBundle\Controller\Sonata\EmailTemplateAdminController }
+
+    admin.tip:
+        public: true
+        class: AwardWallet\MainBundle\Admin\TipAdmin
+        arguments:
+            - "@router"
+            - '@AwardWallet\MainBundle\Service\EmailTemplate\DataProviderLoader'
+            - "@doctrine.orm.default_entity_manager"
+            - '@AwardWallet\MainBundle\Service\Tip\TipHandlerCollection'
+        calls:
+            - [ setTemplate, [edit, '@@AwardWalletMain/Sonata/CRUD/Tip/TipEdit.html.twig']]
+        tags:
+            - { name: sonata.admin, manager_type: orm, group: "AwardWallet LP", label: "Tip", model_class: AwardWallet\MainBundle\Entity\Tip }
+
+    admin.retail_provider:
+        public: true
+        class: AwardWallet\MainBundle\Admin\RetailProviderAdmin
+        arguments:
+            - "@router"
+            - "@doctrine.orm.default_entity_manager"
+        calls:
+            - [setTemplate, [import, '@@AwardWalletMain/Sonata/CRUD/RetailProvider/import.html.twig']]
+            - [setTemplate, [list, '@@AwardWalletMain/Sonata/CRUD/RetailProvider/list.html.twig']]
+        tags:
+            - { name: sonata.admin, manager_type: orm, label: "Retail Provider", group: "AwardWallet LP", show_mosaic_button: false, model_class: AwardWallet\MainBundle\Entity\RetailProvider, controller: AwardWallet\MainBundle\Controller\Sonata\RetailProviderAdminController }
+
+    admin.qs_transaction:
+        public: true
+        class: AwardWallet\MainBundle\Admin\QsTransactionAdmin
+        arguments:
+            - "@router"
+            - '@AwardWallet\MainBundle\Service\EmailTemplate\DataProviderLoader'
+            - "@doctrine.orm.default_entity_manager"
+        tags:
+            - { name: sonata.admin, manager_type: orm, group: 'AwardWallet LP', label: 'QS Credit Card', model_class: AwardWallet\MainBundle\Entity\QsTransaction, controller: AwardWallet\MainBundle\Controller\Sonata\QsTransactionAdminController }
+
+    # Blocks
+
+    sonata.block.service.welcome:
+        public: true
+        class: AwardWallet\MainBundle\Admin\Block\WelcomeBlockService
+        arguments: [ "@twig" ]
+        tags:
+            - { name: sonata.block }
+
+    # Filters
+
+    sonata.admin.orm.filter.type.number_range:
+        public: true
+        class: AwardWallet\MainBundle\Admin\Filter\NumberRangeFilter
+        tags:
+            - { name: "sonata.admin.filter.type", alias: "doctrine_orm_number_range" }
+
+    admin.credit_card:
+        public: true
+        autowire: true
+        class: AwardWallet\MainBundle\Admin\CreditCardAdmin
+        tags:
+            - { name: sonata.admin, manager_type: orm, group: 'AwardWallet LP', label: 'Credit Card', model_class: AwardWallet\MainBundle\Entity\CreditCard }
+
+    admin.multiplier_lookup:
+        public: true
+        class: AwardWallet\MainBundle\Admin\MultiplierLookupAdmin
+        calls:
+            - [setTemplate, [list, '@@AwardWalletMain/Sonata/CRUD/MultiplierLookup/list.html.twig']]
+        tags:
+            - { name: sonata.admin, manager_type: orm, group: 'AwardWallet LP', label: 'Multiplier Lookup', show_mosaic_button: false, model_class: AwardWallet\MainBundle\Entity\AccountHistory }
+
+    admin.at_201_group:
+        public: true
+        class: AwardWallet\MainBundle\Admin\AT201GroupAdmin
+        tags:
+            - { name: sonata.admin, manager_type: orm, group: 'Support', label: 'Award Travel 201', model_class: AwardWallet\MainBundle\Entity\Groupuserlink }
+
+    admin.abshare:
+        public: true
+        class: AwardWallet\MainBundle\Admin\AbShareAdmin
+        tags:
+            - { name: sonata.admin, manager_type: orm, group: 'Misc', label: 'Share accounts', model_class: AwardWallet\MainBundle\Entity\AbShare, controller: AwardWallet\MainBundle\Controller\Sonata\AbShareAdminController }

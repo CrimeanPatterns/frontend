@@ -1,0 +1,121 @@
+parameters:
+    aw.email.address.from: info@awardwallet.com
+    aw.email.address.dev: dev@awardwallet.com
+    aw.email.address.support: support@awardwallet.com
+    aw.email.address.notifications: notifications@awardwallet.com
+    aw.email.address.error: error@awardwallet.com
+    aw.email.address.test: test@awardwallet.com
+    aw.email.address.bcc: [notifications@awardwallet.com]
+    aw.email.address.ndr:  ndr@awardwallet.com
+    aw.email.address.donotreply: do.not.reply@awardwallet.com
+    email_tracking_salt: "%secret%_tracking_fyxoryj30dj"
+
+services:
+    _defaults:
+        public: true
+        bind:
+            $mailLogger: '@monolog.logger.email'
+    aw.email.mailer:
+        public: true
+        class: AwardWallet\MainBundle\FrameworkExtension\Mailer\Mailer
+        arguments:
+            - "@doctrine.orm.default_entity_manager"
+            - "@twig"
+            - "@logger"
+            - "@monolog.logger.email"
+            - '@AwardWallet\MainBundle\Service\SecureLink'
+            - "%locale%"
+            - '@AwardWallet\MainBundle\FrameworkExtension\Mailer\RelaySelector'
+            - "@event_dispatcher"
+            - "@translator"
+            - '@AwardWallet\MainBundle\FrameworkExtension\Mailer\Tracker\SendTracker'
+        calls:
+            -
+                - setEmails
+                -
+                    - from:
+                          "%aw.email.address.from%": "AwardWallet"
+                      dev: "%aw.email.address.dev%"
+                      support: "%aw.email.address.support%"
+                      notifications: "%aw.email.address.notifications%"
+                      error: "%aw.email.address.error%"
+                      test: "%aw.email.address.test%"
+                      bcc: "%aw.email.address.bcc%"
+                      ndr: "%aw.email.address.ndr%"
+                      donotreply: "%aw.email.address.donotreply%"
+            -
+                - setHosts
+                -
+                    - personal: "%requires_channel%://%host%"
+                      business: "%requires_channel%://%business_host%"
+                      cdn: "%cdn_host%"
+                      channel: "%requires_channel%:"
+    AwardWallet\MainBundle\FrameworkExtension\Mailer\Mailer: '@aw.email.mailer'
+    AwardWallet\MainBundle\FrameworkExtension\Mailer\RelaySelector:
+        autowire: true
+        arguments:
+            $defaultTransport: "@swiftmailer.transport"
+            $relays: "%relays%"
+    AwardWallet\MainBundle\FrameworkExtension\Mailer\Tracker\SendTracker:
+        autowire: true
+        lazy: true # do not prepare sql statement when warming up cache
+        arguments:
+            $protoAndHost: "%requires_channel%://%host%"
+    AwardWallet\MainBundle\FrameworkExtension\Mailer\Tracker\ClickTrackingListener:
+        autowire: true
+        tags:
+            - { name: kernel.event_listener, event: kernel.request, method: onKernelRequest, priority: 1000 }
+    AwardWallet\MainBundle\FrameworkExtension\Mailer\Tracker\OpenTracker:
+        autowire: true
+    AwardWallet\MainBundle\FrameworkExtension\Mailer\Tracker\ClickTracker:
+        autowire: true
+    AwardWallet\MainBundle\FrameworkExtension\Mailer\Tracker\UrlSigner:
+        autowire: true
+        arguments:
+            $salt: "%email_tracking_salt%"
+
+    AwardWallet\MainBundle\FrameworkExtension\Mailer\MailerCollection:
+        public: true
+        autowire: true
+
+    aw.email.collection.mailer:
+        alias: AwardWallet\MainBundle\FrameworkExtension\Mailer\MailerCollection
+
+    aw.email.message:
+        public: true
+        class: Swift_Message
+        shared: false
+        calls:
+            - [ setReturnPath, [ "%aw.email.address.ndr%" ] ]
+            - [ setBcc, [ "%aw.email.address.bcc%" ] ]
+            - [ setFrom, [ "%aw.email.address.from%" ] ]
+
+    AwardWallet\MainBundle\FrameworkExtension\Mailer\EmailLog:
+        public: true
+        autowire: true
+
+    aw.email.provider.expire_aw:
+        public: true
+        class: AwardWallet\MainBundle\FrameworkExtension\Mailer\DataProvider\ExpireAwPlusDataProvider
+        shared: false
+        arguments:
+            - "@doctrine.orm.default_entity_manager"
+            - "@logger"
+            - "@aw.email.mailer"
+            - '@AwardWallet\MainBundle\Service\Notification\Sender'
+            - '@AwardWallet\MainBundle\Globals\Localizer\LocalizeService'
+            - '@AwardWallet\MainBundle\Service\Billing\PlusManager'
+            - '@AwardWallet\MainBundle\Service\Billing\ExpirationCalculator'
+    AwardWallet\MainBundle\FrameworkExtension\Mailer\DataProvider\ExpireAwPlusDataProvider: '@aw.email.provider.expire_aw'
+
+    aw.email.provider.rewards_activity:
+        autowire: true
+        public: true
+        class: AwardWallet\MainBundle\FrameworkExtension\Mailer\DataProvider\RewardsActivityProvider
+        shared: false
+#        arguments:
+#            - "@doctrine"
+#            - "@logger"
+#            - '@AwardWallet\MainBundle\Service\Account\RecentlyList'
+#            - "@aw.manager.advt"
+    AwardWallet\MainBundle\FrameworkExtension\Mailer\DataProvider\RewardsActivityProvider: '@aw.email.provider.rewards_activity'

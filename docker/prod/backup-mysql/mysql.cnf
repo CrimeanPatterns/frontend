@@ -1,0 +1,26 @@
+[mysqld]
+character-set-server = utf8mb4
+connect_timeout = 60
+# innodb_autoinc_lock_mode = 2
+innodb_buffer_pool_size = 1GB
+innodb_doublewrite = 0
+innodb_flush_log_at_trx_commit = 0
+innodb_flush_method = nosync
+innodb_io_capacity = 200
+innodb_io_capacity_max = 100000
+innodb_log_buffer_size = 256M
+innodb_log_file_size = 1G
+innodb_log_compressed_pages = 0
+innodb_page_size = 16KB
+innodb_thread_concurrency=0
+interactive_timeout = 300
+max_allowed_packet=1G
+# performance_schema = 0
+skip-character-set-client-handshake = 1
+sql_mode = ""
+sync_binlog = 0
+wait_timeout = 60
+disable_log_bin
+innodb_status_output_locks = 0
+innodb_status_output = 0
+innodb_adaptive_hash_index = 0

@@ -1,0 +1,124 @@
+{% extends "@AwardWalletMain/Layout/booking.html.twig" %}
+{% import '@AwardWalletMain/Booking/macros.html.twig' as macros %}
+{% import '@AwardWalletMain/TwigMacros/assets.html.twig' as assets %}
+
+{% block title %}
+    {{ 'booking.table.mytitle'|trans({}, 'booking') }}
+{% endblock %}
+
+{% block mainContent %}
+    <div class="booking-requests my-requests">
+        <a href="{{ path('aw_booking_add_index') }}" class="bread-crumbs btn spec"><i class="old-icon-book-add"></i>{{ 'booking.add-request'|trans({}, 'booking')|desc('New booking request') }}</a>
+        <table>
+            <thead>
+            <tr>
+                <td colspan="9">
+                    {% if archive is defined and archive %}
+                        {{ 'booking.table.past_title'|trans({}, 'booking')|desc('Past requests') }}
+                    {% else %}
+                        {{ 'booking.table.active_title'|trans({}, 'booking')|desc('Active requests') }}
+                    {% endif %}
+                </td>
+            </tr>
+            </thead>
+            <tr class="booking-requests-caption">
+                <td>
+                    <div>{{ 'booking.table.headers.id'|trans({}, 'booking') }}</div>
+                </td>
+                <td>
+                    <div>{{ 'new_abrequest.segments.fromto'|trans({}, 'email') }}</div>
+                </td>
+                <td>
+                    <div>{{ 'booking.table.headers.departure'|trans({}, 'booking') }}</div>
+                </td>
+                <td>
+                    <div>{{ 'booking.table.headers.last-update'|trans({}, 'booking') }}</div>
+                </td>
+                <td>
+                    <div>{{ 'booking.table.headers.status'|trans({}, 'booking') }}</div>
+                </td>
+                <td style="width: 50px"></td>
+            </tr>
+
+            {% for request in result %}
+                {% set LastUpdate = request.LastUpdateDate %}
+                {% set isRequestReadByUser = requestRep.isRequestReadByUser(request, app.user, false) %}
+                {% set detailsLink = url('aw_booking_view_index', {'id' : request.abrequestid }) %}
+                {% set detailsLinkWithScroll = detailsLink %}
+                {% if isRequestReadByUser == false %}
+                    {% set detailsLinkWithScroll = detailsLink ~ '?new' %}
+                {% endif %}
+                <tr class="{% if isRequestReadByUser == false %}new {% endif %}{{ macros.requestListClassRow(request, false) }} tablebody"
+                    data-target="{{ detailsLinkWithScroll }}">
+                    <td class="booking-id">
+                        <a href="{{ detailsLinkWithScroll }}">
+                            <p>{{ request.abrequestid }}</p>
+                        </a>
+                    </td>
+                    <td>
+                        <a href="{{ detailsLinkWithScroll }}">
+                            {% set old_segment = '' %}
+                            {% for segment in request.segments %}
+                                {% if old_segment != segment.dep %}
+                                    <p>{{ segment.dep }}</p>
+                                {% endif %}
+                                <p>{{ segment.arr }}</p>
+                                {% set old_segment = segment.arr %}
+                            {% endfor %}
+                        </a>
+                    </td>
+                    <td>
+                        <a href="{{ detailsLinkWithScroll }}">
+                            <p>{{ request.segments.first ? request.segments.first.depdateideal|formatDatetime('medium', 'none') : '' }}</p>
+                        </a>
+                    </td>
+                    <td>
+                        <a href="{{ detailsLinkWithScroll }}">
+                            {{ LastUpdate|leadTZ|formatDatetime('medium', 'none') }}
+                            <span>{{ LastUpdate|leadTZ|formatDatetime('none', 'short') }}</span>
+                        </a>
+                    </td>
+                    <td>
+                        <a href="{{ detailsLinkWithScroll }}">
+                            <p>{{ requestRep.getStatusDescription(request.realstatus(false))|trans({}, 'booking') }}</p>
+                        </a>
+                    </td>
+                    <td class="booking-btn">
+                        <a href="{{ detailsLink }}#respond-block"><i class="old-icon-booking-back" title="{{ 'booking.table.tooltip.reply'|trans({}, 'booking')|desc('Reply') }}"></i></a><span></span><a
+                                href="{{ path('aw_booking_view_markread', {id: request.abrequestid}) }}"
+                                class="read-button"><i
+                                    class="{{ isRequestReadByUser ? 'old-icon-booking-read-message' : 'old-icon-booking-message' }}"
+                                    title="{{ 'booking.table.tooltip.mark-as'|trans({}, 'booking')|desc('Mark as read/unread') }}"></i></a>
+                    </td>
+                </tr>
+            {% endfor %}
+        </table>
+    </div>
+{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    {{ assets.assets_form('css') }}
+    {{ encore_entry_link_tags('booking') }}
+    <style type="text/css">
+        input.booking-requests-select { display: none; } select.booking-requests-select { position: relative; width: 136px; opacity: 0; filter: alpha(opacity=0); z-index: 5; } .disabled { opacity: 0.5; filter: alpha(opacity=50); }
+    </style>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script type="text/javascript">
+    require([
+        'jquery-boot', 'translator-boot',
+        // assets_form
+        'select2',
+        'awardwalletmain/js/select2_colored',
+        // bookingJs
+        'awardwalletmain/js/booking/common',
+        'awardwalletmain/js/booking/autocomplete',
+        // page
+        'awardwalletmain/js/booking/list'
+    ], function(){
+    });
+    </script>
+{% endblock %}

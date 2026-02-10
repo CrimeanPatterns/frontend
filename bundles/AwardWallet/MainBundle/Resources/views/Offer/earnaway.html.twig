@@ -1,0 +1,99 @@
+{# Issue #8273 #}
+
+{% extends "@AwardWalletMain/Offer/standard.html.twig" %}
+{% import '@AwardWalletMain/Offer/offerMacros.html.twig' as offerMacros %}
+{% import '@AwardWalletMain/TwigMacros/assets.html.twig' as assets %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    {{ encore_entry_link_tags('offer') }}
+    {{ encore_entry_link_tags('offers/earnaway') }}
+    {{ assets.assets_form('css') }}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    {{ assets.assets_form('js') }}
+    <script>
+        function selectChange(sel){
+            accId = sel.options[sel.selectedIndex].value;
+            ss = sel.options[sel.selectedIndex].text.substring(0,sel.options[sel.selectedIndex].text.indexOf(' ') - 1);
+            if (parseInt(ss, 10) > 0)
+                $('#earnaway_input').val(ss);
+            else
+                $('#earnaway_input').val('');
+        }
+        {{ offerMacros.jsOfferNo(_context, Code, OfferUserID, defaultRedirectLocation) }}
+        function offerAgreed() {
+            {% autoescape false %}
+            {% if (preview != 1) and (src != 1) %}
+            {% if vars.isLocalProd == false %}
+                $.post("{{ url('aw_offer_agree', { 'offerUserId': OfferUserID, 'agreed': '1' } ) }}");
+            {% endif %}
+            {% endif %}
+            {% endautoescape %}
+            varval = $( "input#earnaway_input" ).val();
+            $.get("{{ url('aw_offer_var', { 'offerUserId': OfferUserID } ) }}", { var: varval },function (data){
+                window.location = '{{ url('aw_account_redirect', {ID: accId, step: 'earnaway'}) }}';
+            });
+            return true;
+        }
+    </script>
+{% endblock %}
+
+{% block content %}
+    <div id="offer_wrap">
+        <div id="earnaway_bg">
+            <div class="offer_title earnaway_title">
+                Earn away.<br/>
+                Get away
+            </div>
+            <div id="div_ul" class="earnaway_ul">
+                <ul class="offer_list earnaway_list">
+                    <li>Earn 2X Starpoints on all eligible stays at more<br>
+                        than 1,000 participating hotels and resorts through<br>
+                        July 31, 2014.
+                    <li>Earn 3X Starpoints if your stay includes a Sunday<br>
+                    (Saturday at hotels in the Middle East). It doesn't<br>
+                    get better than that. Register by June 30, 2014.
+                </ul>
+            </div>
+            <script>
+                accId = {{ Accounts[0].AccountID }};
+            </script>
+            <div class="earnaway_bottom">
+                {% if Accounts|length == 1 %}
+                <div style="display: table;">
+                {% else %}
+                    <div class="earnaway_select_label">
+                        Please select an account to register:
+                    </div>
+                    <div style="display: table;">
+                    <select style="opacity:0; height: 30px" onchange="selectChange(this);">
+                        {% for account in Accounts %}
+                            <option value="{{ account.AccountID }}">{{ account.AccountNumber }} ({{ account.UserName }})</option>
+                        {% endfor %}
+                    </select>
+                {% endif %}
+                <div class="earnaway_enter_label">
+                    ENTER YOUR SPG® NUMBER
+                </div>
+                    {% if Accounts[0].AccountNumber > 0 %}
+                        <input id="earnaway_input" value="{{ Accounts[0].AccountNumber }}">
+                    {% else %}
+                        <input id="earnaway_input"">
+                    {% endif %}
+                <div class="offer_btn" id="earnaway_btn" onclick="offerAgreed();">
+                    Register for this promotion
+                </div>
+                    </div>
+            </div>
+        </div>
+        <div class="offer_declinekind" onclick="offerNo();">
+            Never show this ad again
+        </div>
+        <div class="offer_toaccount earnaway_toaccount" onclick="window.location = '{{ defaultRedirectLocation }}'">
+            Proceed to my account
+        </div>
+    </div>
+{% endblock %}

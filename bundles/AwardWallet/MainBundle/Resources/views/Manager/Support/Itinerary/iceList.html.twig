@@ -1,0 +1,58 @@
+                    <tr>
+                        <th class="iced stDate bothBorder topBorder"><h4>Update Date</h4></th>
+                        <th class="iced account rightBorder topBorder"><h4>Account ID</h4></th>
+                        <th class="iced short rightBorder topBorder"><h4>User ID</h4></th>
+                        <th class="iced middle rightBorder topBorder"><h4>Log</h4></th>
+                        <th class="iced middle2 rightBorder topBorder"><h4>All</h4></th>
+                    </tr>
+                    {% if list|length > 0 %}
+                        {% for row in list %}
+
+                            <tr class="nowrap">
+                                <td class="iced bothBorder date"
+                                    title="{{ row.UpdateDate }}">{{ row.UpdateDate }}</td>
+                                <td class="iced rightBorder account">
+                                    {% if row.AccountID %}
+                                        <a target="_blank"  title="Request password for AccountID: {{ row.AccountID }}"
+                                           href="/manager/passwordVault/requestPassword.php?ID={{ row.AccountID }}">{{ row.AccountID }}</a>&nbsp;
+                                        <button class="gray" style="float: right;" title="Copy AccountID '{{ row.AccountID }}' to buffer"
+                                                onclick="copy(this)">&nbsp;❒ Copy
+                                        </button>
+                                    {% endif %}
+                                </td>
+                                <td class="iced rightBorder userId"
+                                    title="Impersonate UserID: {{ row.UserID }}">
+                                    {% if row.UserID %}
+                                        <a target="_blank"
+                                           href="/manager/impersonate?UserID={{ row.UserID }}&AutoSubmit&AwPlus=1">{{ row.UserID }}</a>
+                                    {% endif %}
+                                </td>
+                                {% if row.file %}
+                                    <td id="log{{ type }}{{ loop.index }}" class="iced rightBorder Log" title="Log" data-field="log{{ type }}{{ loop.index }}" data-data="{{ row.file|json_encode() }}"></td>
+                                {% elseif row.AccountID %}
+                                    <td class="iced rightBorder Log"
+                                        title="Latest Log">
+                                        <a href='/manager/loyalty/logs?AccountID={{ row.AccountID }}&ShowLatest=1'
+                                           target='_blank'>Latest</a>
+                                    </td>
+                                {% else %}
+                                    <td class="iced rightBorder Log"
+                                        title="No Log">No log
+                                    </td>
+                                {% endif %}
+                                <td class="iced rightBorder Log"
+                                    title="Latest All Logs">
+                                    {% if row.AccountID %}
+                                        <a href='/manager/loyalty/logs?AccountID={{ row.AccountID }}'
+                                           target='_blank'>All Logs</a>
+                                    {% else %}
+                                        No accounts
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    {% else %}
+                        <tr>
+                            <td colspan="5"><span style="color: red">Not found</span></td>
+                        </tr>
+                    {% endif %}

@@ -1,0 +1,39 @@
+{% extends is_granted('SITE_BUSINESS_AREA') ? "@AwardWalletMain/Layout/business_default.html.twig" : "@AwardWalletMain/Layout/edit_connections.html.twig" %}
+
+{% block header_metatags %}
+    {% include '@AwardWalletMain/Utility/scalableViewport.html.twig' %}
+{% endblock %}
+
+{% block content %}
+    <div class="add-account">
+        <div class="main-blk">
+            <h1>{{ 'agents.connect.step1.header'|trans|desc('Add a new connection') }}</h1>
+
+            {% if is_granted('SITE_BUSINESS_AREA') %}
+                {% if found|length == emailCount %}
+                    <div class="warning-message">
+                        <i class="icon-warning-b"></i>
+                        <p>{{ 'agents.connect.exist.message'|trans }}</p>
+                    </div>
+                {% else %}
+                    <div class="success-message">
+                        <i class="icon-green-check-b"></i>
+                        <p>{{ 'agents.connect.business.sent'|trans({})|desc('Thank you. We sent invitation emails to the addresses you specified.') }}</p>
+                    </div>
+                {% endif %}
+            {% else %}
+                <div class="success-message">
+                    <i class="icon-green-check-b"></i>
+                    <p>{{ 'agents.connect.thanks.message'|trans({'%email%': email |htmlencode})|desc('Thank you. We sent an email to the address you specified <span class="silver">(%email%)</span>. As soon as this person accepts your connection the two of you can decide what you want to share via AwardWallet.')|raw }}</p>
+                </div>
+            {% endif %}
+
+            <div style="text-align: center; padding-top: 40px">
+                <a href="{{ is_granted('SITE_BUSINESS_AREA') ? url('aw_business_members') : url('aw_user_connections') }}" class="btn-blue">{{ 'button.ok'|trans }}</a>
+            </div>
+
+            <br>
+        </div>
+        {{ include('@AwardWalletMain/Agent/_faq.html.twig') }}
+    </div>
+{% endblock %}

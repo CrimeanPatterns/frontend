@@ -1,0 +1,1 @@
+{% if message.fromBooker %}{{ message.post|replace(msgReplacedVars)|raw('html')|filterMobileCSP }}{% else %}{{ message.post|auto_link|filterMobileCSP }}{% endif %}

@@ -1,0 +1,91 @@
+{% extends "@AwardWalletMain/Layout/onecard.html.twig" %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    {{ encore_entry_link_tags('one-card') }}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        require([
+            'lib/design',
+            'pages/onecard'
+        ], function () {
+            $('form').on('submit', function (e) {
+                $('form button[type="submit"]').addClass('loader').attr('disabled', 'disabled');
+            });
+        });
+    </script>
+{% endblock %}
+
+{% block title %}One Card{% endblock %}
+
+{% block content %}
+    <div class="main-blk one-card">
+        <h1>{{ 'one.card.text'|trans }}</h1>
+
+        <div class="one-card-row f-left">
+            <form action="/onecard/designer.php" method="post">
+                <div class="main-blk-content">
+                    <p class="title-p">{{ 'aw.onecard.title'|trans|desc('Select the people for whom you want to get AwardWallet OneCard:') }}</p>
+
+                    <table class="main-table">
+                        <thead>
+                        <tr>
+                            <th>{{ 'aw.onecard.th.select'|trans|desc('Select') }}</th>
+                            <th class="owner">{{ 'aw.onecard.th.owner'|trans|desc('Owner') }}</th>
+                            <th>{{ 'aw.onecard.th.account'|trans|desc('Accounts:') }}</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for data in result %}
+                            <tr>
+                                <td class="select">
+                                    <input type="checkbox" class="user" name="otherUsers[]" value="{{ data.userId }}" id="check_{{ data.userId }}">
+                                    {#<label for="check_{{ data.userId }}" class="label"></label>#}
+                                </td>
+                                <td class="owner">{{ data.username }}</td>
+                                <td>{{ data.count }}</td>
+                            </tr>
+                        {% else %}
+                            <tr><td colspan="3" class="not-added"><i class="icon-warning-small"></i><span>{{ 'aw.onecard.no-accounts'|trans|desc('You have not yet added any loyalty programs to your account.') }}</span></td></tr>
+                        {% endfor %}
+                        {#<tr>#}
+                            {#<td class="select">#}
+                                {#<input type="checkbox" id="check_all">#}
+                            {#</td>#}
+                            {#<td class="owner">#}
+                                {#<label for="check_all">{{ 'aw.onecard.select-all'|trans|desc('Select All') }}</label>#}
+                            {#</td>#}
+                            {#<td></td>#}
+                        {#</tr>#}
+                        </tbody>
+                    </table>
+                    <div class="hidden error-message-blk" id="error">
+                        <i class="icon-warning-small"></i>
+                        {% set link = '<a href="'~path('aw_users_pay')~'">'~('aw.onecard.error.link2'|trans|desc('proceed to purchasing a credit'))~'</a>' %}
+                        <p>{{ 'aw.onecard.error.title2'|trans|desc('You do not have enough OneCard credits.') }} {{ 'aw.onecard.error2'|trans({'%link%': link})|desc('Please %link% in order to complete this request.')|raw }}</p>
+                    </div>
+                </div>
+                <div class="row-submit">
+                    <button type="submit" class="btn-blue" id="proceed" disabled>{{ 'form.button.proceed'|trans|desc('Proceed') }}</button>
+                </div>
+            </form>
+        </div>
+        <div class="main-blk small f-left">
+            <h2>{{ 'aw.onecard.summary.header'|trans|desc('Summary') }}</h2>
+
+            <div class="main-blk-content">
+                <div class="summary-cards">
+                    <div class="row">{{ 'aw.onecard.available.link'|trans|desc('Available Cards') }}<span class="count silver" id="total">{{ cards.Left }}</span></div>
+                    <div class="row">{{ 'aw.onecard.used.link'|trans|desc('Cards Used') }}<span class="count silver" id="used">0</span></div>
+                    <div class="row">{{ 'aw.onecard.left.link'|trans|desc('Cards Left') }}<span class="count silver" id="left">{{ cards.Left }}</span></div>
+                </div>
+            </div>
+            <div class="row-submit">
+                <a href="{{ path('aw_users_pay') }}" class="btn-blue">{{ 'aw.onecard.get-more.link'|trans|desc('Get more cards') }}</a>
+            </div>
+        </div>
+    </div>
+{% endblock %}

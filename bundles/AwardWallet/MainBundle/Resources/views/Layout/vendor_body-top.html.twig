@@ -1,0 +1,12 @@
+{#
+{% if not is_granted('SITE_MOBILE_VERSION_SUITABLE') and not is_granted('SITE_FROM_APP') and load_external_scripts and not webpack|default(false) %}
+    <!-- Quantcast Choice. Consent Manager Tag v2.0 (for TCF 2.0) -->
+    <script type="text/javascript" async=true>
+        require(["lib/gdpr-quantcast"], function () {});
+    </script>
+    <!-- End Quantcast Choice. Consent Manager Tag v2.0 (for TCF 2.0) -->
+{% endif %}
+#}
+{% if is_granted('ROLE_STAFF') %}
+<script src="https://app.termly.io/resource-blocker/548bf46c-10df-4ba3-a029-0b660bea6d7f?autoBlock={{ app.request.get('autoBlock', 'off') }}" async></script>
+{% endif %}

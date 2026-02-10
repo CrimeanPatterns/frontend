@@ -1,0 +1,146 @@
+{% form_theme form with ['@AwardWalletMain/FormTheme/sharingOptions.html.twig', '@AwardWalletMain/FormTheme/fields.html.twig'] %}
+{% extends app.request.attributes.has('ngtemplate') ? "@AwardWalletMain/Layout/ngtemplate.html.twig" : (is_granted('SITE_BUSINESS_AREA') ? "@AwardWalletMain/Layout/business_default.html.twig" : "@AwardWalletMain/Layout/accounts.html.twig") %}
+
+{% block javascripts %}
+    {{ parent() }}
+
+    <script>
+        require(['jquery-boot', 'lib/utils', 'lib/customizer', 'lib/accountSharing', 'jqueryui', 'select2', 'routing', 'lib/accountAutocomplete', 'browserext'], function ($, utils, customizer) {
+            $(function () {
+
+                $('form[name=add]').find('input:visible').first().focus();
+                $('form[name=add] div.error').find('input:visible').first().focus();
+
+                $('.faq a.show').click(function (e) {
+                    e.preventDefault();
+                    $(this).hide();
+                    $('.faq-blk-item').fadeIn('slow');
+                });
+
+                // Autocomplete
+                $(document).on('focus', '.cp-autocomplete:not(.ui-autocomplete-input)', function (e) {
+                    $(this).autocomplete({
+                        source: function (request, response) {
+                            var term = request.term.replace(/[^A-Za-z0-9А-Яа-я\.' ]+/g, '');
+
+//                            if (term.length > 6) return;
+                            utils.debounce(
+                               function () {
+                                   $.ajax({
+                                       url: Routing.generate('aw_coupon_json_progs', {query: term}),
+                                       dataType: "json",
+                                       success: function (data) {
+                                           response(data);
+                                       }
+                                   })
+                               }, 300
+                            );
+
+                        },
+                        select: function (event, ui) {
+                            $(event.target).val(ui.item.value);
+                            $(event.target).trigger('change');
+                        },
+                        minLength: 2
+                    })
+                });
+
+                //Autocomplete highlighting
+                $.ui.autocomplete.prototype._renderItem = function (ul, item) {
+                    var regex = new RegExp("(" + this.element.val().replace(/[^A-Za-z0-9А-Яа-я\.]+/g, '') + ")", "gi"),
+                            html = item.label.replace(regex, "<b>$1</b>");
+                    return $("<li></li>")
+                            .data("item.autocomplete", item)
+                            .append($("<a></a>").html(html))
+                            .appendTo(ul);
+                };
+
+                $('#providercoupon_programname, #providercoupon_owner').change(
+                    function () {
+                        var $form = $(this).closest('form');
+                        var $owner = $form.find('#providercoupon_owner');
+                        var $programName = $form.find('#providercoupon_programname');
+                        var data = {};
+                        data[$owner.attr('name')] = $owner.val();
+                        data[$programName.attr('name')] = $programName.val();
+                        $form.find('#providercoupon_account').attr('disabled', 'disabled');
+                        $.ajax({
+                            url: $form.attr('action'),
+                            type: $form.attr('method'),
+                            data: data,
+                            success: function (html) {
+                                $form.find('#providercoupon_account').replaceWith($(html).find('#providercoupon_account'));
+                                checkCategories($form, html);
+                            }
+                        });
+                    }
+                );
+
+                checkCategories();
+
+                function checkCategories(element, html) {
+                    element = element || $('#providercoupon_programname');
+                    var $form = element.closest('form');
+                    var kindSelect = $form.find('#providercoupon_kind');
+                    if($(html || $form).find('#providercoupon_kind option').length < 2){
+                        kindSelect.closest('.row').slideUp(function () {
+                            if(html)
+                                kindSelect.replaceWith($(html).find('#providercoupon_kind'));
+                        });
+                    }else{
+                        if(html)
+                            kindSelect.replaceWith($(html).find('#providercoupon_kind'));
+                        $form.find('#providercoupon_kind').closest('.row').slideDown();
+                    }
+                }
+
+                $('#account_owner, #providercoupon_owner').change(function() {
+                    $(window).trigger('person.activate', $(this).val());
+                    'providercoupon_owner' === $(this).attr('id')
+                        ? $('#account_owner').val($(this).val())
+                        : $('#providercoupon_owner').val($(this).val());
+                });
+            });
+        });
+    </script>
+{% endblock %}
+
+
+{% block content %}
+    <div class="add-account">
+        <div class="main-blk">
+            {% if not app.request.attributes.has('ngtemplate') %}
+                <h1>{{ 'track.type.manual_ticket.title' | trans() | desc('Manually track travel voucher or gift card') }}</h1>
+            {% endif %}
+            {% set backTo = app.request.query.has('backTo') ? {backTo: app.request.query.get('backTo')} : {} %}
+            <form name="add" class="main-form"
+                  action="{{ coupon.providercouponid ? path('aw_coupon_edit', {couponId: coupon.providercouponid}|merge(backTo)) : path('aw_coupon_add') }}"
+                  method="post" autocomplete="off">
+                <div class="main-form-item">
+                    {{ form_row(form.owner) }}
+                    {{ form_row(form.programname) }}
+                    {{ form_row(form.account) }}
+                    {{ form_row(form.kind) }}
+                    {{ form_row(form.typeName) }}
+                    {{ form_row(form.cardnumber) }}
+                    {{ form_row(form.pin) }}
+                    {{ form_row(form.value) }}
+                    {{ form_row(form.currency) }}
+                    {{ form_row(form.expirationdate) }}
+                    {{ form_row(form.donttrackexpiration) }}
+                    {{ form_row(form.isArchived) }}
+                    {{ form_row(form.description) }}
+                    {{ form_widget(form, {'noSubmit' : true}) }}
+                </div>
+                <div class="row-submit">
+                    <div class="row-submit-item">
+                        <div class="submit">
+                            <button type="submit"
+                                    class="btn-blue">{{ coupon.providercouponid ? 'coupon.buttons.update'|trans|desc('Update') : 'coupon.buttons.add'|trans|desc('Add') }}</button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+{% endblock %}

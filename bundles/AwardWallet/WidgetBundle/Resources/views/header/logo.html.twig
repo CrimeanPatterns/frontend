@@ -1,0 +1,69 @@
+{% if not_logged is not defined %}
+	<div class="header-area {{ business }}">
+{% endif %}
+	{% if plus is defined and not business %}
+		<span class="plus"></span>
+	{% endif %}
+	{% if expires is defined and expires == 1 and not business %}
+		<a class="expires" href="{{ path('aw_users_pay') }}" tabindex="-1"></a>
+	{% elseif trial is defined and trial and not business %}
+		<a class="trial" href="{{ path('aw_users_pay') }}" tabindex="-1"></a>
+	{% endif %}
+
+	<a href="{{ urlLocale('aw_home_locale') }}" id="main-logo" class="{{ logo }}" title="AwardWallet.com" tabindex="-1"></a>
+
+	{% if not business %}
+		<div id="mediaLogos" style="display: none;" title="{{ 'aw.logos'|trans()|desc('AwardWallet Logos') }}">
+			<div class="new-design">
+				<h3>{{ 'message.looking_for_logos.1'|trans|desc('Looking for AwardWallet logos, banners or screenshots?') }}</h3>
+				<h4>{{ 'message.looking_for_logos.2'|trans|desc('We got them all organized neatly for you on this page:') }}</h4>
+				<br>
+				<p class=""><a href="{{ path('aw_media_logos') }}">{{ url('aw_media_logos') }}</a></p>
+			</div>
+		</div>
+		{% if not (isMobileDevice() and isHomePage()) %}
+			{% if not webpack|default(false) %}
+				<script>
+				require(['jquery-boot', 'lib/dialog'], function ($, dialog) {
+					var popup = $('#mediaLogos');
+					var logo = $('.header-site .logo');
+
+					var d = dialog.createNamed('mediaLogos', popup, {
+						autoOpen: false,
+						modal: true,
+						minWidth: 550,
+						//position: { my: "left-80 top", at: "center bottom+15", of: logo },
+						buttons: [
+							{
+								text: '{{ 'button.close'|trans|trans|desc('Close') }}',
+								"class": "btn-silver",
+								click: function() {
+									d.close();
+								}
+							},
+							{
+								text: '{{ 'button.proceed_to_page'|trans|desc('Proceed to this page') }}',
+								"class": "btn-blue",
+								click: function() {
+									window.location = '{{ path('aw_media_logos') }}';
+								}
+							}
+						]
+					});
+
+					logo.on('contextmenu', function (e) {
+						e.preventDefault();
+						d.open();
+						//$(".ui-dialog-titlebar").hide();
+					});
+				});
+			</script>
+			{% else %}
+				{{ encore_entry_script_tags('logo', null, '_default', {'defer': true}) }}
+			{% endif %}
+			
+		{% endif %}
+	{% endif %}
+{% if not_logged is not defined %}
+	</div>
+{% endif %}

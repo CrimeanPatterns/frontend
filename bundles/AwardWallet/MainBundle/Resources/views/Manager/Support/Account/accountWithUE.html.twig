@@ -1,0 +1,152 @@
+{% set title = "Accounts with UE" %}
+{% extends '@AwardWalletMain/Manager/layout.html.twig' %}
+{% block content %}
+    <style>
+        table.tableRes {
+            margin-top: 10px;
+            border-spacing: 0;
+            border-collapse: separate;
+        }
+
+        table.tableRes td {
+            padding: 4px;
+            vertical-align: text-top;
+        }
+
+        table.tableRes th {
+            background-color: whitesmoke;
+            font-weight: bold;
+            border-top: #D0D0D0 1px solid;
+            border-bottom: #D0D0D0 1px solid;
+            text-align: center;
+            padding: 5px;
+        }
+
+        table.tableRes {
+            border-width: 0 !important;
+            vertical-align: middle;
+        }
+
+        table.tableRes .bothBorder {
+            border-left: #D0D0D0 1px solid;
+            border-right: #D0D0D0 1px solid;
+        }
+
+        table.tableRes .leftBorder {
+            border-left: #D0D0D0 1px solid;
+        }
+
+        table.tableRes .rightBorder {
+            border-right: #D0D0D0 1px solid;
+        }
+
+        table.tableRes .topBorder {
+            border-top: #D0D0D0 1px solid;
+        }
+
+        table.tableRes .bottomBorder {
+            border-bottom: #D0D0D0 1px solid;
+        }
+    </style>
+
+    <script>
+        function setColor(el) {
+            if ($(el).attr('checked'))
+                $(el).parent().parent().css('background-color', 'lavender');
+            else
+                $(el).parent().parent().css('background-color', '');
+        }
+        function sortTable(table, col)
+        {
+            toSortRows = $(table).find('tr').get();
+            resultRows = [];
+            $(toSortRows[0].cells).css('background', 'ghostwhite');
+            $(toSortRows[0].cells[col]).css('background', 'aliceblue');
+            resultRows.push(toSortRows[0]);
+
+            toSortRows = toSortRows.slice(1);
+
+            // col=0;
+            let sortedRows = Array.from(toSortRows)
+                .sort((rowA, rowB) => {
+                    if (col === 2) {
+                        dataA = $(rowA.cells[col]).find('a').get(0);
+                        dataB = $(rowB.cells[col]).find('a').get(0);
+                    } else {
+                        dataA = rowA.cells[col];
+                        dataB = rowB.cells[col];
+                    }
+                    if (Number(dataA.innerHTML.match(/(.+?)(?:\/|<|$)/)[1]) > 0) {
+                        valA = Number(dataA.innerHTML.match(/(.+?)(?:\/|<|$)/)[1]);
+                        valB = Number(dataB.innerHTML.match(/(.+?)(?:\/|<|$)/)[1]);
+                    } else {
+                        valA = dataA.innerHTML;
+                        valB = dataB.innerHTML;
+                    }
+                    if (col === 7)
+                        cond = (valA < valB);
+                    else
+                        cond = (valA > valB);
+                    return (cond ? 1 : -1);
+                });
+
+            sortedRows.forEach(function (row){
+                resultRows.push(row);
+            });
+
+            table.tBodies[0].append(...resultRows);
+            // $('.tableRes tbody tr').each(function(i) {
+            //     $(this).find('td:first').text(i);
+            // });
+        }
+
+        $(document).ready(function () {
+            let _tableRows = $('.tableRes tbody tr');
+            if (_tableRows.length > 0) {
+                $(_tableRows.get(0).cells[1]).css('background', 'aliceblue');
+                $(_tableRows.get(0).cells[1]).css('text-decoration', 'underline ');
+                $(_tableRows.get(0).cells[2]).css('text-decoration', 'underline ');
+                $(_tableRows.get(0).cells[3]).css('text-decoration', 'underline ');
+                $(_tableRows.get(0).cells[7]).css('text-decoration', 'underline ');
+                _tableRows.each(function (i) {
+                    $(this).find('td:first').text(i);
+                });
+            }
+        });
+    </script>
+
+    <table class="tableRes">
+        {% if not data is empty %}
+            <tr>
+                <th class="nn bothBorder">#</th>
+                <th class="code rightBorder" onclick="sortTable($('.tableRes').get(0),1)">Code</th>
+                <th class="displayname rightBorder" onclick="sortTable($('.tableRes').get(0),2)">DisplayName</th>
+                <th class="kind rightBorder" onclick="sortTable($('.tableRes').get(0),3)">Kind</th>
+                <th class="state rightBorder">State</th>
+                <th class="totalue rightBorder">Total UE</th>
+                <th class="locally rightBorder">UE (locally)</th>
+                <th class="withAW rightBorder" onclick="sortTable($('.tableRes').get(0),7)">UE (with AwardWallet.com)</th>
+                <th class="adminlinks rightBorder">Admin links</th>
+                <th class="check rightBorder th">v</th>
+            </tr>
+        {% endif %}
+        <tbody>
+        {% for row in data %}
+            <tr>
+                <td class="nn rightBorder bottomBorder leftBorder"></td>
+                <td class="code rightBorder bottomBorder">{{ row.Code }}</td>
+                <td class="displayname rightBorder bottomBorder"><a href="/manager/list.php?Schema=Provider&ProviderID={{ row.ProviderID }}" target="_blank">{{ row.DisplayName }}</a></td>
+                <td class="kind rightBorder bottomBorder">{{ kind[row.Kind] }}</td>
+                <td class="state rightBorder bottomBorder">{{ state[row.State] }}</td>
+                <td class="totalue rightBorder bottomBorder">{{ row.TotalUE }}</td>
+                <td class="locally rightBorder bottomBorder">{{ row.TotalUE - row.SavePWD }}</td>
+                <td class="withAW rightBorder bottomBorder">{{ row.SavePWD }}</td>
+                <td class="adminlinks rightBorder bottomBorder">
+                    <a href="{{ path('aw_manager_accountByRegion') }}?search=1&login2=&login3=&UnusedID={{ row.ProviderID }}&providerID={{ row.ProviderID }}&errorCode=6" target="_blank">accounts</a>&nbsp;|&nbsp;<a href="/manager/operations?ID={{ row.ProviderID }}" target="_blank">operations</a>
+                </td>
+                <td class="rightBorder bottomBorder"><input type="checkbox" onclick="setColor(this);"/></td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

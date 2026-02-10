@@ -1,0 +1,25 @@
+{% set MAIN_BODY_CLASSES = {
+	'responsive': false,
+	'manual-hidden': false,
+	'hide-menu': false
+}|merge(MAIN_BODY_CLASSES|default({})) %}
+
+{% extends is_granted('SITE_BUSINESS_AREA') ? "@AwardWalletMain/Layout/business_default.html.twig" : "@AwardWalletMain/Layout/default.html.twig" %}
+
+{% block body_left_widgets %}
+	{{ widget_render('left_top') }}
+	{{ widget_render('user_profile') }}
+{% endblock %}
+
+{% if is_granted('SITE_BUSINESS_AREA') %}
+	{% block left_menu %}
+		<div class="menu-close"></div>
+
+		<aside class="user-blk">
+			<div class="user-blk-item">
+				{{ widget_render('left_top') }}
+				{{ widget_render('user_profile') }}
+			</div>
+		</aside>
+	{% endblock %}
+{% endif %}

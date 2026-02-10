@@ -1,0 +1,14 @@
+{% form_theme form with ['@AwardWalletMain/FormTheme/fields.html.twig'] %}
+<form action="{{ result.action }}" class="main-form" method="post" data-id="{{ result.id }}">
+    <div class="main-form-item">
+        {% for key, child in form.children %}
+            {% if key in ['login', 'login2', 'login3', 'pass', 'notrelated', '_token'] %}
+                {{ form_row(child) }}
+            {% endif %}
+        {% endfor %}
+    </div>
+    <div class="row-submit t-right">
+        <a href="" class="btn-silver delete">{{ 'button.delete'|trans }}</a>
+        <button type="submit" class="btn-blue save">{{ 'form.button.save'|trans }}</button>
+    </div>
+</form>

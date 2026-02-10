@@ -1,0 +1,40 @@
+{% import '@AwardWalletMain/TwigMacros/common.html.twig' as interfaceMacros %}
+
+{% set okButtonTrigger = 'window.location.href=\''~back~'\'' %}
+{% if back == '' %}
+    {% set okButtonTrigger = 'cancelPopup();' %}
+{% endif %}
+
+{% if result.accounts|length > 0 %}
+    <p>{{ 'award.account.list.preamble' | trans | desc('Success, we found the following accounts in your mailbox:') }}</p>
+    <div>
+        <table class="awTable" cellspacing="0" cellpadding="0" width="98%">
+            <tr class="caption">
+                <td class="bothBorder">{{ 'award.account.provider' | trans }}</td>
+                <td class="rightBorder">{{ 'award.account.number' | trans }}</td>
+                <td class="rightBorder">{{ 'award.account.balance' | trans }}</td>
+            </tr>
+        {% for account in result.accounts %}
+            <tr>
+                <td class="bothBorder">{{ account.ProviderName }}</td>
+                <td class="rightBorder">{{ account.AccountNumber }}</td>
+                <td class="rightBorder">{{ account.Balance }}</td>
+            </tr>
+        {% endfor %}
+        </table>
+    </div>
+    <p>{{ 'mailbox.scan.result.accounts-added-to-profile' | trans | desc('They have been added to your profile and will be automatically updated the next time your statement is sent to you. Please click OK to finish the set up.') }}</p>
+    <div class="buttons">
+        {{ interfaceMacros.DrawButton('button.ok' | trans, ' onclick="'~okButtonTrigger~'" align="center" style="float: none"', 0, '') }}
+    </div>
+{% else %}
+    <p>{{ 'mailbox.scan.result.statements-not-found.notice' | trans | desc('Unfortunately we were not able to find your statement just yet, however you still have a few options:') }}</p>
+    <ul>
+        <li>{{ 'mailbox.scan.result.statements-not-found.option-manual' | trans | desc('Update your account balance manually') }}</li>
+        <li>{{ 'mailbox.scan.result.statements-not-found.option-forwarding' | trans({'%login%': user.login}) | desc('Set up forwarding of your statements to <b>%login%@AwardWallet.com</b> (click OK to read more)') }}</li>
+    </ul>
+    <p>{{ 'mailbox.scan.result.statements-not-found.improving-in-progress' | trans | desc('And BTW we are working on improving this functionality so now that you\'ve linked your mailbox, soon we will be able to update your balance directly from your mailbox.') }}</p>
+    <div class="buttons">
+        {{ interfaceMacros.DrawButton('button.ok' | trans, ' onclick="' ~ okButtonTrigger ~ '" align="center" style="float: none"', 0, '') }}
+    </div>
+{% endif %}

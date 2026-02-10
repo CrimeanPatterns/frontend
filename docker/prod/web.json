@@ -1,0 +1,169 @@
+{
+  "networkMode": "bridge",
+  "family": "frontend-web",
+  "containerDefinitions": [
+
+    {
+      "name": "nginx",
+      "essential": true,
+      "image": "718278292471.dkr.ecr.us-east-1.amazonaws.com/frontend/nginx:TAG",
+      "memoryReservation": 150,
+      "cpu": 250,
+      "mountPoints": [
+        {
+          "containerPath": "/www/awardwallet/web/images/uploaded",
+          "sourceVolume": "uploaded"
+        }
+      ],
+      "portMappings": [
+        {
+          "protocol": "tcp",
+          "containerPort": 80,
+          "hostPort": 0
+        }
+      ],
+      "links": [
+        "php:php",
+        "fluent:fluent"
+      ]
+    },
+
+    {
+      "name": "php",
+      "essential": true,
+      "image": "718278292471.dkr.ecr.us-east-1.amazonaws.com/frontend/fpm:TAG",
+      "memoryReservation": 2048,
+      "cpu": 1500,
+      "volumesFrom": [
+        {
+          "sourceContainer": "fluent"
+        }
+      ],
+      "mountPoints": [
+        {
+          "containerPath": "/www/awardwallet/engine",
+          "sourceVolume": "engine"
+        },
+        {
+          "containerPath": "/www/awardwallet/web/images/uploaded",
+          "sourceVolume": "uploaded"
+        }
+      ],
+      "links": [
+        "mail:mail",
+        "fluent:fluent",
+        "amqproxy:amqproxy"
+      ],
+      "dependsOn": [
+        {"containerName":  "amqproxy", "condition":  "START"},
+        {"containerName":  "fluent", "condition":  "START"},
+        {"containerName":  "mail", "condition":  "START"}
+      ],
+      "environment": [
+        {
+          "name": "RABBITMQ_HOST",
+          "value": "amqproxy"
+        }
+      ],
+      "healthCheck": {
+        "command": [
+          "CMD",
+          "/www/awardwallet/docker/prod/worker-healthcheck.sh"
+        ],
+        "interval": 60,
+        "timeout": 30,
+        "startPeriod": 30
+      },
+      "linuxParameters": {
+        "capabilities": {
+          "add": ["SYS_PTRACE"]
+        }
+      },
+      "logConfiguration": {
+        "logDriver": "fluentd",
+        "options": {
+          "fluentd-async": "true",
+          "fluentd-sub-second-precision": "true",
+          "tag": "php_container"
+        }
+      }
+    },
+
+    {
+      "name": "mail",
+      "essential": true,
+      "image": "718278292471.dkr.ecr.us-east-1.amazonaws.com/postfix:2.05",
+      "cpu": 32,
+      "memoryReservation": 64
+    },
+
+    {
+      "name": "updater",
+      "cpu": 32,
+      "memoryReservation": 64,
+      "essential": false,
+      "mountPoints": [
+        {
+          "containerPath": "/destination",
+          "sourceVolume": "engine"
+        }
+      ],
+      "environment": [
+        {
+          "name": "FOLDER",
+          "value": "engine"
+        },
+        {
+          "name": "RABBIT_HOST",
+          "value": "%RABBITMQ_HOST%"
+        }
+      ],
+      "image": "718278292471.dkr.ecr.us-east-1.amazonaws.com/updater:2.01"
+    },
+
+    {
+      "name": "fluent",
+      "essential": true,
+      "image": "718278292471.dkr.ecr.us-east-1.amazonaws.com/frontend/fluentbit:TAG",
+      "cpu": 64,
+      "memoryReservation": 64,
+      "portMappings": [
+        {
+          "protocol": "tcp",
+          "containerPort": 24224,
+          "hostPort": 24224
+        }
+      ]
+    },
+
+    {
+      "name": "amqproxy",
+      "essential": true,
+      "image": "cloudamqp/amqproxy:v0.8.14",
+      "command": ["-l", "0.0.0.0", "-p", "5672", "-t", "60", "amqp://%RABBITMQ_HOST%:5672"],
+      "cpu": 32,
+      "memoryReservation": 64
+    }
+
+  ],
+  "volumes": [
+    {
+      "name": "engine",
+      "host": {
+        "sourcePath": "/var/engine"
+      }
+    },
+    {
+        "name": "uploaded",
+        "dockerVolumeConfiguration": {
+            "scope": "task",
+            "driver": "local",
+            "driverOpts": {
+                "type": "nfs",
+                "device": ":/",
+                "o": "addr=fs-b3890dfa.efs.us-east-1.amazonaws.com,soft,rw,nfsvers=4.1,rsize=1048576,wsize=1048576,hard,timeo=14,retrans=2,noresvport"
+            }
+        }
+    }
+  ]
+}

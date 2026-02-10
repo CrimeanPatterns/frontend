@@ -1,0 +1,8 @@
+<a href="{{ path('aw_business_balance') }}" class="btn-light-silver{% if active %} active{% endif %}">
+    {{ 'menu.button.balance' | trans({}, 'menu') | desc('Balance') }}
+    <span id="account-btn-counter">{{ balance|raw }}</span>
+</a>
+
+<a href="{{ path('aw_business_pay') }}" class="add btn-light-silver" data-role="tooltip" title="{{ 'menu.button.balance.add' | trans({}, 'menu') | desc('Fill up balance') }}">
+    <i class="icon-add-dark"></i>
+</a>

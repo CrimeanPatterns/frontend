@@ -1,0 +1,553 @@
+{% extends "@AwardWalletMain/Layout/index.html.twig" %}
+{% import "@AwardWalletMain/TwigMacros/recaptcha.html.twig" as recaptcha %}
+{% import "@AwardWalletMain/TwigMacros/environment.html.twig" as env %}
+{% import _self as macro %}
+
+{% block meta %}
+    {{ parent() }}
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1, maximum-scale=5, viewport-fit=cover">
+    <meta name="keywords" content="{{ 'meta.keywords'|trans|desc('Incentive reward center, Marriott reward, cheap airfare, reward incentive program, American Express rewards, trip reward, air miles reward program, frequent flyer miles, track award program balances, air mile reward, award software, award program, delta sky miles, reward program reward network') }}">
+    <meta name="description" content="{{ 'meta.description'|trans|desc('AwardWallet helps you track frequent flyer miles and hotel points as well as book reward tickets') }}">
+    <meta name="google-site-verification" content="rtczCsWSE3xSyZ3TiyI6quRz2fgkTgAEgCVJvQVn0R0" />
+    <base href="{{ app.request.pathInfo | raw }}">
+{% endblock %}
+
+{% block title %}
+    {% if app.request.get('_route') in ['aw_login', 'aw_login_locale'] %}
+        {{ 'meta.title.login'|trans }}
+    {% elseif app.request.get('_route') in ['aw_register', 'aw_register_locale'] %}
+        {{ 'meta.title.register'|trans }}
+    {% else %}
+        {{ 'meta.title'|trans }}
+    {% endif %}
+{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    {{ encore_entry_link_tags('page-landing') }}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    {{ encore_entry_script_tags('trans/' ~ app.request.locale, null, '_default', {'defer': true}) }}
+    {{ encore_entry_script_tags('page-landing', null, '_default', {'defer': true}) }}
+{% endblock %}
+
+{% block body_class %}
+    {{ parent() }} {{ bem('page-landing') }}
+{% endblock %}
+
+{% block body_attr %}
+    {% if invite is defined and invite %}
+        {% set invitee = invite.familyMember ? invite.familyMember : invite.inviteeid %}
+
+        {{ env.dataAttr({
+            'invite-email': invite.email ? invite.email : '',
+            'invite-fn': invitee ? invitee.firstname : '',
+            'invite-ln': invitee ? invitee.lastname : '',
+            'invite-code': invite.code,
+        }) }}
+    {% endif %}
+{% endblock %}
+
+{% block body %}
+    {% include '@AwardWalletMain/Layout/vendor_body-top.html.twig' %}
+    <div class="{{ bem('page-landing', 'container') }}">
+        <header class="{{ bem('page-landing', 'sticky-header') }}">
+            <div class="{{ bem('page-landing', 'header') }} {{ bem('page-landing', 'section-wrapper') }}">
+                <div class="{{ bem('logo') }} {{ bem('page-landing', 'logo') }}">
+                    <a href="{{ urlLocale('aw_home_locale') }}">
+                        <picture class="{{ bem('logo', 'light') }}">
+                            <img {{ image_src('logo/logo.svg') }} width="150" height="12" alt="logo">
+                        </picture>
+                        <picture class="{{ bem('logo', 'dark') }}">
+                            <img {{ image_src('logo/logo--dark.svg') }} width="150" height="12" alt="logo">
+                        </picture>
+                    </a>
+                </div>
+                <div class="{{ bem('page-landing', 'header-buttons') }}">
+                    <a href="{{ path('aw_login') }}" ui-sref="login" ui-sref-active="active" class="{{ bem('button', null, ['type_login']) }} ga-landing-top-btn-login">{{ 'log-in.btn'|trans({}, 'landing')|desc('Log In') }}</a>
+                    <a href="{{ path('aw_register') }}" ui-sref="register" ui-sref-active="active" class="{{ bem('button') }} ga-landing-top-btn-register">{{ 'sign-up.btn'|trans({}, 'landing')|desc('Sign Up') }}</a>
+                </div>
+                <div class="{{ bem('page-landing', 'header-platform-buttons') }}">
+                    {% if is_ios() %}
+                        {{ macro.platform_appstore_button('button', ['type_platform', 'align_left', 'arrow']) }}
+                    {% elseif is_android() %}
+                        {{ macro.platform_google_play_button('button', ['type_platform', 'align_left', 'arrow']) }}
+                    {% else %}
+                        {{ macro.platform_appstore_link('button-platform', ['size_medium']) }}
+                        {{ macro.platform_google_play_link('button-platform', ['size_medium']) }}
+                    {% endif %}
+                </div>
+            </div>
+        </header>
+
+        <main class="{{ bem('page-landing', 'main') }}">
+            <section class="{{ bem('page-landing', 'section-description') }} {{ bem('page-landing', 'section-wrapper') }}">
+                <div class="{{ bem('page-landing', 'section-description-column') }}">
+                    <h1 class="{{ bem('page-landing', 'section-description-title') }}">
+                        {{ 'aw-desc-title'|trans({
+                            '%bold_on%': '<span>',
+                            '%bold_off%': '</span>',
+                        }, 'landing')|desc('All your %bold_on%Rewards%bold_off% &amp; %bold_on%Travel%bold_off% in One Place')|raw }}
+                    </h1>
+                    <p class="{{ bem('page-landing', 'section-description-text') }}">
+                        {{ 'aw-desc-text'|trans({}, 'landing')|desc('AwardWallet tracks your credit cards, loyalty points, and travel plans in a convenient, secure account you can access from anywhere.') }}
+                    </p>
+                    <div class="{{ bem('page-landing', 'section-description-buttons') }}">
+                        <a href="{{ path('aw_register') }}" ui-sref="register" ui-sref-active="active" class="{{ bem('button') }} ga-landing-head-btn-register">{{ 'sign-up-free.btn'|trans({}, 'landing')|desc('Sign up for free') }}</a>
+                        <span class="{{ bem('page-landing', 'section-platform-buttons') }}">
+                            {% if is_ios() %}
+                                {{ macro.platform_appstore_link('button-platform', ['size_medium']) }}
+                            {% elseif is_android() %}
+                                {{ macro.platform_google_play_link('button-platform', ['size_medium']) }}
+                            {% else %}
+                                {{ macro.platform_appstore_link('button-platform', ['size_medium']) }}
+                                {{ macro.platform_google_play_link('button-platform', ['size_medium']) }}
+                            {% endif %}
+                        </span>
+                    </div>
+                    <div class="{{ bem('page-landing', 'section-description-app-button') }}">
+                        {% if is_ios() %}
+                            {{ macro.platform_appstore_button('button', ['align_left', 'wide', 'arrow']) }}
+                        {% elseif is_android() %}
+                            {{ macro.platform_google_play_button('button', ['align_left', 'wide', 'arrow']) }}
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="{{ bem('page-landing', 'section-description-img-container') }}">
+                    <picture class="{{ bem('page-landing', 'section-description-img-light') }}">
+                        <img
+                            loading="lazy"
+                            {{ image_src('page-landing/phone@{450,691,900,1381}w.png') }}
+                            sizes="(max-width: 440px) 75vw, (max-width: 1023px) 47vw, 691px"
+                            width="691"
+                            height="595"
+                            alt="phone">
+                    </picture>
+                    <picture class="{{ bem('page-landing', 'section-description-img-dark') }}">
+                        <source
+                            {{ image_srcset('page-landing/phone--dark@{450,691,900,1382}w.png') }}
+                            sizes="(max-width: 440px) 75vw, (max-width: 1023px) 47vw, 691px"
+                            width="691"
+                            height="595"
+                            media="(prefers-color-scheme: dark)">
+                        <img
+                            loading="lazy"
+                            {{ image_src('page-landing/phone@{450,691,900,1381}w.png') }}
+                            sizes="(max-width: 440px) 75vw, (max-width: 1023px) 47vw, 691px"
+                            width="691"
+                            height="595"
+                            alt="phone">
+                    </picture>
+                </div>
+            </section>
+
+            <div class="{{ bem('page-landing', 'section-lp-wrapper') }}">
+                <section class="{{ bem('page-landing', 'section-lp') }} {{ bem('page-landing', 'section-wrapper') }}">
+                    <div class="{{ bem('page-landing', 'section-lp-header') }}">
+                        <h2 class="{{ bem('page-landing', 'section-header') }}">
+                            {{ 'supported-programs-in-pocket'|trans({
+                                '%count%': programs,
+                                '%count_formatted%': programs|formatNumber,
+                                '%bold_on%': '<span>',
+                                '%bold_off%': '</span>',
+                            }, 'landing')|desc('Over %bold_on%%count_formatted% Loyalty Programs%bold_off% in Your Pocket')|raw }}
+                        </h2>
+                    </div>
+
+                    <div class="{{ bem('page-landing', 'section-lp-body') }}">
+                        {{ macro.item_lp('marriott', 'Marriott Bonvoy', 'Marriott-Bonvoy', 127, 35) }}
+                        {{ macro.item_lp('capitalone', 'Capital One', 'Capital-One', 130, 46) }}
+                        {{ macro.item_lp('ihg', 'IHG Hotels & Resorts', 'IHG-Hotels-amp-Resorts-One-Rewards', 133, 22) }}
+                        {{ macro.item_lp('amex', 'American Express', 'Amex-Membership-Rewards', 163, 44) }}
+                        {{ macro.item_lp('thankyou', 'Citi ThankYou', 'Citibank-ThankYou-Rewards', 156, 37) }}
+                        {{ macro.item_lp('aeroplan', 'Air Canada Aeroplan', 'Air-Canada-Aeroplan', 157, 39) }}
+                        {{ macro.item_lp('boa', 'Bank of America', 'Bank-Of-America', 169, 44) }}
+                        {{ macro.item_lp('trueblue', 'TrueBlue JetBlue', 'JetBlue-Airways-trueBlue', 135, 31) }}
+                        {{ macro.item_lp('chase', 'Chase Ultimate Rewards', 'Chase-Ultimate-Rewards', 133, 52) }}
+                        {{ macro.item_lp('hilton', 'Hilton Honors', 'Hilton-Honors', 132, 57) }}
+                        {{ macro.item_lp('hyatt', 'World of Hyatt', 'Hyatt-World-of-Hyatt', 87, 87) }}
+                        {{ macro.item_lp('alaska', 'Alaska Mileage Plan', 'Alaska-Airlines-Mileage-Plan', 143, 55) }}
+                    </div>
+                </section>
+            </div>
+
+            <section class="{{ bem('page-landing', 'section-miles') }} {{ bem('page-landing', 'section-wrapper') }}">
+                <div class="{{ bem('page-landing', 'section-miles-header') }}">
+                    <h2 class="{{ bem('page-landing', 'section-header') }}">
+                        {% set china_locale = app.request.locale in ['zh_TW', 'zh_CN'] %}
+                        {% set miles = china_locale ? miles|slice(0, 4) : miles|slice(0, 3) %}
+                        {{ 'aw-track-over-points'|trans({
+                            '%count%': miles,
+                            '%count_formatted%': miles|formatNumber,
+                            '%bold_on%': '<span>',
+                            '%bold_off%': '</span>',
+                        }, 'landing')|desc('AwardWallet’s %bold_on%Free Service%bold_off% Tracks Over %bold_on%%count_formatted% Billion Points%bold_off%')|raw }}
+                    </h2>
+
+                    <div class="{{ bem('page-landing', 'section-miles-desc') }}">
+                        {{ 'aw-track-over-points.desc'|trans({}, 'landing')|desc('Keeping your rewards organized shouldn’t be a hassle. Here are some of the types of programs you can track.') }}
+                    </div>
+                </div>
+                <div class="{{ bem('page-landing', 'section-miles-body') }}">
+                    {{ macro.provider_kind_item('credit-card', 'track.group.card'|trans, constant('PROVIDER_KIND_CREDITCARD')) }}
+                    {{ macro.provider_kind_item('train', 'track.group.train'|trans, constant('PROVIDER_KIND_TRAIN')) }}
+                    {{ macro.provider_kind_item('airline', 'track.group.airline'|trans, constant('PROVIDER_KIND_AIRLINE')) }}
+                    {{ macro.provider_kind_item('cruise', 'track.group.cruise'|trans, constant('PROVIDER_KIND_CRUISES')) }}
+                    {{ macro.provider_kind_item('hotel', 'track.group.hotel'|trans, constant('PROVIDER_KIND_HOTEL')) }}
+                    {{ macro.provider_kind_item('dining', 'track.group.dining'|trans, constant('PROVIDER_KIND_DINING')) }}
+                    {{ macro.provider_kind_item('car', 'track.group.rent'|trans, constant('PROVIDER_KIND_CAR_RENTAL')) }}
+                    {{ macro.provider_kind_item('shopping', 'track.group.shop'|trans, constant('PROVIDER_KIND_SHOPPING')) }}
+                    {{ macro.provider_kind_item('parking', 'track.group.parking'|trans, constant('PROVIDER_KIND_PARKING')) }}
+                    {{ macro.provider_kind_item('surveys', 'track.group.survey'|trans, constant('PROVIDER_KIND_SURVEY')) }}
+                </div>
+            </section>
+
+            <div class="{{ bem('page-landing', 'section-mobile-features-wrapper') }}">
+                <section class="{{ bem('page-landing', 'section-mobile-features') }} {{ bem('page-landing', 'section-wrapper') }}">
+                    <div class="{{ bem('page-landing', 'section-mobile-features-list') }}">
+                        <div class="{{ bem('page-landing', 'mobile-feature') }} {{ bem('page-landing', 'mobile-feature-dummy') }}"></div>
+                        {{ macro.mobile_feature(
+                            'track.group.card'|trans,
+                            'mobile-feature-credit-card'|trans({}, 'landing')|desc('See your points balances, card benefits, and available credits so you never miss another perk.'),
+                            'mobile-credit-card'
+                        ) }}
+                        {{ macro.mobile_feature(
+                            'track.group.airline'|trans,
+                            'mobile-feature-airlines'|trans({}, 'landing')|desc('Track your airline miles, elite status, upgrade certificates, and travel vouchers.'),
+                            'mobile-airlines'
+                        ) }}
+                        {{ macro.mobile_feature(
+                            'track.group.hotel'|trans,
+                            'mobile-feature-hotels'|trans({}, 'landing')|desc('Track your hotel points, elite status, free-night certificates, room and suite upgrades, and more.'),
+                            'mobile-hotels'
+                        ) }}
+                        {{ macro.mobile_feature(
+                            'mobile-feature-spend-analysis.header'|trans({}, 'landing')|desc('Maximize Your Points'),
+                            'mobile-feature-spend-analysis'|trans({}, 'landing')|desc('AwardWallet shows you how many points you earned for every transaction—and highlights when you should use a different credit card to earn more.'),
+                            'mobile-spend-analysis'
+                        ) }}
+                        {{ macro.mobile_feature(
+                            'mobile-feature-expiration-reminders.header'|trans({}, 'landing')|desc('Expiration Reminders'),
+                            'mobile-feature-expiration-reminders'|trans({}, 'landing')|desc('Get push notifications and email reminders whenever your points or benefits are at risk of expiring.'),
+                            'mobile-reminders'
+                        ) }}
+                        {{ macro.mobile_feature(
+                            'mobile-feature-account-details.header'|trans({}, 'landing')|desc('See Account Details'),
+                            'mobile-feature-account-details'|trans({}, 'landing')|desc('Pull up your loyalty card to scan at checkout or log in to your account with a tap of the finger.'),
+                            'mobile-account-details'
+                        ) }}
+                        <div class="{{ bem('page-landing', 'mobile-feature') }} {{ bem('page-landing', 'mobile-feature-dummy') }}"></div>
+                    </div>
+                </section>
+            </div>
+
+            <section class="{{ bem('page-landing', 'section-itinerary-organization') }} {{ bem('page-landing', 'section-wrapper') }}">
+                <div class="{{ bem('page-landing', 'section-itinerary-organization-header') }}">
+                    <h2 class="{{ bem('page-landing', 'section-header') }}">
+                        {{ 'aw-itinerary-organization'|trans({
+                            '%bold_on%': '<span>',
+                            '%bold_off%': '</span>',
+                        }, 'landing')|desc('%bold_on%Travel Better%bold_off% with Effortless %bold_on%Itinerary Organization%bold_off%')|raw }}
+                    </h2>
+                </div>
+                <div class="{{ bem('page-landing', 'section-itinerary-organization-body') }}">
+                    {{ macro.step(
+                        1,
+                        'itinerary-organization.1-step'|trans({}, 'landing')|desc('Connect your email or forward your travel plans.')
+                    ) }}
+
+                    <div class="{{ bem('page-landing', 'border-step') }}"></div>
+
+                    {{ macro.step(
+                        2,
+                        'itinerary-organization.2-step'|trans({}, 'landing')|desc('No matter where you book, you’ll find the details imported into an easy-to-read, master itinerary.')
+                    ) }}
+
+                    <div class="{{ bem('page-landing', 'border-step') }}"></div>
+
+                    {{ macro.step(
+                        3,
+                        'itinerary-organization.3-step'|trans({}, 'landing')|desc('Get real-time alerts to your mobile device so you’re always on top of what’s next.')
+                    ) }}
+                </div>
+            </section>
+
+            <section class="{{ bem('page-landing', 'section-security') }} {{ bem('page-landing', 'section-wrapper') }}">
+                <img class="{{ bem('page-landing', 'shield-icon') }}" width="100" height="100" loading="lazy" {{ image_src('page-landing/shield.svg') }} alt="shield">
+                <h2 class="{{ bem('page-landing', 'section-header') }} {{ bem('page-landing', 'section-security-header') }}">
+                    {{ 'bank-level-encryption'|trans({}, 'landing')|desc('Bank Level Encryption') }}
+                </h2>
+
+                <div class="{{ bem('page-landing', 'security-checkboxes-list') }}">
+                    <div class="{{ bem('page-landing', 'security-checkboxes-wrapper') }}">
+                        <div class="{{ bem('page-landing', 'security-checkbox-item') }}">
+                            <picture class="{{ bem('page-landing', 'security-checkbox-img-light') }}">
+                                <img loading="lazy" {{ image_src('page-landing/checkbox.svg') }} width="28" height="28" alt="checkbox">
+                            </picture>
+                            <picture class="{{ bem('page-landing', 'security-checkbox-img-dark') }}">
+                                <img loading="lazy" {{ image_src('page-landing/checkbox--dark.svg') }} width="28" height="28" alt="checkbox">
+                            </picture>
+                            <p>{{ 'multi-factor-authentication'|trans({}, 'landing')|desc('Multi-Factor authentication') }}</p>
+                        </div>
+                        <div class="{{ bem('page-landing', 'security-checkbox-item') }}">
+                            <picture class="{{ bem('page-landing', 'security-checkbox-img-light') }}">
+                                <img loading="lazy" {{ image_src('page-landing/checkbox.svg') }} width="28" height="28" alt="checkbox">
+                            </picture>
+                            <picture class="{{ bem('page-landing', 'security-checkbox-img-dark') }}">
+                                <img loading="lazy" {{ image_src('page-landing/checkbox--dark.svg') }} width="28" height="28" alt="checkbox">
+                            </picture>
+                            <p>{{ 'never-sell-your-data'|trans({}, 'landing')|desc('We will never sell your data') }}</p>
+                        </div>
+                    </div>
+                </div>
+
+                <a href="{{ path('aw_register') }}" ui-sref="register" ui-sref-active="active" class="{{ bem('button') }} {{ bem('page-landing', 'section-security-buttons') }} ga-landing-foot-btn-register">{{ 'sign-up-free.btn'|trans({}, 'landing')|desc('Sign up for free') }}</a>
+                <div class="{{ bem('page-landing', 'section-security-app-button') }}">
+                    {% if is_ios() %}
+                        {{ macro.platform_appstore_button('button', ['align_left', 'wide', 'arrow']) }}
+                    {% elseif is_android() %}
+                        {{ macro.platform_google_play_button('button', ['align_left', 'wide', 'arrow']) }}
+                    {% endif %}
+                </div>
+            </section>
+        </main>
+
+        <div class="{{ bem('page-landing', 'footer-wrapper') }}">
+            <footer class="{{ bem('page-landing', 'footer') }} {{ bem('page-landing', 'section-wrapper') }}">
+                <div class="{{ bem('page-landing', 'footer-list') }}">
+                    <div class="{{ bem('page-landing', 'footer-links') }}">
+                        <div class="{{ bem('page-landing', 'footer-links-list') }}">
+                            {{ macro.footer_link('menu.privacy-notice'|trans({}, 'menu'), urlLocale('aw_page_index_locale', {'page': 'privacy', '_locale': app.request.locale})) }}
+                            {{ macro.footer_link('menu.terms-of-use'|trans({}, 'menu'), urlLocale('aw_page_index_locale', {'page': 'terms', '_locale': app.request.locale})) }}
+                            {{ macro.footer_link('menu.about-us'|trans({}, 'menu'), urlLocale('aw_page_index_locale', {'page': 'about', '_locale': app.request.locale})) }}
+                            {{ macro.footer_link('menu.media'|trans({}, 'menu'), urlLocale('aw_pressrelease_index_locale', {'_locale': app.request.locale})) }}
+                            {{ macro.footer_link('menu.credit-card-offers'|trans({}, 'menu'), 'https://awardwallet.com/blog/credit-cards/') }}
+                            {{ macro.footer_link('menu.promos'|trans({}, 'menu'), urlLocale('aw_promotions_index_locale', {'_locale': app.request.locale})) }}
+                            <a href="#" class="page-landing__footer-link termly-display-preferences">Consent Preferences</a>
+                        </div>
+                        <div class="{{ bem('page-landing', 'footer-links-list') }}">
+                            {{ macro.footer_link('menu.supported'|trans({}, 'menu'), urlLocale('aw_supported_locale', {'_locale': app.request.locale})) }}
+                            {{ macro.footer_link('menu.faqs'|trans({}, 'menu'), urlLocale('aw_faq_index_locale', {'_locale': app.request.locale})) }}
+                            {{ macro.footer_link('APIs', urlLocale('aw_api_doc_locale', {'_locale': app.request.locale})) }}
+                            {{ macro.footer_link('award-booking-service'|trans({}, 'menu'), urlLocale('aw_booking_add_index_locale', {'_locale': app.request.locale})) }}
+                            {{ macro.footer_link('menu.contact-us'|trans({}, 'menu'), urlLocale('aw_contactus_index_locale', {'_locale': app.request.locale})) }}
+                            {{ macro.footer_link('menu.aw-blog'|trans({}, 'menu')|desc('AwardWallet Blog'), 'https://awardwallet.com/blog/') }}
+                        </div>
+                    </div>
+                    <div class="{{ bem('page-landing', 'footer-locales') }}">
+                        <div class="{{ bem('page-landing', 'footer-links-list') }}">
+                            {% for locale in locales|slice(0, 4) %}
+                                {% set link = (constant('\AwardWallet\\MainBundle\\FrameworkExtension\\Twig\\MetaExtension::DEFAULT_LOCALE') is same as(locale) ? path('aw_home') : path('aw_home_locale', {'_locale': locale})) %}
+                                {{ macro.footer_link(('language.' ~ locale)|trans({}, 'menu'), link) }}
+                            {% endfor %}
+                        </div>
+                        <div class="{{ bem('page-landing', 'footer-links-list') }}">
+                            {% for locale in locales|slice(4) %}
+                                {{ macro.footer_link(('language.' ~ locale)|trans({}, 'menu'), path('aw_home_locale', {'_locale': locale})) }}
+                            {% endfor %}
+                        </div>
+                    </div>
+                    <div class="{{ bem('page-landing', 'footer-mobile-apps') }}">
+                        {% if is_ios() %}
+                            {{ macro.platform_appstore_button('button', ['type_platform', 'align_left']) }}
+                        {% elseif is_android() %}
+                            {{ macro.platform_google_play_button('button', ['type_platform', 'align_left']) }}
+                        {% else %}
+                            {{ macro.platform_appstore_button('button', ['type_platform', 'align_left']) }}
+                            {{ macro.platform_google_play_button('button', ['type_platform', 'align_left']) }}
+                        {% endif %}
+                    </div>
+                    <div class="{{ bem('page-landing', 'footer-mobile-apps-compact') }}">
+                        {% if is_ios() %}
+                            {{ macro.platform_appstore_button('button', ['type_platform', 'align_left', 'wide', 'arrow']) }}
+                        {% elseif is_android() %}
+                            {{ macro.platform_google_play_button('button', ['type_platform', 'align_left', 'wide', 'arrow']) }}
+                        {% else %}
+                            {{ macro.platform_appstore_button('button', ['type_platform', 'align_left', 'wide', 'arrow']) }}
+                            {{ macro.platform_google_play_button('button', ['type_platform', 'align_left', 'wide', 'arrow']) }}
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div class="{{ bem('page-landing', 'footer-border') }}"></div>
+
+                <div class="{{ bem('page-landing', 'footer-copyright') }}">
+                    <div class="{{ bem('page-landing', 'copyright') }}">
+                        <div class="{{ bem('logo', null, ['small']) }}">
+                            <picture class="{{ bem('logo', 'light') }}">
+                                <img {{ image_src('logo/logo.svg') }} width="178" height="21" alt="logo">
+                            </picture>
+                            <picture class="{{ bem('logo', 'dark') }}">
+                                <img {{ image_src('logo/logo--dark.svg') }} width="178" height="21" alt="logo">
+                            </picture>
+                        </div>
+                        <div>© 2004 - {{ "now"|date('Y') }} AwardWallet LLC.</div>
+                    </div>
+                    <div class="{{ bem('page-landing', 'social-media') }}">
+                        {{ macro.social_media('twitter', 'Twitter', 'https://twitter.com/AwardWallet') }}
+                        {{ macro.social_media('facebook', 'Facebook', 'https://www.facebook.com/groups/awardtravel101/') }}
+                        {{ macro.social_media('youtube', 'YouTube', 'https://www.youtube.com/channel/UCOBfnZ9yioR331pId7FyrNA') }}
+                        {{ macro.social_media('instagram', 'Instagram', 'https://www.instagram.com/awardwallet/') }}
+                        {{ macro.social_media('linkedin', 'LinkedIn', 'https://www.linkedin.com/company/awardwallet/about/') }}
+                    </div>
+                </div>
+            </footer>
+        </div>
+
+        {% set refs = {
+            'homeRef': 'home',
+            'loginRef': 'login',
+            'registerRef': 'register',
+            'restoreRef': 'restore',
+        } %}
+        <div ui-view autoscroll="false" class="viewport"></div>
+        <script type="text/ng-template" id="/login">
+            {% include "@AwardWalletMain/Users/login.html.twig" with refs %}
+        </script>
+        <script type="text/ng-template" id="/register">
+            {% include "@AwardWalletMain/Users/register.html.twig" with refs %}
+        </script>
+        <script type="text/ng-template" id="/restore">
+            {% include "@AwardWalletMain/Users/restore.html.twig" with refs %}
+        </script>
+        {{ recaptcha.render(captcha_provider, 'new_registration', true) }}
+
+        <div class="{{ bem('popup-media-logos') }}" style="display: none;" title="{{ 'aw.logos'|trans }}">
+            <h3 class="{{ bem('popup-media-logos', 'header') }}">{{ 'message.looking_for_logos.1'|trans }}</h3>
+            <h4 class="{{ bem('popup-media-logos', 'sub-header') }}">{{ 'message.looking_for_logos.2'|trans }}</h4>
+            <p class="{{ bem('popup-media-logos', 'content') }}">
+                <a href="{{ urlLocale('aw_media_logos_locale') }}">{{ url('aw_media_logos') }}</a>
+            </p>
+        </div>
+    </div>
+
+    {#  Old dumb code, delete after transferring registration and login to a new code #}
+    <script defer src="/assets/common/vendors/requirejs/require.js"></script>
+    <script defer src="/assets/requireConfig.js"></script>
+    <script type="text/javascript">
+        document.addEventListener('DOMContentLoaded', function () {
+            define('intl');
+        });
+    </script>
+    {#  end dumb code  #}
+    {{ encore_entry_link_tags('page-landing/popups') }}
+    {{ encore_entry_script_tags('page-landing/popups', null, '_default', {'defer': true}) }}
+{% endblock %}
+
+{% macro item_lp(icon, alt, providerId, width, height) %}{% apply spaceless %}
+    <b class="{{ bem('page-landing', 'section-lp-item') }}">
+        <picture class="{{ bem('page-landing', 'section-lp-img-container-light') }}">
+            <img
+                class="{{ bem('page-landing', 'section-lp-img') }}"
+                loading="lazy"
+                {{ image_src('page-landing/section-lp/' ~ icon ~ '@{1-2}x.png') }}
+                width="{{ width }}"
+                height="{{ height }}"
+                alt="{{ alt }}"
+            >
+        </picture>
+        <picture class="{{ bem('page-landing', 'section-lp-img-container-dark') }}">
+            <img
+                class="{{ bem('page-landing', 'section-lp-img') }}"
+                loading="lazy"
+                {{ image_src('page-landing/section-lp/' ~ icon ~ '--dark@{1-2}x.png') }}
+                width="{{ width }}"
+                height="{{ height }}"
+                alt="{{ alt }}"
+            >
+        </picture>
+    </b>
+{% endapply %}{% endmacro %}
+
+{% macro provider_kind_item(icon, text, id) %}{% apply spaceless %}
+    <b class="{{ bem('page-landing', 'section-miles-item') }}">
+        <b class="{{ bem('icon-program-kind', null, [icon]) }} {{ bem('page-landing', 'section-miles-item-icon') }}"></b>
+        <span class="{{ bem('page-landing', 'section-miles-item-text') }}">{{ text }}</span>
+    </b>
+{% endapply %}{% endmacro %}
+
+{% macro mobile_feature(header, desc, icon) %}{% apply spaceless %}
+    <div class="{{ bem('page-landing', 'mobile-feature') }}">
+        <h3 class="{{ bem('page-landing', 'mobile-feature-header') }}">{{ header }}</h3>
+        <div class="{{ bem('page-landing', 'mobile-feature-desc') }}">{{ desc }}</div>
+        <picture class="{{ bem('page-landing', 'mobile-feature-img-light') }}">
+            <img
+                loading="lazy"
+                {{ image_src('page-landing/section-mobile-features/' ~ icon ~ '@{240,360,480,720}w.png') }}
+                sizes="(max-width: 400px) 52vw, (max-width: 575px) 47vw, (max-width: 1023px) 43vw, 360px"
+                width="360"
+                height="577"
+                alt="{{ header }}">
+        </picture>
+        <picture class="{{ bem('page-landing', 'mobile-feature-img-dark') }}">
+            <img
+                loading="lazy"
+                {{ image_src('page-landing/section-mobile-features/' ~ icon ~ '--dark@{240,360,480,720}w.png') }}
+                sizes="(max-width: 400px) 52vw, (max-width: 575px) 47vw, (max-width: 1023px) 43vw, 360px"
+                width="360"
+                height="577"
+                alt="{{ header }}">
+        </picture>
+    </div>
+{% endapply %}{% endmacro %}
+
+{% macro step(step, desc) %}{% apply spaceless %}
+    <div class="{{ bem('page-landing', 'section-itinerary-organization-step') }}">
+        <p class="{{ bem('page-landing', 'section-itinerary-organization-header-step') }}">0{{ step }}</p>
+        <div class="{{ bem('page-landing', 'section-itinerary-organization-body-step') }}">{{ desc }}</div>
+        <picture class="{{ bem('page-landing', 'section-itinerary-organization-img-light') }}">
+            <img
+                loading="lazy"
+                {{ image_src('page-landing/section-itinerary-organization-step/step' ~ step ~ '@{300,450,600,900}w.jpg') }}
+                sizes="(max-width: 1023px) 70vw, 450px"
+                width="450"
+                height="552"
+                alt="0{{ step }}">
+        </picture>
+        <picture class="{{ bem('page-landing', 'section-itinerary-organization-img-dark') }}">
+            <img
+                loading="lazy"
+                {{ image_src('page-landing/section-itinerary-organization-step/step' ~ step ~ '--dark@{300,450,600,900}w.png') }}
+                sizes="(max-width: 1023px) 70vw, 450px"
+                width="450"
+                height="552"
+                alt="0{{ step }}">
+        </picture>
+    </div>
+{% endapply %}{% endmacro %}
+
+{% macro footer_link(text, href) %}{% apply spaceless %}
+    <a href="{{ href }}" target="_self" class="{{ bem('page-landing', 'footer-link') }}" rel="noopener">{{ text }}</a>
+{% endapply %}{% endmacro %}
+
+{% macro social_media(icon, label, href) %}{% apply spaceless %}
+    <a class="{{ bem('button-platform', null, ['size_small', 'social-network']) }}" aria-label="{{ label }}" target="_blank" href="{{ href }}" rel="noopener noreferrer">
+        <b class="{{ bem('icon-platform', null, [icon]) }}"></b>
+    </a>
+{% endapply %}{% endmacro %}
+
+{% macro platform_appstore_link(block, modifiers) %}{% apply spaceless %}
+    <a class="{{ bem(block, null, modifiers) }}" href="http://itunes.apple.com/us/app/awardwallet/id388442727?mt=8" aria-label="appstore" target="_blank" rel="noopener noreferrer">
+        <b class="{{ bem('icon-platform', null, ['ios']) }}"></b>
+    </a>
+{% endapply %}{% endmacro %}
+
+{% macro platform_google_play_link(block, modifiers) %}{% apply spaceless %}
+    <a class="{{ bem(block, null, modifiers) }}" href="https://play.google.com/store/apps/details?id=com.itlogy.awardwallet" aria-label="google play" target="_blank" rel="noopener noreferrer">
+        <b class="{{ bem('icon-platform', null, ['google-play']) }}"></b>
+    </a>
+{% endapply %}{% endmacro %}
+
+{% macro platform_appstore_button(block, modifiers) %}{% apply spaceless %}
+    <a class="{{ bem(block, null, modifiers) }}" href="http://itunes.apple.com/us/app/awardwallet/id388442727?mt=8" aria-label="appstore" target="_blank" rel="noopener noreferrer">
+        <img {{ image_src('page-landing/app-store-button.svg') }} width="133" height="36" alt="App Store">
+    </a>
+{% endapply %}{% endmacro %}
+
+{% macro platform_google_play_button(block, modifiers) %}{% apply spaceless %}
+    <a class="{{ bem(block, null, modifiers) }}" href="https://play.google.com/store/apps/details?id=com.itlogy.awardwallet" aria-label="google play" target="_blank" rel="noopener noreferrer">
+        <img {{ image_src('page-landing/google-play-button.svg') }} width="136" height="34" alt="Google Play">
+    </a>
+{% endapply %}{% endmacro %}

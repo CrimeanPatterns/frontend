@@ -1,0 +1,123 @@
+{% extends '@MailTemplate/Layout/base.twig' %}
+{% trans_default_domain "email" %}
+
+{% block subject %}{% apply spaceless %}{% autoescape false %}
+    {{ 'plus_expired.subject'|trans({}, 'email', lang)|desc('AwardWallet Plus Account expired') }}
+{% endautoescape %}{% endapply %}{% endblock subject %}
+
+{% block content %}
+    {% import '@MailTemplate/CommonMacro.twig' as commonMacro %}
+
+    {{ commonMacro.hello(user.firstname, _context) }}
+
+    {% if trial %}
+        {# trial aw plus #}
+        {{ commonMacro.smallWarning(
+            'plus_expired.trial_expired'|trans({
+                '%span_on%': '<b style="color:#3d424d">',
+                '%span_off%': '</b>',
+                '%span2_on%': '<b style="color:#cc3d5e">',
+                '%span2_off%': '</b>'
+            }, 'email', lang)|desc('Your trial %span_on%AwardWallet Plus%span_off% membership %span2_on%has expired%span2_off%.'),
+            _context, {escape: false}
+        ) }}
+
+        {% set prices = constant('\\AwardWallet\\MainBundle\\Globals\\Cart\\SubscriptionPrice::AWPLUS_PRICE') %}
+        {% set price = prices[constant('\\AwardWallet\\MainBundle\\Globals\\Cart\\SubscriptionPeriod::DURATION_1_YEAR')] %}
+
+        {{ commonMacro.paragraph(
+            'plus_expired.trial.desc-1-year.v2'|trans({
+                '%price%': price|formatCurrency("USD", true, locale)
+            }, 'email', lang)|desc('We wanted to thank you and say that we truly appreciate your interest in our service! The cost of the upgrade is only %price% per year. Awardwallet Plus contributions enable us to continue developing and enhancing AwardWallet.'),
+            _context
+        ) }}
+
+    {% elseif lastPayment == 0 %}
+        {# aw plus via coupon #}
+        {{ commonMacro.smallWarning(
+            'plus_expired.expired'|trans({
+                '%span_on%': '<b style="color:#3d424d">',
+                '%span_off%': '</b>',
+                '%span2_on%': '<b style="color:#cc3d5e">',
+                '%span2_off%': '</b>'
+            }, 'email', lang)|desc('Your %span_on%AwardWallet Plus%span_off% semiannual membership %span2_on%has expired%span2_off%.'),
+            _context, {escape: false}
+        ) }}
+
+        {% set prices = constant('\\AwardWallet\\MainBundle\\Globals\\Cart\\SubscriptionPrice::AWPLUS_PRICE') %}
+        {% set price = prices[constant('\\AwardWallet\\MainBundle\\Globals\\Cart\\SubscriptionPeriod::DURATION_1_YEAR')] %}
+
+        {{ commonMacro.paragraph(
+            'plus_expired.coupon.desc-1-year.v2'|trans({
+                '%price%': price|formatCurrency("USD", true, locale)
+            }, 'email', lang)|desc('We wanted to thank you and say that we truly appreciate your interest in our service! We see that you used a coupon to upgrade your account last time, the cost of the upgrade is only %price% per year. AwardWallet Plus contributions enable us to continue developing and enhancing AwardWallet.'),
+            _context
+        ) }}
+
+    {% else %}
+        {# paid aw plus #}
+        {{ commonMacro.smallWarning(
+            'plus_expired.expired.v2'|trans({
+                '%span_on%': '<b style="color:#3d424d">',
+                '%span_off%': '</b>',
+                '%span2_on%': '<b style="color:#cc3d5e">',
+                '%span2_off%': '</b>'
+            }, 'email', lang)|desc('Your %span_on%AwardWallet Plus%span_off% membership %span2_on%has now expired%span2_off%.'),
+            _context, {escape: false}
+        ) }}
+
+        {{ commonMacro.paragraph(
+            'plus_expired.paid.desc.v2'|trans({}, 'email', lang)|desc('Thank you for previously supporting AwardWallet. Your past contribution helped us continue improving our service, and we\'re truly grateful.'),
+            _context, {escape: false}
+        ) }}
+    {% endif %}
+
+    {{ commonMacro.paragraph(
+        'plus_expired.note.v2'|trans({
+            '%bold_on%': '<b>',
+            '%bold_off%': '</b>',
+        }, 'email', lang)|desc('None of your data has been deleted — you can continue using AwardWallet as a free member without interruption. To learn more about the differences between the free and Plus versions, check out this page:'),
+        _context, {escape: false}
+    ) }}
+
+    {% set link = baseUrl ~ path('aw_pricing') %}
+    {{ commonMacro.dottedLink(link, link, _context) }}
+
+    {{ commonMacro.paragraph(
+        'plus_expired.renew.v3'|trans({}, 'email', lang)|desc('If you\'d like to renew your AwardWallet Plus membership, you can do so here:'),
+        _context
+    ) }}
+
+    {% if lastType in [
+        constant('\\AwardWallet\\MainBundle\\Entity\\CartItem\\AT201Subscription1Month::TYPE'),
+        constant('\\AwardWallet\\MainBundle\\Entity\\CartItem\\AT201Subscription6Months::TYPE'),
+        constant('\\AwardWallet\\MainBundle\\Entity\\CartItem\\AT201Subscription1Year::TYPE')
+    ] %}
+        {% set link = baseUrl ~ path('aw_at201_payment', {type: lastType}) %}
+    {% else %}
+        {% set link = baseUrl ~ path('aw_users_pay') %}
+    {% endif %}
+
+    {{ commonMacro.dottedLink(link, link, _context) }}
+
+    {{ commonMacro.info(
+        'recommend-aw.v2'|trans({}, 'email', lang)|desc('We\'d also love it if you could recommend AwardWallet to your friends!'), _context
+    ) }}
+
+{% endblock content %}
+
+{% block signature %}
+    {% import '@MailTemplate/CommonMacro.twig' as commonMacro %}
+    <tr>
+        <td  align="right" style="padding:10px">
+            <span style="font-size:13px;color:#535457">
+                {% set link = commonMacro.link('https://awardwallet.com', '$$')|split('$$') %}
+                {{ 'thank_you_for_being_part_of_community_with_team'|trans({
+                    '%link_on%': link[0],
+                    '%link_off%': link[1],
+                    '%teamName%': 'The AwardWallet Team'
+                }, 'email', lang)|desc('Thank you again for being part of our community, <br>%link_on%%teamName%%link_off%.')|raw }}
+            </span>
+        </td>
+    </tr>
+{% endblock signature %}

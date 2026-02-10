@@ -1,0 +1,14 @@
+{% extends "@AwardWalletMain/Layout/profile.html.twig" %}
+
+{% block title %}{{ 'user.coupon.form.title'|trans|desc('Upgrade or get AwardWallet OneCard credits using coupon') }}{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        require([
+            'lib/design'
+        ], function(){
+
+        });
+    </script>
+{% endblock %}

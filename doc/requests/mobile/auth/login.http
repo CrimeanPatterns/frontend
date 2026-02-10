@@ -1,0 +1,33 @@
+###
+GET {{scheme}}{{host}}/m/api/login_status?{{xdebugParamName}}={{xdebugParamValue}}
+Content-Type: application/json
+X-Aw-Version: {{clientVersion}}
+X-Aw-Platform: {{clientPlatform}}
+X-Symfony-Env: {{symfonyEnv}}
+Authorization: Basic {{basicAuthLogin}} {{basicAuthPassword}}
+
+> {%
+    const xScripted = response.headers.valueOf('X-Scripted').split('+').map(e => new Number(e)).reduce((acc, v) => acc + v, 0);
+    client.log('X-Scripted result: ' + xScripted);
+    client.global.set("xScriptedCheck", xScripted.toString());
+%}
+
+###
+// @no-log
+POST {{scheme}}{{host}}/m/api/login_check?{{xdebugParamName}}={{xdebugParamValue}}
+Content-Type: application/json
+X-Aw-Version: {{clientVersion}}
+X-Aw-Platform: {{clientPlatform}}
+X-Scripted: {{xScriptedCheck}}
+X-Symfony-Env: {{symfonyEnv}}
+Authorization: Basic {{basicAuthLogin}} {{basicAuthPassword}}
+
+{
+	"_remember_me": 1,
+	"login_password": {
+		"login": "{{login}}",
+		"pass": "{{password}}"
+	},
+	"one_time_code_by_app": {{otcApp}},
+	"one_time_code_by_email": {{otcEmail}}
+}

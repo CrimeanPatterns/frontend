@@ -1,0 +1,14 @@
+<table class="billing-report-table">
+    <thead>
+        {% for field, value in tripit | first %}
+            <th>{{ field }}</th>
+        {% endfor %}
+    </thead>
+{% for row in tripit %}
+    <tr>
+        {% for field, value in row %}
+            <td>{{ value }}</td>
+        {% endfor %}
+    </tr>
+{% endfor %}
+</table>

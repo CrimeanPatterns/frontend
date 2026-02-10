@@ -1,0 +1,96 @@
+{% extends '@MailTemplate/Layout/base.twig' %}
+{% trans_default_domain "email" %}
+
+{% block subject %}{% apply spaceless %}{% autoescape false %}
+    {{ 'empty-accounts.subject'|trans({}, 'email', lang)|desc('Empty accounts purged from AwardWallet database') }}
+{% endautoescape %}{% endapply %}{% endblock subject %}
+
+{% block content %}
+    {% import '@MailTemplate/CommonMacro.twig' as commonMacro %}
+
+    {{ commonMacro.hello(user.firstname, _context) }}
+
+    {{ commonMacro.paragraph(
+        'empty-accounts.message'|trans({}, 'email', lang)
+            |desc('We noticed that the following empty accounts were created on AwardWallet with you as a referral:'),
+        _context
+    ) }}
+
+    <table width="100%" cellpadding="0" border="0" cellspacing="0" style="margin-top:10px;line-height:18px;border-bottom:1px dotted #8e9199;border-top:1px dotted #8e9199;">
+        <tr>
+            <td style="padding:10px 0">
+            {% for u in invitees %}
+                {% set verified = '' %}
+                {% if u.EmailVerified == constant('EMAIL_UNVERIFIED') %}
+                    {% set verified = '(' ~ 'email-unverified'|trans({}, 'email', lang)|desc('Unverified')|lower ~ ')' %}
+                {% elseif u.EmailVerified == constant('EMAIL_NDR') %}
+                    {% set verified = '(' ~ 'email-non-deliverable'|trans({}, 'email', lang)|desc('Non deliverable')|lower ~ ')' %}
+                {% endif %}
+
+                <table width="100%" cellpadding="0" border="0" cellspacing="0" style="line-height:20px">
+                    <tr>
+                        <td  width="150" class="first-cell" valign="top" style="padding-right:15px;font-size:15px;color:#70798c;">
+                            {{ 'user-name'|trans({}, 'email', lang)|desc("Name") }}:
+                        </td>
+                        <td {# width="60%" #} valign="top" style="font-size:16px;color:#535457;">
+                            <b style="font-weight:bold;color:#3d424d;">{{ u.FirstName ~ " " ~ u.LastName }}</b>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td  width="150" class="first-cell" valign="top" style="padding-right:15px; padding-top:5px;font-size:15px;color:#70798c;">
+                            {{ 'login.email'|trans({}, 'messages', lang) }}:
+                        </td>
+                        <td {# width="60%" #} valign="top" style="padding-top:5px;font-size:16px;color:#535457;">
+                            {{ u.Email|htmlencode|disableEmailLink|raw }} {% if verified is not empty %} <span style="color:#828b99;display:inline-block;">{{ verified }}</span>{% endif %}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td  width="150" class="first-cell" valign="top" style="padding-right:15px; padding-top:5px;font-size:15px;color:#70798c;">
+                            {{ 'lp-count'|trans({}, 'email', lang)|desc("# of Loyality Accounts") }}:
+                        </td>
+                        <td {# width="60%" #} valign="top" style="padding-top:5px;font-size:16px;color:#535457;">
+                            {{ u.cAccounts|formatNumber(null, locale) }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td  width="150" class="first-cell" valign="top" style="padding-right:15px; padding-top:5px;font-size:15px;color:#70798c;">
+                            {{ 'ip-address'|trans({}, 'email', lang)|desc("IP Address") }}:
+                        </td>
+                        <td {# width="60%" #} valign="top" style="padding-top:5px;font-size:16px;color:#535457;">
+                            {{ u.RegistrationIP }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td  width="150" class="first-cell" valign="top" style="padding-right:15px; padding-top:5px;font-size:15px;color:#70798c;">
+                            {{ 'registration-time'|trans({}, 'email', lang)|desc("Time of registration") }}:
+                        </td>
+                        <td {# width="60%" #} valign="top" style="padding-top:5px;font-size:16px;color:#535457;">
+                            {{ u.CreationDateTime|formatDatetime('short', 'short', locale) }}
+                        </td>
+                    </tr>
+                </table>
+                {% if not loop.last %}
+                    <br>
+                {% endif %}
+            {% endfor %}
+            </td>
+        </tr>
+    </table>
+
+    {{ commonMacro.paragraph(
+        'empty-accounts.purge'|trans({}, 'email', lang)
+            |desc('These accounts have been purged from our database. We would appreciate if you refrain from creating empty accounts in order to receive AwardWallet Plus upgrades as it makes our database very messy, and obviously this was not the intent of our referral program.'),
+        _context
+    ) }}
+
+    {% if coupons is not empty %}
+        {{ commonMacro.paragraph(
+            'empty-accounts.coupons'|trans({
+                '%coupons%': coupons,
+                '%span_on%': '<b>',
+                '%span_off%': '</b>'
+            }, 'email', lang)|desc('The following coupons have also been removed from your account: %span_on%%coupons%%span_off%.'),
+            _context, {escape: false}
+        ) }}
+    {% endif %}
+{% endblock content %}

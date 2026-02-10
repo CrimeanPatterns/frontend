@@ -1,0 +1,30 @@
+{% extends is_granted('SITE_BUSINESS_AREA') ? "@AwardWalletMain/Layout/business_default.html.twig" : "@AwardWalletMain/Layout/edit_connections.html.twig" %}
+{% form_theme form with ['@AwardWalletMain/FormTheme/fields.html.twig'] %}
+
+{% block header_metatags %}
+    {% include '@AwardWalletMain/Utility/scalableViewport.html.twig' %}
+{% endblock %}
+
+{% block content %}
+    <div class="add-account">
+        <div class="main-blk">
+            <h1>{{ 'agents.connect.step1.header'|trans|desc('Add a new connection') }}</h1>
+            {{ form_start(form, {'attr': {'class': 'main-form' }}) }}
+            <div class="main-blk-content">
+                <div class="success-message">
+                    <i class="icon-green-check-b"></i>
+
+                    <p class="big">{{ 'agents.connect.user-found.message'|trans({'%email%': email |htmlencode})|desc('A user name with email address that you specified <span class="silver">(%email%)</span> was found in our database')|raw }}</p>
+                </div>
+                <p>{{ 'agents.connect.default-info.message'|trans({'%email%': email |htmlencode})|desc('By default no information will be visible to <a href="mailto:%email%">%email%</a>. However, once the two of you are connected you will be able to choose what to share.')|raw }}</p>
+
+                <p>{{ 'agents.connect.remember.message'|trans|desc('Also please remember that anybody could be registered under this email address on AwardWallet.') }}</p>
+            </div>
+            <div class="row-submit">
+                <button type="submit" class="btn-blue">{{ 'agents.connect.yes-connect.btn'|trans|desc('Yes, connect me with this person') }}</button>
+            </div>
+            {{ form_end(form) }}
+        </div>
+        {{ include('@AwardWalletMain/Agent/_faq.html.twig') }}
+    </div>
+{% endblock %}

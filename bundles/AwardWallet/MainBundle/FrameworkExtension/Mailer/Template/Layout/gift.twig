@@ -1,0 +1,58 @@
+{% extends '@MailTemplate/Layout/default.twig' %}
+
+{% block contentBody %}
+    <table cellpadding="0" cellspacing="0"  border="0" height="100" width="100%">
+        <tr>
+            <td background="{{ baseImagesPath }}/top-bg-2.png" valign="top" bgcolor="#d7d8db" class="header" style="background-repeat: repeat-x;">
+                <table width="100%" cellpadding="0" border="0" cellspacing="0" height="90">
+                    <tr>
+                        <td style="padding:0 10px">
+                            {% block headerLogoWrapper %}
+                                <table width="100%" cellpadding="0" border="0" cellspacing="0" height="90">
+                                    <tr>
+                                        {% block headerLogo %}
+                                            {% import '@MailTemplate/CommonMacro.twig' as commonMacro %}
+                                            {{ commonMacro.awLogo(_context) }}
+                                        {% endblock headerLogo %}
+                                    </tr>
+                                </table>
+                            {% endblock headerLogoWrapper %}
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+    <table width="100%" cellpadding="0" border="0" cellspacing="0" style="font-weight: normal; min-width: 300px;">
+        <tr>
+            <td class="emailBody">
+                <table width="100%" cellpadding="0" border="0" cellspacing="0">
+                    {% block content_row %}
+                    <tr>
+                        <td>
+                            {% block content %}
+                            {% endblock content %}
+                        </td>
+                    </tr>
+                    {% endblock content_row %}
+
+                    {% block signature %}
+                        {% import '@MailTemplate/CommonMacro.twig' as commonMacro %}
+                        <tr>
+                            <td  align="right" style="padding:10px">
+                                <span style="font-size:13px;color:#535457">
+                                    {% set link = commonMacro.link('http://awardwallet.com', '$$')|split('$$') %}
+                                    {{ 'thank_you_team'|trans({
+                                        '%link_on%': link[0],
+                                        '%link_off%': link[1],
+                                        '%teamName%': 'AwardWallet'
+                                    }, 'email', lang)|desc('Thank you, <br>%link_on% %teamName% team%link_off%.')|raw }}
+                                </span>
+                            </td>
+                        </tr>
+                    {% endblock signature %}
+                </table>
+            </td>
+        </tr>
+    </table>
+{% endblock contentBody %}

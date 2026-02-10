@@ -1,0 +1,23 @@
+services:
+    _defaults:
+        public: true
+
+    aw.mobile.ab_message:
+        public: true
+        class: AwardWallet\MobileBundle\Form\Type\AbMessageType
+        tags:
+            - { name: form.type }
+
+    # Handlers
+
+    aw.form.ab_message.subscriber.generic:
+        public: true
+        class: AwardWallet\MainBundle\Form\Handler\Subscriber\Booking\MessageGeneric
+        arguments: ["@aw.manager.abrequest_manager", "@event_dispatcher", "@doctrine.orm.default_entity_manager"]
+
+    aw.form.ab_message.handler.generic:
+        public: true
+        parent: aw.form.generic_request_handler
+        calls:
+            - [setChannel, ["form.generic.ab_message"]]
+            - [addHandlerSubscriber, ["@aw.form.ab_message.subscriber.generic"]]

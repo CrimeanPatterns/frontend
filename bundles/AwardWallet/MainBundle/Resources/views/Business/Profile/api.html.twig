@@ -1,0 +1,188 @@
+{% extends "@AwardWalletMain/Layout/profile.html.twig" %}
+{% form_theme enableDisableForm with ['@AwardWalletMain/FormTheme/fields.html.twig'] %}
+{% form_theme keyRegenerateForm with ['@AwardWalletMain/FormTheme/fields.html.twig'] %}
+
+{% block stylesheets %}
+    {{ parent() }}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        require(['jquery-boot', 'lib/dialog'], function ($, dialog) {
+            $(function () {
+                $(document).on('click', '.js-api-regenerate', function (event) {
+                    event.preventDefault();
+                    dialog.fastCreate(
+                        '{{ 'api.api-key.regenerate-confirm-title'|trans|desc("Re-generate API Key") }}',
+                        '{{ 'api.api-key.regenerate-confirm-text'|trans|desc("You are about to re-generate your API Key. Are you sure you want to do that?") }}',
+                        true,
+                        true,
+                        [
+                            {
+                                text: Translator.trans('button.cancel'),
+                                click: function () {
+                                    $(this).dialog('close');
+                                },
+                                'class': 'btn-silver'
+                            },
+                            {
+                                id: 'send-form',
+                                text: Translator.trans('button.yes'),
+                                click: function () {
+                                    $('#send-form').addClass('loader').attr('disabled', true);
+                                    $('#api-regenerate').submit();
+                                },
+                                'class': 'btn-blue'
+                            }
+                        ],
+                        600
+                    );
+                    return false;
+                });
+
+                $(document).on('click', '.js-api-switch', function (event) {
+                    event.preventDefault();
+                    $('#api-switch').submit();
+                    return false;
+                });
+            })
+        });
+    </script>
+{% endblock %}
+
+
+{% block content %}
+    <div class="main-blk shortened">
+        <h1>{{ 'profile.business.api'|trans|desc('API Settings') }}</h1>
+
+        <div class="main-blk-content">
+            {% if app.session.flashbag.has('notice.business-api') %}
+                {% for flash_message in app.session.flashbag.get('notice.business-api') %}
+                    <div class="success-title">
+                        <i class="icon-white-check-b"></i>
+                        <span>{{ flash_message }}</span>
+                    </div>
+                {% endfor %}
+            {% endif %}
+
+            <table class="main-table edit-account" style="border-top: 1px dotted #8e9199;">
+                <tbody>
+                    <tr>
+                        <td class="caption-row">{{ 'api.api-status'|trans|desc('API Status') }}:</td>
+                        <td class="info-row">
+                            <span class="bold">
+                                {% if info.isApiEnabled %}
+                                    <i class="icon-green-check"></i> {{ 'api.api-status.enabled'|trans|desc('Enabled') }}
+                                {% else %}
+                                    <i class="icon-error-small"></i> {{ 'api.api-status.disabled'|trans|desc('Disabled') }}
+                                {% endif %}
+                            </span>
+                        </td>
+                        <td class="action-row">
+                            <a href="#" class="btn-silver js-api-switch" style="min-width: 108px">
+                                {% if info.isApiEnabled %}
+                                    {{ 'api.api-status.disable'|trans|desc('Disable') }}
+                                {% else %}
+                                    {{ 'api.api-status.enable'|trans|desc('Enable') }}
+                                {% endif %}
+                            </a>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            {% if info.isApiEnabled %}
+                <div class="title-note">
+                    <h3>{{ 'profile.business.api-access'|trans|desc('Access Settings') }}</h3>
+                    <a href="{{ path('aw_profile_business_api_settings') }}" class="btn-blue edit-btn">
+                        <i class="icon-edit-w"></i>
+                        <span>{{ 'button.edit'|trans }}</span>
+                    </a>
+                </div>
+                <table class="main-table edit-account">
+                    <tbody>
+                    <tr>
+                        <td class="caption-row">{{ 'api.api-key'|trans|desc('API Key') }}:</td>
+                        <td class="info-row"><span class="bold">{{ info.apiKey }}</span></td>
+                        <td class="action-row"><a href="#" class="btn-silver js-api-regenerate" style="min-width: 108px">{{ 'api.api-key.regenerate'|trans|desc('Regenerate') }}</a></td>
+                    </tr>
+                    <tr>
+                        <td class="caption-row aligntop">{{ 'api.allowed-ip'|trans }}:</td>
+                        <td class="info-row">
+                            {% if not allowIPs|length %}
+                                <b>{{ 'allowed-ip.deny-for-all'|trans|desc('Deny for all') }}</b>
+                            {% else %}
+                                <div class="list-ips">
+                                {% for ip in allowIPs %}{% if ip %}<div class="row">{{ ip }}</div>{% endif %}{% endfor %}
+                                </div>
+                            {% endif %}
+                        </td>
+                        <td class="action-row"></td>
+                    </tr>
+                    </tbody>
+                </table>
+                {% if info.isApiInviteEnabled %}
+                    <div class="title-note">
+                        <h3>{{ 'profile.business.api-callback'|trans|desc('Invite Settings') }}</h3>
+                        <a href="{{ path('aw_profile_business_api_callback_settings') }}" class="btn-blue edit-btn">
+                            <i class="icon-edit-w"></i>
+                            <span>{{ 'button.edit'|trans }}</span>
+                        </a>
+                    </div>
+                    <table class="main-table edit-account">
+                        <tbody>
+                        <tr>
+                            <td class="caption-row">{{ 'api.invite-url'|trans }}:</td>
+                            <td class="info-row"><input type="text" value="{{ inviteUrl }}" style="font-weight: bold"/></td>
+                        </tr>
+                        <tr>
+                            <td class="caption-row">{{ 'api.callback-url'|trans }}:</td>
+                            <td class="info-row">
+                                <span class="bold">
+                                    {% if info.apiCallbackUrl %}
+                                        {{ info.apiCallbackUrl }}
+                                    {% else %}
+                                        {#<i class="icon-warning-small"></i> {{ 'api.callback-url.warning'|trans|desc('Provide Callback URL for enabling user invite') }}#}
+                                    {% endif %}
+                                </span>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                {% else %}
+                    <div class="title-note">
+                        <h3>{{ 'profile.business.api-callback'|trans|desc('Invite Settings') }}</h3>
+                    </div>
+                    <table class="main-table edit-account">
+                        <tbody>
+                        <tr>
+                            <td class="caption-row" style="width: auto"><span><i class="icon-warning-small"></i> {{ 'api.invite-url.contact-us'|trans|desc('Please contact AwardWallet for approval') }}</span></td>
+                            <td class="action-row"><a href="{{ url('aw_contactus_index')}}?API" class="btn-silver" style="min-width: 108px">{{ 'buttons.contact.us'|trans }}</a></td>
+                        </tr>
+                        </tbody>
+                    </table>
+                {% endif %}
+            {% endif %}
+
+        </div>
+        <form style="display: none" id="api-switch"
+              action="{{ path('aw_profile_business_api_switch') }}"
+              method="post">
+            {{ form_widget(enableDisableForm, {'noSubmit':true}) }}
+        </form>
+        <form style="display: none" id="api-regenerate"
+              action="{{ path('aw_profile_business_api_regenerate') }}"
+              method="post">
+            {{ form_widget(keyRegenerateForm, {'noSubmit':true}) }}
+        </form>
+    </div>
+    <div class="faq">
+        <div class="faq-blk">
+            <div class="heading">
+                <i class="icon-info-small"></i>
+                <p>{{ 'profile.business.api-doc'|trans({'%url%': 'https://awardwallet.com/api/AccountAccess/'})|desc("To use this API please first read the <a href='%url%'>API Documentation</a>")|raw }}</p>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

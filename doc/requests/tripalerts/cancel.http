@@ -1,0 +1,24 @@
+POST https://trips-api.flightstats.com/trips?appId={{tripalerts_app_id}}&appKey={{tripalerts_app_key}}
+Content-Type: application/json
+
+[{
+    "referenceNumber": "user-7",
+    "cancelled": true,
+    "flights": [],
+    "attributes": {
+        "CUSTOMER_ID": "AwardWallet_Test",
+        "AuthToken": "{{tripalerts_auth_token}}"
+    },
+    "alerting": {
+        "directApiDeliveries": [
+            {
+                "url": "https:\/\/awardwallet.com\/callback\/tripalert\/7",
+                "alertSetting": "Traveler"
+            },
+            {
+                "url": "https:\/\/awardwallet.com\/callback\/tripalert\/7",
+                "alertSetting": "Status"
+            }
+        ]
+    }
+}]

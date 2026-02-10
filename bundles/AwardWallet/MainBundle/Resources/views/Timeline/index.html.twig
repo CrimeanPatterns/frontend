@@ -1,0 +1,105 @@
+{% extends app.user ? "@AwardWalletMain/Layout/trips.html.twig" : "@AwardWalletMain/Layout/not_logged.html.twig" %}
+{% import '@AwardWalletMain/Business/Members/_searchBox.html.twig' as searchbox %}
+{% use '@AwardWalletMain/Timeline/_timelineElements.html.twig' %}
+{% import '@AwardWalletMain/TwigMacros/common.html.twig' as common %}
+
+{% block meta %}
+    {{ parent() }}
+    <base href="{{ path('aw_timeline') }}">
+    <meta name="robots" content="noindex">
+
+
+    {% if app.user is null %}
+        <META NAME="description" content="{{ 'timeline.sharing.meta'|trans|desc('AwardWallet is the most comprehensive travel plan management solution on the internet.') }}">
+    {% endif %}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    {{ common.angularLinkConverter() }}
+    {{ encore_entry_script_tags('trans/' ~ app.request.locale) }}
+    {{ encore_entry_script_tags('timeline') }}
+{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    {{ encore_entry_link_tags('timeline') }}
+    {{ encore_entry_link_tags('trips') }}
+    {{ encore_entry_link_tags('scanner') }}
+{% endblock %}
+
+{% block title %}
+    {% if app.user is null %}
+        {{ 'timeline.sharing.title'|trans|desc('AwardWallet - the best tool for travelers to track their reservations and frequent flier miles') }}
+    {% else %}
+        {{ 'timeline.title.trips'|trans|desc('Trips') }}
+    {% endif %}
+{% endblock %}
+
+{% block content %}
+    {% import '@AwardWalletMain/UserMailbox/view.html.twig' as mailBoxMacro %}
+
+    {% if is_granted('SITE_BUSINESS_AREA') %}
+        {{ searchbox.draw(
+        'aw_business_members_dropdown_timeline',
+        'traveler.name'|trans|desc('Traveler Name'),
+        'false',
+        "function(id){ return Routing.generate('aw_timeline_html5', {'agentId': id }); }"
+        ) }}
+    {% endif %}
+    <div class="trip" data-ng-controller="timeline" data-ng-cloak>
+
+        <div class="ajax-loader" data-ng-if="spinner">
+            <div class="loading"></div>
+        </div>
+
+        <div data-ng-if="!spinner">
+            {% if is_granted('SITE_BUSINESS_AREA') %}
+                {{ block('user_title') }}
+            {% else %}
+                {{ block('forwarding_email') }}
+            {% endif %}
+
+            {{ block('past_travel') }}
+
+            {% if isShowDeleted %}
+                {{ block('show_deleted') }}
+            {% endif %}
+
+            {{ block('trip_list') }}
+
+            {{ block('add_trip') }}
+
+            <div class="row-submit scanner" data-ng-if="mailboxes[agentId || 'my'] == 0">
+                {{ mailBoxMacro.addMailboxForm() }}
+            </div>
+        </div>
+    </div>
+
+    {{ tip('timelineGroupTripLink', {'output':'javascript', 'position' : 'left'}) }}
+    {{ tip('timelineShareButton', {'output':'javascript', 'position': 'left'}) }}
+    {% if app.user is not null and not app.user.wpDisableAll  %}
+        {% if not webpack|default(false) %}
+            <script>
+                require(['common/web-push'], function(webPush) {
+                    webPush.init('{{ vapid_public_key }}', '{{ webpush_id }}', {{ app.user.userId }}, {{ is_granted('ROLE_STAFF') ? 'true' : 'false' }});
+                });
+            </script>
+        {% else %}
+            <script>
+                window.indexTripVapidPublicKey = '{{ vapid_public_key }}';
+                window.indexTripWebpushId =  '{{ webpush_id }}';
+                window.indexTripUserId = {{ app.user.userId }};
+                window.indexTripIsUserStuff = {{ is_granted('ROLE_STAFF') ? 'true' : 'false' }}; 
+            </script>
+            {{ encore_entry_script_tags('index-trip', null, '_default', {'defer': true}) }}
+        {% endif %}
+        
+    {% endif %}
+
+    {% for flashMessage in app.session.flashBag.get('reservations_not_found') %}
+        {% if flashMessage %}
+            <div data-ng-controller="flashMessageTripit"></div>
+        {% endif %}
+    {% endfor %}
+{% endblock %}

@@ -1,0 +1,37 @@
+{% extends '@MailTemplate/Layout/base.twig' %}
+
+{% block headerLogo %}
+    {% import '@MailTemplate/CommonMacro.twig' as commonMacro %}
+    {{ commonMacro.bookerLogo(request.booker.bookerInfo, _context) }}
+{% endblock %}
+
+{% block signature %}
+        {% import '@MailTemplate/CommonMacro.twig' as commonMacro %}
+        <tr>
+            <td align="right" style="padding:10px">
+                <span style="font-size:13px;color:#535457">
+                    {% set link = commonMacro.link(request.booker.bookerInfo.ServiceURL, '$$')|split('$$') %}
+                    {{ 'thank_you_team'|trans({
+                        '%link_on%': link[0],
+                        '%link_off%': link[1],
+                        '%teamName%': request.booker.bookerInfo.ServiceName
+                    }, 'email', lang)|desc('Thank you, <br>%link_on% %teamName% team%link_off%.')|raw }}
+                </span>
+            </td>
+        </tr>
+{% endblock signature %}
+
+{% block restore_row %}
+    {% if not toBooker %}
+        {{ parent() }}
+    {% endif %}
+{% endblock restore_row %}
+
+{% block physical_address_row %}
+    {% if request.booker.bookerInfo.address is not empty %}
+        <span>{{ request.booker.bookerInfo.address|raw }}</span>
+    {% else %}
+        {{ parent() }}
+    {% endif %}
+{% endblock physical_address_row %}
+

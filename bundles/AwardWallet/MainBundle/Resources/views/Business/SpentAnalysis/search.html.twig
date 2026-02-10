@@ -1,0 +1,15 @@
+{% extends '@AwardWalletMain/Layout/business_check_balance.html.twig' %}
+{% import '@AwardWalletMain/Business/Members/_searchBox.html.twig' as searchbox %}
+
+{% block content %}
+    <div class="main-blk">
+        <div class="search-box">
+            {{ searchbox.draw(
+                'aw_business_members_dropdown_spent_analysis',
+                'traveler.name'|trans|desc('Traveler Name'),
+                'false',
+                "function(id){ return Routing.generate('" ~ routeSearchBox|default('aw_spent_analysis_business') ~ "', {'agentId': id }); }",
+            ) }}
+        </div>
+    </div>
+{% endblock %}

@@ -1,0 +1,129 @@
+{% from "@AwardWalletMain/TwigMacros/oauthButtons.html.twig" import oauthButtons %}
+{% from "@AwardWalletMain/TwigMacros/scanMailboxQuestion.html.twig" import scanMailboxQuestion %}
+<div class="ui-dialog">
+    <div class="ui-dialog-titlebar">
+        <h3 data-ng-bind-html="popupTitle[step]"></h3>
+        <a data-ui-sref="{{ homeRef|default('home') }}" class="ui-dialog-titlebar-close"><i class="ui-icon-closethick"></i></a>
+    </div>
+    <div class="ui-dialog-content">
+        <div class="login-in">
+            <div class="item">
+                <div class="error-blk" data-ng-if="error" data-ng-class="{'forgot':'login' === step && showForgotLink}"><i class="icon-warning-small"></i><span>[[ error ]]</span>
+                    <a href="" data-ui-sref="{{ restoreRef|default('restore') }}" class="f-right" data-ng-if="'login' === step && showForgotLink">{{ 'login.bottom.forgot'|trans }}</a>
+                </div>
+                <div class="information-message" data-ng-if="informationMessage && ('otc' === step || 'question' === step) && !error"><i class="icon-info-small"></i><p>[[ informationMessage ]]</p></div>
+                <form class="main-form unselectable" name="loginForm" data-ng-submit="submit()" method="post">
+                    <div data-ng-hide="step === 'mb_question'">
+                        <div data-ng-show="step === 'login'" class="row" data-ng-class="{error: loginForm.login.$invalid && loginForm.login.$dirty}">
+                            <div class="row-item">
+                                <label for="username">{{ 'login.login'|trans }}<span class="required">*</span></label>
+
+                                <div class="input">
+                                    <div class="input-item">
+                                        <div data-ng-if="loginForm.login.$error.required && loginForm.login.$dirty" class="req" title="{{ 'notblank'|trans({}, 'validators') }}" data-tip="fixed"><i class="icon-warning-small"></i></div>
+                                        <div data-ng-if="loginForm.login.$error.pattern" class="req" title="{{ 'user.login.pattern'|trans({}, 'validators')|desc('Please use only English letters or numbers. No Spaces.') }}" data-tip="fixed"><i class="icon-warning-small"></i></div>
+                                        <input data-show-error tabindex="1" class="login" id="username" require autocomplete="off" type="text" name="login" data-ng-model="user.login" data-ng-class="{complete: !!user.login}" data-ng-keyup="error=false" data-login-hint="{{ username }}" auto-focus>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div data-ng-show="step === 'login'" class="row" data-ng-class="{error: loginForm.password.$invalid && loginForm.password.$dirty}">
+                            <div class="row-item">
+                                <label for="password">{{ 'login.pass'|trans }}<span class="required">*</span></label>
+
+                                <div class="input">
+                                    <div class="input-item">
+                                        {#<div data-ng-if="loginForm.password.$error.required && loginForm.password.$dirty" class="req" title="{{ 'notblank'|trans({}, 'validators') }}" data-tip="fixed"><i class="icon-warning-small"></i></div>#}
+                                        <input tabindex="2" class="password" id="password" required type="password" name="password" data-ng-model="user.password" data-ng-class="{complete: !!user.password}" autocomplete="off" data-ng-keyup="error=false" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div data-ng-show="step === 'login'" class="row link">
+                            <a data-ui-sref="{{ restoreRef|default('restore') }}">{{ 'login.bottom.forgot'|trans }}</a>
+                        </div>
+                        <div data-ng-show="step === 'otc'" class="row info-full" data-ng-class="{error: loginForm.otc.$invalid && loginForm.otc.$dirty}">
+                            <div class="row-item">
+                                <label for="otc"><span style="white-space: nowrap;" data-ng-bind="otcInputLabel"></span><span class="required">*</span></label>
+                                <div class="input">
+                                    <div class="input-item">
+                                        <div data-ng-if="loginForm.otc.$error.required && loginForm.otc.$dirty" class="req" title="{{ 'notblank'|trans({}, 'validators') }}" data-tip="fixed"><i class="icon-warning-small"></i></div>
+                                        <input tabindex="3" class="otc" id="otc" data-ng-required="step === 'otc'" type="text" name="otc" maxlength="6" data-ng-model="user._otc" data-ng-class="{complete: !!user._otc}" autocomplete="off" data-ng-keyup="clearMessages()"/>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="info" data-ng-show="otcInputHint">
+                                <div class="info-icon"></div>
+                                <div class="info-description"><p data-ng-bind="otcInputHint"></p></div>
+                            </div>
+                        </div>
+                        <div data-ng-show="step === 'question'" class="row" data-ng-class="{error: loginForm.otc.$invalid && loginForm.otc.$dirty}">
+                            <div class="row-item">
+                                <label for="otc"><span style="white-space: nowrap;">{{ 'questions.text'|trans }}:</span></label>
+                                <div class="input">
+                                    <div class="input-item">
+                                        <div class="styled-select">
+                                            <div><select id="question-select" data-ng-required="step === 'question'" data-ng-model="question" data-ng-options="question.question for question in questions" data-ng-change="questionChanged()"></select></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div data-ng-show="step === 'question'" class="row" data-ng-class="{error: loginForm.otc.$invalid && loginForm.otc.$dirty}">
+                            <div class="row-item">
+                                <label for="question-answer"><span style="white-space: nowrap;">{{ 'award.account.popup.updater-question.label' | trans }}:</span></label>
+                                <div class="input">
+                                    <div class="input-item">
+                                        <input type="text" tabindex="3" id="question-answer" data-ng-required="step === 'question'" data-ng-model="answer" autocomplete="off"data-ng-class="{complete: !!user._otc}">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div data-ng-show="step === 'otcRecovery'">
+                            <div class="legend">{{ 'login.otc-recovery'|trans|desc("If you lost the device that has your two-factor authentication tokens, the only way to recover would be by using a recovery key that was given to you at the time of setup. If you still have this key please enter it below:") }}</div>
+                            <div class="row" data-ng-class="{error: loginForm.otcRecovery.$invalid && loginForm.otcRecovery.$dirty}">
+                                <div class="row-item">
+                                    <div class="input">
+                                        <div class="input-item wide">
+                                            <div data-ng-if="loginForm.otcRecovery.$error.required && loginForm.otcRecovery.$dirty" class="req" title="{{ 'notblank'|trans({}, 'validators') }}" data-tip="fixed"><i class="icon-warning-small"></i></div>
+                                            <input tabindex="3" class="otcRecovery" id="otcRecovery" data-ng-pattern="/^([^\-]{4}-){7}[^\-]{4}$/" data-ng-required="step === 'otcRecovery'" type="text" name="otcRecovery" data-ng-model="user._otc_recovery" data-ng-class="{complete: !!user._otc_recovery}" autocomplete="off" data-ng-keyup="clearMessages()"/>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="legend">{{ 'login.otc-recovery.bad-luck'|trans|desc("If you don't have this recovery key, sorry you are out of luck.") }}</div>
+                        </div>
+                        <div class="row-submit error">
+                            <div class="row-submit-item">
+                                <div data-ng-show="step === 'login'" class="remember-me">
+                                    <input tabindex="4" id="remember_me" name="{{ remember_me_parameter }}" type="checkbox" class="checkbox" data-ng-model="user._remember_me">
+                                    <label for="remember_me" class="label">{{ 'keep-me.checkbox'|trans|desc('Keep me signed in') }}</label>
+                                </div>
+                                <div class="submit">
+                                    <button data-ng-show="step !== 'login'" tabindex="6" type="button" data-ng-click="back()" class="btn-silver">{{ 'login.button.back'|trans|desc('Back') }}</button>
+                                    <button tabindex="5" id="login-button" data-ng-disabled="((loginForm.$invalid || (step === 'question' && question.question === selectQuestionText)) && !autofill) || spinner" type="submit" class="btn-blue" data-ng-class="{loader:spinner}">[[ submitButton[step] ]]</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="ui-dialog-buttons">
+                            <ul class="popup-footer-buttons full-width" data-ng-show="step === 'otc' && otcShowRecovery">
+                                <li><a href="" data-ng-click="doStep('otcRecovery')" >{{ 'login.bottom.otc-recovery-new'|trans|desc("I don't have the 6-digit code, but I have the long recovery key.") }}</a></li>
+                            </ul>
+                            <ul class="popup-footer-buttons full-width" data-ng-show="step === 'question'">
+                                <li><a href="{{ url('aw_contactus_index') }}">Click here to contact support if you are stuck.</a></li>
+                            </ul>
+                        </div>
+                        <div data-ng-show="step === 'login'">
+                            <div class="or-block">{{ 'or'|trans }}</div>
+                            {{ oauthButtons('login') }}
+                        </div>
+                    </div>
+                    {{ scanMailboxQuestion() }}
+                </form>
+                <div class="em-handle"></div>
+                <div class="em-clock"></div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="overlay"></div>

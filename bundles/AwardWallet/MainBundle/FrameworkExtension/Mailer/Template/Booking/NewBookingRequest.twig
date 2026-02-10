@@ -1,0 +1,469 @@
+{% extends '@MailTemplate/Layout/booking.twig' %}
+{% trans_default_domain "email" %}
+
+{% block subject %}{% apply spaceless %}{% autoescape false %}
+    {{ 'abrequest.subject'|trans({
+        '%requestId%': request.AbRequestID
+    }, 'email', lang)|desc('Award Booking Request #%requestId%') }}
+{% endautoescape %}{% endapply %}{% endblock subject %}
+
+{% macro checkOtherAirportsInfo(lang) %}
+    <span>({{ 'booking.check-other-airports'|trans({}, 'booking', lang) }})</span>
+{% endmacro %}
+
+{% block content %}
+    {% import '@MailTemplate/CommonMacro.twig' as commonMacro %}
+    {% import _self as selfMacro %}
+
+    {{ commonMacro.hello(request.contactname, _context) }}
+
+    {% if confirm %}
+        {% set view_link = baseUrl ~ path('aw_booking_view_index', {'id': request.AbRequestID, 'conf': request.confirmationCode}) %}
+    {% else %}
+        {% set view_link = baseUrl ~ path('aw_booking_view_index', {'id': request.AbRequestID}) %}
+    {% endif %}
+
+    {{ commonMacro.paragraph(
+        'new_abrequest.verify_your_email'|trans({}, 'email', lang)|desc('You\'ve taken the first step toward booking your award. Please verify your email address by clicking the link below so we can keep in contact with you.'),
+        _context, {}, {"margin-top": "15px"}
+    ) }}
+
+    {{ commonMacro.dottedLink(view_link, view_link, _context) }}
+
+    {{ commonMacro.paragraph(
+        'new_abrequest.about_link_v2'|trans({}, 'email', lang)|desc('That link will also take you to our secure messaging system, where you can review flight details, ask questions, and safely share your airline account information for us to complete your reservation.'),
+        _context
+    ) }}
+
+    {{ commonMacro.smallWarning(
+        'new_abrequest.please_note'|trans({
+            '%link%': commonMacro.link(view_link, view_link)
+        }, 'email', lang)|desc('Please note that no work will begin until you verify your email at %link%'),
+        _context, {escape: false}
+    ) }}
+
+    {{ commonMacro.header(
+        'new_abrequest.abrequest_number'|trans({
+            '%bold_on%': '<span style="font-size:25px;color:#70798c">',
+            '%bold_off%': '</span>',
+            '%number%': request.AbRequestID
+        }, 'email', lang)|desc('Booking Request %bold_on%#%number%%bold_off%'), _context, {escape: false}, {
+            'font-size': '25px',
+            'color': '#3d424d',
+            'padding-left': '10px',
+            'line-height': '30px'
+        }, {
+            'margin-top': '35px'
+        }, {
+            'padding-top': '18px'
+        }
+    ) }}
+
+    <table width="100%" cellpadding="0" border="0" cellspacing="0" style="line-height:18px;border-bottom:1px dotted #8e9199;">
+        <tr>
+            <td style="padding:10px 0">
+                {% for passenger in request.getPassengers() %}
+                    <table width="100%" cellpadding="0" border="0" cellspacing="0">
+                        {% if loop.first %}
+                            <tr>
+                                <td colspan="2" valign="top" style="padding-bottom:10px">
+                                    <div style="font-size: 16px; color: #3d424d; background: #ebedf2; padding: 5px 0 5px 10px;" class="email-silver">{{ 'new_abrequest.passengers'|trans({}, 'email', lang)|desc('Passengers:') }}</div>
+                                </td>
+                            </tr>
+                        {% endif %}
+                        <tr>
+                            <td  width="150" class="first-cell" valign="top" style="padding: 0 15px 0 10px; font-size:15px;color:#70798c;">
+                                {{ 'new_abrequest.passenger_name'|trans({}, 'email', lang)|desc('Name') }}:
+                            </td>
+                            <td {# width="60%" #} valign="top" style="font-size:16px;color:#535457;">
+                                <b style="font-weight:bold;color:#3d424d;">{{ passenger.firstname }} {{ passenger.lastname }}</b>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td  width="150" class="first-cell" valign="top" style="padding: 5px 15px 0 10px; font-size:15px;color:#70798c;">
+                                {{ 'booking.request.add.form.traveler.birthday'|trans({}, 'booking', lang) }}:
+                            </td>
+                            <td {# width="60%" #} valign="top" style="padding-top:5px;font-size:16px;color:#535457;">
+                                {{ passenger.birthday ? passenger.birthday|formatDatetime('short', 'none', locale) : '' }}
+                            </td>
+                        </tr>
+                        <tr>
+                            <td  width="150" valign="top" style="padding: 5px 15px 0 10px; font-size:15px;color:#70798c;">
+                                {{ 'new_abrequest.passenger_nationaly'|trans({}, 'email', lang)|desc('Nationaly') }}:
+                            </td>
+                            <td {# width="60%" #} valign="top" style="padding-top:5px;font-size:16px;color:#535457;">
+                                {{ passenger.nationality }}
+                            </td>
+                        </tr>
+                        <tr>
+                            <td  width="150" valign="top" style="padding: 5px 15px 0 10px; font-size:15px;color:#70798c;">
+                                {{ 'new_abrequest.passenger_gender'|trans({}, 'email', lang)|desc('Gender') }}:
+                            </td>
+                            <td {# width="60%" #} valign="top" style="padding-top:5px;font-size:16px;color:#535457;">
+                                {% if passenger.gender == 'M' %}
+                                    {{ 'new_abrequest.passenger_gender_male'|trans({}, 'email', lang)|desc('Male') }}
+                                {% else %}
+                                    {{ 'new_abrequest.passenger_gender_female'|trans({}, 'email', lang)|desc('Female') }}
+                                {% endif %}
+                            </td>
+                        </tr>
+                    </table>
+                    {% if not loop.last %}
+                        <br>
+                    {% endif %}
+                {% endfor %}
+            </td>
+        </tr>
+    </table>
+
+    <table width="100%" cellpadding="0" border="0" cellspacing="0" style="line-height:18px;border-bottom:1px dotted #8e9199;">
+        <tr>
+            <td style="padding:10px 0">
+                <table width="100%" cellpadding="0" border="0" cellspacing="0">
+                    <tr>
+                        <td>
+                            <div style="font-size: 16px; color: #3d424d; background: #ebedf2; padding: 5px 0 5px 10px;" class="email-silver">{{ 'new_abrequest.preferred_cabin'|trans({}, 'email', lang)|desc('Preferred cabin:') }}</div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td {# width="60%" #} valign="top" style="padding:10px 10px 0; font-size:16px;color:#535457;">
+                            {% if (request.cabineconomy) %}
+                                {{ 'new_abrequest.cabin.economy_class'|trans({}, 'email', lang)|desc('Economy Class') }}<br/>
+                            {% endif %}
+                            {% if (request.cabinpremiumeconomy) %}
+                                {{ 'booking.premium_economy.class'|trans({}, 'booking', lang) }}<br/>
+                            {% endif %}
+                            {% if (request.cabinbusiness) %}
+                                {{ 'new_abrequest.cabin.business_class'|trans({}, 'email', lang)|desc('Business Class') }}<br/>
+                            {% endif %}
+                            {% if (request.cabinfirst) %}
+                                {{ 'new_abrequest.cabin.first_class'|trans({}, 'email', lang)|desc('First Class') }}<br/>
+                            {% endif %}
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+
+    <table width="100%" cellpadding="0" border="0" cellspacing="0" style="line-height:18px;border-bottom:1px dotted #8e9199;">
+        <tr>
+            <td style="padding:10px 0">
+                {% for segment in request.getSegments() %}
+                    <table width="100%" cellpadding="0" border="0" cellspacing="0">
+                        {% if loop.first %}
+                            <tr>
+                                <td colspan="2" valign="top" style="padding-bottom:10px">
+                                    <div style="font-size: 16px; color: #3d424d; background: #ebedf2; padding: 5px 0 5px 10px;" class="email-silver">{{ 'new_abrequest.segments'|trans({}, 'email', lang)|desc('Segments:') }}</div>
+                                </td>
+                            </tr>
+                        {% endif %}
+                        <tr>
+                            <td  width="150" class="first-cell" valign="top" style="font-size:15px;color:#70798c; padding: 0 15px 0 10px">
+                                {{ 'new_abrequest.segments.fromto'|trans({}, 'email', lang)|desc('From - To') }}:
+                            </td>
+                            <td {# width="60%" #} valign="top" style="font-size:16px;color:#535457;">
+                                <b style="font-weight:bold;color:#3d424d;">{{ segment.dep }}</b>
+                                {{ segment.DepCheckOtherAirports ? selfMacro.checkOtherAirportsInfo(lang) : '' }}
+                                <b style="font-weight:bold;color:#3d424d;">-</b>
+                                <b style="font-weight:bold;color:#3d424d;">{{ segment.arr }}</b>
+                                {{ segment.ArrCheckOtherAirports ? selfMacro.checkOtherAirportsInfo(lang) : '' }}
+                            </td>
+                        </tr>
+                        <tr>
+                            <td  width="150" class="first-cell" valign="top" style="padding: 5px 15px 0 10px; font-size:15px;color:#70798c;">
+                                {{ 'new_abrequest.segments.departure_date'|trans({}, 'email', lang)|desc('Departure Date') }}:
+                            </td>
+                            <td {# width="60%" #} valign="top" style="padding-top:5px;font-size:16px;color:#535457;">
+                                {% if segment.depdatefrom is defined and segment.depdatefrom is not empty
+                                and segment.depdateto is defined and segment.depdateto is not empty
+                                and segment.depdateideal is defined and segment.depdateideal is not empty
+                                and segment.depDateFlex
+                                %}
+                                    {{ segment.depdatefrom|formatDatetime('short', 'none', locale) }}
+                                    - {{ segment.depdateto|formatDatetime('short', 'none', locale) }}
+                                    (ideal: {{ segment.depdateideal|formatDatetime('short', 'none', locale) }})
+
+                                {% elseif segment.depdatefrom is defined and segment.depdatefrom is not empty
+                                and segment.depdateto is defined and segment.depdateto is not empty
+                                and segment.depDateFlex %}
+                                    {{ segment.depdatefrom|formatDatetime('short', 'none', locale) }}
+                                    - {{ segment.depdateto|formatDatetime('short', 'none', locale) }}
+
+                                {% elseif segment.depdateideal is defined and segment.depdateideal is not empty %}
+                                    {{ segment.depdateideal|formatDatetime('short', 'none', locale) }}
+                                {% endif %}
+                            </td>
+                        </tr>
+                        <tr>
+                            {% if segment.isRoundTrip and (segment.roundTripDaysIdeal or segment.roundTripDaysFlex) %}
+                                <td  width="150" class="first-cell" valign="top" style="padding: 5px 15px 0 10px; font-size:15px;color:#70798c;">
+                                    {{ 'booking.request.add.form.segment.round-trip-days'|trans({}, 'booking', lang) }}:
+                                </td>
+                                <td {# width="60%" #} valign="top" style="padding-top:5px;font-size:16px;color:#535457;">
+                                    {% if segment.roundTripDaysIdeal and not segment.roundTripDaysFlex %}
+                                        {{ segment.roundTripDaysIdeal }}
+                                        {{ 'days'|trans({'%count%': segment.roundTripDaysIdeal}, 'messages', lang) }}
+                                    {% elseif segment.roundTripDaysIdeal and segment.roundTripDaysFlex %}
+                                        {{ segment.roundTripDaysIdeal }}
+                                        {{ 'days'|trans({'%count%': segment.roundTripDaysIdeal}, 'messages', lang) }}
+                                        ({{ 'booking.request.segment.min-max'|trans({
+                                            '%min%':  segment.roundTripDaysFrom ~ ' ' ~ 'days'|trans({'%count%': segment.roundTripDaysFrom}, 'messages', lang),
+                                            '%max%': segment.roundTripDaysTo ~ ' ' ~ 'days'|trans({'%count%': segment.roundTripDaysTo}, 'messages', lang)
+                                        }, 'booking', lang)|desc('MIN: %min%, MAX: %max%') }})
+                                    {% elseif not segment.roundTripDaysIdeal and segment.roundTripDaysFlex %}
+                                        {{ 'booking.request.segment.min-max'|trans({
+                                            '%min%':  segment.roundTripDaysFrom ~ ' ' ~ 'days'|trans({'%count%': segment.roundTripDaysFrom}, 'messages', lang),
+                                            '%max%': segment.roundTripDaysTo ~ ' ' ~ 'days'|trans({'%count%': segment.roundTripDaysTo}, 'messages', lang)
+                                        }, 'booking', lang)|desc('MIN: %min%, MAX: %max%') }}
+                                    {% endif %}
+                                </td>
+                            {% endif %}
+                        </tr>
+                    </table>
+                    {% if segment.isRoundTrip %}
+                        <br>
+                        <table width="100%" cellpadding="0" border="0" cellspacing="0">
+                            <tr>
+                                <td  width="150" class="first-cell" valign="top" style="padding: 0 15px 0 10px; font-size:15px;color:#70798c;">
+                                    {{ 'new_abrequest.segments.fromto'|trans({}, 'email', lang)|desc('From - To') }}:
+                                </td>
+                                <td {# width="60%" #} valign="top" style="font-size:16px;color:#535457;">
+                                    <b style="font-weight:bold;color:#3d424d;">{{ segment.arr }} - {{ segment.dep }}</b>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td  width="150" class="first-cell" valign="top" style="padding: 5px 15px 0 10px; font-size:15px;color:#70798c;">
+                                    {{ 'new_abrequest.segments.departure_date'|trans({}, 'email', lang)|desc('Departure Date') }}:
+                                </td>
+                                <td {# width="60%" #} valign="top" style="padding-top:5px;font-size:16px;color:#535457;">
+                                    {% if segment.returndatefrom is defined and segment.returndatefrom is not empty
+                                    and segment.returndateto is defined and segment.returndateto is not empty
+                                    and segment.returndateideal is defined and segment.returndateideal is not empty
+                                    and segment.returnDateFlex
+                                    %}
+                                        {{ segment.returndatefrom|formatDatetime('short', 'none', locale) }}
+                                        - {{ segment.returndateto|formatDatetime('short', 'none', locale) }}
+                                        (ideal: {{ segment.returndateideal|formatDatetime('short', 'none', locale) }})
+
+                                    {% elseif segment.returndatefrom is defined and segment.returndatefrom is not empty
+                                    and segment.returndateto is defined and segment.returndateto is not empty
+                                    and segment.returnDateFlex %}
+                                        {{ segment.returndatefrom|formatDatetime('short', 'none', locale) }}
+                                        - {{ segment.returndateto|formatDatetime('short', 'none', locale) }}
+
+                                    {% elseif segment.returndateideal is defined and segment.returndateideal is not empty %}
+                                        {{ segment.returndateideal|formatDatetime('short', 'none', locale) }}
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        </table>
+                    {% endif %}
+                    {% if not loop.last %}
+                        <br>
+                    {% endif %}
+                {% endfor %}
+            </td>
+        </tr>
+    </table>
+
+    {% if request.getAccounts().count > 0 or request.getCustomPrograms().count > 0 %}
+        <table width="100%" cellpadding="0" border="0" cellspacing="0" style="line-height:18px;border-bottom:1px dotted #8e9199;">
+            <tr>
+                <td style="padding:10px 0">
+                    {% set rendered = false %}
+                    {% if request.getAccounts().count > 0 %}
+                        {% for account in request.getAccounts() %}
+                            <table width="100%" cellpadding="0" border="0" cellspacing="0">
+                                {% if loop.first and not rendered %}
+                                    {% set rendered = true %}
+                                    <tr>
+                                        <td colspan="2" valign="top" style="padding-bottom:10px">
+                                            <div style="font-size: 16px; color: #3d424d; background: #ebedf2; padding: 5px 0 5px 10px;" class="email-silver">{{ 'new_abrequest.source_of_miles'|trans({}, 'email', lang)|desc('Source of miles:') }}</div>
+                                        </td>
+                                    </tr>
+                                {% endif %}
+                                <tr>
+                                    <td  width="150" class="first-cell" valign="top" style="padding: 0 15px 0 10px; font-size:15px;color:#70798c;">
+                                        {{ 'new_abrequest.source_of_miles.program_name'|trans({}, 'email', lang)|desc('Program Name') }}:
+                                    </td>
+                                    <td {# width="60%" #} valign="top" style="font-size:16px;color:#535457;">
+                                        {{ account.getAccount().providerid.displayname|htmlencode
+                                            |preg_replace('/^[^\\(]+(?=\\(|$)/ims', '<b style="font-weight:bold;color:#3d424d;">${0}</b>')
+                                            |preg_replace('/\\([^\\)]+\\)/ims', '<span style="display:inline-block;">${0}</span>')|raw }}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td  width="150" class="first-cell" valign="top" style="padding: 5px 15px 0 10px; font-size:15px;color:#70798c;">
+                                        {{ 'new_abrequest.source_of_miles.miles'|trans({}, 'email', lang)|desc('Miles') }}:
+                                    </td>
+                                    <td {# width="60%" #} valign="top" style="padding-top:5px;font-size:16px;color:#535457;">
+                                        {{ account.getAccount()|formatBalance(locale)  }}
+                                    </td>
+                                </tr>
+                            </table>
+                            {% if not loop.last or request.getCustomPrograms().count > 0 %}
+                                <br>
+                            {% endif %}
+                        {% endfor %}
+                    {% endif %}
+                    {% if request.getCustomPrograms().count > 0 %}
+                        {% for account in request.getCustomPrograms() %}
+                            <table width="100%" cellpadding="0" border="0" cellspacing="0">
+                                {% if loop.first and not rendered %}
+                                    {% set rendered = true %}
+                                    <tr>
+                                        <td colspan="2" valign="top" style="padding-bottom:10px">
+                                            <div style="font-size: 16px; color: #3d424d; background: #ebedf2; padding: 5px 0 5px 10px;" class="email-silver">{{ 'new_abrequest.source_of_miles'|trans({}, 'email', lang)|desc('Source of miles:') }}</div>
+                                        </td>
+                                    </tr>
+                                {% endif %}
+                                <tr>
+                                    <td  width="150" class="first-cell" valign="top" style="padding: 0 15px 0 10px; font-size:15px;color:#70798c;">
+                                        {{ 'new_abrequest.source_of_miles.program_name'|trans({}, 'email', lang)|desc('Program Name') }}:
+                                    </td>
+                                    <td {# width="60%" #} valign="top" style="font-size:16px;color:#535457;">
+                                        {{ account.name|htmlencode|preg_replace('/^[^\\(]+(?=\\(|$)/ims', '<b style="font-weight:bold;color:#3d424d;">${0}</b>')|raw }}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td  width="150" class="first-cell" valign="top" style="padding: 5px 15px 0 10px; font-size:15px;color:#70798c;">
+                                        {{ 'new_abrequest.source_of_miles.miles'|trans({}, 'email', lang)|desc('Miles') }}:
+                                    </td>
+                                    <td {# width="60%" #} valign="top" style="padding-top:5px;font-size:16px;color:#535457;">
+                                        {{ account.balance|formatNumber(2, locale)  }}
+                                    </td>
+                                </tr>
+                            </table>
+                            {% if not loop.last %}
+                                <br>
+                            {% endif %}
+                        {% endfor %}
+                    {% endif %}
+                </td>
+            </tr>
+        </table>
+    {% endif %}
+
+    {% if request.paymentCash %}
+        <table width="100%" cellpadding="0" border="0" cellspacing="0" style="line-height:18px;border-bottom:1px dotted #8e9199;">
+            <tr>
+                <td style="padding:10px 0">
+                    <table width="100%" cellpadding="0" border="0" cellspacing="0">
+                        <tr>
+                            <td valign="top" style="font-size:16px;color:#3d424d; padding-bottom:10px" colspan="2">
+                                {{ 'new_abrequest.paid_ticket'|trans({}, 'email', lang)|desc('Paid ticket:') }}
+                            </td>
+                        </tr>
+                        <tr>
+                            <td valign="top" width="20" style="padding-top:4px">
+                                <img src="{{ baseImagesPath }}/green-check.png" alt="" border="0" width="13" height="13">
+                            </td>
+                            <td valign="top" style="font-size:15px;color:#00a67c;line-height: 22px">
+                                {% if toBooker %}
+                                    {{ 'booking.paying_money_instead_miles.client'|trans({}, 'booking', lang) }}
+                                {% else %}
+                                    {{ 'booking.paying_money_instead_miles.iam'|trans({}, 'booking', lang) }}
+                                {% endif %}
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+        </table>
+    {% endif %}
+
+    {% if request.booker.bookerinfo.allowBusinessOrPersonalSelect %}
+        <table width="100%" cellpadding="0" border="0" cellspacing="0" style="line-height:18px;border-bottom:1px dotted #8e9199;">
+            <tr>
+                <td style="padding:10px 0">
+                    <table width="100%" cellpadding="0" border="0" cellspacing="0">
+                        <tr>
+                            <td>
+                                <div style="font-size: 16px; color: #3d424d; background: #ebedf2; padding: 5px 0 5px 10px;" class="email-silver">{{ "booking.request.add.form.travel_type"|trans({}, 'booking', lang) }}:</div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td {# width="60%" #} valign="top" style="padding:10px 10px 0;font-size:16px;color:#535457;">
+                                {% if request.isBusinessTravel %}
+                                    {{ "booking.request.add.form.travel_type.business"|trans({}, 'booking', lang) }}
+                                {% else %}
+                                    {{ "booking.request.add.form.travel_type.personal"|trans({}, 'booking', lang) }}
+                                {% endif %}
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+        </table>
+    {% endif %}
+
+    {% if request.notes %}
+        <table width="100%" cellpadding="0" border="0" cellspacing="0" style="line-height:18px;border-bottom:1px dotted #8e9199;">
+            <tr>
+                <td style="padding:10px 0">
+                    <table width="100%" cellpadding="0" border="0" cellspacing="0">
+                        <tr>
+                            <td valign="top">
+                                <div style="font-size: 16px; color: #3d424d; background: #ebedf2; padding: 5px 0 5px 10px;" class="email-silver">{{ 'new_abrequest.notes'|trans({}, 'email', lang)|desc('Notes:') }}</div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td valign="top" style="font-size: 16px;color: #535457;line-height: 24px; padding: 10px 10px 0">
+                                {{ request.notes|nl2br }}
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+        </table>
+    {% endif %}
+
+    {{ commonMacro.header(
+        'new_abrequest.contact_info'|trans({}, 'email', lang)|desc('Contact information'), _context, {}, {
+            'color': '#3d424d',
+            'padding' : '5px 0 5px 10px',
+            'line-height' : '24px'
+        }, {
+            'margin-top': '20px'
+        }
+    ) }}
+
+    <table width="100%" cellpadding="0" border="0" cellspacing="0" style="font-size:16px;line-height:24px;margin-bottom:25px">
+        <tr>
+            <td  width="150" style="padding:5px 15px 5px 10px; font-size: 15px; color: #70798c; border-bottom:1px dotted #8e9199">
+                {{ 'new_abrequest.contact_name'|trans({}, 'email', lang)|desc('Name:') }}
+            </td>
+            <td {# width="60%" #} style="padding:5px 0px; color:#535457; border-bottom:1px dotted #8e9199">
+                {{ request.contactname }}
+            </td>
+        </tr>
+        <tr>
+            <td  width="150" style="padding:5px 15px 5px 10px; font-size: 15px; color: #70798c; border-bottom:1px dotted #8e9199">
+                {{ 'new_abrequest.contact_phone'|trans({}, 'email', lang)|desc('Phone:') }}
+            </td>
+            <td {# width="60%" #} style="padding:5px 0px; color:#535457; border-bottom:1px dotted #8e9199">
+                {{ request.contactphone }}
+            </td>
+        </tr>
+        <tr>
+            <td  width="150"  style="padding:5px 15px 5px 10px; font-size: 15px; color: #70798c; border-bottom:1px dotted #8e9199">
+                {{ 'new_abrequest.contact_email'|trans({}, 'email', lang)|desc('Email:') }}
+            </td>
+            <td {# width="60%" #} style="padding:5px 0px; color:#535457; border-bottom:1px dotted #8e9199">
+                <a href="mailto:{{ request.contactemail }}" style="text-decoration:none; color:#4684c4; font-weight:bold; word-break: break-all;">{{ request.contactemail }}</a>
+            </td>
+        </tr>
+    </table>
+
+    {{ commonMacro.paragraph(
+        'new_abrequest.not_reply'|trans({}, 'email', lang)|desc('Please do not reply to this email, the privacy and security of your account is too valuable to be exposed to non-secure email, please use the link below to communicate with us:'),
+        _context, {},
+        {
+            'margin-top': '20px'
+        }
+    ) }}
+
+    {{ commonMacro.dottedLink(view_link, view_link, _context) }}
+
+{% endblock content %}

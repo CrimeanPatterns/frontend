@@ -1,0 +1,134 @@
+<div class="row">
+    <div class="heading">
+        <i class="icon-silver-arrow-down"></i>
+
+        <h3>{{ 'menu.header.invite'|trans({}, 'menu')|desc('INVITE TO AWARDWALLET') }}</h3>
+    </div>
+    <div class="invite">
+        <div class="row">
+            <h4>{{ 'menu.invite.invite-link'|trans({}, 'menu')|desc('Invite using a direct link') }}:</h4>
+            <input type="text" readonly value="{{ app.request.getScheme() }}://{{ app.request.getHost() }}/?refCode={{ user.Refcode }}" onclick="this.focus(); this.select();" tabindex="-1">
+        </div>
+        <div class="row">
+            <h4>{{ 'menu.invite.invite-link-or'|trans({}, 'menu')|desc('Or') }}:</h4>
+
+            <form action="/" name="inviteByEmail">
+                <input type="email" required="true" placeholder="{{ 'menu.invite.input-placeholder'|trans({}, 'menu')|desc('Your friend’s email here...') }}" tabindex="-1">
+                <button class="btn-light-white" style="display: none" tabindex="-1"><i class="icon-arrow-right-dark"></i></button>
+            </form>
+        </div>
+        {% if freeCoupons['count'] > 0 %}
+            <div class="row">
+                <h4>{{ 'menu.invite.free-coupon'|trans({}, 'menu')|desc('Free upgrade coupon for the first time users') }}:</h4>
+
+                <div class="remaning">
+                    <div class="remaning__input">
+                        <input type="text" class="coupon f-left" value="{{ freeCoupons['code'] }}" readonly onclick="this.focus(); this.select();" tabindex="-1">
+                    </div>
+
+                    <span class="count silver big">{{ 'menu.invite.coupons-left-number'|trans({'%count%': freeCoupons['count'], '%number%': freeCoupons['count']}, 'menu')|desc('1 left|%number% left') }}</span>
+
+                    <div class="clear"></div>
+                </div>
+            </div>
+        {% endif %}
+        {% if load_external_scripts %}
+            <div class="row">
+                <ul class="social-invite">
+                    <li>
+                        <a target="_blank" href="https://www.facebook.com/AwardWallet" tabindex="-1" rel="noopener noreferrer"><i class="icon-facebook"></i></a>
+                        <span class="fblike">Like 8.3K</span>
+                        <a href="https://www.facebook.com/sharer/sharer.php?u={{ 'https://www.facebook.com/AwardWallet'|url_encode }}" target="_blank">{{ 'share'|trans }}</a>
+                        {#
+                        {% if facebookKey is not null %}
+                            <div class="like">
+                                <iframe src="{{ app.request.isSecure() ? 'https' : 'http' }}://www.facebook.com/plugins/like.php?href=https%3A%2F%2Fwww.facebook.com%2FAwardWallet&width=200&layout=button_count&action=like&size=small&show_faces=false&share=true&height=21&appId=75330755697" width="200" height="21" style="border:none;overflow:hidden" scrolling="no" frameborder="0" allowTransparency="true"></iframe>
+                            </div>
+                        {% endif %}
+                        #}
+                    </li>
+                    {% set statusText = 'using.aw.text'|trans({'%url%': 'http://AwardWallet.com/?r=' ~ user.Refcode})|desc('I am using AwardWallet to track my rewards. I highly recommend it: %url%')|url_encode %}
+                    <li><a target="_blank" href="http://twitter.com/AwardWallet" tabindex="-1" rel="noopener noreferrer"><i class="icon-twitter"></i></a><a class="invite-link" target="_blank" href="http://twitter.com/home?status={{ statusText }}&ref=4" tabindex="-1" rel="noopener noreferrer">{{ 'menu.invite.twitter-invite'|trans({}, 'menu')|desc('Invite Twitter followers') }}</a></li>
+                </ul>
+            </div>
+        {% endif %}
+        <div class="row statistics">
+            <ul class="stats">
+                <li><a href="{{ path('aw_user_invites') }}" tabindex="-1"><p>{{ 'menu.invite.coupon.accepted'|trans({}, 'menu')|desc('People Accepted') }}:</p><span class="count silver">{{ acceptedCount }}</span></a></li>
+                <li><a
+                {% if not webpack|default(false) %}
+                    onclick="require(['pages/invites/availableUpgrades'], function(handler){handler({{ stars }});});return false;" 
+                {% else %}
+                    id="availableUpgradesBtn"
+                    data-stars="{{ stars }}"
+                {% endif %}
+                href="#" tabindex="-1"><p>{{ 'menu.invite.coupon.available'|trans({}, 'menu')|desc('Available Upgrades') }}:</p><span class="count silver">{{ stars }}</span></a></li>
+                <li><a href="{{ path('aw_user_invites') }}" tabindex="-1"><p>{{ 'menu.invite.coupon.bonus'|trans({}, 'menu')|desc('Referral Bonus Points') }}:</p><span class="count silver">{{ totalRefBonus }}</span></a></li>
+                <li><a class="new" href="{{ path('aw_user_giftawplus') }}" tabindex="-1"><p>{{ 'gift-awplus-to-friend'|trans({}, 'menu')|desc('Gift AWplus to a Friend') }}</p></a></li>
+            </ul>
+        </div>
+    </div>
+    {% if not webpack|default(false) %}
+        <script>
+            require(['jquery-boot', 'jqueryui'], function ($) {
+                $(function () {
+                    // Invite via email
+                    $("form[name=inviteByEmail]").on("submit", function (e) {
+                        e.preventDefault();
+
+                        require(['pages/invites/inviteByEmailHandler'], function (clickHandler) {
+                            clickHandler(e, "{{ csrfToken }}");
+                        });
+
+                    }).find('input').on('keyup paste', function (e) {
+                        var btn = $(e.target).next();
+                        if (e.target.validity.valid) {
+                            btn.show(300);
+                        } else {
+                            btn.hide(300);
+                        }
+                    })
+                });
+            });
+        </script>
+    {% else %}
+        {{ encore_entry_script_tags('email-invite', null, '_default', {'defer': true}) }}
+        {{ encore_entry_script_tags('available-upgrades', null, '_default', {'defer': true}) }}
+    {% endif %}
+    {#	<script>
+            function facebookShare(refCode){
+                var info;
+                var balances = browserExt.getBalances();
+                if(browserExt.totals)
+                    browserMiles = browserExt.totals.all;
+                $.ajax({
+                    url: "/account/shareMessage.php",
+                    type: 'POST',
+                    data: {Balances: balances},
+                    async: false,
+                    success: function(response){
+                        info = response;
+                    }
+                });
+                FB.ui(
+                        {
+                            method: 'feed',
+                            name: 'AwardWallet.com',
+                            link: 'http://awardwallet.com/?r='+refCode,
+                            picture: info.Image,
+                            caption: 'AwardWallet.com tracks frequent flyer miles and other loyalty program points for free.',
+                            description: ' ',
+                            message: info.Message,
+                            display: 'popup'
+                        },
+                        function(response) {
+                            if (response && response.post_id) {
+    //       alert('Post was published.');
+                            } else {
+    //       alert('Post was not published.');
+                            }
+                        }
+                );
+            }
+        </script>#}
+</div>

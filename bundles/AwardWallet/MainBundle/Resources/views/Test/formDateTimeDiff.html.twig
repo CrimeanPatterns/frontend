@@ -1,0 +1,187 @@
+{% extends "@AwardWalletMain/Layout/main.html.twig" %}
+
+{% block title %}Test dateTimeDiff{% endblock %}
+
+{% block stylesheets %}{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+
+    <script>
+        require(['jquery-boot', 'dateTimeDiff'], function(jq, dateTimeDiff) {
+            const timerView = $('#relative-date-time');
+            const fromToView = $('#from-to');
+            const speedView = $('#speed');
+            const stepView = $('#step');
+            const reverseView = $('#reverse');
+
+            let SPEED = 1;
+            let STEP = 1; // seconds
+            let REVERSE = false;
+
+            let DURATION = false;
+            let ONLY_DATE = false;
+            let SHORT_FORMAT = false;
+            let SUFFIX = true;
+            let FROM_TODAY = true;
+
+            const fromDate = new Date();
+            const toDate = new Date();
+
+            function changeSpeed(newSpeed) {
+                SPEED = parseInt(newSpeed, 10);
+                if (SPEED < 1) {
+                    SPEED = 1;
+                }
+                speedView.text(SPEED);
+            }
+
+            function changeStep(newStep) {
+                STEP = parseInt(newStep, 10);
+                if (STEP < 1) {
+                    STEP = 1;
+                }
+                stepView.text(STEP);
+            }
+
+            function changeReverse(newReverse) {
+                REVERSE = newReverse;
+                reverseView.text(REVERSE ? 'true' : 'false');
+            }
+
+            function timer() {
+                if (REVERSE) {
+                    toDate.setSeconds(toDate.getSeconds() - STEP);
+                } else {
+                    toDate.setSeconds(toDate.getSeconds() + STEP);
+                }
+
+                let timerViewText;
+
+                if (DURATION) {
+                    timerViewText = dateTimeDiff.formatDuration(fromDate, toDate, ONLY_DATE, SHORT_FORMAT, FROM_TODAY);
+                } else {
+                    if (ONLY_DATE) {
+                        if (SHORT_FORMAT) {
+                            timerViewText = dateTimeDiff.shortFormatViaDates(fromDate, toDate, SUFFIX, FROM_TODAY);
+                        } else {
+                            timerViewText = dateTimeDiff.longFormatViaDates(fromDate, toDate, SUFFIX, FROM_TODAY);
+                        }
+                    } else {
+                        if (SHORT_FORMAT) {
+                            timerViewText = dateTimeDiff.shortFormatViaDateTimes(fromDate, toDate, SUFFIX, FROM_TODAY);
+                        } else {
+                            timerViewText = dateTimeDiff.longFormatViaDateTimes(fromDate, toDate, SUFFIX, FROM_TODAY);
+                        }
+                    }
+                }
+
+                timerView.text(timerViewText);
+                fromToView.text(
+                    fromDate.toUTCString() + ' - ' + toDate.toUTCString()
+                );
+                setTimeout(timer, 1000 / SPEED);
+            }
+
+            changeSpeed(1);
+            $('#inc-speed').click(function() {
+                changeSpeed(SPEED * 2);
+            });
+            $('#dec-speed').click(function() {
+                changeSpeed(SPEED / 2);
+            });
+            $('#1x-speed').click(function() {
+                changeSpeed(1);
+            });
+
+            changeStep(1);
+            $('#inc-step').click(function() {
+                changeStep(STEP * 2);
+            });
+            $('#dec-step').click(function() {
+                changeStep(STEP / 2);
+            });
+            $('#1sec-step').click(function() {
+                changeStep(1);
+            });
+
+            changeReverse(REVERSE);
+            $('#reverse-action').click(function() {
+                changeReverse(!REVERSE);
+            });
+
+            $('[name=duration]').change(function() {
+                DURATION = this.checked;
+            });
+            $('[name=onlyDate]').change(function() {
+                ONLY_DATE = this.checked;
+            });
+            $('[name=shortFormat]').change(function() {
+                SHORT_FORMAT = this.checked;
+            });
+            $('[name=suffix]').change(function() {
+                SUFFIX = this.checked;
+            });
+            $('[name=fromToday]').change(function() {
+                FROM_TODAY = this.checked;
+            });
+
+            timer();
+        });
+    </script>
+{% endblock %}
+
+{% block body %}
+    <style>
+        #relative-date-time {
+            font-family: Courier;
+            color: darkred;
+            font-size: 2em;
+        }
+        #controls {
+            font-size: 1.2em;
+        }
+        #speed, #step {
+            color: green;
+        }
+        a {
+            font-weight: bold;
+            text-decoration: none;
+        }
+    </style>
+
+    <div style="padding: 10px;">
+        <div id="relative-date-time"></div>
+        <div id="from-to"></div>
+        <table id="controls">
+            <tr>
+                <td style="width: 100px">Speed:</td>
+                <td style="width: 100px"><span id="speed"></span>x</td>
+                <td><a href="#" id="1x-speed">1x</a>/<a href="#" id="inc-speed">+</a>/<a id="dec-speed" href="#">-</a></td>
+            </tr>
+
+            <tr>
+                <td>Step:</td>
+                <td><span id="step"></span> sec</td>
+                <td><a href="#" id="1sec-step">1 sec</a>/<a href="#" id="inc-step">+</a>/<a id="dec-step" href="#">-</a></td>
+            </tr>
+
+            <tr>
+                <td>Reverse:</td>
+                <td id="reverse"></td>
+                <td><a href="#" id="reverse-action">change</a></td>
+            </tr>
+
+            <tr>
+                <td colspan="3">
+                    <input type="checkbox" name="duration" id="duration" value="false"><label for="duration">Duration</label> <br>
+                    <input type="checkbox" name="onlyDate" id="onlyDate" value="false"><label for="onlyDate">Only Date</label> <br>
+                    <input type="checkbox" name="shortFormat" id="shortFormat" value="false"><label for="shortFormat">Short Format</label> <br>
+                    <input type="checkbox" checked name="suffix" id="suffix" value="true"><label for="suffix">Suffix</label> <br>
+                    <input type="checkbox" checked name="fromToday" id="fromToday" value="true"><label for="fromToday">From Today</label>
+                </td>
+            </tr>
+        </table>
+
+    </div>
+{% endblock %}

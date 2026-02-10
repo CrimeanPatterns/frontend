@@ -1,0 +1,32 @@
+{% set MOBILE_NAV = true %}
+{% set MAIN_BODY_CLASSES = {
+    'manual-hidden': true,
+    'responsive': true
+}|merge(MAIN_BODY_CLASSES|default({})) %}
+{% extends app.user is not null ? "@AwardWalletMain/Layout/common.html.twig" : "@AwardWalletMain/Layout/not_logged.html.twig" %}
+
+{% block title %}{{ 'page.services.title'|trans }}{% endblock %}
+
+{% block meta %}
+    {{ parent() }}
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0, viewport-fit=cover">
+{% endblock %}
+
+{% block content %}
+    <div class="static-page" id="services">
+        <div class="main-blk">
+            <h1>{{ 'page.services.title'|trans }}</h1>
+
+            <div class="main-blk-content">
+                {{ 'page.services'|trans({
+                    '%statusLink%': '/status/#working',
+                    '%programs.plural%': 'programs.plural'|trans({'%count%': lps, '%number%': lps})|desc('%number% loyalty program|%number% loyalty programs'),
+                    '%itunesLink%': 'http://itunes.apple.com/us/app/awardwallet/id388442727?mt=8',
+                    '%playmarketLink%': 'https://play.google.com/store/apps/details?id=com.itlogy.awardwallet&feature=search_result'
+                })|raw }}
+            </div>
+        </div>
+
+    </div>
+{% endblock %}
+

@@ -1,0 +1,8 @@
+{% extends is_granted('SITE_BUSINESS_AREA') ? "@AwardWalletMain/Layout/business_default.html.twig" : "@AwardWalletMain/Layout/accounts.html.twig" %}
+
+{% block body_left_widgets %}
+    {{ widget_render('left_top') }}
+    {{ widget_render('connections_edit') }}
+{% endblock %}
+
+{% set shortened = true %}

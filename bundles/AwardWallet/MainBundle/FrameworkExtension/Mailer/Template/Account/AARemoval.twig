@@ -1,0 +1,125 @@
+{% extends '@MailTemplate/Layout/base.twig' %}
+{% trans_default_domain "email" %}
+
+{% block subject %}{% apply spaceless %}{% autoescape false %}
+    American Airlines Forces AwardWallet to Stop Tracking AA Accounts
+{% endautoescape %}{% endapply %}{% endblock subject %}
+
+{% block content %}
+    {% import '@MailTemplate/CommonMacro.twig' as commonMacro %}
+
+    {{ commonMacro.hello(helloName, _context) }}
+
+    {{ commonMacro.paragraph('
+        We’re writing to let you know that American Airlines has forced us to stop tracking your American Airlines account on AwardWallet. We are extremely disappointed in this decision. AwardWallet believes that you own your loyalty and travel data and that you have the right to control and share that data as you see fit.
+    '|raw, _context, {escape: false}) }}
+
+    {% if accounts|length > 1 %}
+        {{ commonMacro.paragraph('
+            Unfortunately, we are not in a position to fight this demand. As of today, we have removed the following accounts from AwardWallet:
+        '|raw, _context, {escape: false}) }}
+    {% else %}
+        {{ commonMacro.paragraph('
+            Unfortunately, we are not in a position to fight this demand. As of today, we have removed the following account from AwardWallet:
+        '|raw, _context, {escape: false}) }}
+    {% endif %}
+
+    <table width="100%" cellpadding="0" border="0" cellspacing="0"
+           style="border-top:2px solid #bec2cc;line-height:20px;margin-top:20px;margin-bottom: 0;">
+        <tr>
+            <td style="padding:10px 0 10px">
+
+                {% for account in accounts %}
+                    <table width="100%" cellpadding="0" border="0" cellspacing="0" style="margin-bottom: 20px;border-bottom:1px dotted #8e9199;">
+                        <tr>
+                            <td width="150" class="first-cell" valign="top"
+                                style="font-size:15px;color:#70798c; padding: 2px 15px 2px 0;">
+                                Account Owner:
+                            </td>
+                            <td valign="top" style="font-size:16px;color:#535457;padding-top:2px;">
+                                {{ account.owner }}
+                            </td>
+                        </tr>
+                        {% if account.aa_number is not empty %}
+                            <tr>
+                                <td width="150" class="first-cell" valign="top"
+                                    style="font-size:15px;color:#70798c; padding: 2px 15px 2px 0;">
+                                    AAdvantage Number:
+                                </td>
+                                <td valign="top" style="font-size:16px;color:#535457;padding-top:2px;">
+                                    {{ account.aa_number }}
+                                </td>
+                            </tr>
+                        {% endif %}
+                        {% if account.lastname is not empty %}
+                            <tr>
+                                <td width="150" class="first-cell" valign="top"
+                                    style="font-size:15px;color:#70798c; padding: 2px 15px 2px 0;">
+                                    Last Name:
+                                </td>
+                                <td valign="top" style="font-size:16px;color:#535457;padding-top:2px;">
+                                    {{ account.lastname }}
+                                </td>
+                            </tr>
+                        {% endif %}
+                        {% if account.expiration is not empty %}
+                            <tr>
+                                <td width="150" class="first-cell" valign="top"
+                                    style="font-size:15px;color:#70798c; padding: 2px 15px 2px 0;">
+                                    Account Expiration:
+                                </td>
+                                <td valign="top" style="font-size:16px;color:#535457;padding-top:2px;">
+                                    {{ account.expiration }}
+                                </td>
+                            </tr>
+                        {% endif %}
+                        {% if account.level is not empty %}
+                            <tr>
+                                <td width="150" class="first-cell" valign="top"
+                                    style="font-size:15px;color:#70798c; padding: 2px 15px 2px 0;">
+                                    Elite Level:
+                                </td>
+                                <td valign="top" style="font-size:16px;color:#535457;padding-top:2px;">
+                                    {{ account.level }}
+                                </td>
+                            </tr>
+                        {% endif %}
+                        <tr>
+                            <td colspan="2">&nbsp;</td>
+                        </tr>
+                    </table>
+                {% endfor %}
+            </td>
+        </tr>
+    </table>
+
+    {% if isTripsFound is same as(true) %}
+        {{ commonMacro.paragraph('
+            In addition, we removed your future American Airlines flights from AwardWallet. We recognize that AwardWallet members value the ability to track all of their loyalty accounts in one place, and we are deeply sorry that we have been forced to take this action.
+        '|raw, _context, {escape: false}) }}
+    {% endif %}
+
+    {{ commonMacro.paragraph('
+        If you have questions about American Airlines’ decision, you can contact them directly:
+    '|raw, _context, {escape: false}) }}
+
+    {{ commonMacro.paragraph('
+        <a href="https://www.aa.com/contact/forms">https://www.aa.com/contact/forms</a>
+        <br><a href="https://twitter.com/AmericanAir">https://twitter.com/AmericanAir</a>
+        <br><a href="https://www.facebook.com/AmericanAirlines/">https://www.facebook.com/AmericanAirlines/</a>
+        <br><a href="https://www.instagram.com/americanair/">https://www.instagram.com/americanair/</a>
+    '|raw, _context, {escape: false}) }}
+
+    {{ commonMacro.paragraph('
+        In addition, a petition was created to encourage American Airlines to reconsider its decision; we would appreciate it if you could sign it!
+    '|raw, _context, {escape: false}) }}
+
+    {{ commonMacro.paragraph('
+        <a href="'~changeOrgLink~'">'~changeOrgLink~'</a>
+    '|raw, _context, {escape: false}) }}
+
+    {{ commonMacro.paragraph('
+    Finally, you are probably wondering if AwardWallet will have the same workaround for American Airlines accounts as we have for Delta, United, and Southwest but unfortunately, at the moment we are not able to offer it to you.
+    '|raw, _context, {escape: false}) }}
+
+{% endblock content %}

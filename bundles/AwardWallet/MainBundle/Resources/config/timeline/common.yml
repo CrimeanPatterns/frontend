@@ -1,0 +1,71 @@
+services:
+    _defaults:
+        public: true
+
+    AwardWallet\MainBundle\Timeline\Manager:
+        public: true # for ButtonTripsWidget
+        arguments:
+            - "@doctrine.orm.entity_manager"
+            - "@translator"
+            - "@aw.timeline.builder"
+            - "@aw.diff.query"
+            - "@aw.security.token_storage"
+            - "@security.authorization_checker"
+            - "@router"
+            - '@AwardWallet\MainBundle\Globals\Localizer\LocalizeService'
+            - "@aw.memcached"
+            - '@AwardWallet\MainBundle\Service\Cache\CacheManager'
+            - "@logger"
+            - '@AwardWallet\MainBundle\Entity\Query\ItineraryChecker'
+            - "@request_stack"
+            - '@AwardWallet\MainBundle\Service\OperatedByResolver'
+            - "@aw.extension.twig.aw_extension"
+            - "@aw.timeline.formatter.trip_helper"
+            - '@AwardWallet\MainBundle\Service\MileValue\MileValueAlternativeFlights'
+            - '@Clock\ClockInterface'
+            - '@AwardWallet\MainBundle\Timeline\PhoneBookFactory'
+        # to allow cache:warmup without database connection
+        # instantiated by twig through AwardWallet\MainBundle\FrameworkExtension\Twig\Replacement\Timeline
+        lazy: true
+
+    aw.timeline.builder:
+        public: true
+        autowire: true
+        class: AwardWallet\MainBundle\Timeline\Builder
+
+    aw.timeline.plan_manager:
+        public: true
+        class: AwardWallet\MainBundle\Timeline\PlanManager
+        autowire: true
+
+    AwardWallet\MainBundle\Timeline\PlanNameCreator:
+        public: true
+        arguments: ["@translator"]
+
+    # Helpers
+
+    AwardWallet\MainBundle\Timeline\Util\TripHelper:
+        autowire: true
+        public: true
+        arguments:
+            $referralId: "%booking_com_referral_id%"
+
+    aw.timeline.formatter.trip_helper: '@AwardWallet\MainBundle\Timeline\Util\TripHelper'
+
+    AwardWallet\MainBundle\Timeline\PlanManager:
+        autowire: true
+
+    AwardWallet\MainBundle\Timeline\PlanFileManager:
+        autowire: true
+
+    AwardWallet\MainBundle\Timeline\NoForeignFeesCardsQuery:
+        autowire: true
+
+    AwardWallet\MainBundle\Timeline\Util\ItineraryHelper:
+        autowire: true
+
+    AwardWallet\MainBundle\Timeline\Formatter\Utils\ParkingHeaderResolver:
+        autowire: true
+
+    AwardWallet\MainBundle\Timeline\PhoneBookFactory:
+        autowire: true

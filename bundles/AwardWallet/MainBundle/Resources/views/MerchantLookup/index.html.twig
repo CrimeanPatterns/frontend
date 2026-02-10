@@ -1,0 +1,107 @@
+{% set MOBILE_NAV = true %}
+{% set MAIN_BODY_CLASSES = {
+    'manual-hidden': true,
+    'responsive': true
+}|merge(MAIN_BODY_CLASSES|default({})) %}
+
+{% extends app.user is not null ? "@AwardWalletMain/Layout/common.html.twig" : "@AwardWalletMain/Layout/not_logged.html.twig" %}
+{% import "@AwardWalletMain/TwigMacros/recaptcha.html.twig" as recaptcha %}
+
+{% block stylesheets %}
+    {{ parent() }}
+{% endblock %}
+
+{% block body_left_widgets %}
+    {{ widget_render('left_top') }}
+    {{ widget_render('credit_card_tools_zone') }}
+    {{ widget_render('left_bottom') }}
+{% endblock %}
+
+{% block title %}
+    {{ 'merchant_lookup.seo_title'|trans|desc('Merchant Category Code Lookup Tool') }} -
+    {% if merchantData is defined %}
+        {{ merchantData.merchant }}
+    {% else %}
+        AwardWallet
+    {% endif %}
+{% endblock %}
+
+{% block meta %}
+    {{ parent() }}
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0, viewport-fit=cover">
+    {% if merchantData is defined %}
+    <meta name="description" content="{{ 'merchant_lookup.list_reward_cards_merchant'|trans({'%merchantName%': merchantData.merchant})|desc('List of reward cards for %merchantName% merchant') }}">
+    {% else %}
+    <meta name="description" content="{{ 'merchant_lookup.description'|trans|desc('On this page, you can find merchant category code listing for pretty much any merchant') }}">
+    {% endif %}
+{% endblock %}
+
+
+{% block javascripts %}
+    {{ parent() }}
+    <script type="text/javascript">
+        require([
+            'jquery-boot',
+            'angular-boot',
+            'pages/merchantLookup',
+            'lib/design'
+        ], function ($, angular) {
+            angular.module('merchantLookupApp').constant('IsAuth', {{ isAuth }});
+            angular.module('merchantLookupApp').constant('showPercent', {{ showPercent }});
+            {% if merchantData is defined %}
+                angular.module('merchantLookupApp').constant('merchantOffer', '{{ include('@AwardWalletMain/SpentAnalysis/offer.html.twig', merchantData)|e('html_attr') }}');
+            {% endif %}
+            $(function () {
+                angular.bootstrap( $('div.content').get(), ['merchantLookupApp']);
+                $('[data-tip]').tooltip();
+            });
+        });
+    </script>
+{% endblock %}
+
+{% block content %}
+    <div class="main-blk" data-ng-controller="mainCtrl as main">
+        <div class="main-blk-head main-head-flex">
+            <h1>{{ 'merchant_lookup.title'|trans|desc('Merchant Category Lookup Tool') }}</h1>
+            <div class="disclaimer-calculated-box">
+                {{ 'rewards-values-calculated-aw'|trans({
+                    '%link1_on%': '<a href="/blog/awardwallet-mile-valuations/" target="_blank">',
+                    '%link1_off%': '</a>',
+                    '%link2_on%': '<a href="/blog/advertiser-disclosure/" target="_blank">',
+                    '%link2_off%': '</a>',
+                })|raw }}
+            </div>
+        </div>
+
+        <div class="search-box" data-ng-class="{ 'load-offer': main.offer.loaded || main.offer.loading}">
+            <form class="search-form">
+                <input data-ng-class="{
+                           'search-input': !main.searchInput.data && !main.searchInput.loading,
+                           'loading-input': main.searchInput.loading,
+                           'clear-input': main.searchInput.data && !main.searchInput.loading
+                       }"
+                       {% if merchantData is defined %}value="{{ merchantData.merchant }}"{% endif %}
+                       placeholder="{{ 'merchant_lookup.name'|trans|desc('Merchant Name') }}"
+                       type="text"
+                       spellcheck="false"
+                       autocomplete="off"
+                       id="merchant"
+                >
+                {#<span class="reset" data-ng-click="main.resetSearch();">#}
+                    {#<i class="icon-close-silver"></i>#}
+                {#</span>#}
+            </form>
+            <div class="search-box__offer" data-ng-show="main.offer.loading || main.offer.loaded">
+                <div class="ajax-loader" data-ng-show="main.offer.loading"><div class="loading"></div></div>
+                <div data-ng-show="!main.offer.loading" data-ng-bind-html="main.offer.content | unsafe"></div>
+            </div>
+        </div>
+        <div class="main-blk-footer">
+          <a href="{{ path('aw_merchant_reverse_lookup') }}" class="blue-link">Like this tool? Check out our <span>"Reverse Merchant Lookup Tool"</span></a>
+          <a href="{{ path('aw_merchant_reverse_lookup') }}" class="btn-blue"><i class="icon-double-arrow-right-white"></i></a>
+        </div>
+    </div>
+    {% if not isAuth %}
+        {{ recaptcha.render(captcha_provider, 'merchant_lookup') }}
+    {% endif %}
+{% endblock %}

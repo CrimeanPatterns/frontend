@@ -1,0 +1,73 @@
+{% extends '@MailTemplate/Layout/base.twig' %}
+{% trans_default_domain "email" %}
+
+{% block subject %}{% apply spaceless %}{% autoescape false %}
+    {% if fromUS %}
+        {{ 'expert_advice.us.subject'|trans({}, 'email', lang) }}
+    {% else %}
+        {{ 'expert_advice.subject'|trans({}, 'email', lang) }}
+    {% endif %}
+{% endautoescape %}{% endapply %}{% endblock subject %}
+
+{% block content %}
+    {% import '@MailTemplate/CommonMacro.twig' as commonMacro %}
+
+    {{ commonMacro.hello(user.firstname, _context) }}
+
+    {% if accountsCount > 0 %}
+        {{ commonMacro.paragraph(
+            'expert_advice.have-accounts.thanks_v2'|trans({
+                '%count%': accountsCount,
+                '%accountsCount%': accountsCount
+            }, 'email', lang)|desc('{1} Thanks for signing up for an account with AwardWallet yesterday!
+                                        We’re thrilled to have you as a member. It looks like you have added %accountsCount% rewards program to your account. Great job!
+                                        |[2,Inf[ Thanks for signing up for an account with AwardWallet yesterday!
+                                        We’re thrilled to have you as a member. It looks like you have added %accountsCount% rewards programs to your account. Great job!'
+            ),
+            _context
+        ) }}
+        {{ commonMacro.paragraph(
+            'expert_advice.have-accounts.help'|trans({}, 'email', lang)|desc('
+                We’re here to help you keep track of your accounts and make sure those points and miles do not expire.
+                We can update most programs in the background, but there are some that require a little extra help from you.
+            '),
+            _context
+        ) }}
+        {{ commonMacro.paragraph(
+            'expert_advice.have-accounts.update_v2'|trans({}, 'email', lang)|desc('
+                To make sure AwardWallet has the latest information from all of your accounts, just click the "Update All"
+                button at the top of the page. Wait until the accounts have finished updating, and then check for errors.
+                If you change the username or password for any of your accounts, please make sure to update your profile
+                so we can continue to track your accounts accurately.
+            '),
+            _context
+        ) }}
+    {% else %}
+        {% set link = commonMacro.link(baseUrl ~ path('aw_faq_index') ~ '#10', '$$')|split('$$') %}
+        {{ commonMacro.paragraph(
+            'expert_advice.not-have-accounts.thanks_v2'
+                |trans({}, 'email', lang)
+                |desc('Thanks for signing up for an account with AwardWallet yesterday!
+                    We’re thrilled to have you as a member. It looks like you haven’t added any rewards
+                    programs to your account, so we wanted to let you know that we’re here to answer
+                    any questions you might have.'
+                ),
+            _context
+        ) }}
+        {{ commonMacro.paragraph(
+            'expert_advice.learn-more'|trans({
+                '%link_on%': link[0],
+                '%link_off%': link[1]
+            }, 'email', lang)
+                |desc('Keeping your account information secure is a top priority at AwardWallet.
+                    Check out this page to %link_on%learn more about how we protect your data%link_off%.'
+                ),
+            _context, {escape: false}
+        ) }}
+    {% endif %}
+
+    {% if ad is defined and ad is not null %}
+        {{ commonMacro.paragraph(ad, _context, {escape:false, fix_link:true}) }}
+    {% endif %}
+
+{% endblock content %}

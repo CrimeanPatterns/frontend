@@ -1,0 +1,9 @@
+POST https://api.paypal.com/v1/oauth2/token
+Authorization: Basic {{client_id}} {{secret}}
+Content-Type: application/x-www-form-urlencoded
+
+grant_type=client_credentials
+
+> {%
+    client.global.set("access_token", response.body.access_token);
+%}

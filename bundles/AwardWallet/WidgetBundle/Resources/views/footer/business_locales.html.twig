@@ -1,0 +1,13 @@
+<li class="language">
+    <a class="rel-this" data-target="select-language-footer" href=""><span>{{ ('language.' ~ lang) | trans({}, 'menu') }}</span></a>
+    <ul class="dropdown-submenu" data-role="dropdown" data-id="select-language-footer">
+        {% for locale in langs %}
+            <li><a href="{{ path('aw_set_locale', {'_locale': locale}) }}"><span>{{ ('language.' ~ locale) | trans({}, 'menu') }}</span></a></li>
+        {% endfor %}
+    </ul>
+</li>
+{% if app.user is not null and is_granted('ROLE_STAFF') and current_route == 'aw_oldsite_bootfirewall' %}
+    <li>
+        <a style="color:red">ND</a>
+    </li>
+{% endif %}

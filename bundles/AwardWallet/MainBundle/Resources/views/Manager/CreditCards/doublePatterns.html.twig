@@ -1,0 +1,52 @@
+{% set title = "Double card patterns" %}
+{% extends '@AwardWalletMain/Manager/layout.html.twig' %}
+
+{% block content %}
+    {% if filter is not empty %}
+        <p>Filter: {{ filter }}</p>
+    {% endif %}
+    <table class="detailsTable">
+        <thead>
+            <tr>
+                <th>Time</th>
+                <th>Description</th>
+                <th>Matches</th>
+                <th>User</th>
+                <th>Account</th>
+                <th>Credit Card</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for row in rows %}
+                <tr>
+                    <td>{{ row['Time'] }}</td>
+                    <td>{{ row['Name'] }}</td>
+                    <td>
+                        {% for pattern in row['Matches'] %}
+                            <div><a href="{{ path('aw_manager_edit', {'Schema': 'CreditCard', 'ID': pattern['CreditCardID']}) }}" target="_blank">Card {{ pattern['CreditCardID'] }} - {{ pattern['Pattern'] }}</a></div>
+                        {% endfor %}
+                    </td>
+                    <td>
+                        {% if row['UserID'] ?? null %}
+                            <a href="{{ path('aw_manager_impersonate', {'UserID': row['UserID']}) }}" target="_blank">{{ row['UserID'] }}</a>
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if row['AccountID'] ?? null %}
+                            {% if row['UserID'] ?? null %}
+                                <a href="{{ path('aw_manager_impersonate', {'UserID': row['UserID'], 'Goto': path('aw_account_list', {'account': row['AccountID']})}) }}" target="_blank">{{ row['AccountID'] }}</a>
+                            {% else %}
+                                {{ row['AccountID'] }}
+                            {% endif %}
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if row['CreditCardID'] ?? null %}
+                        <a href="{{ path('aw_manager_edit', {'Schema': 'CreditCard', 'ID': row['CreditCardID']}) }}" target="_blank">{{ row['CreditCardID'] }}</a>
+                        {% endif %}
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

@@ -1,0 +1,64 @@
+<div class="ui-dialog">
+    <div class="ui-dialog-titlebar">
+        <h3>{{ 'landing.dialog.forgot.header'|trans|desc('Forgot my password') }}</h3>
+        <a data-ui-sref="{{ homeRef|default('home') }}" class="ui-dialog-titlebar-close"><i class="ui-icon-closethick"></i></a>
+    </div>
+    <div class="ui-dialog-content">
+        <div class="forgot-password">
+            <div class="item">
+                <form class="main-form unselectable" name="restoreForm" data-ng-submit="submit()">
+
+                    <div class='successful-message' data-ng-show="success"><i class='icon-green-check-b'></i><span>{{ 'landing.dialog.forgot.success_header'|trans|desc('A link to reset your password has been sent to the email that you have on your profile') }}</span></div>
+
+                    <div class="container" data-ng-show="!success">
+                        <div class="legend">{{ 'landing.dialog.forgot.legend'|trans|desc('Please give us your username or email address. If we find<br> you in our database, we will send you the instructions on<br> how to reset your password.')|raw }}</div>
+                        <div class="row" data-ng-class="{error: restoreForm.username.$invalid && submitted}">
+                            <div class="row-item">
+                                <label for="forgot-password">
+                                    {{ 'landing.dialog.forgot.label'|trans|desc('Email or login') }}<span class="required">*</span>
+                                </label>
+
+                                <div class="input">
+                                    <div class="input-item">
+                                        <div data-ng-if="restoreForm.username.$error.required && submitted" class="req" title="{{ 'notblank'|trans({}, 'validators') }}" data-tip="fixed"><i class="icon-warning-small"></i></div>
+                                        <div data-ng-if="restoreForm.username.$error.minlength && submitted" class="req" title="{{ 'user.login.minlength'|trans({'%count%': 4}, 'validators')|desc('{1}Please enter at least 1 character|]1,Inf]Please enter at least %count% characters') }}" data-tip="fixed"><i class="icon-warning-small"></i></div>
+                                        <div data-ng-if="errorText" class="req" title="[[ errorText ]]" data-tip="fixed"><i class="icon-warning-small"></i></div>
+                                        <div data-ng-if="error" class="req" title="{{ 'no_user'|trans({}, 'validators')|desc('There is no user with this email address or username in our database') }}" data-tip="fixed"><i class="icon-warning-small"></i></div>
+                                        <input data-ng-disabled="spinner" data-ng-change="change()" auto-focus type="text" data-ng-minlength="4" id="forgot-password" name="username" required data-ng-model="user.username" autocomplete="off">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="info">
+                                <div class="info-icon"></div>
+                                <div class="info-description"><p>{{ 'landing.dialog.forgot.help'|trans|desc('The search is NOT case sensitive') }}</p></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row-submit">
+                        <div class="row-submit-item">
+                            <div class="submit">
+                                <button data-ng-show="!success" type="submit" class="btn-blue" data-ng-class="{loader:spinner}">{{ 'send.btn'|trans|desc('Send') }}</button>
+                                <button data-ng-show="success" type="button" class="btn-blue" data-ui-sref="{{ homeRef|default('home') }}">{{ 'close.btn'|trans }}</button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+                <div class="em-handle"></div>
+                <div class="em-safe"></div>
+            </div>
+        </div>
+    </div>
+    <div class="ui-dialog-buttons">
+        <ul class="popup-footer-buttons">
+            {% if is_granted('SITE_BUSINESS_AREA') %}
+                <li><a data-ui-sref="registerBusiness">{{ 'buttons.register'|trans }}</a></li>
+            {% else %}
+                <li><a data-ui-sref="{{ homeRef|default('register') }}">{{ 'buttons.register'|trans }}</a></li>
+            {% endif %}
+
+            <li><a data-ui-sref="{{ loginRef|default('login') }}">{{ 'landing.page.dialog.login.link'|trans|desc('Log in') }}</a></li>
+        </ul>
+    </div>
+</div>
+<div class="overlay"></div>

@@ -1,0 +1,92 @@
+services:
+    _defaults:
+        public: true
+
+    # Types
+
+    aw.form.type.profile_personal:
+        public: true
+        class: AwardWallet\MainBundle\Form\Type\ProfilePersonalType
+        arguments: ["@router", "@aw.form.transformer.generic.profile_personal", "@translator", "@security.authorization_checker"]
+        tags:
+            - { name: form.type }
+
+    aw.form.type.profile_business:
+        public: true
+        class: AwardWallet\MainBundle\Form\Type\BusinessProfileType
+        arguments: ["@router", "@aw.form.transformer.generic.profile_business"]
+        tags:
+        - { name: form.type }
+
+    aw.mobile.profile_personal:
+        public: true
+        class: AwardWallet\MobileBundle\Form\Type\Profile\PersonalType
+        arguments:
+            ["@translator", "@aw.mobile.url_transformer", "@aw.form.transformer.generic.profile_personal"]
+        tags:
+            - {name: form.type}
+
+    aw.form.type.profile_security_questions:
+        public: true
+        class: AwardWallet\MainBundle\Form\Type\ProfileSecurityQuestionEntryType
+        arguments: ["@aw.security.token_storage"]
+        tags:
+            - {name: form.type}
+
+    # Transformers
+
+    aw.form.transformer.generic.profile_personal:
+        public: true
+        class: AwardWallet\MainBundle\Form\Transformer\Profile\PersonalTransformer
+
+    aw.form.transformer.generic.profile_business:
+        public: true
+        class: AwardWallet\MainBundle\Form\Transformer\Profile\BusinessTransformer
+
+    # Handlers
+
+    aw.form.profile_personal.subscriber.generic:
+        public: true
+        class: AwardWallet\MainBundle\Form\Handler\Subscriber\Profile\PersonalGeneric
+        arguments:
+            ["@aw.form.handler_helper", "@aw.manager.user_manager", "@doctrine.orm.default_entity_manager"]
+
+    aw.form.profile_business.subscriber.generic:
+        public: true
+        class: AwardWallet\MainBundle\Form\Handler\Subscriber\Profile\BusinessGeneric
+        arguments:
+          ["@aw.form.handler_helper", "@aw.manager.user_manager", "@doctrine.orm.default_entity_manager"]
+
+    aw.form.profile_personal.subscriber.desktop:
+        public: true
+        class: AwardWallet\MainBundle\Form\Handler\Subscriber\Profile\PersonalDesktop
+        arguments: ["@aw.manager.user_manager", "@translator"]
+
+    aw.form.profile_personal.handler.desktop:
+        public: true
+        parent: aw.form.generic_request_handler
+        calls:
+            - [setChannel, ["form.desktop.personal"]]
+            - [addHandlerSubscriber, ["@aw.form.profile_personal.subscriber.generic"]]
+            - [addHandlerSubscriber, ["@aw.form.profile_personal.subscriber.desktop"]]
+
+    aw.form.profile_business.handler.desktop:
+        public: true
+        parent: aw.form.generic_request_handler
+        calls:
+        - [setChannel, ["form.desktop.personal"]]
+        - [addHandlerSubscriber, ["@aw.form.profile_business.subscriber.generic"]]
+
+    aw.form.profile_personal.subscriber.mobile:
+        public: true
+        class: AwardWallet\MobileBundle\Form\Handler\Subscriber\PersonalMobile
+        arguments: ["@aw.form.handler_helper"]
+
+    aw.form.profile_personal.handler.mobile:
+        public: true
+        parent: aw.form.generic_request_handler
+        calls:
+            - [setChannels, [["form.mobile", "form.mobile.personal"]]]
+            - [addHandlerSubscriber, ["@aw.form.profile_personal.subscriber.generic"]]
+            - [addHandlerSubscriber, ["@aw.form.profile_personal.subscriber.mobile"]]
+            - [addHandlerSubscriber, ["@aw.form.subscriber.mobile.request_data_transformer"]]

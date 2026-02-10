@@ -1,0 +1,88 @@
+{% set MOBILE_NAV = true %}
+{% set MAIN_BODY_CLASSES = {
+    'manual-hidden': true,
+    'responsive': true
+}|merge(MAIN_BODY_CLASSES|default({})) %}
+{% extends app.user is not null ? "@AwardWalletMain/Layout/common.html.twig" : "@AwardWalletMain/Layout/not_logged.html.twig" %}
+
+{% block meta %}
+    {{ parent() }}
+    <base href="{{ path('aw_loyalty_program_rating_review', {'reviewId': initialData.review.ReviewID}) }}">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0, viewport-fit=cover">
+{% endblock %}
+
+{% block title %}
+    {{ 'review_of_provider'|trans({'%provider_name%': initialData.provider.DisplayName })|desc('Review of %provider_name% loyalty program') }}
+{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+{% endblock %}
+
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        require([
+            'jquery-boot',
+            'angular-boot',
+            'pages/LPRating',
+            'lib/design',
+            'lib/customizer'
+        ], function ($, angular) {
+            angular.module('LPRatingApp').constant('initialData', {{ initialData|json_encode|default('{}')|raw }});
+            $(function() {
+                angular.bootstrap($('.main-blk').get(), ['LPRatingApp']);
+            });
+        });
+    </script>
+{% endblock %}
+
+{% block content %}
+<div class="main-blk rating-blk" data-ng-controller="LPRatingCtrl as main" >
+    <h1>Review #{{ initialData.review.ReviewID }} for {{ initialData.provider.Name }} <span>({{ initialData.provider.ProgramName }})</span></h1>
+    <div class="main-blk-content main-form">
+        <div class="rate-list">
+            <div class="rate">
+                <div class="rate__info">
+                    <div>
+                        <div class="rate__text">{{ initialData.review.Review|nl2br}}</div>
+                        <div class="rate__date">
+                            <strong>{{ initialData.review.updatedateFormat }}</strong>
+                        </div>
+                    </div>
+                    <div class="rate__btn">
+                        <div data-ng-bind="helpfulTrans({{ initialData.review.YesVotes }}, {{ initialData.review.Votes }})"></div>
+                    </div>
+                </div>
+                <div class="rate__average">
+                    <div class="rate__average-top">
+                        <div class="rating middle">
+                            {% for i in 1..5 %}
+                                {% if i <= initialData.review.totalRating %}
+                                    <span class="blue-star"></span>
+                                {% else %}
+                                    <span></span>
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+                        <h4>{{ initialData.review.totalRatingCaption }}</h4>
+                    </div>
+                    <div class="rate__average-ratings">
+                        {#% for name in initialData.fieldNames %}
+                            <div class="rate__average-row">
+                                <span class="rate__average-caption">{{ ('rating.' ~ name) | trans }} <i class="icon-info-silver" data-tip data-role="tooltip" title="{{ ('rating.' ~ name ~ '.desc') | trans }}"></i></span>
+                                <div class="progressbar">
+                                    <span style="width: {{ attribute(initialData.review, name)*20 }}%;"> </span>
+                                </div>
+                                <strong>{{ attribute(initialData.review, name) > 0? attribute(initialData.review, name):'' }}</strong>
+                            </div>
+                        {% endfor %#}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

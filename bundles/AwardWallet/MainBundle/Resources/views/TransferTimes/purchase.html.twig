@@ -1,0 +1,82 @@
+<ul class="tabs-navigation middle main-tabs">
+    <li>
+        <a ui-sref="mainState.mileTransferTimes" ng-class="{active: ('mainState.mileTransferTimes' | includedByState) || ('mainState.mileTransferTimesFilter' | includedByState) || ('mainState.mileTransferTimesLocale' | includedByState) || ('mainState.mileTransferTimesLocaleFilter' | includedByState)}">
+            {{ 'transfer_times'|trans|upper }}
+        </a>
+    </li>
+    <li>
+        <a ui-sref="mainState.milePurchaseTimes" ng-class="{active: ('mainState.milePurchaseTimes' | includedByState) || ('mainState.milePurchaseTimesFilter' | includedByState) || ('mainState.milePurchaseTimesLocale' | includedByState) || ('mainState.milePurchaseTimesLocaleFilter' | includedByState)}">
+            {{ 'purchase_times'|trans|upper }}
+        </a>
+    </li>
+</ul>
+
+<div class="tabs-content fixed-width" >
+    <div class="tab-main-content main-ui-view">
+        <div class="ajax-loader" data-ng-show="main.status.loaded == false"><div class="loading"></div></div>
+        <div class="search">
+            <div class="row">
+                <label>{{ 'start-typing-name-program-to-find'|trans }}</label>
+                <div  class="input">
+                    <div>
+                        <input name="search-provider" data-ng-class="{'empty-query': !programValue()}" data-ng-model="programValue"
+                               ng-model-options="{ getterSetter: true }"
+                               type="text" auto-focus autocomplete="off" spellcheck="false">
+                        <a href="#" data-ng-show="programValue()" data-ng-click="programValue('')"
+                           class="reset-input"><i class="icon-close-silver"></i></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="title-note">
+            <h3>{{ 'purchase_times'|trans }}</h3>
+        </div>
+        <div class="search-box__operations" data-ng-show="main.status.loading == true || main.status.loaded == true">
+            <div class="ajax-loader" data-ng-show="main.status.loading"><div class="loading"></div></div>
+            <table
+                    class="main-table no-border hover-style purchase-times mobile-table"
+                    data-ng-class="{ 'load-operations': main.status.loading}"
+                    data-ng-show="!main.status.loading && main.status.loaded == true"
+            >
+                <thead >
+                    <tr>
+                        <th>{{ 'account.program'|trans }}</th>
+                        <th>{{ 'average_time'|trans|desc('Average Time') }}</th>
+                        <th class="comments-cell" data-ng-show="main.isHasBonus == true">{{ 'comments'|trans|desc('Comments') }}</th>
+                        <th>{{ 'how-to-purchase'|trans|desc("How to purchase") }}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr data-ng-repeat="(key, row) in operations | filter: search track by $index">
+                        <td ng-if="!row.ProviderLinkTo" data-title="{{ 'account.program'|trans }}"
+                            data-ng-bind-html="row.ProviderName | highlight:programValue():false:'green' | unsafe"></td>
+                        <td ng-if="row.ProviderLinkTo" data-title="{{ 'account.program'|trans }}">
+                            <a href="[[row.ProviderLinkTo]]"
+                               data-ng-bind-html="row.ProviderName | highlight:programValue():false:'green' | unsafe"
+                               data-tip title="{{ 'click-find-more'|trans }}" target="_blank"></a>
+                        </td>
+                        <td data-title="{{ 'average_time'|trans|desc('Average Time') }}"><span data-ng-bind="row.TransferDuration" data-role="tooltip" data-tip title= '[[ row.countRowsTip ]]'></span></td>
+                        <td data-title="" class="comments-cell" data-ng-show="main.isHasBonus == true" data-ng-bind-html="row.Bonus|unsafe"></td>
+                        <td data-ng-bind-html="row.HowPurchase|unsafe"></td>
+                    </tr>
+                    <tr class="no-result" data-ng-show="main.status.loaded && (operations | filter:search).length == 0">
+                        <td colspan="4" data-ng-show="!programValue()">{{ 'no_results_found'|trans }}</td>
+                        <td colspan="4" data-ng-show="programValue()" class="not-found">
+                            <i class="icon-warning-small"></i>
+                            <p>{{ 'no_results_found_with_criteria'|trans }}</p>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<script>
+    // save tab when changed language for unauthorized users
+    $(function() {
+        $("li.language li.ui-menu-item").html(function() {
+            return $(this).html().replace("mile-transfer-times","mile-purchase-times");
+        });
+    });
+</script>

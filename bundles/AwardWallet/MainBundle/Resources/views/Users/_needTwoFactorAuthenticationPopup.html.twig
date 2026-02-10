@@ -1,0 +1,139 @@
+{% set route2fa = path('aw_profile_2factor') %}
+{% set routeDelete = path('aw_user_delete') %}
+{% set businessMembers = path('aw_business_members') %}
+{% set popupData = two_fact.getPopupData(app.user) %}
+{% set businessMemberEdit = popupData['userAgentId'] ? path('aw_business_member_edit', {userAgentId: popupData['userAgentId']}) : null %}
+{% set shouldOpenDialog = 'aw_profile' not in app.request.get('_route') and app.request.get('_route') not in ['aw_business_members', 'aw_business_member_edit', 'aw_user_delete', 'aw_user_connections'] ? true : false %}
+
+
+{% set transParams = {
+    '%companyName%': popupData['company'],
+    '%link1_on%': '<a href="' ~ (
+    is_granted('SITE_BUSINESS_AREA') ?
+    popupData['userAgentId'] ? businessMemberEdit : businessMembers :
+    path('aw_security_switch_site', {'Goto': popupData['userAgentId'] ? businessMemberEdit : businessMembers})
+    ) ~ '" target="_blank">',
+    '%link1_off%': '</a>',
+    '%link2_on%': popupData['isBusinessAdmin']
+    ? '<a href="' ~ (is_granted('SITE_BUSINESS_AREA') ? routeDelete : path('aw_security_switch_site', {'Goto': routeDelete})) ~ '" target="_blank">'
+    : '',
+    '%link2_off%': popupData['isBusinessAdmin'] ? '</a>' : '',
+    '%break%': '<br>',
+    '%break2%': '<br>',
+    '%extend-text%': app.user.twoFactorAllowed
+        ? ''
+        : 'create-password-before-2fa'|trans({
+            '%break%': '<br>',
+            '%break2%': '<br>',
+        })|desc('%break%%break2%Before you can enable 2FA, we need to switch your login method from "Google" to AwardWallet. Please create an AwardWallet password and start using your username and password to log in moving forward. Once this is done, you\'ll be able to set up two-factor authentication.')
+} %}
+
+<div id="needTwoFactorAuthentication" style="display: none;" title="{{ '2fact-require.popup-title'|trans|desc('Two-factor Authentication Required') }}">
+    <p>
+        {% if app.user.twoFactorAllowed %}
+            {% set transParams = transParams|merge({'%extend-text%': ''}) %}
+            {{ '2fact-require-message'|trans(transParams)|raw }}
+        {% else %}
+            {{ '2fact-require-message'|trans(transParams)|desc('
+                Your account has administrative privileges under the business account "%companyName%", which gives you access to other users\' data. To help protect this information, we require that you set up two-factor authentication (2FA) for your account.
+                %extend-text%
+                %break%%break2%
+                If you prefer not to enable 2FA, you can ask another business administrator to %link1_on%downgrade%link1_off% your access level to "No Access (regular member)." Alternatively, if you are the sole administrator, you may choose to %link2_on%delete%link2_off% the business account.
+            ')|raw }}
+        {% endif %}
+    </p>
+</div>
+
+{% if webpack|default(false) %}
+    {{ encore_entry_script_tags('need-two-factor', null, '_default', {'defer': true}) }}
+    <script>
+
+            window.needTwoFactorPopupIsUser = {{ not is_granted('ROLE_STAFF') and not is_granted('ROLE_IMPERSONATED') ? 'true' : 'false' }};
+
+            window.needTwoFactorPopupIsTwoFactorAllowed = {{ app.user.twoFactorAllowed ? 'true' : 'false' }};
+
+            window.needTwoFactorPopupSetTwoFactorButtonText = '{{ '2fact-require.popup-button'|trans|desc('Proceed to setting up two-factor authentication') }}';
+
+            window.needTwoFactorPopupIsBusiness = {{ is_granted('SITE_BUSINESS_AREA') ? 'true' : 'false' }};
+
+            window.needTwoFactorPopupSetTwoFactorBusinessPath = "{{ path('aw_security_switch_site', {'Goto': route2fa}) }}";
+
+            window.needTwoFactorPopupSetTwoFactorUserPath = "{{ route2fa }}";
+
+            window.needTwoFactorPopupSetPasswordButtonText = '{{ 'create-aw-password'|trans|desc('Create an AwardWallet Password') }}';
+
+            window.needTwoFactorPopupSetPasswordBusinessPath = "{{ path('aw_security_switch_site', {'Goto': path('aw_profile_change_password')}) }}";
+            
+            window.needTwoFactorPopupSetPasswordUserPath = "{{ path('aw_profile_change_password', {'backTo': path('aw_profile_2factor') }) }}";
+            
+            window.needTwoFactorPopupShouldOpenDialog = {{ shouldOpenDialog ? 'true' : 'false' }};
+    </script>
+{% else %}
+<script>
+    require(['jquery-boot', 'lib/dialog'], function($, dialog){
+        var popup = $('#needTwoFactorAuthentication');
+
+        var d = dialog.createNamed('needTwoFactorAuthentication', popup, {
+            modal: true,
+            minWidth: 590,
+            autoOpen: false,
+            closeOnEscape: false,
+            keyboard: false,
+            draggable: true,
+            resizable: false,
+            open: function(event) {
+                {% if not is_granted('ROLE_STAFF') and not is_granted('ROLE_IMPERSONATED') %}
+                $(event.target).parent().find(".ui-dialog-titlebar-close").hide();
+                {% endif %}
+                $('.ui-widget-overlay').click(function (e) {
+                    e.preventDefault();
+                    return false;
+                })
+            },
+            buttons: [
+                {% if app.user.twoFactorAllowed %}
+                {
+                    text: '{{ '2fact-require.popup-button'|trans|desc('Proceed to setting up two-factor authentication') }}',
+                    "class": "btn-blue btn-wide",
+                    click: function() {
+                        var route;
+
+                        {% if is_granted('SITE_BUSINESS_AREA') %}
+                        route = "{{ path('aw_security_switch_site', {'Goto': route2fa}) }}";
+                        {% else %}
+                        route = "{{ route2fa }}";
+                        {% endif %}
+
+                        window.location = route;
+                    }
+                }
+                {% else %}
+                {
+                    text: '{{ 'create-aw-password'|trans|desc('Create an AwardWallet Password') }}',
+                    "class": "btn-blue btn-wide",
+                    click: function() {
+                        {% if is_granted('SITE_BUSINESS_AREA') %}
+                        window.location = "{{ path('aw_security_switch_site', {'Goto': path('aw_profile_change_password')}) }}";
+                        {% else %}
+                        window.location = "{{ path('aw_profile_change_password', {'backTo': path('aw_profile_2factor') }) }}";
+                        {% endif %}
+                    }
+                }
+                {% endif %}
+            ]
+        });
+        {%
+            if 'aw_profile' not in app.request.get('_route') and app.request.get('_route') not in [
+            'aw_business_members',
+            'aw_business_member_edit',
+            'aw_user_delete',
+            'aw_user_connections',
+        ]
+        %}
+        setTimeout(function(){
+            d.open();
+        }, 2000);
+        {% endif %}
+    });
+</script> 
+{% endif %}

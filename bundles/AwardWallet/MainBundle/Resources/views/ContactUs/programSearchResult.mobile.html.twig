@@ -1,0 +1,39 @@
+{% trans_default_domain "contactus" %}
+
+{% apply spaceless %}
+    {% for program in programs %}
+        <container>
+            <div class="icon">
+                <i class="point"></i>
+            </div>
+            <div class="content">
+                {% if program.action is defined %}
+                    <div class="title">
+                        <div class="surveys">
+                            <div class="bigText">{{ program.action.name }}</div>
+                            <div class="smallText">{{ program.action.kind|trans({}, 'messages') }}</div>
+                        </div>
+                        <div class="requests">
+                            {{ 'requests'|trans({
+                                '%count%': program.action.votes|default(0),
+                                '%count_formatted%': program.action.votes|default(0)|formatNumber,
+                                '%span_on%': '<div class="bigText">',
+                                '%span_off%': '</div>',
+                                '%span2_on%': '<div class="smallText">',
+                                '%span2_off%': '</div>',
+                            })|desc('%span_on%%count_formatted%%span_off% %span2_on%request%span2_off%|%span_on%%count_formatted%%span_off% %span2_on%requests%span2_off%')|raw }}
+                        </div>
+                    </div>
+
+                    <div class="buttonWrap">
+                        <a href="{{ url('aw_status_vote', {id: program.action.id}) }}" class="button{{ program.action.voted|default(false) ? ' voted' : '' }}">+1</a>
+                    </div>
+                {% endif %}
+                {{ program.msg|raw }}
+                {% if program.note is defined and program.note != '' %}
+                    <div class="text">{{ 'contactus.program-comment.text'|trans }} {{ program.note|raw }}</div>
+                {% endif %}
+            </div>
+        </container>
+    {% endfor %}
+{% endapply %}

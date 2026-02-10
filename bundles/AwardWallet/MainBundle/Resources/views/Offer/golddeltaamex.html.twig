@@ -1,0 +1,50 @@
+{# Issue #7305 #}
+
+{% extends "@AwardWalletMain/Offer/standard.html.twig" %}
+{% import '@AwardWalletMain/Offer/offerMacros.html.twig' as offerMacros %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    {{ encore_entry_link_tags('offer') }}
+    {{ encore_entry_link_tags('offers/golddeltaamex') }}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        {{ offerMacros.jsOfferYes(_context, ApplyURL, Code, OfferUserID, defaultRedirectLocation) }}
+        {{ offerMacros.jsOfferNo(_context, Code, OfferUserID, defaultRedirectLocation) }}
+    </script>
+{% endblock %}
+
+{% block content %}
+    <div id="offer_wrap">
+        <div id="offer_bg" class="golddeltaamex_bg">
+            <div class="offer_title golddeltaamex_title">
+                Gold Delta SkyMiles<div class="offer_sup">®</div> Credit Card from American Express
+            </div>
+            <div class="golddeltaamex_image">
+            </div>
+            <div id="div_ul" class="golddeltaamex_ul">
+                <ul class="offer_list golddeltaamex_list">
+                    <li>Earn 30K bonus miles after you make $1K in purchases on your new Card within your first 3 months.
+                    <li>Earn a $50 statement credit after you make a Delta purchase with your new Card within your first 3 months.
+                    <li>Earn As You Spend: Get 2X miles on Delta purchases and 1X miles for all other eligible dollars spent.
+                    <li>Check your first bag free on every Delta flight - that's a savings of up to $200 per round trip for a family of four.
+                    <li>Premium Travel Perks: Settle in sooner with Priority Boarding.
+                    <li>$0 introductory annual fee for the first year, then $95.
+                    <li>Terms and Restrictions Apply.
+                </ul>
+            </div>
+            <div class="offer_btn golddeltaamex_btn" onclick="offerYes();">
+                Yes, I want to earn 30K bonus miles
+            </div>
+        </div>
+        <div class="offer_declinekind" onclick="offerNo();">
+            Never show this ad again
+        </div>
+        <div class="offer_toaccount golddeltaamex_toaccount" onclick="window.location = '{{ defaultRedirectLocation }}'">
+            Proceed to my account
+        </div>
+    </div>
+{% endblock %}

@@ -1,0 +1,44 @@
+{# Issue #7731 #}
+
+{% extends "@AwardWalletMain/Offer/standard.html.twig" %}
+{% import '@AwardWalletMain/Offer/offerMacros.html.twig' as offerMacros %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    {{ encore_entry_link_tags('offer') }}
+    {{ encore_entry_link_tags('offers/fcard') }}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        {{ offerMacros.jsOfferYes(_context, ApplyURL, Code, OfferUserID, defaultRedirectLocation) }}
+        {{ offerMacros.jsOfferNo(_context, Code, OfferUserID, defaultRedirectLocation) }}
+    </script>
+{% endblock %}
+
+{% block content %}
+    <div id="offer_wrap">
+        <div id="fcard_bg">
+            <div class="offer_title fcard_title">
+                Elite status.<br>
+                Preferred pricing.<br>
+                VIP treatment.
+            </div>
+            <div class="fcard_text">
+                These are the types of benefits FoundersCard members receive from leading airlines, hotels, lifestyle brands, and business services. With over 15,000 members worldwide, FoundersCard is recognized as the leading membership community for entrepreneurs, innovators and business owners.
+                <br><br>
+                For a limited time only, AwardWallet members get a special discounted price of <span class="fcard_discount">$395</span>, from a regular price of $795.
+            </div>
+            <div class="offer_btn fcard_btn" onclick="offerYes();">
+                Learn more
+            </div>
+        </div>
+        <div class="offer_declinekind" onclick="offerNo();">
+            Never show this ad again
+        </div>
+        <div class="offer_toaccount fcard_toaccount" onclick="window.location = '{{ defaultRedirectLocation }}'">
+            Proceed to my account
+        </div>
+    </div>
+{% endblock %}

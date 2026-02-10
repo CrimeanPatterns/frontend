@@ -1,0 +1,1178 @@
+{% set  assetBaseUrl =  app.request.scheme ~ '://' ~ app.request.httpHost ~ '/assets/awardwalletnewdesign/' %}
+
+{% set data = [
+    {
+        name: 'Alexi Vereschaga',
+        position: 'Founder and CEO',
+        desc: "<p>Alexi is the co-founder and leads the development efforts of AwardWallet, which he launched in 2004. From its inception, Alexi has been AwardWallet’s product visionary. He is focused on continual improvement of AwardWallet to meet the needs of its %members%+ global members and to respond to the evolving rewards program landscape, which is reflected in AwardWallet’s recognized leadership in rewards management.</p><p>Prior to the creation of AwardWallet, Alexi worked in global enterprise IT Services organizations including, Aelita Software, Quest Software, and Dell. Over 16 years his responsibilities expanded from web development and support to technical account management and systems consulting. Throughout this time Alexi worked with clients including PepsiCo, Inc., Morgan Stanley, ExxonMobil, Fidelity Investments, United Technology, and Publix.</p><p>Alexi attended Utah State University where he played NCAA Division I Men’s College Tennis. He graduated Magna Cum Laude with a B.S. in Information Systems Management from Franklin University. Alexi further received a Master of Information Systems Management from DeVry University. Alexi and his wife have four kids; his hobbies include tennis, kiteboarding, snowboarding, and playing guitar.</p>"
+    },
+    {
+        name: 'Erik Paquet',
+        position: 'Director of Marketing',
+        desc: "<p>Erik joined the AwardWallet team in 2018. He attended the University of Michigan where he earned a Bachelor of Arts in Economics. During school, he discovered points and miles as a way to fund frequent international trips and a semester abroad in Santiago Chile.</p><p>Following school, he began traveling full time and co-founded Abroaders.com, a startup that helps travelers earn and redeem rewards points for maximum value.</p><p>Erik first connected with AwardWallet while looking for a tool to manage complex award bookings for clients. With the help of the AwardWallet booking platform, he and his team have redeemed over 49 million points for 2.2 million in airfare savings.</p><p>Erik lives in Austin, Texas with his wife Gabriela. When not obsessing about points and miles, his hobbies include cooking, photography, learning languages, exploring national parks, watching Michigan athletics (Go Blue!) and of course, travel.</p>"
+    },
+    {
+        name: 'JT Genter',
+        position: 'Editor-in-Chief',
+        desc: "<p>JT is AwardWallet’s Editor-In-Chief. JT originally joined the AwardWallet team in early 2020 as a freelance editor and writer, but he has been part of the points and miles ecosystem since 2014. Looking for a way to reduce the cost of a trip to China (back when it was expensive to fly to China), he found he could sign up for just one credit card to get enough miles to book the flights.</p>
+            <p>That experience prompted him to dive headfirst into the world of airline, hotel, and credit card points and miles. After working for a decade as a tax accountant, JT focused his analytical skills on writing about points, miles, and credit cards. He started contributing at The Points Guy in 2015 and published over 2,000 articles on the site.</p>
+            <p>In June 2017, Katie and JT sold or donated nearly all of their possessions to become digital nomads, proving firsthand how points, miles, and credit card rewards can drastically reduce the cost of travel. JT has logged over 1.6 million miles on 96 airlines, visited 64 countries, and maintains elite status with 8 airlines (including American Executive Platinum, Air Canada Aeroplan 75K, Asiana Diamond, and Malaysia Gold) and 6 hotel loyalty programs (including IHG Diamond, Hilton Diamond, and Marriott Titanium Elite)</p>"
+    },
+    {
+        name: 'Jess Farley',
+        position: 'Chief Compliance Officer',
+        desc: "<p>Jess joined the AwardWallet team in early 2016 as a member of the writing team. Hailing from New Zealand, Jess discovered points and miles while traveling full-time with his wife and son, utilizing rewards to reduce travel costs and relying on credit card perks to make travel more comfortable.</p>
+            <p>His extensive knowledge of frequent flyer programs was acquired through hands-on experience, research, and many hours behind the keyboard helping design and implement AwardWallet's backend tools and compliance systems.</p>
+            <p>When not immersed in his work at AwardWallet, you can find him running trails, cooking up a storm, wakeboarding, and traveling with his family. Jess is currently based in the idyllic Sunshine Coast in Queensland, Australia.</p>"
+    },
+] %}
+
+{% set membersCount = members[1] %}
+{% set billionMilesCount = miles[1] %}
+{% set milesBillionPlural = 'billion miles / points' %}
+{% set billionsMoneyCount = money[1] %}
+{% set moneyBillionPlural = 'billion' %}
+{% set assets = asset('assets') %}
+
+<div class="about">
+    <div class="about__main">
+        <img src="{{ assets }}/awardwalletnewdesign/img/about/main-image.png?v=2" srcset="{{ assets }}/awardwalletnewdesign/img/about/main-image@2x.png 2x" alt="Team">
+        <h1>{{ headMain }}</h1>
+    </div>
+    <div class="about__tags">
+        <ul>
+            <li><a href="#history">Quick History</a></li>
+            <li><a href="#quick-facts">Quick Facts</a></li>
+            <li><a href="#apis">AwardWallet APIs</a></li>
+            <li><a href="#community">Community</a></li>
+            <li><a href="#booking">Award Booking</a></li>
+        </ul>
+        <ul>
+            <li><a href="#blog">AwardWallet Blog</a></li>
+            <li><a href="#points-miles-tools">Points &amp; Miles Tools</a></li>
+            <li><a href="#apps">Mobile Apps</a></li>
+            <li><a href="#media">Media</a></li>
+            <li><a href="#leadership-team">Leadership Team</a></li>
+        </ul>
+    </div>
+    <section>
+        <div class="about__info">
+            <p>AwardWallet is a service that can help you track any type of loyalty account and manage your travel plans. As of today, AwardWallet has around <strong>{{ membersCount }} active members</strong> that manage over <strong>{{ billionMilesCount }} {{ milesBillionPlural }}</strong> representing around <strong>${{ billionsMoneyCount }} {{ moneyBillionPlural }}</strong> in value. It works by automatically logging into a user's online loyalty accounts on their behalf. This allows AwardWallet to retrieve the number of miles or points and when they expire. For some loyalty providers, AwardWallet has direct API integrations.</p>
+            <div class="about__info-stats">
+                <div>
+                    <strong>{{ members[2] }}</strong>
+                    <p>users</p>
+                </div>
+                <div>
+                    <strong>{{ billionMilesCount }} <span>Billion</span></strong>
+                    <p>miles and points</p>
+                </div>
+                <div>
+                    <strong>${{ billionsMoneyCount }} <span>{{ moneyBillionPlural }}</span></strong>
+                    <p>in value</p>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section id="history">
+        <h2>Quick History</h2>
+        <div class="about__history">
+            <div class="about__history-row">
+                <div class="about__history-image">
+                    <img src="{{ assets }}/awardwalletnewdesign/img/about/01.png?v=2" srcset="{{ assets }}/awardwalletnewdesign/img/about/01@2x.png 2x" alt="Team">
+                </div>
+                <div class="about__history-text">
+                    <div>
+                        <div class="about__date">2004</div>
+                        <p>AwardWallet was founded by Alexi Vereschaga (on the right) and Todd Mera (on the left) who were co-workers at the time. The first version of the website went live on <strong>November 20, 2004</strong>, after almost a year of development.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="about__history-row">
+                <div class="about__history-text">
+                    <div>
+                        <div class="about__date">2007</div>
+                        <p>An in-app purchase “AwardWallet Plus” feature was introduced for the first time to offer a premium service level. </p>
+                    </div>
+                </div>
+                <div class="about__history-text">
+                    <div>
+                        <div class="about__date">2010</div>
+                        <p>AwardWallet had roughly 20,000 members at the beginning of 2010. On September 23, 2010, AwardWallet received a Cease and Desist letter from Southwest Airlines demanding that AwardWallet stop accessing the Southwest website in order to help Southwest users track their miles via AwardWallet.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="about__history-row">
+                <div class="about__history-text">
+                    <div>
+                        <div class="about__date">2012</div>
+                        <p>AwardWallet had over 100,000 members, managing over 800,000 loyalty accounts at the beginning of 2012. On August 23, 2012, AwardWallet received a Cease and Desist letter from Delta Air Lines (which was widely publicized on media websites such as <a href="https://techcrunch.com/2012/09/15/delta-sends-cds-to-startups-tracking-airline-rewards-milewise-awardwallet-others-affected" target="_blank" rel="noopener noreferrer">TechCrunch</a>, <a href="https://skift.com/2012/09/10/delta-threatens-to-sue-awardwallet-and-it-drops-skymiles-support/" target="_blank" rel="noopener noreferrer">Skift</a> and others) demanding that AwardWallet stop helping Delta Air Lines users track their miles. On November 30, 2012, AwardWallet received a similar Cease and Desist letter from United Airlines which was covered by <a href="https://bucks.blogs.nytimes.com/2012/12/18/united-is-latest-airline-to-block-rewards-web-site/" target="_blank" rel="noopener noreferrer">The New York Times</a>, also demanding that AwardWallet stop helping United Airlines users track their miles. Finally, in 2012 AwardWallet partnered with BookYourAward to provide users with a personalized booking service to book flights using their airline miles. In 2012 AwardWallet team moved into its first office.</p>
+                    </div>
+                </div>
+                <div class="about__history-image">
+                    <img src="{{ assets }}/awardwalletnewdesign/img/about/02.png?v=2" srcset="{{ assets }}/awardwalletnewdesign/img/about/02@2x.png 2x" alt="Team">
+                </div>
+            </div>
+            <div class="about__history-row">
+                <div class="about__history-row-item">
+                    <div class="about__history-image">
+                        <img src="{{ assets }}/awardwalletnewdesign/img/about/03.png?v=2" srcset="{{ assets }}/awardwalletnewdesign/img/about/03@2x.png 2x" alt="Team">
+                        <div class="about__history-note">The AwardWallet team in the summer of 2014</div>
+                    </div>
+                    <div class="about__history-text">
+                        <div>
+                            <div class="about__date">2013</div>
+                            <p>AwardWallet <a href="https://www.prnewswire.com/news-releases/american-airlines-and-awardwallet-offer-new-reward-tracking-technology-for-aadvantage-members-218502361.html" taergt="_blank" rel="noopener noreferrer">partnered with American Airlines</a> to provide AwardWallet users with the ability to track their American Airlines miles using our API. </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="about__history-row-item">
+                    <div class="about__history-text">
+                        <div>
+                            <div class="about__date">2015</div>
+                            <p>AwardWallet <a href="https://www.capitalone.com/tech/rewards/award-wallet/" target="_blank" rel="noopener noreferrer">partnered with Capital One</a> to provide AwardWallet users with API based access to track CapitalOne miles and presented our integration together at SXSW in Austin TX.</p>
+                        </div>
+                    </div>
+                    <div class="about__history-image">
+                        <img src="{{ assets }}/awardwalletnewdesign/img/about/04.png?v=2" srcset="{{ assets }}/awardwalletnewdesign/img/about/04@2x.png 2x" alt="Team">
+                    </div>
+                </div>
+            </div>
+            <div class="about__history-row">
+                <div class="about__history-image">
+                    <img src="{{ assets }}/awardwalletnewdesign/img/about/05.png?v=2" srcset="{{ assets }}/awardwalletnewdesign/img/about/05@2x.png 2x" alt="Team">
+                    <div class="about__history-note">left to right: Howie Rappaport, Richard Kerr, Rachel Berkey</div>
+                </div>
+                <div class="about__history-text">
+                    <div>
+                        <div class="about__date">2017</div>
+                        <p>AwardWallet expanded its social media presence by acquiring <a href="https://www.facebook.com/groups/awardtravel101/" target="_blank" rel="noopener noreferrer">Award Travel 101 Facebook Group</a>.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="about__history-row wide">
+                <div class="about__history-text">
+                    <div>
+                        <div class="about__date">2018</div>
+                        <p>Bank Of America joined our partnerships to provide AwardWallet users access to tracking their Bank Of America miles. Find out more about what we did in 2018 in this <a href="https://awardwallet.com/blog/awardwallet-in-2018/" target="_blank" rel="noopener noreferrer">infographic that summed up 2018</a> for AwardWallet.</p>
+                    </div>
+                </div>
+                <div class="about__history-image">
+                    <img src="{{ assets }}/awardwalletnewdesign/img/about/06.png?v=2" srcset="{{ assets }}/awardwalletnewdesign/img/about/06@2x.png 2x" alt="Team">
+                    <div class="about__history-note">The AwardWallet Team in the summer of 2018</div>
+                </div>
+                <div class="about__history-image">
+                    <img src="{{ assets }}/awardwalletnewdesign/img/about/07.png?v=3" srcset="{{ assets }}/awardwalletnewdesign/img/about/07@2x.png?v=3 2x" alt="Team">
+                    <div class="about__history-note">The AwardWallet Team in the summer of 2019</div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section id="quick-facts">
+        <h2>Quick Facts</h2>
+        <div class="about__facts">
+            <div class="about__facts-block">
+                <div class="about__facts-icon"><i class="icon-white-check-b"></i></div>
+                <p>AwardWallet has <strong>{{ membersCount }} users</strong>.</p>
+            </div>
+            <div class="about__facts-block">
+                <div class="about__facts-icon"><i class="icon-white-check-b"></i></div>
+                <p>AwardWallet supports the tracking of <strong>{{ programs[1] }} loyalty programs</strong>.</p>
+            </div>
+            <div class="about__facts-block">
+                <div class="about__facts-icon"><i class="icon-white-check-b"></i></div>
+                <p>AwardWallet tracks a total of <strong>{{ billionMilesCount }} {{ milesBillionPlural }}</strong> representing around <strong>${{ billionsMoneyCount }} {{ moneyBillionPlural }} in value</strong>.</p>
+            </div>
+            <div class="about__facts-block">
+                <div class="about__facts-icon"><i class="icon-white-check-b"></i></div>
+                <p>AwardWallet has a total of <strong>30 full-time employees</strong> and <strong>10 part-time contractors</strong>.</p>
+            </div>
+        </div>
+    </section>
+    <section id="apis">
+        <h2>AwardWallet APIs for B2B partners</h2>
+        <p>AwardWallet offers almost its entire technology stack via APIs to any company that wishes to provide similar services. There are three main APIs that we offer:</p>
+        <div class="about__list">
+            <div class="about__list-block has-border blue">
+                <h3>Email Parsing API</h3>
+                <p>This API allows our partners to send us an email with a travel reservation and we will extract all the travel-related data from it and return it in a structured format. More info on this API can be found <a href="https://awardwallet.com/email-parsing-api">here</a>.</p>
+            </div>
+            <div class="about__list-block has-border green">
+                <h3>Web Parsing API (Loyalty)</h3>
+                <p>This API allows our clients to retrieve loyalty information from their users’ loyalty accounts. As an input, it takes user account credentials for a loyalty program and as an output, it returns all of the loyalty attributes of that account, such as account balance, expiration date, elite level, and many other attributes. </p>
+            </div>
+            <div class="about__list-block has-border red">
+                <h3>AwardWallet Account Access API</h3>
+                <p>This API allows our business partners to request AwardWallet users to share their loyalty information from inside AwardWallet with them. An example of such a business would be a reward booking service. In order to book reward tickets, they need to know what loyalty accounts and how many miles and points their users have. An AwardWallet user could share such info with that business via this secure API and revoke such access at any time.</p>
+            </div>
+        </div>
+    </section>
+    <section id="community">
+        <h2>Award Travel Community</h2>
+        <div class="about__row">
+            <div class="about__row-thumb">
+                <div>
+                    <img src="{{ assets }}/awardwalletnewdesign/img/about/awardtravel101.png" srcset="{{ assets }}/awardwalletnewdesign/img/about/awardtravel101@2x.png 2x" alt="AwardTravel101">
+                </div>
+                <div>
+                    <img src="{{ assets }}/awardwalletnewdesign/img/about/awardtravel201.png" srcset="{{ assets }}/awardwalletnewdesign/img/about/awardtravel201@2x.png 2x" alt="AwardTravel201">
+                </div>
+            </div>
+            <div class="about__row-text">
+                <p>AwardWallet runs a variety of Facebook groups where like-minded people can talk miles and points. The main group is “<a href="https://www.facebook.com/groups/awardtravel101/" target="_blank" rel="noopener noreferrer">Award Travel 101</a>” which has 67,000 members and growing. There is also a more advanced paid Facebook group “<a href="https://www.facebook.com/groups/awardtravel201/" target="_blank" rel="noopener">Award Travel 201</a>” where the most knowledgeable frequent flyers and points and miles experts cover advanced topics. For frustrated travelers, there is a “<a href="https://www.facebook.com/groups/travelgrumps101/" target="_blank" rel="noopener noreferrer">Travel Grumps 101</a>” group for airing of grievances. And finally, there is an “<a href="https://www.facebook.com/groups/awardtravelsinglesmingle/" target="_blank" rel="noopener noreferrer">Award Travel Singles Mingle</a>” group for those who are single looking to meet like-minded people.</p>
+            </div>
+        </div>
+    </section>
+    <section id="booking">
+        <h2>Award Booking Service</h2>
+        <div class="about__row">
+            <div class="about__row-thumb">
+                <div>
+                    <img src="{{ assets }}/awardwalletnewdesign/img/about/booking.png" srcset="{{ assets }}/awardwalletnewdesign/img/about/booking@2x.png 2x" alt="Award Booking Service">
+                </div>
+            </div>
+            <div class="about__row-text">
+                <p>AwardWallet provides a full-fledged award booking service, which is of most benefit when booking international first-class or business-class tickets. Anyone can <a href="https://awardwallet.com/awardBooking/add">submit a booking request</a> and one of our booking agents will start looking for the least expensive reward tickets for you. Finding reward availability can be very challenging, letting a professional do this for you will not only save you time, but could also help you avoid paying a lot in airline and fuel charges.</p>
+            </div>
+        </div>
+    </section>
+    <section id="blog">
+        <h2>AwardWallet Blog</h2>
+        <div class="about__row">
+            <div class="about__row-thumb">
+                <div>
+                    <img src="{{ assets }}/awardwalletnewdesign/img/about/awardwalletblog.png" srcset="{{ assets }}/awardwalletnewdesign/img/about/awardwalletblog@2x.png 2x" alt="AwardWallet Blog">
+                </div>
+            </div>
+            <div class="about__row-text">
+                <p>The AwardWallet Blog is here to help you earn more points and turn them into incredible travel experiences. In the world of points and miles, knowledge is power. Follow the blog for timely coverage of deals and promotions and expert analysis of how the latest developments impact the value of your hard-earned points.</p>
+                <p>Staying on top of the loyalty programs you care about can be a full-time job, and we’re happy to do it for you.</p>
+            </div>
+        </div>
+        <div class="about__list">
+            <div class="about__list-block blue">
+                <h3>Maximize the points you earn</h3>
+                <p>Turn your everyday purchases into a steady flow of points that will save you thousands on your next trip.</p>
+            </div>
+            <div class="about__list-block blue">
+                <h3>Get the royal treatment</h3>
+                <p>You don’t have to spend a lot of money to be treated like a VIP. Get on the fast track to elite status and take advantage of perks that make every trip special. </p>
+            </div>
+            <div class="about__list-block blue">
+                <h3>Make each point work harder</h3>
+                <p>With the right redemption strategy, you can travel like a millionaire and pay less than it costs to fly economy.</p>
+            </div>
+            <div class="about__list-block wide">
+                <h3>Ready to supercharge your rewards strategy?</h3>
+                <p><a href="">Subscribe by RSS</a> or <a href="">update your AwardWallet profile</a> to receive notifications for every new post.</p>
+            </div>
+        </div>
+    </section>
+    <section id="points-miles-tools">
+        <h2>Points &amp; Miles Tools</h2>
+        <div class="about__row">
+            <div class="about__row-thumb">
+                <div>
+                    <img src="{{ assets }}/awardwalletnewdesign/img/about/points-miles-tools.png" srcset="{{ assets }}/awardwalletnewdesign/img/about/points-miles-tools@2x.png 2x" alt="Points &amp; Miles Tools">
+                </div>
+            </div>
+            <div class="about__row-text">
+                <p>AwardWallet has developed a number of tools to help points and miles enthusiasts. Here are a few: </p>
+            </div>
+        </div>
+        <div class="about__list">
+            <div class="about__list-block blue">
+                <h3>Merchant Category Lookup Tool</h3>
+                <p>This tool allows you to type in any merchant name and it will tell you how that merchant is coded and which cards earn the highest number of points with that merchant. You can also read more about it <a href="https://awardwallet.com/faqs#75">here</a>.</p>
+                <a href="https://awardwallet.com/merchants" class="about__list-more"><i class="icon-blue-more"></i></a>
+            </div>
+            <div class="about__list-block blue">
+                <h3>Credit Card Spend Analysis</h3>
+                <p>In order to use this report, you need to first link your Chase, Amex, Citi, or Bank Of America accounts. Once you’ve connected one or more of these accounts to AwardWallet, we will analyze your credit card spend and tell you which credit cards you should use while shopping to get the maximum number of points. You can read more about it <a href="https://awardwallet.com/faqs#73">here</a>.</p>
+                <a href="https://awardwallet.com/spend-analysis" class="about__list-more"><i class="icon-blue-more"></i></a>
+            </div>
+            <div class="about__list-block blue">
+                <h3>Transfer and Purchase Times</h3>
+                <p>If you ever need to know how long a miles or points transfer or a purchase is going to take, this report will tell you just that. This is most useful when you find a reward ticket that requires you to transfer or purchase miles. The report is based on real data that is extracted from our <a href="https://awardwallet.com/faqs#74">Balance Watch</a> feature.</p>
+                <a href="https://awardwallet.com/mile-transfer-times" class="about__list-more"><i class="icon-blue-more"></i></a>
+            </div>
+        </div>
+    </section>
+    <section id="apps">
+        <h2>Mobile Apps</h2>
+        <div class="about__row">
+            <div class="about__row-thumb">
+                <img src="{{ assets }}/awardwalletnewdesign/img/about/ios.png" srcset="{{ assets }}/awardwalletnewdesign/img/about/ios@2x.png 2x" alt="iOS app">
+                <img src="{{ assets }}/awardwalletnewdesign/img/about/android.png" srcset="{{ assets }}/awardwalletnewdesign/img/about/android@2x.png 2x" alt="Android app">
+            </div>
+            <div class="about__row-text">
+                <p>AwardWallet has a mobile app that is available for <a href="http://itunes.apple.com/us/app/awardwallet/id388442727?mt=8" target="_blank" rel="noopener noreferrer">iOS</a> and <a href="https://market.android.com/details?id=com.itlogy.awardwallet&amp;feature=search_result" target="_blank" rel="noopener noreferrer">Android</a> devices. Like its web counterpart, the mobile app monitors your account activity and allows you to quickly access your loyalty program account information. In addition to tracking loyalty accounts, it also provides itinerary management so that you can have all of your trips and confirmation numbers available on the go. This includes benefits such as free flight alerts for your flights that get delayed or canceled.</p>
+            </div>
+        </div>
+    </section>
+    <section id="media">
+        <h2>AwardWallet in the Media</h2>
+        <p>AwardWallet has been featured and cited in many International media outlets including:</p>
+        <div class="about__check-list">
+            <div>
+                <ul>
+                    <li>
+                        <strong>CNN Travel</strong>
+                        <p><a href="https://www.cnn.com/travel/article/useful-travel-websites-bt/index.html" target="_blank" rel="noopener noreferrer">10 most useful travel websites</a>: “Never let another frequent-flier mile expire.”</p>
+                    </li>
+                    <li>
+                        <strong>Bloomberg</strong>
+                        <p><a href="https://www.bloomberg.com/news/articles/2016-12-13/how-to-make-sure-you-get-frequent-flier-status-next-year" target="_blank" rel="noopener noreferrer">A Travel Hacker's Guide to Elite Status in 2017 and Beyond</a>: “Don’t let good points and miles go to waste.”</p>
+                    </li>
+                    <li>
+                        <strong>Chicago Tribune</strong>
+                        <p><a href="https://www.chicagotribune.com/business/success/tca-how-to-make-rewards-programs-work-for-you-20180924-story.html" target="_blank" rel="noopener noreferrer">How to make rewards programs work for you</a>: “If you have multiple loyalty accounts and have trouble juggling all the details, try AwardWallet.com.”</p>
+                    </li>
+                    <li>
+                        <strong>Forbes</strong>
+                        <p><a href="https://www.forbes.com/advisor/donna-fuscaldo/2019/02/04/best-apps-to-track-credit-card-rewards/" target="_blank" rel="noopener noreferrer">The 4 Best Apps To Track Credit Card Rewards</a>: “In addition to tracking rewards points, AwardWallet enables customers to view a chart of rewards balances over a period and export that information into Excel.”</p>
+                    </li>
+                    <li>
+                        <strong>Business Insider</strong>
+                        <p><a href="https://www.businessinsider.com/personal-finance/many-credit-cards-how-i-keep-track-of-them-all-2019-7" target="_blank" rel="noopener noreferrer">I have almost 30 credit cards — here's how I keep track of pay dates, benefits, and rewards balances</a>: “AwardWallet is an indispensable resource for anyone with frequent flyer miles, hotel points, or any other kind of rewards currency.”</p>
+                    </li>
+                    <li>
+                        <strong>Condé Nast</strong>
+                        <p><a href="https://www.cntraveler.com/story/how-to-plan-an-entire-vacation-in-a-day" target="_blank" rel="noopener noreferrer">How to Plan an Entire Vacation in a Day</a>: “Try AwardWallet, which stores all of your frequent flier miles, loyalty program info, and account balances in one place.”</p>
+                    </li>
+                    <li>
+                        <strong>BuzzFeed</strong>
+                        <p><a href="https://www.buzzfeed.com/danoshinsky/the-beginners-guide-to-frequent-flier-miles" target="_blank" rel="noopener noreferrer">The Beginner's Guide To Becoming A Frequent Flier</a>: “AwardWallet is this amazing tool to help you keep track of all your points.”</p>
+                    </li>
+                    <li>
+                        <strong>The New York Times</strong>
+                        <p><a href="https://www.nytimes.com/2016/04/17/travel/frequent-flyer-hotel-rewards.html" target="_blank" rel="noopener noreferrer">How to Earn Miles and Points Without Leaving Home</a>: “Your points are worthless if they expire. Keep track of all your loyalty program points in one place with sites such as AwardWallet.”</p>
+                    </li>
+                    <li>
+                        <strong>BBC</strong>
+                        <p><a href="http://www.bbc.com/travel/story/20110831-tracking-travel-rewards" target="_blank" rel="noopener noreferrer">Tracking travel rewards</a>: “Most comprehensive and internationally-minded rewards tracker”</p>
+                        <p><a href="http://www.bbc.com/travel/story/20120619-five-best-air-travel-apps" target="_blank" rel="noopener noreferrer">Five best air travel apps</a>: “Best for having your frequent flier account balances within easy reach for spontaneous upgrades.”</p>
+                    </li>
+                    <li>
+                        <strong>Reuters</strong>
+                        <p><a href="https://www.reuters.com/article/us-column-yourmoney-rewardprograms/a-better-way-to-monitor-reward-programs-idUSBRE85Q14N20120627" target="_blank" rel="noopener noreferrer">A better way to monitor reward programs</a>: “For those who rack up a vast array of rewards from airlines, hotels, drugstores and gas stations, aggregator sites can be one-stop shops.”</p>
+                    </li>
+                </ul>
+            </div>
+            <div>
+                <ul>
+                    <li>
+                        <strong>U.S. News</strong>
+                        <p><a href="https://creditcards.usnews.com/articles/travel-money-survey" target="_blank" rel="noopener noreferrer">Are You Missing Out on Lucrative Credit Card Rewards</a>: “Check out websites, such as AwardWallet or Points.com, that help you keep track of all your rewards programs.”</p>
+                        <p><a href="https://money.usnews.com/money/personal-finance/articles/2011/10/17/5-online-tools-for-managing-airline-miles" target="_blank" rel="noopener noreferrer">Online Tools for Managing Airline Miles</a>: “Kelly says he uses AwardWallet because it syncs with hundreds of rewards programs (even retail stores and credit cards, in addition to travel programs) and because it's one of the oldest programs (founded in 2004, which in Internet years shows some staying power).”</p>
+                    </li>
+                    <li>
+                        <strong>CBS News</strong>
+                        <p><a href="https://www.cbsnews.com/news/track-frequent-flyer-miles-avoid-expired-rewards/" target="_blank" rel="noopener noreferrer">Track Frequent Flyer Miles, Avoid Expired Rewards</a>: “AwardWallet is a Web site that manages all manner of travel programs in one place for you. It handles airline, hotel, rental car, dining, and shopping programs -- basically, if there's some sort of reward program, AwardWallet probably can track it for you.”</p>
+                    </li>
+                    <li>
+                        <strong>The Washington Post</strong>
+                        <p><a href="https://www.washingtonpost.com/lifestyle/style/airline-miles-and-points-must-dos/2012/09/07/8100da5c-f05f-11e1-892d-bc92fee603a7_story.html?utm_term=.2ecb56fc6147" target="_blank" rel="noopener noreferrer">Airline miles and points must-dos</a>: “When you have, say, 10 credit cards attached to mileage programs, you need a mileage manager. Kelly uses Award Wallet (awardwallet.com), a free service that tracks mileage balances and alerts you if miles are expiring.”</p>
+                    </li>
+                    <li>
+                        <strong>Los Angeles Times</strong>
+                        <p><a href="https://www.latimes.com/archives/la-xpm-2009-sep-20-fi-flier20-story.html" target="_blank" rel="noopener noreferrer">First Person</a>“The main page neatly shows all your accounts, with miles for each.”</p>
+                    </li>
+                    <li>
+                        <strong>The Philadelphia Inquirer</strong>
+                        <p><a href="https://www.inquirer.com/philly/living/travel/just-how-secure-are-your-travel-rewards-20180615.html" target="_blank" rel="noopener noreferrer">Just how secure are your travel rewards</a>: “She also is a fan of AwardWallet.com, which helps you track your points and miles and will notify you of withdrawals.”</p>
+                    </li>
+                    <li>
+                        <strong>The Wall Street Journal</strong>
+                        <p><a href="https://www.wsj.com/articles/SB10001424052748704222704574501453001798692" target="_blank" rel="noopener noreferrer">Air Rescue: Saving Miles From the Ax</a>: “AwardWallet.com is a free service that can track programs at airlines, hotels, car-rental companies”</p>
+                    </li>
+                    <li>
+                        <strong>USA Today</strong>
+                        <p><a href="https://www.usatoday.com/story/travel/advice/2019/04/19/hackers-cybersecurity-wi-fi/3506014002/" target="_blank" rel="noopener noreferrer">Hackers are trying to steal your vacation. Here's how to stop them</a>: ”Experts say you should change your passwords often and consider using a service like AwardWallet (awardwallet.com), which allows you to track all of your loyalty programs.”</p>
+                    </li>
+                    <li>
+                        <strong>Vox</strong>
+                        <p><a href="https://www.vox.com/personal-finance/2015/2/6/7952869/frequent-flyer-miles-points" target="_blank" rel="noopener noreferrer">4 frequent flier mile pro tips that anyone can use</a>: “One way to know when your miles are going to expire is to use a program like Awardwallet, which helps you track your miles for free.”</p>
+                    </li>
+                    <li>
+                        <strong>Vice</strong>
+                        <p><a href="https://news.vice.com/en_ca/article/zmy58x/how-to-maximize-loyalty-programs" target="_blank" rel="noopener noreferrer">How to maximize all those loyalty programs</a>: “And skip the Excel spreadsheet — Michael uses an app called AwardWallet to manage all his miles.”</p>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <h3>AwardWallet has also been covered on TV:</h3>
+        <div class="about__check-list">
+            <div>
+                <ul>
+                    <li><p><a href="https://vimeo.com/309126019" target="_blank" rel="noopener noreferrer">The Rachael Ray Show</a></p></li>
+                    <li><p><a href="https://vimeo.com/220740101" target="_blank" rel="noopener noreferrer">Today Show @ NBC News</a></p></li>
+                    <li><p><a href="https://vimeo.com/209911476" target="_blank" rel="noopener noreferrer">Mornings with Maria</a></p></li>
+                </ul>
+            </div>
+            <div>
+                <ul>
+                    <li><p><a href="https://vimeo.com/208071339" target="_blank" rel="noopener noreferrer">ABC News Goodmorning America</a></p></li>
+                    <li><p><a href="https://vimeo.com/208071266" target="_blank" rel="noopener noreferrer">KTLA5</a></p></li>
+                    <li><p><a href="https://vimeo.com/208070491" target="_blank" rel="noopener noreferrer">ABC15</a></p></li>
+                </ul>
+            </div>
+            <div>
+                <ul>
+                    <li><p><a href="https://vimeo.com/208070386" target="_blank" rel="noopener noreferrer">MSNBC Today’s Money</a></p></li>
+                    <li><p><a href="https://vimeo.com/208070244" target="_blank" rel="noopener noreferrer">NBC News Today's Travel</a></p></li>
+                    <li><p><a href="https://vimeo.com/208069900" target="_blank" rel="noopener noreferrer">Fox and Friends</a></p></li>
+                </ul>
+            </div>
+            <div>
+                <ul>
+                    <li><p><a href="https://vimeo.com/261141033" target="_blank" rel="noopener noreferrer">Megyn Kelly Today</a></p></li>
+                </ul>
+            </div>
+        </div>
+    </section>
+    <section id="leadership-team">
+        <h2>Our Leadership Team</h2>
+        <div class="about__leadership">
+            <div class="about__leadership-block">
+                <div class="about__leadership-top">
+                    <div class="about__leadership-prev">
+                        <div class="manager-thumb alexi"></div>
+                    </div>
+                    <div class="about__leadership-person">
+                        <h3>Alexi Vereschaga,</h3>
+                        <p><span>Founder and CEO</span></p>
+                    </div>
+                </div>
+                <div class="about__leadership-text">
+                    <p>Alexi is the co-founder and leads the development efforts of AwardWallet, which he launched in 2004. From its inception, Alexi has been AwardWallet’s product visionary. He is focused on continual improvement of AwardWallet to meet the needs of its {{ members[1] }}+ global members and to respond to the evolving rewards program landscape, which is reflected in AwardWallet’s recognized leadership in rewards management.</p><p>Prior to the creation of AwardWallet, Alexi worked in global enterprise IT Services organizations including, Aelita Software, Quest Software, and Dell. Over 16 years his responsibilities expanded from web development and support to technical account management and systems consulting. Throughout this time Alexi worked with clients including PepsiCo, Inc., Morgan Stanley, ExxonMobil, Fidelity Investments, United Technology, and Publix.</p><p>Alexi attended Utah State University where he played NCAA Division I Men’s College Tennis. He graduated Magna Cum Laude with a B.S. in Information Systems Management from Franklin University. Alexi further received a Master of Information Systems Management from DeVry University. Alexi and his wife have four kids; his hobbies include tennis, kiteboarding, snowboarding, and playing guitar.</p>
+                </div>
+            </div>
+            <div class="about__leadership-block">
+                <div class="about__leadership-top">
+                    <div class="about__leadership-prev">
+                        <div class="manager-thumb erik"></div>
+                    </div>
+                    <div class="about__leadership-person">
+                        <h3>Erik Paquet,</h3>
+                        <p><span>Director of Marketing</span></p>
+                    </div>
+                </div>
+                <div class="about__leadership-text">
+                    <p>Erik joined the AwardWallet team in 2018. He attended the University of Michigan where he earned a Bachelor of Arts in Economics. During school, he discovered points and miles as a way to fund frequent international trips and a semester abroad in Santiago Chile.</p><p>Following school, he began traveling full time and co-founded Abroaders.com, a startup that helps travelers earn and redeem rewards points for maximum value.</p><p>Erik first connected with AwardWallet while looking for a tool to manage complex award bookings for clients. With the help of the AwardWallet booking platform, he and his team have redeemed over 49 million points for 2.2 million in airfare savings.</p><p>Erik lives in Austin, Texas with his wife Gabriela. When not obsessing about points and miles, his hobbies include cooking, photography, learning languages, exploring national parks, watching Michigan athletics (Go Blue!) and of course, travel.</p>
+                </div>
+            </div>
+        </div>
+        <div class="about__leadership">
+            <div class="about__leadership-block">
+                <div class="about__leadership-top">
+                    <div class="about__leadership-prev">
+                        <div class="manager-thumb person-jt"></div>
+                    </div>
+                    <div class="about__leadership-person">
+                        <h3>JT Genter,</h3>
+                        <p><span>Editor-in-Chief</span></p>
+                    </div>
+                </div>
+                <div class="about__leadership-text">
+
+                    <p>JT is AwardWallet’s Editor-In-Chief. JT originally joined the AwardWallet team in early 2020 as a freelance editor and writer, but he has been part of the points and miles ecosystem since 2014. Looking for a way to reduce the cost of a trip to China (back when it was expensive to fly to China), he found he could sign up for just one credit card to get enough miles to book the flights.</p>
+                    <p>That experience prompted him to dive headfirst into the world of airline, hotel, and credit card points and miles. After working for a decade as a tax accountant, JT focused his analytical skills on writing about points, miles, and credit cards. He started contributing at The Points Guy in 2015 and published over 2,000 articles on the site.</p>
+                    <p>In June 2017, Katie and JT sold or donated nearly all of their possessions to become digital nomads, proving firsthand how points, miles, and credit card rewards can drastically reduce the cost of travel. JT has logged over 1.6 million miles on 96 airlines, visited 64 countries, and maintains elite status with 8 airlines (including American Executive Platinum, Air Canada Aeroplan 75K, Asiana Diamond, and Malaysia Gold) and 6 hotel loyalty programs (including IHG Diamond, Hilton Diamond, and Marriott Titanium Elite)</p>
+
+                </div>
+            </div>
+            <div class="about__leadership-block">
+                <div class="about__leadership-top">
+                    <div class="about__leadership-prev">
+                        <div class="manager-thumb person-jess"></div>
+                    </div>
+                    <div class="about__leadership-person">
+                        <h3>Jess Farley,</h3>
+                        <p><span>Chief Compliance Officer</span></p>
+                    </div>
+                </div>
+                <div class="about__leadership-text">
+
+                    <p>Jess joined the AwardWallet team in early 2016 as a member of the writing team. Hailing from New Zealand, Jess discovered points and miles while traveling full-time with his wife and son, utilizing rewards to reduce travel costs and relying on credit card perks to make travel more comfortable.</p>
+                    <p>His extensive knowledge of frequent flyer programs was acquired through hands-on experience, research, and many hours behind the keyboard helping design and implement AwardWallet's backend tools and compliance systems.</p>
+                    <p>When not immersed in his work at AwardWallet, you can find him running trails, cooking up a storm, wakeboarding, and traveling with his family. Jess is currently based in the idyllic Sunshine Coast in Queensland, Australia.</p>
+
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+
+
+<style>
+    {% if is_granted('SITE_MOBILE_AREA') %}
+        @font-face {
+            font-family: 'Open Sans', sans-serif;
+            src: url('https://awardwallet.com/assets/awardwalletnewdesign/font/opensans-regular-webfont.eot?v=2');
+            src: url('https://awardwallet.com/assets/awardwalletnewdesign/font/opensans-regular-webfont.eot?#iefix') format('embedded-opentype'),
+                 url('https://awardwallet.com/assets/awardwalletnewdesign/font/opensans-regular-webfont.woff?v=2') format('woff'),
+                 url('https://awardwallet.com/assets/awardwalletnewdesign/font/opensans-regular-webfont.ttf?v=2') format('truetype');
+            font-weight: normal;
+            font-style: normal;
+        }
+
+        @font-face {
+            font-family: 'Open Sans', sans-serif;
+            src: url('https://awardwallet.com/assets/awardwalletnewdesign/font/opensans-bold-webfont.eot?v=2');
+            src: url('https://awardwallet.com/assets/awardwalletnewdesign/font/opensans-bold-webfont.eot?#iefix') format('embedded-opentype'),
+                 url('https://awardwallet.com/assets/awardwalletnewdesign/font/opensans-bold-webfont.woff?v=2') format('woff'),
+                 url('https://awardwallet.com/assets/awardwalletnewdesign/font/opensans-bold-webfont.ttf?v=2') format('truetype');
+            font-weight: 700;
+            font-style: normal;
+        }
+
+        @font-face {
+            font-family: 'Neo Sans Pro Bold';
+            src: url('https://awardwallet.com/assets/awardwalletnewdesign/font/NeoSansPro-Bold.eot');
+            src: url('https://awardwallet.com/assets/awardwalletnewdesign/font/NeoSansPro-Bold.eot?#iefix') format('embedded-opentype'),
+                 url('https://awardwallet.com/assets/awardwalletnewdesign/font/NeoSansPro-Bold.woff') format('woff'),
+                 url('https://awardwallet.com/assets/awardwalletnewdesign/font/NeoSansPro-Bold.ttf') format('truetype');
+            font-weight: normal;
+            font-style: normal;
+        }
+
+        body,html{
+            margin: 0;
+            padding: 0;
+            font-family: 'Open Sans', sans-serif;
+        }
+
+        * {
+            margin:0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        .about i[class^="icon-"],
+        .about i[class*=" icon-"] {
+          display: inline-block;
+          text-align: center;
+          text-decoration: none;
+          vertical-align: middle;
+          background-image: url('https://awardwallet.com/assets/awardwalletnewdesign/img/sprite@2x.png');
+          background-size: 800px 600px;
+          background-repeat: no-repeat;
+        }
+
+        .dark-mode i[class^="icon-"],
+        .dark-mode i[class*=" icon-"] {
+          background-image: url('https://awardwallet.com/assets/awardwalletnewdesign/img/sprite-dark@2x.png');
+          background-size: 800px 600px;
+          background-repeat: no-repeat;
+        }
+
+        .icon-white-check-b {
+            width: 17px;
+            height: 13px;
+            background-position: -489px -149px;
+        }
+
+        .icon-blue-more {
+            width: 19px;
+            height: 19px;
+            background-position: -565px -99px;
+        }
+
+        .main-blk {
+            font-family: 'Open Sans', sans-serif;
+        }
+
+        h1,h2,h3,h4,h5,h6{
+            font-weight: normal;
+        }
+
+        ul,li{
+            margin: 0;
+            padding: 0;
+        }
+
+        .about {
+          padding: 0 15px 20px;
+          background: #ffffff;
+          color: #535457;
+          overflow-x: hidden;
+        }
+        .dark-mode .about {
+          background: #141414;
+          color: #ffffff;
+        }
+        .about h2 {
+          text-align: center;
+          font-size: 30px;
+          padding: 50px 0 30px;
+          line-height: 1.2;
+          color: #125da3;
+        }
+        .dark-mode .about h2 {
+          color: #fff;
+        }
+        .about h3 {
+          font-size: 25px;
+          line-height: 1.3;
+          margin-bottom: 10px;
+          text-align: center;
+        }
+        .about p {
+          font-size: 16px;
+          line-height: 28px;
+          color: #535457;
+        }
+        .dark-mode .about p {
+          color: #ffffff;
+        }
+        .about p a {
+          text-decoration: none;
+          font-weight: bold;
+          color: #4684c4;
+        }
+        .dark-mode .about p a {
+          color: #0984ff;
+        }
+        .about p a:hover {
+          text-decoration: underline;
+        }
+        .about img {
+          vertical-align: top;
+          max-width: 100%;
+        }
+        .about__main {
+          margin: 0 -15px;
+          position: relative;
+        }
+        .about__main img {
+          width: 100%;
+        }
+        .about__main h1 {
+          color: #ffffff;
+          font-weight: normal;
+          text-align: center;
+          left: 0;
+          right: 0;
+          margin: 0;
+          font-size: 30px;
+          bottom: 15px;
+          position: absolute;
+        }
+        .about__tags {
+          display: none !important;
+        }
+        .about__info {
+          display: -webkit-flex;
+          display: -ms-flexbox;
+          display: -ms-flex;
+          display: flex;
+          -webkit-justify-content: space-between;
+          -ms-justify-content: space-between;
+          justify-content: space-between;
+          margin-top: 30px;
+          -webkit-flex-flow: column-reverse nowrap;
+          -ms-flex-flow: column-reverse nowrap;
+          flex-flow: column-reverse nowrap;
+        }
+        .about__info > p {
+          flex: auto;
+        }
+        .about__info-stats {
+          display: -webkit-inline-flex;
+          display: -ms-inline-flexbox;
+          display: -ms-inline-flex;
+          display: inline-flex;
+          width: 100%;
+         -webkit-justify-content: center;
+         -ms-justify-content: center;
+         justify-content: center;
+         margin-bottom: 30px;
+        }
+        .about__info-stats > div {
+          width: 90px;
+          height: 90px;
+          margin-left: 12px;
+          min-width: 1px;
+          border: 5px solid;
+          border-radius: 50%;
+          padding: 10px 15px 0;
+          display: -webkit-inline-flex;
+          display: -ms-inline-flexbox;
+          display: -ms-inline-flex;
+          display: inline-flex;
+          -webkit-flex-flow: column nowrap;
+          -ms-flex-flow: column nowrap;
+          flex-flow: column nowrap;
+          -webkit-justify-content: center;
+          -ms-justify-content: center;
+          justify-content: center;
+          -webkit-align-items: center;
+          -ms-align-items: center;
+          align-items: center;
+          text-align: center;
+          border-color: #125da3;
+        }
+        .about__info-stats > div:first-child {
+          margin-left: 0;
+        }
+        .dark-mode .about__info-stats > div {
+          border-color: #1c6cc1;
+        }
+        .about__info-stats > div strong {
+          font-family: 'Neo Sans Pro Bold';
+          font-size: 20px;
+          line-height: 1;
+          letter-spacing: -1px;
+          color: #125da3;
+        }
+        .dark-mode .about__info-stats > div strong {
+          color: #1c6cc1;
+        }
+        .about__info-stats > div span {
+          display: block;
+          font-size: 14px;
+        }
+        .about__info-stats > div p {
+          font-size: 10px;
+          padding-top: 0;
+          line-height: 1;
+        }
+        .about__date {
+          font-family: 'Neo Sans Pro Bold';
+          font-size: 30px;
+          display: -webkit-inline-flex;
+          display: -ms-inline-flexbox;
+          display: -ms-inline-flex;
+          display: inline-flex;
+          -webkit-align-items: center;
+          -ms-align-items: center;
+          align-items: center;
+          /*padding: 8px 8px 6px;*/
+          line-height: 1;
+          /*border: 2px solid;*/
+          /*border-color: #125da3;*/
+          color: #125da3;
+        }
+        .dark-mode .about__date {
+          /*border-color: #1c6cc1;*/
+          color: #1c6cc1;
+        }
+        .about__history {
+          margin: 0 -15px;
+        }
+        .about__history-image {
+          position: relative;
+          /*display: -webkit-inline-flex;
+          display: -ms-inline-flexbox;
+          display: -ms-inline-flex;
+          display: inline-flex;
+          -webkit-align-items: center;
+          -ms-align-items: center;
+          align-items: center;*/
+        }
+        .about__history-image img {
+          width: 100%;
+        }
+        .about__history-image + div {
+          margin-left: 0;
+        }
+        .about__history-row {
+          /*display: -webkit-flex;
+          display: -ms-flexbox;
+          display: -ms-flex;
+          display: flex;
+          -webkit-flex-flow: column nowrap;
+          -ms-flex-flow: column nowrap;
+          flex-flow: column nowrap;*/
+        }
+        .about__history-row.wide {
+          /*-webkit-flex-flow: row wrap;
+          -ms-flex-flow: row wrap;
+          flex-flow: row wrap;*/
+        }
+        .about__history-row.wide .about__history-text {
+          width: 100%;
+          flex: auto;
+        }
+        .about__history-row.wide .about__history-text + div {
+          margin-left: 0;
+        }
+        .about__history-row.wide .about__history-image {
+          margin-top: 20px;
+        }
+        .about__history-row:not(:first-child) {
+          margin-top: 0;
+        }
+        .about__history-row:nth-child(odd) > div {
+          background: #e9eaeb;
+        }
+        .dark-mode .about__history-row:nth-child(odd) > div {
+          background: #1c1c1e;
+        }
+        .about__history-row-item {
+          /*display: -webkit-flex;
+          display: -ms-flexbox;
+          display: -ms-flex;
+          display: flex;
+          -webkit-flex-flow: column nowrap;
+          -ms-flex-flow: column nowrap;
+          flex-flow: column nowrap;*/
+        }
+        .about__history-text {
+          flex: 1;
+          padding: 15px;
+          /*display: -webkit-inline-flex;
+          display: -ms-inline-flexbox;
+          display: -ms-inline-flex;
+          display: inline-flex;
+          -webkit-align-items: center;
+          -ms-align-items: center;
+          align-items: center;*/
+        }
+        .about__history-text {
+          padding: 20px 15px;
+          /*-webkit-order: -1;
+          -ms-order: -1;
+          order: -1;*/
+          margin: 0 !important;
+        }
+        .about__history-text + .about__history-text {
+          padding-top: 0;
+        }
+        .about__history-text + div {
+          margin: 0;
+        }
+        .about__history-text > div {
+          display: block;
+        }
+        .about__history-text p:not(:first-child) {
+          margin: 15px 0 0 0;
+        }
+        .about__history-note {
+          position: absolute;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          font-size: 13px;
+          text-align: right;
+          padding: 8px 10px;
+          background: #e9eaeb;
+          color: #535457;
+        }
+        .dark-mode .about__history-note {
+          color: #ffffff;
+          background: #1c1c1e;
+        }
+        .about__facts {
+          display: -webkit-flex;
+          display: -ms-flexbox;
+          display: -ms-flex;
+          display: flex;
+          -webkit-justify-content: space-between;
+          -ms-justify-content: space-between;
+          justify-content: space-between;
+          -webkit-flex-flow: row wrap;
+          -ms-flex-flow: row wrap;
+          flex-flow: row wrap;
+          margin: -8px -23px;
+        }
+        .about__facts-block {
+          width: calc(50% - 16px);
+          display: -webkit-inline-flex;
+          display: -ms-inline-flexbox;
+          display: -ms-inline-flex;
+          display: inline-flex;
+          -webkit-justify-content: center;
+          -ms-justify-content: center;
+          justify-content: center;
+          -webkit-align-items: center;
+          -ms-align-items: center;
+          align-items: center;
+          text-align: center;
+          margin: 8px;
+          position: relative;
+          padding: 30px 15px;
+          background: #e9eaeb;
+        }
+        .dark-mode .about__facts-block {
+          background: #1c1c1e;
+        }
+        .about__facts-block:nth-child(odd) .about__facts-icon {
+          left: auto;
+          right: 0;
+        }
+        .about__facts-icon {
+          position: absolute;
+          left: 0;
+          top: 0;
+          width: 25px;
+          height: 25px;
+          display: -webkit-inline-flex;
+          display: -ms-inline-flexbox;
+          display: -ms-inline-flex;
+          display: inline-flex;
+          -webkit-align-items: center;
+          -ms-align-items: center;
+          align-items: center;
+          -webkit-justify-content: center;
+          -ms-justify-content: center;
+          justify-content: center;
+          background: #4684c4;
+        }
+        .dark-mode .about__facts-icon {
+          background: #0984ff;
+        }
+        .about__list {
+          display: -webkit-flex;
+          display: -ms-flexbox;
+          display: -ms-flex;
+          display: flex;
+          -webkit-flex-flow: row wrap;
+          -ms-flex-flow: row wrap;
+          flex-flow: row wrap;
+          -webkit-justify-content: space-between;
+          -ms-justify-content: space-between;
+          justify-content: space-between;
+           margin: 15px -15px -8px;
+        }
+        .about__list-block {
+          margin: 8px 0;
+          position: relative;
+          padding: 25px 15px;
+          text-align: center;
+          width: 100%;
+          background: #e9eaeb;
+        }
+        .about__list-block.wide {
+          width: 100%;
+        }
+        .dark-mode .about__list-block {
+          background: #1c1c1e;
+        }
+        .about__list-block.has-border {
+          border-bottom: 10px solid;
+        }
+        .about__list-block.has-border h3 {
+          padding: 0 20px;
+        }
+        .about__list-block.has-border.blue {
+          border-bottom-color: #5c9fe6;
+        }
+        .dark-mode .about__list-block.has-border.blue {
+          border-bottom-color: #0984ff;
+        }
+        .about__list-block.has-border.green {
+          border-bottom-color: #4dbfa2;
+        }
+        .dark-mode .about__list-block.has-border.green {
+          border-bottom-color: #30d178;
+        }
+        .about__list-block.has-border.red {
+          border-bottom-color: #e73e70;
+        }
+        .dark-mode .about__list-block.has-border.red {
+          border-bottom-color: #ea3c48;
+        }
+        .about__list-block.blue {
+          color: #125da3;
+        }
+        .dark-mode .about__list-block.blue {
+          color: #0984ff;
+        }
+        .about__list-block.green {
+          color: #4dbfa2;
+        }
+        .dark-mode .about__list-block.green {
+          color: #30d178;
+        }
+        .about__list-block.red {
+          color: #cc3d5e;
+        }
+        .dark-mode .about__list-block.red {
+          color: #ea3c48;
+        }
+        .about__list-more {
+          display: inline-block;
+          margin-top: 20px;
+        }
+        .about__row {
+          display: block;
+        }
+        .about__row p:not(:first-child) {
+          padding-top: 15px;
+        }
+        .about__row-thumb {
+          display: -webkit-flex;
+          text-align: center;
+          display: -ms-flexbox;
+          display: -ms-flex;
+          display: flex;
+          -webkit-justify-content: center;
+          -ms-justify-content: center;
+          justify-content: center;
+          min-width: 1px;
+          margin: 0;
+          padding-bottom: 15px;
+        }
+        .about__row-thumb > img {
+          display: inline-block;
+          margin: 0 10px;
+        }
+        .about__row-thumb > div {
+          padding: 0;
+        }
+        .about__row-thumb > div img {
+          display: block;
+          margin: 0 auto;
+        }
+        .about__row-thumb > div:first-child {
+          padding-top: 0;
+          padding-right: 15px;
+        }
+        .about__row-thumb > div:last-child {
+          padding-bottom: 0;
+          padding-left: 15px;
+        }
+        .about__row-thumb > div:not(:first-child) {
+          border-left: 1px solid;
+          border-left-color: #e9eaeb;
+        }
+        .dark-mode .about__row-thumb > div:not(:first-child) {
+          border-left-color: #1c1c1e;
+        }
+        .about__row-text {
+          flex: 1;
+        }
+        .about__check-list {
+          display: block;
+          margin: 0;
+        }
+        .about__check-list > div {
+          width: 100%;
+          margin: 0;
+        }
+        .about__check-list ul {
+          margin: 0;
+        }
+        .about__check-list ul li {
+          list-style: none;
+          font-size: 16px;
+          line-height: 28px;
+          position: relative;
+          display: block;
+          padding-left: 30px;
+          margin-top: 10px;
+        }
+        .about__check-list ul li:before {
+          position: absolute;
+          content: '';
+          left: 0;
+          top: 8px;
+          width: 13px;
+          height: 13px;
+          background-position: -23px -19px;
+          background-image: url('https://awardwallet.com/assets/awardwalletnewdesign/img/sprite@2x.png');
+          background-size: 800px 600px;
+          background-repeat: no-repeat;
+        }
+        .dark-mode .about__check-list ul li:before {
+          background-image: url('https://awardwallet.com/assets/awardwalletnewdesign/img/sprite-dark@2x.png');
+          background-size: 800px 600px;
+          background-repeat: no-repeat;
+        }
+        .about__leadership {
+          display: block;
+          margin: -20px -15px -60px;
+        }
+        .about__leadership-top {
+          display: -webkit-flex;
+          display: -ms-flexbox;
+          display: -ms-flex;
+          display: flex;
+          -webkit-align-items: center;
+          -ms-align-items: center;
+          align-items: center;
+          padding-left: 15px;
+        }
+        .about__leadership-prev {
+          position: relative;
+          margin: 0 0 -20px 0;
+          top: -20px;
+        }
+        .about__leadership-block {
+          width: 100%;
+          margin: 40px 0;
+          border-radius: 0;
+          background: #e9eaeb;
+        }
+        .dark-mode .about__leadership-block {
+          background: #1c1c1e;
+        }
+        .about__leadership-text {
+          padding: 15px 20px;
+        }
+        .about__leadership-text p:not(:first-child) {
+          padding-top: 10px;
+        }
+        .about__leadership-person {
+          flex: 1;
+          padding-left: 25px;
+        }
+        .about__leadership-person h3 {
+          text-align: left;
+          margin: 0;
+          color: #125da3;
+        }
+        .dark-mode .about__leadership-person h3 {
+          color: #0984ff;
+        }
+
+    {% endif %}
+    .manager-thumb {
+        display: inline-block;
+        vertical-align: top;
+        width: 80px;
+        height: 80px;
+    }
+    .manager-thumb.alexi {
+        background: url(https://awardwallet.com/assets/awardwalletnewdesign/img/alexi_circle.png) no-repeat;
+        background-size: 80px 80px;
+    }
+    .manager-thumb.erik {
+        background: url(https://awardwallet.com/assets/awardwalletnewdesign/img/erik_circle.png) no-repeat;
+        background-size: 80px 80px;
+    }
+
+    .manager-thumb.person-jess,
+    .manager-thumb.person-jt {
+        background-size: 120px 120px !important;
+        border-radius: 50%;
+    }
+    .manager-thumb.person-jess {
+        background: url(https://dtwuzpz2q0bmy.cloudfront.net/blog/wp-content/uploads/2019/08/Jess-Farley-Profile.jpg) no-repeat;
+    }
+    .manager-thumb.person-jt {
+        background: url(https://dtwuzpz2q0bmy.cloudfront.net/blog/wp-content/uploads/2020/03/JTGenter.jpg) no-repeat;
+    }
+    @media (-webkit-min-device-pixel-ratio: 2), (min--moz-device-pixel-ratio: 2), (-o-min-device-pixel-ratio: 2/1), (min-resolution: 2dppx) {
+        .manager-thumb.alexi {
+            background-image: url("https://awardwallet.com/assets/awardwalletnewdesign/img/alexi_circle@2x.png");
+            background-size: 80px 80px;
+        }
+        .manager-thumb.erik {
+            background-image: url("https://awardwallet.com/assets/awardwalletnewdesign/img/erik_circle@2x.png");
+            background-size: 80px 80px;
+        }
+    }
+
+    .about__leadership + .about__leadership {
+        margin-top: 8px;
+    }
+
+    @media (max-width: 1024px) {
+        .about__leadership + .about__leadership {
+            margin-top: 100px;
+        }
+    }
+</style>

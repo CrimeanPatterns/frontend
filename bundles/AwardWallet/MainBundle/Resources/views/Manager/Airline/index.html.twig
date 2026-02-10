@@ -1,0 +1,87 @@
+{% set title = "Airlines" %}
+{% extends '@AwardWalletMain/Manager/layout.html.twig' %}
+
+{% block content %}
+    <style type="text/css">
+        table {
+            border-collapse: collapse;
+        }
+        table td {
+            border: lightgray solid 1px;
+            padding: 7px;
+        }
+        thead td {
+            font-weight: bold;
+        }
+    </style>
+
+    <a href="{{ url('aw_manager_flightinfo_index') }}">FlightInfo</a> |
+    <a href="{{ url('aw_manager_airline_index') }}">Airlines</a>
+
+    <hr size="2"/>
+
+    <h1>
+        Airlines ({{ airlines|length }})
+        <small> &nbsp; <a href="{{ url('aw_manager_airline_add') }}">Add New</a></small>
+    </h1>
+
+    {% if airlines|length %}
+        <br/>
+        <table>
+            <thead>
+            <tr>
+                <td>Airline Name</td><td>IATA Code</td><td>ICAO Code</td><td>Update Date</td>
+                <td>Provider</td><td>Aliases</td>
+                <td></td>
+            </tr>
+            </thead>
+            <tbody>
+            {% for row in airlines %}
+                <tr>
+                    <td {% if row.doubleName is defined and row.doubleName and row.name %}bgcolor="red"{% endif %}><a href="{{ url('aw_manager_airline_view', {id: row.id}) }}">{{ row.name }}</a></td>
+                    <td {% if row.doubleIATA is defined and row.doubleIATA and row.IATA %}bgcolor="red"{% endif %}>{{ row.IATA }}</td>
+                    <td {% if row.doubleICAO is defined and row.doubleICAO and row.ICAO %}bgcolor="red"{% endif %}>{{ row.ICAO }}</td>
+                    <td>{{ row.updateDate }}</td>
+                    <td>{% if row.providerId %}<a href="/manager/edit.php?ID={{ row.providerId }}&Schema=Provider">{{ row.providerName }}</a>{% endif %}</td>
+                    <td>{% if row.aliasCnt %}{{ row.aliasCnt }}{% endif %}</td>
+                    <td><nobr>
+                        <a href="{{ url('aw_manager_airline_edit', {id: row.id}) }}">edit</a> &middot;
+                        <a href="{{ url('aw_manager_airline_delete', {id: row.id}) }}">delete</a> &middot;
+                        {#<a href="{{ url('aw_manager_airline_view', {id: row.id}) }}">aliases</a> &middot;#}
+                        <a href="{{ url('aw_manager_airline_alias_add', {id: row.id}) }}">add alias</a>
+                    </nobr></td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        Airlines not exists
+    {% endif %}
+
+    <br/>
+    <hr size="1"/>
+
+    <h1>Broken Providers</h1>
+
+    {% if providers|length %}
+        <br/>
+        <table>
+            <thead>
+            <tr>
+                <td>Provider Name</td><td>IATA Code</td>
+            </tr>
+            </thead>
+            <tbody>
+            {% for row in providers %}
+                <tr>
+                    <td>{% if row.providerId %}<a href="/manager/edit.php?ID={{ row.providerId }}&Schema=Provider">{{ row.providerName ?: '#' ~ row.providerId }}</a>{% endif %}</td>
+                    <td {% if row.IATA is defined and row.IATA %}bgcolor="red"{% endif %}>{{ row.IATA }}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        Broken Providers not exists
+    {% endif %}
+
+{% endblock %}

@@ -1,0 +1,166 @@
+services:
+    _defaults:
+        public: true
+
+    # Format Handlers
+
+    aw.timeline.format_handler.mobile:
+        public: true
+        class: AwardWallet\MainBundle\Timeline\Formatter\Mobile\FormatHandler
+        arguments:
+            - "@aw.api.versioning"
+            - "@aw.timeline.formatter.mobile.geofences_helper"
+            - "@aw.timeline.helper.alternative_flights"
+            - '@aw.security.token_storage'
+        lazy: true
+        tags:
+            - { name: timeline.format_handler, format: mobile }
+
+    # Formatters
+
+    AwardWallet\MainBundle\Timeline\Formatter\Mobile\Trip:
+        autowire: true
+        public: true
+        tags:
+            - { name: timeline.item_formatter, format: mobile, type: airtrip }
+            - { name: timeline.item_formatter, format: mobile, type: bustrip }
+            - { name: timeline.item_formatter, format: mobile, type: cruisetrip }
+            - { name: timeline.item_formatter, format: mobile, type: ferrytrip }
+            - { name: timeline.item_formatter, format: mobile, type: traintrip }
+            - { name: timeline.item_formatter, format: mobile, type: transfer }
+
+    aw.timeline.formatter.mobile.restaurant:
+        public: true
+        class: AwardWallet\MainBundle\Timeline\Formatter\Mobile\Restaurant
+        arguments:
+            - "@translator"
+            - "@aw.timeline.formatter.mobile.block_helper"
+            - "@router"
+            - '@AwardWallet\MainBundle\Globals\AccountList\Mapper\MobileFormatter\Desanitizer'
+            - '@AwardWallet\MainBundle\Service\ItineraryFormatter\PropertiesDB\PropertiesDB'
+        tags:
+            - { name: timeline.item_formatter, format: mobile, type: restaurant }
+
+    aw.timeline.formatter.mobile.plan_start:
+        public: true
+        class: AwardWallet\MainBundle\Timeline\Formatter\Mobile\PlanStart
+        arguments:
+            - "@aw.timeline.formatter.mobile.block_helper"
+        tags:
+            - { name: timeline.item_formatter, format: mobile, type: planstart }
+
+    aw.timeline.formatter.mobile.plan_end:
+        public: true
+        class: AwardWallet\MainBundle\Timeline\Formatter\Mobile\PlanEnd
+        arguments:
+            - "@translator"
+            - "@aw.timeline.formatter.mobile.block_helper"
+        tags:
+            - { name: timeline.item_formatter, format: mobile, type: planend }
+
+    aw.timeline.formatter.mobile.pickup:
+        public: true
+        class: AwardWallet\MainBundle\Timeline\Formatter\Mobile\Pickup
+        arguments:
+            - "@translator"
+            - "@aw.timeline.formatter.mobile.block_helper"
+            - '@AwardWallet\MainBundle\Globals\AccountList\Mapper\MobileFormatter\Desanitizer'
+            - '@AwardWallet\MainBundle\Service\ItineraryFormatter\PropertiesDB\PropertiesDB'
+        tags:
+            - { name: timeline.item_formatter, format: mobile, type: pickup }
+            - { name: timeline.item_formatter, format: mobile, type: taxi_ride }
+
+    aw.timeline.formatter.mobile.parking_start:
+        autowire: true
+        public: true
+        class: AwardWallet\MainBundle\Timeline\Formatter\Mobile\ParkingStart
+        tags:
+            - { name: timeline.item_formatter, format: mobile, type: parkingstart }
+
+    aw.timeline.formatter.mobile.parking_end:
+        autowire: true
+        public: true
+        class: AwardWallet\MainBundle\Timeline\Formatter\Mobile\ParkingEnd
+        tags:
+            - { name: timeline.item_formatter, format: mobile, type: parkingend }
+
+    AwardWallet\MainBundle\Timeline\Formatter\Mobile\ParkingStart:
+        autowire: true
+
+    AwardWallet\MainBundle\Timeline\Formatter\Mobile\Layover:
+        autowire: true
+        tags:
+            - { name: timeline.item_formatter, format: mobile, type: layover }
+
+    AwardWallet\MainBundle\Timeline\Formatter\Mobile\LayoverCruise:
+        autowire: true
+        tags:
+            - { name: timeline.item_formatter, format: mobile, type: layovercruise }
+
+    aw.timeline.formatter.mobile.dropoff:
+        public: true
+        class: AwardWallet\MainBundle\Timeline\Formatter\Mobile\Dropoff
+        arguments:
+            - "@translator"
+            - "@aw.timeline.formatter.mobile.block_helper"
+            - "@aw.timeline.formatter.mobile.pickup"
+        tags:
+            - { name: timeline.item_formatter, format: mobile, type: dropoff }
+
+    aw.timeline.formatter.mobile.date:
+        public: true
+        class: AwardWallet\MainBundle\Timeline\Formatter\Mobile\Date
+        arguments:
+            - "@aw.timeline.formatter.mobile.block_helper"
+        tags:
+            - { name: timeline.item_formatter, format: mobile, type: date }
+
+    aw.timeline.formatter.mobile.checkout:
+        public: true
+        class: AwardWallet\MainBundle\Timeline\Formatter\Mobile\Checkout
+        arguments:
+            - "@translator"
+            - "@aw.timeline.formatter.mobile.block_helper"
+            - "@aw.timeline.formatter.mobile.checkin"
+        tags:
+            - { name: timeline.item_formatter, format: mobile, type: checkout }
+
+    aw.timeline.formatter.mobile.checkin:
+        public: true
+        class: AwardWallet\MainBundle\Timeline\Formatter\Mobile\Checkin
+        arguments:
+            - "@translator"
+            - "@aw.timeline.formatter.mobile.block_helper"
+            - "@router"
+            - '@AwardWallet\MainBundle\Globals\AccountList\Mapper\MobileFormatter\Desanitizer'
+            - '@AwardWallet\MainBundle\Service\ItineraryFormatter\PropertiesDB\PropertiesDB'
+        tags:
+            - { name: timeline.item_formatter, format: mobile, type: checkin }
+
+    AwardWallet\MainBundle\Timeline\Formatter\Mobile\AlternativeFlightsFormatter:
+        autowire: true
+
+    # Helpers
+
+    AwardWallet\MainBundle\Timeline\Formatter\Mobile\BlockHelper:
+        autowire: true
+        public: true
+        arguments:
+            $host: "%host%"
+    aw.timeline.formatter.mobile.block_helper: '@AwardWallet\MainBundle\Timeline\Formatter\Mobile\BlockHelper'
+
+    aw.timeline.formatter.mobile.geofences_helper:
+        public: true
+        autowire: true
+        class: AwardWallet\MainBundle\Timeline\Formatter\Mobile\GeofencesHelper
+
+    aw.timeline.helper.mobile:
+        public: true
+        class: AwardWallet\MainBundle\Timeline\Formatter\Mobile\Helper
+        autowire: true
+
+    aw.timeline.helper.alternative_flights:
+        public: true
+        class: AwardWallet\MainBundle\Timeline\Formatter\Mobile\AlternativeFlightsUtils
+        arguments:
+            - '@AwardWallet\MainBundle\Globals\Localizer\LocalizeService'

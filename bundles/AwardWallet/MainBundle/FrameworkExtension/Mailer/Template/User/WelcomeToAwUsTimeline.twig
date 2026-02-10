@@ -1,0 +1,100 @@
+{% extends '@MailTemplate/Layout/base.twig' %}
+{% trans_default_domain "email" %}
+
+{% block subject %}{% apply spaceless %}{% autoescape false %}
+    AwardWallet Organizes All Your Travel Plans Automatically
+{% endautoescape %}{% endapply %}{% endblock subject %}
+
+{% block mailPreview %}
+    {% import '@MailTemplate/CommonMacro.twig' as commonMacro %}
+
+    {{ commonMacro.emailPreview('Check Out Your Personalized Travel Timeline') }}
+{% endblock mailPreview %}
+
+{% block restore_row %}{% endblock restore_row %}
+
+{% block content %}
+    {% import '@MailTemplate/CommonMacro.twig' as commonMacro %}
+
+    <div style="padding: 0 10px;">
+        {{ commonMacro.link(
+            'https://awardwallet.com/blog/track-travel-plans-awardwallet-timeline/?utm_source=aw&utm_medium=email_new-us&awid=aw&mid=email_new-us&rkbtyn=' ~ user.refcode,
+            'All of Your Travel in One Place',
+            {
+                'color': '#186db6',
+                'font-size': '24px',
+                'line-height': '30px',
+                'text-decoration': 'none',
+                'font-weight': 'normal'
+            }
+        ) }}
+        {{ commonMacro.offerRemark(_context) }}
+        {% set paragraphStyles = {
+            'font-size': '14px',
+            'color': '#535457',
+            'line-height': '18px'
+        } %}
+
+        {{ commonMacro.paragraph(
+            'Hey ' ~ user.firstname ~ ',', _context, {}, paragraphStyles
+        ) }}
+        {{ commonMacro.paragraph(
+            'Did you know AwardWallet can automatically import your travel plans and organize them in a secure place for easy reference?', _context, {}, paragraphStyles
+        ) }}
+        {{ commonMacro.paragraph(
+            'Every AwardWallet member has a secure, personalized travel timeline which shows all of your upcoming reservations. If you are already tracking the loyalty account you used to book your trip, AwardWallet will automatically add the details to '
+            ~ commonMacro.link(
+                'https://awardwallet.com/timeline/?utm_source=aw&utm_medium=email_new-us&awid=aw&mid=email_new-us&rkbtyn=' ~ user.refcode,
+                'your timeline',
+                {'font-size': '14px', 'line-height': '18px'}
+            ) ~
+            '.',
+            _context,
+            {
+                'escape': false,
+            },
+            paragraphStyles
+        ) }}
+        {{ commonMacro.paragraph(
+            'And if you\'re missing a trip, there are three additional ways to add travel plans to your timeline:', _context, {}, paragraphStyles
+        ) }}
+
+        {% set listStyles = 'font-size: 14px; color: #535457; line-height: 22px' %}
+        <ol>
+            <li style="{{ listStyles }}">
+                The best (and easiest) way to import your trips is to grant AwardWallet access to the email account where
+                you receive travel itineraries, confirmations, and receipts. Click here to
+                {{ commonMacro.link(
+                    'https://awardwallet.com/mailboxes/?utm_source=aw&utm_medium=email_new-us&awid=aw&mid=email_new-us&rkbtyn=' ~ user.refcode,
+                    'link your mailbox',
+                    {'font-size': '14px'}
+                ) }}.
+            </li>
+            <li style="{{ listStyles }}">
+                If you prefer to manually add travel plans, you can do that by forwarding travel confirmations to your personal AwardWallet travel inbox. Here's the email we set up for your account:
+                {{ commonMacro.link(
+                    'mailto:' ~ user.username ~ '@email.AwardWallet.com',
+                    user.username ~ '@email.AwardWallet&#8203;.com',
+                    {'line-height': '22px'},
+                    {escape: false}
+                ) }}.
+            </li>
+            <li style="{{ listStyles }}">
+                Lastly, you can add a travel reservation by choosing the associated loyalty program and entering your confirmation number. Or in rare cases where we can't find your trip, you can enter the details manually.
+            </li>
+        </ol>
+
+        {{ commonMacro.paragraph(
+            'Click below to check out our guide to tracking your travel plans with AwardWallet.', _context, {}, paragraphStyles
+        ) }}
+
+        {{ commonMacro.button(
+            'Learn more',
+            'https://awardwallet.com/blog/track-travel-plans-awardwallet-timeline/?utm_source=aw&utm_medium=email_new-us&awid=aw&mid=email_new-us&rkbtyn=' ~ user.refcode,
+            {
+                'padding': '0 20px',
+                'margin': '15px 0'
+            }
+        ) }}
+    </div>
+{% endblock content %}

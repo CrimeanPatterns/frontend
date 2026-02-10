@@ -1,0 +1,201 @@
+{% extends '@MailTemplate/Layout/base.twig' %}
+{% trans_default_domain "email" %}
+
+{% block subject %}{% apply spaceless %}{% autoescape false %}
+    {{ 'order-confirmation.subject'|trans({
+        '%sitename%': merchant is null ? constant('SITE_NAME') : merchant.serviceName,
+        '%orderId%': cart.cartId
+    }, 'email', lang)|desc('%sitename% Order ID: %orderId%') }}
+{% endautoescape %}{% endapply %}{% endblock subject %}
+
+{% block headerLogo %}
+    {% if merchant is not null %}
+        {% import '@MailTemplate/CommonMacro.twig' as commonMacro %}
+        {{ commonMacro.bookerLogo(merchant, _context) }}
+    {% else %}
+        {{ parent() }}
+    {% endif %}
+{% endblock %}
+
+{% block content %}
+    {% import '@MailTemplate/CommonMacro.twig' as commonMacro %}
+    {% import '@MailTemplate/CartMacro.twig' as cartMacro %}
+
+    <span style="color:#535457;">
+        {{ 'thank-you'|trans({}, 'email', lang)|desc('Thank You!') }}
+        {% if cart.paymenttype is not empty %}
+            <br>
+            {% if cart.getScheduledTotal() > 0 and cart.getImmediateAmount() == 0 %} {# disabled, https://redmine.awardwallet.com/issues/17544 #}
+                {{ 'successfully-scheduled'|trans({
+                    '%amount%': '<b style="color:#3d424d;">' ~ cart.getScheduledTotal()|formatCurrency("USD", true, locale) ~ '</b>',
+                    '%order%': '<b style="color:#3d424d;">Order ID: ' ~ cart.cartId ~ '</b>'
+                }, 'email', lang)|desc('You have successfully scheduled to pay %amount% for %order%')|raw }},
+            {% else %}
+                {{ 'successfully-paid'|trans({
+                    '%amount%': '<b style="color:#3d424d;">' ~ cart.totalPrice|formatCurrency("USD", true, locale) ~ '</b>',
+                    '%order%': '<b style="color:#3d424d;">Order ID: ' ~ cart.cartId ~ '</b>'
+                }, 'email', lang)|desc('You have successfully paid %amount% for %order%')|raw }},
+            {% endif %}
+        {% endif %}
+    </span>
+
+    <br>
+
+    {{ commonMacro.header('your-order'|trans({}, 'email', lang)|desc('Your Order'), _context) }}
+
+    {% set prepaid = cart.hasPrepaidAwPlusSubscription() %}
+
+    <table width="100%" cellpadding="0" border="0" cellspacing="0" style="line-height:24px;">
+        <tbody>
+        {% for item in cart.items %}
+            {% if item is not instanceof('\\AwardWallet\\MainBundle\\Entity\\CartItem\\Discount')
+                and item is not instanceof('\\AwardWallet\\MainBundle\\Entity\\CartItem\\AwPlusGift')
+                and item.isVisibleInCart
+                and (not prepaid or not (item is instanceof('\\AwardWallet\\MainBundle\\Entity\\CartItem\\AwPlusSubscription')))
+            %}
+                <tr>
+                    <td valign="middle" style="font-size:16px;color:#3d424d;padding:7px 0; border-bottom:1px dotted #8e9199;">
+                        {{ item.getName|auto_mailto|raw }}
+                        {% if item.isCountable %}: {{ item.getCnt }}{% endif %}
+                        {% if (
+                            item is instanceof('\\AwardWallet\\MainBundle\\Entity\\CartItem\\AwPlusSubscription')
+                            or item is instanceof('\\AwardWallet\\MainBundle\\Entity\\CartItem\\AwPlusWeekSubscription')
+                            )
+                        %}
+                            {{ item.getDescription }}
+                        {% endif %}
+                    </td>
+                    <td valign="middle" align="right" style="font-size:16px;color:#3d424d;padding:7px 8px 7px 0; border-bottom:1px dotted #8e9199;">
+                        {% if
+                            item is instanceof('\\AwardWallet\\MainBundle\\Entity\\CartItem\\AwPlusSubscription')
+                            or item is instanceof('\\AwardWallet\\MainBundle\\Entity\\CartItem\\AwPlusWeekSubscription')
+                        %}
+                            {{ (item.price ? item.price : item.priceForUser(cart.user))|formatCurrency("USD", false, locale) }}
+                        {% else %}
+                            {{ item.getTotalPrice|formatCurrency("USD", false, locale) }}
+                        {% endif %}
+                    </td>
+                </tr>
+
+                {% if item is instanceof('\\AwardWallet\\MainBundle\\Entity\\CartItem\\AwPlusPrepaid') and item.description %}
+                    <tr>
+                        <td style="font-size:16px;color:#3d424d;padding:7px 8px 7px 0; border-bottom:1px dotted #8e9199;" colspan="2">{{ item.description }}</td>
+                    </tr>
+                {% endif %}
+            {% endif %}
+        {% endfor %}
+
+        {% for item in cart.items %}
+            {% if item is instanceof('\\AwardWallet\\MainBundle\\Entity\\CartItem\\Discount') %}
+                <tr>
+                    <td valign="middle" style="font-size:16px;color:#cc3d5e;padding:7px 0; border-bottom:1px dotted #8e9199;">
+                        {{ item.getName|raw }}
+                    </td>
+                    <td valign="middle" align="right" style="font-size:16px;color:#cc3d5e;padding:7px 8px 7px 0; border-bottom:1px dotted #8e9199;">
+                        {{ item.getTotalPrice|formatCurrency("USD", false, locale) }}
+                    </td>
+                </tr>
+            {% endif %}
+        {% endfor %}
+
+        <tr>
+            <td valign="middle" style="font-size:16px;color:#cc3d5e;padding:7px 0; border-bottom:1px dotted #8e9199;">
+                <b>
+                    {{ 'total'|trans({}, 'email', lang)|desc('Total') }}
+                </b>
+            </td>
+            <td valign="middle" align="right" style="font-size:16px;color:#cc3d5e;padding:5px 8px 5px 0; border-bottom:1px dotted #8e9199;">
+                <b style="font-size:20px">
+                    {{ cart.totalPrice|formatCurrency("USD", false, locale) }}
+                </b>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+    {% if cart.oneCardsQuantity %}
+        {% set oneCardLink = personalHost ~ path("aw_one_card") %}
+        {% set htmlLink = commonMacro.link(oneCardLink, '$$')|split('$$') %}
+
+        {{ commonMacro.info(
+            'onecard-reminder'|trans({
+                '%link_on%': htmlLink[0],
+                '%link_off%': htmlLink[1],
+                '%link%': oneCardLink,
+            }, 'email', lang)|desc('Please note that your AwardWallet OneCard still needs to be ordered via %link_on% %link% %link_off% using the credit you just purchased.'),
+            _context, {escape: false}
+        ) }}
+    {% endif %}
+
+    {% if cart.creditCardPaymentType %}
+        {#{{ cartMacro.billingAddress(cart, _context) }}#}
+        {{ cartMacro.CCInfo(cart, _context) }}
+    {% endif %}
+
+    {% if attribute(paymentTypes, cart.paymenttype) is defined %}
+        {{ commonMacro.info(
+            'payment-method'|trans({}, 'email', lang)|desc('Payment method') ~ ": " ~ attribute(paymentTypes, cart.paymenttype),
+            _context
+        ) }}
+        {% if cart.PayPalPaymentType or cart.CreditCardPaymentType %}
+            {% if merchant is not null %}
+                {% set merchantName = merchant.getMerchantName() %}
+            {% else %}
+                {% set merchantName = constant('AW_MERCHANT') %}
+            {% endif %}
+            {% if merchantName is not empty %}
+                {% if cart.creditCardPaymentType %}
+                    {{ commonMacro.paragraph(
+                    'creditcard-charge'|trans({
+                        '%merchant%': merchantName
+                    }, 'email', lang)|desc('This charge will appear on your credit card statement as %merchant%'),
+                    _context
+                    ) }}
+                {% else %}
+                    {{ commonMacro.paragraph(
+                    'paypal-charge'|trans({
+                        '%merchant%': merchantName
+                    }, 'email', lang)|desc('This charge will appear on your paypal history as %merchant%'),
+                    _context
+                    ) }}
+                {% endif %}
+            {% endif %}
+        {% endif %}
+    {% endif %}
+{% endblock content %}
+
+{% block restore_row %}
+    {% if developerInfo %}
+        <b style="font-weight:bold;color:#535457;font-size: 16px;"><br>
+            {{ developerInfo }}
+        </b>
+    {% endif %}
+{% endblock restore_row %}
+
+{% block signature %}
+    {% if merchant is not null %}
+        {% import '@MailTemplate/CommonMacro.twig' as commonMacro %}
+        <tr>
+            <td align="right" style="padding:10px">
+                <span style="font-size:13px;color:#535457">
+                    {% set link = commonMacro.link(merchant.ServiceURL, '$$')|split('$$') %}
+                    {{ 'thank_you_team'|trans({
+                        '%link_on%': link[0],
+                        '%link_off%': link[1],
+                        '%teamName%': merchant.ServiceName|htmlencode
+                    }, 'email', lang)|raw }}
+                </span>
+            </td>
+        </tr>
+    {% else %}
+        {{ parent() }}
+    {% endif %}
+{% endblock signature %}
+
+{% block physical_address_row %}
+    {% if merchant is not null and merchant.address is not empty %}
+        <span>{{ merchant.address|raw }}</span>
+    {% else %}
+        {{ parent() }}
+    {% endif %}
+{% endblock physical_address_row %}

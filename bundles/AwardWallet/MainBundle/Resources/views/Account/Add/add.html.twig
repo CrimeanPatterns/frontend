@@ -1,0 +1,177 @@
+{% extends is_granted('SITE_BUSINESS_AREA') ? "@AwardWalletMain/Layout/business_check_balance.html.twig" : "@AwardWalletMain/Layout/accounts.html.twig" %}
+{% import "@AwardWalletMain/TwigMacros/new.html.twig" as macros %}
+
+{% set providersTabs = [
+    {name: "track.group.all"|trans},
+    {name: "track.group.card"|trans, kind: constant('PROVIDER_KIND_CREDITCARD')},
+    {name: "track.group.airline"|trans, kind: constant('PROVIDER_KIND_AIRLINE')},
+    {name: "track.group.hotel"|trans, kind: constant('PROVIDER_KIND_HOTEL')},
+    {name: "track.group.rent"|trans, kind: constant('PROVIDER_KIND_CAR_RENTAL')},
+    {name: "track.group.train"|trans, kind: constant('PROVIDER_KIND_TRAIN')},
+    {name: "track.group.cruise"|trans, kind: constant('PROVIDER_KIND_CRUISES')},
+    {name: "track.group.shop"|trans, kind: constant('PROVIDER_KIND_SHOPPING')},
+    {name: "track.group.dining"|trans, kind: constant('PROVIDER_KIND_DINING')},
+    {name: "track.group.survey"|trans, kind: constant('PROVIDER_KIND_SURVEY')},
+    {name: "track.group.parking"|trans, kind: constant('PROVIDER_KIND_PARKING')},
+    {name: "track.group.other"|trans, kind: constant('PROVIDER_KIND_OTHER')},
+] %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        window.providersTabsData = {{ providersTabs|json_encode|raw }};
+        window.business = {% if is_granted('SITE_BUSINESS_AREA') %}true{% else %}false{% endif %};
+        window.agentId = '{{ agentId }}';
+        window.providersData = {{ providers|json_encode|raw }};
+        window.discoveredAcconts = {{ discoveredAcconts|json_encode|raw }};
+
+        function initUaSelect() {
+            var selector = $('.js-useragent-select:visible').first();
+            if (selector.length) {
+                selector.trigger('change');
+            } else {
+                if (typeof(window.agentId) != 'undefined') {
+                    $(window).trigger('person.activate', window.agentId);
+                }
+            }
+        }
+
+        require([
+            'jquery',
+            'jqueryui',
+            'pages/addAccount/main'
+        ], function ($) {
+            $(function () {
+
+                $('#tabs').tabs({
+                    create: function() {
+                        initUaSelect();
+                    },
+                    activate: function (e, ui) {
+                        initUaSelect();
+                        var scrollTop = $(window).scrollTop(); // save current scroll position
+                        document.location.hash = ui.newPanel.attr('id');
+                        $(window).scrollTop(scrollTop);
+                    }
+                });
+
+                if ("onhashchange" in window) {
+                    $(window).on('hashchange', function() {
+                        var hash = location.hash;
+
+                        if (hash !== '') {
+                            var tab = $(".tabs-navigation a[href='"+hash+"']");
+
+                            if (tab.length === 1) {
+                                tab.trigger('click');
+                            }
+                        }
+                    });
+                }
+
+            });
+        });
+    </script>
+{% endblock %}
+
+{% block content %}
+    {{ macros.drawSplashScreen(true, 250 + 46 * agents) }}
+    {# main tabs #}
+    <div id="tabs" data-ng-cloak>
+        <ul class="tabs-navigation">
+            {% if discoveredAcconts|length > 0 %}
+                <li>
+                    <a id="discovered-tab" href="#/discovered">{{ "discovered-accounts"|trans|desc("DISCOVERED <br>ACCOUNTS")|raw }}</a>
+                </li>
+            {% endif %}
+            <li>
+                <a id="auto-track-tab" href="#/auto">{{ "track.type.automatically"|trans|desc("AUTOMATICALLY TRACK<br> AWARD PROGRAM")|raw }}</a>
+            </li>
+            <li>
+                <a id="manually-track-tab" href="#/custom">{{ "track.type.manually"|trans|desc("MANUALLY TRACK<br> AWARD PROGRAM")|raw }}</a>
+            </li>
+            <li>
+                <a id="voucher-tab" href="#/coupon">{{ "track.type.manual_ticket"|trans|desc("MANUALLY TRACK<br> TRAVEL VOUCHER OR GIFT CARD")|raw }}</a>
+            </li>
+            <li>
+                <a id="documents-tab" href="#/document">{{ "track.type.document"|trans|desc("MANUALLY TRACK<br> DOCUMENTS")|raw }}</a>
+            </li>
+        </ul>
+        <div class="tabs-content">
+            {% if discoveredAcconts|length > 0 %}
+                <div id="/discovered" style="display: none">
+                    {{ include('@AwardWalletMain/Account/List/discovered_list.html.twig') }}
+                </div>
+            {% endif %}
+            <div id="/custom" style="display: none">
+                <!-- tab2.html -->
+                {{ render(controller('AwardWallet\\MainBundle\\Controller\\Account\\EditController::addAction', {ngtemplate: "tab2.html"}, {agentId: agentId})) }}
+            </div>
+            <div id="/coupon" style="display: none">
+                <!-- tab3.html -->
+                {{ render(controller('AwardWallet\\MainBundle\\Controller\\CouponController::addCouponAction', {ngtemplate: "tab3.html"}, {agentId: agentId})) }}
+            </div>
+            <div id="/document" style="display: none">
+                <div class="list-content">
+                    <a href="{{ path('aw_document_add', { 'type': constant('\AwardWallet\\MainBundle\\Entity\\Providercoupon::KEY_TYPE_PASSPORT'), agentId: agentId}) }}">
+                        <div class="row">
+                            <div class="prev">
+                                <i class="icon-world"></i>
+                            </div>
+                            <div class="title">{{ 'track.type.document.passport-title'|trans }}</div>
+                        </div>
+                    </a>
+                    <a href="{{ path('aw_document_add', { 'type': constant('\AwardWallet\\MainBundle\\Entity\\Providercoupon::KEY_TYPE_TRAVELER_NUMBER'), agentId: agentId}) }}">
+                        <div class="row">
+                            <div class="prev">
+                                <i class="icon-travel-number"></i>
+                            </div>
+                            <div class="title">{{ 'track.type.document.traveler-number-title'|trans }}</div>
+                        </div>
+                    </a>
+                    <a href="{{ path('aw_document_add', { 'type': constant('\AwardWallet\\MainBundle\\Entity\\Providercoupon::KEY_TYPE_VACCINE_CARD'), agentId: agentId}) }}">
+                        <div class="row">
+                            <div class="prev">
+                                <i class="icon-virus"></i>
+                            </div>
+                            <div class="title">{{ 'add-vaccine-card'|trans }}</div>
+                        </div>
+                    </a>
+                    <a href="{{ path('aw_document_add', { 'type': constant('\AwardWallet\\MainBundle\\Entity\\Providercoupon::KEY_TYPE_INSURANCE_CARD'), agentId: agentId}) }}">
+                        <div class="row">
+                            <div class="prev">
+                                <i class="icon-insurance-card"></i>
+                            </div>
+                            <div class="title">{{ 'add-insurance-card'|trans }}</div>
+                        </div>
+                    </a>
+                    <a href="{{ path('aw_document_add', { 'type': constant('\AwardWallet\\MainBundle\\Entity\\Providercoupon::KEY_TYPE_VISA'), agentId: agentId}) }}">
+                        <div class="row">
+                            <div class="prev">
+                                <i class="icon-visa"></i>
+                            </div>
+                            <div class="title">{{ 'add-visa'|trans }}</div>
+                        </div>
+                    </a>
+                    <a href="{{ path('aw_document_add', { 'type': constant('\AwardWallet\\MainBundle\\Entity\\Providercoupon::KEY_TYPE_DRIVERS_LICENSE'), agentId: agentId}) }}">
+                        <div class="row">
+                            <div class="prev">
+                                <i class="icon-drivers-license"></i>
+                            </div>
+                            <div class="title">{{ 'add-drivers-license'|trans }}</div>
+                        </div>
+                    </a>
+                    <a href="{{ path('aw_document_add', { 'type': constant('\AwardWallet\\MainBundle\\Entity\\Providercoupon::KEY_TYPE_PRIORITY_PASS'), agentId: agentId}) }}">
+                        <div class="row">
+                            <div class="prev"><i class="icon-priority-pass"></i></div>
+                            <div class="title">{{ 'add-priority-pass'|trans }}</div>
+                        </div>
+                    </a>
+                </div>
+            </div>
+            <div id="/auto" style="display: none">
+                {% include('@AwardWalletMain/Account/Add/_providersList.html.twig') %}
+            </div>
+        </div>
+    </div>
+{% endblock %}

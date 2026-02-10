@@ -1,0 +1,41 @@
+{# Issue #11037 #}
+
+{% extends popup is defined and popup ? "@AwardWalletMain/Offer/_offerPopup.html.twig" : "@AwardWalletMain/Offer/standard.html.twig" %}
+{% import '@AwardWalletMain/Offer/offerMacros.html.twig' as offerMacros %}
+{% import '@AwardWalletMain/TwigMacros/assets.html.twig' as assets %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    {{ encore_entry_link_tags('offer') }}
+    {{ encore_entry_link_tags('offers/regalcard') }}
+    {% if popup is not defined %}
+        {{ assets.assets_form('css') }}
+    {% endif %}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        {{ offerMacros.jsOfferYes(_context, ApplyURL, Code, OfferUserID, defaultRedirectLocation) }}
+        {{ offerMacros.jsOfferNo(_context, Code, OfferUserID, defaultRedirectLocation) }}
+    </script>
+{% endblock %}
+
+{% block content %}
+    <div id="offer_wrap">
+        <div class="regal-card-offer">
+            <h3>Luxury For The Average Traveler</h3>
+            <div class="regal-card-logo"></div>
+            <ol>
+                <li><strong>Unlimited Airport Lounge Access</strong> - no visit limits, no surprise fees, just an area to relax before and after their flight. Members have full access to over 700+ VIP lounges worldwide, regardless of class or airline flown.</li>
+                <li><strong>Premium Travel Insurance</strong> - this international insurance policy provides comprehensive coverage needed to travel responsibly. Includes medical, dental, evacuation, trip interruption and luggage protection for every trip.</li>
+                <li><strong>Exclusive Fares On Luxury Flights</strong> - members trust their Regal Card agents for a personal and thorough booking experience, plus low rates on first and business class international flights* to ensure they travel in style.</li>
+                <li><strong>Preferred Rates & Hotel Services</strong> - holding contracts with over 200,000 3+ star hotels means that members save up to 30% off at their favorite hotels including Hilton, Marriott, Sofitel, Hyatt, Ritz Carleton, Shangri La, and more.</li>
+                <li><strong>The Regal Card Perks Collection</strong> - the ever-growing collection of member-only offers and savings are available - including luggage shipping, car services, vacation excursions, passport assistance, and more.</li>
+            </ol>
+            <a onclick="offerYes();" href="#" class="btn-blue-offer">Learn more</a>
+            <div class="remark">* Discounted fares available for flights originating in the US, Canada, Australia, and Europe.</div>
+        </div>
+        {{ offerMacros.offerButtons(_context) }}
+    </div>
+{% endblock %}

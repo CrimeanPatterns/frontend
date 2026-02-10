@@ -1,0 +1,154 @@
+{% use '@AwardWalletMain/AccountList/elements.html.twig' %}
+
+{% block list_elements %}
+    <section data-ng-cloak2 class="main-ui-view" data-ng-controller="listCtrl as list" data-ng-show="main.state.loaded">
+        {{ block('list_table') }}
+    </section>
+{% endblock %}
+
+{% block list_table %}
+    <div class="account-list show-owner retrieve-accounts">
+        <div data-ng-repeat="row in list.elements.data track by row.ID" data-ng-hide="row.hidden" class="row-[[::row.type]]">
+            {{ block('list_header') }}
+            {{ block('row_data') }}
+        </div>
+    </div>
+{% endblock %}
+
+{% block list_header %}
+    <div data-ng-if="row.firstRow" class="account-title-row">
+        <div class="check">&nbsp;</div>
+        <div class="account-details">&nbsp;</div>
+        <div class="program">{{ "award.account.list.column.program"|trans|desc("Award Program") }}</div>
+        <div class="owner">{{ "award.account.list.column.owner"|trans|desc("Owner") }}</div>
+        <div class="account">{{ "award.account.list.column.account"|trans|desc("Account") }}</div>
+        {#
+                        <div class="status">{{ "award.account.list.column.status"|trans|desc("Status") }}</div>
+        #}
+        <div class="balance">{{ "award.account.list.column.balance"|trans|desc("Balance") }}</div>
+        {#
+                        <div class="expire">{{ "award.account.list.column.expire"|trans|desc("Expire") }}</div>
+        #}
+        <div class="actions">&nbsp;</div>
+    </div>
+{% endblock %}
+
+{% block row_data %}
+    <div class="account-row" data-ng-if="::(row.type == 'account')" data-ng-controller="elementCtrl as element">
+        <div id="[[ ::element.account.FID ]]">
+            {{ block('row_account') }}
+        </div>
+    </div>
+{% endblock %}
+
+{% block row_account %}
+    {{ block('row_column_tip') }}
+    <div class="account-row-block" data-ng-class="{errored: (element.account.ProgramMessage.Type == 5 && (element.account.ErrorCode > 1 || element.account.ErrorCode < 0) && (main.view.showErrors || element.updater.state))}">
+        {{ block('row_column_detail') }}
+        {{ block('row_column_program') }}
+        {{ block('row_column_owner') }}
+        {{ block('row_column_account') }}
+        {{ block('row_update') }}
+        {#{{ block('row_column_status') }}#}
+        {{ block('row_column_balance') }}
+        {#{{ block('row_column_expire') }}#}
+    </div>
+    {{ block('row_account_error') }}
+{% endblock %}
+
+{% block row_account_error %}
+    <div data-ng-if="(element.account.ProgramMessage.Type == 5 && element.account.ErrorCode > 1)" class="account-row-error">
+        <div class="error-message">
+            <i class="icon-red-error"></i><span class="red">[[ element.account.ProgramMessage.Title ]].</span> <span data-ng-bind-html="element.account.ProgramMessage.BeforeError | unsafe"></span>
+            <div class="error-balance-blk">
+                <span data-ng-bind-html="element.account.ProgramMessage.Error | unsafe"></span>
+                <a href="" class="read-more" data-ng-hide="element.view.showError" data-ng-click="element.view.showError = true">{{ "award.account.list.more-info"|trans|desc("More Info") }}<i class="icon-double-arrow-right-white"></i></a>
+            </div>
+            <div class="error-information" data-ng-if="element.view.showError">
+                <p data-ng-if="element.account.ProgramMessage.Description || element.account.ProgramMessage.DateInfo">
+                            <span data-ng-if="element.account.ProgramMessage.Description"
+                                  data-ng-bind-html="element.account.ProgramMessage.Description | unsafe"></span>
+                            <span data-ng-if="element.account.ProgramMessage.DateInfo"
+                                  data-bind-html-compile="element.account.ProgramMessage.DateInfo | unsafe"></span>
+                    <a href="" class="less-info" data-ng-click="element.view.showError = false"><i class="icon-double-arrow-left-silver"></i>{{ "award.account.list.less-info"|trans|desc("Less info") }}
+                    </a>
+                </p>
+            </div>
+        </div>
+    </div>
+    <div data-ng-if="(element.account.ErrorCode == {{ constant('AwardWallet\\MainBundle\\Updater\\Event\\LimitEvent::ERROR_CODE_LOCKOUT') }} && element.updater.counter)" class="account-row-error">
+        <div class="error-message">
+            <i class="icon-red-error"></i><span class="red">{{ 'please-upgrade'|trans }}</span>
+            <div class="error-balance-blk">
+                <a href="#" data-ng-click="element.view.errorInfo($event)" style="float: right; margin-right: -30px"><i class="icon-red-error"></i></a>
+                <span>[[element.account.ErrorMessage]]</span>
+                <a href="//awardwallet.com/blog/link/updateLimit" class="read-more">{{ 'upgrade-now'|trans }}</a>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block row_update %}
+    <div class="update" data-ng-show="element.updater.process">
+        <div class="update-row">
+            <div class="update-row-item" data-ng-show="element.updater.visualState == 'queue'">
+                <p><span>{{ 'award.account.list.updating.queue.1'|trans }}</span><span>{{ 'award.account.list.updating.queue.2'|trans }}</span></p>
+                <div class="loader"></div>
+            </div>
+            <div class="update-row-item" data-ng-show="element.updater.visualState == 'checking'">
+                <div class="progress-bar"><div class="progress-bar-row"><span data-ng-style="element.updater.progressStyle"></span></div></div>
+            </div>
+            <div class="update-row-item" data-ng-show="element.updater.visualState == 'changed'">
+                <p data-ng-bind-html="element.updater.changeText | unsafe">{{ 'award.account.list.updating.trips-found'|trans({count: 1, trips: 1})|desc('{1}<span class="bold">1</span> reservation found|[2,Inf]<span class="bold">%trips%</span> reservations found') }}</p>
+                <i class="icon-green-check"></i>
+{#
+                <a class="btn-blue small" data-ng-click="element.view.doneUpdate()">{{ 'button.ok'|trans }}</a>
+#}
+            </div>
+            <div class="update-row-item" data-ng-show="element.updater.visualState == 'unchanged'">
+                <p data-ng-bind-html="element.updater.unchangeText | unsafe">{{ 'award.account.list.updating.trips-not-found'|trans|desc('No reservations found') }}</p>
+                <i class="icon-" style="width: 13px;"></i>
+{#
+                <a class="btn-blue small" data-ng-click="element.view.doneUpdate()">{{ 'button.ok'|trans }}</a>
+#}
+            </div>
+            <div class="update-row-item" data-ng-show="element.updater.visualState == 'error'">
+                <p class="red">{{ 'award.account.list.updating.error'|trans | raw }}</p>
+                <i class="icon-red-error"></i>
+{#
+                <a class="btn-blue small" data-ng-click="element.view.doneUpdate()">{{ 'button.ok'|trans }}</a>
+#}
+            </div>
+            <div class="update-row-item" data-ng-show="element.updater.visualState == 'failed'">
+                <p data-ng-bind-html="element.updater.failedText | unsafe"></p>
+                <i class="icon-red-error"></i>
+{#
+                <a class="btn-blue small" data-ng-click="element.view.doneUpdate()">{{ 'button.ok'|trans }}</a>
+#}
+            </div>
+            <div class="update-row-item disabled-row" data-ng-show="element.updater.visualState == 'disabled'">
+                <p>
+                    <span>{{ 'award.account.list.updating.disabled.1'|trans|desc('This account is marked as "Disabled"') }}</span>
+                    <span data-ng-bind-html="element.updater.disabledText | unsafe">
+                        {{ 'award.account.list.updating.disabled.2'|trans|desc('To update <a href="%url%">please uncheck</a> the "Disabled" checkbox') | raw }}
+                        {{ 'award.account.list.updating.disabled.3'|trans|desc('Please ask account owner to uncheck the "Disabled" checkbox') | raw }}
+                    </span>
+                </p>
+{#                <i class="icon-warning-small"></i>#}
+{#                <a class="btn-blue small" data-ng-click="element.view.doneUpdate()">{{ 'button.ok'|trans }}</a>#}
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block row_column_program_alliance %}
+    <div data-ng-if="::element.account.AllianceIcon" class="alliance">
+        <div class="alliance-item">
+            <div class="picture">
+                <img class="picture__dark" data-ng-src="[[ element.account.AllianceIcon.replace('alliances/', 'alliances/dark/') + (main.devicePixelRatio && main.devicePixelRatio == 2 ? '@2x.png' : '.png') ]]" alt="" height="28" width="23"/>
+                <img class="picture__light" data-ng-src="[[ element.account.AllianceIcon + (main.devicePixelRatio && main.devicePixelRatio == 2 ? '@2x.png' : '.png') ]]" alt="" height="28" width="23"/>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+

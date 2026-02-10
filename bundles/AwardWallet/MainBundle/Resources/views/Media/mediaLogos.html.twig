@@ -1,0 +1,397 @@
+{% set MOBILE_NAV = true %}
+{% set MAIN_BODY_CLASSES = {
+    'manual-hidden': true,
+    'responsive': true
+}|merge(MAIN_BODY_CLASSES|default({})) %}
+{% extends app.user is not null ? "@AwardWalletMain/Layout/common.html.twig" : "@AwardWalletMain/Layout/not_logged.html.twig" %}
+
+{% block title %}{{ 'aw.logos'|trans()|desc('AwardWallet Logos') }}{% endblock %}
+
+{% block meta %}
+    {{ parent() }}
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0, viewport-fit=cover">
+{% endblock %}
+
+{% block content %}
+    <div class="main-blk">
+        <h1>{{ 'aw.logos'|trans()|desc('AwardWallet Logos') }}</h1>
+        <div class="main-blk-content">
+            <div class="logos-list">
+                <div class="title-note">
+                    <h3>{{ 'aw.logo.full_regular'|trans()|desc('Full Regular Logo') }}</h3>
+                </div>
+                <div class="container">
+                    <div class="row">
+                        <div class="thumb">
+                            <div class="logo-regular"></div>
+                        </div>
+                        <div class="download-list">
+                            <div class="col">
+                                <a href="/assets/awardwalletnewdesign/img/media/Logos/Regular/regular_small.png" download><span class="bold">{{ 'size.small'|trans()|desc('Small') }}</span>
+                                (181 x 24)</a>
+                            </div>
+                            <div class="col">
+                                <a href="/assets/awardwalletnewdesign/img/media/Logos/Regular/regular_medium.png" download><span class="bold">{{ 'size.medium'|trans()|desc('Medium') }}</span>
+                                (500 x 66)</a>
+                            </div>
+                            <div class="col">
+                                <a href="/assets/awardwalletnewdesign/img/media/Logos/Regular/regular_large.png" download><span class="bold">{{ 'size.large'|trans()|desc('Large') }}</span>
+                                (1000 x 133)</a>
+                            </div>
+                            <div class="col">
+                                <a href="/assets/awardwalletnewdesign/img/media/Logos/Regular/regular_huge.png" download><span class="bold">{{ 'size.huge'|trans()|desc('Huge') }}</span>
+                                (5000 x 633)</a>
+                            </div>
+                            <i class="icon-download"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="title-note">
+                    <h3>{{ 'aw.square_logo'|trans()|desc('Square Logo') }}</h3>
+                </div>
+                <div class="container">
+                    <div class="row">
+                        <div class="thumb">
+                            <div class="logo-square"></div>
+                        </div>
+                        <div class="download-list">
+                            <div class="col">
+                                <a href="/assets/awardwalletnewdesign/img/media/Logos/Square/square_tiny.png" download><span class="bold">{{ 'size.tiny'|trans()|desc('Tiny') }}</span>
+                                (126 x 126)
+                                </a>
+                            </div>
+                            <div class="col">
+                                <a href="/assets/awardwalletnewdesign/img/media/Logos/Square/square_medium.png" download><span class="bold">{{ 'size.medium'|trans() }}</span>
+                                (512 x 512)
+                                </a>
+                            </div>
+                            <div class="col">
+                                <a href="/assets/awardwalletnewdesign/img/media/Logos/Square/square_large.png" download><span class="bold">{{ 'size.large'|trans() }}</span>
+                                (1024 x 1024)
+                                </a>
+                            </div>
+                            <div class="col">
+                                <a href="/assets/awardwalletnewdesign/img/media/Logos/Square/square_huge.png" download><span class="bold">{{ 'size.huge'|trans()|desc('Huge') }}</span>
+                                (5000 x 5000)
+                                </a>
+                            </div>
+                            <i class="icon-download"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="title-note">
+                    <h3>{{ 'aw.just_logo'|trans()|desc('Just the Logo') }}</h3>
+                </div>
+                <div class="container">
+                    <div class="row">
+                        <div class="thumb">
+                            <div class="logo-just"></div>
+                        </div>
+                        <div class="download-list">
+                            <div class="col">
+                                <a href="/assets/awardwalletnewdesign/img/media/JustLogos/logo_tiny.png" download=""><span class="bold">Tiny</span>
+                                    (50 x 50)
+                                </a>
+                            </div>
+                            <div class="col">
+                                <a href="/assets/awardwalletnewdesign/img/media/JustLogos/logo_small.png" download=""><span class="bold">Small</span>
+                                    (100 x 100)
+                                </a>
+                            </div>
+                            <div class="col">
+                                <a href="/assets/awardwalletnewdesign/img/media/JustLogos/logo_medium.png" download=""><span class="bold">Medium</span>
+                                    (500 x 500)
+                                    </a>
+                            </div>
+                            <div class="col">
+                                <a href="/assets/awardwalletnewdesign/img/media/JustLogos/logo_large.png" download=""><span class="bold">Large</span>
+                                    (1024 x 1024)
+                                </a>
+                            </div>
+                            <div class="col">
+                                <a href="/assets/awardwalletnewdesign/img/media/JustLogos/logo_huge.png" download=""><span class="bold">Huge</span>
+                                    (5000 x 5000)
+                                </a>
+                            </div>
+                            <i class="icon-download"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="main-blk">
+        <h2>{{ 'aw.screenshots'|trans()|desc('AwardWallet Screenshots') }}</h2>
+        <div class="main-blk-content">
+            <div class="logos-list">
+                <div class="title-note">
+                    <h3>{{ 'website'|trans()|desc('Website') }}</h3>
+                </div>
+                <div class="container">
+                    <div class="row second desktop">
+                        <a class="col" href="/assets/awardwalletnewdesign/img/media/{{ app.request.locale }}/Screenshots/Website/1-list_of_accounts.png" download>
+                            <div class="thumb">
+                                <div class="screenshot-list-accounts-desktop"></div>
+                            </div>
+                            <div class="details">
+                                <span class="bold">{{ 'list_of_accounts'|trans()|desc('List of Accounts') }}</span>
+                                <i class="icon-download"></i>
+                            </div>
+                        </a>
+                        <a class="col" href="/assets/awardwalletnewdesign/img/media/{{ app.request.locale }}/Screenshots/Website/2-accounts_details.png" download>
+                            <div class="thumb">
+                                <div class="screenshot-account-details-desktop"></div>
+                            </div>
+                            <div class="details">
+                                <span class="bold">{{ 'account_details'|trans()|desc('Account Details') }}</span>
+                                <i class="icon-download"></i>
+                            </div>
+                        </a>
+                        <a class="col" href="/assets/awardwalletnewdesign/img/media/{{ app.request.locale }}/Screenshots/Website/3-travel_timeline.png" download>
+                            <div class="thumb">
+                                <div class="screenshot-timeline-desktop"></div>
+                            </div>
+                            <div class="details">
+                                <span class="bold">{{ 'travel_timelines'|trans()|desc('Travel Timeline') }}</span>
+                                 <i class="icon-download"></i>
+                            </div>
+                        </a>
+                        <a class="col" href="/assets/awardwalletnewdesign/img/media/{{ app.request.locale }}/Screenshots/Website/4-reservation_details.png" download>
+                            <div class="thumb">
+                                <div class="screenshot-reservation-details-desktop"></div>
+                            </div>
+                            <div class="details">
+                                <span class="bold">{{ 'reservation_details'|trans()|desc('Reservation Details') }}</span>
+                                <i class="icon-download"></i>
+                            </div>
+                        </a>
+                        <a class="col" href="/assets/awardwalletnewdesign/img/media/{{ app.request.locale }}/Screenshots/Website/8-reservation-changes.png" download>
+                            <div class="thumb">
+                                <div class="screenshot-reservation-changes-desktop"></div>
+                            </div>
+                            <div class="details">
+                                <span class="bold">{{ 'reservation_changes'|trans()|desc('Reservation changes') }}</span>
+                                <i class="icon-download"></i>
+                            </div>
+                        </a>
+                        <a class="col" href="/assets/awardwalletnewdesign/img/media/{{ app.request.locale }}/Screenshots/Website/9-group-into-trip.png" download>
+                            <div class="thumb">
+                                <div class="screenshot-group-into-trip-desktop"></div>
+                            </div>
+                            <div class="details">
+                                <span class="bold">{{ 'group-into-trip'|trans()|desc('Group itineraries into a trip') }}</span>
+                                <i class="icon-download"></i>
+                            </div>
+                        </a>
+                        <a class="col" href="/assets/awardwalletnewdesign/img/media/{{ app.request.locale }}/Screenshots/Website/10-share-trip.png" download>
+                            <div class="thumb">
+                                <div class="screenshot-share-trip-desktop"></div>
+                            </div>
+                            <div class="details">
+                                <span class="bold">{{ 'share-trip'|trans()|desc('Share trip') }}</span>
+                                <i class="icon-download"></i>
+                            </div>
+                        </a>
+                        <a class="col" href="/assets/awardwalletnewdesign/img/media/{{ app.request.locale }}/Screenshots/Website/5-spend-analysis.png" download>
+                            <div class="thumb">
+                                <div class="screenshot-spend-analysis-desktop"></div>
+                            </div>
+                            <div class="details">
+                                <span class="bold">Spend Analysis</span>
+                                <i class="icon-download"></i>
+                            </div>
+                        </a>
+                        <a class="col" href="/assets/awardwalletnewdesign/img/media/{{ app.request.locale }}/Screenshots/Website/6-merchant-lookup-tool.png" download>
+                            <div class="thumb">
+                                <div class="screenshot-merchant-desktop"></div>
+                            </div>
+                            <div class="details">
+                                <span class="bold">Merchant Lookup Tool</span>
+                                <i class="icon-download"></i>
+                            </div>
+                        </a>
+                        <a class="col" href="/assets/awardwalletnewdesign/img/media/{{ app.request.locale }}/Screenshots/Website/7-transaction-analyzer.png" download>
+                            <div class="thumb">
+                                <div class="screenshot-transaction-analyzer-desktop"></div>
+                            </div>
+                            <div class="details">
+                                <span class="bold">Transaction Analyzer</span>
+                                <i class="icon-download"></i>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+                <div class="title-note">
+                    <h3>{{ 'mobile'|trans()|desc('Mobile') }}</h3>
+                </div>
+                <div class="container">
+                    <div class="row second">
+                        <a class="col" href="/assets/awardwalletnewdesign/img/media/{{ app.request.locale }}/Screenshots/Mobile/1-list_of_accounts.png" download>
+                            <div class="thumb">
+                                <div class="screenshot-list-accounts-mobile"></div>
+                            </div>
+                            <div class="details">
+                                <span class="bold">{{ 'list_of_accounts'|trans()|desc('List of Accounts') }}</span>
+                                <i class="icon-download"></i>
+                            </div>
+                        </a>
+                        <a class="col" href="/assets/awardwalletnewdesign/img/media/{{ app.request.locale }}/Screenshots/Mobile/2-accounts_details.png" download>
+                            <div class="thumb">
+                                <div class="screenshot-account-details-mobile"></div>
+                            </div>
+                            <div class="details">
+                                <span class="bold">{{ 'account_details'|trans()|desc('Account Details') }}</span>
+                                <i class="icon-download"></i>
+                            </div>
+                        </a>
+                        <a class="col" href="/assets/awardwalletnewdesign/img/media/{{ app.request.locale }}/Screenshots/Mobile/3-travel_timeline.png" download>
+                            <div class="thumb">
+                                <div class="screenshot-timeline-mobile"></div>
+                            </div>
+                            <div class="details">
+                                <span class="bold">{{ 'travel_timelines'|trans()|desc('Travel Timeline') }}</span>
+                                <i class="icon-download"></i>
+                            </div>
+                        </a>
+                        <a class="col" href="/assets/awardwalletnewdesign/img/media/{{ app.request.locale }}/Screenshots/Mobile/4-reservation_details.png" download>
+                            <div class="thumb">
+                                <div class="screenshot-reservation-detials-mobile"></div>
+                            </div>
+                            <div class="details">
+                                <span class="bold">{{ 'reservation_details'|trans()|desc('Reservation Details') }}</span>
+                                <i class="icon-download"></i>
+                            </div>
+                        </a>
+                        <a class="col" href="/assets/awardwalletnewdesign/img/media/{{ app.request.locale }}/Screenshots/Mobile/5-spend-analysis.png" download>
+                            <div class="thumb">
+                                <div class="screenshot-spend-analysis-mobile"></div>
+                            </div>
+                            <div class="details">
+                                <span class="bold">Spend Analysis</span>
+                                <i class="icon-download"></i>
+                            </div>
+                        </a>
+                        <a class="col" href="/assets/awardwalletnewdesign/img/media/{{ app.request.locale }}/Screenshots/Mobile/6-merchant-lookup-tool.png" download>
+                            <div class="thumb">
+                                <div class="screenshot-merchant-mobile"></div>
+                            </div>
+                            <div class="details">
+                                <span class="bold">Merchant Lookup Tool</span>
+                                <i class="icon-download"></i>
+                            </div>
+                        </a>
+                        <a class="col" href="/assets/awardwalletnewdesign/img/media/{{ app.request.locale }}/Screenshots/Mobile/7-reverse-merchant-lookup-tool.png" download>
+                            <div class="thumb">
+                                <div class="screenshot-merchant-reverse-mobile"></div>
+                            </div>
+                            <div class="details">
+                                <span class="bold">Reverse Merchant Lookup Tool</span>
+                                <i class="icon-download"></i>
+                            </div>
+                        </a>
+                        <a class="col" href="/assets/awardwalletnewdesign/img/media/{{ app.request.locale }}/Screenshots/Mobile/8-notification-reatail-store.png" download>
+                            <div class="thumb">
+                                <div class="screenshot-push-message-details-mobile"></div>
+                            </div>
+                            <div class="details">
+                                <span class="bold">Notification Reatail Store</span>
+                                <i class="icon-download"></i>
+                            </div>
+                        </a>
+                        <a class="col" href="/assets/awardwalletnewdesign/img/media/{{ app.request.locale }}/Screenshots/Mobile/9-notification-flight-delay.png" download>
+                            <div class="thumb">
+                                <div class="screenshot-push-message-mobile"></div>
+                            </div>
+                            <div class="details">
+                                <span class="bold">Notification Flight Delay</span>
+                                <i class="icon-download"></i>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="main-blk">
+        <h2>{{ 'aw.banners'|trans()|desc('AwardWallet Banners') }}</h2>
+        <div class="main-blk-content">
+            <div class="logos-list">
+                <div class="title-note">
+                    <h3>{{ 'aw.banner.rectangular'|trans()|desc('Rectangular Banner') }}</h3>
+                </div>
+                <div class="container">
+                    <div class="row">
+                        <div class="thumb">
+                            <div class="banner-regular"></div>
+                        </div>
+                        <div class="download-list">
+                            <div class="col">
+                                <a href="/assets/awardwalletnewdesign/img/media/{{ app.request.locale }}/Other/Rectangular/AwardWallet_Ad_200x150.png" download><span class="bold">200x150</span> px
+                                </a>
+                            </div>
+                            <div class="col">
+                                <a href="/assets/awardwalletnewdesign/img/media/{{ app.request.locale }}/Other/Rectangular/AwardWallet_Ad_250x200.png" download><span class="bold">250x200</span> px
+                                </a>
+                            </div>
+                            <div class="col">
+                                <a href="/assets/awardwalletnewdesign/img/media/{{ app.request.locale }}/Other/Rectangular/AwardWallet_Ad_300x250.png" download><span class="bold">300x250</span> px
+                                </a>
+                            </div>
+                            <div class="col">
+                                <a href="/assets/awardwalletnewdesign/img/media/{{ app.request.locale }}/Other/Rectangular/AwardWallet_Ad_350x300.png" download><span class="bold">350x300</span> px
+                                </a>
+                            </div>
+                            <div class="col">
+                                <a href="/assets/awardwalletnewdesign/img/media/{{ app.request.locale }}/Other/Rectangular/AwardWallet_Ad_400x300.png" download><span class="bold">400x300</span> px
+                                </a>
+                            </div>
+                            <div class="col">
+                                <a href="/assets/awardwalletnewdesign/img/media/{{ app.request.locale }}/Other/Rectangular/AwardWallet_Ad_500x400.png" download><span class="bold">500x400</span> px
+                                </a>
+                            </div>
+                            <i class="icon-download"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="title-note">
+                    <h3>{{ 'aw.banner.square'|trans()|desc('Square Banner') }}</h3>
+                </div>
+                <div class="container">
+                    <div class="row">
+                        <div class="thumb">
+                            <div class="banner-square"></div>
+                        </div>
+                        <div class="download-list">
+                            <div class="col">
+                                <a href="/assets/awardwalletnewdesign/img/media/{{ app.request.locale }}/Other/Square/AwardWallet_Ad_200x200.png" download><span class="bold">200x200</span> px
+                                </a>
+                            </div>
+                            <div class="col">
+                                <a href="/assets/awardwalletnewdesign/img/media/{{ app.request.locale }}/Other/Square/AwardWallet_Ad_250x250.png" download><span class="bold">250x250</span> px
+                                </a>
+                            </div>
+                            <div class="col">
+                                <a href="/assets/awardwalletnewdesign/img/media/{{ app.request.locale }}/Other/Square/AwardWallet_Ad_300x300.png" download><span class="bold">300x300</span> px
+                                </a>
+                            </div>
+                            <div class="col">
+                                <a href="/assets/awardwalletnewdesign/img/media/{{ app.request.locale }}/Other/Square/AwardWallet_Ad_350x350.png" download><span class="bold">350x350</span> px
+                                </a>
+                            </div>
+                            <div class="col">
+                                <a href="/assets/awardwalletnewdesign/img/media/{{ app.request.locale }}/Other/Square/AwardWallet_Ad_400x400.png" download><span class="bold">400x400</span> px
+                                </a>
+                            </div>
+                            <div class="col">
+                                <a href="/assets/awardwalletnewdesign/img/media/{{ app.request.locale }}/Other/Square/AwardWallet_Ad_500x500.png" download><span class="bold">500x500</span> px
+                                </a>
+                            </div>
+                            <i class="icon-download"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+

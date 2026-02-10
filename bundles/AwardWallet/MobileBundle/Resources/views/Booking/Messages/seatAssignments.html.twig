@@ -1,0 +1,19 @@
+{% apply spaceless %}
+<div class="seat-assigments">
+    <p>{{ 'booking.seat-assignments.message'|trans({}, 'booking') }}</p>
+    <div class="table-block">
+        {% for number in message.getPhoneNumbers %}
+            <table>
+                <tr>
+                    <td>{{ 'booking.forms.seat_assignments.provider'|trans({}, 'booking') }}</td>
+                    <td>{{ number.Provider }}</td>
+                </tr>
+                <tr>
+                    <td>{{ 'booking.forms.seat_assignments.phone'|trans({}, 'booking') }}</td>
+                    <td><span class="red bold">{{ number.Phone }}</span></td>
+                </tr>
+            </table>
+        {% endfor %}
+    </div>
+</div>
+{% endapply %}

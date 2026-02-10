@@ -1,0 +1,46 @@
+{% extends "@Module/Itinerary/Resources/templates/itinerary.html.twig" %}
+
+{% block title %}
+    {% if edit|default(false) %}
+        {{ 'rental.edit'|trans([], 'trips') }}
+    {% else %}
+        {{ 'rental.add'|trans([], 'trips') }}
+    {% endif %}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    {% if not webpack|default(false) %}
+        <script>
+            require(['jquery-boot', 'pages/itinerary/form'], function ($, ItineraryForm) {
+                $(document).ready(function() {
+                    new ItineraryForm({
+                        formContainer  : '#rental',
+                        template       : '#segmentTemplate',
+                        autocompleteField: 'Address',
+                        autocompleteRoute: 'google_geo_code_airports',
+                        blockContainer : '#addedSegments',
+                        block          : '.segment',
+                        companyField: {id: 'rentalCompany', kind: 3}
+                    }).init();
+                })
+            })
+        </script>
+    {% else %}
+        {{ encore_entry_script_tags('rental', null, '_default', {'defer': true}) }}
+    {% endif %}
+{% endblock %}
+
+{% block main_form %}
+    {{- form_start(form, {
+        'attr': {
+            'data-files': files|json_encode,
+            'class': 'main-form',
+            'novalidate': 'true',
+            'id': form.vars.full_name
+        }
+    }) -}}
+    {{- form_widget(form, {'noSubmit': true}) -}}
+    {{ block('submit_button') }}
+    {{- form_end(form) -}}
+{% endblock %}

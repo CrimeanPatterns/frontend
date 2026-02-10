@@ -1,0 +1,10 @@
+#!/usr/bin/env php
+<?php
+
+$branch = $argv[1] ?? null;
+
+if (!isset($branch) || ('' === $branch)) {
+    $branch = trim(`git rev-parse --abbrev-ref HEAD`);
+}
+
+echo "https://jenkins.awardwallet.com/job/Frontend/job/deploy-staging/parambuild/?branch=" . urlencode($branch) . "&update_on_push=0\n";

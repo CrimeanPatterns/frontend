@@ -1,0 +1,17 @@
+Index: bundles/AwardWallet/MainBundle/Service/FlightStats/TripAlerts/API/Api/TripImportApi.php
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/bundles/AwardWallet/MainBundle/Service/FlightStats/TripAlerts/API/Api/TripImportApi.php b/bundles/AwardWallet/MainBundle/Service/FlightStats/TripAlerts/API/Api/TripImportApi.php
+--- a/bundles/AwardWallet/MainBundle/Service/FlightStats/TripAlerts/API/Api/TripImportApi.php	(revision 39dfc332494349b303198b6e5e063c0f5dd4aea0)
++++ b/bundles/AwardWallet/MainBundle/Service/FlightStats/TripAlerts/API/Api/TripImportApi.php	(date 1648464235749)
+@@ -244,7 +244,7 @@
+                     $response = $exception->getResponse();
+                     $statusCode = $response->getStatusCode();
+
+-                    throw new ApiException(sprintf('[%d] Error connecting to the API (%s)', $statusCode, $exception->getRequest()->getUri()), $statusCode, $response->getHeaders(), $response->getBody());
++                    throw new ApiException(sprintf('[%d] Error connecting to the API (%s)', $statusCode, parse_url($exception->getRequest()->getUri(), PHP_URL_PATH)), $statusCode, $response->getHeaders(), $response->getBody());
+                 }
+             );
+     }

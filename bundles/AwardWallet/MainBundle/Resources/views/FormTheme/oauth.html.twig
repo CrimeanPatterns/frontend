@@ -1,0 +1,172 @@
+{% block oauth_row %}
+	{% apply spaceless %}
+		<div class="main-separator row-{{ name|lower }}"></div>
+		<div class="row-inside row-{{ name|lower }}">
+			<div class="main-form-title">
+				{{ 'oauth.info'|trans({
+					'%programName%': form.vars.program_name
+				})|desc('We have a direct API integration with %programName%,
+						powered by %programName%, which is the most secure and efficient way to pull account information.
+						So we are not actually pulling your account information from %programName% website.'
+				) }}
+			</div>
+
+			<div id="oauth-complete"{% if value is empty %} style="display: none;"{% endif %}>
+				<div class="success-message-row">
+					<i class="icon-green-check-b"></i>
+					<p>{{ 'oauth.status'|trans|desc('Account Status') }}: <strong>{{ 'oauth.status.authenticated'|trans|desc('Authenticated') }}</strong></p>
+				</div>
+				<a class="btn-blue" id="revokeAuth">{{ 'button.oauth.revoke-authentication'|trans({'%programName%': form.vars.program_name})|desc('Revoke %programName% authentication of AwardWallet') }}</a>
+			</div>
+			<div id="oauth-none"{% if value is not empty %} style="display: none;"{% endif %}>
+				<div class="error-message-row">
+					<i class="icon-red-error-b"></i>
+					<p>{{ 'oauth.status'|trans|desc('Account Status') }}: <strong>{{ 'oauth.status.not-authenticated'|trans|desc('Not authenticated') }}</strong></p>
+				</div>
+				<a class="btn-{{ form.vars.program_code }}" id="openAuthPopup">{{ 'button.oauth.authenticate'|trans({'%programName%': form.vars.program_name})|desc('Connect with %programName%') }}</a>
+			</div>
+		</div>
+		{% if form.vars.autologin_notice %}
+		<div class="main-separator row-{{ name|lower }}"></div>
+		<div class="row-inside row-{{ name|lower }}">
+			<div class="main-form-title">
+				{{ 'oauth.info.2'|trans({
+					'%programName%': form.vars.program_name
+				})|desc('Providing account credentials is optional for %programName%
+				 		as we have API integration with them and only needed for the auto-login feature.') }}
+				</div>
+		</div>
+		{% endif %}
+
+		<div id="ieWarning" style="display: none;" title="TLS 1.2 protocol needed" >
+			<div>
+				<p>
+					In order to connect with {{ form.vars.program_name }} using this outdated version of Internet Explorer please
+					make sure you enable TLS 1.2 protocol in the settings of Internet Explorer:
+				</p>
+				<br />
+				<p>
+					<img src="/assets/awardwalletnewdesign/img/capital-one-ie.png" alt="IE_warning">
+				</p>
+			</div>
+		</div>
+
+		<script>
+			var auth_popup;
+
+			require(['jquery-boot', 'lib/dialog', 'common/alerts', 'vendor/jquery-scrollintoview/jquery.scrollintoview'], function($, dialog){
+
+				$('#openAuthPopup').on('click', function(e){
+					e.preventDefault();
+
+					var event = jQuery.Event("oauth_click");
+					event.cancelled = false;
+					event.popupLocation = '{{ path('aw_auth_' ~ form.vars.program_code ~ '_authorize', {'requestId': form.vars.request_id, 'platform': 'desktop'}) }}';
+					$('#openAuthPopup').trigger(event);
+					if (event.cancelled) {
+					    return;
+					}
+
+					var h = 650;
+					var w = 450;
+					var y = window.top.outerHeight / 2 + window.top.screenY - ( h / 2);
+					var x = window.top.outerWidth / 2 + window.top.screenX - ( w / 2);
+
+					auth_popup = window.open(event.popupLocation, 'auth_{{ form.vars.program_code }}', 'toolbar=no, location=0, directories=no, status=no, menubar=no, scrollbars=yes, resizable=0, copyhistory=no, width='+w+', height='+h+', top='+y+', left='+x);
+				});
+
+				$('#revokeAuth').on('click', function(e){
+					e.preventDefault();
+					$('#oauth-none').show();
+					$('#oauth-complete').hide();
+					$('#{{ id }}').val('');
+					$('#account_login2').trigger('change');
+				});
+
+				$('#account-form').on('submit', null, null, function(event){
+					if($('#account_{{ name }}').attr('required') && $.trim($('#account_{{ name }}').val()) == ''){
+						event.preventDefault();
+						var button = $('#oauth-none');
+						(button).scrollintoview();
+						button.effect('shake');
+						return false;
+					}
+				});
+
+				var popup = $('#ieWarning');
+
+				{% if not app.request.cookies.has('hideOauthPopup') %}
+
+				var d = dialog.createNamed('ieWarning', popup, {
+					autoOpen: false,
+					modal: true,
+					minWidth: 480,
+					buttons: [
+						{
+							text: "{{ 'popup.never_show'|trans|desc('Never show me this popup') }}",
+							"class": "silver-link",
+							click: function() {
+								document.cookie = "hideOauthPopup=1;path=/";
+								d.close();
+							}
+						},
+						{
+
+							text: Translator.trans("button.ok"),
+							"class": "btn-blue",
+							click: function() {
+								d.close();
+							}
+						}
+					]
+				});
+
+				// IE10+ is ok, show popup if lower
+				if(navigator.appName.indexOf("Internet Explorer")!=-1){
+
+					if(navigator.appVersion.indexOf("MSIE 1")==-1){
+						d.open();
+					}
+				}
+
+				{% endif %}
+
+			});
+
+            window.addEventListener("message", function (event) {
+                var origin = event.origin || event.originalEvent.origin;
+                // For Chrome, the origin property is in the event.originalEvent object.
+				console.log(event);
+                if (origin !== "{{ url_scheme }}://{{ host }}") {
+                    return;
+                }
+
+                if (typeof(event.data) !== 'object' || event.data.messageType !== 'oauth') {
+                    return;
+				}
+
+				console.log('processing oauth message');
+
+				if(event.data.error){
+					console.log('oauth error: ' + event.data.error);
+					auth_popup.close();
+					$('#oauth-none').show();
+					$('#oauth-complete').hide();
+					jAlert({{ 'error.auth.failure'|trans|json_encode|raw }});
+					return;
+				}
+
+				$('#{{ id }}').val(event.data.authInfo);
+				$('#account_login2').trigger('change');
+				$('#oauth-none').hide();
+				$('#oauth-complete').show();
+				auth_popup.close();
+
+				$('#submit-button').click();
+            }, false);
+
+		</script>
+		<input type="hidden" {{ block('widget_attributes') }} value="{{ value }}"/>
+	{% endapply %}
+{% endblock %}
+

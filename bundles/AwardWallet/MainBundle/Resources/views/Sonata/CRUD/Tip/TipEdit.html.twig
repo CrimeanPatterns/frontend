@@ -1,0 +1,84 @@
+{% extends '@SonataAdmin/CRUD/edit.html.twig' %}
+
+{% block stylesheets %}
+    {{ parent() }}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        $(function() {
+            var step2repl = $('#step-1-replacement');
+            $('form div[class^=tab-pane]:eq(0) .row')
+                .children(":eq(0)").after(step2repl);
+            step2repl.show();
+
+            var step2info = $('#step-1-info');
+            $('form div[class^=tab-pane]:eq(0) .row:eq(0)')
+                .children(":eq(1)").after(step2info);
+            step2info.show();
+        });
+    </script>
+{% endblock %}
+
+{% block sonata_page_content %}
+    {{ parent() }}
+
+    <div id="step-1-replacement" class="col-md-6">
+        <div class="box box-info">
+            <div class="box-header with-border">
+                <h3 class="box-title">
+                    <i class="fas fa-crop"></i>
+                    Replacements
+                </h3>
+                <div class="box-tools pull-right">
+                    <button class="btn btn-box-tool" data-widget="collapse"><i class="fas fa-minus"></i></button>
+                </div>
+            </div>
+            <div class="box-body" style="height:420px;overflow-y: auto;">
+                {{ admin.parameters.tplReplacement|raw }}
+                {% verbatim %}
+                <table class="table table-striped">
+                    <tbody>
+                    <tr>
+                        <td>{{Timeline().next.name}}</td>
+                        <td>Название плана, либо название блока сегмента</td>
+                    </tr>
+                    <tr>
+                        <td>{{Timeline().next.date}}</td>
+                        <td>Дата и время события (если поездка то дата прибытия)</td>
+                    </tr>
+                    <tr>
+                        <td>{{Timeline().next.location}}</td>
+                        <td>Местонахождение точки назачения для поездок либо начальной из сегмента</td>
+                    </tr>
+                    <tr>
+                        <td>{{Timeline().next.timeAhead}}</td>
+                        <td>Через сколько времени произойдет событие</td>
+                    </tr>
+                    </tbody>
+                </table>
+                {% endverbatim %}
+            </div>
+        </div>
+    </div>
+
+    <div id="step-1-info" class="col-md-12">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="alert alert-warning alert-dismissible">
+                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                    <i class="icon fas fa-warning"></i> <b>Внимание!</b> Залитые картинки синхронизируются между серверами в течение 10 минут!
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="alert alert-info alert-dismissible">
+                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                    Возможен upload картинок.
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

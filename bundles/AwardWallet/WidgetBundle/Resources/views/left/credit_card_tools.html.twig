@@ -1,0 +1,38 @@
+<div class="row">
+    <div class="heading silver">
+        <h3>
+            {{ 'credit-card.tools_menu_title'|trans|desc('Credit Card Optimization Tools') }}
+        </h3>
+    </div>
+    {% set items = [
+        {
+            'path': path('aw_spent_analysis_index'),
+            'title': 'credit-card.ccsa_title'|trans|desc('Credit Card Spend Analysis'),
+            'enabled': true,
+            'tip' : 'cardSpendToolsLink'
+        },
+        {
+            'path': path('aw_merchant_lookup'),
+            'title': 'credit-card.merchant_lookup_title'|trans|desc('Merchant Lookup Tool'),
+            'enabled': true
+        },
+        {
+            'path': path('aw_transactions_index'),
+            'title': 'transaction-analyzer'|trans,
+            'enabled': true
+        },
+
+    ] %}
+
+    <ul class="default">
+        {% for item in items %}
+            {% if item.enabled %}
+                <li class="{{ path(app.request.attributes.get('_route'), app.request.attributes.get('_route_params')) == item.path ? 'active' : '' }}"{% if item.tip is defined %} {{ tip(item.tip, {'position' : 'right'}) }}{% endif %}>
+                    <div class="row-item">
+                        <a href="{{ item.path }}">{{ item.title }}</a>
+                    </div>
+                </li>
+            {% endif %}
+        {% endfor %}
+    </ul>
+</div>

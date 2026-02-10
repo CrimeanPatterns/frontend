@@ -1,0 +1,28 @@
+{% macro drawAccountsPopup(accountsData) %}
+{% import '@AwardWalletMain/TwigMacros/common.html.twig' as interfaceMacros %}
+{{  interfaceMacros.DrawBeginBox('id="deltaPopupCrossover" style="width: 650px;"', "", true, "popupWindow") }}
+<div id="deltaPopupCrossoverFrame"></div>
+<div class="popupBContennner">
+    <table class="dealAccountsInfo" style="margin-bottom: 20px;">
+        {% if accountsData|length > 1 %}
+        In order to register you will need your Delta account numbers. Here they are:
+        {% else %}
+        In order to register you will need your Delta account number. Here it is:
+        {% endif %}
+        <tr class="whiteBg">
+            <th>Account Number</th>
+            <th>Owner</th>
+            <th class="noBorderRight">Total</th>
+        </tr>
+        {% for account in accountsData %}
+        <tr class="{% if loop.index0 is even %}greyBg{% else %}whiteBg{% endif %} {% if loop.last %}lastRow{% endif %}">
+            <td>{{ account.AccountNumber }}</td>
+            <td>{{ account.UserName }}</td>
+            <td class="noBorderRight">{{ account.Balance }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+    {{ interfaceMacros.DrawButton('button.proceed-to-my-account' | trans | desc('Proceed to my account'), "onclick=\"location.href = '/account/list.php?UserAgentID=All'\"") }}
+</div>
+{{ interfaceMacros.DrawEndBox() }}
+{% endmacro %}

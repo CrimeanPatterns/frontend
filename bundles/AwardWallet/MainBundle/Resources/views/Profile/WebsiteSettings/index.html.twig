@@ -1,0 +1,31 @@
+{% form_theme form with ['@AwardWalletMain/FormTheme/profileFields.html.twig', '@AwardWalletMain/FormTheme/fields.html.twig'] %}
+{% extends "@AwardWalletMain/Layout/profile.html.twig" %}
+
+{% block title %}{{ 'menu.edit-website-settings'|trans({}, 'menu') }}{% endblock %}
+
+{% block content %}
+    <div class="main-blk shortened">
+        <h1>{{ 'menu.edit-website-settings'|trans({}, 'menu') }}</h1>
+        {% if app.session.flashbag.has('notice') %}
+            <div class="main-blk-content">
+            {% for flash_message in app.session.flashbag.get('notice') %}
+                <div class="success-title">
+                    <i class="icon-white-check-b"></i>
+                    <span>{{ flash_message }}</span>
+                </div>
+            {% endfor %}
+            </div>
+        {% endif %}
+        <form class="main-form spinnerable"
+              action="{{ path('aw_profile_settings') }}"
+              method="post"
+        >
+            {{ form_widget(form, {'noSubmit':true}) }}
+            <div class="row-submit">
+                <button type="submit" class="btn-blue">
+                    {{ 'form.button.submit'|trans }}
+                </button>
+            </div>
+        </form>
+    </div>
+{% endblock %}

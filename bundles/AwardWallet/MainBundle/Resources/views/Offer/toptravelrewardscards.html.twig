@@ -1,0 +1,34 @@
+{# Issue #10908 #}
+
+{% extends popup is defined and popup ? "@AwardWalletMain/Offer/_offerPopup.html.twig" : "@AwardWalletMain/Offer/standard.html.twig" %}
+{% import '@AwardWalletMain/Offer/offerMacros.html.twig' as offerMacros %}
+{% import '@AwardWalletMain/TwigMacros/assets.html.twig' as assets %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    {{ encore_entry_link_tags('offer') }}
+    {{ encore_entry_link_tags('offers/toptravelrewardscards') }}
+    {% if popup is not defined %}
+        {{ assets.assets_form('css') }}
+    {% endif %}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        {{ offerMacros.jsOfferYes(_context, ApplyURL, Code, OfferUserID, ApplyURL) }}
+        {{ offerMacros.jsOfferNo(_context, Code, OfferUserID, defaultRedirectLocation) }}
+    </script>
+{% endblock %}
+
+{% block content %}
+    <div id="offer_wrap" class="offer-block">
+        <div id="image-cover" onclick="offerYes(false);"></div>
+        <div class="top-travel-rewards-card-offer">
+            <h3>Top Travel Rewards <br>Card Offers</h3>
+            <p>Tired of paying for flights & hotels? <br>These <a onclick="offerYes(false); return false;" href="#">top travel rewards credit cards</a> <br>can help! From airline miles to hotel <br> points, there’s something for <br>everyone.</p>
+            <a onclick="offerYes(false); return false;" href="#" class="btn-blue-offer">Learn More</a>
+        </div>
+        {{ offerMacros.offerButtons(_context) }}
+    </div>
+{% endblock %}

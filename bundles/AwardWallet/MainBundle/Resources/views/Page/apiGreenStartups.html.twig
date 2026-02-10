@@ -1,0 +1,79 @@
+{% set MOBILE_NAV = true %}
+{% set HIDE_NAV = true %}
+{% set MAIN_BODY_CLASSES = {
+    'manual-hidden': true,
+    'responsive': true,
+    'hide-menu': true
+}|merge(MAIN_BODY_CLASSES|default({})) %}
+
+{% extends app.user is not null ? "@AwardWalletMain/Layout/common.html.twig" : "@AwardWalletMain/Layout/not_logged.html.twig" %}
+
+{% block title %}How to build a green app with AwardWallet | Carbon Offset API{% endblock %}
+
+{% block meta %}
+    {{ parent() }}
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0, viewport-fit=cover">
+    <meta name="description" content="Learn how AwardWallet help with building green start-ups and services using powerful APIs - email parsing and web parsing">
+{% endblock %}
+
+{% block content %}
+    {% include '@AwardWalletMain/Page/_apiNav.html.twig' %}
+    <div class="main-blk content-page has-additionl-menu">
+        <h1>What AwardWallet solutions/technologies help build green start-ups and services?</h1>
+        <picture class="preview-image">
+            <source srcset="../../assets/awardwalletnewdesign/img/api/green-startups/tree-desktop.png?v=2" media="(min-width: 768px)">
+            <img src="../../assets/awardwalletnewdesign/img/api/green-startups/tree-mobile.png" alt="Tree">
+        </picture>
+        <div class="main-blk-content">
+            <div class="title-note no-border bold">
+                <h2>What are the Green Economy and Green Companies?</h2>
+            </div>
+            <p>With the growing focus on the need to urgently tackle environmental change, this has generated rapid growth in green start-ups and companies within the move to a green economy. The green economy is defined as an economy that is founded on sustainable development, with resource efficiency. A green economy is driven by the need to deliver reduced carbon emissions and pollution as well as the prevention of the loss of biodiversity.
+                Individuals are being encouraged to reduce their “carbon footprint”. A carbon footprint is the amount of carbon dioxide released into the atmosphere as a result of the actions of a person. Green companies are springing up to offer individuals ways to both calculate and offset their carbon footprint.</p>
+            <p>Despite only being a relatively small contributor to the total amount of CO2, flying has become a key target for emission reductions. This may be because it is viewed as non-essential transport by some, and also because it is believed to be the privilege of the more wealthy parts of society. This has led to a phenomenon called ”flight shaming”. Travellers are feeling pressure to offset their flying emissions which leads to
+                opportunities for green startups and established green companies to offer passengers ways to do this.</p>
+            <p>Green companies offer a variety of options to offset carbon emissions. Some such as <a class="blue-link" href="https://get.air.care/" target="_blank" rel="noopener noreferrer">AirCare</a>, not only will calculate your projected emissions for a flight, but also offer ways to offset this. Other companies offer a yearly subscription based on your average amount of travel to offset your average emissions over a year.</p>
+            <div class="title-note no-border bold">
+                <h2>What technologies are the basis for successful green start-ups and companies?</h2>
+            </div>
+            <p>The main challenge for green companies and startups offering to offset flying carbon emissions is getting the data in a cost-effective way. Many people wanting to negate their carbon footprint will be frequent flyers. Companies need to offer frequent travellers a simple way to enter their flight information without having to fill out long online forms with information. One solution is to use email parsing.</p>
+            <p>Email parsing APIs allow a company to scrape the information from an email such as a flight reservation and convert it into simple useable data. In this way, a customer can simply forward their email to the companies specific inbox rather than having to fill out a form to provide information. It is also possible for a client to sign up for inbox scraping which allows all flight reservation in their inbox to be identified and parsed
+                automatically by the relevant company. </p>
+            <p><strong>Reducing Carbon Footprint Technology</strong></p>
+            <div class="content-image">
+                <div class="content-image__center">
+                    <img class="picture__light" src="../../assets/awardwalletnewdesign/img/api/green-startups/green-startups@2x.png" alt="email parsing api">
+                    <img class="picture__dark" src="../../assets/awardwalletnewdesign/img/api/green-startups/green-startups-dark@2x.png" alt="email parsing api">
+                </div>
+                <div class="content-image__info">
+                    <div>Flight <br>Booking</div>
+                    <div>Email <br>Parsing</div>
+                    <div>Formula <br>of Carbon <br>Footprint</div>
+                    <div>Personal <br>Carbon <br>Footprint</div>
+                    <div>People <br>Actions</div>
+                </div>
+            </div>
+            <p>However, it can be prohibitively expensive for a start-up to build their own email parsing technology. This is where AwardWallet can help green start-ups by offering them an off the shelf email parsing solution at a competitive price.</p>
+            <div class="title-note no-border bold">
+                <h2>What solutions does AwardWallet offer?</h2>
+            </div>
+            <p>AwardWallet is able to offer a fast, efficient and cost-effective email parsing service to assist green companies to import their clients’ flight data. As an example, AwardWallet currently works with <a class="blue-link" href="https://get.air.care/" target="_blank" rel="noopener noreferrer">AirCare</a>, a green company that offers customers the chance to offset their flight carbon dioxide emissions. Potential clients are invited to forward their flight
+                bookings
+                to the AirCare generic email address rather than having to enter the details manually.</p>
+            <div class="content-image light-green">
+                <img src="../../assets/awardwalletnewdesign/img/api/green-startups/screenshot-1.png" srcset="../../assets/awardwalletnewdesign/img/api/green-startups/screenshot-1@2x.png 2x" alt="">
+            </div>
+            <p>Once the traveller has forwarded their flight receipt email to AirCare, they receive an email back within a few minutes with their free report on the intended flight’s carbon emissions. AwardWallet make this possible with their automated email parsing service which extracts data from emails in a matter of seconds.</p>
+            <div class="content-image dark-green">
+                <img src="../../assets/awardwalletnewdesign/img/api/green-startups/screenshot-2.png" srcset="../../assets/awardwalletnewdesign/img/api/green-startups/screenshot-2@2x.png 2x" alt="">
+            </div>
+            <p>AirCare also include details in the email of the service they offer to offset the individual’s CO2. The customer is then able to purchase a way to remove an equivalent amount of CO₂ from the atmosphere in one of their Gold Standard carbon offset projects.</p>
+            <p>AwardWallet can parse a multitude of different email formats (<a class="blue-link" href="{{ path('aw_supported_email') }}">list of supported email formats</a>) to allow you to support potential customers’ needs. </p>
+            <p>For further information or to request a trial, <a class="blue-link" href="{{ path('aw_contactus_index') }}?API">contact us using this form</a>. As well as being able to send you details of our competitive pricing, we can also offer you a chance to try our services.</p>
+        </div>
+        <div class="row-submit">
+            <a href="{{ path('aw_contactus_index') }}?API" class="btn-blue">Contact Us</a>
+            <a href="/api/email" class="btn-blue">Documentation</a>
+        </div>
+    </div>
+{% endblock %}

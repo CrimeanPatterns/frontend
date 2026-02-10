@@ -1,0 +1,15 @@
+<div class="row">
+    {% if is_granted('SITE_BUSINESS_AREA') %}
+    <div class="heading silver">
+        <i class="icon-silver-arrow-down"></i>
+
+        <h3>{{ 'buttons.onecard'|trans }}</h3>
+    </div>
+    {% endif %}
+    <ul class="default">
+        {% for item in items %}
+            {{ widget_render(item) }}
+        {% endfor %}
+    </ul>
+</div>
+

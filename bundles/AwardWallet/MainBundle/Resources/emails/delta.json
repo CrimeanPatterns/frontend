@@ -1,0 +1,68 @@
+{
+    "status": "success",
+    "errorMessage": null,
+    "loyaltyProgram": {
+		"balance": 100,
+		"properties": {
+			"Number": "123"
+		},
+		"providerCode": "delta"
+	},
+    "itineraries": [
+        {
+            "segments": [
+                {
+                    "departure": {
+                        "airportCode": "MIA",
+                        "name": "Miami",
+                        "localDateTime": "2014-07-08T15:15:00"
+                    },
+                    "arrival": {
+                        "airportCode": "ATL",
+                        "name": "Atlanta",
+                        "localDateTime": "2014-07-08T17:10:00"
+                    },
+                    "seats": [
+                        "25C"
+                    ],
+                    "cabin": "Economy",
+                    "bookingClass": "U",
+                    "airlineName": "Delta Air Lines"
+                },
+                {
+                    "departure": {
+                        "airportCode": "ATL",
+                        "name": "Atlanta",
+                        "localDateTime": "2014-07-08T19:00:00"
+                    },
+                    "arrival": {
+                        "airportCode": "DTW",
+                        "name": "Detroit",
+                        "localDateTime": "2014-07-08T20:59:00"
+                    },
+                    "seats": [
+                        "24C"
+                    ],
+                    "cabin": "Economy",
+                    "bookingClass": "U",
+                    "airlineName": "Delta Air Lines"
+                }
+           ],
+            "travelers": [
+                {
+                    "fullName": "John J Smith"
+                }
+            ],
+            "providerDetails": {
+                "confirmationNumber": "XXKU4R",
+                "reservationDate": null,
+                "name": "Delta Air Lines",
+                "code": "delta"
+            },
+            "totalPrice": null,
+            "type": "flight"
+        }
+    ],
+    "email": "Delivered-To: test@awardwallet.com\nReceived: by 10.220.46.136 with SMTP id j8csp149205vcf;\n        Wed, 26 Jun 2013 09:25:23 -0700 (PDT)\nX-Received: by 10.42.90.70 with SMTP id j6mr2705456icm.4.1372263922795;\n        Wed, 26 Jun 2013 09:25:22 -0700 (PDT)\nReturn-Path: \nReceived: from mta606.e.delta.com (mta606.e.delta.com. [38.100.169.70])\n        by mx.google.com with SMTP id g1si6042531igy.62.2013.06.26.09.25.21\n        for ;\n        Wed, 26 Jun 2013 09:25:22 -0700 (PDT)\nReceived-SPF: pass (google.com: domain of em-b73a83ebxzts1dau0hjt5qdfj5918s@m.e.delta.com designates 38.100.169.70 as permitted sender) client-ip=38.100.169.70;\nAuthentication-Results: mx.google.com;\n       spf=pass (google.com: domain of em-b73a83ebxzts1dau0hjt5qdfj5918s@m.e.delta.com designates 38.100.169.70 as permitted sender) smtp.mail=em-b73a83ebxzts1dau0hjt5qdfj5918s@m.e.delta.com;\n       dkim=pass header.i=@e.delta.com;\n       dmarc=pass (p=NONE dis=NONE) d=delta.com\nDKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=e.delta.com;\n\ts=20111007; t=1372263921; x=1388075121;\n\tbh=4LVsIcPQiMadmG4fXgG57N6vnaORs4ki9sn0nAUsaMg=; h=From:Reply-To;\n\tb=SSequcEjc/XDXX8eqQ73gRK5VUvLJBMCQNl6pjzWhzYsHmCu70lXtMUGm1NyF5FVg\n\t xXmxNoWkJAoWHvlmddJ+t+gJdSawabaw5P9XUaU0ydL9O+qNxXPWENaktaUTufsZJR\n\t LYjF0dTcWXjMqjymZ5BVHsZ/1ZjFnJU3hZnTOB4g=\nDomainKey-Signature: a=rsa-sha1; q=dns; c=nofws;\n  s=200505; d=e.delta.com;\n  b=N+KFTQXlDEz5SVBHTz3NFigauBjr4R1DB7RUlf5zpPWRqtpMIjR8pDEzNl6n2R+QCFuXVMd6yC/+R7YzM4cYh7gyUR5i0brcu5BzriX21oHXZix0c7Bz5Ghm3CR6HAmw1mIKPrHG1B7R6OWCv8oY+qRkQNURxbu2sunHkKpNzWU=;\n h=Content-Transfer-Encoding:Content-Type:Date:From:Message-Id:Received:Reply-To:Subject:To;\nContent-Transfer-Encoding: quoted-printable\nContent-Type: text/html; charset=iso-8859-1\nDate: Wed, 26 Jun 2013 16:25:21 -0000\nFrom: \"Delta Air Lines\" \nMessage-Id: \nReceived: (qmail 4002 invoked by uid 108); Wed, 26 Jun 2013 16:25:21 -0000\nReply-To: \"Delta Air Lines\" \nSubject: JOHN J SMITH 08JUL13\nTo: test@awardwallet.com",
+	"fromProvider": true
+}

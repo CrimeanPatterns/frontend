@@ -1,0 +1,29 @@
+{% extends '@MailTemplate/Layout/base.twig' %}
+{% trans_default_domain "email" %}
+
+{% block subject %}{% apply spaceless %}{% autoescape false %}
+    {{ 'account.balancewatch.update-error.subject'
+    |trans({
+        '%providerName%' : account.getProviderid.getDisplayname(),
+        '%accountLogin%' : account.getAccountNumber(),
+    }, 'email', lang)
+    |desc('%providerName% account %accountLogin% is returning an error') }}
+{%  endautoescape %}{% endapply %}{% endblock subject %}
+
+{% block content %}
+    {% import '@MailTemplate/CommonMacro.twig' as commonMacro %}
+
+    {{ commonMacro.hello(user.firstname, _context) }}
+    {% set accountEdit = absolute_url(path('aw_account_edit', {'accountId' : account.getAccountid() ?? 0})) %}
+
+    {{ commonMacro.paragraph('account.balancewatch.update-error.message'|trans({
+        '%providerName%'  : account.getProviderid.getDisplayname(),
+        '%accountLogin%'  : account.getAccountNumber(),
+        '%accountEdit%'   : '<a href="'~accountEdit~'" style="color:#4684c4;line-height:20px;font-weight:bold;text-decoration:none;" target="_blank">'~accountEdit~'</a>',
+    }, 'email', lang)|desc('%providerName% account %accountLogin% was being monitored for changes. However, we received an error while updating this account. For that reason, this account was reverted to a normal background updating schedule and your Balance Watch credit was returned back to you.
+<br>If you wish to enable the Balance Watch again on this account please make sure AwardWallet is able to retrieve its balance:
+<br>
+<br>%accountEdit%
+    '|raw), _context, {escape: false}) }}
+
+{% endblock content %}

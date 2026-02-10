@@ -1,0 +1,58 @@
+{% block recaptcha_row %}
+    <script>
+
+        function onSubmitRecaptcha(token)
+        {
+            const input = $('#{{ form.token.vars.id }}');
+            var form = input.closest('form');
+            input.val(token);
+            form.get(0).submit();
+        }
+
+        function initRecaptcha() {
+            let forceTheme = {% if theme.currentTheme is null %}null{% else %}'{{ theme.currentTheme }}'{% endif %};
+            let theme = (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches && 'light' !== forceTheme || 'dark' === forceTheme) ? 'dark' : 'light';
+            $('.g-recaptcha').data('theme', theme);
+
+            var form = $('#{{ form.token.vars.id }}').closest('form');
+            form.bind('submit', function (event) {
+                if(event.isDefaultPrevented()) {
+                    return false;
+                }
+                grecaptcha.execute();
+
+                var alignTimer = null;
+
+                function alignCaptchaPopup()
+                {
+                    var iframe = $("iframe[title='recaptcha challenge']");
+                    if (iframe.length === 0) {
+                        return;
+                    }
+                    var div = iframe.parent().parent();
+                    if (!div.is(":visible")) {
+                        return;
+                    }
+
+                    div.get(0).scrollIntoView(true);
+                    clearInterval(alignTimer);
+                }
+
+                alignTimer = setInterval(alignCaptchaPopup, 1000);
+
+                event.preventDefault();
+            });
+        }
+
+    </script>
+
+    <div class="g-recaptcha"
+         data-sitekey="{{ recaptcha_site_key }}"
+         data-action="{{ action }}"
+         data-callback="onSubmitRecaptcha"
+         data-size="invisible">
+    </div>
+
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+    {{ form_rest(form) }}
+{% endblock %}

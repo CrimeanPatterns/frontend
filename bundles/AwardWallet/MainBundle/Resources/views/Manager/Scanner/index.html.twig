@@ -1,0 +1,104 @@
+{% set title = "Mailbox Scanner Status" %}
+{% extends '@AwardWalletMain/Manager/layout.html.twig' %}
+
+{% block content %}
+
+    <h1>{{ title }}</h1>
+
+    <div>
+        <input type="checkbox" id="errorsOnly" value="1" checked> <label for="errorsOnly">Errors only</label>
+        <select name="type" id="type">
+            <option value="">All</option>
+            <option value="imap">imap</option>
+            <option value="google">google</option>
+            <option value="microsoft">microsoft</option>
+        </select>
+    </div>
+
+    <table border="1" cellspacing="0" cellpadding="5" id="mailboxes">
+        <thead>
+            <tr>
+                <td>id</td>
+                <td>type</td>
+                <td>email</td>
+                <td>state</td>
+                <td>error</td>
+                <td>errorCount</td>
+                <td>errorCode</td>
+                <td>backoffDate</td>
+                <td>startFrom</td>
+                <td>listenUntil</td>
+                <td>creationDate</td>
+                <td>
+                    <a style="display: none;" href="#" class="reset">Reset</a>
+                </td>
+            </tr>
+        </thead>
+        <tbody>
+            <tr><td colspan="12">Loading..</td></tr>
+        </tbody>
+    </table>
+
+    <script>
+
+        function list()
+        {
+            $.ajax({
+                url: '{{ path('aw_manager_scanner_proxy', {path: '/mailboxes'}) }}?errorsOnly=' + $('#errorsOnly').is(':checked') + '&type=' + $('#type').val(),
+                success: function(data){
+                    var body = $('#mailboxes tbody');
+                    body.empty();
+                    var template = $('#mailboxes thead tr');
+                    $.each(data, function(index, values){
+                         var row = template.clone();
+                         row.find('td').each(function(index, cell){
+                             if(index < 11)
+                                cell.innerText = '';
+                         });
+
+                         row.find('td:eq(0)').text(values.mailbox.id);
+                         row.find('td:eq(1)').text(values.mailbox.type);
+                         row.find('td:eq(2)').text((values.mailbox.login || values.mailbox.email) + "\n" + values.mailbox.tags.join(","));
+                         row.find('td:eq(3)').text(values.state);
+                         row.find('td:eq(4)').text(values.error);
+                         row.find('td:eq(5)').text(values.errorCount);
+                         row.find('td:eq(6)').text(values.mailbox.errorCode);
+                         row.find('td:eq(7)').text(values.backoffDate);
+                         row.find('td:eq(8)').text(values.mailbox.startFrom);
+                         row.find('td:eq(9)').text(values.mailbox.listenUntil);
+                         row.find('td:eq(10)').text(values.mailbox.creationDate);
+
+                         row.data('mailboxId', values.mailbox.id);
+                         row.find('a').show();
+
+                         row.appendTo(body);
+                    });
+                }
+            })
+        }
+
+        function reset()
+        {
+            mailboxId =  $(this).closest('tr').data('mailboxId');
+            var cell = $(this).closest('td')
+            cell.text('Resetting..');
+            $.ajax({
+                url: '{{ path('aw_manager_scanner_proxy', {path: '/mailboxes'}) }}' + '/' + mailboxId + '/reset',
+                type: 'POST',
+                success: function (data) {
+                    cell.text('Reset.');
+                    cell.closest('tr').css('background-color', 'yellow');
+                }
+            });
+            return false;
+        }
+
+        $(document).ready(function(){
+            list();
+            $('#errorsOnly').on('click', list);
+            $('#type').on('change', list);
+            $('#mailboxes').on('click', 'a.reset', reset);
+        });
+    </script>
+
+{% endblock %}

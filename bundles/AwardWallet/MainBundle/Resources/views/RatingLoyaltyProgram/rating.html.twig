@@ -1,0 +1,316 @@
+{% import "@AwardWalletMain/TransferTimes/macros.twig" as transferMacros %}
+{% import "@AwardWalletMain/MileValue/macros.twig" as mileValueMacros %}
+
+{% set MOBILE_NAV = true %}
+{% set MAIN_BODY_CLASSES = {
+    'manual-hidden': true,
+    'responsive': true
+}|merge(MAIN_BODY_CLASSES|default({})) %}
+{% extends app.user is not null ? "@AwardWalletMain/Layout/common.html.twig" : "@AwardWalletMain/Layout/not_logged.html.twig" %}
+
+{% block meta %}
+    {{ parent() }}
+    <base href="{{ path('aw_loyalty_program_rating', {'loyaltyProgramName': initialData.provider.urlname}) }}">
+    <meta name="description" content="{{ 'provider_rating_page_description'|trans({
+        '%provider_name%' : initialData.provider.displayname,
+        '%programs-count%' : counter.programs,
+        '%users-count%' : counter.users,
+        '%points-count%' : counter.points,
+    })|desc('End-user reviews of the %provider_name% loyalty program. Track all of your reward program accounts with AwardWallet. We support %programs-count% reward programs for %users-count% thousand users who track %points-count% billion points with us. Register your free account today!') }}">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0, viewport-fit=cover">
+{% endblock %}
+
+{% block title %}
+    {{ 'reviews_of_provider'|trans({'%provider_name%': initialData.provider.displayname })|desc('Reviews of %provider_name% loyalty program') }}
+{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        require([
+            'jquery-boot',
+            'angular-boot',
+            'pages/LPRating',
+            'lib/design',
+            'lib/customizer'
+        ], function ($, angular) {
+            angular.module('LPRatingApp').constant('initialData', {{ initialData|json_encode|default('{}')|raw }});
+            angular.module('LPRatingApp').constant('transferTimesTo', {{ transferTimesTo|json_encode|default('{}')|raw }});
+            angular.module('LPRatingApp').constant('transferTimesFrom', {{ transferTimesFrom|json_encode|default('{}')|raw }});
+            angular.module('LPRatingApp').constant('mileValue', {{ mileValue|json_encode|default('{}')|raw }});
+
+            $(function() {
+                angular.bootstrap($('.main-blk').get(), ['LPRatingApp']);
+                {% if isAuth is same as(false) %}
+                $('#writeReviewBtn').attr('href', '{{ path('aw_login', {"BackTo": app.request.uri ~ "#userReview"}) }}');
+                {% endif %}
+            });
+        });
+    </script>
+{% endblock %}
+
+{% block content %}
+<style type="text/css">
+    .point-values tbody .col strong:empty:after {
+        content: '{{ 'na'|trans }}';
+    }
+</style>
+<div class="main-blk rating-blk provider-rating-page" data-ng-controller="LPRatingCtrl as main">
+    <div class="heading">
+        <h1>{{ initialData.provider.displayname|raw }}</h1>
+        <div class="rating-wrap">
+            <div class="rating middle">
+                {% for i in 1..5 %}
+                    {% if i <= initialData.providerRating.total %}
+                        <span class="blue-star"></span>
+                    {% else %}
+                        <span></span>
+                    {% endif %}
+                {% endfor %}
+            </div>
+            <div class="rating-wrap__text">
+                {% if initialData.providerRating.count > 0 %}
+                    {{ 'based_on_n_reviews.v2'|trans({
+                        '%count%': initialData.providerRating.count,
+                        '%number%': initialData.providerRating.count|formatNumber,
+                    })|desc('Based on %number% review|Based on %number% reviews') }}
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <div class="main-blk-content provider-rating">
+        <div class="rate__silver" {% if 0 == initialData.providerRating.total and (blogposts is not defined or 0 == blogposts|length) %}ng-hide="true"{% endif %}>
+            <div class="rate__silver-row">
+                <div class="title-note">
+                    <h3>{{ 'average_ratings'|trans|desc('Average Ratings') }}</h3>
+                </div>
+                <div class="rate__silver-row-item">
+                    <div class="rate__average">
+                        <div class="rate__average-ratings">
+                            {% for key, value in initialData.providerRating.rating %}
+                                <div class="rate__average-row">
+                                    <span class="rate__average-caption">{{ ('rating.' ~ key|lower) |trans }} <i class="icon-info-silver" data-role="tooltip" title= '{{ ('rating.' ~ key|lower ~ '.desc')|trans }}'></i></span>
+                                    <div class="progressbar{% if 0 >= value %} empty{% endif %}">
+                                        <span style="width: {{ value * 20 }}%"></span>
+                                    </div>
+                                    <strong>{{ value > 0 ? value : ''}}</strong>
+                                </div>
+
+                            {% endfor %}
+                        </div>
+                    </div>
+                    <div class="rate__btn">
+                        <a id="writeReviewBtn" class="btn-blue" href=
+                        {% if isAuth %}
+                            "#" onclick="$('#fldReview').focus(); return false;"
+                        {% else %}
+                            "{{ path('aw_login') }}"
+                        {% endif %}
+                        >{{ 'write_review'|trans|desc('Write a Review') }}
+                        </a>
+                    </div>
+                </div>
+            </div>
+            {% if blogposts is defined and blogposts|length %}
+            <div class="rate__silver-row">
+                <div class="title-note">
+                    <h3>{{ 'top-blog-posts'|trans|desc('Top Blog Posts') }}</h3>
+                    <div class="rate__silver-row-item">
+                        <div class="rate__silver-list">
+                            {% for post in blogposts %}
+                            <a href="{{ post.postURL }}">{{ post.title }}</a>
+                            {% endfor %}
+                        </div>
+                        {% if blogtags is defined and blogtags is not empty %}
+                        <div class="rate__more">
+                            <a href="https://awardwallet.com/blog/?rTagId={{ blogtags|url_encode }}" class="blue-link">
+                                <span>{{ 'see-all-posts-on'|trans({'%provider%' : initialData.provider.displayname|htmldecode})|desc('See all posts on %provider%') }}</span>
+                                <i class="icon-double-arrow-right-blue"></i>
+                            </a>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+
+        <div ng-if="transferTimesTo.length" class="rate__table transfer-from" ng-cloak>
+            <div class="title-note">
+                <h3>{{ 'transfer-to'|trans({'%provider%' : initialData.provider.displayname|htmldecode })|desc('Transfer to %provider%') }}</h3>
+            </div>
+            {{ transferMacros.showTransferTimes('transferTimesTo') }}
+            <div class="rate__more">
+                <a href="{{ path('aw_mile_transfer_times_index') }}" class="blue-link">
+                    <span>{{ 'see-all-transfer-partners'|trans|desc('See all transfer partners') }}</span>
+                    <i class="icon-double-arrow-right-blue"></i>
+                </a>
+            </div>
+        </div>
+
+        <div ng-if="transferTimesFrom.length" class="rate__table transfer-to" ng-cloak>
+            <div class="title-note">
+                <h3>{{ 'transfer-from'|trans({'%provider%' : initialData.provider.displayname|htmldecode })|desc('Transfer from %provider%') }}</h3>
+            </div>
+            {{ transferMacros.showTransferTimes('transferTimesFrom') }}
+            <div class="rate__more">
+                <a href="{{ path('aw_mile_transfer_times_index') }}" class="blue-link">
+                    <span>{{ 'see-all-transfer-partners'|trans }}</span>
+                    <i class="icon-double-arrow-right-blue"></i>
+                </a>
+            </div>
+        </div>
+
+        <div class="point-mile-values rate__points-table" ng-if="mileValue._mileValue" ng-cloak>
+            {{ mileValueMacros.showMileValue('mileValue') }}
+            <div class="rate__more">
+                <a href="{{ path('aw_points_miles_values') }}" class="blue-link">
+                    <span>{{ 'see-all-mile-values'|trans|desc('See all mile values') }}</span>
+                    <i class="icon-double-arrow-right-blue"></i>
+                </a>
+            </div>
+        </div>
+
+        <div class="title-note" ng-show="reviewsList.length > 0">
+            <h3>{{ 'aw_member_reviews'|trans|desc('AwardWallet Member Reviews') }}</h3>
+            <div class="title-note__input">
+                <span>{{ 'sort_by'|trans|desc('Sort by:') }}</span>
+                <div class="styled-select middle">
+                    <div>
+                        <select ng-model="selectedFields" ng-options="field.label for field in sortedFields"></select>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="ajax-loader" data-ng-hide="main.page_loaded"><div class="loading"></div></div>
+        <div class="rate-list">
+            <div class="rate" data-ng-repeat="review in reviewsList | orderBy: selectedFields.name : selectedFields.descending track by review.ReviewID" ng-cloak>
+                <div class="rate__info">
+                    <div class="rate__author">
+                        <div class="rate__author_thumb">
+                            <img src="" alt="" data-ng-src="[[review.avatar]]" ng-if="review.avatar">
+                            <i class="icon-default-avatar" ng-if="review.avatar == null"></i>
+                        </div>
+                        <div class="rate__author_details">
+                            <div class="rate__author_name">[[review.FirstName]]</div>
+                            <div class="rate__author_date">{{ 'reviewed-on'|trans|desc('Reviewed on') }}: <span data-ng-bind="review.updatedateFormat"></span></div>
+                        </div>
+                    </div>
+                    <div ng-if="review.Approved == 1 && review.Review != ''" class="rate__text" style="white-space: pre-line;" data-ng-bind="review.Review"></div>
+                    <div ng-if="review.Approved == 1 && review.Review == ''" class="rate__text rate__text-empty">{{ 'no-review-added'|trans|desc('No Review Added') }}</div>
+                    <div ng-if="review.Approved == 0" class="rate__text rate__text--box">{{ 'review-awaiting-moderation'|trans }}</div>
+                    <div class="rate__btn rate__btn--useful">
+                        <div data-ng-bind="helpfulTrans(review._usefulCount)"></div>
+                        {% if isAuth %}
+                        <div class="rate__btn-wrap" ng-if="review.Approved == 1">
+                            <a href="#" id="vote-yes" class="btn-blue small-btn" data-ng-click="setReviewVote(review, 1, $event)">{{ 'useful'|trans|desc('Useful') }}</a>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="rate__average">
+                    <div class="rate__average-body">
+                        <div class="rate__average-top">
+                            <div class="rating middle">
+                                <span data-ng-repeat="star in [1,2,3,4,5]" data-ng-class="{'blue-star': star <= review.totalRating}"></span>
+                            </div>
+                            <h4 data-ng-bind="review.totalRatingCaption"></h4>
+                        </div>
+                        <div class="rate__average-ratings">
+                            <div class="rate__average-row-wrap">
+                                <div class="rate__average-row" data-ng-repeat="value in fieldNames">
+                                    <span class="rate__average-caption"><span data-ng-bind="ratingLabelText(value)"></span>
+                                    <i class="icon-info-silver" data-tip data-role="tooltip" title="[[ ratingTipText(value) ]]"></i></span>
+                                    <div class="progressbar" data-ng-class="{'empty' : 0 >= review[value]}">
+                                        <span style="width: [[ review[value]*20 ]]%;"> </span>
+                                    </div>
+                                    <strong data-ng-bind="(review[value] > 0)? review[value] : ''"></strong>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% if isAuth is same as(false) and (blogposts is not defined or 0 == blogposts|length) %}
+            <div class="rate" data-ng-show="!reviewsList.length" style="padding-left: 18px;margin-top:-30px;">
+                <p>{{ 'provider-not-have-reviews-please-login'|trans({
+                        '%providerName%' : initialData.provider.displayname,
+                        '%link_on%' : '<a href="'~path('aw_login', {"BackTo": app.request.uri ~ "#userReview"})~'">',
+                        '%link_off%' : '</a>'
+                    })|raw|desc('%providerName% does not have any reviews yet, please %link_on%log in%link_off% to AwardWallet to be the first one to review it.') }}</p>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    {% if isAuth %}
+        <form id="userReview" name="form" class="main-form" data-ng-model="userReview" data-ng-submit="submit()">
+            <div class="main-form-item">
+                <div class="title-note">
+                    <h3>{{ 'your_review_and_rating'|trans|desc('Your Review & Rating') }}</h3>
+                </div>
+                <div class="ajax-loader" data-ng-hide="main.page_loaded"><div class="loading"></div></div>
+                <div class="error-message-blk" data-ng-show="form.$dirty && form.$invalid" data-ng-cloak>
+                    <i class="icon-error-small-white"></i>
+                    <p>{{ 'please_set_rating_or_review'|trans|desc('Please specify rating or write review text') }}</p>
+                </div>
+                <div class="success-message-row" data-ng-cloak data-ng-show="main.review.saved == true && main.review.success == true">
+                    <i class="icon-green-check-b"></i>
+                    {% if initialData.userReview is not empty %}
+                        <p>{{ 'review_successfully_edited'|trans|desc('Your review was successfully edited') }}</p>
+                    {% else %}
+                        <p>{{ 'review-awaiting-moderation'|trans }}</p>
+                    {% endif %}
+                </div>
+                <div class="error-message-blk" data-ng-cloak data-ng-show="main.review.saved == true && main.review.success == false">
+                    <i class="icon-error-small-white"></i>
+                    <p>{{ 'error_saving_review'|trans|desc("Your review wasn't saved") }}</p>
+                </div>
+
+                <div class="main-form__container" data-ng-cloak>
+                    <div class="main-form__left">
+                        <label class="main-form__label bold">{{ 'review'|trans|desc('Review') }}</label>
+                        <div class="main-form__input">
+                            <textarea name="fReview" class="big" id="fldReview" data-ng-model="userReview.Review" data-ng-required="ratingSum()==0"></textarea>
+                        </div>
+                    </div>
+                    <div class="main-form__right">
+                        <label class="main-form__label bold">{{ 'provider-rating'|trans }}</label>
+                        <div class="rate__average">
+                            <div class="rate__average-ratings" data-ng-cloak>
+                                <div class="rate__average-row" data-ng-repeat="valuer in fieldNames">
+                                    <span class="rate__average-caption"><span  data-ng-bind="ratingLabelText(valuer)"></span><i class="icon-info-silver" data-tip data-role="tooltip" title="[[ ratingTipText(valuer) ]]"></i></span>
+                                    <div class="rating big">
+                                        <span class="star"
+                                              data-ng-repeat="youStar in starsNumber"
+                                              data-ng-class="{'blue-star': youStar <= yourCurrentRate[valuer]}"
+                                              data-ng-click="setRate(youStar, valuer)"
+                                              data-ng-mouseover="currentRate(youStar, valuer)"
+                                              data-ng-mouseleave="currentRateUnset(valuer)"
+                                        ></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row-submit" data-ng-cloak>
+                <button class="btn-blue" type="submit"  data-ng-disabled="form.$invalid || form.$pristine">
+                    {% if initialData.userReview is not empty %}
+                        <span>{{ 'edit_review'|trans|desc('Edit Review') }}</span>
+                    {% else %}
+                        <span>{{ 'post_review'|trans|desc('Post Review') }}</span>
+                    {% endif %}
+                </button>
+            </div>
+        </form>
+    {% endif %}
+    </div>
+{% endblock %}

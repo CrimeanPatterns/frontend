@@ -1,0 +1,86 @@
+{% extends '@AwardWalletMain/Manager/layout.html.twig' %}
+
+{% block content %}
+    <style>
+        table {
+            border-collapse: collapse;
+        }
+        td {
+            border: black solid 1px;
+            font-size: medium;
+        }
+        tr.status1 td {
+            background-color: #DBFFE4;
+        }
+        tr.status-1 td {
+            background-color: #FFEBEB;
+        }
+    </style>
+    <script>
+        function sendData(status) {
+            var ids = [];
+            var list = $('.idCheck:checked');
+            for(var i = 0; i < list.length; i++) {
+                ids.push(list.eq(i).val());
+            }
+            if (confirm('Set ' + ids.length + ' address to ' + (status == 1 ? 'valid' : 'invalid') + '?')) {
+                $.post('post', {'ids': ids.join(','), 'status': status}, function(data){
+                    console.log(data);
+                    if (data.error) {
+                        alert(data.error);
+                    }
+                    else {
+                        list.prop('checked', false);
+                        list.parents('tr').removeClass().addClass('status' + status);
+                    }
+                });
+
+            }
+        }
+    </script>
+    <div>
+        Addresses are split into {{ meta.listCount }} files, address count by list:
+        {% for i, cnt in meta.lengths %}
+            <li>{{ i }}: {{ cnt }}</li>
+        {% endfor %}
+        Last changes were made {{ meta.lastUpdateDate }}
+    </div>
+    <div style="position: sticky; top: 100px; float: right;">
+        <button onclick="return sendData(-1);">Invalid</button>
+        <button onclick="return sendData(1);">Approve</button>
+    </div>
+    <table>
+        <thead>
+            <tr>
+                <th></th>
+                <th>Address</th>
+                <th>Itinerary</th>
+                <th>Balance</th>
+                <th>Discovered</th>
+                <th>OTC</th>
+                <th>Boarding Pass</th>
+                <th>Other</th>
+                <th>Last received date</th>
+                <th>Total(old)</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for item in list %}
+            <tr class="status{{ item.Verified }}">
+                <td><input type="checkbox" value="{{ item.ID }}" class="idCheck"></td>
+                <td><a href="../parser/list/all?show=all&from={{ item.Domain|url_encode }}" target="_blank">{{ item.Domain }}</a></td>
+                <td>{{ item.TotalItinerary }}</td>
+                <td>{{ item.TotalStatement }}</td>
+                <td>{{ item.TotalDiscovered }}</td>
+                <td>{{ item.TotalOtc }}</td>
+                <td>{{ item.TotalBp }}</td>
+                <td>{{ item.TotalOther }}</td>
+                <td>{{ item.LastReceivedDate }}</td>
+                <td>{{ item.Total }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+{% endblock %}
+

@@ -1,0 +1,47 @@
+<table class="details" style="width: 100%;">
+    <tr>
+        <th class="ra sticky" onclick="filterUniqueRows();">v</th>
+        <th class="ra sticky">requestID</th>
+        <th class="ra sticky">{% if type=='hotel' %}destination{% else %}route{% endif %}</th>
+        <th class="ra sticky">state (error code)</th>
+        <th class="ra sticky">retries</th>
+        <th class="ra sticky">request dateTime</th>
+        <th class="ra sticky">queue time (s)</th>
+        <th class="ra sticky">parsing/captcha time (s)</th>
+        <th class="ra sticky">full processing time (s)</th>
+        <th class="ra sticky">partner</th>
+    </tr>
+    {% for row in data %}
+        <tr>
+            <td class="ra-top"><input type="checkbox"></td>
+            <td class="ra-top">
+{#                for local debug full path                #}
+                <div style="text-align: right;margin-right: 40px;">
+                    {% if manageLog %}
+                <a href='https://awardwallet.com/manager/loyalty/logs?Method={{ method }}&RequestID={{ row.RequestID }}&Partner={{ row.Partner }}&Cluster={{ cluster }}'
+                   target='_blank'>{{ row.RequestID }}</a>&nbsp&nbsp<a style="float:right;"
+                        href='https://awardwallet.com/manager/loyalty/logs?Method={{ method }}&RequestID={{ row.RequestID }}&Partner={{ row.Partner }}&Cluster={{ cluster }}&ShowLatest=1'
+                        target='_blank'>last</a>
+                    {% else %}
+                        {{ row.RequestID }}
+                    {% endif %}
+                </div>
+            </td>
+            <td class="ra-top" title="{{ row.RequestData }}">
+                <span>{{ row.Route|length > 30 ? row.Route|slice(0, 30) ~ '...' : row.Route  }}</span>
+                <button class="gray" title="Copy request" onclick="copy(this);">&nbsp;❒ Request</button>
+            </td>
+            <td class="ra-top" title="{{ row.ResponseData }}">
+                <span>{{ row.ErrorCode }}</span>
+                {% if row.ResponseData  %}<button class="gray" title="{{ row.ResponseData }}">&nbsp; Response</button> {% endif %}
+{#                {% if row.ResponseData  %}<button class="gray" title="Copy response" onclick="copy(this);">&nbsp;❒ Response</button> {% endif %}#}
+            </td>
+            <td class="ra-top">{{ row.ParseRetries }}</td>
+            <td class="ra-top">{{ row.RequestDateTime }}</td>
+            <td class="ra-top">{{ row.QueueTime }}</td>
+            <td class="ra-top">{{ row.ParsingTime }}/{{ row.CaptchaTime }}</td>
+            <td class="ra-top">{{ row.FullProcessingTime }}</td>
+            <td class="ra-top">{{ row.Partner }}</td>
+        </tr>
+    {% endfor %}
+</table>

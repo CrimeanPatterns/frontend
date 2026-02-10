@@ -1,0 +1,142 @@
+{% set MOBILE_NAV = true %}
+{% set HIDE_NAV = true %}
+{% set MAIN_BODY_CLASSES = {
+    'manual-hidden': true,
+    'responsive': true,
+    'hide-menu': true
+}|merge(MAIN_BODY_CLASSES|default({})) %}
+
+{% extends app.user is not null ? "@AwardWalletMain/Layout/common.html.twig" : "@AwardWalletMain/Layout/not_logged.html.twig" %}
+
+{% if billingForm is defined %}
+    {% form_theme billingForm with ['@AwardWalletMain/FormTheme/fields.html.twig'] %}
+{% endif %}
+
+{% import "@AwardWalletMain/Cart/macros.html.twig" as macro %}
+
+{% block header_metatags %}
+    {% include '@AwardWalletMain/Utility/scalableViewport.html.twig' %}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        var oldonload = window.onload;
+        var newonload = function () {
+            if (window.devicePixelRatio == 2) {
+                $("form img").each(function () {
+                    var retinaSrc = $(this).attr('src').replace('.png', '@2x.png');
+                    $(this).attr('src', retinaSrc);
+                });
+            }
+        };
+        if (typeof window.onload != 'function') {
+            window.onload = newonload;
+        } else {
+            window.onload = function() {
+                if (oldonload) {
+                    oldonload();
+                }
+                newonload();
+            }
+        }
+
+        require([
+            'lib/design', 'pages/billing'
+        ], function () {
+            $('form').one('submit', function (e) {
+                e.preventDefault();
+                var form = $(this);
+                $('form button[type="submit"]')
+                    .addClass('loader')
+                    .attr('disabled', 'disabled')
+                    .delay(200)
+                    .queue(function(next) {
+                        form.submit();
+                        next();
+                    });
+            });
+        });
+    </script>
+{% endblock %}
+
+{% block meta %}
+    {{ parent() }}
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0, viewport-fit=cover">
+{% endblock %}
+
+{% block content %}
+    <div class="main-blk shortened">
+        <h1>
+            {% if changePaymentMethod %}
+                {{ 'cart.order-update-payment-method'|trans|desc("Update payment method") }}
+            {% else %}
+                {{ 'cart.order-review'|trans }}
+            {% endif %}
+        </h1>
+        <form action="" method="post" class="main-form">
+            {% if not cardInfoForm.vars.valid or (billingForm is defined and not billingForm.vars.valid)%}
+                <div class="error-message-blk">
+                        <i class="icon-warning-small"></i>
+                        <p>{{ 'form.error-below'|trans|desc("There has been an error on this page. For details see below.")|raw }}</p>
+                </div>
+            {% endif %}
+            <div class="main-form-item">
+                {% if not changePaymentMethod %}
+                    {{ macro.drawCart(cart) }}
+                {% endif %}
+                {% if billingForm is defined or billingAddress is defined %}
+                    <div class="title-note">
+                        <h3>{{ 'billing.address'|trans|desc('Billing address') }}</h3>
+                    </div>
+
+                    <div class="content-block" id="billing-address">
+                        {% if billingForm is defined %}
+                            {{ form_widget(billingForm, {'noSubmit':true}) }}
+                        {% elseif billingAddresses is defined %}
+
+                            {{ include ("@AwardWalletMain/Cart/Billing/_address.html.twig", {'address': selectedAddress, 'changeLink': true}) }}
+
+                            <div id="change-billing-popup" style="display: none">
+                                <div class="add-block">
+                                    {% for address in billingAddresses %}
+                                        <div class="col">
+                                            {{ include ("@AwardWalletMain/Cart/Billing/_address.html.twig", {'address': address, 'changeLink': false}) }}
+                                            <div class="action">
+                                                <button class="btn-blue use-this-address" data-id="{{ address.billingaddressid }}">{{ 'use.this.address'|trans|desc('Use this address') }}</button>
+                                                <ul class="list-actions">
+                                                    <li><a href="{{ path('aw_billing_edit', {'id': address.billingaddressid}) }}"><i class="icon-edit"></i></a></li>
+                                                    <li><a href="#" class="delete-address" data-id="{{ address.billingaddressid }}"><i class="icon-delete"></i></a></li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    {% endfor %}
+
+                                    <div class="col">
+                                        <a href="{{ path('aw_billing_add') }}" class="add">
+                                            <i class="icon-add-dark"></i>
+
+                                            <span>{{ 'add.billing.address'|trans|desc('Add a billing address') }}</span>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endif %}
+                    </div>
+                {% endif %}
+
+                {{ include('@AwardWalletMain/Cart/Common/_cardinfo.html.twig', { 'form': cardInfoForm }) }}
+
+            </div>
+            <div class="row-submit t-right">
+                {% if showBackButton %}
+                    <a href="{{ url('aw_cart_common_paymenttype') }}" class="btn-silver">{{ 'button.back'|trans|desc("Back") }}</a>
+                {% endif %}
+
+                <button type="submit" class="btn-blue">
+                    {{ cart.subscription and not changePaymentMethod ? 'create-subscription'|trans|desc("Create subscription") : 'continue'|trans|desc("Continue") }}
+                </button>
+            </div>
+        </form>
+    </div>
+{% endblock %}

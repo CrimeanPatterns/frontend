@@ -1,0 +1,149 @@
+{% extends "@AwardWalletMain/Manager/layout.html.twig" %}
+{% set title = 'Check Account through WSDL' %}
+{% set contentTitle = "" %}
+{% set fields = {'AccountID':'Account ID', 'ProviderCode':'Provider Code', 'Login':'Login', 'Login2':'Login2', 'Password':'Password'} %}
+{% block content %}
+
+<h1 style="padding-bottom: 20px;">{{ title }}</h1>
+
+<form id="wsdlCheckForm" style="float: left; width: 300px;">
+    <!-- fake fields are a workaround for chrome autofill getting the wrong fields -->
+    <input style="display:none" type="text" name="fakeusernameremembered"/>
+    <input style="display:none" type="password" name="fakepasswordremembered"/>
+    <table>
+        {% for field, title in fields %}
+        <tr>
+            <td><label for="fld{{ field }}">{{ title }}</label></td>
+            <td><input class="inputTxt" type="{% if field == 'Password' %}password{% else %}text{% endif %}" id="fld{{ field }}" name="{{ field }}" autocomplete="false"/></td>
+        </tr>
+        {% endfor %}
+        <tr>
+            <td><label for="fldAnswers">Security Answers</label></td>
+            <td>
+                <textarea class="inputTxt" id="fldAnswers" name="Answers" style="height: 100px;"></textarea><br/>
+                <div class="note" style="color: gray;">
+                One answer per line:<br/>
+                Question=Answer
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td><label for="fldDate">Files Start Date</label></td>
+            <td>
+                <input class="inputTxt" type="date" id="fldDate" name="Date"/>
+            </td>
+        </tr>
+        <tr>
+            <td></td>
+            <td>
+                <input type="button" value="Check" id="checkButton" style="float: left;">
+                <div id="progressIndicator" style="float: left; width: 100px; display: none;">
+                    <img src="/lib/images/progressCircle.gif" style="float: left; border: none;"/>
+                    <input type="button" id="stopButton" value="Stop" style="float: left;"></button>
+                </div>
+            </td>
+        </tr>
+    </table>
+</form>
+
+<div style="margin-left: 320px; margin-top: 5px;">
+    <div id="progress">
+        Fill in Account ID or Password Code and other fields
+    </div>
+    <div id="warnings" style="color: red; font-weight: bold;"></div>
+    <pre id="response"></pre>
+</div>
+
+<script type="text/javascript">
+
+    $(document).ready(function(){
+
+        var timer;
+        var form = $('#wsdlCheckForm');
+
+        lastData = localStorage.getItem('lastWsdlCheck');
+        if(lastData)
+            for(key in lastData){
+                var val = lastData[key];
+                $('#fld' + val.name).val(val.value);
+            }
+
+        $('#checkButton').on('click', function(){
+            var data = form.serialize();
+            localStorage.setItem('lastWsdlCheck', form.serializeArray());
+            $('#progress').text('Checking account..').removeAttr('class');
+            $('#response').text('');
+            $('#warnings').text('');
+            showProgress(true);
+            check(data, true, function(response){
+                $('#warnings').html('');
+                $.each(response.warnings, function(index, warning){
+                    $('#warnings').append('<div>' + warning + '</div>');
+                });
+                if(response.result.ErrorCode == 108) // SOAP_TIMEOUT
+                    poll(data, 550);
+                else
+                    showError(response.result.ErrorMessage);
+            });
+        });
+
+        $('#stopButton').on('click', function(){
+            clearTimeout(timer);
+            showError('stopped');
+        });
+
+        $('#fldAccountID').focus();
+
+        function check(data, now, onSuccess){
+            request = $.ajax({
+                type: 'POST',
+                url: '{{ path('aw_manager_wsdl_check_check') }}?now=' + now,
+                data: data,
+                success: function(response){
+                    $('#response').html(JSON.stringify(response.result, undefined, 2));
+                    onSuccess(response);
+                },
+                error: function(XMLHttpRequest, textStatus, errorThrown){
+                    showError(textStatus + ' ' + errorThrown);
+                }
+            });
+        }
+
+        function showError(error){
+            clearTimeout(timer);
+            $('#progress').html(error).addClass('errorFrm');
+            showProgress(false);
+        }
+
+        function poll(data, timelimit){
+            if(timelimit > 0){
+                $('#progress').text('Waiting for result, ' + timelimit + ' seconds remaining');
+                timer = setTimeout(function(){
+                    check(data, false, function(response){
+                        if(response.result.ErrorCode == 0 /* SOAP_SUCCESS */ && response.result.State == 0 /* ACCOUNT_NOT_CHECKED */ && $('#progressIndicator').is(':visible'))
+                            poll(data, timelimit - 5);
+                        else{
+                            $('#progress').text('complete').addClass('successFrm');
+                            showProgress(false);
+                        }
+                    });
+                }, 5000);
+            }
+            else
+                showError('Timelimit hit, no result received');
+        }
+
+        function showProgress(show){
+            $('#checkButton').toggle(!show);
+            $('#progressIndicator').toggle(show);
+            if(show)
+                form.find('input').attr('disabled', 'disabled');
+            else
+                form.find('input').removeAttr('disabled');
+            $('#stopButton').removeAttr('disabled');
+        }
+
+    });
+
+</script>
+{% endblock %}

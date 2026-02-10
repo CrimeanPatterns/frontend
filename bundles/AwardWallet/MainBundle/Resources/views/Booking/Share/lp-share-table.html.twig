@@ -1,0 +1,65 @@
+{% for account in accounts|filter(account => account.requested) %}
+    {% if account.abaccountprogramid in notShareableIDs %}
+        <tr data-id="{{ account.getAccount().getAccountid() }}">
+            <td class="id"><i class="old-icon-warning" title="{{ 'booking.share.icon-warning.title'|trans({}, 'booking') }}"></i></td>
+            <td>{{ account.getAccount().getProviderid().getName() }}</td>
+            {% if customPrograms|length %}
+                <td class="sharing-balance">{{ account.getAccount().getBalance() ? account.getAccount().getBalance()|formatNumber : '' }}</td>
+                <td>
+                    {{ account.getAccount().getUserid().getFullName() }}
+                    &nbsp;
+                    &nbsp;
+                    <i class="old-icon-warning"></i> {{ 'booking.share.account-manage-required'|trans({}, 'booking')|desc('Please, request full access from the account owner') }}
+                </td>
+            {% else %}
+                <td>
+                    {{ account.getAccount().getUserid().getFullName() }}
+                    &nbsp;
+                    &nbsp;
+                    <i class="old-icon-warning"></i> {{ 'booking.share.account-manage-required'|trans({}, 'booking')|desc('Please, request full access from the account owner') }}
+                </td>
+                <td class="sharing-balance">{{ account.getAccount().getBalance() ? account.getAccount().getBalance()|formatNumber : '' }}</td>
+            {% endif %}
+        </tr>
+    {% else %}
+        <tr data-id="{{ account.getAccount().getAccountid() }}">
+            <td class="id">
+                <i class="old-icon-check"{% if is_granted("SITE_ND_SWITCH") and savePasswords is defined and account.getAccount().getAccountid() in savePasswords %} style="display: none;"{% endif %}></i>
+            </td>
+            <td>{{ account.getAccount().getProviderid().getName() }}</td>
+            {% if customPrograms|length %}
+                <td class="sharing-balance">{{ account.account.balance is not null ? account.account.balance|formatNumber : '-' }}</td>
+                <td>{{ account.getAccount().getOwnerFullName() }}</td>
+            {% else %}
+                <td>{{ account.getAccount().getOwnerFullName() }}</td>
+                <td class="sharing-balance">{{ account.account.balance is not null ? account.account.balance|formatNumber : '-' }}</td>
+            {% endif %}
+        </tr>
+    {% endif %}
+{% endfor %}
+{% for custom in customPrograms|filter(custom => custom.requested) %}
+    <tr data-id="{{ custom.AbCustomProgramID }}" data-provider="{{ custom.Provider.ProviderID }}">
+        <td class="id"><i class="old-icon-warning" title="{{ 'booking.share.icon-warning.title'|trans({}, 'booking') }}"></i></td>
+        <td>{{ custom.Provider.Name }}</td>
+        <td class="sharing-balance">{{ custom.balance is not null ? custom.balance|formatNumber : '-'}}</td>
+        {#<td>{{ custom.owner }}</td>#}
+        <td>
+            {% if custom.Provider.ProviderID in providerAccounts|keys %}
+                <div class="select-owner">
+                    <select class="js-share-program-select">
+                        <option>{{ 'booking.share.select_account'|trans({}, 'booking') }}</option>
+                        <option value="add"
+                                data-url="{{ path('aw_booking_share_add_account', {id: request.AbRequestID, customID: custom.AbCustomProgramID }) }}">{{ 'account.buttons.add'|trans({}, 'messages') }}</option>
+                        {% for account in providerAccounts[custom.Provider.ProviderID] %}
+                            <option value="{{ account.ID }}"
+                                    data-url="{{ path('aw_booking_share_custom_to_account', {id: request.AbRequestID, customID: custom.AbCustomProgramID, accountID: account.ID }) }}">{{ account.UserName|raw }} / {{ account.Login }} / {{ account.Balance }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <a href="#" class="btn spec wide js-share-program" style="display: none;">{{ 'booking.share.continue'|trans({}, "booking")|desc('Continue') }}</a>
+            {% else %}
+                <a href="{{ path('aw_booking_share_add_account', {id: request.AbRequestID, customID: custom.AbCustomProgramID }) }}" class="btn spec wide">{{ 'booking.share.continue'|trans({}, "booking")|desc('Continue') }}</a>
+            {% endif %}
+        </td>
+    </tr>
+{% endfor %}

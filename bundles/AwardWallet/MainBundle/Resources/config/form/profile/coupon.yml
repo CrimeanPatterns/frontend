@@ -1,0 +1,77 @@
+services:
+    _defaults:
+        public: true
+
+    # Types
+    aw.desktop.profile_coupon:
+        public: true
+        class: AwardWallet\MainBundle\Form\Type\ProfileCouponType
+        arguments:
+            - "@aw.form.transformer.generic.profile_coupon"
+            - "@doctrine.orm.default_entity_manager"
+            - "@aw.form.validator.profile_coupon"
+        tags:
+            - {name: form.type}
+
+    aw.mobile.profile_coupon:
+        public: true
+        class: AwardWallet\MobileBundle\Form\Type\Profile\ProfileCouponType
+        arguments:
+            - "@aw.form.transformer.generic.profile_coupon"
+            - "@doctrine.orm.default_entity_manager"
+            - "@translator"
+            - "@aw.api.versioning"
+        tags:
+            - {name: form.type}
+
+    aw.mobile.profile_result_coupon:
+        public: true
+        class: AwardWallet\MobileBundle\Form\Type\Profile\ProfileCouponResultType
+        arguments:
+            - "%requires_channel%://%host%"
+            - "@router"
+            - "@translator"
+            - '@AwardWallet\MainBundle\Globals\Localizer\LocalizeService'
+            - "@aw.security.token_storage"
+        tags:
+            - {name: form.type}
+
+    # Validators
+    AwardWallet\MainBundle\Validator\CouponValidator:
+        public: true
+        autowire: true
+
+    aw.form.validator.profile_coupon:
+        alias: AwardWallet\MainBundle\Validator\CouponValidator
+
+    # Transformers
+    aw.form.transformer.generic.profile_coupon:
+        public: true
+        class: AwardWallet\MainBundle\Form\Transformer\Profile\CouponTransformer
+
+    # Handlers
+    aw.form.profile_coupon.subscriber.generic:
+        public: true
+        class: AwardWallet\MainBundle\Form\Handler\Subscriber\Profile\CouponGeneric
+        shared: false
+        arguments:
+            - "@doctrine.orm.entity_manager"
+            - '@AwardWallet\MainBundle\Service\CouponApplier'
+            - "@aw.manager.cart"
+
+    aw.form.profile_coupon.handler.desktop:
+        public: true
+        parent: aw.form.generic_request_handler
+        shared: false
+        calls:
+            - [setChannel, ["form.generic.profile_coupon"]]
+            - [addHandlerSubscriber, ["@aw.form.profile_coupon.subscriber.generic"]]
+
+    aw.form.profile_coupon.handler.mobile:
+        public: true
+        parent: aw.form.generic_request_handler
+        shared: false
+        calls:
+            - [setChannels, [["form.mobile", "form.generic.profile_coupon"]]]
+            - [addHandlerSubscriber, ["@aw.form.profile_coupon.subscriber.generic"]]
+            - [addHandlerSubscriber, ["@aw.form.subscriber.mobile.request_data_transformer"]]

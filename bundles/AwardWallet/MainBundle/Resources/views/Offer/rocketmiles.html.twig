@@ -1,0 +1,50 @@
+{# Issue #6198 #}
+
+{% extends "@AwardWalletMain/Offer/standard.html.twig" %}
+{% import '@AwardWalletMain/Offer/offerMacros.html.twig' as offerMacros %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    {{ encore_entry_link_tags('offer') }}
+    {{ encore_entry_link_tags('offers/rocketmiles') }}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        {{ offerMacros.jsOfferYes(_context, url, Code, OfferUserID, defaultRedirectLocation) }}
+        {{ offerMacros.jsOfferNo(_context, Code, OfferUserID, defaultRedirectLocation, 'Kind') }}
+    </script>
+{% endblock %}
+
+{% block content %}
+    <div id="offer_wrap">
+        <div id="offer_bg" class="rm_bg">
+            <div class="offer_title rm_title">
+                Get {{ Points }} extra<br/>
+                {{ ProviderName }} {{ ProgramName }}<br/>
+                with your next hotel stay<br/>
+                in {{ City }}!
+            </div>
+            <div class="rm_image">
+            </div>
+            <div class="rm_description">
+                <strong>Hi {{ Name }},</strong><br/>
+                We see that you have an upcoming flight to <span class="rm_highlight">{{ City }}</span> on {{ Date }},
+                and wanted to let you know about a special hotel offer. With {{ ProviderName }}, you can earn an average
+                of {{ Points }} miles for a {{ Days }}-night hotel stay in {{ City }}.<br/><br/>
+                In fact, the highest {{ Days }}-night booking in {{ City }} last week earned <span
+                        class="rm_highlight">{{ HighestPoints }} {{ ProviderName }} {{ ProgramName }}!</span>
+            </div>
+            <div class="offer_btn" onclick="offerYes();">
+                Earn up to 5,000 extra {{ ProviderName }} miles per night
+            </div>
+        </div>
+        <div class="offer_declinekind" onclick="offerNo();">
+            Don't show these types of offers to me again
+        </div>
+        <div class="offer_toaccount" onclick="window.location = '{{ defaultRedirectLocation }}'">
+            Proceed to my account
+        </div>
+    </div>
+{% endblock %}

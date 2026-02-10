@@ -1,0 +1,57 @@
+{% macro showTransferTimes(dataListName = 'operations') %}
+    <table class="main-table no-border hover-style transfer-times mobile-table-v2"
+           data-ng-class="{ 'load-operations': main.status.loading}"
+           data-ng-show="!main.status.loading && main.status.loaded == true"
+    >
+        <thead>
+        <tr>
+            <th>{{ 'from'|trans|desc('From') }}</th>
+            <th>{{ 'to'|trans|desc('To') }}</th>
+            <th class="t-center">{{ 'transfer_ratio'|trans|desc('Transfer Ratio') }}</th>
+            <th>{{ 'minimum_transfer'|trans|desc('Minimum Transfer') }}</th>
+            <th>{{ 'average_time'|trans }}</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr data-ng-repeat="(key, row) in {{ dataListName }} | filter: search track by $index">
+            <td data-title="{{ 'from'|trans|desc('From') }}">
+                <span ng-if="!row.ProviderLinkFrom"
+                      data-ng-bind-html="row.ProviderFromName | highlight:programValue():false:'green' | unsafe"></span>
+                <a ng-if="row.ProviderLinkFrom" href="[[row.ProviderLinkFrom]]" rel="noopener"
+                   data-ng-bind-html="row.ProviderFromName | highlight:programValue():false:'green' | unsafe"
+                   data-tip title="{{ 'click-find-more'|trans|desc('Click to find out more') }}" target="_blank"></a>
+                <div class="transfer-regions" ng-if="null != row.SourceProgramRegion"
+                     data-ng-bind="row.SourceProgramRegion"></div>
+            </td>
+            <td data-title="{{ 'to'|trans|desc('To') }}">
+                <span ng-if="!row.ProviderLinkTo"
+                      data-ng-bind-html="row.ProviderName | highlight:programValue():false:'green' | unsafe"></span>
+                <a ng-if="row.ProviderLinkTo" href="[[row.ProviderLinkTo]]" rel="noopener"
+                   data-ng-bind-html="row.ProviderName | highlight:programValue():false:'green' | unsafe"
+                   data-tip title="{{ 'click-find-more'|trans }}" target="_blank"></a>
+                <div class="transfer-regions" ng-if="null != row.TargetProgramRegion"
+                     data-ng-bind="row.TargetProgramRegion"></div>
+            </td>
+            <td data-title="{{ 'transfer_ratio'|trans|desc('Transfer Ratio') }}" class="t-center">
+                <div>
+                    <p><span data-ng-bind="row.TransferRatio"></span></p>
+                    <p><span data-ng-bind-html="row.Bonus|unsafe" class="silver-text"></span></p>
+                </div>
+            </td>
+            <td data-title="{{ 'minimum_transfer'|trans|desc('Minimum Transfer') }}"
+                data-ng-bind="row.MinimumTransfer"></td>
+            <td data-title="{{ 'average_time'|trans }}">
+                <span data-ng-bind="row.TransferDuration"
+                      data-role="tooltip" data-tip title='[[ row.countRowsTip ]]'></span>
+            </td>
+        </tr>
+        <tr class="no-result" data-ng-if="main.status.loaded && (operations | filter:search).length == 0">
+            <td colspan="5" data-ng-show="!programValue()">{{ 'no_results_found'|trans|desc('No results found') }}</td>
+            <td colspan="5" data-ng-show="programValue()" class="not-found">
+                <i class="icon-warning-small"></i>
+                <p>{{ 'no_results_found_with_criteria'|trans|desc('No results found that match your search criteria') }}</p>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+{% endmacro %}

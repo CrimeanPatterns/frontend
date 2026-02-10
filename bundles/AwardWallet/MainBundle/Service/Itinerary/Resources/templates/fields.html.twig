@@ -1,0 +1,351 @@
+{% block date_widget %}
+    <div class="input">
+        <div class="input-item">
+            <div class="row-date">
+                <input type="hidden" {{ block('widget_attributes') }}
+                       id="{{ id }}"
+                        {% if value is defined %}value="{{ value }}" {% endif %}
+                       name="{{ name }}"
+                />
+                <div class="datepicker-container">
+                    <input required="{{required}}"
+                           type="text"
+                           id="{{ id }}_datepicker"
+                           datepicker="true"
+                           data-role="datepicker"
+                           data-dp-opt="{'yearRange': '1910:c+50', {#'minDate': '0',#} 'defaultDate': '{{value}}' }"
+                    />
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block time_widget %}
+    <div class="row-time">
+        <div class="row-item">
+            {% set type = 'text' %}
+            {{ block('form_widget_simple') }}
+        </div>
+    </div>
+{% endblock %}
+
+{% block time_row %}
+    <div class="row{% if not valid %} error{% endif %} row-{{name}}" id="row-{{id}}">
+        <div class="row-item">
+            {{ form_label(form) }}
+            <div class="input">
+                <div class="input-item">
+                    {{ form_widget(form) }}
+                </div>
+            </div>
+        </div>
+        <div class="info">
+            <div class="info-icon"></div>
+        </div>
+        {{ form_errors(form) }}
+    </div>
+{% endblock %}
+
+{% block datetime_row %}
+    <div id="row-{{ name }}" class="row{% if form.vars.errors is not empty %} error{% endif %}">
+        <div class="row row-date">
+            <div class="row-item">
+                {{ form_label(form) }}
+                {{ form_widget(form.date) }}
+            </div>
+            {{ block('info_message') }}
+
+            {{ form_errors(form.date) }}
+        </div>
+
+        <div {% if form.date.vars.value is empty %} style="display: none" {% endif %} class="time">
+            {{form_row(form.time)}}
+        </div>
+        <div class="row">
+            {{ form_errors(form) }}
+        </div>
+    </div>
+{% endblock %}
+
+{% block error_message %}
+    <div class="error-message">
+        <div class="warning"><i class="icon-warning-small"></i></div>
+        <div class="error-message-description">{{ 'notblank'|trans({}, 'validators') }}</div>
+    </div>
+{% endblock %}
+
+{% block info_message %}
+    <div class="info">
+        <div class="info-icon"></div>
+        <div class="info-description"><p></p></div>
+    </div>
+{% endblock %}
+
+{% block aircode_row %}
+    <div class="row with-text{% if not valid and not compound %} error{% endif %} row-{{name}}" id="row-aircode">
+        <div class="row-item">
+            {{form_label(form)}}
+            <div class="input">
+                <div class="input-item">
+                    {{ form_widget(form, {
+                        'attr': {
+                            'class': "middle-input inline-input",
+                            'style': "text-transform: uppercase",
+                        },
+                    }) }}
+                    <div class="input-text airport">{{ form.vars.airport }}</div>
+                </div>
+            </div>
+        </div>
+        {{ block('info_message') }}
+        {{ form_errors(form) }}
+    </div>
+{% endblock %}
+
+{% block _flight_segments_entry_retrieve_widget %}
+    <div class="clear"></div>
+    <div class="row-submit transparent send-segment">
+        <button type="button" class="btn-silver retrieve-btn">
+            {{ form.vars.label|trans({}, 'trips') }}
+        </button>
+    </div>
+    <div class="clear"></div>
+    <div class="error-container error-manually" style="display: none">
+        <i class="icon-error-small"></i>
+        <span>
+			{{ "retrieve.error.incorrect_data"|trans({}, 'trips')|desc("Error occurred finding this flight, fill out the information manually or correct the data above and") }}
+            <a href="#" class="blue-link retrieve-btn">
+				{{ "try_again"|trans({}, 'trips')|desc("try again") }}
+			</a>
+			<span class="loader" style="display: none"></span>
+		</span>
+    </div>
+    <div class="error-container error-fatal" style="display: none">
+        <i class="icon-error-small"></i>
+        <span>{{ "retrieve.error.not_found"|trans|desc("Error occurred finding this flight, fill out the information manually") }}.</span>
+    </div>
+{% endblock %}
+
+{% block segment_collection_row %}
+    {{ form_label(form) }}
+    {{ form_widget(form) }}
+    {{ form_errors(form) }}
+{% endblock %}
+
+{% block segment_collection_widget %}
+    <div id="addedSegments">
+        {% for segment in form %}
+            {{- form_row(segment) -}}
+        {% endfor %}
+    </div>
+{% endblock %}
+
+{% block add_segment_button_row %}
+    <div class="row-block">
+        <div class="row-title"></div>
+        <div class="row-body">
+            <a href="#" class="add-segment js-block-add">
+                <i class="icon-add-dark"></i>
+                <span>{{ form.vars.label|trans({}, 'trips') }}</span>
+            </a>
+        </div>
+    </div>
+{% endblock %}
+
+{% block trip_segment_row %}
+<div class="row-block segment" {% if resolved is defined and resolved == true %} data-resolved="true"{% endif %}>
+    {{ form_label(form) }}
+    {{ form_widget(form) }}
+</div>
+{% endblock %}
+
+{% block trip_segment_label %}
+    <div class="row-title">
+        {{ form.vars.label|trans({}, 'trips') }} #<span class="num">1</span>
+        <div class="row-remove js-block-del">
+            <i class="icon-delete"></i>
+        </div>
+    </div>
+{% endblock %}
+
+{% block flight_segment_widget %}
+    <div class="row-body">
+        {{ form_row(form.airlineName) }}
+        {{ form_row(form.flightNumber) }}
+        {{ form_row(form.departureAirport) }}
+        {{ form_row(form.departureDate) }}
+        {{ form_row(form.retrieve) }}
+        <div class="arrival-block {{ form.arrivalAirport.vars.value }}" {% if form.arrivalAirport.vars.value is empty %} style="display: none" {% endif %}>
+            {{ form_row(form.arrivalAirport) }}
+            {{ form_row(form.arrivalDate) }}
+        </div>
+    </div>
+{% endblock %}
+
+{% block bus_segment_widget %}
+    <div class="row-body">
+        {{ form_row(form.carrier) }}
+        {{ form_row(form.route) }}
+        {{ form_row(form.departureStation) }}
+        {{ form_row(form.departureDate) }}
+        {{ form_row(form.arrivalStation) }}
+        {{ form_row(form.arrivalDate) }}
+    </div>
+{% endblock %}
+
+{% block cruise_segment_widget %}
+    <div class="row-body">
+        {{ form_row(form.cruiseShip) }}
+        {{ form_row(form.route) }}
+        {{ form_row(form.departurePort) }}
+        {{ form_row(form.departureDate) }}
+        {{ form_row(form.arrivalPort) }}
+        {{ form_row(form.arrivalDate) }}
+    </div>
+{% endblock %}
+
+
+{% block train_segment_widget %}
+    <div class="row-body">
+        {{ form_row(form.carrier) }}
+        {{ form_row(form.route) }}
+        {{ form_row(form.departureStationCode) }}
+        {{ form_row(form.departureStation) }}
+        {{ form_row(form.departureDate) }}
+        {{ form_row(form.arrivalStationCode) }}
+        {{ form_row(form.arrivalStation) }}
+        {{ form_row(form.arrivalDate) }}
+    </div>
+{% endblock %}
+
+{% block ferry_segment_widget %}
+    <div class="row-body">
+        {{ form_row(form.ferryCompany) }}
+        {{ form_row(form.route) }}
+        {{ form_row(form.departurePort) }}
+        {{ form_row(form.departureDate) }}
+        {{ form_row(form.arrivalPort) }}
+        {{ form_row(form.arrivalDate) }}
+    </div>
+{% endblock %}
+
+{% block places_autocomplete_row %}
+    <div class="row{% if not valid %} error{% endif %} row-{{name}}" id="row-{{name}}">
+        <div class="row-item">
+            {{form_label(form)}}
+            <div class="input">
+                <div class="input-item">
+                    <input type="text" style="position: absolute;left: -5000px" tabindex="-1">
+                    <input type="text" {{ block('widget_attributes') }} {% if value is defined %}value="{{ value }}"{% endif %} />
+                </div>
+            </div>
+        </div>
+        {{ block('info_message') }}
+        {{ form_errors(form) }}
+    </div>
+    {% if not webpack|default(false) %}
+        <script>
+            require(['jquery-boot', 'pages/itinerary/form'], function($){
+                $('body').on('init_places', function (e, payload) {
+                    var options = {
+                        delay: 500,
+                        minLength: 4,
+                        search: function (event, ui) {
+                            if ($(event.target).val().length >= 2)
+                                $(event.target).addClass('loading-input');
+                            else
+                                $(event.target).removeClass('loading-input');
+                        },
+                        open: function (event, ui) {
+                            $(event.target).removeClass('loading-input')
+                        }
+                    };
+                    $(payload.selector + ':not(.ui-autocomplete-input)')
+                        .off('keydown')
+                        .on('keydown', function (e) {
+                            if (
+                                !$.trim($(e.target).val()) &&
+                                (e.keyCode === 0 || e.keyCode === 32)
+                            ) e.preventDefault();
+                        })
+                        .autocomplete($.extend({}, options, payload.options));
+                });
+            });
+        </script>
+    {% else %}
+        {{ encore_entry_script_tags('fields-itinerary', null, '_default', {'defer': true}) }}
+    {% endif %}
+    
+    
+{% endblock %}
+
+{% block address_autocomplete_row %}
+    <div class="row with-text{% if not valid %} error{% endif %} row-{{name}}" id="row-{{name}}">
+        <div class="row-item">
+            {{form_label(form)}}
+            <div class="input">
+                <div class="input-item">
+                    <input type="text" style="position: absolute;left: -5000px" tabindex="-1">
+                    <input type="text" class="inline-input" {{ block('widget_attributes') }} {% if value is defined %}value="{{ value }}"{% endif %} />
+                    <div class="input-text address-timezone" style="display: none;"></div>
+                </div>
+            </div>
+        </div>
+        <div class="info">
+            <div class="info-icon"></div>
+            <div class="info-description">
+                <p>
+                    {% if help is defined and help != '' %}
+                        {{ help|trans({}, translation_domain)|raw }}
+                    {% elseif attr['notice'] is defined and attr['notice'] != '' %}
+                        {{ attr['notice']|raw }}
+                    {% endif %}
+                </p>
+            </div>
+        </div>
+        {{ form_errors(form) }}
+    </div>
+    {% if attr['skip_js'] is not defined or not attr['skip_js'] %}
+        {% if not webpack|default(false) %}
+            <script>
+                require(['jquery-boot', 'pages/itinerary/form'], function($){
+                    console.log('address load');
+                    $('body').on('init_address', function (e, payload) {
+                        console.log('address init');
+                        var options = {
+                            delay: 500,
+                            minLength: 2,
+                            search: function (event, ui) {
+                                if ($(event.target).val().length >= 2)
+                                    $(event.target).addClass('loading-input');
+                                else
+                                    $(event.target).removeClass('loading-input');
+                            },
+                            open: function (event, ui) {
+                                $(event.target).removeClass('loading-input')
+                            }
+                        };
+                        $(payload.selector + ':not(.ui-autocomplete-input)')
+                            .off('keydown')
+                            .on('keydown', function (e) {
+                                if (
+                                    !$.trim($(e.target).val()) &&
+                                    (e.keyCode === 0 || e.keyCode === 32)
+                                ) e.preventDefault();
+                            })
+                            .autocomplete($.extend({}, options, payload.options));
+                    });
+                });
+            </script>
+        {% else %}
+            {{ encore_entry_script_tags('fields-itinerary-address-autocomplete', null, '_default', {'defer': true}) }}
+        {% endif %}    
+    {% endif %}
+{% endblock %}
+
+{% block notes_row %}
+    <div class="row notes">
+        {{ form_row(form) }}
+    </div>
+{% endblock %}

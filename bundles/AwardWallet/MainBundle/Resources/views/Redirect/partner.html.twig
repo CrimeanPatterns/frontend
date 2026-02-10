@@ -1,0 +1,24 @@
+{% if preloadUrl != none %}
+    <iframe id="redirect" name="redirect" src={{ preloadUrl|json_encode|raw }} style="display:none;"></iframe>
+    <script type="text/javascript">
+        function doRedirect() {
+            window.document.getElementById('redirect').onload = doFrameOnLoad;
+            function doFrameOnLoad(){
+                window.location.href={{ targetUrl|json_encode|raw }};
+            }
+        }
+    </script>
+{% else %}
+    <script type="text/javascript">
+        function doRedirect() {
+            window.location.href={{ targetUrl|json_encode|raw }};
+        }
+    </script>
+{% endif %}
+<script>
+    // For the case when images are disabled in browser
+    setTimeout(function() { doRedirect() }, 1000);
+</script>
+<div style="text-align:center; padding:30px;">
+	<div class="progressBig"></div>
+</div>

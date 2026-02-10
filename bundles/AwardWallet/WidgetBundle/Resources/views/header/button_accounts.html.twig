@@ -1,0 +1,12 @@
+<a href="{{ url('aw_account_list') }}" target="_self" class="btn-light-silver {{ active }}" tabindex="955">{{ 'menu.button.accounts' | trans({}, 'menu') | desc('Accounts') }}<span id="account-btn-counter" data-overlimits="{{ overlimits }}" data-onlimits="{{ onlimits }}">{{ accounts }}</span></a><a href="{{ url('aw_select_provider') }}" class="add btn-light-silver {{ activeAdd }}" data-role="tooltip" title="{{ 'menu.button.accounts.add' | trans({}, 'menu') | desc('Add Award Program to Track') }}" tabindex="956"><i class="icon-add-dark"></i></a>
+{% if not webpack|default(false) %}
+    <script>
+        require(['jquery-boot'], function ($) {
+            $(window).on('totalAccounts.update', function (event, data) {
+                $('#account-btn-counter').text(data);
+            });
+        });
+    </script>
+{% else %}
+    {{ encore_entry_script_tags('button-accounts', null, '_default', {'defer': true}) }}
+{% endif %}

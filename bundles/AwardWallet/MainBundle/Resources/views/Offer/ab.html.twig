@@ -1,0 +1,39 @@
+{# Issue #6570 #}
+
+{% extends popup is defined and popup ? "@AwardWalletMain/Offer/_offerPopup.html.twig" : "@AwardWalletMain/Offer/standard.html.twig" %}
+{% import '@AwardWalletMain/Offer/offerMacros.html.twig' as offerMacros %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    {{ encore_entry_link_tags('offer') }}
+    {{ encore_entry_link_tags('offers/ab') }}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        {{ offerMacros.jsOfferYes(_context, ApplyURL, Code, OfferUserID, defaultRedirectLocation) }}
+        {{ offerMacros.jsOfferNo(_context, Code, OfferUserID, defaultRedirectLocation) }}
+    </script>
+{% endblock %}
+
+{% block content %}
+    <div id="offer_wrap">
+        <div id="offer_bg">
+            <div class="offer_title ab_title">
+                Need help booking international First or Business class award tickets?
+            </div>
+            <div class="ab_text">
+            Let us save you time, money and miles by finding the most optimal itinerary. We charge $150 per booked ticket but we can save you a lot more in terms of fuel surcharges, miles and time spent.
+            <br /><br />
+            Even if you are not planning on traveling in the near future, submit a booking request today so we can start looking and get you the best deal!
+            </div>
+            <div class="offer_btn ab_btn" onclick="offerYes();">
+                Proceed to making a booking request!
+            </div>
+            <div id="ab_image">
+            </div>
+        </div>
+        {{ offerMacros.offerButtons(_context) }}
+    </div>
+{% endblock %}

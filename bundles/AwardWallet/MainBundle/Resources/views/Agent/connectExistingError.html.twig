@@ -1,0 +1,24 @@
+{% extends is_granted('SITE_BUSINESS_AREA') ? "@AwardWalletMain/Layout/business_default.html.twig" : "@AwardWalletMain/Layout/edit_connections.html.twig" %}
+
+{% block header_metatags %}
+    {% include '@AwardWalletMain/Utility/scalableViewport.html.twig' %}
+{% endblock %}
+
+{% block content %}
+    <div class="add-account">
+        <div class="main-blk">
+            <h1>{{ 'agents.connect.step1.header'|trans|desc('Add a new connection') }}</h1>
+
+            <div class="main-blk-content">
+                <div class="warning-message">
+                    <i class="icon-warning-b"></i>
+                    <p>{{ 'agents.connect.exist.message'|trans|desc('This connection already exists in your profile') }}</p>
+                </div>
+            </div>
+            <div class="row-submit">
+                <a href="{{ path('aw_create_connection') }}" class="btn-blue">{{ 'agents.connect.search-again.btn'|trans|desc('Search again') }}</a>
+            </div>
+        </div>
+        {{ include('@AwardWalletMain/Agent/_faq.html.twig') }}
+    </div>
+{% endblock %}

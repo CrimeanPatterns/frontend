@@ -1,0 +1,49 @@
+{% form_theme invoiceForm '@AwardWalletMain/Booking/fields.html.twig' %}
+{% trans_default_domain "booking" %}
+
+<div class="booking-form item">
+    <form data-setting-ts="{{ thousandsSeparator|e }}" data-setting-dp="{{ decimalPoint|e }}" data-setting-currency-sign="{{ currency.sign|e }}">
+        {# Items start #}
+            <div class="booker-item">
+                <div class="booker-item-title">{{ 'invoice.line-items'|trans|desc('Invoice line items') }}</div>
+                <table id="items-list" data-descriptions="{{ descriptions|json_encode }}" data-prototype="{{ form_widget(invoiceForm.Items.vars.prototype)|e }}">
+                    {% for child in invoiceForm.Items %}
+                        {{ form_widget(child) }}
+                    {% endfor %}
+                </table>
+            </div>
+            <div class="add-block">
+                <a id="add-item-link" href="#"><i class="old-icon-add-another-block"></i>{{ "invoice.add-line-item"|trans|desc("Add line item") }}</a>
+            </div>
+            <div class="total-row" style="border: 1px solid #d0d0d0; border-top: none; padding: 10px;">
+                <div id="total-label" style="width: inherit">
+                    {{ "invoice.form.total-label"|trans|desc("Total") }}:
+                    <span class="calc" id="calc-totals" style="position: inherit"><div class="red">{{ 0|formatCurrency(currency.code) }}</div></span>
+                </div>
+            </div>
+        {# Items end #}
+
+        {# Miles start #}
+            <div class="booker-item">
+                <div class="booker-item-title">{{ 'create.invoice.miles.title'|trans|desc('Miles Needed (Per Person)') }}</div>
+                <table id="miles-list" data-prototype="{{ form_widget(invoiceForm.Miles.vars.prototype)|e }}">
+                    {% for child in invoiceForm.Miles %}
+                        {{ form_widget(child) }}
+                    {% endfor %}
+                </table>
+            </div>
+            <div id="add-miles-block">
+                <a id="add-miles-link" href="#"><i class="old-icon-add-another-block"></i>{{ "invoice.form.add-program"|trans|desc("Add program") }}</a>
+            </div>
+        {# Miles end #}
+
+        <div class="buttons" style="float:right">
+            <a href="#" onclick="$(this).closest('form').submit();return false;" class="btn spec wide submitButton">{{ 'send.btn'|trans|desc('Send') }}</a>
+        </div>
+        <div class="clear"></div>
+
+        {% set a = invoiceForm.Miles.setRendered %}
+        {% set a = invoiceForm.Items.setRendered %}
+        {{ form_end(invoiceForm) }}
+    </form>
+</div>

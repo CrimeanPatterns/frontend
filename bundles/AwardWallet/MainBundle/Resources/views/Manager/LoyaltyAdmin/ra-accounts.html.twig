@@ -1,0 +1,355 @@
+{% extends '@AwardWalletMain/Manager/layout.html.twig' %}
+{% set title = "RA Accounts" %}
+{% set contentTitle = "" %}
+
+{% set codes = {
+    0: 'Unchecked',
+    1: 'Checked',
+    2: 'Invalid password',
+    3: 'Provider lockout',
+    4: 'Provider error',
+    6: 'Unknown error',
+    8: 'Prevent lockout',
+    9: 'Warning',
+    10: 'Security question',
+    11: 'Timeout',
+} %}
+
+{% block content %}
+    <style>
+        table {
+            border: 1px solid #C7C4BF;
+            border-spacing: 0;
+            border-collapse: collapse;
+        }
+        td, th {
+            border: 1px solid #C7C4BF;
+            text-align: left;
+            padding: 3px;
+        }
+        .accrow.current {
+            background-color: #f5f5f5;
+        }
+        .accrow.selected {
+            background-color: lightgoldenrodyellow;
+        }
+        tfoot tr.action {
+            display: none;
+        }
+        .descriptionState {padding:20px 50px 20px 0;}
+        .descriptionState table {border-collapse: collapse;}
+        .descriptionState table td {border:1px solid #ccc; padding:10px;}
+        .descriptionState table .titleState {font-weight:bold;}
+        i[class^="icon-"], i[class*=" icon-"] {
+            display: inline-block;
+            text-align: center;
+            text-decoration: none;
+            vertical-align: middle;
+            background-image: url({{ asset('assets/awardwalletnewdesign/img/sprite.png?v=2') }});
+            background-repeat: no-repeat;
+        }
+        .icon-blue-info {
+            width: 13px;
+            height: 13px;
+            background-position: -111px -99px;
+        }
+    </style>
+
+    <select onchange="checkCluster(this);">
+        {% for c in clustersList %}
+            <option value="{{ c }}" {% if cluster==c %}selected="selected"{% endif %}>{{ c }}</option>
+        {% endfor %}
+    </select>
+    <span id="links"></span><span style="float: right">accounts shown:&nbsp;<span id="shown_acc"></span></span>
+    <table class="detailsTable">
+        <thead>
+            <tr>
+                <th></th>
+                <th>Provider</th>
+                <th>Login</th>
+                <th>ErrorCode</th>
+                <th>Email</th>
+                <th>Last Used</th>
+                <th>State</th>
+                <th>Login2</th>
+                <th>Login3</th>
+                <th>Answers</th>
+                <th>ID (Click to edit)</th>
+            </tr>
+            <tr>
+                <th><input type="checkbox" class="check_all"></th>
+                <th><select id="sel_provider">
+                        <option value="">ALL</option>
+                        {% for code in providers %}
+                        <option value="{{ code }}">{{ code }}</option>
+                        {% endfor %}
+                    </select>
+                </th>
+                <th><input id="sel_login" title="enter and press enter"></th>
+                <th><select id="sel_error">
+                        <option value="">ALL</option>
+                        {% for code,value in codes %}
+                            <option value="{{ code }}">{{ value }} ({{ code }})</option>
+                        {% endfor %}
+                    </select>
+                </th>
+                <th></th>
+                <th></th>
+                <th>
+                    <select id="sel_state">
+                        <option value="">ALL</option>
+                        {% for code,value in states %}
+                            <option value="{{ code }}">{{ value }} ({{ code }})</option>
+                        {% endfor %}
+                    </select>
+                    <i class='icon-blue-info' rel='Info' id="Info"/>
+                    <div class='descriptionState' style='display: none;'>
+                        <table>
+                            <tr>
+                                <td class='titleState'>Info</td>
+                                <td class='descrState' lab='Info'>
+                                    <b>Locked</b> - безвозвратно заблокирован<br/>
+                                    <b>Debug</b> - аккаунт выставлен как отладочный. на нем включается режим debug в парсере, в работу идет лишь на спец запросах<br/>
+                                    <b>Disabled</b> - отключенный аккаунт (заблокированный, предположительно подлежит восстановлению)<br/>
+                                    <b>Enabled</b> - включен/в работе<br/>
+                                    <b>Reserved</b> - резервный аккаунт (живой, в ожидании)
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </th>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for row in rows %}
+                <tr class="accrow {{ row.provider }} err{{ row.code }} st{{ row.state }} login-{{ row.login|replace({'@': 'AT', '.':'_'}) }}">
+                    <td><input type="checkbox" class="check_row" data-row-id="{{ row.id }}"></td>
+                    <td {% if row.lockState == 1 %}style="background-color: #f0eb96;" title="is busy"{% endif %}>{{ row.provider }}</td>
+                    <td>{{ row.login }}</td>
+                    <td>{% if codes[row.code] is defined %} {{ codes[row.code] }} ({{ row.code }})
+                        {% else %} {{ row.code }}
+                        {% endif %}
+                    </td>
+                    <td>{{ row.email }}</td>
+                    <td>{{ row.lastUse }}</td>
+                    <td>{% if states[row.state] is defined %} {{ states[row.state] }} ({{ row.state }})
+                        {% else %} {{ row.state }}
+                        {% endif %}
+                    </td>
+                    <td>{{ row.login2 }}</td>
+                    <td>{{ row.login3 }}</td>
+                    <td>{% for pair in row.answers %}{{ pair[0] }} : {{ pair[1] }}; {% endfor %}</td>
+                    <td><a href="{{ url('aw_manager_loyalty_ra_accounts_edit', {'id': row.id, 'cluster': cluster}) }}">{{ row.id }}</a></td>
+                </tr>
+            {% endfor %}
+        </tbody>
+        <tfoot>
+            <tr class="add">
+                <td colspan="11" style="padding: 15px;"><a href="{{ url('aw_manager_loyalty_ra_accounts_edit', {'id': 'new', 'cluster': cluster}) }}">Add new</a></td>
+            </tr>
+            <tr class="action reset">
+                <td colspan="11" style="padding: 15px;"><a data-method="reset" href="#">Reset browser state and error code of <span></span> accounts</a></td>
+            </tr>
+            <tr class="action setEnabled">
+                <td colspan="11" style="padding: 15px;"><a data-method="setEnabled" href="#">Set state "enabled" <span></span> accounts</a></td>
+            </tr>
+            <tr class="action setDisabled">
+                <td colspan="11" style="padding: 15px;"><a data-method="setDisabled" href="#">Set state "disabled" <span></span> accounts</a></td>
+            </tr>
+            <tr class="action setLocked">
+                <td colspan="11" style="padding: 15px;"><a data-method="setLocked" href="#">Set state "locked" <span></span> accounts</a></td>
+            </tr>
+            <tr class="action setReserve">
+                <td colspan="11" style="padding: 15px;"><a data-method="setReserve" href="#">Set state "reserve" <span></span> accounts</a></td>
+            </tr>
+            <tr class="action delete">
+                <td colspan="11" style="padding: 15px;"><a data-method="delete" href="#">Delete <span></span> accounts</a></td>
+            </tr>
+            <div style="display: none;">
+                <form name="bulk" id="bulk" method="post">
+                    <input type="hidden" name="method" id="method">
+                    <input type="hidden" name="ids" id="ids">
+                    <input type="hidden" name="cluster" id="cluster" value="{{ cluster }}">
+                </form>
+            </div>
+        </tfoot>
+    </table>
+    <script type="text/javascript">
+        function checkCluster(e) {
+            document.location = '{{ path('aw_manager_loyalty_ra_accounts') }}' + '?cluster=' + e.value;
+        }
+        function getSearchLinks() {
+            var code = $('#sel_provider').get(0).value;
+            $('#links').html('');
+            $.ajax(
+                {
+                    url: "{{ path('aw_manager_loyalty_ra_accounts_link') }}",
+                    type: "POST",
+                    data: {
+                        provider: code
+                    },
+                    async: true,
+                    success: function (data) {
+                        if (data) {
+                            $('#links').html(data);
+                        }
+                    }
+                }
+            );
+
+        }
+        function setFilter() {
+            var code = $('#sel_provider').get(0).value;
+            var login = $('#sel_login').get(0).value;
+            var error = $('#sel_error').get(0).value;
+            var state = $('#sel_state').get(0).value;
+            localStorage.setItem('ra_provider', code);
+            localStorage.setItem('ra_error', error);
+            localStorage.setItem('ra_state', state);
+
+            $('.accrow').hide();
+            var cl = '.accrow';
+            if (code)
+                cl += '.' + code;
+            if (login)
+                cl += '.login-' + login.replace('@', 'AT').replace('.', '_');
+            if (error)
+                cl += '.err' + error;
+            if (state)
+                cl += '.st' + state;
+
+            $(cl).show();
+            $('#shown_acc').html($('.accrow:visible').length);
+        }
+        $(document).ready(function(){
+            const Actions = function(){
+                this.check = function(){
+                    var cnt = $('.check_row:checked').length;
+                    if (cnt > 0) {
+                        $('tfoot .action span').text(cnt);
+                        $('tfoot .action').show();
+                    }
+                    else {
+                        $('tfoot .action').hide();
+                    }
+                };
+                return this;
+            }();
+            $('#shown_acc').html($('.accrow:visible').length);
+            $('#sel_provider').on('change', function(){
+                setFilter();
+                getSearchLinks();
+            });
+            $('#sel_error').on('change', function(){
+                setFilter();
+            });
+            $('#sel_state').on('change', function(){
+                setFilter();
+            });
+            $('#sel_login').on('change', function(){
+                setFilter();
+            });
+            $('.accrow').on('mouseenter', function(){
+                $('.accrow').removeClass('current');
+                $(this).addClass('current');
+            });
+            $('.check_row').on('change', function(){
+                var row = $(this).parent('td').parent('tr');
+                if (this.checked) {
+                    row.addClass('selected');
+                }
+                else {
+                    row.removeClass('selected');
+                }
+                Actions.check();
+            });
+            $('.check_all').on('change', function(){
+                $('.check_row').prop('checked', false);
+                $('.accrow').removeClass('selected');
+                $('.check_row:visible').prop('checked', this.checked);
+                if (this.checked) {
+                    $('.check_row:visible').parent('td').parent('.accrow').addClass('selected');
+                }
+                Actions.check();
+            });
+            $('tfoot .action a').on('click', function(){
+                let ids = new Array();
+                let checkboxes = $('.check_row:checked');
+                let method = $(this).attr('data-method');
+                checkboxes.each(function(){
+                    ids.push($(this).attr('data-row-id'));
+                });
+                $('#ids').val(ids.join(' '));
+                $('#method').val(method);
+                let msg = '';
+                switch (method){
+                    case 'delete':
+                        msg = 'Delete ' + checkboxes.length + ' accounts?';
+                        break;
+                    case 'setEnabled':
+                        msg = 'Enabled ' + checkboxes.length + ' accounts?';
+                        break;
+                    case 'setDisabled':
+                        msg = 'Disabled ' + checkboxes.length + ' accounts?';
+                        break;
+                    case 'setLocked':
+                        msg = 'Locked out ' + checkboxes.length + ' accounts?';
+                        break;
+                    case 'setReserve':
+                        msg = 'Reserve ' + checkboxes.length + ' accounts?';
+                        break;
+                    default:
+                        msg = 'Reset browser state of ' + checkboxes.length + ' accounts?';
+                        break;
+
+                }
+                if (window.confirm(msg)) {
+                    $('#bulk').submit();
+                }
+                return false;
+            });
+
+            var code = localStorage.getItem('ra_provider');
+            $('#sel_provider').get(0).value = code;
+            var error = localStorage.getItem('ra_error');
+            $('#sel_error').get(0).value = error;
+            var state = localStorage.getItem('ra_state');
+            $('#sel_state').get(0).value = state;
+            setFilter();
+            getSearchLinks();
+        });
+        $("i#Info").hover(
+            function(event){
+                if (typeof($(this).attr('rel')) != 'undefined') {
+                    var label = $(this).attr('rel');
+                    var text = $('td[lab='+label+']').html();
+                    if ($('#helper').length == 0) {
+                        $('body').append("<div id='helper'></div>");
+                    } else {
+                        $('#helper').show();
+                    }
+                    var data = {
+                        position:   'fixed',
+                        left:       620,
+                        top:        80,
+                        border:     '2px solid #000',
+                        background: '#e9e9e9',
+                        color:      '#000',
+                        padding:    '10px',
+                        width:      600
+                    };
+                    $('#helper').css(data).html(text);
+                }
+            },
+            function(){
+                $('#helper').hide();
+            }
+        );
+
+    </script>
+
+{% endblock %}

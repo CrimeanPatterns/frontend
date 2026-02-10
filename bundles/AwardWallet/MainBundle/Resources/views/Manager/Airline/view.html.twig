@@ -1,0 +1,105 @@
+{% set title = "Airlines" %}
+{% extends '@AwardWalletMain/Manager/layout.html.twig' %}
+
+{% block content %}
+    <style type="text/css">
+        table {
+            border-collapse: collapse;
+        }
+        table td {
+            border: lightgray solid 1px;
+            padding: 7px;
+        }
+        thead td {
+            font-weight: bold;
+        }
+    </style>
+
+    <a href="{{ url('aw_manager_airline_index') }}">Airlines</a>
+
+    <hr size="2"/>
+
+    <h1>
+        Airline {{ airline.name }}
+        <small> &nbsp; <a href="{{ url('aw_manager_airline_edit', {id: airline.airlineid}) }}">Edit</a></small>
+        <small> &nbsp; <a href="{{ url('aw_manager_airline_delete', {id: airline.airlineid}) }}">Delete</a></small>
+    </h1>
+
+    <br/>
+    <table>
+        <thead>
+        <tr>
+            <td></td>
+            <td>Airline Name</td><td>IATA Code</td><td>ICAO Code</td><td>Update Date</td>
+            <td>Provider</td><td>Aliases</td>
+            <td></td>
+        </tr>
+        </thead>
+        <tbody>
+        {% for row in airlines %}
+            <tr>
+                {% if loop.first %}
+                    <td bgcolor="#aaa"><b>Airline</b></td>
+                    <td bgcolor="#eee">{{ row.name }}</td>
+                    <td bgcolor="#eee">{{ row.IATA }}</td>
+                    <td bgcolor="#eee">{{ row.ICAO }}</td>
+                    <td bgcolor="#eee">{{ row.updateDate }}</td>
+                    <td bgcolor="#eee">{% if row.providerId %}<a href="/manager/edit.php?ID={{ row.providerId }}&Schema=Provider">{{ row.providerName }}</a>{% endif %}</td>
+                    <td bgcolor="#eee">{% if row.aliasCnt %}{{ row.aliasCnt }}{% endif %}</td>
+                    <td bgcolor="#eee"></td>
+                {% else %}
+                    {% if loop.index == 2 %}
+                        <td bgcolor="#aaa" rowspan="{{ airlines|length - 1 }}"><b>Doubles</b></td>
+                    {% endif %}
+                    <td><a href="{{ url('aw_manager_airline_view', {id: row.id}) }}">{{ row.name }}</a></td>
+                    <td>{{ row.IATA }}</td>
+                    <td>{{ row.ICAO }}</td>
+                    <td>{{ row.updateDate }}</td>
+                    <td>{% if row.providerId %}<a href="/manager/edit.php?ID={{ row.providerId }}&Schema=Provider">{{ row.providerName }}</a>{% endif %}</td>
+                    <td>{% if row.aliasCnt %}{{ row.aliasCnt }}{% endif %}</td>
+                    <td><nobr>
+                        <a href="{{ url('aw_manager_airline_convert', {id: row.id, targetId: airline.airlineid}) }}">convert to alias</a> &middot;
+                        <a href="{{ url('aw_manager_airline_edit', {id: row.id}) }}">edit</a> &middot;
+                        <a href="{{ url('aw_manager_airline_delete', {id: row.id}) }}">delete</a>
+                    </nobr></td>
+                {% endif %}
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <br/>
+    <hr size="1"/>
+
+    <h1>
+        Aliases
+        <small> &nbsp; <a href="{{ url('aw_manager_airline_alias_add', {id: airline.airlineid}) }}">Add New</a></small>
+    </h1>
+
+    {% if airline.aliases|length %}
+        <br/>
+        <table>
+            <thead>
+            <tr>
+                <td>Alias</td><td></td>
+            </tr>
+            </thead>
+            <tbody>
+            {% for row in airline.aliases %}
+                <tr>
+                    <td>{{ row.alias }}</td>
+                    <td>
+                        <a href="{{ url('aw_manager_airline_alias_edit', {id: row.airlineAliasID}) }}">edit</a> &middot;
+                        <a href="{{ url('aw_manager_airline_alias_delete', {id: row.airlineAliasID}) }}">delete</a>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <br/>
+        Aliases not exists
+    {% endif %}
+
+{% endblock %}
+

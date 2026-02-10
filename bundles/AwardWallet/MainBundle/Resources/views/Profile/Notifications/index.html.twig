@@ -1,0 +1,618 @@
+{% extends app.user is not null ? "@AwardWalletMain/Layout/profile.html.twig" : "@AwardWalletMain/Layout/not_logged.html.twig" %}
+{% import "@AwardWalletMain/TwigMacros/new.html.twig" as macros %}
+{% import _self as devicesTable %}
+
+{% block title %}{% apply spaceless %}
+    {% if is_granted('SITE_BUSINESS_AREA') %}
+        {{ 'notify.title'|trans({'%email%': user.fullName}) }}
+    {% elseif app.user is not null and app.user.email == user.email %}
+        {{ 'notifications'|trans }}
+    {% else %}
+        {{ 'notify.title'|trans({'%email%': user.email})|desc('Notifications for %email%') }}
+    {% endif %}
+{% endapply %}{% endblock %}
+
+{% block meta %}
+    {{ parent() }}
+    <meta name="robots" content="noindex,nofollow"/>
+{% endblock %}
+
+{% block stylesheets %}
+	{{ parent() }}
+
+    {{ encore_entry_link_tags('page-notifications') }}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        require([
+            'pages/notifications'
+        ], function () {
+        });
+        {% if app.user is not null and not app.user.wpDisableAll and not is_granted('SITE_BUSINESS_AREA') %}
+            require(['common/web-push', 'jquery-boot', 'lib/dialog'], function(webPush, $, dialog) {
+
+                webPush.safariUserToken = {{ safariToken | json_encode | raw }};
+                webPush.forceSave = true;
+
+                $(document).ready(function(){
+
+                    $('.subscribe-to-pushes').click(function(event) {
+                        event.preventDefault();
+                        webPush.clearDismiss();
+                        webPush.init('{{ vapid_public_key }}', '{{ webpush_id }}', {{ app.user.userId }}, {{ is_granted('ROLE_STAFF') ? 'true' : 'false' }}, {
+                            showPopupTimeout: 1,
+                            ignoreDismiss: true,
+                            dontShowPopup: false,
+                            ignoreStaff: true
+                        });
+
+                        if (webPush.isDisabled()) {
+                            dialog.createNamed('popupNotifications', $('#popupEnableNotifications'), {
+                                title: "{{ 'enable-push-notifications-in-browser'|trans }}",
+                                autoOpen: true,
+                                modal: true,
+                                width: '700px',
+                            });
+                        }
+                    });
+
+                });
+            });
+        {% endif %}
+    </script>
+{% endblock %}
+
+{% block content %}
+    {% form_theme form with ['@AwardWalletMain/FormTheme/fields.html.twig', _self] %}
+
+    <div class="main-blk shortened">
+        <h1>{{ block('title') }}</h1>
+        {% if freeVersion %}
+            <div>
+                <h2 class="notification-page__subtitle">{{ 'email.notify.marketing.emails'|trans|desc('Marketing emails help fund the free version of AwardWallet.') }}</h2>
+                <p class="notification-page__description">{{ 'email.notify.unscribe.description'|trans|desc('By choosing to unsubscribe from all emails and notifications, you will miss out on essential updates, including notifications about expiring points and changes to your travel plans.') }}</p>
+            </div>
+        {% endif %}
+        {{ macros.drawSplashScreen(0) }}
+
+        <div class="page-content" style="display: none;">
+            {% if success %}
+                <div class="main-blk-content">
+                    <div class="success-message">
+                        <i class="icon-green-check-b"></i>
+                        <p>{{ 'email.notify.success'|trans({'%email%': user.email})|desc('Profile "%email%" has been updated') }}</p>
+                    </div>
+                </div>
+            {% elseif errors|length > 0 %}
+                <div class="error-message-blk">
+                    <i class="icon-warning-small"></i>
+                    <p>{{ errors|first.message|raw }}</p>
+                </div>
+            {% endif %}
+
+            <form action="" method="post" class="main-form spinnerable" id="notifications-form">
+                <div class="main-form-item">
+                    <table class="main-table edit-account notifications inside">
+                        <thead>
+                            <tr>
+                                <th></th>
+                                <th>{{ 'mobile'|trans }}</th>
+                                <th>{{ 'desktop'|trans }}</th>
+                                <th>{{ 'email'|trans }}</th>
+                            </tr>
+                        </thead>
+                        {% if is_granted('SITE_BUSINESS_AREA') %}
+                            <tbody>
+                            <tr>
+                                <td class="caption-row">
+                                    {{ 'notification.booking'|trans }}
+                                    <i class="icon-info-silver" data-role="tooltip" title="{{ 'notification.booking-messages.help'|trans }}"></i>
+                                </td>
+                                {{ form_row(form.mpBookingMessages) }}
+                                {{ form_row(form.wpBookingMessages) }}
+                                {{ form_row(form.emailBookingMessages) }}
+                            </tr>
+                            </tbody>
+                        {% else %}
+                            <tbody>
+                            <tr>
+                                <td colspan="4">
+                                    <div id="disableAll">
+                                        <div class="{{ bem('notification-page', 'control-row') }}">
+                                            <table width="100%">
+                                                <tbody>
+                                                    <tr>
+                                                        <td class="caption-row">
+                                                            {{ 'notification.disable-all'|trans }}
+                                                            <i class="icon-info-silver" data-role="tooltip" title="{{ 'notification.disable-all.help'|trans }}"></i>
+                                                        </td>
+                                                        {{ form_row(form.mpDisableAll) }}
+                                                        {{ form_row(form.wpDisableAll) }}
+                                                        {{ form_row(form.emailDisableAll) }}
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                            {% if freeVersion %}
+                                <tr>
+                                    <td colspan="4" class="{{ bem('notification-page', 'banner-cell') }}">
+                                        <a href="{{ path('aw_users_pay', {ref: 238}) }}" class="banner" tabindex="0">
+                                            <div class="{{ bem('banner', 'content') }}">
+                                                <div class="{{ bem('banner', 'img-content') }}">
+                                                    <img {{ image_src('page-notifications/assets/phone@{1-2}x.png') }}>
+                                                </div>
+                                                <div class="{{ bem('banner', 'main-block') }}">
+                                                    <p class="{{ bem('banner', 'description') }}">
+                                                        {{ 'email.notify.banner.description'|trans|desc('For more precise control over the types of communications you receive, consider upgrading to AwardWallet Plus.') }}
+                                                    </p>
+                                                    <button type="button" class="{{ bem('banner', 'button') }}" tabindex="-1">{{ 'email.notify.banner.button'|trans|desc('Upgrade to AwardWallet') }}
+                                                        <svg width="59" height="22" viewBox="0 0 59 22" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                            <rect x="1" y="1.05245" width="57" height="19.8947" rx="5" fill="#0168CA" stroke="#328EF2" stroke-width="2"/>
+                                                            <rect width="20" height="17.8947" rx="4" transform="matrix(-1 0 0 1 22 2.05245)" fill="#104F92"/>
+                                                            <path fill-rule="evenodd" clip-rule="evenodd" d="M5.53105 7.48702L14.8129 5.22535C15.1233 5.14996 15.3955 5.36605 15.4145 5.70782L15.8491 12.9653C15.8682 13.307 15.6294 13.6438 15.3238 13.7192L6.03716 15.9808C5.72681 16.0562 5.45468 15.8401 5.43558 15.5034L5.00107 8.24591C4.98197 7.90414 5.2207 7.56741 5.53105 7.49202V7.48702Z" fill="white"/>
+                                                            <path opacity="0.5" d="M17.6494 11.211H17.0956C16.8712 11.211 16.685 11.015 16.685 10.7788C16.685 10.5426 16.8664 10.3466 17.0956 10.3466H17.5778L17.3964 8.18042C17.3677 7.84368 17.0812 7.56221 16.7613 7.56221H16.3794L16.704 12.9098C16.7518 13.6838 16.2266 14.4276 15.5152 14.5985L9.63281 16.0309H17.4632C17.7831 16.0309 18.0266 15.7545 17.998 15.4177L17.6494 11.211Z" fill="white"/>
+                                                            <path d="M30.8145 6.43359C31.9199 6.43359 32.7266 6.67188 33.2344 7.14844C33.7422 7.62109 33.9961 8.27344 33.9961 9.10547C33.9961 9.48047 33.9395 9.83984 33.8262 10.1836C33.7129 10.5234 33.5273 10.8262 33.2695 11.0918C33.0156 11.3574 32.6758 11.5684 32.25 11.7246C31.8242 11.877 31.2988 11.9531 30.6738 11.9531H29.8945V15H28.0781V6.43359H30.8145ZM30.7207 7.92188H29.8945V10.4648H30.4922C30.832 10.4648 31.127 10.4199 31.377 10.3301C31.627 10.2402 31.8203 10.0996 31.957 9.9082C32.0938 9.7168 32.1621 9.4707 32.1621 9.16992C32.1621 8.74805 32.0449 8.43555 31.8105 8.23242C31.5762 8.02539 31.2129 7.92188 30.7207 7.92188ZM37.2598 15H35.4727V5.88281H37.2598V15ZM45.1523 8.44922V15H43.7812L43.541 14.1621H43.4473C43.3066 14.3848 43.1309 14.5664 42.9199 14.707C42.709 14.8477 42.4766 14.9512 42.2227 15.0176C41.9688 15.084 41.7051 15.1172 41.4316 15.1172C40.9629 15.1172 40.5547 15.0352 40.207 14.8711C39.8594 14.7031 39.5879 14.4434 39.3926 14.0918C39.2012 13.7402 39.1055 13.2832 39.1055 12.7207V8.44922H40.8926V12.2754C40.8926 12.7441 40.9766 13.0977 41.1445 13.3359C41.3125 13.5742 41.5801 13.6934 41.9473 13.6934C42.3105 13.6934 42.5957 13.6113 42.8027 13.4473C43.0098 13.2793 43.1543 13.0352 43.2363 12.7148C43.3223 12.3906 43.3652 11.9961 43.3652 11.5312V8.44922H45.1523ZM51.5977 13.0547C51.5977 13.5 51.4922 13.877 51.2812 14.1855C51.0742 14.4902 50.7637 14.7227 50.3496 14.8828C49.9355 15.0391 49.4199 15.1172 48.8027 15.1172C48.3457 15.1172 47.9531 15.0879 47.625 15.0293C47.3008 14.9707 46.9727 14.873 46.6406 14.7363V13.2598C46.9961 13.4199 47.377 13.5527 47.7832 13.6582C48.1934 13.7598 48.5527 13.8105 48.8613 13.8105C49.209 13.8105 49.457 13.7598 49.6055 13.6582C49.7578 13.5527 49.834 13.416 49.834 13.248C49.834 13.1387 49.8027 13.041 49.7402 12.9551C49.6816 12.8652 49.5527 12.7656 49.3535 12.6562C49.1543 12.543 48.8418 12.3965 48.416 12.2168C48.0059 12.0449 47.668 11.8711 47.4023 11.6953C47.1406 11.5195 46.9453 11.3125 46.8164 11.0742C46.6914 10.832 46.6289 10.5254 46.6289 10.1543C46.6289 9.54883 46.8633 9.09375 47.332 8.78906C47.8047 8.48047 48.4355 8.32617 49.2246 8.32617C49.6309 8.32617 50.0176 8.36719 50.3848 8.44922C50.7559 8.53125 51.1367 8.66211 51.5273 8.8418L50.9883 10.1309C50.6641 9.99023 50.3574 9.875 50.0684 9.78516C49.7832 9.69531 49.4922 9.65039 49.1953 9.65039C48.9336 9.65039 48.7363 9.68555 48.6035 9.75586C48.4707 9.82617 48.4043 9.93359 48.4043 10.0781C48.4043 10.1836 48.4375 10.2773 48.5039 10.3594C48.5742 10.4414 48.707 10.5332 48.9023 10.6348C49.1016 10.7324 49.3926 10.8594 49.7754 11.0156C50.1465 11.168 50.4688 11.3281 50.7422 11.4961C51.0156 11.6602 51.2266 11.8652 51.375 12.1113C51.5234 12.3535 51.5977 12.668 51.5977 13.0547Z" fill="white"/>
+                                                        </svg>
+                                                    </button>
+                                                </div>
+                                                <ul class="{{ bem('banner', 'benefit-list') }}">
+                                                    <li class="{{ bem('banner', 'benefit-item') }}">{{'email.notify.banner.benefit1'|trans|desc('See all Expirations') }}</li>
+                                                    <li class="{{ bem('banner', 'benefit-item') }}">{{'email.notify.banner.benefit2'|trans|desc('Concurrent updating, up to 5x faster.') }}</li>
+                                                    <li class="{{ bem('banner', 'benefit-item') }}">{{'email.notify.banner.benefit3'|trans|desc('Flight Monitoring')}}</li>
+                                                    <li class="{{ bem('banner', 'benefit-item') }}">{{'email.notify.banner.benefit4'|trans|desc('See additional properties')}}</li>
+                                                </ul>
+                                            </div>
+                                        </a>
+                                    </td>
+                                </tr>
+                            {% endif %}
+                            <tr>
+                                <td colspan="4">
+                                    <div class="caption">
+                                        <span>{{ 'rewards'|trans }}</span>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="4">
+                                    <div id="rewardsExpiration">
+                                        <div class="{{ bem('notification-page', 'control-row') }}">
+                                            <table width="100%">
+                                                <tbody>
+                                                    <tr>
+                                                        <td class="caption-row">
+                                                            {{ 'notification.expiration'|trans }}
+                                                            <i class="icon-info-silver" data-role="tooltip" title="{{ 'notification.expiration.help-v2'|trans }}"></i>
+                                                        </td>
+                                                        {{ form_row(form.mpExpire) }}
+                                                        {{ form_row(form.wpExpire) }}
+                                                        {{ form_row(form.emailExpire) }}
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="4">
+                                    <div id="rewardsActivity">
+                                        <div class="{{ bem('notification-page', 'control-row') }}">
+                                            <table width="100%">
+                                                <tbody>
+                                                    <tr>
+                                                        <td class="caption-row">
+                                                            {{ 'notification.rewards-activity'|trans }}
+                                                            <i class="icon-info-silver" data-role="tooltip" title="{{ 'notification.rewards-activity.help'|trans }}"></i>
+                                                        </td>
+                                                        {{ form_row(form.mpRewardsActivity) }}
+                                                        {{ form_row(form.wpRewardsActivity) }}
+                                                        {{ form_row(form.emailRewardsActivity) }}
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="4">
+                                    <div id="retailLoyaltyCards">
+                                        <div class="{{ bem('notification-page', 'control-row') }}">
+                                            <table width="100%">
+                                                <tbody>
+                                                    <tr>
+                                                        <td class="caption-row">
+                                                            {{ 'notification.channel.retail_cards'|trans({}, 'mobile') }}
+                                                            <i class="icon-info-silver" data-role="tooltip" title="{{ 'notification.retail_cards.help'|trans|desc("For retail loyalty cards, we have an option to give you a popup with your card barcode whenever you get close to the store geographically. If you set up your retail loyalty cards this way you can disable all such notifications using this option.") }}"></i>
+                                                        </td>
+                                                        {{ form_row(form.mpRetailCards) }}
+                                                        <td class="status">&nbsp;</td>
+                                                        <td class="status">&nbsp;</td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="4">
+                                    <div class="caption">
+                                        <span>{{ 'travel'|trans }}</span>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="4">
+                                    <div id="newTravelReservations">
+                                        <div class="{{ bem('notification-page', 'control-row') }}">
+                                            <table width="100%">
+                                                <tbody>
+                                                    <tr>
+                                                        <td class="caption-row">
+                                                            {{ 'notification.new-travel-plan'|trans }}
+                                                            <i class="icon-info-silver" data-role="tooltip" title="{{ 'notification.new-travel-plan.help'|trans }}"></i>
+                                                        </td>
+                                                        {{ form_row(form.mpNewPlans) }}
+                                                        {{ form_row(form.wpNewPlans) }}
+                                                        {{ form_row(form.emailNewPlans) }}
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="4">
+                                    <div id="changesToTravelReservations">
+                                        <div class="{{ bem('notification-page', 'control-row') }}">
+                                            <table width="100%">
+                                                <tbody>
+                                                    <tr>
+                                                        <td class="caption-row">
+                                                            {{ 'notification.change-travel-plan'|trans }}
+                                                            <i class="icon-info-silver" data-role="tooltip" title="{{ 'notification.change-travel-plan.help'|trans }}"></i>
+                                                        </td>
+                                                        {{ form_row(form.mpPlanChanges) }}
+                                                        {{ form_row(form.wpPlanChanges) }}
+                                                        {{ form_row(form.emailPlanChanges) }}
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="4">
+                                    <div id="flightReminders">
+                                        <div class="{{ bem('notification-page', 'control-row') }}">
+                                            <table width="100%">
+                                                <tbody>
+                                                    <tr>
+                                                        <td class="caption-row">
+                                                            {{ 'notification.checkinreminder'|trans }}
+                                                            <i class="icon-info-silver" data-role="tooltip" title="{{ 'notification.checkinreminder.help'|trans }}"></i>
+                                                        </td>
+                                                        {{ form_row(form.mpCheckins) }}
+                                                        {{ form_row(form.wpCheckins) }}
+                                                        {{ form_row(form.emailCheckins) }}
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="4">
+                                    <div class="caption">
+                                        <span>{{ 'other'|trans }}</span>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="4">
+                                    <div id="productUpdates">
+                                        <div class="{{ bem('notification-page', 'control-row') }}">
+                                            <table width="100%">
+                                                <tbody>
+                                                    <tr>
+                                                        <td class="caption-row">
+                                                            {{ 'notification.product-updates'|trans }}
+                                                            <i class="icon-info-silver" data-role="tooltip" title="{{ 'notification.product-updates.help'|trans }}"></i>
+                                                        </td>
+                                                        {{ form_row(form.mpProductUpdates) }}
+                                                        {{ form_row(form.wpProductUpdates) }}
+                                                        {{ form_row(form.emailProductUpdates) }}
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="4">
+                                    <div id="promotionalOffers">
+                                        <div class="{{ bem('notification-page', 'control-row') }}">
+                                            <table width="100%">
+                                                <tbody>
+                                                    <tr>
+                                                        <td class="caption-row">
+                                                            {{ 'notification.offers'|trans }}
+                                                            <i class="icon-info-silver" data-role="tooltip" title="{{ 'notification.offers.help'|trans }}"></i>
+                                                        </td>
+                                                        {{ form_row(form.mpOffers) }}
+                                                        {{ form_row(form.wpOffers) }}
+                                                        {{ form_row(form.emailOffers) }}
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="4">
+                                    <div id="newBlogPosts">
+                                        <div class="{{ bem('notification-page', 'control-row') }}">
+                                            <table width="100%">
+                                                <tbody>
+                                                    <tr>
+                                                        <td class="caption-row">
+                                                            {{ 'notification.blog-new-post'|trans }}
+                                                            <i class="icon-info-silver" data-role="tooltip" title="{{ 'notification.blog-new-post.help'|trans }}"></i>
+                                                        </td>
+                                                        {{ form_row(form.mpNewBlogPosts) }}
+                                                        {{ form_row(form.wpNewBlogPosts) }}
+                                                        {{ form_row(form.emailNewBlogPosts) }}
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="4">
+                                    <div id="userReferrals">
+                                        <div class="{{ bem('notification-page', 'control-row') }}">
+                                            <table width="100%">
+                                                <tbody>
+                                                    <tr>
+                                                        <td class="caption-row">
+                                                            {{ 'notification.register'|trans }}
+                                                            <i class="icon-info-silver" data-role="tooltip" title="{{ 'notification.register.help'|trans }}"></i>
+                                                        </td>
+                                                        <td class="status">&nbsp;</td>
+                                                        <td class="status">&nbsp;</td>
+                                                        {{ form_row(form.emailInviteeReg) }}
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                            {# TODO: uncomment after implement #}
+                            {#<tr>#}
+                            {#<td class="caption-row">#}
+                            {#{{ 'notification.connected-alerts'|trans }}#}
+                            {#<i class="icon-info-silver" data-role="tooltip" title="{{ 'notification.connected-alerts.help'|trans }}"></i>#}
+                            {#</td>#}
+                            {#{{ form_row(form.mpConnected) }}#}
+                            {#{{ form_row(form.wpConnected) }}#}
+                            {#{{ form_row(form.emailConnected) }}#}
+                            {#</tr>#}
+                            <tr>
+                                <td colspan="4">
+                                    <div id="notConnectedMemberAlerts">
+                                        <div class="{{ bem('notification-page', 'control-row') }}">
+                                            <table width="100%">
+                                                <tbody>
+                                                    <tr>
+                                                        <td class="caption-row">
+                                                            {{ 'notification.not-connected-alerts'|trans }}
+                                                            <i class="icon-info-silver" data-role="tooltip" title="{{ 'notification.not-connected-alerts.help'|trans }}"></i>
+                                                        </td>
+                                                        {{ form_row(form.mpNotConnected) }}
+                                                        {{ form_row(form.wpNotConnected) }}
+                                                        {{ form_row(form.emailNotConnected) }}
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                            </tbody>
+                        {% endif %}
+
+                    </table>
+                </div>
+                <div class="row-submit">
+                    <button type="submit" class="btn-blue">{{ 'form.button.update'|trans }}</button>
+                </div>
+                {{ form_rest(form) }}
+            </form>
+        </div>
+    </div>
+    <div class="main-blk shortened">
+        <h1>
+            {{ 'notification.devices.title'|trans|desc('Here are the ways we can communicate with you') }}
+        </h1>
+        <div class="main-blk-content">
+            <div class="title-note">
+                <h3>
+                    {{ 'notification.devices.mobile'|trans|desc('Mobile Push Notifications') }}
+                </h3>
+                {% if mobileDevices|length %}
+                    {{ devicesTable.draw(_context, mobileDevices, 'mobile') }}
+                {% endif %}
+                    <div class="warning-container notification-empty--mobile"{% if mobileDevices is not empty %} hidden{% endif %}>
+                        <i class="icon-warning-small"></i>
+                        <p>
+                            {{ 'notification.devices.mobile.no-devices-info'|trans|desc('
+                            At the moment, you have not authorized AwardWallet
+                            to send push notifications to any of your mobile devices, to do that,
+                            please download the AwardWallet app on your device, open it, log in to your
+                            AwardWallet account and allow the app to send you push notifications.
+                            ') }}
+                        </p>
+                    </div>
+            </div>
+            <div class="title-note">
+                <h3>{{ 'notification.devices.desktop'|trans|desc('Desktop Browser Push Notifications') }}</h3>
+                {% if desktopDevices|length %}
+                    {{ devicesTable.draw(_context, desktopDevices, 'desktop') }}
+                {% endif %}
+                    <div class="notification-empty--desktop"{% if desktopDevices is not empty %} hidden{% endif %}>
+                        <br><a id="enablePushNotifications" class="btn-blue subscribe-to-pushes" href="#subsribe-to-pushes">{{ 'enable-push-notifications-in-browser'|trans|desc('Enable Push Notifications in this Browser') }}</a>
+                        <p id="refreshPageNotifications" hidden>{{ 'please-refresh-page'|trans|desc('Please refresh the page') }}</p>
+                        {#
+                        <i class="icon-warning-small"></i>
+                        <p>
+                            {{ 'notification.devices.desktop.no-devices-info'|trans({
+                                '%link_on%': "<a class=\"blue-link subscribe-to-pushes\" href=\"" ~ path('aw_home') ~ "\">",
+                                '%link_off%': "</a>"
+                            })|desc('
+                            At the moment, you have not authorized AwardWallet to send push notifications to any
+                            of your desktops browsers. Currently, we support the following browsers: Google Chrome,
+                            Safari and Firefox, if you use any of these browsers on your desktop or laptop computer
+                            and wish to get push notifications from us, please click %link_on%this link%link_off%
+                            and make sure you allow push notifications to be delivered to you from AwardWallet
+                            (this is a browser setting).
+                            ')|raw }}
+                        </p>
+                        #}
+                    </div>
+            </div>
+            <div class="title-note">
+                <h3>
+                    {{ 'notification.devices.email'|trans|desc('Email Notifications') }}
+                </h3>
+            </div>
+            <table class="main-table notification-settings">
+                <tbody>
+                <tr>
+                    <td>{{ user.email }}</td>
+                    <td class="actions">
+                        <ul class="list-actions">
+                            <li><a href="{{ path('aw_user_change_email') }}"><i class="icon-edit" data-role="tooltip" title="{{ 'notification.devices.email.change'|trans|desc('Change email') }}"></i></a></li>
+                            <li><a href="#" class="test-email"><i class="icon-send-notification" data-role="tooltip" title="{{ 'notification.devices.email.test'|trans|desc('Send a test email') }}"></i></a></li>
+                        </ul>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div id="popupEnableNotifications" class="notifications-popup-content js-{{ browser.platform|lower }} js-{{ browser.browser|lower }}">
+        <div class="notify-permit-wrap">
+            <div class="notify-permit-head">
+                {{ 'enable-push-notifications-aw'|trans({'%break%': '<br>'})|desc('In order to enable push notifications from %break%AwardWallet please follow these two simple steps')|raw }}:
+            </div>
+            <div class="notify-browser--chrome">
+                <img class="notify-tip-light" src="/assets/awardwalletnewdesign/img/browser/notifications-permit/chrome.png" alt="">
+                <img class="notify-tip-dark" src="/assets/awardwalletnewdesign/img/browser/notifications-permit/chrome-dark.png" alt="">
+            </div>
+            <div class="notify-browser--firefox">
+                <img class="notify-tip-light" src="/assets/awardwalletnewdesign/img/browser/notifications-permit/firefox.png" alt="">
+                <img class="notify-tip-dark" src="/assets/awardwalletnewdesign/img/browser/notifications-permit/firefox-dark.png" alt="">
+                <b>{{ 'or'|trans }}</b>
+                <img class="notify-tip-light" src="/assets/awardwalletnewdesign/img/browser/notifications-permit/firefox_blocked.png" alt="">
+                <img class="notify-tip-dark" src="/assets/awardwalletnewdesign/img/browser/notifications-permit/firefox_blocked-dark.png" alt="">
+            </div>
+            <div class="notify-browser--edge">
+                <img class="notify-tip-light" src="/assets/awardwalletnewdesign/img/browser/notifications-permit/edge.png" alt="">
+                <img class="notify-tip-dark" src="/assets/awardwalletnewdesign/img/browser/notifications-permit/edge-dark.png" alt="">
+            </div>
+            <div class="notify-browser--safari">
+                <img class="notify-tip-light" src="/assets/awardwalletnewdesign/img/browser/notifications-permit/safari.png" alt="">
+                <img class="notify-tip-dark" src="/assets/awardwalletnewdesign/img/browser/notifications-permit/safari-dark.png" alt="">
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+
+{% block checkbox_row %}
+    <td class="status">{{ form_widget(form) }}</td>
+{% endblock checkbox_row %}
+
+{% block choice_row %}
+    <td class="status">{{ form_widget(form, {small: true}) }}</td>
+{% endblock choice_row %}
+
+{% macro draw(context, devices, type, deviceManager) %}
+    <table class="main-table notification-settings" data-device="{{ type }}">
+        <thead>
+        <tr>
+            <th class="alias">{% if (devices|first).desktop %}{{ 'notification.devices.interface'|trans|desc('Interface') }}{% else %}{{ 'notification.devices.alias'|trans|desc('Alias') }}{% endif %}</th>
+            <th class="browser-name">{% if (devices|first).desktop %}{{ 'notification.devices.browser'|trans|desc('Browser name') }}{% else %}{{ 'notification.devices.type'|trans|desc('Device Type') }}{% endif %}</th>
+            <th class="enrolled-on">{{ 'notification.devices.enrolled-on'|trans|desc('Enrolled on') }}</th>
+            <th class="last-updated">{{ 'award.account.list.column.lastupdate'|trans}}</th>
+            <th class="enrolled-from<">{{ 'notification.devices.enrolled-from'|trans|desc('Enrolled from') }}</th>
+            <th class="actions"></th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for device in devices %}
+            <tr data-code="{{ attribute(context.unsubscribeCodes, device.deviceKey) }}"
+                class="{% if context.browser is defined and context.browser.browser == getBrowser(device.getUseragent).browser %}is-{{ type }}-same-browser{% endif %}">
+                <td class="alias">
+                    {% if 'business' in device.appVersion %}
+                        <span>{{ 'notification.devices.business'|trans|desc('Business') }}</span>
+                    {% elseif 'personal' in device.appVersion %}
+                        <span>{{ 'notification.devices.personal'|trans|desc('Personal') }}</span>
+                    {% else %}
+                        <a href="#" class="blue-link set-alias" data-alias="{{ device.alias|trim }}">{{ (device.alias|trim ? device.alias : 'notification.devices.set-alias'|trans|desc('Set Alias')) }}</a>
+                    {% endif %}
+                </td>
+                <td class="browser-name">
+                    {{ context.deviceManager.getDeviceName(device) }}
+                </td>
+                <td class="enrolled-on">
+                    {{ device.creationDate|formatTimeAgo(true, true) }}
+                    <div>({{ device.creationDate|patternDatetime("LLLL dd, y", app.request.locale) }})</div>
+                </td>
+                <td class="last-updated">
+                    {{ device.updateDate|formatTimeAgo(true, true) }}
+                    <div>({{ device.updateDate|patternDatetime("LLLL dd, y", app.request.locale) }})</div>
+                </td>
+                <td class="enrolled-from<">
+                    {% if device.ip %}
+                        {{ context.locationService.locationNameByIp(device.ip) }}
+                        <div>({{ device.ip }})</div>
+                    {% else %}
+                        N/A
+                    {% endif %}
+                </td>
+                <td class="actions">
+                    <ul class="list-actions">
+                        <li>
+                            <a href="#" class="unsubscribe">
+                                <i class="icon-delete" data-role="tooltip" title="{{ 'notification.devices.unsubscribe'|trans|desc('Unsubscribe this device') }}"></i>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#" class="test-notification">
+                                <i class="icon-send-notification" data-role="tooltip" title="{{ 'notification.devices.test'|trans|desc('Send a test notification') }}"></i>
+                            </a>
+                        </li>
+                    </ul>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+{% endmacro %}

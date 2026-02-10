@@ -1,0 +1,104 @@
+{% trans_default_domain "email" %}
+
+{% block content %}
+DTSTART;VALUE=DATE:{{ dateStart }}
+DTSTAMP:{{ dateCreate }}
+UID:{{ uid }}
+SUMMARY:{{ title|raw }}
+TRANSP:TRANSPARENT
+DESCRIPTION:{{ descr_text|raw }}
+{#X-ALT-DESC;FMTTYPE=text/html:{{ descr_html|raw }}#}
+{#{{ alarms|raw }}#}
+{% endblock content %}
+
+{% block alarms %}
+{% for weeks in weeksBeforeAlarm %}
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:This is an event reminder
+TRIGGER:-P{{ weeks }}WT12H0M0S
+END:VALARM
+{% endfor %}
+{% endblock alarms %}
+
+{% block subject %}{% apply spaceless %}{% autoescape false %}
+    {% set country = block('countryName') %}
+    {% if expiresInMonths == 0 %}
+        {% if country is empty %}
+            {{ 'passport_expiration_today.subject'|trans({
+                '%user_name%': passport.ownerFullName,
+            }, 'email', lang)|desc("🛂 %user_name%'s Passport Expires today") }}
+        {% else %}
+            {{ 'passport_expiration_today.with_issuing_country.subject'|trans({
+                '%user_name%': passport.ownerFullName,
+                '%issuing_country%': country,
+                '%months%': expiresInMonths
+            }, 'email', lang)|desc("🛂 %user_name%'s Passport (%issuing_country%) Expires today") }}
+        {% endif %}
+    {% else %}
+        {% if country is empty %}
+            {{ 'passport_expiration.subject'|trans({
+                '%user_name%': passport.ownerFullName,
+                '%months%': expiresInMonths
+            }, 'email', lang)|desc("🛂 %user_name%'s Passport Expires in %months% Months") }}
+        {% else %}
+            {{ 'passport_expiration.with_issuing_country.subject'|trans({
+                '%user_name%': passport.ownerFullName,
+                '%issuing_country%': country,
+                '%months%': expiresInMonths
+            }, 'email', lang)|desc("🛂 %user_name%'s Passport (%issuing_country%) Expires in %months% Months") }}
+        {% endif %}
+    {% endif %}
+{% endautoescape %}{% endapply %}{% endblock subject %}
+
+{% block descr %}
+
+    {% set country = block('countryName') %}
+    {% if expiresInMonths == 0 %}
+        {% if country is empty %}
+            {% set expiresIn = 'passport_expiration.expires_today'|trans({
+            '%user_name%': passport.ownerFullName|htmlencode,
+            '%bold_on%': '',
+            '%bold_off%': ''
+            }, 'email', lang)|desc('According to our records, the passport, which belongs to %user_name%, %bold_on%expires today%bold_off%.') %}
+        {% else %}
+            {% set expiresIn = 'passport_expiration.with_issuing_country.expires_today'|trans({
+            '%user_name%': passport.ownerFullName|htmlencode,
+            '%issuing_country%': country|htmlencode,
+            '%bold_on%': '',
+            '%bold_off%': ''
+            }, 'email', lang)|desc('According to our records, the passport (issuing country: %issuing_country%), which belongs to %user_name%, %bold_on%expires today%bold_off%.') %}
+        {% endif %}
+    {% else %}
+        {% if country is empty %}
+            {% set expiresIn = 'passport_expiration.expires_in'|trans({
+            '%user_name%': passport.ownerFullName|htmlencode,
+            '%months%': expiresInMonths,
+            '%bold_on%': '',
+            '%bold_off%': ''
+            }, 'email', lang)|desc('According to our records, the passport, which belongs to %user_name%, %bold_on%expires in %months% months%bold_off%.') %}
+        {% else %}
+            {% set expiresIn = 'passport_expiration.with_issuing_country.expires_in'|trans({
+            '%user_name%': passport.ownerFullName|htmlencode,
+            '%months%': expiresInMonths,
+            '%issuing_country%': country|htmlencode,
+            '%bold_on%': '',
+            '%bold_off%': ''
+            }, 'email', lang)|desc('According to our records, the passport (issuing country: %issuing_country%), which belongs to %user_name%, %bold_on%expires in %months% months%bold_off%.') %}
+        {% endif %}
+    {% endif %}
+
+    {{ expiresIn ~ ' ' ~
+    'passport_expiration.recommendation'|trans({}, 'email', lang)|desc("Typically, your passport should be valid for at least six months after your last day of travel. If you haven't already done so, we recommend that you start looking into getting this passport renewed now. Once you get your new passport, please update your records on AwardWallet so that we can continue monitoring your passport expiration date:") }}
+
+{% endblock descr %}
+
+{% block countryName %}{% apply spaceless %}{% autoescape false %}
+    {% set country = '' %}
+    {% if passport.customFields.passport is defined %}
+        {% set country = passport.customFields.passport.country|default('') %}
+    {% endif %}
+    {% if country is not empty %}
+        {{ country|localizedCountryById(lang) }}
+    {% endif %}
+{% endautoescape %}{% endapply %}{% endblock countryName %}

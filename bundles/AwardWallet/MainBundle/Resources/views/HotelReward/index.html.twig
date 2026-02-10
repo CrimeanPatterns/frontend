@@ -1,0 +1,38 @@
+{% import "@AwardWalletMain/TwigMacros/environment.html.twig" as environmentMacros %}
+{% set MOBILE_NAV = true %}
+{% set MAIN_BODY_CLASSES = {
+    'manual-hidden': true,
+    'responsive': true,
+}|merge(MAIN_BODY_CLASSES|default({})) %}
+{% extends app.user is not null ? "@AwardWalletMain/Layout/common.html.twig" : "@AwardWalletMain/Layout/not_logged.html.twig" %}
+{% import "@AwardWalletMain/TwigMacros/recaptcha.html.twig" as recaptcha %}
+
+{% block meta %}
+    {{ parent() }}
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0, viewport-fit=cover">
+{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    {{ encore_entry_link_tags('hotel-reward') }}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    {{ encore_entry_script_tags('trans/' ~ app.request.locale) }}
+    {{ encore_entry_script_tags('hotel-reward') }}
+{% endblock %}
+
+{% block body_left_widgets %}
+    {{ widget_render('left_top') }}
+    {{ widget_render('credit_card_tools_zone') }}
+    {{ widget_render('left_bottom') }}
+{% endblock %}
+
+{% block title %}{{ 'best-hotel-reward-search'|trans }}{% endblock %}
+
+{% block content %}
+    <div id="content" {{ environmentMacros.dataAttr({
+        'primary-list': primaryHotelList
+    }) }}></div>
+{% endblock %}

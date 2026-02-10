@@ -1,0 +1,82 @@
+{% extends "@AwardWalletMain/Layout/hidden_left_menu.html.twig" %}
+{% form_theme form with ['@AwardWalletMain/FormTheme/fields.html.twig'] %}
+{% trans_default_domain "messages" %}
+
+{% block title %}
+    {{ 'cart.item.type.balancewatch-credit'|trans }}
+{% endblock %}
+
+{% block header_metatags %}
+    {% include '@AwardWalletMain/Utility/scalableViewport.html.twig' %}
+{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        window.paymentOptions = {{ paymentOptions|json_encode|raw }};
+        require([
+            'pages/userPay/main',
+            'lib/design',
+            'lib/customizer'
+        ], function() {
+            $('form button[type="submit"]').on('click', function(e) {
+                $(this).attr('disabled', 'disabled')
+                    .addClass('loader')
+                    .delay(200)
+                    .queue(function(next) {
+                        $('form').submit();
+                        next();
+                    });
+            });
+        });
+    </script>
+{% endblock %}
+
+{% block content %}
+    <div class="main-blk shortened" data-ng-controller="userPayBalanceWatchCreditCtrl as ctrl">
+        <h1>{{ 'cart.item.type.balancewatch-credit'|trans }}</h1>
+
+        <form method="post" class="main-form">
+            {{ form_widget(form._token) }}
+
+            <div class="main-blk-content">
+                <table class="main-table payment" data-ng-cloak>
+                    <thead>
+                    <tr>
+                        <th class="item">{{ 'user-pay.column.item.title'|trans|desc('Item') }}</th>
+                        <th class="quantity">{{ 'user-pay.column.quantity.title'|trans|desc('Quantity') }}</th>
+                        <th class="t-right">{{ 'user-pay.column.price.title'|trans|desc('Price') }}</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td>{{ 'cart.item.type.balancewatch-credit'|trans }}</td>
+                        <td>{{ form_widget(form.balanceWatchCredit, {'small': true}) }}</td>
+                        <td class="t-right price">[[ model.user_pay.balanceWatchCreditAmount | currency ]]</td>
+                    </tr>
+                    <tr data-ng-cloak data-ng-if="model.discount">
+                        <td><strong class="red">{{ 'discount'|trans }}</strong></td>
+                        <td></td>
+                        <td class="t-right price"><strong class="red">-[[ model.discount | currency ]]</strong></td>
+                    </tr>
+                    </tbody>
+                </table>
+
+                <table data-ng-cloak class="main-table total">
+                    <tr class="totals">
+                        <td><strong class="red">{{ 'total'|trans|desc('Total') }}:</strong></td>
+                        <td class="total-price t-right"><span class="red">[[ model.total | currency ]]</span></td>
+                    </tr>
+                </table>
+            </div>
+
+            <div class="row-submit" data-ng-cloak>
+                <button type="submit" class="btn-blue" ng-disabled="model.total == 0">{{ 'payment-proceed'|trans|desc('Proceed to payment options') }}</button>
+            </div>
+        </form>
+    </div>
+{% endblock %}

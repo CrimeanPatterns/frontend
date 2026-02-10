@@ -1,0 +1,111 @@
+{% set title = "Email stats" %}
+{% use '@AwardWalletMain/FormTheme/oldFields.html.twig' %}
+{% extends '@AwardWalletMain/Manager/layout.html.twig' %}
+
+{% block content %}
+    <link href="{{ asset('assets/awardwalletmain/css/manualParser.css') }}" rel="stylesheet" type="text/css" media="all" />
+    <link rel="stylesheet" href="{{ asset('/assets/awardwalletmain/css/flags.css') }}?id=1"/>
+    {% if region starts with 'us' %}
+        <div class="flag_mini us" title="US"></div>
+    {% elseif region starts with 'eu' %}
+        <div class="flag_mini eu" title="EU"></div>
+    {% endif %}
+    <div style="float: right;">
+        {% for r in regions %}
+            {% if region == r %}
+                <b>{{ r }}</b>
+            {% else %}
+                <a href="?region={{ r }}">{{ r }}</a>
+            {% endif %}
+        {% endfor %}
+    </div>
+    <div class="nav">
+      {% for title in titles %}
+        <a href="{{ path('aw_manager_emailstat_index', { type: title|replace({' ': ''})|lower }) }}">{{ title }}</a>
+      {% endfor %}
+    </div>
+    {% for pageIndex, page in reports %}
+        <div id="page{{ pageIndex }}" class="page" data-title="{{ page.title }}">
+            <h1>{{ page.title }}</h1>
+            {% for reportIndex, report in page.reports %}
+            <div>
+                <h2>{{ report.title }}</h2>
+                {% if report.tabs is defined %}
+                    <h3>
+                    {{ report.tabTitle }}
+                    </h3>
+                <select class="tab_select selectTxt" id="tab_select_{{ reportIndex }}" data-tab-group="{{ pageIndex ~ "_" ~ reportIndex }}">
+                    {% for tabIndex, tab in report.tabs %}
+                        <option value="{{ pageIndex ~ "_" ~ reportIndex ~ "_" ~ tabIndex }}" {% if tabIndex == 0 %}selected{% endif %}>{{ tab.caption }}</option>
+                    {% endfor %}
+                </select>
+                {% for tabIndex, tab in report.tabs %}
+                <table class="detailsTable tabTable {{ "tab_group_" ~ pageIndex ~ "_" ~ reportIndex }}" id="{{ "tab_" ~ pageIndex ~ "_" ~ reportIndex ~ "_" ~ tabIndex }}" cellpadding="5" cellspacing="0" data-title="{{ report.title }}" {% if tabIndex > 0 %}style="display: none;"{% endif %}>
+                    <thead>
+                    {% if report.columns is defined %}
+                        <tr>
+                            {% for column in report.columns %}
+                                <td><b>{{ column }}</b></td>
+                            {% endfor %}
+                        </tr>
+                    {% endif %}
+                    </thead>
+                    <tbody>
+                    {% for row in tab.rows %}
+                        <tr>
+                            {% for value in row %}
+                                <td>{{ value }}</td>
+                            {% endfor %}
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+                {% endfor %}
+                {% else %}
+                <table class="detailsTable" cellpadding="5" cellspacing="0" data-title="{{ report.title }}">
+                    {% if report.columns is defined %}
+                        <tr>
+                        {% for column in report.columns %}
+                            <td><b>{{ column }}</b></td>
+                        {% endfor %}
+                        </tr>
+                    {% endif %}
+                    <tbody>
+                    {% for row in report.rows %}
+                    <tr>
+                    {% if report.columns is defined %}
+                        {% for key, column in report.columns %}
+                            <td>{{ row[key] }}</td>
+                        {% endfor %}
+                    {% else %}
+                        {% for value in row %}
+                            <td>{{ value }}</td>
+                        {% endfor %}
+                    {% endif %}
+                    </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+                {% endif %}
+            </div>
+        {% endfor %}
+        </div>
+    {% endfor %}
+
+    <div style="padding-top: 10px; font-size: 50%; color: gray;">Generated {{ date|date }}</div>
+
+    <script type="text/javascript">
+
+        $(document).ready(function(){
+
+        	// tab selection
+            $('select.tab_select').change(function(event){
+            	var select = $(event.target);
+            	console.log(select.attr('data-tab-group'));
+            	$('table.tab_group_' + select.attr('data-tab-group')).hide();
+            	$('#tab_' + select.val()).show();
+            });
+        });
+
+    </script>
+{% endblock %}

@@ -1,0 +1,214 @@
+{% macro openLeftBox(title, classes) %}
+	{% if title != '' %}
+		<div class="boxTitle">
+			<div class="head"></div>
+			<div class="center">
+				<div class="caption">{{ title }}</div>
+				<div class="mark"></div>
+			</div>
+			<div class="foot"></div>
+		</div>
+		{% set classes = classes ~ " titled" %}
+	{% else %}
+		{% set classes = classes ~ " untitled" %}
+	{% endif %}
+	<div class="box {{ classes }}">
+		<div class="bHead"></div>
+{% endmacro %}
+
+{% macro closeLeftBox() %}
+		<div class="bFoot"></div>
+	</div>
+{% endmacro %}
+
+{% macro DrawBeginBox(attr, header, closable, classes) %}
+	<div {{ attr|raw }} class="roundedBox {{ classes }}">
+		<div>
+			<table cellpadding="0" cellspacing="0" class="frame{% if header == '' or header is null %} headerLess{% endif %}{% if closable == false %} notClosable{% endif %}">
+				<tr class="top">
+					<td class="left"></td>
+					<td class="center">
+						<a class='close' href='#' onclick='cancelPopup(); return false;'></a><div class='clear'></div>
+						<div class='header'>{{ header|raw }}</div>
+					</td>
+					<td class="right"></td>
+				</tr>
+				<tr class="middle">
+					<td class="left">
+						<div class="bg"></div>
+					</td>
+					<td class="center">
+{% endmacro %}
+
+{% macro DrawEndBox() %}
+						<div class='clear'></div>
+					</td>
+					<td class="right">
+						<div class="bg"></div>
+					</td>
+				</tr>
+				<tr class="bottom">
+					<td class="left"></td>
+					<td class="center"></td>
+					<td class="right"></td>
+				</tr>
+			</table>
+		</div>
+	</div>
+{% endmacro %}
+
+{% macro DrawButton(caption, attr, size, buttonAttr, href, buttonClasses) %}
+	<div class="overallButton {{ buttonClasses }}" {{ attr|raw }}>
+	    <div class="ico"></div>
+		<table border="0" cellpadding="0" cellspacing="0">
+			<tr>
+				<td>
+					<div class="buttonLeft"></div>
+				</td>
+				<td>
+                {% if href|default(false) == false %}
+					<input style="display: block; {% if size > 0 %} width:{{ size }}px;{% endif %}" type="submit" {{ buttonAttr|raw }} class="buttonBg" value="{{ caption|e }}">
+                {% else %}
+                    <a class="buttonLink" {{ buttonAttr|raw }} {% if size > 0 %} style="width: {{ size }}px;"{% endif %} href="{{ href|raw }}" target="_blank">{{ caption|e }}</a>
+                {% endif %}
+				</td>
+				<td><div class="buttonRight"></div></td>
+			</tr>
+		</table>
+	</div>
+{% endmacro %}
+
+{% macro DrawMessageBox(message, kind, width) %}
+	<table cellspacing="0" cellpadding="0" border="0" align="center" style="width: 100%;">
+		<tr>
+			<td valign="bottom" align="center">
+				<div style="width: {{ width|default('400') }}px;" class="roundedBox">
+					<div>
+						<table cellpadding="0" cellspacing="0" class="frame headerLess notClosable">
+							<tr class="top">
+								<td class="left"></td>
+								<td class="center">
+									<a class='close' href='#' onclick='cancelPopup(); return false;'></a><div class='clear'></div>
+									<div class='header'></div>
+								</td>
+								<td class="right"></td>
+							</tr>
+							<tr class="middle"><td class="left"><div class="bg"></div></td><td class="center">
+							
+								<table cellspacing="0" cellpadding="0" border="0" style="margin-bottom: 20px; margin-left: 20px; margin-right: 20px;">
+									<tr>
+										<td width="50" align="left">
+											<img src="{{ '/lib/images/' ~ kind|default('info') ~ '_big.gif' }}" border="0" alt="" style="margin-right: 20px;" />
+										</td>
+										<td class="{{ kind|default('info') }}Frm">{{ message | raw }}</td>
+									</tr>
+								</table>
+								<div class='clear'></div>
+							
+							</td><td class="right"><div class="bg"></div></td></tr>
+							<tr class="bottom">
+								<td class="left"></td>
+								<td class="center"></td>
+								<td class="right"></td>
+							</tr>
+						</table>
+					</div>
+				</div>
+			</td>
+		</tr>
+	</table>
+{% endmacro %}
+
+{% macro DrawBoxTall(content, class, attr) %}
+	<div class="boxToll pageNote {{ class|default('') }}" {{ attr|default('')|raw }}>
+		<div class="top">
+			<div class="left"></div>
+		</div>
+		<div class="center pad">
+			{{ content|raw }}
+		</div>
+		<div class="bottom">
+			<div class="left"></div>
+		</div>
+	</div>
+{% endmacro %}
+
+{% macro DrawTableTitle(content) %}
+	{{ _self.DrawBoxTall('<div class="redHeader">' ~ content ~ '</div>', 'formHeader', 'style="padding-bottom: 20px;"') }}
+{% endmacro %}
+
+{% macro DrawFaq(question, answer) %}
+	<div class="boxToll boxBlue boxFaq boxBlueClosed" style="margin-top: 23px;">
+		<div class="left"></div>
+		<div class="center">
+			<div class="centerInner">
+				<div class="q">Q:</div>
+				<a class="button" href="#" onclick="toggleFaq(this); return false;"></a>
+				<div class="text"><a href="#" onclick="toggleFaq(this); return false;">{{ question|raw }}</a></div>
+			</div>
+		</div>
+		<div class="bottom">
+			<div class="left"></div>
+		</div>
+	</div>
+	<div class="boxToll pageNote afterBlue boxFaq afterBlueClosed" style="display: none;">
+		<div class="left"></div>
+		<div class="downArrow"></div>
+		<div class="center pad">
+			<div>
+				<div class="q">A:</div>
+				<div class="text">{{ answer|raw }}</div>
+			</div>
+		</div>
+		<div class="bottom">
+			<div class="left"></div>
+		</div>
+	</div>
+{% endmacro %}
+
+{% macro DrawMessage(text, kind) %}
+	<div class='message {{ kind }}Message'>
+		<table border='0' cellpadding='0' cellspacing='0'>
+			<tr>
+				<td><div class='icon'></div></td>
+				<td>{{ text }}</td>
+			</tr>
+		</table>
+	</div>
+{% endmacro %}
+
+{% macro DrawSmallButton(caption, bAttr, bClasses, inpAttr) %}
+    <div class="smallButton {{ bClasses }}" {{ bAttr|raw }}>
+        <b class="leftBg"></b>
+        <input type="button" class="caption" value="{{ caption }}" {{ inpAttr|raw }} />
+        <b class="rightBg"></b>
+    </div>
+{% endmacro %}
+
+{% macro topMenuItem(path, caption, selected) %}
+    <a class="link" href="{{ path }}"
+	    {% if selected %}
+	        style="background-image: none; padding: 7px 0px 10px 0px;"
+	    {% endif %}
+	>
+	    {% if selected %}
+	        <div class="topMenuSelected"><div class="topMenuLeft"></div><div class="topMenuSelectedBg">
+	    {% endif %}
+	    {{ caption|trans }}
+	    {% if selected %}
+	        </div><div class="topMenuRight"></div></div>
+	    {% endif %}
+	</a>
+{% endmacro %}
+
+{% macro angularLinkConverter() %}
+	<script>
+		if(decodeURIComponent(window.location.href).indexOf('#/') > -1){
+			history.pushState(
+				'',
+				document.title,
+				window.location.pathname + decodeURIComponent(window.location.hash).replace(/\/?#\//, '/')
+			);
+		}
+	</script>
+{% endmacro %}

@@ -1,0 +1,83 @@
+{% form_theme form with ['@AwardWalletMain/Manager/EmailViewer/theme.html.twig'] %}
+{% set tdStyle = 'style="padding: 8px; background-color: #eeeeee"' %}
+{% set tdStyle2 = 'style="padding: 8px; background-color: #d9d9d9; min-width: 140px"' %}
+
+<table cellpadding="0" cellspacing="2" border="0" style="width: 600px;">
+    <tr>
+        <td align="right" {{ tdStyle2|raw }}>
+            {{ form_label(form.kind) }}
+        </td>
+        <td {{ tdStyle|raw }}>
+            {{ form_widget(form.kind) }}
+        </td>
+    </tr>
+    <tr>
+        <td align="right" {{ tdStyle2|raw }}>
+            {{ form_label(form.lang) }}
+        </td>
+        <td {{ tdStyle|raw }}>
+            {{ form_widget(form.lang) }}
+        </td>
+    </tr>
+    <tr>
+        <td align="right" {{ tdStyle2|raw }}>
+            {{ form_label(form.locale) }}
+        </td>
+        <td {{ tdStyle|raw }}>
+            {{ form_widget(form.locale) }}
+        </td>
+    </tr>
+    <tr>
+        <td align="right" {{ tdStyle2|raw }}>
+        </td>
+        <td {{ tdStyle|raw }}>
+            {{ form_widget(form.debug) }} {{ form_label(form.debug) }}
+        </td>
+    </tr>
+    <tr>
+        <td align="right" {{ tdStyle2|raw }}>
+            {{ form_label(form.address) }}
+        </td>
+        <td {{ tdStyle|raw }}>
+            {{ form_widget(form.address) }}
+        </td>
+    </tr>
+    <tr>
+        <td align="right" {{ tdStyle2|raw }}>
+            {{ form_label(form.stat_period) }}
+        </td>
+        <td {{ tdStyle|raw }}>
+            {{ form_widget(form.stat_period) }}
+        </td>
+    </tr>
+    {% if form.offsetExists('form') %}
+        {% for option in form.form %}
+            <tr>
+                <td align="right" {{ tdStyle2|raw }}>
+                    {{ form_label(option) }}
+                </td>
+                <td {{ tdStyle|raw }}>
+                    {{ form_widget(option) }}
+                </td>
+            </tr>
+        {% endfor %}
+    {% endif %}
+    <tr>
+        <td {{ tdStyle|raw }}>
+        </td>
+        <td align="center" {{ tdStyle|raw }}>
+            {{ form_widget(form.show) }} {{ form_widget(form.send) }}
+        </td>
+    </tr>
+    <tr>
+        <td colspan="2">
+            {{ form_rest(form) }}
+        </td>
+    </tr>
+    <tr>
+        <td colspan="2" style="text-align: center">
+            <a href="https://redmine.awardwallet.com/projects/awwa/wiki/Send-mail-2" target="_blank">Wiki по созданию писем</a><br>
+            <a id="macroHelp" href="">Twig Macro Help</a> (только общие макросы)<br>
+        </td>
+    </tr>
+</table>

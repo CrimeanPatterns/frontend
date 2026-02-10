@@ -1,0 +1,396 @@
+{% extends "@AwardWalletMain/Layout/profile.html.twig" %}
+{% use '@AwardWalletMain/Profile/ProfileOverview/accountType.html.twig' %}
+
+{% block title %}{{ 'user.profile.title'|trans({})|desc('Edit my profile') }}{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        require([
+            'pages/userProfile/profileOverview'
+        ], function () {
+        });
+    </script>
+{% endblock %}
+
+{% block content %}
+    <div class="main-blk shortened">
+        <h1>{{ 'user.profile.title'|trans({})|desc('Edit my profile') }}</h1>
+
+        <div class="main-blk-content">
+            {% if app.session.flashbag.has('notice') %}
+                {% for flash_message in app.session.flashbag.get('notice') %}
+                    <div class="success-title">
+                        <i class="icon-white-check-b"></i>
+                        <span>{{ flash_message }}</span>
+                    </div>
+                {% endfor %}
+            {% else %}
+                {% if user.emailverified != constant('EMAIL_VERIFIED') %}
+                    <div class="warning-blk t-center">
+                        <i class="icon-warning-w"></i>
+                        <p>{{ 'email.not_verified'|trans()|desc('Your email has not been verified. Please <a href="#" id="verifyEmail">verify your email</a> now.') | raw }}</p>
+                    </div>
+                {% endif %}
+            {% endif %}
+            {{ block('account_type') }}
+
+            <table id="accountInfo" class="main-table edit-account" data-level="{{ user.accountlevel }}">
+                <tbody>
+                <tr>
+                    <td class="caption-row">{{ 'cart.item.type.one-card'|trans }}:</td>
+                    <td class="info-row"><span class="bold">{{ onecard.Left }}</span></td>
+                    <td class="action-row"><a href="{{ path('aw_users_pay') }}" class="btn-blue button-credits">{{ 'buy-more'|trans|desc('Buy More') }}</a></td>
+                </tr>
+                <tr>
+                    <td class="caption-row">{{ 'cart.item.type.balancewatch-credit'|trans }}:</td>
+                    <td class="info-row"><span class="bold">{{ user.balancewatchcredits }}</span></td>
+                    <td class="action-row"><a id="buyBalanceWatchCredit" href="{{ path('aw_users_pay_balancewatchcredit') }}" class="btn-blue button-credits">{{ 'buy-more'|trans|desc('Buy More') }}</a></td>
+                </tr>
+
+                {% if user.getOAuth().count() > 0 %}
+                    <tr class="oauth-caption">
+                        <td colspan="3" class="caption-wrap">
+                            <div class="caption">
+                                <span>{{ 'linked-oauth-accounts'|trans|desc('Linked Accounts') }}</span>
+                            </div>
+                        </td>
+                    </tr>
+
+                    {% for userOAuth in user.getOAuth() %}
+                        {% set icon = userOAuth.provider %}
+                        {% set name = userOAuth.provider|capitalize %}
+
+                        <tr class="oauth-row">
+                            <td class="caption-row">
+                                <div class="linked">
+                                    <div class="linked__icon">
+                                        <i class="icon-{{ icon }}"></i>
+                                    </div>
+                                    <div class="linked__details">
+                                        {{ name }}:
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="info-row">
+                                <div class="user-wrap">
+                                    <div class="user-wrap__thumb">
+                                        <img src="{{ userOAuth.AvatarURL|default('/assets/awardwalletnewdesign/img/no-avatar.gif') }}" alt="avatar">
+                                    </div>
+                                    <div class="user-wrap__details">
+                                        <span class="bold">{{ userOAuth.email }}</span>
+                                        <span class="info">{{ userOAuth.fullName }}</span>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="action-row">
+                                <a href="" data-oauth-unlink="{{ userOAuth.id }}">
+                                    <i class="icon-delink"></i>
+                                </a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                {% endif %}
+                </tbody>
+            </table>
+            <div class="title-note">
+                <h3>{{ 'personal_info'|trans({})|desc('Personal information') }}</h3>
+                <a href="{{ path('aw_profile_personal') }}" class="btn-blue edit-btn">
+                    <i class="icon-edit-w"></i>
+                    <span>{{ 'button.edit'|trans({})|desc('Edit') }}</span>
+                </a>
+            </div>
+            <table class="main-table edit-account">
+                <tbody>
+                <tr>
+                    <td class="caption-row">{{ 'login.login'|trans({}) }}:</td>
+                    <td class="info-row"><span class="bold">{{ user.login }}</span></td>
+                    <td class="action-row"></td>
+                </tr>
+                <tr>
+                    <td class="caption-row">{{ 'login.security_question'|trans|desc('Security questions') }}:</td>
+                    {% if securityQuestionsCount == 0 %}
+                        {% set securityQuestionsMessage = 'login.security_question.not_configured'|trans|desc('Not configured') %}
+                    {% else %}
+                        {% set securityQuestionsMessage = 'login.security_question.configured'|trans({'%count%': securityQuestionsCount, '%questions%': securityQuestionsCount})|desc('{1}%questions% question configured|[2,Inf]%questions% questions configured') %}
+                    {% endif %}
+                    <td class="info-row"><span class="bold">{{ securityQuestionsMessage }}</span></td>
+                    <td class="action-row"></td>
+                </tr>
+                <tr>
+                    <td class="caption-row">{{ 'login.pass'|trans({})|desc('Password') }}:</td>
+                    <td class="info-row"><span class="bold">••••••••</span></td>
+                    <td class="action-row"><a href="{{ path('aw_profile_change_password') }}" class="btn-silver">{{ 'personal_info.change_password'|trans({})|desc('Change password') }}</a>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="caption-row">{{ 'login.first'|trans({}) }}:</td>
+                    <td class="info-row"><span class="bold">{{ user.firstname }}</span></td>
+                    <td class="action-row"></td>
+                </tr>
+                {% if user.midname %}
+                    <tr>
+                        <td class="caption-row">{{ 'personal_info.middle_name'|trans({})|desc('Middle name') }}:</td>
+                        <td class="info-row"><span class="bold">{{ user.midname }}</span></td>
+                        <td class="action-row"></td>
+                    </tr>
+                {% endif %}
+                <tr>
+                    <td class="caption-row">{{ 'login.name'|trans({}) }}:</td>
+                    <td class="info-row"><span class="bold">{{ user.lastname }}</span></td>
+                    <td class="action-row"></td>
+                </tr>
+                <tr>
+                    <td class="caption-row">{{ 'login.email'|trans({}) }}:</td>
+                    <td class="info-row">
+                        <div class="flex">
+                            {% if user.emailverified == constant('EMAIL_VERIFIED') %}
+                            <span class="icon-info-offset verified">
+                                <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path fill-rule="evenodd" clip-rule="evenodd" d="M6.41496 8.93629L10.4801 4L12.3209 5.51592L6.69378 12.3489L3 9.1168L4.57028 7.32219L6.41496 8.93629Z" fill="#27a887"/></svg>
+                            </span>
+                            {% endif %}
+                            <span class="bold">{{ user.email }}</span>
+                        </div>
+                    </td>
+                    <td class="action-row"><a href="{{ path('aw_user_change_email') }}" class="btn-silver">{{ 'personal_info.email.change'|trans({})|desc('Change email') }}</a>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="caption-row">{{ 'personal_info.avatar'|trans({})|desc('Picture') }}:</td>
+                    <td class="info-row">
+                        {% if avatarSrc %}
+                            <img src="{{ avatarSrc }}" alt="" class="avatar">
+                        {% else %}
+                            <i class="icon-default-avatar"></i>
+                        {% endif %}
+                    </td>
+                    <td class="action-row"></td>
+                </tr>
+                </tbody>
+            </table>
+            <div class="title-note">
+                    <h3>{{ 'personal_info.regional'|trans({})|desc('Regional Settings') }}</h3>
+                <a href="{{ path('aw_profile_regional') }}" class="btn-blue edit-btn">
+                    <i class="icon-edit-w"></i>
+                    <span>{{ 'button.edit'|trans({})|desc('Edit') }}</span>
+                </a>
+            </div>
+            <table class="main-table edit-account">
+                <tbody>
+                <tr>
+                    <td class="caption-row">{{ 'personal_info.regional.language'|trans({})|desc('Language') }}:</td>
+                    <td class="info-row"><span class="bold">{{ language }}</span></td>
+                    <td class="action-row"></td>
+                </tr>
+                <tr>
+                    <td class="caption-row">{{ 'label.country'|trans({}) }}:</td>
+                    <td class="info-row">
+                        <span class="bold">{{ regionName }}</span>
+                        <span class="info">{{ regionHint }}</span>
+                    </td>
+                    <td class="action-row"></td>
+                </tr>
+
+                {% if currency is not null %}
+                    <tr>
+                        <td class="caption-row">{{ 'itineraries.currency'|trans({}, 'trips') }}:</td>
+                        <td class="info-row"><span class="bold">{{ currency.name }}</span></td>
+                        <td class="action-row"></td>
+                    </tr>
+                {% endif %}
+
+                </tbody>
+            </table>
+            <div class="title-note">
+                <h3>{{ 'notifications'|trans }}</h3>
+                <a href="{{ path('aw_profile_notifications') }}" class="btn-blue edit-btn">
+                    <i class="icon-edit-w"></i>
+                    <span>{{ 'button.edit'|trans({})|desc('Edit') }}</span>
+                </a>
+            </div>
+            <table class="main-table edit-account notifications">
+                <thead>
+                <tr>
+                    <th></th>
+                    <th>{{ 'mobile'|trans }}</th>
+                    <th>{{ 'desktop'|trans }}</th>
+                    <th>{{ 'email'|trans }}</th>
+                </tr>
+                </thead>
+                <tbody>
+                    {% for group, item in userNotifications if group != constant('\\AwardWallet\\MainBundle\\Service\\NotificationSettings::APP_HEADER') %}
+                        <tr>
+                            <td colspan="4">
+                                <div class="caption">
+                                    <span>{{ group|upper }}</span>
+                                </div>
+                            </td>
+                        </tr>
+                        {% for name, props in item %}
+                            <tr>
+                                <td class="caption-row">{{ name }}</td>
+                                {% for prop in props %}
+                                    <td class="status">
+                                        {% if prop.status is same as(true) %}
+                                            <i class="icon-green-check"></i>
+                                        {% elseif prop.status is same as(false) %}
+                                            <i class="icon-red-error"></i>
+                                        {% else %}
+                                            <span>{{ prop.status }}</span>
+                                        {% endif %}
+                                    </td>
+                                {% endfor %}
+                            </tr>
+                        {% endfor %}
+                    {% endfor %}
+                </tbody>
+            </table>
+            <div class="title-note" id="websiteSettings">
+                <h3>{{ 'personal_info.site_settings'|trans({})|desc('Website Settings') }}</h3>
+                <a href="{{ path('aw_profile_settings') }}" class="btn-blue edit-btn">
+                    <i class="icon-edit-w"></i>
+                    <span>{{ 'button.edit'|trans({})|desc('Edit') }}</span>
+                </a>
+            </div>
+            <table class="main-table edit-account">
+                <tbody>
+                <tr>
+                    <td class="caption-row">{{ 'personal_info.site_settings.2factor'|trans({})|desc('Two-factor Authentication') }}:</td>
+                    <td class="info-row"><span class="bold">{{ user.enabled2Factor ? 'turned_on'|trans : 'turned_off.autenification'|trans }}</span>
+                    </td>
+                    <td class="action-row"><a href="{{ path('aw_profile_2factor') }}" class="btn-silver">{{ user.enabled2Factor ? 'turn_off'|trans : 'set_up'|trans }}</a>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="caption-row">{{ 'default_password_storage'|trans|desc('Default Password Storage') }}:</td>
+                    <td class="info-row"><span class="bold">
+                        {% if user.savepassword == constant('SAVE_PASSWORD_DATABASE') %}
+                            {{ 'account.choice.save.password.with.aw'|trans }}
+                        {% else %}
+                            {{ 'account.choice.save.password.locally'|trans }}
+                        {% endif %}
+                    </span></td>
+                    <td class="action-row"></td>
+                </tr>
+                <tr>
+                    <td class="icon-row"></td>
+                    <td class="info-row" colspan="2">
+                        <i class="{% if user.autogatherplans %}icon-green-check{% else %}icon-error-small{% endif %}"></i>
+                        <span class="silver">{{ 'personal_info.site_settings.gather_plans'|trans({})|desc('Automatically gather my travel plans') }}</span></td>
+                </tr>
+
+                <tr>
+                    <td class="icon-row"></td>
+                    <td class="info-row" colspan="2">
+                        {% if user.splashAdsDisabled and user.awPlus %}
+                            <i class="icon-error-small"></i>
+                            <span class="silver">{{ 'splash_screen_ads_disabled'|trans|desc('Splash screen ads are turned off') }}</span>
+                        {% else %}
+                            <i class="icon-green-check"></i>
+                            <span class="silver">{{ 'splash_screen_ads_enabled'|trans|desc('Splash screen ads are turned on') }}</span>
+                        {% endif %}
+                    </td>
+                </tr>
+
+                <tr>
+                    <td class="icon-row"></td>
+                    <td class="info-row" colspan="2">
+                        {% if user.linkAdsDisabled and user.awPlus %}
+                            <i class="icon-error-small"></i>
+                            <span class="silver">{{ 'affiliate_links_auto_login_disabled'|trans|desc('Affiliate links are not being used during auto-login') }}</span>
+                        {% else %}
+                            <i class="icon-green-check"></i>
+                            <span class="silver">{{ 'affiliate_links_auto_login_enabled'|trans|desc('Affiliate links are being used during auto-login') }}</span>
+                        {% endif %}
+                    </td>
+                </tr>
+
+                <tr>
+                    <td class="icon-row"></td>
+                    <td class="info-row" colspan="2">
+                        {% if user.listAdsDisabled and user.awPlus %}
+                            <i class="icon-error-small"></i>
+                            <span class="silver">{{ 'credit_card_ads_in_accounts_list_disabled'|trans|desc('Credit card ads in the list of accounts are hidden') }}</span>
+                        {% else %}
+                            <i class="icon-green-check"></i>
+                            <span class="silver">{{ 'credit_card_ads_in_accounts_list_enabled'|trans|desc('Credit card ads in the list of accounts are being shown') }}</span>
+                        {% endif %}
+                    </td>
+                </tr>
+
+                <tr>
+                    <td class="icon-row"></td>
+                    <td class="info-row" colspan="2">
+                        {% if not user.isBlogPostAds and user.awPlus %}
+                            <i class="icon-error-small"></i>
+                            <span class="silver">{{ 'blog_ads_awardwallet_disabled'|trans|desc('Ads in the AwardWallet blog are hidden') }}</span>
+                        {% else %}
+                            <i class="icon-green-check"></i>
+                            <span class="silver">{{ 'blog_ads_awardwallet_enabled'|trans|desc('Ads in the AwardWallet blog are bing shown') }}</span>
+                        {% endif %}
+                    </td>
+                </tr>
+
+                <tr>
+                    <td class="caption-row">{{ 'appearance'|trans }}:</td>
+                    <td class="info-row" colspan="2">
+                        <span class="bold">{{ appearance }}</span>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td class="caption-row">{{ 'personal_info.site_settings.email_scanner'|trans({})|desc('Email Scanner') }}:</td>
+                    <td class="info-row">
+                        <div class="flex">
+                            <span class="count-silver">{{ linkedBoxes }}</span>
+                            <span class="bold">{{ 'personal_info.site_settings.email_scanner.mailboxes'|trans({})|desc('Linked mailboxes') }}</span>
+                        </div>
+                    </td>
+                    <td class="action-row"><a href="{{ path('aw_usermailbox_view') }}" class="btn-silver">{{ 'personal_info.site_settings.add_mailboxes'|trans({})|desc('Add/Change mailboxes') }}</a></td>
+                </tr>
+
+                <tr>
+                    <td class="caption-row">
+                        <div class="flex">
+                            <span class="icon-info-offset icon-tripit"></span>
+                            <span>{{ 'tripit_itinerary_import'|trans|desc('TripIt Itinerary Import') }}:</span>
+                        </div>
+                    </td>
+                    {% if not tripitHasAccessToken %}
+                        <td class="info-row">
+                            <div class="flex">
+                                <span class="icon-info-offset"><i class="icon-blue-info"></i></span>
+                                <span>{{ 'tripit_link_account'|trans|desc('Link your TripIt account for more convenient travel tracking')|raw }}</span>
+                            </div>
+                        </td>
+                        <td class="action-row"><a href="{{ path('aw_timeline_tripit_authorize') }}" class="btn-silver">{{ 'tripit_button_link'|trans|desc('Link account') }}</a></td>
+                    {% else %}
+                        <td class="info-row">
+                            <div class="flex">
+                                <span class="icon-info-offset"><i class="icon-green-check"></i></span>
+                                <span>{{ 'tripit_account_linked'|trans|desc('TripIt Account Linked') }}</span>
+                            </div>
+                        </td>
+                        <td class="action-row"><a href="#" id="tripitDisconnect" class="btn-silver">{{ 'tripit_button_disconnect'|trans|desc('Disconnect') }}</a></td>
+                    {% endif %}
+                </tr>
+                </tbody>
+            </table>
+
+            <br><br>
+            <div class="session-list session-list-many">
+                {% include '@AwardWalletMain/Users/sessionsList.html.twig' with {'sessions': identifications, 'logout' : true, title : 'personal_info.authorized_devices'|trans} %}
+            </div>
+
+            {% if identifications|length > 2 %}
+                <br>
+                <div style="text-align: right">
+                    <button id="sessionSignouts" class="btn-blue">{{ 'session.logout-all-sessions'|trans|desc('Sign out all other web sessions') }}</button>
+                </div>
+            {% endif %}
+
+        </div>
+
+    </div>
+
+{% endblock %}

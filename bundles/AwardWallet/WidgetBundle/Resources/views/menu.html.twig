@@ -1,0 +1,13 @@
+{% block menu %}
+    <ul {% if ulclass is defined %} class="{{ ulclass }}" {% endif %}>
+        {% block items %}
+            {% for key, item in items %}
+                {% if item.isVisible() %}
+                    {% block item %}
+                        <li>{{ widget_render(item) }}</li>
+                    {% endblock %}
+                {% endif %}
+            {% endfor %}
+        {% endblock %}
+    </ul>
+{% endblock %}

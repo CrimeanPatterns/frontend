@@ -1,0 +1,38 @@
+{% extends '@MailTemplate/Offer/Chase/BaseTemplate.twig' %}
+{% trans_default_domain "email" %}
+
+{% block subject %}{% apply spaceless %}{% autoescape false %}
+    Your Upcoming Stay in {{ location }}
+{% endautoescape %}{% endapply %}{% endblock subject %}
+
+{% block content %}
+    {% import '@MailTemplate/CommonMacro.twig' as commonMacro %}
+
+    <div style="padding: 0 10px">
+        {{ commonMacro.link(link, 'Save Big with a Hyatt Free Night Certificate', {
+            'color': '#1D6CB5',
+            'font-size': '25px',
+            'line-height': '1.2',
+            'margin': '0',
+            'padding': '5px 0 10px 0',
+            'font-weight': 'normal'
+        }) }}
+        {{ commonMacro.offerRemark(_context) }}
+
+        {{ commonMacro.dear(user.firstname, _context) }}
+
+        {{ commonMacro.paragraph(
+            'We hope you have a great trip to ' ~ location ~ '. If your future plans include more stays with Hyatt, you should check out the <a href="' ~ link ~ '">The World Of Hyatt Credit Card</a>.', _context, {escape: false, fix_link: true}
+        ) }}
+        {{ commonMacro.paragraph(
+            'In addition to earning 4X points at participating Hyatt hotels, this card comes with an annual free night certificate—good for a stay at category 1-4 properties. You can also earn an additional free night if you spend $15,000 during your cardmember anniversary year.', _context
+        ) }}
+        {{ commonMacro.paragraph(
+            'This is one of the best hotel cards out there for delivering big long-term value. Check out our full review for more details.', _context
+        ) }}
+
+        <div style="text-align: center; margin-top: 15px;">
+            {{ commonMacro.button('Learn more', link) }}
+        </div>
+    </div>
+{% endblock content %}

@@ -1,0 +1,70 @@
+{% macro billingAddress(cart, context) %}{% trim %}
+    {% import '@MailTemplate/CommonMacro.twig' as commonMacro %}
+
+    {{ commonMacro.header(
+        'billing-address'|trans({}, 'email', context.lang)|desc('Billing Address'), context, {}, {}, {
+            'margin-top': '30px'
+        }
+    ) }}
+
+    <table width="100%" cellpadding="0" border="0" cellspacing="0"
+           style="line-height:18px;border-bottom:1px dotted #8e9199;">
+        <tbody>
+        <tr>
+            <td style="padding:10px 0">
+                <table width="100%" cellpadding="0" border="0" cellspacing="0">
+                    <tbody>
+                    <tr>
+                        <td valign="top" style="font-size:13px;color:#535457;padding-bottom: 3px;">
+                            {{ cart.billfirstname }}&nbsp;{{ cart.billlastname }}
+                            <br />
+                            {{ cart.billaddress1 }}
+                            <br />
+                            {% if cart.billaddress2 %} {{ cart.billaddress2 }}<br/>{% endif %}
+                            {{ cart.billcity }},
+                            {% if cart.billstate and cart.billstate.name %}{{ cart.billstate.name }},{% endif %}
+                            {% if cart.billcountry and cart.billcountry.name %} {{ cart.billcountry.name }},{% endif %}
+                            {{ cart.billzip }}
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+{% endtrim %}{% endmacro %}
+
+{% macro CCInfo(cart, context) %}{% trim %}
+    {% import '@MailTemplate/CommonMacro.twig' as commonMacro %}
+
+    {{ commonMacro.header(
+        'cc-address'|trans({}, 'email', context.lang)|desc('Credit Card Info'), context, {}, {
+            'color': '#3d424d'
+        }, {
+            'margin-top': '30px'
+        }
+    ) }}
+
+    <table width="100%" cellpadding="0" border="0" cellspacing="0"
+           style="line-height:18px;border-bottom:1px dotted #8e9199;">
+        <tbody>
+        <tr>
+            <td style="padding:10px 0">
+                <table width="100%" cellpadding="0" border="0" cellspacing="0">
+                    <tbody>
+                    <tr>
+                        <td valign="top" style="font-size:13px;color:#535457;padding-bottom: 3px;">
+                            {{ cart.creditcardtype }}<br />
+                            {{ cart.creditcardnumber }}<br />
+                            **/****
+                            <br />
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+{% endtrim %}{% endmacro %}

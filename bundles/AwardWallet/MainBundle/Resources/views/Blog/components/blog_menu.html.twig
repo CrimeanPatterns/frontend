@@ -1,0 +1,162 @@
+{% macro renderMenuItem(item, isMobile = false) %}
+    {% import '@AwardWalletMain/Blog/components/icons.html.twig' as icons %}
+    {% set itemClass = bem('blog-menu', 'item') %}
+    {% set titleClass = bem('blog-menu', 'item-title') %}
+    
+    {% if item.items is defined and item.items is not empty %}
+        <li class="{{ itemClass }}" {% if isMobile %}data-category-id="{{ item.title }}"{% endif %} tabindex="0" >
+            {% if isMobile %}
+                <h3 class="{{ titleClass }}">
+                    {{ item.title }}
+                </h3>
+            {% else %}
+                {% if item.url is defined %}
+                    <a href="{{ item.url }}" class="{{ titleClass }}">{{ item.title }}</a>
+                {% else %}
+                    <h3 class="{{ titleClass }}">
+                        {{ item.title }}
+                    </h3>
+                {% endif %}
+                {{ _self.renderDropdownMenu(item) }}
+            {% endif %}
+        </li>
+    {% else %}
+        <li class="{{ itemClass }}">
+            <a href="{{ item.url }}" target="_blank" class="{{ titleClass }}">{{ item.title }}</a>
+        </li>
+    {% endif %}
+{% endmacro %}
+
+{% macro renderDropdownMenu(menuItem) %}
+    {% import '@AwardWalletMain/Blog/components/icons.html.twig' as icons %}
+    <div class="{{ bem('blog-menu', 'dropdown') }}">
+        {% if menuItem.classes is defined and 'flat-submenu' in menuItem.classes %}
+            <ul class="{{ bem('blog-menu', 'subitem-list') }}">
+                {% for subItem in menuItem.items %}
+                    {{ _self.renderSubitem(subItem, true) }}
+                {% endfor %}
+            </ul>
+        {% else %}
+            <ul style="--columns-count: {{ menuItem.items|length }}" class="{{ bem('blog-menu', 'category-list') }}">
+                {% for categoryItem in menuItem.items %}
+                    {{ _self.renderCategory(categoryItem) }}
+                {% endfor %}
+            </ul>
+        {% endif %}
+    </div>
+{% endmacro %}
+
+{% macro renderCategory(categoryItem) %}
+    {% import '@AwardWalletMain/Blog/components/icons.html.twig' as icons %}
+    <li class="{{ bem('blog-menu', 'category-item') }}">
+        {% if categoryItem.url is defined %}
+            <a href="{{ categoryItem.url }}" class="{{ bem('blog-menu', 'category-title', ['link']) }}">
+                {{ categoryItem.title }}
+            </a>
+        {% else %}
+            <h3 class="{{ bem('blog-menu', 'category-title') }}">
+                {{ categoryItem.title }}
+            </h3>
+        {% endif %}
+
+        {% if categoryItem.items is defined and categoryItem.items is not empty %}
+            <ul class="{{ bem('blog-menu', 'subitem-list') }}">
+                {% for subItem in categoryItem.items %}
+                    {{ _self.renderSubitem(subItem, false) }}
+                {% endfor %}
+            </ul>
+        {% endif %}
+    </li>
+{% endmacro %}
+
+{% macro renderSubitem(subItem, isFlat = false) %}
+    {% import '@AwardWalletMain/Blog/components/icons.html.twig' as icons %}
+    {% set classModifier = [] %}
+    {% if isFlat %}
+        {% set classModifier = classModifier|merge(['flat']) %}
+    {% endif %}
+
+    <li class="{{ bem('blog-menu', 'subitem') }}">
+        {% if subItem.code is defined %}
+            <img {{ image_src(subItem.code,'/') }} alt="provider logo" class="{{ bem('blog-menu','subitem-img') }}" />
+        {% endif %}
+        <a href="{{ subItem.url }}" {% if isFlat %}target="_blank"{% endif %}
+          class="{{ bem('blog-menu', 'subitem-link', classModifier) }}">
+            {{ subItem.title }}
+            {% if subItem.isHot is defined and subItem.isHot %}
+                <span class="{{ bem('blog-menu', 'hot-icon') }}">
+                    {{ icons.statusIcon() }}
+                </span>
+            {% endif %}
+        </a>
+    </li>
+{% endmacro %}
+
+{% macro renderMobileCategoryMenu(menuItem) %}
+    {% import '@AwardWalletMain/Blog/components/icons.html.twig' as icons %}
+    <div class="{{ bem('blog-menu', 'mobile-category-menu') }}" data-parent="{{ menuItem.title }}">
+        <div class="{{ bem('blog-menu', 'mobile-category-title-block') }}">
+            <button class="{{ bem('blog-menu', 'mobile-category-back-button') }}">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M4.61523 12.0001L11.9998 4.61548L13.505 6.12068L8.69008 10.9356L19.3845 10.9356L19.3845 13.0645L8.69008 13.0645L13.505 17.8795L11.9998 19.3847L4.61523 12.0001Z"/>
+                    </svg>
+            </button>
+            <h3 class="{{ bem('blog-menu', 'item-title', ['small']) }}">{{ menuItem.title }}</h3>
+        </div>
+        
+        {% if menuItem.classes is defined and 'flat-submenu' in menuItem.classes %}
+            <ul class="{{ bem('blog-menu', 'subitem-list') }}">
+                {% for subItem in menuItem.items %}
+                    {{ _self.renderSubitem(subItem, true) }}
+                {% endfor %}
+            </ul>
+        {% else %}
+            <ul class="{{ bem('blog-menu', 'category-list') }}">
+                {% for categoryItem in menuItem.items %}
+                    {{ _self.renderCategory(categoryItem) }}
+                {% endfor %}
+            </ul>
+        {% endif %}
+    </div>
+{% endmacro %}
+
+{% macro renderDesktopBlogMenu(menu) %}
+    {% import '@AwardWalletMain/Blog/components/icons.html.twig' as icons %}
+    <ul class="{{ bem('blog-menu') }}">
+        {% for menuItem in menu %}
+            {{ _self.renderMenuItem(menuItem, false) }}
+        {% endfor %}
+    </ul>
+{% endmacro %}
+
+{% macro renderMobileBlogMenu(menu, user) %}
+    {% import '@AwardWalletMain/Blog/components/icons.html.twig' as icons %}
+    <div class="{{ bem('blog-menu', 'mobile-menu') }}">
+        <ul class="{{ bem('blog-menu', 'mobile-menu-main') }}">
+            {% for menuItem in menu %}
+                {{ _self.renderMenuItem(menuItem, true) }}
+            {% endfor %}
+            {% if user.avatar.image is defined and not user.avatar.image is null %}
+                <li class="{{ bem('blog-menu', 'item') }}">
+                    <a href="{{ user.avatar.link }}" class="{{ bem('blog-menu', 'mobile-user-link') }}">
+                        <div class="{{ bem('blog-menu', 'mobile-user-link-name-block') }}">
+                            <img src="{{ user.avatar.image }}" class="{{ bem('blog-menu', 'mobile-user-link-img') }}" />
+                            <p class="{{ bem('blog-menu', 'mobile-user-link-name') }}">{{ user.fullName }}</p>
+                        </div>
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M19.3848 12.0001L12.0002 4.61548L10.495 6.12068L15.3099 10.9356L4.61554 10.9356L4.61554 13.0645L15.3099 13.0645L10.495 17.8795L12.0002 19.3847L19.3848 12.0001Z" fill="currentColor"/>
+                        </svg>
+                    </a>
+                </li>
+            {% endif %}
+            
+            
+        </ul>
+
+        {% for menuItem in menu %}
+            {% if menuItem.items is defined and menuItem.items is not empty %}
+                {{ _self.renderMobileCategoryMenu(menuItem) }}
+            {% endif %}
+        {% endfor %}
+    </div>
+{% endmacro %}

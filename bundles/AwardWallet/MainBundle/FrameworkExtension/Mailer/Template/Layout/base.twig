@@ -1,0 +1,129 @@
+{% extends '@MailTemplate/Layout/default.twig' %}
+
+{% block contentBody %}
+    {% set isReduceLinks = layout is defined and constant('\\AwardWallet\\MainBundle\\Entity\\EmailTemplate::LAYOUT_BLOGNEWSLETTER_FILENAME') == layout %}
+
+    <table cellpadding="0" cellspacing="0"  border="0" height="111" width="100%">
+        <tr>
+            <td background="{{ baseImagesPath }}/top-bg-2.png" valign="top" bgcolor="#d7d8db" class="header" style="background-repeat: repeat-x;">
+                <table width="100%" cellpadding="0" border="0" cellspacing="0" height="90">
+                    <tr>
+                        <td style="padding:0 10px">
+                            {% block headerLogoWrapper %}
+                                <table width="100%" cellpadding="0" border="0" cellspacing="0" height="90">
+                                    <tr>
+                                        {% block headerLogo %}
+                                            {% import '@MailTemplate/CommonMacro.twig' as commonMacro %}
+                                            {{ commonMacro.awLogo(_context, isReduceLinks is not same as true) }}
+                                        {% endblock headerLogo %}
+                                    </tr>
+                                </table>
+                            {% endblock headerLogoWrapper %}
+
+                            <table width="100%" cellpadding="0" border="0" cellspacing="0">
+                                <tr>
+                                    <td width="156" height="5" valign="top" style="font-size:0;line-height:1px;">
+                                        <img src="{{ baseImagesPath }}/page_tl.png" alt="" border="0" style="vertical-align:top" width="156" height="5">
+                                    </td>
+                                    <td width="*" height="5" style="font-size:0;line-height:1px;">&nbsp;</td>
+                                    <td width="156" height="5" valign="top" style="font-size:0;line-height:1px;">
+                                        <img src="{{ baseImagesPath }}/page_tr.png" alt="" border="0" style="vertical-align:top" width="156" height="5">
+                                    </td>
+                                </tr>
+                            </table>
+                            {% block topPadding %}
+                                <table width="100%" cellpadding="0" border="0" cellspacing="0" style="border-left: solid 1px #a6aab3;border-top: solid 1px #a6aab3;border-right: solid 1px #a6aab3;background:#fff;" class="email-white">
+                                    <tr>
+                                        <td style="line-height:0;font-size:0;background:#fff;" width="100%" height="16" class="email-white"></td>
+                                    </tr>
+                                </table>
+                            {% endblock topPadding %}
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+    <table width="100%" cellpadding="0" border="0" cellspacing="0" style="font-weight: normal; min-width: 300px;">
+        <tr>
+            <td style="padding:0 10px;" class="emailBody">
+                <table width="100%" cellpadding="0" border="0" cellspacing="0">
+                    {% block content_row %}
+                        <tr>
+                            <td style="line-height:24px;font-size:16px; border-left: solid 1px #a6aab3; border-right: solid 1px #a6aab3; border-bottom: solid 1px #a6aab3; background:#fff;padding:0 10px 20px" class="email-white">
+                                <!-- content -->
+                                {% block content %}
+                                {% endblock content %}
+
+                                {% set restore_user = null %}
+                                {% if user is defined and user is instanceof('\\AwardWallet\\MainBundle\\Entity\\Usr') %}
+                                    {% set restore_user = user %}
+                                {% endif %}
+                                {% block restore_row %}
+                                    {% if restore_user is defined and restore_user %}
+                                        {% block restore_text %}
+                                            {% import '@MailTemplate/CommonMacro.twig' as commonMacro %}
+
+                                            {% set restore_link = baseUrl ~ path('aw_users_restore_plain', {username: restore_user.username|base64encode}) %}
+                                            {% set textLink = commonMacro.link(restore_link, '$$')|split('$$') %}
+                                            <table width="100%" cellpadding="0" border="0" cellspacing="0" style="margin-top: 15px">
+                                                <tr>
+                                                    <td style="padding:10px;border:1px solid #ddd; background:#fcfcfc;" class="email-silver">
+                                                    <span style="line-height:22px;color:#535457;font-size:16px;display:block">
+                                                        {{ 'restore_description_v2'|trans({
+                                                            '%link_on%': textLink[0],
+                                                            '%link_off%': textLink[1]
+                                                        }, 'email', lang)|desc('%link_on%Click here%link_off% if you don\'t know your username or password. If the link doesn\'t work, please copy/paste this into your browser:')|raw }}
+                                                    </span>
+                                                        {{ commonMacro.dottedLink(restore_link, restore_link, _context) }}
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                        {% endblock restore_text %}
+                                    {% endif %}
+                                {% endblock restore_row %}
+                                <!-- end -->
+                            </td>
+                        </tr>
+                    {% endblock content_row %}
+
+                    <tr>
+                        <td>
+                            <table width="100%" cellpadding="0" border="0" cellspacing="0">
+                                <tr>
+                                    <td width="156" height="5" valign="top" style="font-size:0;line-height:0;">
+                                        <img src="{{ baseImagesPath }}/page_bl.png" alt="" border="0" style="vertical-align:top" width="156" height="5">
+                                    </td>
+                                    <td width="*" height="5" style="font-size:0;line-height:0;">&nbsp;</td>
+                                    <td width="156" height="5" valign="top" style="font-size:0;line-height:0;">
+                                        <img src="{{ baseImagesPath }}/page_br.png" alt="" border="0" style="vertical-align:top" width="156" height="5">
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+
+                    {% block signature %}
+                        {% import '@MailTemplate/CommonMacro.twig' as commonMacro %}
+                        <tr>
+                            <td  align="right" style="padding:10px">
+                                <span style="font-size:13px;color:#535457">
+                                    {% if isReduceLinks is same as true %}
+                                        {% set link = ['', ''] %}
+                                    {% else %}
+                                        {% set link = commonMacro.link('https://awardwallet.com', '$$')|split('$$') %}
+                                    {% endif %}
+                                    {{ 'thank_you_team'|trans({
+                                        '%link_on%': link[0],
+                                        '%link_off%': link[1],
+                                        '%teamName%': 'AwardWallet'
+                                    }, 'email', lang)|desc('Thank you, <br>%link_on% %teamName% team%link_off%.')|raw }}
+                                </span>
+                            </td>
+                        </tr>
+                    {% endblock signature %}
+                </table>
+            </td>
+        </tr>
+    </table>
+{% endblock contentBody %}

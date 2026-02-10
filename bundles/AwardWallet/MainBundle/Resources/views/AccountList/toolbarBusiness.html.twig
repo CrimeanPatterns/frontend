@@ -1,0 +1,28 @@
+{% use '@AwardWalletMain/AccountList/toolbar.html.twig' %}
+
+{% block toolbar_options %}
+    <li data-ng-controller="optionsCtrl as options">
+        <a href="" class="btn-silver-w rel-this" data-target="list-options"><i class="icon-views"></i><span>{{ 'award.account.list.options-button'|trans|desc('Views') }}</span><i class="icon-arrow-bottom-dark"></i></a>
+        <ul class="dropdown-submenu" data-menu data-id="list-options">
+            <li><a href="{{ path('aw_transactions_business_search') }}"><span class="dropdown-submenu__icon"><i class="icon-grid-view"></i></span><span>{{ "transaction-analyzer"|trans }}</span></a></li>
+            <li><a href="{{ path('aw_spent_analysis_index') }}"><span class="dropdown-submenu__icon"><i class="icon-full-list"></i></span><span>{{ "credit-card.ccsa_title"|trans|desc("Credit Card Spend Analysis") }}</span></a></li>
+            <li data-ng-show="main.stateParams.recent || main.stateParams.errors"><a href="" data-ng-click="main.setOptions({recent: undefined, errors: undefined})"><span class="dropdown-submenu__icon"><i class="icon-full-list"></i></span><span>{{ "award.account.list.menu.options.changed-clean"|trans|desc("Full list") }}</span></a></li>
+            <li data-ng-show="main.stateParams.recent != '7'"><a href="" data-ng-click="main.setOptions({recent: 7})"><span class="dropdown-submenu__icon"><i class="icon-change-week"></i></span><span>{{ "award.account.list.menu.options.changed-within-week"|trans|desc("Changed within 1 week") }}</span></a></li>
+            <li data-ng-show="main.stateParams.recent != '31'"><a href="" data-ng-click="main.setOptions({recent: 31})"><span class="dropdown-submenu__icon"><i class="icon-change-month"></i></span><span>{{ "award.account.list.menu.options.changed-within-month"|trans|desc("Changed within 1 month") }}</span></a></li>
+            <li data-ng-show="!main.stateParams.errors"><a href="" data-ng-click="main.setOptions({errors: 'on'})"><span class="dropdown-submenu__icon"><i class="icon-show-errors"></i></span><span>{{ "award.account.list.menu.options.errors-only"|trans|desc("Accounts with errors") }}</span></a></li>
+            <li data-ng-show="main.stateParams.errors"><a href="" data-ng-click="main.setOptions({errors: undefined})"><span class="dropdown-submenu__icon"><i class="icon-show-errors"></i></span><span>{{ "award.account.list.menu.options.errors-all"|trans|desc("Remove errors filter") }}</span></a></li>
+            <li><a href="/account/accountExporter2.php{% if app.request.get('agentId') is not empty %}?agentId={{ app.request.get('agentId') }}{% endif %}"><span class="dropdown-submenu__icon"><i class="icon-excel"></i></span><span>{{ "award.account.list.menu.options.download-excel"|trans }}</span></a></li>
+            {#<li data-ng-show="!options.view.showInactive && main.view.couponCount"><a href="" data-ng-click="options.view.toggleInactive()"><span class="dropdown-submenu__icon"><i class="icon-transparent-check-s"></i></span><span>{{ "award.account.list.menu.options.show-inactive"|trans|desc("Show inactive coupons") }}</span></a></li>#}
+            {#<li data-ng-show="options.view.showInactive && main.view.couponCount"><a href="" data-ng-click="options.view.toggleInactive()"><span class="dropdown-submenu__icon"><i class="icon-transparent-check-s"></i></span><span>{{ "award.account.list.menu.options.hide-inactive"|trans|desc("Hide inactive coupons") }}</span></a></li>#}
+            <li data-ng-show="!main.view.showErrors"><a href="" data-ng-click="main.view.toggleErrors()"><span class="dropdown-submenu__icon"><i class="icon-show-errors"></i></span><span>{{ "award.account.list.menu.options.show-errors"|trans|desc("Show errors") }}</span></a></li>
+            <li data-ng-show="main.view.showErrors"><a href="" data-ng-click="main.view.toggleErrors()"><span class="dropdown-submenu__icon"><i class="icon-hide-errors"></i></span><span>{{ "award.account.list.menu.options.hide-errors"|trans|desc("Hide errors") }}</span></a></li>
+{#
+            <li data-ng-show="!main.view.showLastUpdateAgo"><a href="" data-ng-click="main.view.toggleLastUpdate()"><span class="dropdown-submenu__icon"><i class="icon-"></i></span><span>{{ "award.account.list.menu.options.lastupdate-ago"|trans|desc("Show last update timeago") }}</span></a></li>
+            <li data-ng-show="main.view.showLastUpdateAgo"><a href="" data-ng-click="main.view.toggleLastUpdate()"><span class="dropdown-submenu__icon"><i class="icon-"></i></span><span>{{ "award.account.list.menu.options.lastupdate-date"|trans|desc("Show last update date") }}</span></a></li>
+#}
+        </ul>
+    </li>
+{% endblock %}
+
+{% block toolbar_search %}
+{% endblock %}

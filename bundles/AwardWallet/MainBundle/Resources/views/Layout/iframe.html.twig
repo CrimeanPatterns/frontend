@@ -1,0 +1,28 @@
+{% extends "@AwardWalletMain/Layout/main.html.twig" %}
+{% import "@AwardWalletMain/TwigMacros/environment.html.twig" as environmentMacros %}
+
+{% block stylesheets %}
+    {{ encore_entry_link_tags('landing') }}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    {{ encore_entry_script_tags('iframe') }}
+{% endblock %}
+
+{% block body %}
+    <body {{ environmentMacros.globalDataAttr(_context) }}>
+    <div id="main-body">
+
+        {% block page %}
+            <div id="contentTable"{# id=contentTable for booking scripts #}>
+                {% block content %}
+                {% endblock %}
+                {% block mainContent %}
+                {% endblock %}
+            </div>
+        {% endblock %}
+
+    </div>
+    </body>
+{% endblock %}

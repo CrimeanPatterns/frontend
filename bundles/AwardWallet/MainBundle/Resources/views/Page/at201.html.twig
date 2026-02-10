@@ -1,0 +1,203 @@
+{% set MOBILE_NAV = true %}
+{% set HIDE_NAV = true %}
+{% set MAIN_BODY_CLASSES = {
+    'manual-hidden': true,
+    'responsive': true,
+    'hide-menu': true
+}|merge(MAIN_BODY_CLASSES|default({})) %}
+
+{% extends app.user is not null ? "@AwardWalletMain/Layout/common.html.twig" : "@AwardWalletMain/Layout/not_logged.html.twig" %}
+
+{% block title %}AwardTravel 201 Membership{% endblock %}
+
+{% block meta %}
+    {{ parent() }}
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0, viewport-fit=cover">
+{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    {{ encore_entry_link_tags('page-awardtravel') }}
+{% endblock %}
+
+{% block content %}
+
+    <main class="page-wrap">
+        <div class="awardtravel">
+            <div class="awardtravel__head">
+                <div class="awardtravel__logo-wrap">
+                    <div class="awardtravel__logo"></div>
+                </div>
+                <div class="awardtravel__head-info">
+                    <p>Awesome to see that you’re ready to up your travel rewards game to the next level.</p>
+                    <p>Award Travel 201 is the perfect place to do just that!</p>
+                </div>
+                <div class="awardtravel__head-btn">
+                    <a href="#join-now" class="awardtravel__btn">Join Now</a>
+                </div>
+            </div>
+            <div class="awardtravel__sub-title">What To Expect</div>
+            <div class="arrow-down"></div>
+            <div class="awardtravel__list">
+                <div class="awardtravel__list-block small">
+                    <div class="awardtravel__list-block-item">
+                        <div class="awardtravel__list-block-info">
+                            <h3>Meet the Team</h3>
+                            <div class="awardtravel__list-block-text">
+                                <p>A group leader and moderator team who between them have decades of experience in the world of miles, points, credit cards, and travel.</p>
+                                <a href="https://award.travel/about" target="_blank" class="btn-blue wide" rel="noopener noreferrer">Who We Are <i class="icon-double-arrow-right-white"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="awardtravel__list-block dark small">
+                    <div class="awardtravel__list-block-item">
+                        <div class="awardtravel__list-block-info">
+                            <h3>An AwardWallet Product</h3>
+                            <div class="awardtravel__list-block-text">
+                                <p>Proven technology, knowledge, and support from the entire team at AwardWallet.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="awardtravel__list-block wide">
+                    <div class="awardtravel__list-block-item">
+                        <div class="awardtravel__list-block-info">
+                            <h3>Weekly Challenges</h3>
+                                <div class="awardtravel__list-block-text">
+                                <p>Each week we design a challenge alternating between our <a class="blue-link" target="_blank" href="https://www.facebook.com/hashtag/routingchallenge?__eep__=6&source=note&epa=HASHTAG" rel="noopener noreferrer">#RoutingChallenge</a> and <a class="blue-link" target="_blank" href="https://www.facebook.com/hashtag/suitespot?__eep__=6&source=note&epa=HASHTAG" rel="noopener noreferrer">#SuiteSpot</a>. These challenges provide a safe place to practice, test your skills, and get feedback from the best! <br>In <a class="blue-link" target="_blank" href="https://www.facebook.com/hashtag/suitespot?__eep__=6&source=note&epa=HASHTAG" rel="noopener noreferrer">#RoutingChallenge</a> we provide the origin and destination, and you find the best way to do it. <br>In <a class="blue-link" target="_blank" href="https://www.facebook.com/hashtag/suitespot?__eep__=6&source=note&epa=HASHTAG" rel="noopener noreferrer">#SuiteSpot</a> we'll offer a destination, and you'll have an opportunity to search different properties and locales to show us the best booking you can find.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="awardtravel__list-block dark">
+                    <div class="awardtravel__list-block-item">
+                        <div class="awardtravel__list-block-info">
+                            <h3>Higher Level Discussions</h3>
+                            <div class="awardtravel__list-block-text">
+                                <p>The ideal content level will be a few steps above what you see in Award Travel 101. Posts will not need to be approved, but discussions will be moderated to ensure that they are not too basic.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="awardtravel__list-block no-border">
+                    <div class="awardtravel__list-block-item">
+                        <div class="awardtravel__list-block-info">
+                            <h3>AwardWallet Plus</h3>
+                            <div class="awardtravel__list-block-text">
+                                <p>You will receive a free upgrade to AwardWallet Plus as long as you remain a member of Award Travel 201.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="awardtravel__list-block dark">
+                    <div class="awardtravel__list-block-item">
+                        <div class="awardtravel__list-block-info">
+                            <h3>Live Instructional Videos</h3>
+                            <div class="awardtravel__list-block-text">
+                                <p>Interactive Videos on a variety of topics including:</p>
+                                <ul>
+                                    <li>Award Booking Demos - Detailed Award Chart Analysis</li>
+                                    <li>Tech Tools like Expert Flyer and ITA Matrix</li>
+                                    <li>Credit Card Reviews and Comparisons</li>
+                                    <li>Miscellaneous Miles and Points Tips</li>
+                                    <li>General Travel Topics like photography, rentals, food, etc</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="awardtravel__list-block">
+                    <div class="awardtravel__list-block-item">
+                        <div class="awardtravel__list-block-info">
+                            <h3>Top Quality Information</h3>
+                            <div class="awardtravel__list-block-text">
+                                <p>24 hour a day, 7 day a week moderation means that discussions will be kept on track and any false or misleading information will be removed.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="awardtravel__list-block dark">
+                    <div class="awardtravel__list-block-item">
+                        <div class="awardtravel__list-block-info">
+                            <h3>New AwardWallet Features</h3>
+                            <div class="awardtravel__list-block-text">
+                                <p>Get first access to try new AwardWallet features before they are rolled out to the general public. Help fine tune products so they will work in the best way possible.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="awardtravel__list-block">
+                    <div class="awardtravel__list-block-item">
+                        <div class="awardtravel__list-block-info">
+                            <h3>Meetups</h3>
+                            <div class="awardtravel__list-block-text">
+                                <p>Meetups will be organized once it is deemed safe and will include presentations from miles and points experts. We want you to feel comfortable and will provide opportunities for members at all levels to enhance their skills. Only group members will be eligible to register and attend. Conference locations will vary across the United States.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="awardtravel__text">
+                <p>Instruction shared in Award Travel 201 will be a step above what you see in Award Travel 101. Examples include:</p>
+                <ul>
+                    <li>Professional Guest Speakers</li>
+                    <li>Loyalty Program breakdowns</li>
+                    <li>Access to inside information</li>
+                    <li>Live Instructional videos</li>
+                </ul>
+                <p>Learn more about loyalty programs and how to make them work for you, Award Travel 201 is where you’ll want to be. Come join us and learn how to enhance your strategies to maximize your miles and points. Travel more while spending less. We can’t wait to see you there!</p>
+            </div>
+            <a name="join-now"></a>
+            <div class="awardtravel__sub-title">Available Pricing for Award Travel 201</div>
+            <div class="arrow-down"></div>
+            <div class="awardtravel__order">
+                <div class="awardtravel__order-block blue">
+                    <div class="awardtravel__order-block-item">
+                        <h3>Bi-Annually{% if biAnnualItem.savings > 0 %}<span>{{ biAnnualItem.savings }}% Savings</span>{% endif %}</h3>
+                        <div class="awardtravel__order-block-cost">
+                            {{ biAnnualItem.price|formatCurrency('USD') }}<span>Paid Every 6 Months</span>
+                        </div>
+                        <div class="awardtravel__order-block-btn">
+                            <a href="{{ path('aw_at201_payment') }}?type={{ constant('\\AwardWallet\\MainBundle\\Entity\\CartItem\\AT201Subscription6Months::TYPE') }}">Join Now</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="awardtravel__order-block red">
+                    <div class="awardtravel__order-block-item">
+                        <h3>Annually{% if annualItem.savings > 0 %}<span>{{ annualItem.savings }}% Savings</span>{% endif %}</h3>
+                        <div class="awardtravel__order-block-cost">
+                            {{ annualItem.price|formatCurrency('USD') }}<span>Paid Onсe Per Year</span>
+                        </div>
+                        <div class="awardtravel__order-block-btn">
+                            <a href="{{ path('aw_at201_payment') }}?type={{ constant('\\AwardWallet\\MainBundle\\Entity\\CartItem\\AT201Subscription1Year::TYPE') }}">Join Now</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="awardtravel__text dark">
+                <div class="awardtravel__text-item">
+                    <p>Once you have completed the payment, you will be approved for the Award Travel 201 group on Facebook and your journey to a higher level of miles and points knowledge will take off.</p>
+                </div>
+            </div>
+            <div class="awardtravel__bottom">
+                <div class="awardtravel__bottom-block">
+                    <div class="awardtravel__bottom-block-item">
+                        <a href="{{ path('aw_faq_index') }}">FAQs</a>
+                    </div>
+                </div>
+                <div class="awardtravel__bottom-block transparent">
+                    <div class="awardtravel__bottom-block-item">
+                        <div class="awardtravel__logo"></div>
+                    </div>
+                </div>
+                <div class="awardtravel__bottom-block">
+                    <div class="awardtravel__bottom-block-item">
+                        <a href="{{ path('aw_contactus_index') }}">Contact</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+{% endblock %}

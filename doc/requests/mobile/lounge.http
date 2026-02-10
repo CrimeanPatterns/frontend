@@ -1,0 +1,23 @@
+POST {{scheme}}{{host}}/m/api/timeline/lounge/list?{{xdebugParamName}}={{xdebugParamValue}}
+Content-Type: application/json
+X-Aw-Version: {{clientVersion}}
+X-Aw-Platform: {{clientPlatform}}
+X-Symfony-Env: {{symfonyEnv}}
+Authorization: Basic {{basicAuthLogin}} {{basicAuthPassword}}
+X-XSRF-TOKEN: {{csrfToken}}
+
+{
+  "segmentId": "T.{{segmentId}}",
+  "stage": "dep"
+}
+
+> ../scripts/csrfToken.js
+
+####
+
+GET {{scheme}}{{host}}/m/api/timeline/lounge/{{loungeId}}?{{xdebugParamName}}={{xdebugParamValue}}
+Content-Type: application/json
+X-Aw-Version: {{clientVersion}}
+X-Aw-Platform: {{clientPlatform}}
+X-Symfony-Env: {{symfonyEnv}}
+Authorization: Basic {{basicAuthLogin}} {{basicAuthPassword}}

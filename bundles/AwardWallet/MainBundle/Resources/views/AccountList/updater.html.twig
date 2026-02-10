@@ -1,0 +1,260 @@
+{% block account_updater %}
+    <div id="updater" data-ng-cloak2 data-ng-controller="updateActionCtrl as updateAction">
+        <section data-ng-show="updateAction.state.active">
+            <div class="silver-blk update-account" data-ng-controller="updateProgressCtrl as updateProgress">
+                {{ block('updater_result') }}
+                <div class="content-blk">
+                    {{ block('updater_progress') }}
+                    {{ block('updater_stat') }}
+                    {{ block('updater_control') }}
+                </div>
+            </div>
+            {{ block('updater_advertise') }}
+            <div style="clear: both"></div>
+            {{ block('awplus_advertise') }}
+        </section>
+        <section data-ng-show="!updateAction.state.active && updateAction.pendingChanges.accounts.length && !main.stateParams.archive">
+            <div class="warning-confirm">
+                <div class="warning-confirm__item">
+                    <i class="icon-warning-small"></i>
+                    <p ng-bind-html="updateAction.pendingChanges.info | unsafe"></p>
+                </div>
+                <div class="warning-confirm__item">
+                    <a class="white-link"
+                       style="cursor: pointer;"
+                       ng-click="updateAction.confirmAllChanges()">{{ 'award.account.list.confirm-all'|trans|desc('Confirm all Changes') }}</a>
+                    <a class="btn-blue"
+                       ng-click="updateAction.scrollToUnconfirmed()"
+                    >{{ 'award.account.list.whats-changed'|trans|desc('See What has Changed') }}</a>
+                </div>
+            </div>
+            {#<div class="silver-blk update-account full-width">#}
+                {#<div class="title">#}
+                    {#<i class="icon-info-small"></i>#}
+                    {#<p id="update-action-done-text">What changed since last login</p>#}
+                {#</div>#}
+                {#<div class="content-blk">#}
+                    {#<table class="main-table">#}
+                        {#<tbody>#}
+                        {#<tr data-ng-show="updateAction.pendingChanges.increased.count" class="ng-hide">#}
+                            {#<td class="prev"><i class="icon-green-up-m"></i></td>#}
+                            {#<td class="title-row">Accounts increased</td>#}
+                            {#<td class="balance">#}
+                                {#<span class="green">+[[ updateAction.pendingChanges.increased.amount ]]</span>#}
+                            {#</td>#}
+                            {#<td class="count">#}
+                                {#<span class="black">[[ updateAction.pendingChanges.increased.count ]]</span>#}
+                            {#</td>#}
+                        {#</tr>#}
+                        {#<tr data-ng-show="updateAction.pendingChanges.decreased.count" class="">#}
+                            {#<td class="prev"><i class="icon-blue-down-m"></i></td>#}
+                            {#<td class="title-row">Accounts decreased</td>#}
+                            {#<td class="balance">#}
+                                {#<span class="blue">[[ updateAction.pendingChanges.decreased.amount ]]</span>#}
+                            {#</td>#}
+                            {#<td class="count">#}
+                                {#<span class="black">[[ updateAction.pendingChanges.decreased.count ]]</span>#}
+                            {#</td>#}
+                        {#</tr>#}
+                        {#<tr class="total">#}
+                            {#<td colspan="2">Total change</td>#}
+                            {#<td class="balance">#}
+                                {#<span data-ng-class="{blue: updateAction.pendingChanges.total < 0, green: updateAction.pendingChanges.total > 0}" class="blue">#}
+                                    {#[[ updateAction.pendingChanges.total ]]#}
+                                {#</span>#}
+                            {#</td>#}
+                            {#<td class="count">[[ updateAction.pendingChanges.accounts.length ]]</td>#}
+                        {#</tr>#}
+                        {#</tbody>#}
+                    {#</table>#}
+                    {#<div class="row-submit">#}
+                        {#<a class="btn-blue"#}
+                           {#data-ng-class="{loader: updateAction.confirmPending}"#}
+                           {#data-ng-click="updateAction.confirmAllChanges()"#}
+                        {#>#}
+                            {#Confirm All Changes#}
+                        {#</a>#}
+                    {#</div>#}
+                {#</div>#}
+            {#</div>#}
+            <div style="clear: both"></div>
+        </section>
+        {{ block('updater_question_popup') }}
+        {{ block('updater_password_popup') }}
+    </div>
+{% endblock %}
+
+{% block updater_question_popup %}
+    <script type="text/javascript">
+        {% if is_granted('UPDATER_3K') %}
+            window.updater_3k_enabled = true;
+            window.centrifuge_config = {{ centrifuge_client.getClientData | json_encode | raw }};
+        {% endif %}
+    </script>
+    <div data-ng-cloak2 data-ng-controller="updaterQuestionCtrl as updaterQuestion">
+        <dialog id="updater-question" data-auto-open="false" data-title="'{{ 'award.account.popup.updater-question.title'|trans({provider: ''})|desc('%provider% ask you a security question') }}'" data-modal="true" data-width="500">
+            <form name="updaterQuestionForm" class="main-form" autocomplete="off">
+                <div class="popup-row-updater">
+                    <div class="row-updater-var">
+                        <b>{{ 'account.label'|trans }}</b>:
+                    </div>
+                    <div class="row-updater-val">
+                        [[ updaterQuestion.account ]]
+                    </div>
+                </div>
+                <div class="popup-row-updater">
+                    <div class="row-updater-var">
+                        <b>{{ 'questions.text'|trans }}</b>:
+                    </div>
+                    <div class="row-updater-val">
+                        [[ updaterQuestion.question ]]
+                    </div>
+                </div>
+                <div class="popup-row-updater popup-row-updater-answer" ng-class="{'popup-row-updater-error': updaterQuestion.error}">
+                    <div class="row-updater-var">
+                        <label for="updater-question-answer">{{ 'award.account.popup.updater-question.label'|trans|desc('Answer') }}:</label>
+                    </div>
+                    <div class="row-updater-val">
+                        <input type="text" name="answer" data-ng-model="updaterQuestion.answer" id="updater-question-answer" ng-change="updaterQuestion.answerChange($event)">
+                    </div>
+                </div>
+                <div class="popup-row-updater popup-row-updater-error-text" ng-class="{'popup-row-updater-error': updaterQuestion.error}">
+                    <div class="row-updater-var">
+                        <i class="icon-warning-small"></i>
+                    </div>
+                    <div class="row-updater-val">
+                        [[ updaterQuestion.error ]]
+                    </div>
+                </div>
+
+                <input type="submit" name="" value="" style="visibility:hidden; position: absolute; height: 0; width: 0; border: none; padding: 0;" hidefocus="true" tabindex="-1"/>
+            </form>
+        </dialog>
+    </div>
+{% endblock %}
+
+{% block updater_password_popup %}
+    <div data-ng-cloak2 data-ng-controller="updaterPasswordCtrl as updaterPassword">
+        <dialog id="updater-password" data-auto-open="false" data-title="'{{ 'award.account.popup.updater-password.title'|trans({provider: ''})|desc('%provider% ask you a password') }}'" data-modal="true" data-width="500">
+            <form name="updaterPasswordForm" class="main-form">
+                <p>[[ updaterPassword.title ]]</p>
+
+                <div class="row">
+                    <div class="row-item">
+                        <label for="updater-password-password">{{ 'award.account.popup.updater-password.label'|trans|desc('Password') }}:</label>
+
+                        <div class="input">
+                            <div class="input-item">
+                                <input type="password" name="password" data-ng-model="updaterPassword.password" id="updater-password-password">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="info">
+                        <div class="info-icon"></div>
+                        <div class="info-description"><p></p></div>
+                    </div>
+                    <div class="error-message">
+                        <div class="warning"><i class="icon-warning-small"></i></div>
+                        <div class="error-message-description">{{ 'notblank'|trans({}, 'validators') }}</div>
+                    </div>
+                </div>
+                <input type="submit" name="" value="" style="visibility:hidden; position: absolute; height: 0; width: 0; border: none; padding: 0;" hidefocus="true" tabindex="-1"/>
+            </form>
+        </dialog>
+    </div>
+{% endblock %}
+
+{% block updater_advertise %}
+    <div class="silver-blk update-account-advertise" data-ng-controller="updaterAdvertiseCtrl as updaterAdvertise">
+        <div class="advertise" data-ng-show="updaterAdvertise.view.show" data-ng-bind-html="updaterAdvertise.view.content | unsafe"></div>
+        <p class="remark">*{{ 'advertise-remark'|trans|desc("All advertising links open in a new window, checking balances will not stop") }}.</p>
+    </div>
+{% endblock %}
+
+{% block awplus_advertise %}
+    <div class="banner-aw-plus" data-ng-cloak data-ng-show="!main.user.isAwPlus()">
+        <p>{{ 'awplus-advertise.1'|trans|desc("Your accounts are being updated in sequence (<strong>1 at a time</strong>) because you have a free AwardWallet account.")|raw }}</p>
+        <p class="big"><a style="color: white" target="_blank" href="{{ url('aw_users_pay') }}"><strong>{{ 'awplus-advertise.2'|trans|desc("Upgrade to AwardWallet Plus") }}</strong></a></p>
+        <p class="inline">{{ 'awplus-advertise.3'|trans|desc("and get your accounts updating <strong>in parallel</strong> 5 accounts at a time")|raw }} <span>– {{ 'awplus-advertise.4'|trans|desc("5x faster") }}</span></p>
+    </div>
+{% endblock %}
+
+{% block updater_result %}
+    <div class="title" data-ng-show="updateProgress.view.process">
+        <div class="loader"></div>
+        <p id="update-action-process-text">{{ 'award.account.list.update.process'|trans({'%count%': 1, '%accounts%': 1, '%current%': 1})|desc('{1}Updating <span>%current%</span> of <span>1</span> account|[2,Inf]Updating <span>%current%</span> of <span>%accounts%</span> accounts')|raw }}</p>
+    </div>
+    <div class="title" data-ng-show="updateProgress.view.done">
+        <i class="icon-green-check"></i>
+        <p id="update-action-done-text">{{ 'award.account.list.update.done'|trans({count: 1, accounts: 1})|desc('{1}Account updating complete|[2,Inf]Accounts updating complete')|raw }}</p>
+    </div>
+    <div class="title" data-ng-show="updateProgress.view.fail">
+        <i class="icon-red-error"></i>
+        <p id="update-action-fail-text">{{ 'award.account.list.update.fail'|trans({count: 1, accounts: 1})|desc('{1}Server communication error occurred, 1 account was not sent for update|[2,Inf]Server communication error occurred, %accounts% accounts were not sent for update')|raw }}</p>
+    </div>
+{% endblock %}
+
+{% block updater_progress %}
+    <div class="progress-bar" data-ng-show="updateProgress.view.process">
+        <div class="progress-bar-row">
+            <span data-ng-style="updateProgress.counters.progressStyle"></span>
+        </div>
+    </div>
+{% endblock %}
+
+{% block updater_control %}
+    <div class="text-center">
+        <a data-ng-show="updateAction.state.updating" href="" data-ng-click="updateAction.stop()" class="btn-blue">{{ 'stop-updating'|trans|desc("Stop updating") }}</a>
+        <a data-ng-hide="updateAction.state.updating" href="" data-ng-click="updateAction.done()" class="btn-blue">{{ 'done'|trans|desc("Done") }}</a>
+    </div>
+{% endblock %}
+
+{% block updater_stat %}
+    <table class="main-table">
+        <tbody>
+        {#
+            <tr data-ng-if="updateProgress.counters.success">
+                <td class="prev"><i class="icon-successfully-update"></i></td>
+                <td class="title-row">{{ 'award.account.list.update.update-counter'|trans|desc('Accounts successfully updated') }}</td>
+                <td class="balance"></td>
+                <td class="count"><span class="black">[[ updateProgress.counters.success ]]</span></td>
+            </tr>
+        #}
+        <tr data-ng-show="updateProgress.counters.unchanged">
+            <td class="prev"><i class="icon-successfully-update"></i></td>
+            <td class="title-row">{{ 'award.account.list.update.unchanged-counter'|trans|desc('Unchanged accounts') }}</td>
+            <td class="balance"></td>
+            <td class="count"><span class="black">[[ updateProgress.counters.unchanged ]]</span></td>
+        </tr>
+        <tr data-ng-show="updateProgress.counters.increased">
+            <td class="prev"><i class="icon-green-up-m"></i></td>
+            <td class="title-row">{{ 'award.account.list.update.increased-counter'|trans|desc('Accounts increased') }}</td>
+            <td class="balance"><span class="green">[[ updateProgress.counters.increase > 0 ? '+' : '' ]][[ updateProgress.counters.increase | number:0 ]]</span></td>
+            <td class="count"><span class="black">[[ updateProgress.counters.increased ]]</span></td>
+        </tr>
+        <tr data-ng-show="updateProgress.counters.decreased">
+            <td class="prev"><i class="icon-blue-down-m"></i></td>
+            <td class="title-row">{{ 'award.account.list.update.decreased-counter'|trans|desc('Accounts decreased') }}</td>
+            <td class="balance"><span class="blue">[[ updateProgress.counters.decrease | number:0 ]]</span></td>
+            <td class="count"><span class="black">[[ updateProgress.counters.decreased ]]</span></td>
+        </tr>
+        <tr data-ng-if="updateProgress.counters.error">
+            <td class="prev"><i class="icon-red-error"></i></td>
+            <td class="title-row">{{ 'award.account.list.update.error-counter'|trans|desc('Accounts with errors') }}</td>
+            <td class="balance"></td>
+            <td class="count"><span class="black">[[ updateProgress.counters.error ]]</span></td>
+        </tr>
+        <tr data-ng-show="updateProgress.counters.disabled">
+            <td class="prev"><i class="icon-warning-small"></i></td>
+            <td class="title-row">{{ 'award.account.list.update.disabled-counter'|trans|desc('Not able to update') }}</td>
+            <td class="balance"></td>
+            <td class="count"><span class="black">[[ updateProgress.counters.disabled ]]</span></td>
+        </tr>
+        <tr class="total" data-ng-show="updateProgress.counters.totals">
+            <td colspan="2">{{ 'award.account.list.update.total-counter'|trans|desc('Total change') }}</td>
+            <td class="balance"><span data-ng-class="{blue: updateProgress.counters.total < 0, green: updateProgress.counters.total > 0}">[[ updateProgress.counters.total > 0 ? '+' : '' ]][[ updateProgress.counters.total | number:0 ]]</span></td>
+            <td class="count">[[ updateProgress.counters.totals ]]</td>
+        </tr>
+        </tbody>
+    </table>
+{% endblock %}

@@ -1,0 +1,20 @@
+{% block subject %}{% apply spaceless %}{% autoescape false %}
+    {% if user.isBusiness %}
+        Deleted AwardWallet Business Account
+    {% else %}
+        Deleted AwardWallet Account
+    {% endif %}
+{% endautoescape %}{% endapply %}{% endblock subject %}
+
+{% block body_text %}
+{{ user.isBusiness ? 'Company name' : 'Full name' }}: {{ user.getFullName }}<br>
+UserID: {{ user.userid }}<br>
+Email: {{ user.email }}<br>
+Number of Award Programs: {{ accounts }}<br>
+Number of trips: {{ trips }}<br>
+Times logged in: {{ user.logoncount }}<br>
+Registered on: {{ user.creationdatetime|formatDatetime('long', 'short') }}<br>
+Paid for {{ user.isBusiness ? 'AwardWallet Business' : 'AwardWallet Plus' }}: {{ pays|default('Never') }}<br>
+Lifetime contribution: ${{ lifetimeContribution }}<br>
+Reason: {{ reason }}
+{% endblock body_text %}

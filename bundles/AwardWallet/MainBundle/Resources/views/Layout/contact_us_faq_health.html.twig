@@ -1,0 +1,8 @@
+{% extends app.user is not null ? "@AwardWalletMain/Layout/common.html.twig" : "@AwardWalletMain/Layout/not_logged.html.twig" %}
+
+{% block body_left_widgets %}
+    {{ widget_render('left_top') }}
+    {{ widget_render('contact_us') }}
+{% endblock %}
+
+{% block content %} {% endblock %}

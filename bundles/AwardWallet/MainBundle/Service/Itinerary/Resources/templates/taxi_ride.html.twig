@@ -1,0 +1,45 @@
+{% extends "@Module/Itinerary/Resources/templates/itinerary.html.twig" %}
+
+{% block title %}
+    {% if edit|default(false) %}
+        {{ 'taxi_ride.edit'|trans([], 'trips') }}
+    {% else %}
+        {{ 'taxi_ride.add'|trans([], 'trips') }}
+    {% endif %}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    {% if not webpack|default(false) %}
+        <script>
+            require(['jquery-boot', 'pages/itinerary/form'], function ($, ItineraryForm) {
+                $(document).ready(function() {
+                    new ItineraryForm({
+                        formContainer  : '#{{ form.vars.full_name }}',
+                        template       : '#segmentTemplate',
+                        autocompleteField: 'Address',
+                        blockContainer : '#addedSegments',
+                        block          : '.segment'
+                    }).init();
+                })
+            })
+        </script>
+    {% else %}
+         <script>
+            window.taxiRideFormContainer = '#{{ form.vars.full_name }}';
+        </script>
+        {{ encore_entry_script_tags('taxi-ride', null, '_default', {'defer': true}) }}
+    {% endif %}
+{% endblock %}
+
+{% block main_form %}
+    {{- form_start(form, {
+        'attr': {
+            'data-files': files|json_encode,
+            'class': 'main-form',
+        }
+    }) -}}
+    {{- form_widget(form, {'noSubmit': true}) -}}
+    {{ block('submit_button') }}
+    {{- form_end(form) -}}
+{% endblock %}

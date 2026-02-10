@@ -1,0 +1,22 @@
+{% extends "@AwardWalletMain/Cart/Billing/layout.html.twig" %}
+
+{% block title %}
+    {{ 'add.billing.title'|trans|desc('Add new billing address') }}
+{% endblock %}
+
+{% block content %}
+    <div class="main-blk shortened">
+            <h1>{{ 'add.billing.title'|trans|desc('Add new billing address') }}</h1>
+
+            {{ form_start(form, {'attr': {'class': 'main-form', 'novalidate': 'true'}}) }}
+            {{ form_widget(form, {'noSubmit':true}) }}
+            <div class="row-submit">
+                <div class="row-submit-item">
+                    <button type="submit"
+                            class="btn-blue">{{ 'form.button.save'|trans|desc('Save') }}</button>
+                </div>
+            </div>
+            {{ form_end(form) }}
+    </div>
+
+{% endblock %}

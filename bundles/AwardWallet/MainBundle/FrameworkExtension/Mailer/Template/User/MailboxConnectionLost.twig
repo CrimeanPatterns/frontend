@@ -1,0 +1,32 @@
+{% extends '@MailTemplate/Layout/base.twig' %}
+{% trans_default_domain "email" %}
+
+{% block subject %}{% apply spaceless %}{% autoescape false %}
+    {{ 'mailbox_connection_lost_title'|trans({}, 'messages', lang) }}
+{% endautoescape %}{% endapply %}{% endblock subject %}
+
+{% block content %}
+    {% import '@MailTemplate/CommonMacro.twig' as commonMacro %}
+
+    {{ commonMacro.hello(user.firstname, _context) }}
+    {% set unsubscribe_link = commonMacro.link(url('aw_usermailbox_view', {'delete-mailbox': mailboxId}), '$$')|split('$$') %}
+    {{ commonMacro.paragraph(
+        'mailbox_connection_lost_email_body_2'|trans({
+            '%email%': mailboxEmail,
+            '%link_on%': unsubscribe_link[0],
+            '%link_off%': unsubscribe_link[1]
+        }, 'email', lang)|desc('We\'ve lost the connection to your mailbox "%email%" on AwardWallet and are no longer able to auto-import your travel plans and account statements. Please re-authenticate your mailbox now. Alternatively, if this mailbox no longer exists you can %link_on%delete it%link_off% from AwardWallet.'),
+        _context, {escape: false}
+    ) }}
+    {{ commonMacro.button('re_authenticate_mailbox'|trans({}, 'messages', lang), link) }}
+{% endblock content %}
+
+{% block unsubscribe %}
+    {% import '@MailTemplate/CommonMacro.twig' as commonMacro %}
+
+    {% set unsubscribe_link = commonMacro.link(url('aw_usermailbox_view', {'delete-mailbox': mailboxId}), '$$')|split('$$') %}
+    {{ 'unsubscribe_delete_mailbox'|trans({
+        '%link_on%': unsubscribe_link[0],
+        '%link_off%': unsubscribe_link[1]
+    }, 'email', lang)|desc('If you wish to stop receiving these reminders, feel free to %link_on%unsubscribe%link_off% by simply deleting this mailbox connection from AwardWallet.')|raw }}
+{% endblock unsubscribe %}

@@ -1,0 +1,86 @@
+{% extends "@AwardWalletMain/Layout/edit_connections.html.twig" %}
+
+{% block mainContent %}
+    <div class="main-blk">
+        <h1>{{ 'share-all.title'|trans({'%agentName%': agent.fullName | htmlencode })|desc("Shared accounts with %agentName%") }}</h1>
+        <div class="main-blk-content">
+            {% if savePasswords|length < accounts|length %}
+            <div class="title-note">
+                <h3>{{ 'share-all.success'|trans({'%agentName%': agent.fullName | htmlencode })|desc("Accounts listed below have been successfully shared with %agentName%") }}</h3>
+            </div>
+            <table class="main-table shared-accounts">
+                <thead>
+                <tr>
+                    <th></th>
+                    <th>{{ 'booking.display.name'|trans({}, 'booking') }}</th>
+                    <th>{{ 'booking.owner'|trans({}, 'booking') }}</th>
+                    <th>{{ 'booking.balance'|trans({}, 'booking') }}</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for id, v in accounts %}
+                    {% if savePasswords[id] is not defined %}
+                    <tr data-id="{{ accounts[id].ID }}">
+                        <td class="check"><i class="icon-green-check"></i></td>
+                        <td>{{ accounts[id].ProviderName | raw  }}</td>
+                        <td>{{ accounts[id].UserName | raw }}</td>
+                        <td>{{ accounts[id].Balance is not null ? (accounts[id].Balance | raw) : '-' }}</td>
+                    </tr>
+                    {% endif %}
+                {% endfor %}
+                </tbody>
+            </table>
+            {% endif %}
+            {% if savePasswords|length > 0 %}
+            <div class="title-note">
+                <h3>{{ 'share-all.without-passwords'|trans({'%agentName%': agent.fullName | htmlencode })|desc("Accounts listed below have been shared with %agentName% without passwords") }}
+                    <span class="small">
+                        {{ 'share-all.without-passwords.1'|trans|desc("The accounts below do not have passwords stored in the AwardWallet database") }}.
+                        {{ 'share-all.without-passwords.2'|trans({'%agentName%': agent.fullName | htmlencode })|desc("Therefore, %agentName% will not be able to auto-login or see the passwords of these accounts") }}.
+                        {{ 'share-all.without-passwords.3'|trans({'%url%': url('aw_account_list') })|desc("To fix it, please go to your <a href='%url%' class='blue-link'>account list</a> and chose to store passwords for these accounts in the AwardWallet's database")|raw }}.
+                    </span>
+                </h3>
+            </div>
+            <table class="main-table shared-accounts">
+                <thead>
+                <tr>
+                    <th></th>
+                    <th>{{ 'booking.display.name'|trans({}, 'booking') }}</th>
+                    <th>{{ 'booking.owner'|trans({}, 'booking') }}</th>
+                    <th>{{ 'booking.balance'|trans({}, 'booking') }}</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for id, v in accounts %}
+                    {% if savePasswords[id] is defined %}
+                    <tr data-id="{{ accounts[id].ID }}">
+                        <td class="check"><i class="icon-warning-small"></i></td>
+                        <td>{{ accounts[id].ProviderName | raw  }}</td>
+                        <td>{{ accounts[id].UserName | raw }}</td>
+                        <td>{{ accounts[id].Balance is not null ? (accounts[id].Balance | raw) : '-' }}</td>
+                    </tr>
+                    {% endif %}
+                {% endfor %}
+                </tbody>
+            </table>
+            {% endif %}
+        </div>
+        <div class="info-blk info-message">
+            <i class="icon-green-check-b"></i>
+            {% if fullAccess %}
+                <p>
+                    <strong>{{ 'share-all.done'|trans|desc('You are all done.') }}</strong><br/>
+                    {{ 'share-all.full'|trans({'%agentName%': agent.fullName | htmlencode })|desc('Accounts listed above (with passwords) have been shared with %agentName%.') }}<br/>
+                    {{ 'share-all.deny'|trans({'%url%': path('aw_share_deny_all', {userAgentId: userAgent.useragentid})})|desc('If you want to undo this, follow this <a href="%url%">link</a>.')|raw }}
+                </p>
+            {% else %}
+                <p>
+                    <strong>{{ 'share-all.done'|trans }}</strong><br/>
+                    {{ 'share-all.readonly'|trans({'%agentName%': agent.fullName | htmlencode })|desc('Accounts listed above (without passwords) have been shared with %agentName%.') }}<br/>
+                    {{ 'share-all.deny'|trans({'%url%': path('aw_share_deny_all', {userAgentId: userAgent.useragentid})})|raw }}
+                </p>
+            {% endif %}
+        </div>
+
+    </div>
+{% endblock %}

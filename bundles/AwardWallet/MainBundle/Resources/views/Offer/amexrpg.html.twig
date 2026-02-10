@@ -1,0 +1,57 @@
+{# Issue #6570 #}
+
+{% extends "@AwardWalletMain/Offer/standard.html.twig" %}
+{% import '@AwardWalletMain/Offer/offerMacros.html.twig' as offerMacros %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    {{ encore_entry_link_tags('offer') }}
+    {{ encore_entry_link_tags('offers/amexrpg') }}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        {{ offerMacros.jsOfferYes(_context, ApplyURL, Code, OfferUserID, defaultRedirectLocation) }}
+        {{ offerMacros.jsOfferNo(_context, Code, OfferUserID, defaultRedirectLocation) }}
+    </script>
+{% endblock %}
+
+{% block content %}
+    <div id="offer_wrap">
+        <div id="offer_bg" class="amexrpg_bg">
+            <div class="offer_title amexrpg_title">
+                Earn 3x points on your Amazon purchases with
+                Amex Premier Rewards Gold card and 25,000
+                sign-up bouns points!
+            </div>
+            <div class="amexrpg_image">
+            </div>
+            <div id="div_ul" class="amexrpg_ul">
+                <ul class="offer_list amexrpg_list">
+                    <li>Earn More: earn 25K Membership Rewards® points after you spend $2K during your first three
+                        months of Card membership; earn 15K points after you spend $30,000 within one calendar year
+                    <li>Earn Fast: 3X points for flights booked with airlines, 2X points at US gas stations and US
+                        supermarkets, 1X points on other purchases. Terms and limitations apply.
+                    <li>Use points for gift cards for dining, entertainment, and to shop over 300 of some of your
+                        favorite brands
+                    <li>Access to Benefits: Baggage Insurance Plan* when you travel, and shop with confidence with
+                        Extended Warranty* and Return Protection.*Underwritten by Amex Assurance Company
+                    <li>Book two consecutive hotel nights through American Express Travel and receive $75 back at
+                        checkout. Restrictions may apply
+                    <li>$0 introductory annual fee for the first year, then $175
+                    <li>Terms and Restrictions Apply
+                </ul>
+            </div>
+            <div class="offer_btn" onclick="offerYes();">
+                Yes, I want 25,000 bonus points, apply now
+            </div>
+        </div>
+        <div class="offer_declinekind" onclick="offerNo();">
+            Never show this ad again
+        </div>
+        <div class="offer_toaccount amexrpg_toaccount" onclick="window.location = '{{ defaultRedirectLocation }}'">
+            Proceed to my account
+        </div>
+    </div>
+{% endblock %}

@@ -1,0 +1,54 @@
+{% form_theme form with ['@AwardWalletMain/FormTheme/fields.html.twig'] %}
+{% extends '@AwardWalletMain/User/useCoupon.html.twig' %}
+
+{% block content %}
+    {% set prices = constant('\\AwardWallet\\MainBundle\\Globals\\Cart\\SubscriptionPrice::AWPLUS_PRICE') %}
+    {% set price = prices[constant('\\AwardWallet\\MainBundle\\Globals\\Cart\\SubscriptionPeriod::DURATION_1_YEAR')] %}
+    {% set totalDuration = 0 %}
+
+    {% for couponItem in cart.coupon.items %}
+        {% if couponItem.cartItemType == constant('\\AwardWallet\\MainBundle\\Entity\\CartItem\\AwPlus::TYPE') %}
+            {% set totalDuration = totalDuration + 6 %}
+        {% endif %}
+    {% endfor %}
+
+    {% set startDate = "now"|date_modify('+' ~ totalDuration ~ ' months') %}
+
+    <div class="add-account">
+        <div class="main-blk">
+            <h1>{{ 'user.coupon.title.requires-subscription'|trans|desc('Coupon Requires Subscription') }}</h1>
+            <div class="main-blk-content">
+                <p>
+                    {{ 'user.coupon.requires-subscription.setup-instructions'|trans({
+                        '%bold_on%': '<b>',
+                        '%bold_off%': '</b>'
+                    })|desc('To use this coupon, please set up a %bold_on%yearly recurring subscription%bold_off% to AwardWallet Plus on the next screen.')|raw }}
+                </p>
+                <p>
+                    {{ 'user.coupon.requires-subscription.good-news'|trans({
+                        '%bold_on%': '<b>',
+                        '%bold_off%': '</b>',
+                        '%amount%': price|formatCurrency('USD', true),
+                        '%start_date%': startDate|formatDatetime('long', 'none')
+                    })|desc("
+    %bold_on%Good news:%bold_off% The subscription is %bold_on%%amount% per year%bold_off%, but you won’t be charged until %bold_on%%start_date%%bold_off% — that’s when your new AwardWallet Plus membership (from the coupon you just applied) begins and your current free period ends.
+    Cancel anytime before then to avoid any charges.
+    ")|raw }}
+                </p>
+            </div>
+            <div class="row-submit">
+                <button onclick="document.location.href='{{ path('aw_account_list') }}'" type="button" class="btn-silver">
+                    {{ 'alerts.btn.cancel'|trans }}
+                </button>
+                {{ form_start(form, {'attr': {'style': 'display: inline;'}}) }}
+                    <button type="submit" name="{{ form.submit.vars.full_name }}" class="btn-blue">
+                        {{ form.submit.vars.label|trans }}
+                    </button>
+                    {% do form.submit.setRendered %}
+
+                    {{ form_rest(form) }}
+                {{ form_end(form) }}
+            </div>
+        </div>
+    </div>
+{% endblock %}

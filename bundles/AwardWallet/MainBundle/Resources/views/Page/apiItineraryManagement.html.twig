@@ -1,0 +1,60 @@
+{% set MOBILE_NAV = true %}
+{% set HIDE_NAV = true %}
+{% set MAIN_BODY_CLASSES = {
+    'manual-hidden': true,
+    'responsive': true,
+    'hide-menu': true
+}|merge(MAIN_BODY_CLASSES|default({})) %}
+
+{% extends app.user is not null ? "@AwardWalletMain/Layout/common.html.twig" : "@AwardWalletMain/Layout/not_logged.html.twig" %}
+
+{% block title %}How to build a travel planning app with AwardWallet | Itinerary API{% endblock %}
+
+{% block meta %}
+    {{ parent() }}
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0, viewport-fit=cover">
+    <meta name="description" content="Learn how AwardWallet help with building itinerary management services using powerful APIs - email parsing and web parsing">
+{% endblock %}
+
+{% block content %}
+    {% include '@AwardWalletMain/Page/_apiNav.html.twig' %}
+    <div class="main-blk content-page has-additionl-menu">
+        <h1>How to build an itinerary management platform, apps and services with AwardWallet APIs</h1>
+        <picture class="preview-image">
+            <source srcset="../../assets/awardwalletnewdesign/img/api/itinerary-management/image.png?v=2" media="(min-width: 768px)">
+            <img src="../../assets/awardwalletnewdesign/img/api/itinerary-management/image-mobile.png" alt="itinerary management">
+        </picture>
+        <div class="main-blk-content">
+            <div class="title-note no-border bold">
+                <h2>What is itinerary management?</h2>
+            </div>
+            <p>Itinerary management provides both leisure and business travelers with all their trip information consolidated into one itinerary. This can include a multitude of information from the basics such as flights and hotel bookings to more bespoke elements such as car rental, airport transfer, and restaurant or excursion reservations. Itinerary management can also be an essential tool for organizing group events such as sports and team travel as well as large scale conferences and exhibitions. The main benefits of itinerary management are reduced workload for travel agents and event organizers. Individuals benefit from having a less stressful and well-organized journey. No lost reservation emails or not being able to find hotel addresses for filling in immigration and customs forms.</p>
+            <p>Along with storing vital information, itinerary management companies also alert travelers to changes and disruptions in their journeys such as a flight change or cancellation. These can be crucial for business travelers and those attending events. Additionally, the companies can supply passengers with useful information to make their journey more efficient such as gate numbers and baggage reclaim belts.</p>
+            <p>Clients can usually access their information via apps as well as a traditional website. Apps give the advantage of being able to access travel itineraries offline which can be vital during air travel or countries with limited data or internet capabilities.</p>
+            <div class="title-note no-border bold">
+                <h2>Technology for successful itinerary management companies</h2>
+            </div>
+            <p>Itinerary management companies need to have technology in place to make using their service as seamless as possible for the individual or company. If customers have to enter a multitude of information about reservations themselves, the workload is unlikely to convince them on the benefits of itinerary management or the associated costs. In order to make the process as streamlined as possible, start-up itinerary management companies will need to buy or build their own itinerary management platform. This will need to include an email parsing API service.</p>
+            <br>
+            <div class="picture">
+                <img class="picture__light" src="../../assets/awardwalletnewdesign/img/api-pic.png" srcset="../../assets/awardwalletnewdesign/img/api-pic@2x.png 2x" alt="Email Parsing API">
+                <img class="picture__dark" src="../../assets/awardwalletnewdesign/img/api-pic-dark.png" srcset="../../assets/awardwalletnewdesign/img/api-pic-dark@2x.png 2x" alt="Email Parsing API">
+            </div>
+            <p>Email parsing allows itinerary management companies to retrieve travel reservation information from customers’ emails and turn this into useable data for their itinerary management platform. Building a bespoke email parsing API can be expensive, particularly for a start-up itinerary management company. An API will have to be built for each travel provider as well as being able to support numerous languages and email formats.</p>
+            <p>Even once you have built an email parsing solution you will then need to maintain it, which can be time-consuming and costly. Travel providers often change reservation formats or add new languages. New email providers can emerge as well, all of which will need continuous adjustment if you have a bespoke system.</p>
+            <p>AwardWallet offers a competitively priced email parsing solution for itinerary management companies.</p>
+            <div class="title-note no-border bold">
+                <h2>What solutions does AwardWallet offer?</h2>
+            </div>
+            <p>The AwardWallet Email Parsing API will extract the relevant information from your clients’ travel reservations from their emails. Customers simply have to send their travel reservation emails such as a hotel or flight bookings, to your nominated email address and AwardWallet’s email parsing API will retrieve the necessary data. This information is then parsed by the API and returned to your platform in a structured format (JSON) for you to use. It only takes a few seconds for the parsing to take place and the process is automatic. We can also provide an even simpler solution for your clients in the form of emails scanning. The nominated inbox of your customer will be continuously scanned for new travel reservations. When a new booking arrives it will be automatically parsed so the data can be used by your itinerary management program.</p>
+            <p>AwardWallet is able to extract extra information from the reservation that provides value for your customers. For example, we extract cancellation policy information for hotels. If relevant, we can then add in the cancellation deadline date to the itinerary.</p>
+            <p>AwardWallet’s email parsing API can handle nearly all widely used email formats with thousands of email providers supported. Parsing is done automatically and takes just a few seconds. Our parsing can also support multiple different languages and an extremely comprehensive list of travel companies and their reservation formats.</p>
+            <p>We have a team of developers working continuously on keeping our APIs up to date with new travel companies, email providers, reservation formats, and changes. Once you have bought our services, you can relax knowing we will keep your email parsing running efficiently and up to date.</p>
+            <p>If you would like to try our email parsing API to see how it could help your company, please <a href="{{ path('aw_contactus_index') }}?API" class="blue-link">contact us using this form</a>. We will also be able to provide you with further details such as our pricing.</p>
+        </div>
+        <div class="row-submit">
+            <a href="{{ path('aw_contactus_index') }}?API" class="btn-blue">Contact Us</a>
+            <a href="/api/email" class="btn-blue">Documentation</a>
+        </div>
+    </div>
+{% endblock %}

@@ -1,0 +1,58 @@
+{% extends "@AwardWalletMain/Layout/accounts.html.twig" %}
+
+{% block content %}
+    <div class="main-blk">
+        <h1>{{ programName }}</h1>
+        <div class="email-info">
+            <table class="main-table">
+                <tr>
+                    <td>{{ 'mailbox.email.from'|trans|desc('From') }}:</td>
+                    <td>{{ headers.from|raw }}</td>
+                </tr>
+                <tr>
+                    <td>{{ 'mailbox.email.date'|trans|desc('Date') }}:</td>
+                    <td>{{ headers.date }}</td>
+                </tr>
+                <tr>
+                    <td>{{ 'mailbox.email.to'|trans|desc('To') }}:</td>
+                    <td>{{ headers.to|raw }}</td>
+                </tr>
+                {% if headers.cc %}
+                    <tr>
+                        <td>{{ 'mailbox.email.cc'|trans|desc('Cc') }}:</td>
+                        <td>{{ headers.cc|raw }}</td>
+                    </tr>
+                {% endif %}
+                <tr class="bold">
+                    <td>{{ 'mailbox.email.subject'|trans|desc('Subject') }}:</td>
+                    <td>{{ headers.subject }}</td>
+                </tr>
+                <tr>
+            </table>
+        </div>
+        <div class="main-blk-content">
+            <iframe src="{{ path('aw_usermailbox_view_mailBody', {'historyId': historyId}) }}?withoutLayout=true" scrolling="no" frameborder="0" width="100%"></iframe>
+        </div>
+        <div class="row-submit">
+            <button class="btn-blue" id="back-btn">
+                <i class="icon-arrow-left-w"></i>
+                <span>{{ 'button.back'|trans }}</span>
+            </button>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        require(['jquery-boot'], function () {
+            $('iframe').load(function () {
+                this.style.height = this.contentWindow.document.body.offsetHeight + 100 + 'px';
+            });
+
+            $('#back-btn').click(function () {
+                window.history.back();
+            });
+        });
+    </script>
+{% endblock %}

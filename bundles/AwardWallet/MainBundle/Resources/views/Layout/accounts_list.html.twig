@@ -1,0 +1,30 @@
+{% extends "@AwardWalletMain/Layout/default.html.twig" %}
+
+{% block meta %}
+    {{ parent() }}
+	<base href="{{ path('aw_account_list') }}">
+    <meta name="robots" content="noindex">
+{% endblock %}
+
+{% block page_content %}
+<div class="item">
+	<div id="ng-app" class="content" style="max-width: 1900px">
+		{% block content %}
+		{% endblock %}
+		{% block mainContent %}
+		{% endblock %}
+	</div>
+</div>
+{% endblock %}
+
+{% block body_header_widgets %}
+	{{ widget_render('logo') }}
+	{{ widget_render('header') }}
+{% endblock %}
+
+{% block body_left_widgets %}
+	{{ widget_render('left_top') }}
+    {{ widget_render('credit_card_tools_zone') }}
+    {{ widget_render('accounts_list') }}
+	{{ widget_render('left_bottom') }}
+{% endblock %}

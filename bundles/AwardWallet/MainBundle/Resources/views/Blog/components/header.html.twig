@@ -1,0 +1,61 @@
+{% import '@AwardWalletMain/Blog/components/blog_menu.html.twig' as menuRender %}
+{% import '@AwardWalletMain/Blog/components/icons.html.twig' as icons %}
+
+<div class="{{ bem('bg-layout') }} {{ bem(pageName, 'header-bg-layout') }}"></div>
+<header class="{{ bem('simple-header', null, ['sticky']) }} {{ bem(pageName, 'header') }}">
+    <div class="{{ bem(pageName, 'container') }} {{ bem(pageName, 'header-content') }}">
+        <a href="{{ path('aw_blog_learn') }}" class="{{ bem(pageName, 'header-logo-link') }}">
+            <img
+                {{ image_src(pageAssetsPath ~ '/aw-learn-logo.svg') }} alt="AwardWallet Learn"
+                class="{{ bem(pageName, 'header-logo') }} {{ bem(pageName, 'header-logo-light') }}" />
+            <img
+                {{ image_src(pageAssetsPath ~ '/aw-learn-logo--dark.svg') }} alt="AwardWallet Learn"
+                class="{{ bem(pageName, 'header-logo') }} {{ bem(pageName, 'header-logo-dark') }}" />
+        </a>
+
+        {% if not isSearch %}
+            <div class="{{ bem(pageName, 'header-search-container') }}" id="autocomplete"></div>
+        {% endif %}
+        
+        
+        {{ menuRender.renderDesktopBlogMenu(menu) }}    
+
+        <div class="{{ bem(pageName, 'header-user-block') }}">
+            <a href="{{ (user is defined and user is not null) ? user.post.read.link : path('aw_login', { 'BackTo': path('aw_blog_learn') }) }}" 
+                class="{{ bem(pageName, 'header-quick-access-link') }}" 
+                title="{{ (user is defined and user is not null) ? user.post.read.title : 'Add to favorite' }}">
+                {{ icons.doubleCheckIcon(false) }}
+                <div class="{{ bem(pageName, 'header-quick-access-indicator', [(user is defined and user is not null and user.post is defined and user.post.read is defined and user.post.read.count > 0) ? 'visible' : null]) }}" 
+                        data-read-post-count="{{ (user is defined and user is not null) ? user.post.read.count : 0 }}">
+                        {{ (user is defined and user is not null and user.post is defined and user.post.read is defined) ? (user.post.read.count > 99 ? '99+' : user.post.read.count) : 0 }}
+                </div>
+            </a>
+
+            <a href="{{ (user is defined and user is not null) ? user.post.favorite.link : path('aw_login', { 'BackTo': path('aw_blog_learn') }) }}" 
+                class="{{ bem(pageName, 'header-quick-access-link') }}" 
+                title="{{ (user is defined and user is not null) ? user.post.favorite.title : 'Favorites' }}">
+                {{ icons.bookmarkIcon(false) }}
+                <div class="{{ bem(pageName, 'header-quick-access-indicator', [(user is defined and user is not null and user.post is defined and user.post.favorite is defined and user.post.favorite.count > 0) ? 'visible' : null]) }}"  
+                        data-favorite-post-count="{{ (user is defined and user is not null) ? user.post.favorite.count : 0 }}">
+                        {{ (user is defined and user is not null and user.post is defined and user.post.favorite is defined) ? (user.post.favorite.count > 99 ? '99+' : user.post.favorite.count) : 0 }}
+                </div>
+            </a>
+
+            <a href="{{ (user is defined and user is not null) ? user.avatar.link : path('aw_login', { 'BackTo': path('aw_blog_learn') }) }}" class="{{ bem(pageName, 'user-avatar') }}">
+                {% if user is defined and user is not null and user.avatar is defined and user.avatar.image is defined and user.avatar.image is not null %}
+                    <img src="{{ user.avatar.image }}" alt="User Avatar" class="{{ bem(pageName, 'user-image') }}" />
+                {% else %}
+                    <img {{ image_src(pageAssetsPath ~ '/user-icon.svg') }} alt="User Avatar" class="{{ bem(pageName, 'user-image', ['placeholder']) }} {{ bem(pageName, 'user-image-light') }}" />
+                    <img {{ image_src(pageAssetsPath ~ '/user-icon--dark.svg') }} alt="User Avatar" class="{{ bem(pageName, 'user-image', ['placeholder']) }} {{ bem(pageName, 'user-image-dark') }}" />
+                {% endif %}
+            </a>
+        </div>       
+        <button type="button" class="{{ bem(pageName, 'header-menu-button') }}"></button>
+    </div>
+    <div class="{{ bem(pageName, 'container') }} {{ bem(pageName, 'advertiser-disclosure') }}">
+        <div class="{{ bem(pageName, 'advertiser-disclosure-wrapper') }}">
+            <a href="https://awardwallet.com/blog/advertiser-disclosure/" class="{{ bem(pageName, 'advertiser-disclosure-text') }}">Advertiser Disclosure</a>   
+        </div>
+    </div>
+</header>
+{{ menuRender.renderMobileBlogMenu(menu, user) }}

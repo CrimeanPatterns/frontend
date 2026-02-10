@@ -1,0 +1,120 @@
+{% extends "@AwardWalletMain/Layout/main.html.twig" %}
+{% import "@AwardWalletMain/TwigMacros/environment.html.twig" as environmentMacros %}
+
+{% block javascripts %}
+    {{ parent() }}
+    {% if not webpack|default(false) %}
+        <script type="text/javascript">
+            require(["lib/design", 'lib/customizer', 'jqueryui'], function (design, customizer) {
+                $(function () { customizer.initDropdowns($('footer.footer-site')); })
+            });
+        </script>
+    {% endif %}
+{% endblock %}
+{% block body %}
+    <body id="body" {{ environmentMacros.globalDataAttr(_context) }}>
+    {% include '@AwardWalletMain/Layout/vendor_body-top.html.twig' %}
+    {% block popup %}{% endblock %}
+
+    <div class="{{ html_classes(MAIN_BODY_CLASSES) }}">
+        {% block before_header %}
+            {% if MOBILE_NAV is defined %}
+                <div class="fixed-header">
+                    <div class="menu-button"></div>
+                    <a class="logo" href="/"></a>
+                </div>
+                {% if app.user is null and not webpack|default(false) %}
+                    <script>require(['lib/customizer', 'lib/design'], (customizer) => customizer.navMobile());</script>
+                {% endif %}
+            {% endif %}
+        {% endblock %}
+        <!-- header -->
+        <header id="headerSite" class="header-site">
+			{% block body_header_widgets %}
+            {{ widget_render('logo') }}
+            {{ widget_render('header') }}
+                {% if MOBILE_NAV is defined %}
+                    {{ widget_render('not_logged_header_menu_mobile') }}
+                {% endif %}
+			{% endblock %}
+        </header>
+        <!-- end -->
+
+		<div class="page">
+            {% block page_content %}
+			<div class="item" id="contentTable"{# id=contentTable for booking scripts #}>
+				<div id="ng-app" class="content">
+                    {% block content %}
+                    {% endblock %}
+                    {% block mainContent %}
+                    {% endblock %}
+				</div>
+			</div>
+            {% endblock %}
+            {% block hide_menu_button %}
+                {% if HIDE_NAV is not defined %}
+			    <div class="menu-close"></div>
+                {% endif %}
+            {% endblock %}
+            {% block page_aside %}
+            <aside class="user-blk" ng-non-bindable>
+				<div class="user-blk-item">
+					{% block body_left_widgets %}
+					{{ widget_render('left_top') }}
+					{{ widget_render('left_bottom') }}
+					{% endblock %}
+				</div>
+            </aside>
+            {% endblock %}
+		</div>
+        {% block popups %}
+            {% if app.user is not null %}
+                {% if app.user.emailverified == constant('EMAIL_NDR') and is_granted('SITE_BUSINESS_AREA') == false %}
+                    {% include '@AwardWalletMain/Users/_emailNdr.html.twig' %}
+                {% endif %}
+                {% if app.session.flashbag.get('betaWelcome') %}
+                    {{ include('@AwardWalletMain/Users/_betaPopup.html.twig', { 'user': app.user }) }}
+                {% endif %}
+                {% if two_fact.isNeedTwoFactorAuth(app.user) %}
+                    {{ include('@AwardWalletMain/Users/_needTwoFactorAuthenticationPopup.html.twig') }}
+                {% endif %}
+                {% set unauthorizedMailbox = scanner_warning_generator.unauthorizedMailbox %}
+                {% if unauthorizedMailbox is not null %}
+                    {% if not webpack|default(false) %}
+                        <script type="text/javascript">
+                        require(['pages/mailbox/unauth-popup'], function(popupFunc) {
+                            popupFunc({{ unauthorizedMailbox.id }}, {{ unauthorizedMailbox.email | json_encode | raw }});
+                        });
+                    </script>
+                    {% else %}
+                        <script type="text/javascript">
+                        window.unauthMailboxId = {{ unauthorizedMailbox.id }};
+                        window.unauthMailbox = {{ unauthorizedMailbox.email | json_encode | raw }};
+                        </script>
+                        {{ encore_entry_script_tags('unauthorized-mailbox-popup', null, '_default', {'defer': true}) }}
+                    {% endif %}
+                    
+                {% endif %}
+            {% endif %}
+        {% endblock %}
+        {% block sessions %}
+            {% if app.user is not null %}
+                {% set _sessions = session_detector.detectOtherSessions(app.request.session.id, app.user.userid, app.request.clientIp) %}
+                {% if _sessions|length > 0 and is_granted("NOT_SITE_BUSINESS_AREA") %}
+                    {% include '@AwardWalletMain/Users/sessions_warning.html.twig' %}
+                {% endif %}
+            {% endif %}
+        {% endblock %}
+    </div>
+	{% block footer %}
+	<!-- footer -->
+	<footer class="footer-site">
+		{{ widget_render('footer') }}
+	</footer>
+	<!-- end -->
+        {% if is_granted('SITE_MOBILE_BROWSER') and not is_granted('SITE_MOBILE_AREA') and not is_granted('SITE_BUSINESS_AREA') %}
+            <a href="{{ path('aw_home', {'mobile' : 1}) }}" class="switch-container" style="display: block">{{ 'switch-to-mobile-version'|trans|desc("Switch to the mobile version") }}</a>
+        {% endif %}
+	{% endblock %}
+</body>
+{% endblock %}

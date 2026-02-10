@@ -1,0 +1,30 @@
+{% form_theme form with ['@AwardWalletMain/FormTheme/fields.html.twig'] %}
+{% extends "@AwardWalletMain/Layout/profile.html.twig" %}
+
+{% block title %}{{ 'user.change-email.form.title'|trans|desc('Change email') }}{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        require(['lib/formReauthenticator']);
+    </script>
+{% endblock %}
+
+{% block content %}
+    <div class="main-blk shortened">
+        <h1>{{ 'user.change-email.form.title'|trans|desc('Change email') }}</h1>
+        <form class="main-form spinnerable"
+              action="{{ path('aw_user_change_email') }}"
+              method="post"
+              autocomplete="off"
+              data-reauth-action="ChangeEmailAction"
+        >
+            {{ form_widget(form, {'noSubmit':true}) }}
+            <div class="row-submit">
+                <button type="submit" class="btn-blue">
+                    {{ 'user.change-email.form.submit'|trans|desc('Change') }}
+                </button>
+            </div>
+        </form>
+    </div>
+{% endblock %}

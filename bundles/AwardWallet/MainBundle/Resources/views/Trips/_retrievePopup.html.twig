@@ -1,0 +1,91 @@
+<div data-ext-dialog data-ng-if="selected.showPopup" onclose="selected.showPopup = false" modal="true" width="700">
+    <div data-dialog-header>
+        {{ 'trips.retrieve.popup.title'|trans()|desc('Retrieve [[ selected.provider.DisplayName ]] reservation') }}
+    </div>
+
+    <div class="ajax-loader" data-ng-hide="selected.data">
+        <div class="loading"></div>
+    </div>
+
+    <div class="retrieve-list" data-ng-show="selected.data">
+
+        <a data-ng-click="selected.disabled || selected.update(account)" data-ng-repeat="account in selected.data.accounts" data-ng-if="selected.data.CanCheckItinerary">
+            <div class="icon">
+                <i data-ng-class="{ 'icon-user':!account.loading, 'loader':account.loading }"></i>
+            </div>
+            <div class="retrieve">
+                {{ 'trips.retrieve.popup.retrieve_via'|trans()|desc('Retrieve via') }}
+            </div>
+            <div class="name">
+                [[ account.UserName]]
+                <span class="silver">
+                    ([[ account.Number ? account.Number : account.Login ]])
+                </span>
+            </div>
+            <div class="amount">
+                [[ account.Balance ]]
+                {#<span class="silver" data-ng-if="account.Balance">#}
+                    {#[[ selected.data.Currency | lowercase ]]#}
+                {#</span>#}
+            </div>
+        </a>
+
+        <a data-ng-click="selected.disabled || selected.updateAll()" data-ng-if="selected.data.CanCheckItinerary && countObjects(selected.data.accounts) > 1">
+            <div class="icon">
+                <i class="icon-user-group"></i>
+            </div>
+            <div class="retrieve">
+                {{ 'trips.retrieve.popup.retrieve_from'|trans()|desc('Retrieve from') }}
+            </div>
+            <div class="name">
+                {{ 'trips.retrieve.popup.retrieve_from_all_accounts'|trans()|desc('All accounts') }}
+            </div>
+            <div class="amount">
+            </div>
+        </a>
+
+        <a data-ng-href="[[ Routing.generate('aw_trips_retrieve_confirmation', {providerId: selected.provider.ProviderID}) + (selectedClient ? '?agentId=' + selectedClient : '') ]]" data-ng-if="selected.data.CanCheckConfirmation">
+            <div class="icon">
+                <i class="icon-number"></i>
+            </div>
+            <div class="retrieve">
+                {{ 'trips.retrieve.popup.retrieve_via'|trans()|desc('Retrieve via') }}
+            </div>
+            <div class="name">
+                {{ 'trips.retrieve.popup.conf_number'|trans()|desc('confirmation number') }}
+            </div>
+            <div class="amount">
+            </div>
+        </a>
+
+        <a class="retrieve-row">
+            <div class="icon">
+                <i class="icon-email"></i>
+            </div>
+            <div class="retrieve">
+                {{ 'trips.retrieve.popup.retrieve_via'|trans()|desc('Retrieve via') }}
+            </div>
+            <div class="name">
+                {{- 'trips.retrieve.popup.email'|trans()|desc('email') -}}
+                <span class="silver">
+                    ({{- 'trips.retrieve.popup.email.forward_message'|trans()|desc('just forward your plans to') }}
+                    <span class="nowrap">
+                        <span class="email">
+                            [[ selected.data.Email ]]
+                        </span>)
+                    </span>
+                </span>
+            </div>
+        </a>
+
+    </div>
+    <form id="retrieve-form" action="{{ url('aw_trips_update') }}" method="POST" style="display: none">
+        <input class="js-agentid" name="agentId"/>
+        <input class="js-account" name="accounts[]"/>
+    </form>
+    <div data-dialog-footer>
+        <button type="button" class="btn-blue" role="button" data-ng-click="selected.showPopup = false">
+            {{ 'form.button.cancel'|trans() }}
+        </button>
+    </div>
+</div>

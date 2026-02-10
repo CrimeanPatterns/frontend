@@ -1,0 +1,43 @@
+{% set tdStyle = 'style="padding: 8px; background-color: #eeeeee"' %}
+{% set tdStyle2 = 'style="padding: 8px; background-color: #d9d9d9"' %}
+<table cellpadding="0" cellspacing="2" border="0">
+    <tr>
+        <td {{ tdStyle2|raw }} colspan="2" align="center">Email data</td>
+    </tr>
+    <tr>
+        <td align="right" {{ tdStyle2|raw }}>Subject</td>
+        <td {{ tdStyle|raw }}>{{ email_stat.subject }}</td>
+    </tr>
+    <tr>
+        <td align="right" {{ tdStyle2|raw }}>Desc</td>
+        <td {{ tdStyle|raw }}>{{ email_stat.desc }}</td>
+    </tr>
+    {% if email_stat.keywords|length > 0 %}
+        <tr>
+            <td align="right" {{ tdStyle2|raw }}>Keywords</td>
+            <td {{ tdStyle|raw }}>{{ email_stat.keywords|join(', ') }}</td>
+        </tr>
+    {% endif %}
+    <tr>
+        <td align="right" {{ tdStyle2|raw }}>Kind</td>
+        <td {{ tdStyle|raw }}>{{ email_stat.kind }}</td>
+    </tr>
+    <tr>
+        <td align="right" {{ tdStyle2|raw }}>Status</td>
+        <td {{ tdStyle|raw }}>
+            {% if email_stat.status == constant('\\AwardWallet\\MainBundle\\FrameworkExtension\\Mailer\\Template\\AbstractTemplate::STATUS_READY') %}
+                <span style="color: green; font-weight: bolder">Ready</span>
+            {% else %}
+                <span style="color: red; font-weight: bolder">Not ready</span>
+            {% endif %}
+        </td>
+    </tr>
+    <tr>
+        <td align="right" {{ tdStyle2|raw }}>File</td>
+        <td {{ tdStyle|raw }}><input style="width: 95%" type="text" value="{{ email_stat.file }}" readonly /></td>
+    </tr>
+    <tr>
+        <td align="right" {{ tdStyle2|raw }}>Emails, {{ email_stat.period }}</td>
+        <td {{ tdStyle|raw }}>{{ email_stat.count }}</td>
+    </tr>
+</table>

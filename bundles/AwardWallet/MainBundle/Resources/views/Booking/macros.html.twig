@@ -1,0 +1,45 @@
+{% macro requestListClassRow(request, isBooker) %}{% apply spaceless %}
+    {% set status = request.getRealStatus(isBooker) %}
+    {% if status == constant('\\AwardWallet\\MainBundle\\Entity\\AbRequest::BOOKING_STATUS_NOT_VERIFIED') %}
+        not verified
+    {% elseif status == constant('\\AwardWallet\\MainBundle\\Entity\\AbRequest::BOOKING_STATUS_PENDING') %}
+        opened
+    {% elseif status == constant('\\AwardWallet\\MainBundle\\Entity\\AbRequest::BOOKING_STATUS_PROCESSING') %}
+        paid
+    {% elseif status == constant('\\AwardWallet\\MainBundle\\Entity\\AbRequest::BOOKING_STATUS_BOOKED') %}
+        booked
+    {% elseif status == constant('\\AwardWallet\\MainBundle\\Entity\\AbRequest::BOOKING_STATUS_CANCELED') %}
+        canceled
+    {% elseif status == constant('\\AwardWallet\\MainBundle\\Entity\\AbRequest::BOOKING_STATUS_FUTURE') %}
+        future
+    {% endif %}
+{% endapply %}{% endmacro %}
+
+{% macro abroadersTrackingScripts() %}
+    <script type="text/javascript">
+        document.write(decodeURI("%3Cscript id=%27pap_x2s6df8d%27 src=%27" + (("https:" == document.location.protocol) ? "https://" : "http://") + "abroaders.postaffiliatepro.com/scripts/fvoj8fzu%27 type=%27text/javascript%27%3E%3C/script%3E"));
+    </script>
+    <script type="text/javascript">
+        PostAffTracker.setAccountId('default1');
+        try {
+            PostAffTracker.track();
+        } catch (err) { }
+    </script>
+    <!-- Facebook Pixel Code -->
+    <script>
+      !function(f,b,e,v,n,t,s)
+      {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+      n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+      if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+      n.queue=[];t=b.createElement(e);t.async=!0;
+      t.src=v;s=b.getElementsByTagName(e)[0];
+      s.parentNode.insertBefore(t,s)}(window, document,'script',
+      'https://connect.facebook.net/en_US/fbevents.js');
+      fbq('init', '1557905984459191');
+      fbq('track', 'PageView');
+    </script>
+    <noscript><img height="1" width="1" style="display:none"
+      src="https://www.facebook.com/tr?id=1557905984459191&ev=PageView&noscript=1"
+    /></noscript>
+    <!-- End Facebook Pixel Code -->
+{% endmacro %}

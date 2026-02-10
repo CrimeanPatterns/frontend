@@ -1,0 +1,105 @@
+{
+  "networkMode": "bridge",
+  "family": "frontend-worker",
+  "containerDefinitions": [
+
+    {
+      "name": "worker",
+      "volumesFrom": [
+        {
+          "sourceContainer": "fluent"
+        }
+      ],
+      "essential": true,
+      "mountPoints": [
+        {
+          "containerPath": "/www/awardwallet/engine",
+          "sourceVolume": "engine"
+        },
+        {
+          "containerPath": "/www/awardwallet/web/images/uploaded",
+          "sourceVolume": "uploaded"
+        }
+      ],
+      "links": [
+        "mail:mail",
+        "fluent:fluent"
+      ],
+      "image": "718278292471.dkr.ecr.us-east-1.amazonaws.com/frontend/worker:TAG",
+      "memoryReservation": 300,
+      "healthCheck": {
+        "command": [
+          "CMD",
+          "/www/awardwallet/docker/prod/worker-healthcheck.sh"
+        ],
+        "interval": 60,
+        "timeout": 30,
+        "startPeriod": 30
+      },
+      "linuxParameters": {
+        "capabilities": {
+          "add": ["SYS_PTRACE"]
+        }
+      },
+      "ulimits": [{"name":"core", "softLimit": 0, "hardLimit": 0}]
+    },
+
+    {
+      "name": "mail",
+      "essential": true,
+      "image": "718278292471.dkr.ecr.us-east-1.amazonaws.com/postfix:2.05",
+      "memoryReservation": 64
+    },
+
+    {
+      "name": "updater",
+      "essential": false,
+      "mountPoints": [
+        {
+          "containerPath": "/destination",
+          "sourceVolume": "engine"
+        }
+      ],
+      "environment": [
+        {
+          "name": "FOLDER",
+          "value": "engine"
+        },
+        {
+          "name": "RABBIT_HOST",
+          "value": "%RABBITMQ_HOST%"
+        }
+      ],
+      "image": "718278292471.dkr.ecr.us-east-1.amazonaws.com/updater:2.01",
+      "memoryReservation": 64
+    },
+
+    {
+      "name": "fluent",
+      "essential": true,
+      "image": "718278292471.dkr.ecr.us-east-1.amazonaws.com/frontend/fluentbit:TAG",
+      "memoryReservation": 64
+    }
+
+  ],
+  "volumes": [
+    {
+      "name": "engine",
+      "host": {
+        "sourcePath": "/var/engine"
+      }
+    },
+      {
+          "name": "uploaded",
+          "dockerVolumeConfiguration": {
+              "scope": "task",
+              "driver": "local",
+              "driverOpts": {
+                  "type": "nfs",
+                  "device": ":/",
+                  "o": "addr=fs-b3890dfa.efs.us-east-1.amazonaws.com,soft,rw,nfsvers=4.1,rsize=1048576,wsize=1048576,hard,timeo=14,retrans=2,noresvport"
+              }
+          }
+      }
+  ]
+}

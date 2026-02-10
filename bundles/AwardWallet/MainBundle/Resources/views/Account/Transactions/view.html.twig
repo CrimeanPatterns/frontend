@@ -1,0 +1,906 @@
+{% extends is_granted('SITE_BUSINESS_AREA') ? "@AwardWalletMain/Layout/business_check_balance.html.twig" : "@AwardWalletMain/Layout/accounts_list.html.twig" %}
+{% import '@AwardWalletMain/Business/Members/_searchBox.html.twig' as searchbox %}
+{% set isBusiness = userAgentId is defined and userAgentId > 0 %}
+
+{% block body_left_widgets %}
+    {{ widget_render('left_top') }}
+    {{ widget_render('credit_card_tools_zone') }}
+    {{ widget_render('left_bottom') }}
+{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    {{ encore_entry_link_tags('transaction-analyzer') }}
+    <style>
+        .filter-wrap__dropdown {
+            z-index: 12;
+        }
+    </style>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    {{ encore_entry_script_tags('trans/' ~ app.request.locale) }}
+    {{ encore_entry_script_tags('transaction-analyzer') }}
+
+    {# Need to decide how to load comfortably lang files #}
+    <script>
+        require(['jquery-boot', 'angular-boot', 'directives/retooltipAfter', 'pages/transactionAnalyzer'],
+            function ($, angular) {
+                const data = /* DATA START */{# comment used in tests #}{
+                    "transactions": {{ transactions|json_encode|default('false')|raw }},
+                    "offerCardsFilter": {{ offerCardsFilter|json_encode|default('false')|raw }},
+                    "offerCardsState": {{ offerCardsState|json_encode|raw }},
+                    "owners": {{ owners|json_encode|default('false')|raw }},
+                    "providers": {{ providers|json_encode|default('false')|raw }},
+                    "totals": { "isLoading": true },
+                    "selectedUser": "{{ selectedUser }}",
+                    "nextPageToken": "{{ nextPageToken }}",
+                    "defaultRange": "{{ defaultRange }}",
+                    "isLastPageLoaded": {{ isLastPageLoaded ? 'true' : 'false'|raw }},
+                    "user": {{ user|json_encode|default('false')|raw }},
+                    "userAgentId": {{ userAgentId|default('false')|raw }},
+                }/* DATA END */;
+                angular.module('transactionAnalyzerApp').constant('Data', data);
+
+                $(function () {
+                    if (0 === data.transactions.length && true === data.isLastPageLoaded) {
+                        return;
+                    }
+                    angular.bootstrap($('.page .item .content').get(), ['transactionAnalyzerApp', 'retooltip-after-directive']);
+                    TransactionAnalyzer.loadTotals(true);
+                    TransactionAnalyzer.buildAvailableCards(true, {{ selectedCard }});
+                });
+            });
+    </script>
+{% endblock %}
+
+{% block popup %}
+    {{ parent() }}
+{% endblock %}
+
+{% block content %}
+    {% set isStaff = is_granted('ROLE_STAFF') or is_granted('ROLE_IMPERSONATED') %}
+    {% if noAccounts or noTransactions %}
+
+        <div class="main-blk-head">
+            <h1>{{ "transaction-analyzer"|trans|desc("Transaction Analyzer") }}</h1>
+            {% if isBusiness is same as(true) %}
+                <div class="main-blk-actions">
+                    <div>
+                        <label for="owner">{{ 'label.owner'|trans }}:</label>
+                        <div class="search-box" data-position='{"my":"right top","at":"right bottom"}'>
+                            {{ searchbox.draw(
+                                'aw_business_members_dropdown_spent_analysis',
+                                travelerName,
+                                'false',
+                                "function(id){ return Routing.generate('" ~ routeSearchBox ~ "', {'agentId': id }); }"
+                            ) }}
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+        <div class="tabs-content spend-content">
+            {# start #}
+            <div class="not-found no-border t-left">
+                {% if noAccounts %}
+                    <p>{{ 'analysis.stub.add-accounts'|trans({}, 'mobile-native') }}</p>
+                {% else %}
+                    <i class="icon-warning-small"></i>
+                    <p>{{ 'analysis.stub.no-analytics'|trans({}, 'mobile-native') }}</p>
+                {% endif %}
+            </div>
+            {% if isBusiness is same as(false) %}
+            <div class="search-content has-border">
+                {% for provider in providers %}
+                    <a href="{{ url('aw_account_add', {providerId: provider.id, backTo: path('aw_transactions_index')}) }}">
+                        <div class="row">
+                            <div class="name">
+                                <h3>{{ provider.displayName }}</h3>
+                            </div>
+                            <div class="result">
+                                {% if provider.accountsCounter > 0 %}
+                                    <i class="icon-green-check"></i>
+                                    <span class="added">{{ 'accounts.n'|trans({'%count%': provider.accountsCounter, '%accounts%': provider.accountsCounter}) }}</span>
+                                {% else %}
+                                    <i class="icon-silver-error"></i>
+                                    <span class="not-added">No accounts</span>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </a>
+                {% endfor %}
+            </div>
+            {% endif %}
+            {# end #}
+            {# dublicated #}
+            <div class="title-silver">
+                <div class="title-silver__item">
+                    <a target="_blank" href="{{ url('aw_merchant_lookup') }}" class="blue-link">{{ 'credit-card.merchant.which-credit-card-use-rewards'|trans|desc('Trying to figure out which credit card to use with a specific merchant to maximize your rewards? Try our new merchant category lookup tool!') }}</a>
+                    <a target="_blank" href="{{ url('aw_merchant_lookup') }}" class="btn-blue"><i class="icon-double-arrow-right-white"></i></a>
+                </div>
+            </div>
+        </div>
+
+    {% else %}
+
+    <div class="main-blk" data-ng-controller="mainCtrl as main">
+        <div class="main-blk-head main-head-flex">
+            <h1>{{ "transaction-analyzer"|trans|desc("Transaction Analyzer") }}</h1>
+            <div class="disclaimer-calculated-box">
+                {{ 'rewards-values-calculated-aw'|trans({
+                    '%link1_on%': '<a href="/blog/awardwallet-mile-valuations/" target="_blank">',
+                    '%link1_off%': '</a>',
+                    '%link2_on%': '<a href="/blog/advertiser-disclosure/" target="_blank">',
+                    '%link2_off%': '</a>',
+                })|desc("Rewards valuations have been calculated by AwardWallet and have not been reviewed or endorsed by any loyalty program or advertising partner. Here's an %link1_on%overview of our methodology%link1_off% and our %link2_on%Advertiser disclosure%link2_off%.")|raw }}
+            </div>
+        </div>
+        <div class="main-blk-head">
+            <div class="main-blk-actions">
+                <div>
+                    <label for="owner">{{ 'label.owner'|trans }}:</label>
+                    {% if isBusiness is same as(true) %}
+                    <div class="search-box" data-position='{"my":"right top","at":"right bottom"}'>
+                        {{ searchbox.draw(
+                            'aw_business_members_dropdown_spent_analysis',
+                            travelerName,
+                            'false',
+                            "function(id){ return Routing.generate('" ~ routeSearchBox ~ "', {'agentId': id }); }"
+                        ) }}
+                    </div>
+                    {% else %}
+                    <div class="styled-select middle">
+                        <div>
+                            <select id="owner" data-ng-model="main.state.selectedUser" data-ng-change="main.buildAvailableCards();main.reloadRows()">
+                                {% for owner in owners %}
+                                    <option value="{{ owner.id }}">{{ owner.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <div class="ajax-loader" data-ng-show="!main.state.isLoaded"><div class="loading"></div></div>
+        <div class="overlay" data-ng-show="main.state.reloading"></div>
+        <div class="main-blk-content" data-ng-cloak>
+
+            <div class="search column first">
+                <div class="row">
+                    <input class="search-input" type="text" placeholder="Find Transactions"
+                           data-ng-model="main.state.filters.description"
+                           ng-model-options="{
+                                       'updateOn': 'default blur',
+                                       'debounce': {
+                                            'default': 500,
+                                            'blur': 0
+                                        }
+                                   }"
+                           ng-change='main.reloadRows()'
+                           data-ng-class="{ 'has-text': main.state.filters.description.length > 0 }"
+                    >
+                    <a href="" class="reset-input" data-ng-click="main.handleDescriptionChange('')"><i class="icon-close-silver"></i></a>
+                </div>
+                <button class="btn-blue" data-ng-click="main.exportCsv()">Export to CSV</button>
+            </div>
+
+            <offer-cards-filter
+                init-data="main.state.offerCardsFilter"
+                state-owners="main.state.owners"
+                state-cards="main.state.offerCardsState"
+                check-model="main.state.cardsFilter"
+                check-action="main.changeOfferCards()"
+                data-ng-if="true"
+                all-card-selected="true"
+            >
+            </offer-cards-filter>
+
+            <div class="filter-wrap">
+                <div class="filter__overlay" data-ng-show="main.state.showFiltersOverlay" data-ng-click="main.toggleFilter('all')"></div>
+                <div
+                    data-ng-class="{
+                        'filter-wrap__block': true,
+                        active: main.state.showFilters.dateRange
+                    }"
+                >
+                    <div class="filter-wrap__btn" data-ng-click="main.toggleFilter('dateRange')">
+                        <span class="filter-wrap__btn-caption">Date Range</span>
+                        <span class="filter-wrap__btn-note" data-ng-if="!main.isDatesSelected()" data-ng-bind="main.getDatesRangeTitle()"></span>
+                        <span
+                            class="filter-wrap__btn-note"
+                            data-ng-if="main.isDatesSelected()"
+                            data-ng-bind="main.state.filters.startDate + ' - ' + main.state.filters.endDate"
+                        ></span>
+                    </div>
+                    <div class="filter-wrap__dropdown">
+                        <div class="filter-wrap__dropdown-row-list">
+                            <div data-ng-repeat="range in main.datesRangeList" class="filter-wrap__dropdown-row">
+                                <a
+                                    data-ng-class="{
+                                        active: range.value === main.state.filters.datesRange && !main.isDatesSelected()
+                                    }"
+                                    data-ng-click="main.handleFilterChange($event, 'datesRange', range.value)"
+                                    data-ng-bind="range.title"
+                                ></a>
+                            </div>
+                        </div>
+{#                        {% block date_widget %}#}
+                        <div data-ng-class="{
+                            'filter-wrap__dropdown-row': true,
+                            active: main.isDatesSelected()
+                        }">
+                            <span>From Date:</span>
+                            <div class="filter-wrap__dropdown-input">
+                                <div class="datepicker-container">
+                                    <input
+                                       data-ng-model="main.state.filters.startDate"
+                                       type="text"
+                                       datepicker="true"
+                                       data-role="datepicker"
+                                       id="datepicker1"
+                                       autocomplete="off"
+                                       data-dp-opt="{'yearRange': '1910:c+50',  'defaultDate': '', 'dateFormat': 'yy-mm-dd' }"
+{#                                       {{ block('widget_attributes') }}#}
+                                    />
+                                </div>
+                            </div>
+                        </div>
+                            <div data-ng-class="{
+                            'filter-wrap__dropdown-row': true,
+                            active: main.isDatesSelected()
+                        }">
+                            <span>To Date:</span>
+                            <div class="filter-wrap__dropdown-input">
+                                <div class="datepicker-container">
+                                    <input
+                                        data-ng-model="main.state.filters.endDate"
+                                        type="text"
+                                        datepicker="true"
+                                        data-role="datepicker"
+                                        id="datepicker2"
+                                        autocomplete="off"
+                                        data-dp-opt="{'yearRange': '1910:c+50',  'defaultDate': '', 'dateFormat': 'yy-mm-dd' }"
+{#                                        {{ block('widget_attributes') }}#}
+                                    />
+                                </div>
+                            </div>
+                        </div>
+{#                        {% endblock date_widget %}#}
+                        <button class="btn-blue" data-ng-click="main.toggleFilter('dateRange'); main.reloadRows();">Apply</button>
+                    </div>
+                </div>
+                <div
+                    data-ng-class="{
+                        'filter-wrap__block': true,
+                        active: main.state.showFilters.creditCard
+                    }"
+                >
+                    <div class="filter-wrap__btn" data-ng-click="main.toggleFilter('creditCard')">
+                        <span class="filter-wrap__btn-caption">Credit Card</span>
+                            <span class="filter-wrap__btn-note" data-ng-bind="main.creditCardFilterTitle()"></span>
+                        </div>
+                    <div class="filter-wrap__dropdown">
+                        <div class="filter-wrap__dropdown-scrollview">
+                            <div class="filter-wrap__dropdown-row">
+                                <input
+                                    type="checkbox"
+                                    id="provider_all"
+                                    data-ng-class="{
+                                        checkbox: true
+                                    }"
+                                    data-ng-model="main.state.filters.subAccGroups.all"
+                                    data-ng-change="main.handleCreditCardGroup('all')"
+                                />
+                                <label
+                                    data-ng-class="{
+                                        label: true,
+                                        minus: !main.state.filters.subAccGroups.all
+                                    }"
+                                    for="provider_all"
+                                >
+                                    All
+                                </label>
+                            </div>
+                            <div class="filter-wrap__dropdown-row-group" data-ng-repeat="provider in main.state.userCards">
+                                <div class="filter-wrap__dropdown-row">
+                                    <input
+                                        type="checkbox"
+                                        data-ng-class="{
+                                            checkbox: true
+                                        }"
+                                        id="provider[[provider.providerId]]"
+                                        data-ng-model="main.state.filters.subAccGroups[provider.providerId]"
+                                        data-ng-change="main.handleCreditCardGroup(provider.providerId)"
+                                    />
+                                    <label
+                                        for="provider[[provider.providerId]]"
+                                        data-ng-class="{
+                                            label: true,
+                                            minus: !main.state.filters.subAccGroups[provider.providerId]
+                                        }"
+                                        data-ng-bind="provider.displayName"
+                                    ></label>
+                                </div>
+                                <div class="filter-wrap__dropdown-row" data-ng-repeat="card in provider.cards">
+                                    <input
+                                        id="credit_card[[card.subAccountId]]"
+                                        type="checkbox"
+                                        class="checkbox"
+                                        data-ng-model="main.state.filters.subAccIds[card.subAccountId]"
+                                        data-ng-change="main.handleCreditCardFilterChange(card.subAccountId)"
+                                    />
+                                    <label for="credit_card[[card.subAccountId]]" class="label" data-ng-bind="card.creditCardName"></label>
+                                </div>
+                            </div>
+                        </div>
+                        <button class="btn-blue" data-ng-click="main.toggleFilter('creditCard'); main.reloadRows();">Apply</button>
+                    </div>
+                </div>
+                <div data-ng-class="{
+                    'filter-wrap__block': true,
+                    loading: main.state.isLoadingCategories,
+                    active: main.state.showFilters.category
+                }">
+                    <div class="filter-wrap__btn" data-ng-click="main.toggleFilter('category')">
+                        <span class="filter-wrap__btn-caption">Category</span>
+                        <span class="filter-wrap__btn-note" data-ng-bind="main.categoryFilterTitle()"></span>
+                    </div>
+                    <div class="filter-wrap__dropdown">
+                        <div class="filter-wrap__dropdown-scrollview">
+                            <div class="filter-wrap__dropdown-row">
+                                <input
+                                    id="categories_all"
+                                    type="checkbox"
+                                    class="checkbox"
+                                    data-ng-model="main.state.filters.categoriesAll"
+                                    data-ng-change="main.handleFilterCategories(true)"
+                                />
+                                <label
+                                    for="categories_all"
+                                    data-ng-class="{
+                                        label: true,
+                                        minus: !main.state.filters.categoriesAll
+                                    }"
+                                >
+                                    All
+                                </label>
+                            </div>
+                            <div
+                                data-ng-if="!main.state.isLoadingCategories"
+                                class="filter-wrap__dropdown-row"
+                                data-ng-repeat="(index, category) in main.state.categories track by index"
+                            >
+                                <input
+                                    id="category_[[index]]"
+                                    type="checkbox"
+                                    class="checkbox"
+                                    data-ng-model="main.state.filters.categories[category]"
+                                    data-ng-change="main.handleFilterCategories()"
+                                />
+                                <label for="category_[[index]]" class="label" data-ng-bind="category"></label>
+                            </div>
+                        </div>
+                        <button class="btn-blue" data-ng-click="main.toggleFilter('category'); main.reloadRows();">Apply</button>
+                    </div>
+                </div>
+                <div data-ng-class="{
+                    'filter-wrap__block': true,
+                    active: main.state.showFilters.amount
+                }">
+                    <div class="filter-wrap__btn" data-ng-click="main.toggleFilter('amount')">
+                        <span class="filter-wrap__btn-caption">Amount</span>
+                        <span class="filter-wrap__btn-note" data-ng-bind="main.handleFilterAmountTitle()"></span>
+                    </div>
+                    <div class="filter-wrap__dropdown">
+                        <div class="filter-wrap__dropdown-row">
+                            <a
+                                data-ng-class="{
+                                    active: main.state.filters.amountAny
+                                }"
+                                data-ng-click="$event.preventDefault(); main.handleFilterAmount('any');"
+                            >Any</a>
+                        </div>
+                        <div
+                            data-ng-class="{
+                                'filter-wrap__dropdown-row': true,
+                                active: !!main.state.filters.amountExactly
+                            }"
+                        >
+                            <span>Exact Amount:</span>
+                            <div class="filter-wrap__dropdown-input">
+                                <span>$</span>
+                                <input type="text" data-ng-model="main.state.filters.amountExactly" data-ng-change="main.handleFilterAmount('exactly')"/>
+                            </div>
+                        </div>
+                        <div
+                            data-ng-class="{
+                                'filter-wrap__dropdown-row': true,
+                                active: !!main.state.filters.amountGreater
+                            }"
+                        >
+                            <span>Greater than:</span>
+                            <div class="filter-wrap__dropdown-input">
+                                <span>$</span>
+                                <input type="text" data-ng-model="main.state.filters.amountGreater" data-ng-change="main.handleFilterAmount('greater')"/>
+                            </div>
+                        </div>
+                        <div
+                            data-ng-class="{
+                                'filter-wrap__dropdown-row': true,
+                                active: !!main.state.filters.amountLess
+                            }"
+                        >
+                            <span>Less than:</span>
+                            <div class="filter-wrap__dropdown-input">
+                                <span>$</span>
+                                <input type="text" data-ng-model="main.state.filters.amountLess" data-ng-change="main.handleFilterAmount('less')"/>
+                            </div>
+                        </div>
+                        <button class="btn-blue" data-ng-click="main.toggleFilter('amount'); main.reloadRows();">Apply</button>
+                    </div>
+                </div>
+                <div data-ng-class="{
+                    'filter-wrap__block': true,
+                    active: main.state.showFilters.multiplier
+                }">
+                    <div class="filter-wrap__btn" data-ng-click="main.toggleFilter('multiplier')">
+                        <span class="filter-wrap__btn-caption">Point Multiplier</span>
+                        <span class="filter-wrap__btn-note" data-ng-bind="main.filterMultiplierTitle()"></span>
+                    </div>
+                    <div class="filter-wrap__dropdown">
+                        <div class="filter-wrap__dropdown-row">
+                            <input
+                                id="multiplier_all"
+                                data-ng-model="main.state.filters.multipliersAll"
+                                type="checkbox"
+                                class="checkbox"
+                                data-ng-change="main.handleFilterMultiplier(true)"
+                            />
+                            <label
+                                for="multiplier_all"
+                                data-ng-class="{
+                                    label: true,
+                                    minus: !main.state.filters.multipliersAll
+                                }"
+                            />
+                                All
+                            </label>
+                        </div>
+                        <div class="filter-wrap__dropdown-row" data-ng-repeat="multiplier in main.state.multipliers">
+                            <input
+                                id="multiplier_[[multiplier]]"
+                                type="checkbox"
+                                class="checkbox"
+                                data-ng-model="main.state.filters.multipliers[multiplier]"
+                                data-ng-change="main.handleFilterMultiplier()"
+                            />
+                            <label for="multiplier_[[multiplier]]" class="label" data-ng-bind="multiplier + 'x'"></label>
+                        </div>
+                        <button class="btn-blue" data-ng-click="main.toggleFilter('multiplier'); main.reloadRows();">Apply</button>
+                    </div>
+                </div>
+                <div data-ng-class="{
+                    'filter-wrap__block': true,
+                    active: main.state.showFilters.potential
+                }">
+                    <div class="filter-wrap__btn" data-ng-click="main.toggleFilter('potential')">
+                        <span class="filter-wrap__btn-caption">Earning Potential</span>
+                        <span class="filter-wrap__btn-note" data-ng-bind="main.filterPotentialTitle()"></span>
+                    </div>
+                    <div class="filter-wrap__dropdown">
+                        <div class="filter-wrap__dropdown-row">
+                            <input
+                                id="potential_all"
+                                data-ng-model="main.state.filters.potentialAll"
+                                type="checkbox"
+                                class="checkbox"
+                                data-ng-change="main.handleFilterPotential(true)"
+                            />
+                            <label
+                                for="potential_all"
+                                data-ng-class="{
+                                    label: true,
+                                    minus: !main.state.filters.potentialAll
+                                }"
+                            />
+                                All
+                            </label>
+                        </div>
+                        <div class="filter-wrap__dropdown-row" data-ng-repeat="diff in [1,2,3,4]">
+                            <input
+                                id="potential_[[diff]]"
+                                type="checkbox"
+                                class="checkbox"
+                                data-ng-model="main.state.filters.potential[diff]"
+                                    data-ng-change="main.handleFilterPotential()"
+                            />
+                            <label for="potential_[[diff]]" class="label" data-ng-bind="diff + 'x difference'"></label>
+                        </div>
+                        <button class="btn-blue" data-ng-click="main.toggleFilter('potential'); main.reloadRows();">Apply</button>
+                    </div>
+                </div>
+            </div>
+
+            <mile-value-box
+                init-data="main.state.user.mileValue"
+{#                    change-action="spentAnalysis.forceFetchReport()" #}
+                change-action="main.reloadRows()"
+            >
+            </mile-value-box>
+
+            {% if isStaff is same as true %}
+                <style>
+                    .main-table.transaction .debug-raw-category,
+                    .main-table.transaction tr.zero div.debug-raw-category {display: none;color: darkred;}
+                    .main-table.transaction tr.zero .debug-data,
+                    .debug-data {display: none;width:100%;outline:dotted 1px red;padding: 2px 4px;float:none;clear: both;}
+                </style>
+            {#
+                <div style="position: relative;top:25px;">
+                <div id="devMenu" class="devMenu">
+                    <menu>
+                        <div><label><input id="debugParsedCategory" type="checkbox"> show parsed category</label></div>
+                        <div><label><input id="debugData" type="checkbox"> debug data</label></div>
+                    </menu>
+                </div>
+                </div>
+                <script>
+                    require(['jquery-boot'], function() {
+                        jQuery('body').on('change', '#debugParsedCategory', function() {
+                            $(this).prop('checked') ? $('.debug-raw-category').show() : $('.debug-raw-category').hide();
+                        });
+                        jQuery('body').on('change', '#debugData', function() {
+                            $(this).prop('checked') ? $('.debug-data').show() : $('.debug-data').hide();
+                        });
+                    });
+                </script>
+            #}
+            {% endif %}
+
+            {% if not app.request.query.has('old') %}
+            <div id="bestCardsOverlay" ng-show="main.popup.isFixed" ng-click="main.hideFixedPopupBestCards()"></div>
+            <best-cards best-cards="main.popup.bestCards" loading="main.popup.loading" is-fixed="main.popup.isFixed" is-error="main.popup.isError"></best-cards>
+            <div id="transactionsWrap" class="transactions-wrap"
+                 infinite-scroll="main.loadMore()" infinite-scroll-distance="2">
+                <div class="transactions-head">
+                    <div class="transactions-date">Date</div>
+                    <div class="transactions-description">Description</div>
+                    <div class="transactions-card">Credit Card</div>
+                    <div class="transactions-amount">Amount</div>
+                    <div class="transactions-points">Points Earned</div>
+                    <div class="transactions-eq">Cash Eqv.</div>
+                </div>
+                <div class="transactions-row"
+                     data-ng-class="{
+                            'transactions-status-positive': row.miles > 0,
+                            'transactions-status-negative': row.miles < 0 || row.amount < 0,
+                            'transactions-status-empty': row.miles == null || 0 === row.miles || null === row.multiplier,
+                            'transactions-status-amount-empty': row.amount == null || 0 === row.amount,
+                            'transactions-status-casheq-empty': 0 === row.cashEquivalent || null === row.cashEquivalent,
+                            ['transactions-potential--' + row.potentialColor]: !!row.potentialColor && !row.isProfit,
+                            'transactions-potential--profit': row.isProfit,
+                            [('transactions-diff-eq--' + row.diffCashEq)] : true,
+                         }"
+                     data-ng-repeat="(i, row) in main.state.transactions track by i"
+                     on-finish-render
+                    >
+                        <div class="transactions-date">
+                            <div data-ng-bind="row.formatted.date"></div>
+                        </div>
+                        <div class="transactions-description">
+                            <a href="" data-ng-click="main.handleDescriptionChange(row.description)"><b data-ng-bind="row.description"></b></a>
+                            <br><a href="" data-ng-bind="row.category | unsafe" data-ng-click="main.handleCategoryFilterSelectOne(row.category)"></a>
+                        </div>
+                        <div class="transactions-card">
+                            <a href=""
+                               data-ng-bind="row.cardName"
+                               data-ng-click="main.handleCreditCardFilterSelectOne(row.subAccountId)"></a>
+                        </div>
+                        <div class="transactions-amount">
+                            <span data-ng-bind="row.formatted.amount"></span>
+                        </div>
+                        <div class="transactions-points">
+                            <div class="transactions-points-earned">
+                                <div class="transactions-points-numbers">
+                                    <span class="transactions-points-miles" data-ng-bind="row.formatted.miles"></span>
+                                    <span class="transactions-points-multiplier">[[row.multiplier]]x</span>
+                                </div>
+                            </div>
+                            <div class="transactions-point-name" data-ng-bind="row.pointName"></div>
+                        </div>
+                        <div class="transactions-eq" data-ng-class="{
+                            'transactions-row--empty': row.miles === 0 || row.miles === null || (row.multiplier === null && row.miles === null),
+                            'transactions-popup-off': row.miles < 0 || row.amount < 0,
+                            }" data-uuid="[[row.uuid]]">
+
+                            <div class="transactions-points-chart" data-miles="[[row.miles]]" data-potential-miles="[[row.potentialMiles]]"
+                                 data-ng-class="{
+                                        [('transactions-points-chart--' + row.multiplier).replace('.', '_')] : true,
+                                        'transactions-points-chart--profit': row.isProfit,
+                                        'transactions-points-chart--exists': !row.isProfit && (row.miles >= 0 || row.pointsValue > 0),
+                                        'transactions-points-chart--no': !row.isProfit && (row.miles === null || row.multiplier === null),
+                                     }">
+                                <div class="transactions-chart-circle">
+                                    <div class="transactions-chart-inner"></div>
+                                    <svg width="40px" height="40px">
+                                        <circle cx="20" cy="20" r="19"/>
+                                    </svg>
+                                </div>
+                                <div class="transactions-chart-checkmark" ng-if="row.isProfit"></div>
+                                <div class="transactions-multiplier" data-ng-show="row.multiplier > 0 || row.cashEquivalent > 0">
+                                    <div>
+                                        <span class="transactions-points-value"
+                                              ng-if="row.pointsValue !== 0 && row.pointsValue !== null"
+                                              data-ng-bind="row.formatted.cashEquivalent"></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="loader-container" data-ng-show="main.state.isLoading && !main.state.totals.isLoading">
+                        <div class="loader"></div>
+                    </div>
+                    <div id="transactionsTotals" data-ng-class="{
+                        'total-transactions': true,
+                        'not-fixed': main.state.fixedTotals
+                     }" data-ng-hide="!main.state.totals || main.state.transactions.length < 1">
+                        <div class="loader-container" data-ng-show="main.state.totals.isLoading">
+                            <div class="loader"></div>
+                        </div>
+
+                        <div class="transactions-totals" data-ng-hide="main.state.totals.isLoading">
+                            <div class="transactions-bottom">
+                                <div class="transactions-date"><div class="ng-hide"></div></div>
+                                <div class="transactions-description">
+                                    <b><span data-ng-bind="main.state.totals.transactionsFormatted"></span> Transactions</b>
+                                    <br><span data-ng-bind="main.state.totals.averageFormatted"></span> Average
+                                </div>
+                                <div class="transactions-card"></div>
+                                <div class="transactions-amount">
+                                    Total Amount Spent
+                                    <br><b data-ng-bind="main.state.totals.amountFormatted"></b>
+                                </div>
+                                <div class="transactions-points">
+
+                                    <div class="transactions-popup-earning">
+                                        <div class="transactions-popup-inner">
+                                            <b>{{ 'earning-potential'|trans }}</b>
+                                            <div class="transactions-earning-multiplier">
+                                                <div data-ng-bind="main.state.totals.potential+'x'"></div>
+                                                <div>
+                                                    <i class="transactions-earning-arrow-up transactions-earning-arrow-up--1"></i>
+                                                    <i class="transactions-earning-arrow-up transactions-earning-arrow-up--2"></i>
+                                                    <i class="transactions-earning-arrow-up transactions-earning-arrow-up--3"></i>
+                                                </div>
+                                            </div>
+                                            <div class="transactions-miles-range">
+                                                <span data-ng-bind="main.state.totals.potentialMilesFormatted"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="transactions-points-earned" ng-show="main.state.totals.multiplier">
+                                        <div class="transactions-points-numbers">
+                                            <span class="transactions-points-miles" data-ng-bind="main.state.totals.milesFormatted"></span>
+                                            <!--
+                                            <span>~</span><span class="transactions-points-value" data-ng-bind="main.state.totals.averageFormatted"></span>
+                                            -->
+                                            <span class="transactions-total-earned">Total Earned</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="transactions-eq">
+                                    <!--
+                                    <div class="transactions-points-chart">
+                                        <div class="transactions-chart-circle">
+                                            <div class="transactions-chart-inner"></div>
+                                            <svg width="40px" height="40px">
+                                                <circle cx="20" cy="20" r="19"/>
+                                            </svg>
+                                        </div>
+
+                                        <div class="transactions-multiplier">
+                                            <span class="transactions-points-value" data-ng-bind="main.state.totals.averageFormatted"></span>
+                                            < !--
+                                            <div data-ng-bind="main.state.totals.multiplier + 'x'"></div>
+                                            -- >
+                                        </div>
+                                    </div>
+                                    -->
+                                    <div class="transactions-eq-value" data-ng-bind="main.state.totals.cashEquivalentFormatted"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            {% endif %}
+
+            {% if app.request.query.has('old') %}
+
+                <table class="main-table transaction transaction-sizes" style="margin-bottom: 22px;">
+                    <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th class="col-info">Description</th>
+                        <th class="col-card">Credit Card</th>
+                        <th class="col-category">Category</th>
+                        <th class="balance-cell">Amount</th>
+                        <th class="balance-cell">Points</th>
+                        <th style="min-width: 110px">Earning Potential</th>
+                    </tr>
+                </thead>
+                <tbody infinite-scroll='main.loadMore()' infinite-scroll-distance='2'>
+                    <tr data-ng-repeat="(i, row) in main.state.transactions track by i"
+                        data-ng-class="{ green: row.miles >= 0, blue: row.miles < 0 || row.amount < 0, zero: row.miles == null }"
+                    >
+                        <td><div data-ng-bind="row.formatted.date"></div></td>
+                        <td class="col-info">
+                            <div class="t-mark-text"
+                                data-ng-bind="row.description"
+                                data-ng-click="main.handleDescriptionChange(row.description)"
+                            >
+                            </div>
+                        </td>
+                        <td class="col-card">
+                            <div class="t-mark-text"
+                                data-ng-bind="row.cardName"
+                                data-ng-click="main.handleCreditCardFilterSelectOne(row.subAccountId)"
+                            ></div>
+                        </td>
+                        <td class="col-category">
+                            <div class="t-mark-text"
+                                data-ng-bind="row.category | unsafe"
+                                data-ng-click="main.handleCategoryFilterSelectOne(row.category)"
+                            ></div>
+                            {% if isStaff is same as true %}<div class="debug-raw-category" data-ng-bind="row.rawCategory"></div>{% endif %}
+                        </td>
+                        <td class="balance-cell points-cell">
+                            <div data-ng-bind="row.formatted.amount"></div>
+                        </td>
+                        <td class="balance-cell points-cell miles-range-cell">
+                            <div class="spent-potential">
+                                <span>
+                                    <span data-ng-bind="row.formatted.miles"></span>
+                                    <div class="miles-range" ng-if="row.miles !== null && row.miles !== 0">
+                                        <span ng-class="{'silver-text': row.miles !== null}">
+                                            <span ng-if="!row.minValue || row.minValue === row.maxValue" data-ng-bind="row.formatted.pointsValue"></span>
+                                            <span ng-if="row.minValue && row.minValue !== row.maxValue">
+                                                <span data-ng-bind="row.formatted.minValue"></span> - <span data-ng-bind="row.formatted.maxValue"></span>
+                                            </span>
+                                        </span>
+                                    </div>
+                                    <div class="up-block">
+                                        <div class="up-counter" data-ng-show="row.multiplier > 0">[[row.multiplier]]x</div>
+                                    </div>
+                                </span>
+                            </div>
+                            {% if isStaff is same as true %}
+                                <div class="debug-data">
+                                    avg: <span data-ng-bind="row.formatted.pointsValue"></span>
+                                </div>
+                            {% endif %}
+                        </td>
+                        <td data-ng-class="{
+                                'balance-cell': !row.isProfit,
+                                'transp-like': row.isProfit,
+                                'pointer': !row.isProfit,
+                                'potential-cell': !row.isProfit,
+                                [row.potentialColor]: !!row.potentialColor,
+                                'miles-range-cell2' : true
+                            }"
+                            data-ng-click="main.showOfferPopup(row.uuid, row.description)"
+                        >
+                            <div class="inner" data-ng-if="row.isProfit && row.potentialPointsValue !== null && (row.miles > 0 || row.pointsValue > 0)"><i class="icon-like"></i></div>
+                            <div class="spent-potential" data-ng-if="!row.isProfit && (row.miles >= 0 || row.pointsValue > 0)">
+                                <span>
+                                    <span>[[row.potentialMilesFormatted]]</span>
+                                    <div class="miles-range" ng-if="row.potentialPointsValue !== null && row.potentialPointsValue !== 0">
+                                        <span ng-if="!row.potentialMinValue || row.potentialMinValue === row.potentialMaxValue" class="silver-text" data-ng-bind="row.formatted.potentialPointsValue"></span>
+                                        <span ng-if="row.potentialMinValue && row.potentialMinValue !== row.potentialMaxValue" class="silver-text">
+                                            <span data-ng-bind="row.formatted.potentialMinValue"></span> - <span data-ng-bind="row.formatted.potentialMaxValue"></span>
+                                        </span>
+                                    </div>
+                                </span>
+                                <div class="up-block" ng-if="null !== row.potential">
+                                    <div class="up-counter">[[row.potential]]x</div>
+                                </div>
+                            </div>
+                            <div class="arrow" data-ng-if="row.potential"><i class="icon-double-arrow-right-white"></i></div>
+                            {% if isStaff is same as true %}
+                                <div class="debug-data">
+                                    <br clear="all">
+                                    avg: <span data-ng-bind="row.formatted.potentialPointsValue"></span> | <span class="up-counter">[[row.potential]]x</span>
+                                    <br><span data-ng-bind="row.formatted.potentialMinValue"></span> - <span data-ng-bind="row.formatted.potentialMaxValue"></span>
+                                </div>
+                            {% endif %}
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="not-found" data-ng-cloak data-ng-show="main.state.transactions.length < 1 && main.state.isLoaded">
+                <i class="icon-warning-small"></i>
+                <p>{{ "account.history.not-exist"|trans|raw }}</p>
+            </div>
+            <div class="loader-container">
+                <div class="loader" data-ng-show="main.state.isLoading"></div>
+            </div>
+
+            <div data-ng-class="{
+                    'total-transactions': true,
+                    'not-fixed': main.state.fixedTotals && main.state.isLastPageLoaded
+                }"
+                 data-ng-hide="!main.state.totals || main.state.transactions.length < 1"
+            > <!-- if scroll on bottom add class not-fixed -->
+
+                <div class="loader-container" data-ng-show="main.state.totals.isLoading">
+                    <div class="loader"></div>
+                </div>
+
+                <table class="main-table transaction" data-ng-hide="main.state.totals.isLoading">
+                    <tr>
+                        <td>
+                            <strong data-ng-bind="main.state.totals.transactionsFormatted"></strong>
+                            Transactions (<strong data-ng-bind="main.state.totals.averageFormatted"></strong> Average)
+                        </td>
+                        <td class="balance-cell bold" data-ng-bind="main.state.totals.amountFormatted"><!-- Amout --></td>
+                        <td class="balance-cell bold balance-cell-foot-totals">
+                            <div>
+                                <span ng-show="main.state.totals.multiplier">
+                                    <div data-ng-bind="main.state.totals.milesFormatted + '&nbsp;'"></div>
+                                    <div class="up-block">
+                                        <div data-ng-bind="main.state.totals.multiplier + 'x'" class="up-counter"></div>
+                                    </div>
+                                </span>
+                            </div>
+                        </td>
+                        <td style="min-width: 110px;"
+                            data-ng-class="{
+                                'potential-cell': true,
+                                'balance-cell': true,
+                                'bold': true,
+                                [main.state.totals.potentialColor]: !!main.state.totals.potentialColor
+                            }"
+                        >
+                            <div>
+                                <span ng-show="main.state.totals.potential">
+                                    <div data-ng-bind="main.state.totals.potentialMilesFormatted + '&nbsp;'"></div>
+                                    <div class="up-block">
+                                        <div data-ng-bind="main.state.totals.potential+'x'" class="up-counter"></div>
+                                    </div>
+                                </span>
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+
+            {% endif %}
+
+        </div>
+        <div data-ng-cloak2>
+            <dialog id="credit-card-offer-popup" data-auto-open="false" data-modal="true" data-width="800">
+                <div data-ng-show="!main.state.offerLoading" data-ng-bind-html="main.offerDialogContent | unsafe"></div>
+                <div class="ajax-loader" data-ng-show="main.state.offerLoading"><div class="loading"></div></div>
+            </dialog>
+        </div>
+    </div>
+    {% endif %}
+
+    <script type="text/ng-template" id="/offerCardsFilter">
+        {% include "@AwardWalletMain/SpentAnalysis/offerCardsFilter.html.twig" %}
+    </script>
+    <script type="text/ng-template" id="/mileValueBox">
+        {% include "@AwardWalletMain/SpentAnalysis/mileValueBox.html.twig" %}
+    </script>
+    <script type="text/ng-template" id="/bestCards">
+        {% include "@AwardWalletMain/SpentAnalysis/bestCards-popup.html.twig" %}
+    </script>
+
+    <div id="content"></div>
+
+{% endblock %}

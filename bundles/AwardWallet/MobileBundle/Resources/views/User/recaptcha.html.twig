@@ -1,0 +1,172 @@
+<html lang="en">
+<head>
+    <title>reCAPTCHA</title>
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0, viewport-fit=cover">
+    <script src="{{ captcha_provider.getScriptUrl("onloadCallback")|raw }}" async defer></script>
+    <style type="text/css">
+        .recaptcha {
+            display: flex;
+            align-self: center;
+            flex-direction: row;
+            justify-content: center;
+        }
+
+        .hide {
+            display: none;
+        }
+
+        .flex-container {
+            display: flex;
+            flex-direction: row;
+            flex-wrap: nowrap;
+            justify-content: center;
+            align-content: stretch;
+            align-items: flex-start;
+        }
+
+        .flex-item {
+            flex: 0 1 auto;
+            align-self: center;
+        }
+
+        .lds-ellipsis {
+            display: inline-block;
+            position: relative;
+            width: 80px;
+            height: 80px;
+        }
+
+        .lds-ellipsis div {
+            position: absolute;
+            top: 33px;
+            width: 13px;
+            height: 13px;
+            border-radius: 50%;
+            background: #ccc;
+            animation-timing-function: cubic-bezier(0, 1, 1, 0);
+        }
+
+        .lds-ellipsis div:nth-child(1) {
+            left: 8px;
+            animation: lds-ellipsis1 0.6s infinite;
+        }
+
+        .lds-ellipsis div:nth-child(2) {
+            left: 8px;
+            animation: lds-ellipsis2 0.6s infinite;
+        }
+
+        .lds-ellipsis div:nth-child(3) {
+            left: 32px;
+            animation: lds-ellipsis2 0.6s infinite;
+        }
+
+        .lds-ellipsis div:nth-child(4) {
+            left: 56px;
+            animation: lds-ellipsis3 0.6s infinite;
+        }
+
+        @keyframes lds-ellipsis1 {
+            0% {
+                transform: scale(0);
+            }
+            100% {
+                transform: scale(1);
+            }
+        }
+
+        @keyframes lds-ellipsis3 {
+            0% {
+                transform: scale(1);
+            }
+            100% {
+                transform: scale(0);
+            }
+        }
+
+        @keyframes lds-ellipsis2 {
+            0% {
+                transform: translate(0, 0);
+            }
+            100% {
+                transform: translate(24px, 0);
+            }
+        }
+
+        @media (prefers-color-scheme: dark) {
+            body {
+                background-color: #1c1c1e;
+            }
+            .lds-ellipsis div {
+                background-color: #fff;
+            }
+        }
+    </style>
+</head>
+<body class="flex-container">
+<div class="recaptcha">
+    <div class="flex-item">
+        <div id="spinner">
+            <div class="lds-ellipsis">
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+            </div>
+        </div>
+        <div id="recaptcha">
+        </div>
+    </div>
+</div>
+</body>
+<script>
+    const [, _theme] = document.location.search.split('=');
+    const theme = _theme === 'dark' ? 'dark' : 'light';
+
+    function onResponse(recaptcha) {
+        if (window.ReactNativeWebView) {
+            window.ReactNativeWebView.postMessage(recaptcha);
+        } else {
+            window.postMessage(recaptcha);
+        }
+    }
+
+    const target = document.getElementById('recaptcha');
+    const spinner = document.getElementById('spinner');
+
+    const callback = function(mutationsList, observer) {
+        for (let mutation of mutationsList) {
+            if (mutation.type === 'childList') {
+                spinner.classList.add('hide');
+                observer.disconnect();
+            }
+        }
+    };
+
+    const observer = new MutationObserver(callback);
+
+    observer.observe(target, {childList: true});
+
+    function onloadCallback() {
+        const sitekey = "{{ captcha_provider.siteKey|raw }}";
+
+        grecaptcha.render(target, {
+            sitekey,
+            theme,
+            callback: onResponse
+        });
+    }
+
+    const sendNativeEvent = function (command, event) {
+        if (typeof sendEvent === 'function') {
+            sendEvent(Object.assign(
+                {
+                    command,
+                },
+                event
+            ));
+        }
+    }
+</script>
+</html>

@@ -1,0 +1,41 @@
+{% extends '@MailTemplate/Layout/base.twig' %}
+{% trans_default_domain "email" %}
+
+{% block subject %}{% apply spaceless %}{% autoescape false %}
+    {{ 'invitation-claim-ownership.subject-v2'|trans(
+        {'%count%': accounts|length}, 'email', lang
+    )|desc('{0} Invitation to AwardWallet.com|[1,Inf[ Invitation to claim ownership of your reward programs') }}
+{% endautoescape %}{% endapply %}{% endblock subject %}
+
+{% block content %}
+    {% import '@MailTemplate/CommonMacro.twig' as commonMacro %}
+
+    {{ commonMacro.hello(user.fullname, _context) }}
+
+    {{ commonMacro.paragraph(
+        'invitation-claim-ownership.message-v2'|trans({
+            '%count%' : accounts|length,
+            '%inviter%': inviter.fullname|htmlencode,
+            '%bold_on%': '<b style="color:#3d424d;">',
+            '%bold_off%': '</b>',
+            '%awardwallet%': 'AwardWallet'
+        }, 'email', lang)|desc('{0} %inviter% is inviting you to register on %bold_on% %awardwallet% %bold_off% and keep track of your award programs.|[1,Inf[ %inviter% is inviting you to register on %bold_on% %awardwallet% %bold_off% and take ownership of the following reward programs:'),
+        _context, {escape: false}
+    ) }}
+
+    {% if accounts|length > 0 %}
+        {{ commonMacro.accountList(accounts, _context) }}
+    {% endif %}
+
+    {{ commonMacro.paragraph(
+        'invitation-claim-ownership.link'|trans({}, 'email', lang)|desc('In order to do that you have to follow this link:'),
+        _context, {},
+        {
+            'margin-top': '20px'
+        }
+    ) }}
+
+    {% set shareAccountsLink = personalHost ~ '/invite/' ~ shareCode %}
+    {{ commonMacro.dottedLink(shareAccountsLink, shareAccountsLink, _context) }}
+{% endblock content %}
+

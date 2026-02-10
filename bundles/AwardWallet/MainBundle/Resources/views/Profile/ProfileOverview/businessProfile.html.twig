@@ -1,0 +1,145 @@
+{% extends "@AwardWalletMain/Layout/profile.html.twig" %}
+
+{% block title %}{{ 'user.business-profile.page-title'|trans({})|desc('Edit Business Account') }}{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        require([
+            'pages/userProfile/profileOverview'
+        ], function () {
+        });
+    </script>
+{% endblock %}
+
+{% block content %}
+    <div class="main-blk shortened">
+        <h1>{{ 'user.business-profile.page-title'|trans({})|desc('Edit Business Account') }}</h1>
+
+        <div class="main-blk-content">
+            {% if app.session.flashbag.has('notice') %}
+                {% for flash_message in app.session.flashbag.get('notice') %}
+                    <div class="success-title">
+                        <i class="icon-white-check-b"></i>
+                        <span>{{ flash_message }}</span>
+                    </div>
+                {% endfor %}
+            {% endif %}
+
+            <div class="title-note">
+                <h3>{{ 'user.business-profile.title'|trans({})|desc('Business Information') }}</h3>
+                <a href="{{ path('aw_profile_business_edit') }}" class="btn-blue edit-btn">
+                    <i class="icon-edit-w"></i>
+                    <span>{{ 'button.edit'|trans({})|desc('Edit') }}</span>
+                </a>
+            </div>
+            <table class="main-table edit-account">
+                <tbody>
+                <tr>
+                    <td class="caption-row">{{ 'business.company-name'|trans({})|desc('Company Name') }}:</td>
+                    <td class="info-row"><span class="bold">{{ business.company }}</span></td>
+                    <td class="action-row"></td>
+                </tr>
+                <tr>
+                    <td class="caption-row">{{ 'login.login'|trans({}) }}:</td>
+                    <td class="info-row"><span class="bold">{{ user.login }}</span></td>
+                    <td class="action-row"></td>
+                </tr>
+                <tr>
+                    <td class="caption-row">{{ 'login.pass'|trans({})|desc('Password') }}:</td>
+                    <td class="info-row"><span class="bold">••••••••</span></td>
+                    <td class="action-row">
+                        <a href="{{ path('aw_profile_change_password') }}"
+                           class="btn-silver">{{ 'personal_info.change_password'|trans({})|desc('Change password') }}
+                        </a>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="caption-row">{{ 'login.first'|trans({}) }}:</td>
+                    <td class="info-row"><span class="bold">{{ user.firstname }}</span></td>
+                    <td class="action-row"></td>
+                </tr>
+                {% if user.midname %}
+                    <tr>
+                        <td class="caption-row">{{ 'personal_info.middle_name'|trans({})|desc('Middle name') }}:</td>
+                        <td class="info-row"><span class="bold">{{ user.midname }}</span></td>
+                        <td class="action-row"></td>
+                    </tr>
+                {% endif %}
+                <tr>
+                    <td class="caption-row">{{ 'login.name'|trans({}) }}:</td>
+                    <td class="info-row"><span class="bold">{{ user.lastname }}</span></td>
+                    <td class="action-row"></td>
+                </tr>
+                <tr>
+                    <td class="caption-row">{{ 'login.email'|trans({}) }}:</td>
+                    <td class="info-row"><span class="bold">{{ user.email }}</span></td>
+                    <td class="action-row">
+                        <a href="{{ path('aw_user_change_email') }}"
+                           class="btn-silver">{{ 'personal_info.email.change'|trans({})|desc('Change email') }}</a>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="caption-row">{{ 'business.email-alias'|trans({})|desc('Email alias for travel plans') }}:</td>
+                    <td class="info-row"><span class="bold">{{ business.login }}</span></td>
+                    <td class="action-row"></td>
+                </tr>
+                <tr>
+                    <td class="caption-row">{{ 'business.logo'|trans({})|desc('Logo') }}:</td>
+                    <td class="info-row">
+                        {% if business.avatarSrc %}
+                            <img src="{{ business.avatarSrc }}" alt="" class="avatar">
+                        {% else %}
+                            <i class="icon-default-avatar"></i>
+                        {% endif %}
+                    </td>
+                    <td class="action-row"></td>
+                </tr>
+                </tbody>
+            </table>
+
+            {% if businessNotifications is not null %}
+                <div class="title-note">
+                    <h3>{{ 'notifications'|trans }}</h3>
+                    <a href="{{ path('aw_profile_notifications') }}" class="btn-blue edit-btn">
+                        <i class="icon-edit-w"></i>
+                        <span>{{ 'button.edit'|trans({})|desc('Edit') }}</span>
+                    </a>
+                </div>
+                <table class="main-table edit-account notifications">
+                    <thead>
+                    <tr>
+                        <th></th>
+                        <th>{{ 'mobile'|trans }}</th>
+                        <th>{{ 'desktop'|trans }}</th>
+                        <th>{{ 'email'|trans }}</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                        {% for group, item in businessNotifications|filter((item, group) => group != constant('\\AwardWallet\\MainBundle\\Service\\NotificationSettings::APP_HEADER')) %}
+                            {% for name, props in item %}
+                                <tr>
+                                    <td class="caption-row">{{ name }}</td>
+                                    {% for prop in props %}
+                                        <td class="status">
+                                            {% if prop.status is same as(true) %}
+                                                <i class="icon-green-check"></i>
+                                            {% elseif prop.status is same as(false) %}
+                                                <i class="icon-red-error"></i>
+                                            {% else %}
+                                                <span>{{ prop.status }}</span>
+                                            {% endif %}
+                                        </td>
+                                    {% endfor %}
+                                </tr>
+                            {% endfor %}
+                        {% endfor %}
+                    </tbody>
+                </table>
+            {% endif %}
+
+        </div>
+
+    </div>
+
+{% endblock %}

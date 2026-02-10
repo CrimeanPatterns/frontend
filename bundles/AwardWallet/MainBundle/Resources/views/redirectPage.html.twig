@@ -1,0 +1,27 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+    <meta http-equiv='refresh' content='3;url={{ url | raw }}'>
+    <script type='text/javascript'>
+        if (document.location.href.indexOf("/logout") === -1) {
+            sessionStorage.setItem('backUrl', document.location.href);
+        }
+
+        function execRedirect() {
+            {% if script is defined %}
+                {{ script | raw }}
+            {% endif %}
+            if (window.parent != window) {
+                parent.location.href = '{{ url | raw }}';
+            }
+            else
+                location.href = '{{ url | raw }}';
+        }
+    </script>
+</head>
+<body onload='execRedirect();'>
+{% block body %}
+
+{% endblock %}
+</body>
+</html>

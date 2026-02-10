@@ -1,0 +1,668 @@
+{% set MAIN_BODY_CLASSES = {
+    'landing': true,
+    'not-logged': false,
+    'business': is_granted('SITE_BUSINESS_AREA'),
+    'manual-hidden': false,
+    'responsive': false,
+    'hide-menu': false
+}|merge(MAIN_BODY_CLASSES|default({})) %}
+
+{% extends "@AwardWalletMain/Layout/not_logged.html.twig" %}
+{% import "@AwardWalletMain/TwigMacros/recaptcha.html.twig" as recaptcha %}
+
+{% block title %}
+    {% if currentRoute in ['aw_login', 'aw_login_locale'] %}
+        {{ 'meta.title.login'|trans|desc('Log in to AwardWallet account') }}
+    {% elseif currentRoute in ['aw_register', 'aw_register_locale'] %}
+        {{ 'meta.title.register'|trans|desc('Create your AwardWallet account') }}
+    {% else %}
+        {{ 'meta.title'|trans|desc('Track frequent flyer reward programs and plan your travel') }}
+    {% endif %}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script type="text/javascript">
+        if (!!navigator.userAgent) {
+            if (/iPad|iPhone|iPod/i.test(navigator.userAgent)) {
+                document.body.classList.add('is-device-ios');
+            } else if (/android/i.test(navigator.userAgent.toLowerCase())) {
+                document.body.classList.add('is-device-android');
+            }
+        }
+
+        {% if invite is defined and invite %}
+        {% set invitee = invite.familyMember ? invite.familyMember : invite.inviteeid %}
+        window.inviteEmail = {{ invite.email ? invite.email|json_encode|raw : '""' }};
+        window.firstName = {{ invitee ? invitee.firstname|capitalize|json_encode|raw : '""' }};
+        window.lastName = {{ invitee ? invitee.lastname|capitalize|json_encode|raw : '""' }};
+        window.inviteCode = {{ invite.code|json_encode|raw }};
+        {% endif %}
+        var locale = {{ app.request.locale | json_encode | raw }};
+        require(['jquery-boot', 'vendor/lazysizes/lazysizes'], function ($) {
+            $(function () {
+                if (!!navigator.userAgent) {
+                    if (/iPad|iPhone|iPod/i.test(navigator.userAgent)) {
+                        document.getElementById('pageWrap').classList.add('is-device-ios');
+                    } else if (/android/i.test(navigator.userAgent.toLowerCase())) {
+                        document.getElementById('pageWrap').classList.add('is-device-android');
+                    }
+                }
+                $('.app ').css('zoom', ((1024 / $(window).width()) * 100) + '%' );
+
+                require(['lib/design', 'pages/landing/main']);
+            });
+        });
+        {#
+        {% if isMobileDevice() %}
+        require(['lib/design']);
+        document.getElementById('merchant').addEventListener('focus', (event) => require(['pages/landing/main']));
+        {% else %}
+        require(['pages/landing/main']);
+        {% endif %}
+        #}
+    </script>
+
+    {% if load_external_scripts %}
+        <script type="text/javascript">
+            window.fbAsyncInit = function() {
+                FB.init({
+                    appId            : '191119281484667',
+                    autoLogAppEvents : true,
+                    xfbml            : true,
+                    version          : 'v2.11'
+                });
+                FB.AppEvents.logPageView();
+            };
+            (function(d, s, id) {
+                var js, fjs = d.getElementsByTagName(s)[0];
+                if (d.getElementById(id)) return;
+                js     = d.createElement(s);
+                js.id  = id;
+                js.async = 1;
+                js.src = 'https://connect.facebook.net/en_US/sdk/xfbml.group.js#xfbml=1&version=v2.11&appId=191119281484667';
+                fjs.parentNode.insertBefore(js, fjs);
+            }(document, 'script', 'facebook-jssdk'));
+        </script>
+    {% endif %}
+{% endblock %}
+
+{% block logo_attr %}ui-sref="home"{% endblock %}
+
+{% block meta %}
+    {{ parent() }}
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0, viewport-fit=cover">
+    <meta name="keywords" content="{{ 'meta.keywords'|trans|desc('Incentive reward center, Marriott reward, cheap airfare, reward incentive program, American Express rewards, trip reward, air miles reward program, frequent flyer miles, track award program balances, air mile reward, award software, award program, delta sky miles, reward program reward network') }}">
+    <meta name="description" content="{{ 'meta.description'|trans|desc('AwardWallet helps you track frequent flyer miles and hotel points as well as book reward tickets') }}">
+    <meta name="google-site-verification" content="rtczCsWSE3xSyZ3TiyI6quRz2fgkTgAEgCVJvQVn0R0" />
+    <base href="{{ app.request.pathInfo | raw }}">
+{% endblock %}
+
+{% block register_button_options %}ui-sref="register" ui-sref-active="active"{% endblock %}
+{% block register_business_button_options %}ui-sref="registerBusiness" ui-sref-active="active"{% endblock %}
+{% block login_button_options %}ui-sref="login" ui-sref-active="active"{% endblock %}
+
+{% block page %}
+    {% if is_granted('SITE_BUSINESS_AREA') %}
+        <main id="pageWrap" class="page-wrap">
+            <div class="top-image">
+                {% if is_granted('SITE_BUSINESS_AREA') %}
+                    <div class="top-prev">
+                        <h1>{{ 'landing.busines.h1'|trans|desc('AwardWallet <br>business interface')|raw }}</h1>
+
+                        <p>{{ 'landing.business.h2'|trans|desc('lets you track reward programs for a large number of users. Travel companies, concierge services and reward booking services use this interface. It has a reward-booking queue that is designed for travel agents to have all the data they need to book reward tickets.') }}</p>
+                    </div>
+                {% else %}
+                    <div class="top-prev">
+                        <h1>{{ 'aw.keeps.track.h2'|trans|desc('AwardWallet<br>keeps track of your<br>reward programs')|raw }}</h1>
+
+                        {{ 'such.as.your.text'|trans|desc('<p>such as your <span class="light-blue small">frequent flyer miles</span>, <br> <span class="light-blue small">HOTEL</span> and <span class="light-blue small">credit card points</span>.</p>')|raw }}
+
+                        {# todo localizer!#}
+                        {{ 'landing.page.counters.text'|trans({
+                            '%miles-count%' : miles|number_format,
+                            '%miles.and.points.plural%': 'miles.and.points.plural'|transchoice(miles),
+
+                            '%programs-count%' : programs|number_format,
+                            '%loyalty.programs.plural%' : 'loyalty.programs.plural'|transchoice(programs),
+
+                        }) | desc('<p>Currently we are tracking a total of <br><span class="light-blue middle">%miles-count%</span>
+                    %miles.and.points.plural% <br>for our members across <span class="rose middle">%programs-count%</span><br>%loyalty.programs.plural%.</p>')|raw }}
+
+                    </div>
+                {% endif %}
+
+                <div class="advantages">
+                    <h2>{{ 'its.as.easy.h2'|trans|desc('It’s as easy as:') }}</h2>
+                    <ul>
+                        <li>
+                            <span class="counter">1.</span>
+
+                            <p>{{ 'landing.page.easy.text1'|trans|desc('<span>Join</span> AwardWallet for free and add your reward programs.')|raw }}</p>
+                        </li>
+                        <li>
+                            <span class="counter">2.</span>
+
+                            <p>{{ 'landing.page.easy.text2'|trans|desc('Let AwardWallet <span>track</span> and <span>monitor</span> your reward programs and itineraries for you')|raw }}</p>
+                        </li>
+                        <li>
+                            <span class="counter">3.</span>
+
+                            <p>{{ 'landing.page.easy.text3'|trans|desc('<span>Get notified</span> when your balances change and before your points expire.')|raw }}</p>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            {% if blogposts is defined and blogposts is not empty %}
+                <div class="blog">
+                    <div class="container">
+                        <div class="blog__top">
+                            <div class="title">
+                                <h2>{{ 'landing.page.blog.title.1'|trans({}, 'landing')|desc('Learn how to get more travel rewards, points and miles') }}</h2>
+                                <span>{{ 'landing.page.blog.title.2'|trans({}, 'landing')|desc('by reading our blog!') }}</span>
+                            </div>
+                        </div>
+                        <div class="blog__post-list">
+                            {% for blogpost in blogposts%}
+                                <div class="blog__post">
+
+                                    <div class="blog__post-thumb">
+                                        {% if blogpost.imageURL is not empty %}
+                                            <a href="{{ blogpost.postURL|replaceVarInLink({'awid': 'homepage'}, true) }}" target="_blank"><img class="lazyload" data-src="{{ blogpost.imageURL }}" alt=""></a>
+                                        {% endif %}
+                                    </div>
+
+                                    <div class="blog__post-details">
+                                        <div class="blog__post-actions">
+                                            <ul>
+                                                <li>by <a href="{{ blogpost.authorURL }}" target="_blank">{{ blogpost.author }}</a></li>
+                                                <li>{{ blogpost.postDate|patternDatetime('LLLL d, y', app.request.locale) }}</li>
+                                                <li>{% if blogpost.commentsNumber is defined and blogpost.commentsNumber > 0 %}{{ blogpost.commentsNumber }} Comments{% else %}No Comments{% endif %}</li>
+                                            </ul>
+                                        </div>
+                                        <div class="blog__post-title">
+                                            <a href="{{ blogpost.postURL|replaceVarInLink({'awid': 'homepage'}, true) }}" target="_blank">{{ blogpost.title|raw }}</a>
+                                        </div>
+                                        <div class="blog__post-more">
+                                            <a href="{{ blogpost.postURL|replaceVarInLink({'awid': 'homepage'}, true) }}" target="_blank">{{ 'landing.page.blog.read_post'|trans({}, 'landing')|desc('Read More') }}</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                        <div class="more-link">
+                            <a target="_blank" href="https://awardwallet.com/blog/">{{ 'landing.page.blog.more'|trans({}, 'landing')|desc('More articles') }}</a>
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+            <div class="facebook-block">
+                <div id="fbCommunity" class="inner">
+                    <div class="title">
+                        <h2>{{ 'landing.page.facebook_join'|trans({}, 'landing') }}</h2>
+                    </div>
+                    <div class="container">
+                        <div class="iframe">
+                            <div id="fb-root"></div>
+                            <div class="fb-group" data-href="https://www.facebook.com/groups/awardtravel101/" data-width="500" data-show-metadata="true" data-show-facepile="true" data-show-social-context="true"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="quotes-block">
+                <div class="container">
+                    <div class="title">
+                        <h2>{{ 'landing.page.media.title'|trans({}, 'landing') }}</h2>
+                    </div>
+                    <div class="item">
+                        <div class="quotes-blk first">
+                            <div class="blockquote">
+                                <blockquote>
+                                    It is, quite simply, a game changer. It's a free, uncomplicated Web site that keeps all your mile balances, all your account numbers and all your passwords on one screen.
+                                </blockquote>
+                            </div>
+                            <p class="author">Seth Kugel</p>
+
+                            <p class="company">The New York Times</p>
+                        </div>
+                        <div class="quotes-blk second">
+                            <div class="blockquote">
+                                <blockquote>
+                                    I decided the service that best met my needs was AwardWallet, so I'm going to stick with it!
+                                </blockquote>
+                            </div>
+                            <p class="author">Scott J. Wilson</p>
+
+                            <p class="company">Los Angeles Times</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="mobile-block">
+                <div class="title">
+                    {% if is_granted('SITE_BUSINESS_AREA') %}
+                        <h2>{{ 'landing.page.available.business.h2'|trans|desc('ROBUST. SCALABLE. EASY TO USE.') }}</h2>
+                    {% else %}
+                        <h2>{{ 'landing.page.available.h2'|trans|desc('Available on your favorite iOS or Android device') }}</h2>
+                    {% endif %}
+                </div>
+                <div class="app-buttons">
+                    <a href="http://itunes.apple.com/us/app/awardwallet/id388442727?mt=8" target="_blank" class="ios-app" rel="noopener noreferrer"></a>
+                    <a href="https://play.google.com/store/apps/details?id=com.itlogy.awardwallet" target="_blank" class="android-app" rel="noopener noreferrer"></a>
+                </div>
+                <div class="android">
+                    <img src="{{ asset('assets/awardwalletnewdesign/img/android.png')}}" srcset="{{ asset('assets/awardwalletnewdesign/img/android@2x.png') }} 2x" alt="Android app">
+                </div>
+                <div class="iphone">
+                    <img src="{{ asset('assets/awardwalletnewdesign/img/iphone.png')}}" srcset="{{ asset('assets/awardwalletnewdesign/img/iphone@2x.png') }} 2x" alt="Iphone app">
+                </div>
+                <div class="mac">
+                    <img src="{{ asset('assets/awardwalletnewdesign/img/mac.png')}}" srcset="{{ asset('assets/awardwalletnewdesign/img/mac@2x.png') }} 2x" alt="Desktop">
+                </div>
+            </div>
+            <div class="video-block">
+                <div class="item">
+                    <h2>{{ 'landing.page.video.h2'|trans|desc('Introductory video') }}</h2>
+
+                    <div class="video-item">
+                        <div class="top-line"></div>
+                        <div class="video">
+                            <div class="item">
+                                <img id="video-btn" src="{{ asset('assets/awardwalletnewdesign/img/video-stub.jpg') }}" data-srcset="{{ asset('assets/awardwalletnewdesign/img/video-stub@2x.jpg') }} 2x" alt="Video" title="Video">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    {% else %}
+        <div class="menu-button"></div>
+        <div class="fixed-header">
+            <div class="logo"></div>
+        </div>
+        <main id="pageWrap" class="page-wrap">
+            <section class="main-mobile">
+                <div class="container">
+                    <div class="logo"></div>
+                    <p>{{ 'access-programs-get-app-device'|trans({}, 'landing')|desc('To access your loyalty programs and travel plans everywhere, get the AwardWallet app on your device.') }}</p>
+                    <a href="http://itunes.apple.com/us/app/awardwallet/id388442727?mt=8" target="_blank" class="ios-app device-ios" rel="noopener noreferrer"></a>
+                    <a href="https://play.google.com/store/apps/details?id=com.itlogy.awardwallet" target="_blank" class="android-app device-android" rel="noopener noreferrer"></a>
+                    <a href="http://itunes.apple.com/us/app/awardwallet/id388442727?mt=8" target="_blank" class="ios-app device-unknown" rel="noopener noreferrer"></a>
+                    <a href="https://play.google.com/store/apps/details?id=com.itlogy.awardwallet" target="_blank" class="android-app device-unknown" rel="noopener noreferrer"></a>
+                </div>
+            </section>
+            <section class="main">
+                <div class="container">
+                    <div class="title">
+                        <h1>{{ 'landing.page.title'|trans({}, 'landing')|desc('We help you track all of your reward program accounts') }}</h1>
+                    </div>
+                    <div class="main__content">
+                        <div class="main__video">
+                            <div>
+                                <img id="video-btn"
+                                     class="lazyload"
+                                     src="{{ asset('assets/awardwalletnewdesign/img/video-stub.jpg') }}"
+                                     data-sizes="auto"
+                                     data-srcset="{{ asset('assets/awardwalletnewdesign/img/video-stub@2x.jpg') }} 2x"
+                                     alt="Video"
+                                     title="Video">
+                            </div>
+                        </div>
+                        <div class="main__details">
+                            <p>{{ 'landing.page.info.1'|trans({}, 'landing')|desc('AwardWallet is a one-of-a-kind service that helps you track all of your loyalty points including frequent flier miles, hotel points, dining rewards, and shopping rewards.') }}</p>
+                            <p>{{ 'landing.page.info.2'|trans({}, 'landing')|desc('If there is a loyalty program that offers you incentive points, we will help you track your points. Best of all, we alert you when your balances change and before points expire.') }}</p>
+                            <a href="http://itunes.apple.com/us/app/awardwallet/id388442727?mt=8" target="_blank" class="main__btn device-ios" rel="noopener noreferrer">{{ 'download-awardwallet-app'|trans({}, 'landing')|desc('Download the AwardWallet App') }}</a>
+                            <a href="https://play.google.com/store/apps/details?id=com.itlogy.awardwallet" target="_blank" class="main__btn device-android" rel="noopener noreferrer">{{ 'download-awardwallet-app'|trans({}, 'landing') }}</a>
+                            <a href="{{ path('aw_register') }}" ui-sref="register" ui-sref-active="active" class="main__btn device-unknown">{{ 'landing.page.account_create'|trans({}, 'landing')|desc('Create Your Free Account Today') }}</a>
+                        </div>
+                    </div>
+                    <h2>{{ 'landing.page.supported.title'|trans({}, 'landing')|desc('We support') }}</h2>
+                    <div class="main__list">
+                        <div class="main__list-item">
+                            <div class="main__counter">
+                                {% for digit in programs|split('') %}
+                                    <div class="main__counter-block">
+                                        <span>{{ digit }}</span>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                            <div class="main__caption"><span>{{ 'landing.page.supported.programs'|transchoice(programs, {}, 'landing')|desc('loyalty programs') }}</span></div>
+                        </div>
+                        <div class="main__list-item">
+                            <div class="main__counter">
+                                {% if china_locale %}{% set users = (users / 10)|number_format(0) %}{% endif %}
+                                {% for digit in users|split('') %}
+                                    <div class="main__counter-block">
+                                        <span>{{ digit }}</span>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                            <div class="main__caption"><span>
+                                {%- if china_locale %}
+                                    {{ '10-thousand-users'|transchoice(users / 10, {}, 'landing')|desc('10 thousand users') }}
+                                {% else %}
+                                    {{ 'landing.page.supported.users'|transchoice(users * 1000, {}, 'landing')|desc('thousand users') }}
+                                {% endif -%}
+                            </span></div>
+                        </div>
+                        <div class="main__list-item">
+                            <div class="main__counter">
+                                {% set miles = china_locale ? miles|slice(0, 4) : miles|slice(0, 3) %}
+                                {% for digit in miles|split('') %}
+                                    <div class="main__counter-block">
+                                        <span>{{ digit }}</span>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                            <div class="main__caption"><span>
+                                {%- if china_locale %}
+                                    {{ '100-million-points'|transchoice(miles, {}, 'landing')|desc('100 million points') }}
+                                {% else %}
+                                    {{ 'landing.page.supported.points'|transchoice(miles, {}, 'landing')|desc('billion points tracked') }}
+                                {% endif %}
+                            </span></div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            {% if blogposts is defined and blogposts is not empty %}
+                <section class="blog">
+                    <div class="container">
+                        <div class="blog__top">
+                            <div class="title">
+                                <h2>{{ 'landing.page.blog.title.1'|trans({}, 'landing')|desc('Learn how to get more travel rewards, points and miles') }}</h2>
+                                <span>{{ 'landing.page.blog.title.2'|trans({}, 'landing')|desc('by reading our blog!') }}</span>
+                            </div>
+                        </div>
+                        <div class="blog__post-list">
+                            {% for blogpost in blogposts%}
+                                <div class="blog__post">
+
+                                    <div class="blog__post-thumb">
+                                        {% if blogpost.imageURL is not empty %}
+                                            <a href="{{ blogpost.postURL }}" target="_blank"><img class="lazyload" data-src="{{ blogpost.imageURL }}" alt=""></a>
+                                        {% endif %}
+                                    </div>
+
+                                    <div class="blog__post-details">
+                                        <div class="blog__post-actions">
+                                            <ul>
+                                                <li>by <a href="{{ blogpost.authorURL }}" target="_blank">{{ blogpost.author }}</a></li>
+                                                <li>{{ blogpost.postDate|patternDatetime('LLLL d, y', app.request.locale) }}</li>
+                                                <li>{% if blogpost.commentsNumber is defined and blogpost.commentsNumber > 0 %}{{ blogpost.commentsNumber }} Comments{% else %}No Comments{% endif %}</li>
+                                            </ul>
+                                        </div>
+                                        <div class="blog__post-title">
+                                            <a href="{{ blogpost.postURL }}" target="_blank">{{ blogpost.title|raw }}</a>
+                                        </div>
+                                        <div class="blog__post-more">
+                                            <a href="{{ blogpost.postURL }}" target="_blank">{{ 'landing.page.blog.read_post'|trans({}, 'landing')|desc('Read More') }}</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                        <div class="more-link">
+                            <a target="_blank" href="https://awardwallet.com/blog/">{{ 'landing.page.blog.more'|trans({}, 'landing')|desc('More articles') }}</a>
+                        </div>
+                    </div>
+                </section>
+            {% endif %}
+
+            {% if adsCreditCards is defined and adsCreditCards is not empty %}
+                <section class="cards">
+                    <div class="container">
+                        <div class="cards__top">
+                            <div class="title">
+                                <h2>{{ 'landing.page.blog.cards.title'|trans({}, 'landing')|desc('Top Partner Travel Card Offers') }}</h2>
+                            </div>
+                        </div>
+                        <div class="cards__link">
+                            <a target="_blank" href="https://awardwallet.com/blog/advertiser-disclosure">{{ 'advertiser.disclosure'|trans }}</a>
+                        </div>
+                        <div class="cards-list">
+                            {% for card in adsCreditCards %}
+                                <a target="_blank" href="{{ card.directClickURL|var2TrackingModify({'source':'aw', 'cid':'homepage'}) }}" class="cards__block" rel="nofollow">
+                                    <div class="cards__block-thumb"><img class="lazyload" data-src="{{ card.picturePath }}" alt="{{ card.cardFullName }}"></div>
+                                    <div class="cards__block-title">{{ card.cardFullName }}</div>
+                                    <div class="cards__block-text">{{ card.text }}</div>
+                                    <div class="cards__block-more">
+                                        <span>{{ 'cc.promo.apply-now'|trans }}</span>
+                                    </div>
+                                </a>
+                            {% endfor %}
+                        </div>
+                        <div class="more-link">
+                            <a target="_blank" href="https://awardwallet.com/blog/credit-cards">{{ 'landing.page.blog.cards.more'|trans({}, 'landing')|desc('See all cards') }}</a>
+                        </div>
+                    </div>
+                </section>
+            {% endif %}
+
+            <section class="merchant">
+                <div class="container">
+                    <div class="title">
+                        <h2>{{ 'merchant_lookup.title'|trans }}</h2>
+                    </div>
+                    <div class="merchant__block">
+                        <h3>{{ 'landing.page.merchants.info.1'|trans({}, 'landing')|desc('Want to know what credit card to use at your favorite stores and restaurants?') }}</h3>
+                        <p>{{ 'landing.page.merchants.info.2'|trans({}, 'landing')|desc('Use our merchant category lookup tool to see how your purchase will be categorized to maximize how many points you earn.') }}</p>
+                        <div class="merchant__input">
+                            <input type="text"
+                                   placeholder="{{ 'start-typing-merchant-name'|trans({}, 'landing')|desc('Start typing a merchant name') }}"
+                                   id="merchant"
+                                   autocomplete="off"
+                            >
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="facebook-block">
+                <div id="fbCommunity" class="inner">
+                    <div class="title">
+                        <h2>{{ 'landing.page.facebook_join'|trans({}, 'landing')|desc('Join our Facebook community') }}</h2>
+                    </div>
+                    <div class="container">
+                        <div class="iframe">
+                            <div id="fb-root"></div>
+                            <div class="fb-group" data-href="https://www.facebook.com/groups/awardtravel101/" data-width="{% if isMobileDevice() %}300{% else %}500{% endif %}" data-show-metadata="true" data-show-facepile="true" data-show-social-context="true"></div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="booking-block">
+                <div class="title">
+                    <h2>{{ 'planning-trip-to-use-miles'|trans({}, 'landing')|desc('Planning a trip and want to use your miles?') }}</h2>
+                </div>
+                <div class="booking-block__wrap">
+                    <img class="lazyload" data-src="{{ asset('assets/awardwalletnewdesign/img/booking.png')}}" alt="Booking">
+                    <div class="item">
+                        <div class="container">
+                            <div class="block">
+                                <p>{{ 'get-best-values-tickets-for-you'|trans({}, 'landing')|desc('Get the best value from your hard-earned miles by having us book your business or first-class international tickets for you.') }}</p>
+                                <a href="{{ path('aw_booking_add_index') }}" class="btn-blue">{{ 'submit-booking-request'|trans({}, 'landing')|desc('Submit a Booking Request') }}</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="programs">
+                <div class="container">
+                    <div class="title">
+                        <h2>{{ 'landing.page.supported_programs_count'|transchoice(programs, {'%count%': programs|number_format}, 'landing')|desc('We support %count% loyalty programs') }}</h2>
+                    </div>
+                    <ul>
+                        {#
+                        <li>
+                            <div class="picture _icon-americal-airlines">
+                               <img class="lazyload _icon-americal-airlines picture__dark" data-src="{{ asset('assets/awardwalletnewdesign/img/programs/dark/american-airlines.png')}}" data-srcset="{{ asset('assets/awardwalletnewdesign/img/programs/dark/american-airlines@2x.png') }} 2x" alt="American Airlines">
+                               <img class="lazyload _icon-americal-airlines picture__light" data-src="{{ asset('assets/awardwalletnewdesign/img/programs/american-airlines.png')}}" data-srcset="{{ asset('assets/awardwalletnewdesign/img/programs/american-airlines@2x.png') }} 2x" alt="American Airlines">
+                            </div>
+                        </li>
+                        #}
+                        <li>
+                            <div class="picture _icon-marriot">
+                                <img class="lazyload _icon-marriot picture__dark" data-src="{{ asset('assets/awardwalletnewdesign/img/programs/dark/marriot.png')}}" data-srcset="{{ asset('assets/awardwalletnewdesign/img/programs/dark/marriot@2x.png') }} 2x" alt="Marriot">
+                                <img class="lazyload _icon-marriot picture__light" data-src="{{ asset('assets/awardwalletnewdesign/img/programs/marriot.png')}}" data-srcset="{{ asset('assets/awardwalletnewdesign/img/programs/marriot@2x.png') }} 2x" alt="Marriot">
+                            </div>
+                        </li>
+                        <li>
+                            <div class="picture _icon-capital-one">
+                                <img class="lazyload _icon-capital-one picture__dark" data-src="{{ asset('assets/awardwalletnewdesign/img/programs/dark/capital-one.png')}}" data-srcset="{{ asset('assets/awardwalletnewdesign/img/programs/dark/capital-one@2x.png') }} 2x" alt="Capital One">
+                                <img class="lazyload _icon-capital-one picture__light" data-src="{{ asset('assets/awardwalletnewdesign/img/programs/capital-one.png')}}" data-srcset="{{ asset('assets/awardwalletnewdesign/img/programs/capital-one@2x.png') }} 2x" alt="Capital One">
+                            </div>
+                        </li>
+                        <li>
+                            <div class="picture _icon-ihg">
+                                <img class="lazyload _icon-ihg picture__dark" data-src="{{ asset('assets/awardwalletnewdesign/img/programs/dark/ihg.png')}}" data-srcset="{{ asset('assets/awardwalletnewdesign/img/programs/dark/ihg@2x.png') }} 2x" alt="IHG">
+                                <img class="lazyload _icon-ihg picture__light" data-src="{{ asset('assets/awardwalletnewdesign/img/programs/ihg.png')}}" data-srcset="{{ asset('assets/awardwalletnewdesign/img/programs/ihg@2x.png') }} 2x" alt="IHG">
+                            </div>
+                        </li>
+                        <li>
+                            <div class="picture _icon-bank-of-america">
+                                <img class="lazyload _icon-bank-of-america picture__dark" data-src="{{ asset('assets/awardwalletnewdesign/img/programs/dark/bank-of-america.png')}}" data-srcset="{{ asset('assets/awardwalletnewdesign/img/programs/dark/bank-of-america@2x.png') }} 2x" alt="Bank of America">
+                                <img class="lazyload _icon-bank-of-america picture__light" data-src="{{ asset('assets/awardwalletnewdesign/img/programs/bank-of-america.png')}}" data-srcset="{{ asset('assets/awardwalletnewdesign/img/programs/bank-of-america@2x.png') }} 2x" alt="Bank of America">
+                            </div>
+                        </li>
+                        <li>
+                            <div class="picture _icon-jetblue">
+                                <img class="lazyload _icon-jetblue picture__dark" data-src="{{ asset('assets/awardwalletnewdesign/img/programs/dark/jetblue.png')}}" data-srcset="{{ asset('assets/awardwalletnewdesign/img/programs/dark/jetblue@2x.png') }} 2x" alt="JetBlue">
+                                <img class="lazyload _icon-jetblue picture__light" data-src="{{ asset('assets/awardwalletnewdesign/img/programs/jetblue.png')}}" data-srcset="{{ asset('assets/awardwalletnewdesign/img/programs/jetblue@2x.png') }} 2x" alt="JetBlue">
+                            </div>
+                        </li>
+                        <li>
+                            <div class="picture _icon-chase">
+                                <img class="lazyload _icon-chase picture__dark" data-src="{{ asset('assets/awardwalletnewdesign/img/programs/dark/chase.png')}}" data-srcset="{{ asset('assets/awardwalletnewdesign/img/programs/dark/chase@2x.png') }} 2x" alt="Chase">
+                                <img class="lazyload _icon-chase picture__light" data-src="{{ asset('assets/awardwalletnewdesign/img/programs/chase.png')}}" data-srcset="{{ asset('assets/awardwalletnewdesign/img/programs/chase@2x.png') }} 2x" alt="Chase">
+                            </div>
+                        </li>
+                        <li>
+                            <div class="picture _icon-americal-express">
+                                <img class="lazyload _icon-americal-express picture__dark" data-src="{{ asset('assets/awardwalletnewdesign/img/programs/dark/americal-express.png')}}" data-srcset="{{ asset('assets/awardwalletnewdesign/img/programs/dark/americal-express@2x.png') }} 2x" alt="American Express">
+                                <img class="lazyload _icon-americal-express picture__light" data-src="{{ asset('assets/awardwalletnewdesign/img/programs/americal-express.png')}}" data-srcset="{{ asset('assets/awardwalletnewdesign/img/programs/americal-express@2x.png') }} 2x" alt="American Express">
+                            </div>
+                        </li>
+                        <li>
+                            <div class="picture _icon-thankyou">
+                                <img class="lazyload _icon-thankyou picture__dark" data-src="{{ asset('assets/awardwalletnewdesign/img/programs/dark/thankyou.png')}}" data-srcset="{{ asset('assets/awardwalletnewdesign/img/programs/dark/thankyou@2x.png') }} 2x" alt="Thankyou">
+                                <img class="lazyload _icon-thankyou picture__light" data-src="{{ asset('assets/awardwalletnewdesign/img/programs/thankyou.png')}}" data-srcset="{{ asset('assets/awardwalletnewdesign/img/programs/thankyou@2x.png') }} 2x" alt="Thankyou">
+                            </div>
+                        </li>
+                    </ul>
+                    <div class="more-link">
+                        <a href="/supported-programs" target="_blank">{{ 'landing.page.supported_programs.all'|trans({}, 'landing')|desc('See all supported programs') }}</a>
+                    </div>
+                </div>
+            </section>
+
+            <section class="quotes-block">
+                <div class="container">
+                    <div class="title">
+                        <h2>{{ 'landing.page.media.title'|trans({}, 'landing')|desc('AwardWallet in the media') }}</h2>
+                    </div>
+                    <div class="item">
+                        <div class="quotes-blk first">
+                            <div class="blockquote">
+                                <blockquote>
+                                    It is, quite simply, a game changer. It's a free, uncomplicated Web site that keeps all your mile balances, all your account numbers and all your passwords on one screen.
+                                </blockquote>
+                            </div>
+                            <p class="author">Seth Kugel</p>
+
+                            <p class="company">The New York Times</p>
+                        </div>
+                        <div class="quotes-blk second">
+                            <div class="blockquote">
+                                <blockquote>
+                                    I decided the service that best met my needs was AwardWallet, so I'm going to stick with it!
+                                </blockquote>
+                            </div>
+                            <p class="author">Scott J. Wilson</p>
+
+                            <p class="company">Los Angeles Times</p>
+                        </div>
+                        {#                        <div class="more-link">#}
+                        {#                            <a href="/pr/">View all</a>#}
+                        {#                        </div>#}
+                    </div>
+                </div>
+            </section>
+
+            <section class="mobile-block">
+                <div class="title">
+                    <h2>{{ 'landing.page.app.title'|trans({}, 'landing')|desc('Available on your favorite iOS or Android device') }}</h2>
+                </div>
+                <div class="app-buttons">
+                    <a href="http://itunes.apple.com/us/app/awardwallet/id388442727?mt=8" target="_blank" class="ios-app" rel="noopener noreferrer"></a>
+                    <a href="https://play.google.com/store/apps/details?id=com.itlogy.awardwallet" target="_blank" class="android-app" rel="noopener noreferrer"></a>
+                </div>
+                <div class="android">
+                    <img class="lazyload" data-src="{{ asset('assets/awardwalletnewdesign/img/android.png')}}" data-srcset="{{ asset('assets/awardwalletnewdesign/img/android@2x.png') }} 2x" alt="Android app">
+                </div>
+                <div class="iphone">
+                    <img class="lazyload" data-src="{{ asset('assets/awardwalletnewdesign/img/iphone.png')}}" data-srcset="{{ asset('assets/awardwalletnewdesign/img/iphone@2x.png') }} 2x" alt="Iphone app">
+                </div>
+                <div class="mac">
+                    <img class="lazyload" data-src="{{ asset('assets/awardwalletnewdesign/img/mac.png')}}" data-srcset="{{ asset('assets/awardwalletnewdesign/img/mac@2x.png') }} 2x" alt="Desktop">
+                </div>
+            </section>
+
+            <section class="create">
+                <div class="container">
+                    <div class="title">
+                        <h2>{{ 'landing.page.tracking.title'|trans({}, 'landing')|desc('Start tracking your loyalty accounts today!') }}</h2>
+                    </div>
+                </div>
+                <div class="create__bottom">
+                    <a href="http://itunes.apple.com/us/app/awardwallet/id388442727?mt=8" target="_blank" class="main__btn device-ios" rel="noopener noreferrer">{{ 'download-awardwallet-app'|trans({}, 'landing') }}</a>
+                    <a href="https://play.google.com/store/apps/details?id=com.itlogy.awardwallet" target="_blank" class="main__btn device-android" rel="noopener noreferrer">{{ 'download-awardwallet-app'|trans({}, 'landing') }}</a>
+                    <a href="/register" ui-sref="register" ui-sref-active="active" class="main__btn device-unknown">{{ 'landing.page.tracking.create_account'|trans({}, 'landing')|desc('Create a free account') }}</a>
+                </div>
+            </section>
+
+            <section class="other">
+                <div class="container">
+                    <a href="https://awardwallet.com/m">{{ 'dont-want-app-use-mobile-interface'|trans({}, 'landing')|desc("Don't want to download the AwardWallet app? You can use our mobile-friendly web interface instead.") }}</a>
+                </div>
+            </section>
+
+            <section class="social-links">
+                <div class="container">
+                    <ul>
+                        <li><a target="_blank" href="https://twitter.com/AwardWallet" class="twitter" rel="noopener noreferrer"></a></li>
+                        <li><a target="_blank" href="https://www.facebook.com/groups/awardtravel101/" class="facebook" rel="noopener noreferrer"></a></li>
+                        <li><a target="_blank" href="https://www.instagram.com/awardwallet/" class="instagram" rel="noopener noreferrer"></a></li>
+                        <li><a target="_blank" href="https://www.youtube.com/channel/UCOBfnZ9yioR331pId7FyrNA" class="youtube" rel="noopener noreferrer"></a></li>
+                        <li><a target="_blank" href="https://www.linkedin.com/company/awardwallet/about/" class="linkedin" rel="noopener noreferrer"></a></li>
+                    </ul>
+                </div>
+            </section>
+        </main>
+    {% endif %}
+
+    <!-- end -->
+
+    <div ui-view autoscroll="false" class="viewport"></div>
+    {% if not isMobileDevice() %}
+        <script type="text/ng-template" id="/login">
+            {% include "@AwardWalletMain/Users/login.html.twig" %}
+        </script>
+        {% if is_granted('SITE_BUSINESS_AREA') %}
+            <script type="text/ng-template" id="/registerBusiness">
+                {{ render(controller('AwardWallet\\MainBundle\\Controller\\UsersController::getBusinessFormAction')) }}
+            </script>
+        {% else %}
+            <script type="text/ng-template" id="/register">
+                {% include "@AwardWalletMain/Users/register.html.twig" %}
+            </script>
+        {% endif %}
+        <script type="text/ng-template" id="/restore">
+            {% include "@AwardWalletMain/Users/restore.html.twig" %}
+        </script>
+    {% endif %}
+    {{ recaptcha.render(captcha_provider, 'registration', true) }}
+{% endblock %}

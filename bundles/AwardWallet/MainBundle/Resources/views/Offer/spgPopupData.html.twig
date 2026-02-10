@@ -1,0 +1,40 @@
+{% macro drawAccountsPopup(accountsData) %}
+{% import '@AwardWalletMain/TwigMacros/common.html.twig' as interfaceMacros %}
+{{  interfaceMacros.DrawBeginBox('id="spgPopupCrossover" style="width: 550px;"', 'promotion.choose-person.header' | trans | desc('Select person'), true, "popupWindow") }}
+<div class="inBoxTitle">{{ 'promotion.choose-person.title' | trans | desc('Please choose the person you want to use for this promotion:') }}</div>
+<div class="popupBContennner">
+	<div class='boxToll addFrame'>
+		<div class="left"></div>
+		<div class="right"></div>
+		<div class="center pad">
+            {% if accountsData|length == 0 %}
+                You have no Starwood accounts in your profile.
+            {% endif %}
+            {% for account in accountsData %}
+    			<div class="li {% if loop.first %}first{% endif %} {% if loop.last == false %}bottomDots{% endif %} {% if loop.last %}last{% endif %} black">
+                    <div class="liIcon"></div>
+                    <div class="liText">
+                        <div>
+            				<div style="float: left;"><a onclick="offerAgreed();" target="_blank" href="{{ url('aw_account_redirect', {ID: account.AccountID, step: 'crossover'}) }}">{{ account.UserName }}</a></div>
+            				<div class="overallReferral">
+            					<div class="referralLeft"></div>
+            					<div class="referralCenter">{{ account.Balance }}</div>
+            					<div class="referralRight"></div>
+            					<div class="clear"></div>
+            				</div>
+            				<div class="login">{{ account.AccountNumber }}</div>
+            				<div class="clear"></div>
+            			</div>
+                    </div>
+                </div>
+            {% endfor %}
+		</div>
+		<div class="bottom">
+			<div class="left"></div>
+			<div class="right"></div>
+		</div>
+	</div>
+</div>
+<div id="spgPopupCrossoverFrame"></div>
+{{ interfaceMacros.DrawEndBox() }}
+{% endmacro %}

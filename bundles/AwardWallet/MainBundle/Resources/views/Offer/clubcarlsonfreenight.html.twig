@@ -1,0 +1,84 @@
+{# Issue #7625 #}
+
+{% extends "@AwardWalletMain/Offer/standard.html.twig" %}
+{% import '@AwardWalletMain/Offer/offerMacros.html.twig' as offerMacros %}
+{% import '@AwardWalletMain/TwigMacros/assets.html.twig' as assets %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    {{ encore_entry_link_tags('offer') }}
+    {{ encore_entry_link_tags('offers/clubcarlson') }}
+    {{ assets.assets_form('css') }}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    {{ assets.assets_form('js') }}
+    <script>
+        $(document).ready(function(){
+            $(".clubcarslon_select").css({'height':($("#clubcarlson_btn").height()+14+'px')});
+            $(".clubcarslon_select").css({'line-height':($("#clubcarlson_btn").height()+14+'px')});
+        });
+        function selectChange(sel){
+            accId = sel.options[sel.selectedIndex].value;
+        }
+        {{ offerMacros.jsOfferNo(_context, Code, OfferUserID, defaultRedirectLocation) }}
+        function offerAgreed() {
+        {% autoescape false %}
+        {% if (preview != 1) and (src != 1) %}
+        {% if vars.isLocalProd == false %}
+            $.post("{{ url('aw_offer_agree', { 'offerUserId': OfferUserID, 'agreed': '1' } ) }}");
+        {% endif %}
+        {% endif %}
+        {% endautoescape %}
+            window.open('{{ url('aw_account_redirect', {'ID': accId, 'goto': 'offerFreeNight'}) }}','_blank');
+            window.setTimeout(function() {window.location = '{{ defaultRedirectLocation }}';}, 1000);
+        return true;
+        }
+    </script>
+{% endblock %}
+
+{% block content %}
+    <div id="offer_wrap">
+        <div id="clubcarlson_bg">
+            <div class="offer_title clubcarlson_title">
+                Stay 3 Nights.<br>
+                Get 1 Free.
+            </div>
+            <div id="div_ul" class="clubcarlson_ul">
+                <ul class="offer_list clubcarlson_list">
+                    <li>This promotions is capped at one bonus per account
+                    <li>Your stay must begin on or after <strong>January 6, 2014</strong>, and completed by<br/>
+                    <strong>April 13, 2014</strong>
+                    <li>Stays or nights paid for using Points + Cash are not eligible
+                    <li>Registration must be received before checkout of the first Eligible Stay
+                </ul>
+            </div>
+            <script>
+                accId = {{ Accounts[0].AccountID }};
+            </script>
+            <div class="clubcarlson_bottom">
+            {% if Accounts|length == 1 %}
+            {% else %}
+                <div class="clubcarslon_select_label">
+                Please select an account to register:
+                </div>
+                <select style="opacity:0; height: 30px" onchange="selectChange(this);">
+                {% for account in Accounts %}
+                    <option value="{{ account.AccountID }}">{{ account.AccountNumber }} ({{ account.UserName }})</option>
+                {% endfor %}
+                </select>
+            {% endif %}
+                <div class="offer_btn" id="clubcarlson_btn" onclick="offerAgreed();">
+                    Register for this promotion
+                </div>
+            </div>
+        </div>
+        <div class="offer_declinekind" onclick="offerNo();">
+            Never show this ad again
+        </div>
+        <div class="offer_toaccount clubcarlson_toaccount" onclick="window.location = '{{ defaultRedirectLocation }}'">
+            Proceed to my account
+        </div>
+    </div>
+{% endblock %}

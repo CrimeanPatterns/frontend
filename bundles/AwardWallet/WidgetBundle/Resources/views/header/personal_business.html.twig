@@ -1,0 +1,6 @@
+{% if isBusiness %}
+    <ul class="switcher">
+        <li><a href="{{ url('aw_security_switch_site') }}" tabindex="990">{{ 'area.switcher.business'|trans|desc('Business') }}</a></li>
+        <li class="active"><a>{{ 'area.switcher.personal'|trans|desc('Personal') }}</a></li>
+    </ul>
+{% endif %}

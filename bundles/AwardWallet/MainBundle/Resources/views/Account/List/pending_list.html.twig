@@ -1,0 +1,66 @@
+{% extends app.request.xmlHttpRequest ? '@AwardWalletMain/Layout/ajax_content_layout.html.twig' : "@AwardWalletMain/Layout/accounts.html.twig" %}
+
+{% block content %}
+    {% if results|length %}
+        {% for result in results %}
+            <div class="main-blk">
+                <h1 class="silver">{{ 'pending.popup.title'|trans({'%displayName%': '<span class="blue inline">'~result.displayName|escape~'</span>'})|raw }}</h1>
+
+                <div class="main-blk-content" style="padding-bottom: 0">
+
+                    <div class="error-message-blk hidden"></div>
+                    {% if result.emailSubject %}
+
+                        <table class="main-table pendings">
+                            <tbody>
+                            <tr>
+                                <td><span class="bold">{{ 'award.account.popup.pending.from'|trans }}:</span></td>
+                                <td><a href="{{ path('aw_usermailbox_emails', {'id': result.emailId}) }}"
+                                       class="blue-link">{{ result.email }}</a></td>
+                            </tr>
+                            {% if result.userName != false %}
+                                <tr>
+                                    <td><span class="bold">{{ 'award.account.popup.pending.name'|trans }}:</span></td>
+                                    <td>{{ result.userName }}</td>
+                                </tr>
+                            {% endif %}
+                            <tr>
+                                <td><span class="bold">{{ 'award.account.popup.pending.emaildate'|trans }}:</span></td>
+                                <td>{{ result.emailDate }}</td>
+                            </tr>
+                            <tr>
+                                <td><span class="bold">{{ 'award.account.popup.pending.emailsubject'|trans }}:</span>
+                                </td>
+                                <td><a href="{{ path('aw_usermailbox_view_mailBody', {'historyId': result.historyId}) }}">{{ result.emailSubject }}</a></td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    {% endif %}
+                </div>
+                {% set form = result.form %}
+                {% include "@AwardWalletMain/Account/List/_pending_form.html.twig" %}
+            </div>
+        {% endfor %}
+        <div class="navigation">
+            {{ aw_pagination_render(pagination) }}
+        </div>
+
+    {% else %}
+        <div class="main-blk" style="height: 300px;">
+            <p class="no-result" style="margin-top: 140px;">
+                <i class="icon-warning-small"></i>
+
+                <span>{{ 'pending.not-found'|trans|desc('Pending accounts not found.') }}</span>
+            </p>
+        </div>
+    {% endif %}
+{% endblock %}
+
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        require(['pages/pending']);
+    </script>
+{% endblock %}
+

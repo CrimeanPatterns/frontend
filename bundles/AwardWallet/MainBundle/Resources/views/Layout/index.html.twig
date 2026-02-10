@@ -1,0 +1,56 @@
+{% import "@AwardWalletMain/TwigMacros/environment.html.twig" as environmentMacros %}
+{# used only for new pages with BEM methodology #}
+
+{# LEGACY CODE !!! Only used if the page contains old layout with theme support #}
+{% set theme = theme.currentTheme %}
+{% set htmlClass = '' %}
+
+{% if theme and theme != '' %}
+    {% set htmlClass = theme ~ '-mode' %}
+{% endif %}
+{# END LEGACY CODE !!! #}
+
+<!doctype html>
+<html lang="{{ app.request.locale|replace({'_': '-'}) }}" class="{{ htmlClass }}">
+<head>
+    {% block meta %}
+        <meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
+        <link rel="chrome-webstore-item" href="https://chrome.google.com/webstore/detail/lppkddfmnlpjbojooindbmcokchjgbib"/>
+    {% endblock %}
+    <!-- <link rel="shortcut icon" href="{{ asset('favicon.ico') }}"/> -->
+    <link rel="apple-touch-icon" href="/apple-touch-icon-120x120.png">
+    <link rel="apple-touch-icon" sizes="57x57" href="/apple-touch-icon-57x57.png">
+    <link rel="apple-touch-icon" sizes="60x60" href="/apple-touch-icon-60x60.png">
+    <link rel="apple-touch-icon" sizes="72x72" href="/apple-touch-icon-72x72.png">
+    <link rel="apple-touch-icon" sizes="76x76" href="/apple-touch-icon-76x76.png">
+    <link rel="apple-touch-icon" sizes="114x114" href="/apple-touch-icon-114x114.png">
+    <link rel="apple-touch-icon" sizes="120x120" href="/apple-touch-icon-120x120.png">
+    <link rel="apple-touch-icon" sizes="144x144" href="/apple-touch-icon-144x144.png">
+    <link rel="apple-touch-icon" sizes="152x152" href="/apple-touch-icon-152x152.png">
+    <link rel="apple-touch-icon" sizes="167x167" href="/apple-touch-icon-167x167.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon-180x180.png">
+    <link rel="icon" type="image/png" href="/favicon-32x32.png" sizes="32x32">
+    <link rel="icon" type="image/png" href="/android-chrome-192x192.png" sizes="192x192">
+    <link rel="icon" type="image/png" href="/favicon-128x128.png" sizes="128x128">
+    <link rel="icon" type="image/png" href="/favicon-96x96.png" sizes="96x96">
+    <link rel="icon" type="image/png" href="/favicon-16x16.png" sizes="16x16">
+    <link rel="manifest" href="{{ path('aw_push_chrome_manifest') }}">
+    <meta name="msapplication-TileColor" content="#ffffff">
+    <meta name="msapplication-TileImage" content="/mstile-144x144.png">
+    <meta name="theme-color" content="#ffffff">
+    <meta name="csrf-token" content="{{ csrf_token('') }}">
+
+    {{ canonical_tag() }}
+    {{ alternate_tag() }}
+    {{ meta_android_alternate() }}
+
+    <title>{% block title %}AwardWallet{% endblock %}</title>
+    {% block stylesheets %}{% endblock %}
+    {% block javascripts %}{% endblock %}
+
+    {% include '@AwardWalletMain/Layout/vendor_head.html.twig' %}
+</head>
+<body {{ environmentMacros.globalDataAttr(_context) }} class="{% apply spaceless %}{% block body_class %}{% endblock %}{% endapply %}" {% block body_attr %}{% endblock %}>
+    {% block body %}{% endblock %}
+</body>
+</html>

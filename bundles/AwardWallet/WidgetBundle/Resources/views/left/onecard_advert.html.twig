@@ -1,0 +1,7 @@
+    <div class="row card">
+        <div class="heading">
+			<h3>{{ 'menu.header.onecard'|trans({}, 'menu')|desc('AwardWallet OneCard') }}</h3>
+        </div>
+        <p>{{ 'menu.onecard-text'|trans({'%url%': path('aw_one_card')}, 'menu')|desc('Get your personal! <a href="%url%">AwardWallet OneCard</a> whith all of your account numbers on it')|raw }}</p>
+        <a href="{{ path('aw_one_card') }}" class="one-card" tabindex="-1"></a>
+    </div>

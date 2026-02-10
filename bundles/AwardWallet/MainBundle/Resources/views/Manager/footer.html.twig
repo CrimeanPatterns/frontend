@@ -1,0 +1,14 @@
+</div>
+<script>
+    $(window).load(function() {
+        {% for script in onLoadScripts %}
+        {{ script | raw }}
+        {% endfor %}
+        activateDatepickers('active');
+        if ($('#extendFixedMenu').length > 0) {
+            $('#contentBody').css('margin-top', parseInt($('#contentBody').css('margin-top')) + $('#extendFixedMenu').height() + 'px')
+        }
+    })
+</script>
+</body>
+</html>

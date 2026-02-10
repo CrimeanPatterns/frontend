@@ -1,0 +1,31 @@
+{% macro draw(dataRoute, placeholder, add, onGetUrl, autoFocus, value) %}
+    <form class="search-form" onsubmit="return false;">
+        <input type="text" spellcheck="false" autocomplete="off" placeholder="{{ placeholder }}" id="traveler"
+               class="search-input" value="{{ value is defined ? value : "" }}">
+        <a href="#" class="reset">
+            <i class="icon-close-silver"></i>
+        </a>
+    </form>
+    {% if not webpack|default(false) %}
+        <script>
+            require(['pages/businessMembers/searchBox'], function (searchBox) {
+                searchBox('{{ dataRoute }}', {{ add }}, {{ onGetUrl|raw }});
+            });
+            {% if autoFocus is defined and autoFocus %}
+            setTimeout(function(){
+                $('.search-form input.search-input').focus();
+            }, 500);
+            {% endif %}
+        </script>
+    {% else %}
+        <script>
+            window.searchBoxDataRoute = '{{ dataRoute }}';
+            window.searchBoxAdd =  {{ add }};
+            window.searchBoxOnGetUrl = {{ onGetUrl|raw }}
+            window.searchBoxAutoFocus = {{ autoFocus is defined and autoFocus ? 'true' : 'false' }}
+        </script>
+        {{ encore_entry_script_tags('search-box', null, '_default', {'defer': true}) }}
+    {% endif %}
+    
+    
+{% endmacro %}

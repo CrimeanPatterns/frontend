@@ -1,0 +1,20 @@
+<!doctype html>
+<html>
+<head>
+    <script type="text/javascript">
+        var wanted = location.hash.substring(1);
+        console.log('wanted', wanted);
+        var allowed = localStorage.getItem('autologinUrl');
+        console.log('allowed', allowed);
+        if(allowed == wanted && wanted) {
+            console.log('clearing hash');
+            document.location.hash = '';
+            setTimeout(function(){
+                console.log('navigating to', wanted);
+                document.location.href = wanted;
+            }, 100);
+        }
+    </script>
+</head>
+<body></body>
+</html>

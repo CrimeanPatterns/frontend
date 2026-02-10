@@ -1,0 +1,55 @@
+{% set title = "Send Notifications" %}
+{% extends '@AwardWalletMain/Manager/layout.html.twig' %}
+{% form_theme form with ['form_table_layout.html.twig'] %}
+
+{% block content %}
+    <style type="text/css">
+        table {
+            border-collapse: collapse;
+        }
+        table td {
+            border: lightgray solid 1px;
+            padding: 7px;
+        }
+        thead td {
+            font-weight: bold;
+        }
+        input + label:after {
+            content: " ";
+            height: 0;
+            display: block;
+            *height: 1%;
+            *zoom: 1;
+            clear: both;
+        }
+
+        .code-term {
+            font-family: Monaco, Menlo, Consolas, "Courier New", monospace;
+            background-color: #f7f7f9;
+            border: 1px solid #e1e1e8;
+            border-radius: 3px;
+            padding: 2px 4px;
+            color: #d14;
+            font-size: 0.9em;
+        }
+    </style>
+
+    <a href="{{ url('aw_manager_sendnotification_index') }}">List of push notifications</a> |
+    <a href="{{ url('aw_manager_sendnotification_view', {id: notification.notificationTemplateID }) }}">{{ notification.title }}</a>
+
+    <hr size="2"/>
+
+    <h1>Notification {{ notification.title }}</h1>
+
+    <br/>
+    <form name="edit" method="post" autocomplete="off">
+        {{ form_widget(form) }}
+        <br/>
+        <input class="buttonBg" value="Save" type="submit">
+    </form>
+
+    <br/>
+    <hr size="1"/>
+
+{% endblock %}
+

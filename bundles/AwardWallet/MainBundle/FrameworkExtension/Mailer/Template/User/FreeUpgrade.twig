@@ -1,0 +1,39 @@
+{% extends '@MailTemplate/Layout/base.twig' %}
+{% trans_default_domain "email" %}
+
+{% block subject %}{% apply spaceless %}{% autoescape false %}
+    {{ 'free-upgrade.subject'|trans({}, 'email', lang)|desc('Free upgrade to AwardWallet Plus') }}
+{% endautoescape %}{% endapply %}{% endblock subject %}
+
+{% block content %}
+    {% import '@MailTemplate/CommonMacro.twig' as commonMacro %}
+
+    {{ commonMacro.hello(user.firstname, _context) }}
+
+    {% set mailtoLink = null %}
+    {% if not invitee.isBusiness %}
+        {% set mailtoLink = commonMacro.link('mailto:'~invitee.email, invitee.email) %}
+    {% endif %}
+    {{ commonMacro.paragraph(
+        'free-upgrade.thank-you'|trans({
+            '%bold_on%': '<b style="color:#3d424d;">',
+            '%bold_off%': mailtoLink is null ? '</b>' : '</b> ('~mailtoLink~')',
+            '%inviteeUserName%': invitee.fullname|htmlencode,
+            '%awardwallet_plus%': '<b>AwardWallet Plus</b>'
+        }, 'email', lang)|desc('Thank you for inviting %bold_on%%inviteeUserName%%bold_off% to AwardWallet! Now you have a free %awardwallet_plus% upgrade coupon, in order to use it just follow this link:'),
+        _context, {escape: false}
+    ) }}
+
+    {% set link = baseUrl ~ path('aw_users_usecoupon') %}
+    {{ commonMacro.dottedLink(link, link, _context) }}
+
+    {% set selection = commonMacro.span('$$')|split('$$') %}
+    {{ commonMacro.paragraph(
+        'free-upgrade.use-coupon'|trans({
+            '%bold_on%': selection[0],
+            '%bold_off%': selection[1],
+            '%couponCode%': coupon.code|htmlencode
+        }, 'email', lang)|desc('Use the following coupon code: %bold_on%%couponCode%%bold_off% to get the upgrade or give this coupon as a gift to your friend.'),
+        _context, {escape: false}
+    ) }}
+{% endblock content %}

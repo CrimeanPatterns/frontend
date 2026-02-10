@@ -1,0 +1,52 @@
+{% block stylesheets %}
+    {% if preview is defined and preview %}
+        {{ encore_entry_link_tags('main') }}
+    {% endif %}
+{% endblock %}
+
+{% if preview is defined and preview %}
+
+    <div class="ui-widget-overlay"></div>
+    <div class="ui-dialog ui-widget ui-widget-content ui-corner-all ui-front ui-draggable ui-resizable ui-dialog-buttons"
+         style="width:910px">
+        <div class="ui-dialog-titlebar ui-widget-header ui-corner-all ui-helper-clearfix" style="display: none">
+            <span class="ui-dialog-title">AwardWallet Beta Preview</span>
+            <button class="ui-button ui-widget ui-state-default ui-corner-all ui-button-icon-only ui-dialog-titlebar-close">
+                <span class="ui-button-icon-primary ui-icon ui-icon-closethick"></span>
+                <span class="ui-button-text">close</span>
+            </button>
+        </div>
+        <div class="ui-dialog-content">
+{% endif %}
+
+<div id="offerPopup" title="" {% if preview is not defined or not preview %}style="display: none;"{% endif %}>
+    {% block content %}
+    {% endblock %}
+</div>
+
+{% if preview is defined and preview %}
+        </div>
+    </div>
+{% endif %}
+{% block javascripts %}
+    {% if not webpack|default(false) %}
+			<script>
+				require([
+                    "jquery-boot",
+                    "lib/dialog",
+                    ], function ($, dialog) {
+                        var popup = $("#offerPopup");
+                        dialog.createNamed("offerPopup", popup, {
+                            autoOpen: true,
+                            modal   : true,
+                            minWidth: 910,
+                            open    : function (event, ui) {
+                                $(".ui-dialog-titlebar", ui.dialog | ui).hide();
+                            },
+                        });
+                });
+			</script>
+		{% else %}
+			{{ encore_entry_script_tags('offer-popup', null, '_default', {'defer': true}) }}
+		{% endif %}
+{% endblock %}

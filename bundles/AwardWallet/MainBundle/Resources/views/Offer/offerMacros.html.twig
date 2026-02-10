@@ -1,0 +1,134 @@
+{% macro jsOfferYes(context, url, Code, OfferUserID, redirect, Skip) %}
+    function offerYes(openInNewWindow, customRedirectUrl){
+        var xsrfToken = document.head.querySelector('meta[name="csrf-token"]').content;
+        {% autoescape false %}
+            var redirectUrl = (typeof customRedirectUrl === 'string') ? customRedirectUrl : '{{ redirect }}';
+
+            if (typeof openInNewWindow === 'undefined' ? true : openInNewWindow) {
+                window.open('{{ url }}');
+            }
+
+            var redirectAction = function() {
+                window.location = redirectUrl;
+            };
+
+            {% if (context.preview != 1) and (context.src != 1) %}
+                var callbackHellExitCount = 0;
+
+                {% if vars.isLocalProd == false %}
+                    callbackHellExitCount += 1;
+                {% endif %}
+
+                {% if Skip != 'Skip' %}
+                    $.ajax({
+                        url: "{{ url('aw_offer_agree', { 'offerUserId': OfferUserID, 'agreed': '1' }) }}",
+                        type: "POST",
+                        headers: {
+                            "x-xsrf-token": xsrfToken
+                        },
+                        success: function() {
+                            callbackHellExitCount += 1;
+
+                            {% if redirect != 'noredirect' %}
+                                if (callbackHellExitCount == 2) {
+                                    redirectAction();
+                                } else {
+                                    window.setTimeout(redirectAction, 1000);
+                                }
+                            {% endif %}
+                        },
+                    });
+                {% else %}
+                    {% if redirect != 'noredirect' %}
+                        window.setTimeout(redirectAction, 1000);
+                    {% endif %}
+                {% endif %}
+            {% else %}
+                {% if redirect != 'noredirect' %}
+                    window.setTimeout(redirectAction, 1000);
+                {% endif %}
+            {% endif %}
+        {% endautoescape %}
+    }
+{% endmacro %}
+
+{% macro jsOfferNo(context, Code, OfferUserID, redirect, Kind) %}
+    function offerNo(){
+        {% if Kind != 'Kind' %}
+            {% set Kind = 0 %}
+        {% else %}
+            {% set Kind = 2 %}
+        {% endif %}
+
+        var redirectAction = function() {
+            window.location = '{{ redirect }}';
+        };
+
+        {% autoescape false %}
+            {% if (context.preview != 1) and (context.src != 1) %}
+                var callbackHellExitCount = 0;
+
+                {% if vars.isLocalProd == false %}
+                    callbackHellExitCount += 1;
+                {% endif %}
+
+                $.post(
+                    "{{ url('aw_offer_agree', { 'offerUserId': OfferUserID, 'agreed': Kind }) }}",
+                    function() {
+                        callbackHellExitCount += 1;
+
+                        {% if context.popup is defined and context.popup %}
+                            dialog.get('offerPopup').close();;
+                        {% else %}
+                            if (callbackHellExitCount == 2) {
+                                redirectAction();
+                            } else {
+                                window.setTimeout(redirectAction, 1000);
+                            }
+                        {% endif %}
+                    }
+                );
+                $.ajax({
+                        url: "{{ url('aw_offer_agree', { 'offerUserId': OfferUserID, 'agreed': Kind }) }}",
+                        type: "POST",
+                        headers: {
+                            "x-xsrf-token": xsrfToken
+                        },
+                        success: function() {
+                            callbackHellExitCount += 1;
+
+                            {% if context.popup is defined and context.popup %}
+                                dialog.get('offerPopup').close();;
+                            {% else %}
+                                if (callbackHellExitCount == 2) {
+                                    redirectAction();
+                                } else {
+                                    window.setTimeout(redirectAction, 1000);
+                                }
+                            {% endif %}
+                        },
+                    });
+            {% else %}
+                window.setTimeout(redirectAction, 1000);
+            {% endif %}
+        {% endautoescape %}
+    }
+{% endmacro %}
+
+{% macro offerButtons(context) %}
+    {% if context.popup is defined and context.popup %}
+        <div class="offer_declinekind" onclick="offerNo();">
+            {{ 'offer.never_show'|trans|desc('Never show this ad again') }}
+        </div>
+        <div class="offer_toaccount" style="margin-top: 5px" onclick="$('#offerPopup').dialog('close');">
+            {{ 'offer.proceed'|trans|desc('Proceed to my account') }}
+        </div>
+    {% else %}
+        <div class="offer_declinekind" onclick="offerNo();">
+            Never show this ad again
+        </div>
+        <div class="offer_toaccount" style="margin-top: 5px" onclick="window.location = '{{ context.defaultRedirectLocation }}'">
+            Proceed to my account
+        </div>
+    {% endif %}
+{% endmacro %}

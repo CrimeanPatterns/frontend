@@ -1,0 +1,13 @@
+services:
+  centrifugo:
+    image: centrifugo/centrifugo:1.8.0
+    entrypoint: ["centrifugo", "-c", "/centrifugo-config/config.json", "-p", "8000"]
+    restart: always
+    ulimits:
+      nofile:
+        soft: 50000
+        hard: 60000
+    ports:
+      - '8000:8000'
+    volumes:
+      - ./config.json:/centrifugo-config/config.json:ro

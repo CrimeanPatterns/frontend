@@ -1,0 +1,28 @@
+{% set MOBILE_NAV = true %}
+{% set MAIN_BODY_CLASSES = {
+    'manual-hidden': true,
+    'responsive': true
+}|merge(MAIN_BODY_CLASSES|default({})) %}
+{% extends app.user is not null ? "@AwardWalletMain/Layout/common.html.twig" : "@AwardWalletMain/Layout/not_logged.html.twig" %}
+
+{% if content is defined and content is same as('ccpa') %}
+    {% set headerText = 'California Consumer Privacy Act Disclosures' %}
+    {% set includeItem = "@AwardWalletMain/SiteInfo/ccpaNotice.html.twig" %}
+{% else %}
+    {% set headerText = 'menu.privacy-notice'|trans({}, 'menu') %}
+    {% set includeItem = "@AwardWalletMain/SiteInfo/privacyNotice.html.twig" %}
+{% endif %}
+
+{% block title %}{{ headerText }}{% endblock %}
+
+{% block meta %}
+    {{ parent() }}
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0, viewport-fit=cover">
+{% endblock %}
+
+{% block content %}
+    <div class="static-page" id="about-us-page">
+        {% include includeItem with { 'heading': '<h1>'~headerText~'</h1>' } %}
+    </div>
+{% endblock %}
+

@@ -1,0 +1,665 @@
+{% set theme = theme.currentTheme|default('') %}
+{% set htmlCls = '' %}
+{% if isMobileDevice() %}
+    {% set htmlCls = htmlCls ~ 'mobile-device ' %}
+{% endif %}
+{% set isMobileView = is_granted('SITE_FROM_APP') or is_granted('SITE_MOBILE_APP') or is_granted('SITE_MOBILE_AREA') or isMobileDevice() %}
+{% if theme and theme != '' %}
+    {% set htmlCls = htmlCls ~ theme ~ '-mode' %}
+{% endif %}<!doctype html>
+<html lang="en" class="{{ htmlCls }}">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge"/>
+    <title>Offer</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    {% if is_granted('SITE_MOBILE_AREA') %}
+        <link rel="stylesheet" type="text/css" href="/assets/awardwalletmain/css/popup-offer.css?v=7">
+        <script src="{% if is_granted("SITE_PROD_MODE") %}{{ cdn_host }}{% endif %}/assets/common/vendors/jquery/dist/jquery.min.js"></script>
+    {% endif %}
+    <script>
+        function pageOnLoad() {
+            const $filterCards = $('#filterCards');
+
+            function applyFilter() {
+                const $actives = $('a.active', $filterCards);
+                const filterType = $($actives.get(0)).attr('href').substr(1);
+                const filterHas = $($actives.get(1)).length
+                    ? $($actives.get(1)).attr('href').substr(1)
+                    : 'type-all';
+
+                $('.js-filter-type-all').each(function() {
+                    $(this).hasClass('js-filter-' + filterType)
+                    && $(this).hasClass('js-filter-' + filterHas)
+                    {% if isMobileView %}
+                        ? $(this).show(0, toggleBlockCards)
+                        : $(this).hide(0, toggleBlockCards);
+                    {% else %}
+                        ? $(this).slideDown(toggleBlockCards)
+                        : $(this).slideUp(toggleBlockCards);
+                    {% endif %}
+                });
+            }
+
+            $('a', $filterCards).click(function(e) {
+                e.preventDefault();
+                const $label = $('>div', $(this).parent());
+                let pos = $(this).position();
+                $label.css({
+                    'left': pos.left,
+                    'width': $(this).outerWidth(),
+                });
+                $('>a', $(this).parent()).not($(this)).removeClass('active');
+                $(this).addClass('active');
+
+                applyFilter();
+            });
+
+            const myCards = $('.js-filter-has-me');
+            if (0 === myCards.length) {
+                $('.card-me', $filterCards).hide();
+            }
+
+            {% if isMobileView %}
+            setTimeout(() => {
+                $('>div a:first-child', $filterCards).click();
+            }, 500);
+            {% endif %}
+
+            const selectType = function() {
+                if (isSelectedOnlyType('personal-card')) {
+                    $('a[href="#type-personal"]', $filterCards).click();
+                } else if (isSelectedOnlyType('business-card')) {
+                    $('a[href="#type-business"]', $filterCards).click();
+                } else {
+                    $('a[href="#type-all"]', $filterCards).click();
+                }
+
+                if (isSelectedOnlyType('have-card')) {
+                    $('a[href="#has-me"]', $filterCards).click();
+                } else {
+                    $('a[href="#has-all"]', $filterCards).click();
+                }
+            };
+
+            setTimeout(selectType, 500);
+            setTimeout(() => {
+                $('a.active', $filterCards).trigger('click');
+                $('> div > div', $filterCards).css('opacity', 1);
+            }, 1500);
+        };
+
+        function toggleBlockCards() {
+            $('.cards-wrap').each(function() {
+                if (0 === $('>div:not(.container__title):visible', $(this)).length) {
+                    $('.container__title', $(this)).hide();
+                } else {
+                    $('.container__title', $(this)).show();
+                }
+            });
+        }
+
+        function isSelectedOnlyType(type) {
+            const $cardsBox = $('#cardUsed');
+            if (0 === $cardsBox.length) {
+                return null;
+            }
+
+            let isAll = null;
+            $('input.js-cardId:checked', $cardsBox).each(function(e) {
+                isAll = 1 === $(this).parent().find('i.icon-' + type).length;
+                if (!isAll) {
+                    return false;
+                }
+            });
+            return isAll;
+        }
+
+        $(document).ready(pageOnLoad);
+    </script>
+</head>
+<body>
+<div class="offpage">
+<script>
+    var classNames = [];
+    var html = document.getElementsByTagName('html')[0];
+
+    {% if is_granted("SITE_MOBILE_APP_IOS") or is_granted("SITE_MOBILE_AREA") %}
+        classNames.push('device-ios');
+    {% elseif is_granted("SITE_MOBILE_APP_ANDROID") %}
+        classNames.push('device-android');
+    {% endif %}
+
+    if (html.classList) html.classList.add.apply(html.classList, classNames);
+
+    setTimeout(function () {
+        {% if knownCategories is defined and knownCategories|length > 0 %}
+            var aTitle = document.getElementById('open-top-details');
+            aTitle.addEventListener('click', function (evt) {
+                evt.preventDefault();
+                document.getElementById('top-details').classList.toggle("expanded");
+                return false;
+            });
+        {% endif %}
+
+        {% if knownCategories is defined %}
+            var aBottom = document.getElementById('open-bottom-details');
+            aBottom.addEventListener('click', function (evt) {
+                evt.preventDefault();
+                document.getElementById('bottom-details').classList.toggle("expanded");
+                return false;
+            });
+        {% endif %}
+    }, 500);
+</script>
+<style>
+    /*dark mode*/
+    {% if not is_granted('SITE_MOBILE_AREA') %}
+    .filter-cards a,
+    .filter-cards > div > div {
+        transition: none !important;
+    }
+
+    @media (prefers-color-scheme: dark) {
+        html:not(.light-mode) .search-box__offer-top,
+        html:not(.light-mode) .container__row.active {
+            background: #1c1c1e;
+            border-color: #5a5a5f;
+        }
+        html:not(.light-mode) .container,
+        html:not(.light-mode) .search-box__offer-top-container,
+        html:not(.light-mode) .search-box__offer-top-container__row:not(:first-child),
+        html:not(.light-mode) .container__title span,
+        html:not(.light-mode) .container__row,
+        html:not(.light-mode) .container__row.show-details .container__details{
+            border-color: #5a5a5f;
+        }
+        html:not(.light-mode) .container__details,
+        html:not(.light-mode) .modal .remark-info.small{
+            background: #1c1c1e;
+        }
+        html:not(.light-mode) .search-box__offer-content .red {
+            color: #EA3C48;
+        }
+        html:not(.light-mode) .search-box__offer-content .blue,
+        html:not(.light-mode) .modal a,
+        html:not(.light-mode) a.blue-link{
+            color: #0984FF;
+        }
+        html:not(.light-mode) .container__link{
+            border-color: #5a5a5f;
+            color: #fff !important;
+        }
+        html:not(.light-mode) .check-list li,
+        html:not(.light-mode) .modal,
+        html:not(.light-mode) .search-box__offer-title,
+        html:not(.light-mode) .modal p,
+        html:not(.light-mode) .content-popup p,
+        html:not(.light-mode) .container__title,
+        html:not(.light-mode) .search-box__offer-top-container,
+        html:not(.light-mode) .container__title span,
+        html:not(.light-mode) .container{
+            color: #fff;
+        }
+        html:not(.light-mode) .container__link:hover{
+            color: #0984FF !important;
+        }
+        html:not(.light-mode) .modal .up-counter {
+            background: #5a5a5f;
+        }
+    }
+    {% endif %}
+
+    {% if isMobileView %}
+    .filter-cards * {
+        box-sizing: border-box;
+        transition: none;
+        text-align: center;
+    }
+    .filter-cards {
+        margin-bottom: .5rem;
+        float: none;
+    }
+    .filter-cards > div {
+        display: flex;
+        width: 100%;
+        margin: .2rem 0;
+    }
+    .filter-cards .card-types a {
+        width: 33.3%;
+    }
+    .filter-cards .card-me a {
+        width: 50%;
+    }
+
+    .search-box__offer-top-wrap .ads-dis {
+        display: inline-block !important;
+    }
+    {% endif %}
+</style>
+
+    <div class="search-box__offer-content">
+        {% if onlyCardsList is defined and onlyCardsList %}
+        <div class="search-box__offer-top" id="top-details"> <!--  .expanded class -->
+            <div class="search-box__offer-top-wrap">
+                <div class="search-box__offer-title">
+                    <span>{{ merchant }}</span>
+                    {% if category is not empty %}
+                    <span class="blue"> ({{ category }})</span>
+                    {% endif %}
+                </div>
+                {% if knownCategories is defined and knownCategories|length > 0 %}
+                    <a href="#" class="blue-link open-details" id="open-top-details">see other detected categories <i class="icon-double-arrow-right-blue"></i></a>
+                {% endif %}
+                <a class="ads-dis" href="https://awardwallet.com/blog/advertiser-disclosure/">Advertiser Disclosure</a>
+            </div>
+            {% if knownCategories is defined %}
+            <div class="search-box__offer-top-details">
+                <p>{{  merchant }} has been seen to be coded as:</p>
+                <div class="search-box__offer-top-container">
+                    {% for provider, categories in knownCategories %}
+                        <div class="search-box__offer-top-container__row">
+                            <div class="search-box__offer-top-container__col">by {{ provider }}:</div>
+                            <div class="search-box__offer-top-container__col">
+                                <ul class="check-list">
+                                    {% for category in categories %}
+                                        <li>
+                                            {{ category.name|raw }}
+                                            {% if showPercent is defined and showPercent %}(<span class="red">{{ category.percentage }}%</span>){% endif %}
+                                        </li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                        </div>
+
+                    {% endfor %}
+                    {% if chaseUnknownFlag %}
+                        <!-- CHASE -->
+                        <div class="search-box__offer-top-container__row">
+                            <div class="search-box__offer-top-container__col">by Chase:</div>
+                            <div class="search-box__offer-top-container__col">
+                                <div class="no-detect">
+                                    <p><strong>No category detected</strong></p>
+                                    <p class="small">We only receive Chase category if users get bonus points at this merchant. Since we are not seeing any Chase categories for this merchant it probably means Chase is categorizing it as something else and you are not likely to earn any bonus points with any Chase cards at this merchant (unless it's a card that earns more than 1x on all purchases).</p>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- END -->
+                    {% endif %}
+                </div>
+            </div>
+            {% endif %}
+        </div>
+        {% endif %}
+        <div class="modal">
+            <div class="modal__top">
+            {#<p>You spent <strong>$11</strong> at <strong>SPOTHERO 844-324-7768</strong> and earned <strong>16.5</strong> Ultimate Rewards <span class="up-counter">1.5x</span> using your Chase Freedom Unlimited card. Based on the data we've collected and what other AwardWallet members have earned from <strong>SPOTHERO 844-324-7768</strong>, which appears to be coded as <strong>travel</strong>, you may be able to increase your rewards earning with this merchant by instead using a credit card that receives additional bonus points.</p>#}
+            {% if onlyCardsList is not defined or not onlyCardsList%}
+                {% set offerData = {
+                    '%strong_on%': '<strong>',
+                    '%strong_off%': '</strong>',
+                    '%up-counter-on%': '<span class="up-counter">',
+                    '%up-counter-off%': '</span>',
+                    '%merchant%': merchant,
+                    '%multiplier%': [multiplier, 'x']|join,
+                    '%amount%': amount,
+                    '%miles%': miles,
+                    '%description%': merchant,
+                    '%category%': category,
+                    '%earned%': miles ?
+                        'credit-card.offer.popup.merchant.info-analysis.earned-points'|trans({'%strong_on%': '<strong>', '%strong_off%': '</strong>', '%miles%': miles})|desc("%strong_on%%miles%%strong_off% points")
+                        : '<strong>$' ~ pointValue ~ '</strong>'
+                } %}
+                <p>
+                    {% if potentialData.isEveryPurchaseCategory %}
+                        {{ 'credit-card.offer.popup.merchant.info-analysis.everypurchase2'|trans(offerData)|desc("You spent %strong_on%%amount%%strong_off% at %strong_on%%description%%strong_off% and earned %earned% %up-counter-on%%multiplier%%up-counter-off%. Based on the data we've collected and what other AwardWallet members have earned with %strong_on%%merchant%%strong_off%, you may be able to increase your rewards earning by using a credit card that earns more than %up-counter-on%%multiplier%%up-counter-off% on all purchases.") | raw }}
+                    {% else %}
+                        {{ 'credit-card.offer.popup.merchant.info-analysis2'|trans(offerData)|desc("You spent %strong_on%%amount%%strong_off% at %strong_on%%description%%strong_off% and earned %earned% %up-counter-on%%multiplier%%up-counter-off%. Based on the data we've collected and what other AwardWallet members have earned from %strong_on%%merchant%%strong_off%, which appears to be coded as %strong_on%%category%%strong_off%, you may be able to increase your rewards earning with this merchant by instead using a credit card that receives additional bonus points.") | raw }}
+                    {% endif %}
+                </p>
+            {% endif %}
+            <p class="silver-mobile">
+                {% if potentialData.isEveryPurchaseCategory %}
+                    {{ 'credit-card.offer.popup.cards-table.title.everypurchase'|trans()|desc('Currently, the following cards earn more than 1x:') | raw }}
+                {% else %}
+                    {{ 'credit-card.offer.popup.cards-table.title'|trans({
+                        '%category%': category,
+                        '%strong_on%': '<strong>',
+                        '%strong_off%': '</strong>'
+                    })|desc('Currently, the following cards earn more than 1x at %strong_on%%category%%strong_off%:') | raw }}
+                {% endif %}
+            </p>
+
+                <div id="filterCards" class="filter-cards">
+                    <div class="card-types">
+                        <a href="#type-all" class="active">All Cards</a>
+                        <a href="#type-personal">Personal Cards</a>
+                        <a href="#type-business">Business Cards</a>
+                        <div></div>
+                    </div>
+                    {% if is_granted('ROLE_USER') %}
+                    <div class="card-me">
+                        <a href="#has-all" class="active">All Cards</a>
+                        <a href="#has-me">My Cards</a>
+                        <div></div>
+                    </div>
+                    {% endif %}
+                </div>
+
+                {%- macro filterRowClass(card) -%}
+                    {% apply spaceless %}
+                        js-filter-type-all
+                        js-filter-type-{% if card.creditCard.isBusiness is same as true %}business{% else %}personal{% endif %}
+                        js-filter-has-all
+                        {% if card.isUserHas %}js-filter-has-me{% endif %}
+                    {% endapply %}
+                {%- endmacro -%}
+                {% import _self as macros %}
+
+                {% if is_granted('ROLE_STAFF') %}
+                    <style>
+                        .debug-staff { display: none; color: #aaa; }
+                    </style>
+                    {% if is_granted('SITE_MOBILE_AREA') is same as false %}
+                    <div id="devMenu" class="devMenu">
+                        <menu>
+                            <div><label><input id="debugRangeValue" type="checkbox"> debug values</label></div>
+                        </menu>
+                    </div>
+                    <script>
+                        function changeDebugView() {
+                            jQuery('body').on('change', '#debugRangeValue', function() {
+                                $(this).prop('checked') ? $('.debug-staff').show() : $('.debug-staff').hide();
+                            });
+                        }
+                        if ('undefined' === typeof require) {
+                            changeDebugView();
+                        } else {
+                            require(['jquery-boot'], function() {
+                                changeDebugView();
+                            });
+                        }
+                    </script>
+                    {% endif %}
+                {% endif %}
+
+            {% if grouped.list|length > 0 %}
+                <div class="container cards-wrap cards-list">
+                    <div class="container__title">
+                        &nbsp;
+                        <span>The following cards should be earning more than 1x at <strong>{{ merchant }}</strong>{% if category is not empty %} (coded as <strong>{{ category }}</strong>){% endif %}.</span>
+                    </div>
+                    {% for card in grouped.list %}
+                        <div class="container__row active {{ macros.filterRowClass(card) }}">
+                            <div class="container__col">
+                                <div class="container__col-card">
+                                    <div class="container__caption">
+                                        {% if card.isConfirmed is same as(true) %}
+                                            <i class="icon-green-check" title="Confirmed" data-tip data-role="tooltip"></i>
+                                        {% elseif card.isUnconfirmed is same as(true) %}
+                                            <i class="icon-orange-check" title="Unconfirmed" data-tip data-role="tooltip"></i>
+                                        {% endif %}
+                                        <div class="container__thumb">
+                                            <!-- image -->
+                                            {% if card.picturePath %}
+                                                <img src="{{ card.picturePath }}" />
+                                            {% else %}
+                                                <div class="empty-card"></div>
+                                            {% endif %}
+                                            {% if card.isUserHas == true %}
+                                                <i class="icon-blue-check" title="You have this card" data-tip data-role="tooltip"></i>
+                                            {% endif %}
+                                        </div>
+                                        <span>
+                                            <p>{{ card.name }}</p>
+                                            <sub class="blue">{{ card.shoppingCategory|raw }}</sub>
+                                            {% if is_granted('ROLE_STAFF') %}
+                                                <div class="debug-staff">
+                                                    &mdash; id: <a href="/manager/edit.php?Schema=CreditCard&ID={{ card.cardId }}" target="card">{{ card.cardId }}</a> - {{ card.providerName }} ( <a href="/manager/edit.php?Schema=Provider&ID={{ card.providerId }}" target="provider">{{ card.providerId }}</a> )
+                                                    {% if card.isTransferable is defined and card.isTransferable is same as true %}<br>&mdash; transferable{% endif %}
+                                                    {% if card.isUserHas is same as true %}<br>&mdash; user has{% endif %}
+                                                    {% if card.creditCard.isBusiness is same as true %}<br>&mdash; business card{% else %}<br>&mdash; personal card{% endif %}
+                                                    {% if card.creditCard.isCashBackOnly is same as true %}<br>&mdash; isCashBackOnly : {% if card.creditCard.cashBackType == 2 %}POINT{% else %}USD{% endif %} {% endif %}
+                                                </div>
+                                            {% endif %}
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="container__col-info">
+                                    {{ card.description|raw }}
+                                    {% if card.isNonAffiliateDisclosure %}<span class="offer-not-available">Card offer not available through this site.</span>{% endif %}
+                                </div>
+                                <div class="container__col-value">
+                                    {% if card.value is not null %}
+                                        <span class="curr-info">
+                                        {{ card.value }}¢ per dollar
+                                        {% if is_granted('ROLE_STAFF') %}
+                                            <div class="debug-staff">
+                                                <div class="debug-range">
+                                            {%- if card.minValue is defined and card.minValue is not null %}
+                                                &mdash; ({{ card.minValue }}¢ - {{ card.maxValue }}¢)
+                                            {% else %}
+                                                (~{{ card.value }}¢)
+                                            {% endif -%}
+                                                </div>
+                                            </div>
+                                        {% endif %}
+                                        </span>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="container__col container__link">
+                                {% if card.link is not null %}
+                                    <a href="{{ card.link }}" target="_blank">learn<br> more<i class="icon-double-arrow-right-blue"></i></a>
+                                {% endif %}
+                            </div>
+                            {% if card.isNonAffiliateDisclosure %}<div class="offer-not-available">Card offer not available through this site.</div>{% endif %}
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+
+            {% if grouped.fromRecentTransactions|length > 0 %}
+                <div class="container cards-wrap cards-transactions">
+                    <div class="container__title">
+                        Cards That Earn More Than 1X Based on Recent Transactions
+                        <span>According to our records these cards have been recently earning more than 1x at <strong>{{ merchant }}</strong></span>
+                    </div>
+                    {% for card in grouped.fromRecentTransactions %}
+                        <div class="container__row {{ macros.filterRowClass(card) }}">
+                            <div class="container__col">
+                                <div class="container__col-card">
+                                    <div class="container__caption">
+                                        <i class="icon-green-check"></i>
+                                        <div class="container__thumb">
+                                            <!-- image -->
+                                            {% if card.picturePath %}
+                                                <img src="{{ card.picturePath }}" />
+                                            {% else %}
+                                                <div class="empty-card"></div>
+                                            {% endif %}
+                                            {% if card.isUserHas == true %}
+                                                <i class="icon-blue-check" title="You have this card" data-tip data-role="tooltip"></i>
+                                            {% endif %}
+                                        </div>
+                                        <span>
+                                            <p>{{ card.name }}</p>
+                                            <sub class="blue">{{ card.shoppingCategory|raw }}</sub>
+                                            {% if is_granted('ROLE_STAFF') %}
+                                                <div class="debug-staff">
+                                                    &mdash; {{ card.cardId }} - {{ card.providerName }}
+                                                    {% if card.isTransferable is defined and card.isTransferable is same as true %}<br>&mdash; transferable{% endif %}
+                                                    {% if card.isUserHas is same as true %}<br>&mdash; user has{% endif %}
+                                                    {% if card.creditCard.isBusiness is same as true %}<br>&mdash; business card{% else %}<br>&mdash; personal card{% endif %}
+                                                    {% if card.creditCard.isCashBackOnly is same as true %}<br>&mdash; isCashBackOnly : {% if card.creditCard.cashBackType == 2 %}POINT{% else %}USD{% endif %} {% endif %}
+                                                </div>
+                                            {% endif %}
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="container__col-info">
+                                    <b>{{ card.description|raw }}</b>
+                                </div>
+                                <div class="container__col-value">
+                                    {% if card.value is not null %}
+                                        <span class="curr-info">(~{{ card.value }}¢ per dollar)</span>
+                                    {% endif %}
+                                    {% if is_granted('ROLE_STAFF') %}
+                                        <div class="debug-staff">
+                                            <div class="debug-range">
+                                                {%- if card.minValue is defined and card.minValue is not null %}
+                                                    &mdash; ({{ card.minValue }}¢ - {{ card.maxValue }}¢)
+                                                {% else %}
+                                                    (~{{ card.value }}¢)
+                                                {% endif -%}
+                                            </div>
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="container__col container__link">
+                                {% if card.link is not null %}
+                                    <a href="{{ card.link }}" target="_blank">learn<br> more<i class="icon-double-arrow-right-blue"></i></a>
+                                {% endif %}
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+
+            {% if grouped.excluded|length > 0 %}
+                <div class="container cards-wrap cards-excluded">
+                    <div class="container__title">
+                        Cards that Did Not Earn Expected Category Bonus <span>According to our records these cards did not earn the expected bonus points at <strong>{{ merchant }}</strong></span>
+                    </div>
+                    {% for card in grouped.excluded %}
+                        <div class="container__row {{ macros.filterRowClass(card) }}">
+                            <div class="container__col">
+                                <div class="container__col-card">
+                                    <div class="container__caption">
+                                        <i class="icon-red-error"></i>
+                                        <div class="container__thumb">
+                                            <!-- image -->
+                                            {% if card.picturePath %}
+                                                <img src="{{ card.picturePath }}" />
+                                            {% else %}
+                                                <div class="empty-card"></div>
+                                            {% endif %}
+                                            {% if card.isUserHas == true %}
+                                                <i class="icon-blue-check" title="You have this card" data-tip data-role="tooltip"></i>
+                                            {% endif %}
+                                        </div>
+                                        <span class="excluded_card">
+                                            <p>{{ card.name }}</p>
+                                            <sub class="blue">{{ card.shoppingCategory|raw }}</sub>
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="container__col-info">
+                                    {{ card.description|raw }}
+                                </div>
+                                <div class="container__col-value">
+                                    {% if card.value is not null %}
+                                        <span class="curr-info">(~{{ card.value }}¢ per dollar)</span>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="container__col container__link">
+                                {% if card.link is not null %}
+                                    <a href="{{ card.link }}" target="_blank">learn<br> more<i class="icon-double-arrow-right-blue"></i></a>
+                                {% endif %}
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+
+            <div class="credit-card-info">
+                <a href="{{ potentialData.blogUrl }}" target="_blank">
+                    {#<span>How to Earn up to <span class="up-counter">3x</span> points per dollar at <span class="blue-text">travel</span>*</span><i class="icon-double-arrow-right-blue"></i>#}
+                    {% if potentialData.isEveryPurchaseCategory %}
+                        {{ 'credit-card.offer.popup.merchant.offer.everypurchase'|trans({
+                            '%up-counter-on%': '<span class="up-counter">',
+                            '%up-counter-off%': '</span>',
+                            '%potential%': [potentialData.potential, 'x']|join
+                        })|desc('How to Earn up to %up-counter-on%%potential%%up-counter-off% (or more) points per dollar on all purchases*') | raw }}
+                    {% else %}
+                        {{ 'credit-card.offer.popup.merchant.offer'|trans({
+                            '%up-counter-on%': '<span class="up-counter">',
+                            '%up-counter-off%': '</span>',
+                            '%blue-text-on%': '<span class="blue-text">',
+                            '%blue-text-off%': '</span>',
+                            '%potential%': [potentialData.potential, 'x']|join,
+                            '%category%': bottomLinkTitle is defined ? bottomLinkTitle : category
+                        })|desc('How to Earn up to %up-counter-on%%potential%%up-counter-off% points per dollar at %blue-text-on%%category%%blue-text-off%*') | raw }}
+                    {% endif %}
+                </a>
+            </div>
+            </div>
+
+
+            {% if isMobileView %}
+                <style>
+                    .card-tip-hints {
+                        list-style: none;
+                        margin: 15px -15px -15px;
+                        padding: 15px;
+                        background: #f9f9fa;
+                    }
+                    .card-tip-hints li {
+                        position: relative;
+                        padding-left: 20px;
+                    }
+                    .card-tip-hints i {
+                        position: absolute;
+                        left: 0;
+                        top: 3px;
+                    }
+                    .card-tip-hints li:last-child i {
+                        left: -1px;
+                    }
+                </style>
+                <ul class="card-tip-hints">
+                    <li><i class="icon-green-check" title="Confirmed" data-tip data-role="tooltip"></i> Confirmed card</li>
+                    <li><i class="icon-orange-check" title="Unconfirmed" data-tip data-role="tooltip"></i> Unconfirmed card</li>
+                    <li><i class="icon-blue-check" title="You have this card" data-tip data-role="tooltip"></i> You have this card</li>
+                </ul>
+            {% endif %}
+
+            <div class="remark-info small">
+                <i>
+                    {{ 'credit-card.offer.popup.remark.info'|trans({
+                        '%advertisers-link-begin%': '<a target="_blank" href="https://awardwallet.com/blog/advertiser-disclosure/">',
+                        '%advertisers-link-end%': '</a>'
+                    })|desc('* AwardWallet has crowdsourced the data to make these suggestions. Merchant category coding can change at any time, and there is no guarantee that you will earn rewards at the level listed above. AwardWallet makes every attempt to ensure the data provided is accurate and current. This information has not been provided by any bank or affiliated partner of AwardWallet. AwardWallet receives compensation from advertising partners for links on this website. The opinions expressed here are our own and have not been reviewed, provided, or approved by any bank advertiser. Here’s our %advertisers-link-begin%complete list of Advertisers%advertisers-link-end%.') | raw }}
+                </i>
+            </div>
+        </div>
+        {% if knownCategories is defined %}
+        <div class="search-box__offer-bottom" id="bottom-details"> <!--  .expanded class -->
+            <a href="#" class="blue-link open-details" id="open-bottom-details">What are Merchant Category Codes (MCCs) and why are they important? <i class="icon-double-arrow-right-blue"></i></a>
+            <div class="search-box__offer-bottom-details">
+                <div class="title-note">
+                    <h4>What are Merchant Category Codes (MCCs) and why are they important?</h4>
+                </div>
+                <p>Merchant Category Codes (MCCs) are a way for credit card networks to identify different types of merchants. Based on the type of business, a merchant is assigned a category code, which is how credit card companies know that something “codes as travel” or “is a restaurant”.</p>
+                <p>The MCC of a merchant is defined by the network of cards (Visa, Mastercard, American Express and Discover in the U.S.). Typically, merchants receive the same coding with Visa and Mastercard, however, vendors are sometimes coded differently with American Express.</p>
+                <p>When such coding differences happen, a transaction with a merchant may code as “Bakery” with Visa/Mastercard and not receive any bonus points but may code as “Restaurant” with American Express and receive bonus points if that particular card offers a bonus multiplier at restaurants.</p>
+                <p>AwardWallet currently uses data gathered across American Express, Mastercard, and Visa cards issued by Chase, Citibank, and American Express to perform this analysis. We fully expect there to be an occasional anomaly where such coding conflicts occur and are working to point out when this occurs.</p>
+                <p>If you notice something that has been miscategorized, please let us know by <a target="_blank" href="https://awardwallet.com/contact" class="blue-link">submitting a bug report</a>.</p>
+                <p>If you’d like to learn a bit more about MCCs, take a look at some resources here:</p>
+                <ul class="check-list">
+                    <li><a target="_blank" href="https://www.citibank.com/tts/solutions/commercial-cards/assets/docs/govt/Merchant-Category-Codes.pdf" class="blue-link" rel="noopener noreferrer">Citi</a></li>
+                    <li><a target="_blank" href="https://www.visa.com/supplierlocator-app/app" class="blue-link" rel="noopener noreferrer">Visa</a></li>
+                    <li><a target="_blank" href="http://resourcecenter.americanexpress.com/~/media/ResourceCenter/US/Docs/Reconciliation%20and%20Reports/Merchant%20Category%20Codes.ashx" class="blue-link" rel="noopener noreferrer">American Express</a></li>
+                    <li><a target="_blank" href="https://www.mastercard.us/content/dam/mccom/en-us/documents/quick-reference-booklet-me-april-2018.pdf" class="blue-link" rel="noopener noreferrer">MasterCard</a></li>
+                </ul>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+
+</div>
+
+</body>
+</html>

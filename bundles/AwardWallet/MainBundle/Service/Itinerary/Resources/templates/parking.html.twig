@@ -1,0 +1,50 @@
+{% extends "@Module/Itinerary/Resources/templates/itinerary.html.twig" %}
+
+{% block title %}
+    {% if edit|default(false) %}
+        {{ 'parking.edit'|trans([], 'trips') }}
+    {% else %}
+        {{ 'parking.add'|trans([], 'trips') }}
+    {% endif %}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+   
+    {% if not webpack|default(false) %}
+        <script>
+            require(['jquery-boot', 'pages/itinerary/form'], function ($, ItineraryForm) {
+                $(document).ready(function() {
+                    new ItineraryForm({
+                        formContainer  : '#parking',
+                        template       : '#segmentTemplate',
+                        autocompleteField: 'address',
+                        autocompleteRoute: 'google_geo_code_airports',
+                        blockContainer : '#addedSegments',
+                        block          : '.segment',
+                        companyField: {id: 'parkingCompanyName', kind: {{ constant('PROVIDER_KIND_OTHER') }} }
+                    }).init();
+                })
+            })
+        </script>
+    {% else %}
+        <script>
+            window.parkingProviderKind = {{ constant('PROVIDER_KIND_OTHER') }}
+        </script>
+        {{ encore_entry_script_tags('parking', null, '_default', {'defer': true}) }}
+    {% endif %}
+{% endblock %}
+
+{% block main_form %}
+    {{- form_start(form, {
+        'attr': {
+            'data-files': files|json_encode,
+            'class': 'main-form',
+            'novalidate': 'true',
+            'id': form.vars.full_name
+        }
+    }) -}}
+    {{- form_widget(form, {'noSubmit': true}) -}}
+    {{ block('submit_button') }}
+    {{- form_end(form) -}}
+{% endblock %}

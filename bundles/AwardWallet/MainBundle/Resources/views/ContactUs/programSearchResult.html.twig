@@ -1,0 +1,27 @@
+{% trans_default_domain "contactus" %}
+
+{%- macro list(programs) -%}
+	<ul class="programList program-list-2">
+		{% for program in programs %}
+			<li class="result-item">
+				{{ program.msg|raw }}
+				{% if program['note'] is defined and program['note'] != '' %}
+                    <div class="program-comment-label">{{ 'contactus.program-comment.text'|trans }}</div>
+					<div class="program-comment-note">{{ program['note']|raw }}</div>
+				{% endif %}
+			</li>
+		{% endfor %}
+	</ul>
+{%- endmacro -%}
+
+{% import _self as macros %}
+
+{% apply spaceless %}
+	{% if withoutContainer|default(false) %}
+		{{ macros.list(programs) }}
+	{% else %}
+		<div style="overflow: auto; height: 200px;">
+			{{ macros.list(programs) }}
+		</div>
+	{% endif %}
+{% endapply %}

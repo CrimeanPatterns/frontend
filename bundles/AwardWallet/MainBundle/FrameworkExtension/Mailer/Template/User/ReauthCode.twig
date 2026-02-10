@@ -1,0 +1,40 @@
+{% extends '@MailTemplate/Layout/base.twig' %}
+{% trans_default_domain "email" %}
+
+{% block subject %}{% apply spaceless %}{% autoescape false %}
+    {{ 'reauth-code.subject'|trans({}, 'email', lang)|desc('Your Security Code') }}
+{% endautoescape %}{% endapply %}{% endblock subject %}
+
+{% block content %}
+    {% import '@MailTemplate/CommonMacro.twig' as commonMacro %}
+
+    {{ commonMacro.hello(user.firstname, _context) }}
+    {{ commonMacro.paragraph(
+        'reauth-code.message'|trans({}, 'email', lang)|desc('
+            You recently tried to perform an action that requires additional verification.
+            In order to complete this action, please use the following code.
+        '),
+        _context
+    ) }}
+    {{ commonMacro.info(
+        'reauth-code.code'|trans({
+            '%code%': code,
+            '%bold_on%': '<b style="color:#3d424d;">',
+            '%bold_off%': '</b>'
+        }, 'email', lang)|desc('Your Security Code: %bold_on%%code%%bold_off%'),
+        _context, {escape: false}
+    ) }}
+
+    {% set defaultValue = 'unknown'|trans({}, 'messages', lang) %}
+    {{ commonMacro.paragraph(
+        'reauth-code.location'|trans({
+            '%ip%': ip|default(defaultValue)|htmlencode,
+            '%location%': location|default(defaultValue)|htmlencode,
+            '%bold_on%': '<b style="color:#3d424d;">',
+            '%bold_off%': '</b>'
+        }, 'email', lang)|desc('
+            This request attempt was from a device located at the following IP address: %bold_on%%ip%%bold_off% (location: %bold_on%%location%%bold_off%).
+        ')|preg_replace('/(\\s+(?=<b\\b))|((?<=<\\/b>)\\s+)/', '&nbsp;<wbr>'),
+        _context, {escape: false}
+    ) }}
+{% endblock content %}

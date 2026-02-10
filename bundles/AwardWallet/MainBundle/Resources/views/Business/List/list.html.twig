@@ -1,0 +1,60 @@
+{% extends "@AwardWalletMain/Layout/business_check_balance.html.twig" %}
+{% import '@AwardWalletMain/TwigMacros/extension.html.twig' as extension %}
+{% import "@AwardWalletMain/TwigMacros/environment.html.twig" as environmentMacros %}
+{% use '@AccountList/elementsBusiness.html.twig' %}
+{% use '@AccountList/toolbarBusiness.html.twig' %}
+{% use '@AccountList/popupsBusiness.html.twig' %}
+{% use '@AccountList/updater.html.twig' %}
+{% import '@AwardWalletMain/TwigMacros/common.html.twig' as common %}
+
+{% block meta %}
+    {{ parent() }}
+    <base href="{{ path('aw_business_account_list') }}">
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    {{ common.angularLinkConverter() }}
+    {# Need to decide how to load comfortably lang files #}
+    {{ encore_entry_script_tags('trans/' ~ app.request.locale) }}
+    {{ encore_entry_script_tags('account-list') }}
+{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    {{ encore_entry_link_tags('account') }}
+    {{ encore_entry_link_tags('account-list') }}
+{% endblock %}
+
+{% block popup %}
+    {{ parent() }}
+    {{ block('old_site_popups') }}
+{% endblock %}
+
+{% block content %}
+    <div id="update-all-account-container" {{ environmentMacros.dataAttr({isPartial:partial ? 'true' : 'false', accountsData:accountsData, isBusiness:'true', isIE:'false'}) }}></div>
+    {# Details popup #}
+    {{ block('account_details_popup') }}
+
+    <div data-ng-controller="mainCtrl as main" class="main-list">
+        <div class="overlay" data-ng-cloak data-ng-show="main.state.loading && main.state.loaded"></div>
+        {{ block('action_popups') }}
+        {{ block('upgrade_popup') }}
+
+        <div class="tabs-content" style="min-height: 400px">
+            {{ block('account_updater') }}
+            {# Loader start #}
+            <div class="ajax-loader" data-ng-hide="main.state.loaded">
+                <div class="loading"></div>
+            </div>
+            {# Loader end #}
+
+            {# Content #}
+            {{ block('list_toolbar') }}
+            {{ block('list_elements') }}
+        </div>
+    </div>
+
+    {{ extension.load() }}
+
+{% endblock %}

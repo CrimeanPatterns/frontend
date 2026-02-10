@@ -1,0 +1,99 @@
+<div class="overlay js-update-overlay"></div>
+<div data-ng-cloak data-ng-controller="formUpdaterCtrl as formUpdater">
+    <div class="main-form-event" data-ng-if="formUpdater.updating.state == 'queue' || formUpdater.updating.state == ''">
+        <div class="update">
+            <i class="icon-silver-arrow-down"></i><p>{{ 'award.account.form.checking.title'|trans|desc('Checking. Please wait…') }}</p>
+            <div class="progress-bar">
+                <div class="progress-bar-row">
+                    <p>1%</p>
+                    <span style="width:1%"></span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="main-form-event" data-ng-if="formUpdater.updating.state == 'checking'">
+        <div class="update">
+            <i class="icon-silver-arrow-down"></i><p>{{ 'award.account.form.checking.title'|trans }}</p>
+            <div class="progress-bar">
+                <div class="progress-bar-row">
+                    <p>[[ formUpdater.updating.progressText ]]</p>
+                    <span data-ng-style="formUpdater.updating.progressStyle"></span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="main-form-event" data-ng-if="formUpdater.updating.state == 'unchanged'">
+        <div class="success">
+            <div class="success-blk">
+                <i class="icon-green-check-b"></i>
+                <h5>{{ 'award.account.form.unchanged.text'|trans|desc('Account successfully checked') }}</h5>
+                <table>
+                    <tr>
+                        <td><span class="bold">{{ 'award.account.form.success.balance'|trans|desc('Current balance is') }}:</span></td>
+                        <td><span class="balance">[[ formUpdater.account.Balance ]]</span></td>
+                    </tr>
+                </table>
+                <p> </p>
+            </div>
+        </div>
+    </div>
+    <div class="main-form-event" data-ng-if="formUpdater.updating.state == 'changed'">
+        <div class="success">
+            <div class="success-blk">
+                <i data-ng-class="{'icon-green-up-b': formUpdater.updating.changeClass == 'icon-green-up', 'icon-blue-down-b': formUpdater.updating.changeClass == 'icon-blue-down'}"></i>
+                <h5>{{ 'award.account.form.success.text'|trans|desc('Account successfully updated') }}</h5>
+                <table>
+                    <tr data-ng-if="formUpdater.LastBalance">
+                        <td>{{ 'award.account.form.changed.old-balance'|trans|desc('Original balance') }}:</td>
+                        <td>[[ formUpdater.LastBalance ]]</td>
+                    </tr>
+                    <tr data-ng-if="formUpdater.LastBalance">
+                        <td>{{ 'award.account.form.changed.changed'|trans|desc('Changed by') }}:</td>
+                        <td><span data-ng-class="{'green': formUpdater.updating.changeClass == 'icon-green-up', 'blue': formUpdater.updating.changeClass == 'icon-blue-down'}">[[ formUpdater.account.LastChange ]]</span></td>
+                    </tr>
+                    <tr>
+                        <td data-ng-if="formUpdater.LastBalance"><span class="bold">{{ 'award.account.form.success.balance'|trans }}:</span></td>
+                        <td data-ng-if="!formUpdater.LastBalance"><span class="bold">{{ 'award.account.form.changed.balance'|trans|desc('New Balance') }}:</span></td>
+                        <td><span class="balance">[[ formUpdater.account.Balance ]]</span></td>
+                    </tr>
+                </table>
+                <p> </p>
+            </div>
+        </div>
+    </div>
+    <div class="main-form-event" data-ng-if="formUpdater.updating.state == 'done'">
+        <div class="error-message"><i class="icon-red-error-b"></i><p><span class="red">{{ 'award.account.form.cancel.title'|trans|desc('Checking cancelled') }}</span></p></div>
+{#
+        <div class="error-message-blk"><p data-ng-bind-html="formUpdater.updating.failedText | unsafe">{{ 'award.account.list.cancel.failed'|trans }}</p></div>
+#}
+    </div>
+    <div class="main-form-event" data-ng-if="(formUpdater.updating.state == 'error' || formUpdater.updating.state == 'disabled') && formUpdater.account.ErrorCode > 1">
+        <div class="error-message"><i class="icon-red-error-b"></i><p><span class="red">[[ formUpdater.account.ProgramMessage.Title ]].</span> <span data-ng-bind-html="formUpdater.account.ProgramMessage.BeforeError | unsafe"></span></p></div>
+        <div class="error-message-blk"><p data-ng-bind-html="formUpdater.account.ProgramMessage.Error | unsafe"></p></div>
+        <div class="info"><p data-ng-bind-html="formUpdater.account.ProgramMessage.Description | unsafe"></p></div>
+    </div>
+    <div class="main-form-event" data-ng-if="formUpdater.updating.state == 'failed'">
+        <div class="error-message"><i class="icon-red-error-b"></i><p><span class="red">{{ 'award.account.form.failed.title'|trans|desc('Checking failed') }}</span></p></div>
+        <div class="error-message-blk"><p data-ng-bind-html="formUpdater.updating.failedText | unsafe">{{ 'award.account.list.updating.failed'|trans }}</p></div>
+    </div>
+    <div class="main-form-event" data-ng-if="formUpdater.updating.state == 'changed' || formUpdater.updating.state == 'unchanged' || formUpdater.updating.state == 'done'" style="text-align: center">
+        {% if app.request.query.has("backTo") %}
+            <a href="{{ app.request.schemeAndHttpHost ~ app.request.query.get("backTo") }}&accountID={{ account.accountid }}" class="btn-blue">{{ 'button.ok'|trans }}</a>
+        {% else %}
+            <a href="{{ url('aw_account_list', {account: account.accountid}) }}" class="btn-blue">{{ 'button.ok'|trans }}</a>
+        {% endif %}
+    </div>
+    <div class="main-form-event" data-ng-if="(formUpdater.account.ErrorCode == {{ constant('AwardWallet\\MainBundle\\Updater\\Event\\LimitEvent::ERROR_CODE_LOCKOUT') }} && formUpdater.account.ErrorMessage)">
+        <div class="error-message"><i class="icon-red-error-b"></i><p><span class="red">{{ 'please-upgrade'|trans }}</span></p></div>
+        <div class="error-message-blk"><p>
+            <span>[[formUpdater.account.ErrorMessage]]</span>
+            <a href="{{ url('aw_blog_link_redirect', {link: 'updateLimit'}) }}" class="read-more">{{ 'upgrade-now'|trans }}</a>
+        </p></div>
+    </div>
+    <div class="main-form-event" data-ng-repeat="notice in formUpdater.notices">
+        <div class="warning-blk">
+            <i class="icon-warning-small-white"></i>
+            <p ng-bind-html="notice.message|unsafe"></p>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,83 @@
+{% extends "@SonataAdmin/standard_layout.html.twig" %}
+
+{% block stylesheets %}
+    {% for stylesheet in sonata_config.getOption('stylesheets', []) %}
+            <link rel="stylesheet" href="{{ '/' ~ stylesheet }}">
+    {% endfor %}
+
+    <style>
+        #deco-cke-body {
+            background : #FFFFCC;
+            text-align: left;
+            font-size: 0.8em;
+        }
+
+    </style>
+{% endblock stylesheets %}
+
+{% block javascripts %}
+    <script>
+        window.SONATA_CONFIG = {
+            CONFIRM_EXIT: {% if sonata_config.getOption('confirm_exit') %}true{% else %}false{% endif %},
+            USE_SELECT2: {% if sonata_config.getOption('use_select2') %}true{% else %}false{% endif %},
+            USE_ICHECK: {% if sonata_config.getOption('use_icheck') %}true{% else %}false{% endif %},
+            USE_STICKYFORMS: {% if sonata_config.getOption('use_stickyforms') %}true{% else %}false{% endif %}
+        };
+        window.SONATA_TRANSLATIONS = {
+            CONFIRM_EXIT:  '{{ 'confirm_exit'|trans({}, 'SonataAdminBundle')|escape('js') }}'
+        };
+
+        // http://getbootstrap.com/getting-started/#support-ie10-width
+        if (navigator.userAgent.match(/IEMobile\/10\.0/)) {
+            var msViewportStyle = document.createElement('style');
+            msViewportStyle.appendChild(document.createTextNode('@-ms-viewport{width:auto!important}'));
+            document.querySelector('head').appendChild(msViewportStyle);
+        }
+    </script>
+
+    {% for javascript in sonata_config.getOption('javascripts', []) %}
+        <script src="{{ '/' ~ javascript }}"></script>
+    {% endfor %}
+
+    {% set locale = app.request.locale %}
+    {# localize moment #}
+    {% if locale[:2] != 'en' %}
+        <script src="{{ '/bundles/sonatacore/vendor/moment/locale/' ~ locale|replace({'_':'-'}) ~ '.js' }}"></script>
+    {% endif %}
+
+    {# localize select2 #}
+    {% if sonata_config.getOption('use_select2') %}
+        {% if locale == 'pt' %}{% set locale = 'pt_PT' %}{% endif %}
+
+        {# omit default EN locale #}
+        {% if locale[:2] != 'en' %}
+            <script src="{{ '/bundles/sonatacore/vendor/select2/select2_locale_' ~ locale|replace({'_':'-'}) ~ '.js' }}"></script>
+        {% endif %}
+    {% endif %}
+{% endblock javascripts %}
+
+{% block body_attributes %}class="sonata-bc skin-black fixed sidebar-collapse"{% endblock %}
+
+{% block side_bar_nav %}
+    {{ render_action(controller('AwardWallet\\MainBundle\\Controller\\Sonata\\LayoutController::headerAction', {'title': 'AwardWallet'})) }}
+{% endblock %}
+
+{% block sonata_top_nav_menu %}
+    <div class="navbar-custom-menu">
+        <ul class="nav navbar-nav">
+            <li class="dropdown">
+                <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                    <i class="fas fa-user fa-fw"></i> {{ app.user.username }} <i class="fa fa-caret-down"></i>
+                </a>
+                <ul class="dropdown-menu">
+                    <li><a href="{{ url('aw_users_logout') }}"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+                </ul>
+            </li>
+        </ul>
+    </div>
+{% endblock %}
+
+{% block side_bar_after_nav %}{% endblock %}
+
+
+{% block sonata_sidebar_search %}{% endblock %}

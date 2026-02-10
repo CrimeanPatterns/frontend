@@ -1,0 +1,44 @@
+<div class="alliances-container">
+
+	<div class="title-note">
+		<h3>{{ 'added-alliance-members'|trans|desc("Added Alliance Members") }}</h3>
+	</div>
+	<table class="main-table alliances">
+		<thead>
+		<tr>
+			<th>{{ 'alliances.airlines'|trans|desc("Airlines") }}</th>
+			<th></th>
+			<th>{{ 'alliances.owner'|trans|desc("Owner") }}</th>
+			<th>{{ 'alliances.elite-level'|trans|desc("Elite Level") }}</th>
+			<th>{{ 'alliances.miles'|trans|desc("Miles") }}</th>
+		</tr>
+		</thead>
+		<tbody>
+		{% for provider in addedAirlines %}
+			<tr>
+				<td rowspan="{{ provider.accounts|length }}"><strong>{{ provider.ShortName | raw }}</strong> {{ provider.IATACode }}</td>
+			{% for account in provider.accounts %}
+				{% if not loop.first %}<tr>{% endif %}
+				<td class="alliance">
+					<div class="picture">
+						<img class="picture__dark" src="{{ account.AllianceIcon|replace({'alliances/':'alliances/dark/'}) }}" alt="" height="30" width="25" data-role="tooltip" title="{{ account.AllianceLevel }}">
+						<img class="picture__light" src="{{ account.AllianceIcon }}" alt="" height="30" width="25" data-role="tooltip" title="{{ account.AllianceLevel }}">
+					</div>
+				</td>
+				<td>{{ account.FamilyMemberName ?: account.UserName  }}</td>
+				<td>{{ account.AccountStatus | raw }}</td>
+				<td>{{ account.Balance | default('') }}</td>
+			</tr>
+			{% endfor %}
+		{% endfor %}
+		</tbody>
+	</table>
+	<div class="title-note">
+		<h3>{{ 'other-alliances-members'|trans|desc("Other Alliance Members") }}</h3>
+	</div>
+	<div class="other-airlines">
+		{% for provider in otherAirlines %}
+			<div class="row">{{ provider.ShortName | raw }} <span class="silver">{{ provider.IATACode }}</span></div>
+		{% endfor %}
+	</div>
+</div>

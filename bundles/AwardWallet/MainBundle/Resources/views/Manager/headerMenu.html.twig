@@ -1,0 +1,858 @@
+{% set file_version = file_version|default('') %}
+
+<script type="text/javascript" language="JavaScript" src="/lib/3dParty/jquery/jq.js"></script>
+<script type="text/javascript" language="JavaScript" src="/lib/3dParty/jquery/plugins/ui/jquery-ui.js"></script>
+<script type="text/javascript" language="JavaScript" src="/lib/3dParty/jquery/plugins/jquery.cookie.js"></script>
+<script type="text/javascript" language="JavaScript" src="/assets/common/js/jquery-handlers-old.js"></script>
+<script type="text/javascript" language="JavaScript" src="/assets/common/vendors/select2/select2.min.js"></script>
+
+<script type="text/javascript" language="JavaScript" src="/lib/3dParty/jquery/plugins/dynatree/jquery.dynatree.js"></script>
+
+<script language="JavaScript" src="/design/awardWallet.js?v={{ file_version }}"></script>
+<script type="text/javascript" language="JavaScript" src="/lib/scripts.js?v={{ file_version }}"></script>
+<script type="text/javascript" src="/lib/3dParty/horizontalMenu/stuHover.js?v={{ file_version }}"></script>
+<script type="text/javascript" src="/assets/awardwalletmain/js/babel-browser.min.js"></script>
+<script type="text/javascript" src="/assets/common/vendors/react/react.development.js"></script>
+<script type="text/javascript" src="/assets/common/vendors/react/react-dom.development.js"></script>
+<script type="text/javascript" src="/assets/common/vendors/keymaster/keymaster.js"></script>
+<script type="text/javascript" src="/assets/common/vendors/requirejs/require.js"></script>
+<script type="text/javascript" src="/assets/requireConfig.js"></script>
+<script type="text/javascript">
+    define('intl', []);
+    // jquery already loaded
+    define('jquery', [], function() { return $; });
+
+    var debugMode = true;
+
+    $(document).ready(function(){
+        var ll = new LastLink();
+        if (!ll.available())
+            return;
+        $(document).on('click', '#nav .sub a[href!="#"], #nav .last_link a[href!="#"]', function(event){
+            ll.addLink($(this).attr('href'), $(this).text());
+        });
+        // show links
+        var links = ll.getLinks();
+        if (links != null) {
+            var sortable = [];
+            $.each(links, function(i, v) {
+                sortable.push(v);
+            });
+            sortable.sort(function (a, b) {
+                var ac = (typeof a['click'] == 'undefined') ? 0 : Math.floor(a['click']/5);
+                var bc = (typeof b['click'] == 'undefined') ? 0 : Math.floor(b['click']/5);
+                if (ac < bc)
+                    return 1;
+                if (ac > bc)
+                    return -1;
+                return 0;
+            });
+            var colors = ['white', '#e9e9e9', '#dadada', '#cfcfcf', '#c2c2c2'];
+            var height = $('#fixedMenu').height();
+            for (var i = 0; i < 4; i++) {
+                if (typeof sortable[i] == 'undefined')
+                    break;
+                $('#shortcutInfo').before('<li class="top last_link"><a class="top_link" title="'+sortable[i]['label']+'" style="background-color: '+colors[i]+'" href="'+sortable[i]['link']+'"><span style="background-color: '+colors[i]+'">'+sortable[i]['label']+'</span></a></li>');
+            }
+            $('#shortcutInfo').before('<li class="top clear"><a onclick="localStorage.removeItem(\'AWManagerMenu\');window.location.reload();" class="top_link"><span>&#9003;</span></a></li>');
+            var row = $('#nav .last_link');
+            i = row.length;
+            //hack so that upper list doesnt expand because of last links
+            while(i > 0 && $('#fixedMenu').height() > height) {
+                i--;
+                row.get(i).remove();
+            }
+        }
+
+        $('[data-form-select2]').each(function() {
+            let select = $(this);
+            let config = select.data('form-select2') || {};
+            select.select2(config);
+        });
+    });
+
+    function LastLink() {
+        this.available = function() {
+            try {
+                return 'localStorage' in window && window['localStorage'] !== null;
+            } catch (e) {
+                return false;
+            }
+        }
+        this.getLinks = function() {
+            return JSON.parse(localStorage.getItem('AWManagerMenu'));
+        }
+        this.saveLinks = function(links) {
+            try {
+                localStorage.setItem('AWManagerMenu', JSON.stringify(links));
+            } catch (e) {
+                if (e == QUOTA_EXCEEDED_ERR) {}
+            }
+        }
+        this.hashCode = function(s){
+            return s.split("").reduce(function(a,b){a=((a<<5)-a)+b.charCodeAt(0);return a&a},0);
+        }
+        this.addLink = function(link, text) {
+            console.log('Add link: '+link+' ['+text+']');
+            var hash = this.hashCode(link);
+            var links = this.getLinks();
+            if (links == null)
+                links = {};
+            if (typeof links[hash] == 'undefined') {
+                links[hash] = {'label': text, 'link': link, 'click': 1};
+            } else {
+                links[hash]['click']++;
+            }
+            this.saveLinks(links);
+        }
+    }
+</script>
+
+{{ encore_entry_link_tags('page-manager-legacy') }}
+{{ encore_entry_script_tags('page-manager-legacy', null, '_default', {'defer': true}) }}
+
+<style>
+    #filterBox {
+        position: absolute;
+        top: 20%;
+        left: 50%;
+        margin-left: -150px;
+        width: 400px;
+        padding: 5px;
+        max-height: 457px;
+        -webkit-box-shadow: 0px 0px 20px 0px black;
+        -moz-box-shadow: 0px 0px 20px 0px black;
+        box-shadow: 0px 0px 20px 0px black;
+        background: white;
+        z-index: 9999;
+    }
+
+    #filterBox input {
+        width: 100%;
+        height: 30px;
+        outline: 0;
+        box-sizing: border-box;
+        font-size: 13pt;
+    }
+
+    #filterBox .list-elem-item {
+        background: #f6f7fa;
+        margin-top: 2px;
+        padding: 2px 0px;
+    }
+
+    #filterBox .list-elem-item.selected {
+        background: #a8d1fa !important;
+    }
+
+    #filterBox .list-elem-item .url {
+        color: lightslategray;
+        margin: 1px 0px 1px;
+        text-overflow-x: hidden;
+    }
+
+    #filterBox .filter-list {
+        margin-top: 5px;
+        max-height: 425px;
+        overflow: auto;
+        background: white;
+        width: 100%;
+    }
+
+    #filterBoxContainer .hidden {
+        display: none;
+    }
+
+    .list-elem-item .list-elem-matched {
+        background: #d6bb6d;
+    }
+
+    /* Settings Pane Styles */
+    #settingsPane {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 400px;
+        background: white;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.3);
+        z-index: 10000;
+    }
+
+    #settingsPane .settings-header {
+        background: #f5f5f5;
+        padding: 15px 20px;
+        border-bottom: 1px solid #ddd;
+        border-radius: 4px 4px 0 0;
+    }
+
+    #settingsPane .settings-header h3 {
+        margin: 0;
+        font-size: 18px;
+        font-weight: 600;
+        color: #333;
+    }
+
+    #settingsPane .settings-content {
+        padding: 20px;
+        max-height: 400px;
+        overflow-y: auto;
+    }
+
+    #settingsPane .setting-item {
+        margin-bottom: 15px;
+    }
+
+    #settingsPane .setting-item label {
+        display: flex;
+        align-items: center;
+        cursor: pointer;
+        font-size: 14px;
+        color: #333;
+    }
+
+    #settingsPane .setting-item input[type="checkbox"] {
+        margin-right: 10px;
+        width: 16px;
+        height: 16px;
+        cursor: pointer;
+    }
+
+    #settingsPane .settings-footer {
+        padding: 15px 20px;
+        border-top: 1px solid #ddd;
+        text-align: right;
+        background: #f9f9f9;
+        border-radius: 0 0 4px 4px;
+    }
+
+    #settingsPane .settings-footer button {
+        padding: 8px 20px;
+        margin-left: 10px;
+        border: 1px solid #ccc;
+        border-radius: 3px;
+        font-size: 14px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
+
+    #settingsPane .btn-close {
+        background: #fff;
+        color: #666;
+    }
+
+    #settingsPane .btn-close:hover {
+        background: #f5f5f5;
+        border-color: #999;
+    }
+
+    #settingsPane .btn-save {
+        background: #4CAF50;
+        color: white;
+        border-color: #45a049;
+    }
+
+    #settingsPane .btn-save:hover {
+        background: #45a049;
+        border-color: #3d8b40;
+    }
+
+    #settingsPane .setting-indent {
+        margin-left: 26px;
+    }
+
+    #settingsPane .setting-label {
+        margin-right: 10px;
+        font-size: 14px;
+        color: #555;
+    }
+
+    #settingsPane .threshold-input {
+        width: 80px;
+        padding: 4px 8px;
+        border: 1px solid #ccc;
+        border-radius: 3px;
+        font-size: 14px;
+    }
+
+    #settingsPane .threshold-input:focus {
+        outline: none;
+        border-color: #4CAF50;
+    }
+
+    #settingsPane .setting-help {
+        margin-top: 5px;
+        font-size: 12px;
+        color: #777;
+        font-style: italic;
+    }
+</style>
+<script type="text/babel">
+    const menuJson = {{ menuJson|raw }};
+    const KEY_CODE_ARROW_UP = 38;
+    const KEY_CODE_ARROW_DOWN = 40;
+    const KEY_CODE_N = 78;
+    const KEY_CODE_P = 80;
+    const KEY_CODE_OPEN_BRACKET = 219;
+    const KEY_CODE_ESC = 27;
+    const KEY_CODE_ENTER = 13;
+
+    class Filter extends React.Component {
+        filterChanged () {
+            this.props.filterChanged(this.refs.filterInput.value)
+        }
+        onKeyUp(e) {
+            if (
+                KEY_CODE_ESC == e.keyCode || // esc
+                (KEY_CODE_OPEN_BRACKET == e.keyCode && e.ctrlKey) // ctrl+[ for vimers
+            ) {
+                this.props.hideHandler(true)
+            }
+        };
+        onKeyDown(e) {
+            if (
+                (e.keyCode == KEY_CODE_ARROW_UP) ||
+                (e.keyCode == KEY_CODE_P && e.ctrlKey)
+            ) {
+                e.preventDefault();
+
+                this.props.upHandler();
+            } else if (
+                (e.keyCode == KEY_CODE_ARROW_DOWN) ||
+                (e.keyCode == KEY_CODE_N && e.ctrlKey)
+            ) {
+                e.preventDefault();
+
+                this.props.downHandler();
+            } else if (e.keyCode == KEY_CODE_ENTER) {
+                this.props.locationHanlder();
+            }
+        };
+        render () {
+            return (
+                <form onSubmit={this.props.locationHanlder}>
+                    <input
+                        type='text'
+                        placeholder='type something'
+                        ref='filterInput'
+                        value={this.props.filterVal}
+                        onChange={this.filterChanged.bind(this)}
+                        onKeyUp={this.onKeyUp.bind(this)}
+                        onKeyDown={this.onKeyDown.bind(this)}
+                    />
+                </form>
+            )
+        }
+    };
+
+    class ListElem extends React.Component {
+        escapeRegExp(string) {
+            return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+        }
+
+        render() {
+            let item = this.props.item,
+                className = 'list-elem-item';
+
+            if (this.props.selected) {
+                className += ' ' + 'selected'
+            }
+
+            let crumbs = item.root.length > 0 ? item.root.slice(1).join(' > ') : '';
+            const replacer = (string, matches) => {
+                const [head, ...tail] = matches;
+
+                const ret =
+                    string
+                        .split(new RegExp(head.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'i'))
+                        .map(tail.length > 0 ?
+                            (part => replacer(part, tail)) :
+                            (part => part)
+                        )
+                        .join(`<span class="list-elem-matched">${head}</span>`);
+
+                return ret;
+            };
+
+            return (
+                <div className={className}>
+                    <a href={item.url} dangerouslySetInnerHTML={{ "{{__html: replacer(item.title, item.matches)}}" }}></a><br/>
+                    <p className="url">
+                        <b>{crumbs}</b><br/>
+                        {item.url}
+                    </p>
+                </div>
+            );
+        }
+    };
+
+    class FilterBox extends React.Component {
+        constructor () {
+            super();
+            this.state = {filterText: '', hidden: true, selectedIndex: -1, items: []};
+        }
+        stateChanged(text) {
+            let filterList = text.toLowerCase().split(' ').map(s => s.trim());
+
+            var data = menuJson.slice(),
+                filtered;
+
+            data.push({
+                title: "Welcome page",
+                url: '/manager/',
+                root: ['/']
+            })
+
+            if (filterList.length > 0) {
+                filtered =
+                    data
+                        .reduce((arr, item) => {
+                            const normalizedTitle = item.title.toLowerCase();
+                            const itemLink = item.url.toLowerCase();
+                            const matches = filterList.reduce((acc, filter) => {
+                                const pos = normalizedTitle.indexOf(filter);
+                                if (pos > -1 || -1 !== itemLink.indexOf(filter)) {
+                                    acc.push(filter)
+                                }
+
+                                return acc;
+                            }, [])
+
+                            if (matches.length > 0) {
+                                arr.push(jQuery.extend({
+                                    matches: matches,
+                                }, item))
+                            }
+
+                            return arr;
+                        }, [])
+                        .sort((a, b) => Math.sign(b.matches.length - a.matches.length));
+            } else {
+                filtered = []
+            }
+
+            this.setState({filterText: text, selectedIndex: filtered.length ? 0 : -1, items: filtered})
+        };
+
+        setHidden(val) {
+            this.setState({hidden: val})
+        };
+
+        selectIndex(index) {
+            this.setState({selectedIndex: index})
+
+            let item = $(ReactDOM.findDOMNode(this.refs["listitem" + index])),
+                itemHeight = item.outerHeight(),
+                itemTop = item.position().top,
+                box = $(ReactDOM.findDOMNode(this.refs.list)),
+                boxHeight = box.height(),
+                boxScroll = box.scrollTop();
+
+            if (itemTop > boxHeight - 10) {
+                box.scrollTop(boxScroll + itemHeight + 2);
+            } else if ((itemTop < itemHeight * 2) && boxScroll > 0) {
+                box.scrollTop(boxScroll - (itemHeight + 2));
+            }
+        };
+
+        upIndex() {
+            if (this.state.selectedIndex > 0) {
+                this.selectIndex(this.state.selectedIndex - 1)
+            }
+        };
+
+        downIndex() {
+            if (this.state.selectedIndex < this.state.items.length - 1) {
+                this.selectIndex(this.state.selectedIndex + 1)
+            }
+        };
+
+        changeLocation(e) {
+            if (e) {
+                e.preventDefault();
+            }
+
+            if (this.state.selectedIndex >= -1) {
+                document.location = this.state.items[this.state.selectedIndex].url;
+            }
+        };
+
+        render() {
+            var index = 0;
+
+            return (
+                <div className={this.state.hidden ? "hidden" : ""} id="filterBox">
+                    <Filter
+                        filterText={this.state.filterText}
+                        filterChanged={this.stateChanged.bind(this)}
+                        hideHandler={this.setHidden.bind(this)}
+                        upHandler={this.upIndex.bind(this)}
+                        downHandler={this.downIndex.bind(this)}
+                        locationHanlder={this.changeLocation.bind(this)}
+                    />
+                    <div className="filter-list" ref="list">
+                        {this.state.items.map(filtered => (
+                            <ListElem
+                                item={filtered}
+                                ref={"listitem" + index}
+                                selected={index++ == this.state.selectedIndex}
+                                key={filtered.root.join('/') + '/' + filtered.title}
+                            />)
+                        )}
+                    </div>
+                </div>
+            )
+        };
+
+        componentDidMount() {
+            var filterElem = $('#filterBox');
+            var reactComp = this;
+
+            var toggle = () => {
+                let filter = $('#filterBox'),
+                    isVisible = filter.is(':visible'),
+                    input = filter.find('input');
+
+                reactComp.setHidden(isVisible);
+
+                if (isVisible) {
+                    input.blur();
+                } else {
+                    input.focus()
+                }
+            };
+
+            key('ctrl+shift+s', toggle);
+
+            var infoButton = $('#shortcutInfo span').get(0);
+
+            $('html').click(function (e) {
+                if (e.srcElement === infoButton) {
+                    toggle();
+
+                    return;
+                }
+
+                let target = $(e.srcElement);
+
+                if (target && !target.parents('#filterBox').length) {
+                    reactComp.setHidden(true);
+                }
+            });
+        };
+    };
+    ReactDOM.render(
+        <FilterBox data={menuJson} />,
+        document.getElementById('filterBoxContainer')
+    );
+
+    // Settings Pane Component
+    class SettingsPane extends React.Component {
+        constructor(props) {
+            super(props);
+
+            // Cookie name from config or default
+            this.cookieName = this.props.config.cookieName || 'AWManagerSettings';
+
+            // Build default settings from config
+            const defaultSettings = {};
+            Object.entries(this.props.config.options).forEach(([key, option]) => {
+                defaultSettings[key] = option.default;
+            });
+
+            // Migrate from localStorage to cookies if needed
+            this.migrateFromLocalStorage();
+
+            // Load settings from cookie or use defaults
+            const savedSettings = this.getCookieSettings();
+            const settings = savedSettings ? {...defaultSettings, ...savedSettings} : defaultSettings;
+
+            this.state = {
+                hidden: true,
+                settings: settings,
+                tempSettings: {...settings}
+            };
+        }
+
+        migrateFromLocalStorage() {
+            try {
+                // Check if localStorage is available and has our settings
+                if (typeof localStorage !== 'undefined' && localStorage.getItem('AWManagerSettings')) {
+                    const localStorageSettings = localStorage.getItem('AWManagerSettings');
+
+                    // Check if cookie already exists
+                    const existingCookie = $.cookie(this.cookieName);
+
+                    // Only migrate if cookie doesn't exist
+                    if (!existingCookie && localStorageSettings) {
+                        try {
+                            // Parse to validate JSON
+                            const parsedSettings = JSON.parse(localStorageSettings);
+
+                            // Save to cookie
+                            this.setCookieSettings(parsedSettings);
+
+                            // Remove from localStorage after successful migration
+                            localStorage.removeItem('AWManagerSettings');
+
+                            console.log('Successfully migrated settings from localStorage to cookies');
+                        } catch (e) {
+                            console.error('Failed to migrate settings from localStorage:', e);
+                        }
+                    }
+                }
+            } catch (e) {
+                // localStorage might not be available in some environments
+                console.warn('localStorage not available for migration:', e);
+            }
+        }
+
+        getCookieSettings() {
+            const cookieValue = $.cookie(this.cookieName);
+            if (cookieValue) {
+                try {
+                    return JSON.parse(cookieValue);
+                } catch (e) {
+                    console.error('Failed to parse settings cookie:', e);
+                    return null;
+                }
+            }
+            return null;
+        }
+
+        setCookieSettings(settings) {
+            // Set cookie with options: path for entire site, expires in 365 days
+            $.cookie(this.cookieName, JSON.stringify(settings), {
+                path: '/',
+                expires: 365
+            });
+        }
+
+        componentDidMount() {
+            // Toggle settings pane when clicking the settings button
+            $(document).on('click', '#shortcutSettings', (e) => {
+                e.preventDefault();
+                this.togglePane();
+            });
+
+            // Close settings pane when clicking outside
+            $(document).on('click', (e) => {
+                const target = $(e.target);
+                if (!target.closest('#settingsPane').length &&
+                    !target.closest('#shortcutSettings').length &&
+                    !this.state.hidden) {
+                    this.setState({ hidden: true });
+                }
+            });
+
+            // ESC key to close
+            $(document).on('keyup', (e) => {
+                if (e.keyCode === 27 && !this.state.hidden) {
+                    this.handleClose();
+                }
+            });
+        }
+
+        togglePane() {
+            const tempSettings = {};
+            Object.entries(this.props.config.options).forEach(([key, option]) => {
+                tempSettings[key] = this.state.settings[key] !== undefined ? this.state.settings[key] : option.default;
+            });
+
+            this.setState(prevState => ({
+                hidden: !prevState.hidden,
+                tempSettings: tempSettings
+            }));
+        }
+
+        handleSettingChange(settingName, value) {
+            this.setState(prevState => ({
+                tempSettings: {
+                    ...prevState.tempSettings,
+                    [settingName]: value
+                }
+            }));
+        }
+
+        handleSave() {
+            // Save to cookie
+            this.setCookieSettings(this.state.tempSettings);
+
+            // Update state
+            this.setState({
+                settings: {...this.state.tempSettings},
+                hidden: true
+            });
+        }
+
+        handleClose() {
+            const tempSettings = {};
+            Object.entries(this.props.config.options).forEach(([key, option]) => {
+                tempSettings[key] = this.state.settings[key] !== undefined ? this.state.settings[key] : option.default;
+            });
+
+            this.setState({
+                hidden: true,
+                tempSettings: tempSettings
+            });
+        }
+
+        shouldShowOption(option) {
+            // If no show property, default to true
+            if (!option.hasOwnProperty('show')) {
+                return true;
+            }
+
+            // If show is a boolean, return it directly
+            if (typeof option.show === 'boolean') {
+                return option.show;
+            }
+
+            // If show is a function, call it with current temp settings
+            if (typeof option.show === 'function') {
+                try {
+                    // Ensure all values in tempSettings have defaults
+                    const safeSettings = {};
+                    Object.entries(this.props.config.options).forEach(([key, opt]) => {
+                        safeSettings[key] = this.state.tempSettings[key] !== undefined
+                            ? this.state.tempSettings[key]
+                            : opt.default;
+                    });
+                    return option.show(safeSettings);
+                } catch (e) {
+                    console.error('Error in show function:', e);
+                    return false; // Default to hiding the option if error occurs
+                }
+            }
+
+            // Default to true if show is neither boolean nor function
+            return true;
+        }
+
+        renderCheckboxOption(key, option) {
+            const isIndented = option.indent || false;
+            // Ensure we always have a valid boolean value
+            const currentValue = this.state.tempSettings[key] !== undefined
+                ? this.state.tempSettings[key]
+                : option.default;
+
+            return (
+                <div className={`setting-item ${isIndented ? 'setting-indent' : ''}`} key={key}>
+                    <label>
+                        <input
+                            type="checkbox"
+                            checked={!!currentValue}
+                            onChange={(e) => this.handleSettingChange(key, e.target.checked)}
+                        />
+                        <span>{option.label}</span>
+                    </label>
+                </div>
+            );
+        }
+
+        renderNumberOption(key, option) {
+            const [min, max] = option.range || [0, 999999];
+            const isIndented = option.indent || false;
+            // Ensure we always have a valid value, using option.default as fallback
+            const currentValue = this.state.tempSettings[key] !== undefined
+                ? this.state.tempSettings[key]
+                : option.default;
+
+            return (
+                <div className={`setting-item ${isIndented ? 'setting-indent' : ''}`} key={key}>
+                    <label>
+                        <span className="setting-label">{option.label}:</span>
+                        <input
+                            type="number"
+                            min={min}
+                            max={max}
+                            value={currentValue || min}
+                            onChange={(e) => {
+                                const value = parseInt(e.target.value) || min;
+                                this.handleSettingChange(key, Math.max(min, Math.min(max, value)));
+                            }}
+                            className="threshold-input"
+                        />
+                    </label>
+                    {option.help && (
+                        <div className="setting-help">{option.help}</div>
+                    )}
+                </div>
+            );
+        }
+
+        renderOption(key, option) {
+            // Check if this option should be shown
+            if (!this.shouldShowOption(option)) {
+                return null;
+            }
+
+            switch (option.type) {
+                case 'checkbox':
+                    return this.renderCheckboxOption(key, option);
+                case 'number':
+                    return this.renderNumberOption(key, option);
+                default:
+                    console.error(`Unknown option type: ${option.type}`);
+                    return null;
+            }
+        }
+
+        render() {
+            if (this.state.hidden) {
+                return null;
+            }
+
+            return (
+                <div id="settingsPane">
+                    <div className="settings-header">
+                        <h3>Settings</h3>
+                    </div>
+                    <div className="settings-content">
+                        {Object.entries(this.props.config.options).map(([key, option]) =>
+                            this.renderOption(key, option)
+                        )}
+                    </div>
+                    <div className="settings-footer">
+                        <button onClick={() => this.handleClose()} className="btn-close">Close</button>
+                        <button onClick={() => this.handleSave()} className="btn-save">Save</button>
+                    </div>
+                </div>
+            );
+        }
+    }
+
+    // Create a container for the settings pane
+    const settingsContainer = document.createElement('div');
+    settingsContainer.id = 'settingsPaneContainer';
+    document.body.appendChild(settingsContainer);
+
+    // Configuration for settings
+    const settingsConfig = {
+        cookieName: 'AWManagerSettings',  // Cookie name for storing settings
+        options: {
+            searchableSelectBoxes: {
+                label: "Enable searchable select boxes",
+                type: "checkbox",
+                default: false
+            },
+            selectOptionsThreshold: {
+                label: "Minimum options for search",
+                type: "number",
+                default: 50,
+                range: [1, 10000],
+                show: (state) => state.searchableSelectBoxes === true,
+                indent: true,
+                help: "Only select boxes with this many options or more will be searchable"
+            }
+        }
+    };
+
+    // Render the settings pane
+    ReactDOM.render(
+        <SettingsPane config={settingsConfig} />,
+        document.getElementById('settingsPaneContainer')
+    );
+</script>

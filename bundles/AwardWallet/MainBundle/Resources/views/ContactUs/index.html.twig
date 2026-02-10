@@ -1,0 +1,157 @@
+{% set MOBILE_NAV = true %}
+{% set MAIN_BODY_CLASSES = {
+    'manual-hidden': true,
+    'responsive': true
+}|merge(MAIN_BODY_CLASSES|default({})) %}
+{% extends "@AwardWalletMain/Layout/contact_us_faq_health.html.twig" %}
+{% form_theme form with ['@AwardWalletMain/FormTheme/fields.html.twig'] %}
+{% import '@AwardWalletMain/Faq/macro.html.twig' as macro %}
+{% trans_default_domain "contactus" %}
+
+{% block title %}
+    {{ 'about-site.text'
+    | trans({'%site_name%': vars.SiteName})
+    | desc('%site_name% is the number one resource on the web for tracking awards and travel plans')
+    | raw
+    }}
+{% endblock %}
+
+{% block header_metatags %}
+    {% include '@AwardWalletMain/Utility/scalableViewport.html.twig' %}
+{% endblock %}
+
+{% block meta %}
+    {{ parent() }}
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0, viewport-fit=cover">
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    {{ encore_entry_script_tags('trans/' ~ app.request.locale) }}
+    {{ encore_entry_script_tags('page-contact-us') }}
+{% endblock %}
+
+{% block content %}
+    <div class="add-account" data-ng-controller="contactCtrl"
+         data-is-ticket-booking-request="{{ isTicketBookingRequest }}"
+         data-booking-request-count="{{ bookingRequestCount }}"
+         data-booking-request-link="{{ bookingRequestLink }}">
+
+        <dialog data-ng-cloak id="programSearch" data-auto-open="false" data-modal="true" data-width="800" data-draggable="false">
+            <p id="programSearchResult">
+
+            </p>
+            <div class="ajax-loader">
+                <div class="loading"></div>
+            </div>
+        </dialog>
+
+        <dialog data-ng-cloak id="detectBookingRequest" data-title="'{{ 'contactus.detect-booking.title'|trans|desc('Booking Requests') }}'" data-auto-open="false" data-modal="true" data-width="800" data-draggable="false">
+            <p class="rememberData">
+                {% if bookingRequestCount == 0 %}
+                    {{ 'contactus.detect-booking.0-requests'|trans({
+                    '%addRequestLink%': path('aw_booking_add_index'),
+                    '%bookerName%': booker.servicename
+                    })|desc('
+                        Is your inquiry related to an award booking request?
+                        If so, please note that %bookerName% service is separate from AwardWallet support.
+                        In order to submit a new booking request please submit <a href="%addRequestLink%">this form</a> and one of the %bookerName% agents will be in contact with you shortly!
+                    ')|raw }}
+                {% else %}
+                    {{ 'contactus.detect-booking.more-than-zero-requests'|trans({
+                    '%bookerName%': booker.servicename
+                    })|desc('
+                        Is your inquiry related to an award booking request?
+                        If so, please note that %bookerName% service is separate from AwardWallet support,
+                        and you need to submit your booking related questions via your booking request by clicking the Respond button on the request page.
+                    ')|raw }}
+                {% endif %}
+            </p>
+        </dialog>
+
+        <dialog data-ng-cloak id="bookingNotice" data-title="'{{ 'contactus.booking-notice.title'|trans|desc('Booking Requests') }}'" data-auto-open="false" data-modal="true" data-width="700" data-draggable="false">
+            <p class="rememberData">
+                {{ 'contactus.booking-notice'|trans({
+                    '%bookingRequestsLink%': url('aw_booking_list_requests'),
+                })|desc('
+                    Please note that all of the booking requests are done by another team and not by AwardWallet support.
+                    Therefore we are not able to answer any booking related questions.
+                    If you need to update your request or ask a question please navigate to your award ticket booking requests queue: <br />
+                    <a href="%bookingRequestsLink%">%bookingRequestsLink%</a> <br />
+                    and ask your questions by posting a reply to the specific booking request that you have.
+                ')|raw }}
+            </p>
+        </dialog>
+
+        <div class="main-blk">
+            <h1>{{ 'contactus.title'|trans|desc('Contact Us') }}</h1>
+            <div class="warning-message silver-texture">
+                <i class="icon-warning-b"></i>
+                <p>{{ 'contactus.only-english-support' | trans | desc('At the moment we are only able to provide <span class="red bold">support in English language</span>. If you need to contact us please ask your questions in English.')|raw }}</p>
+            </div>
+            <div class="main-blk-content">
+                {% if is_granted('ROLE_USER') %}
+                    {% set _message = '' %}
+                {% else %}
+                    {% set _message = 'contactus.valid-contact-info-request'|trans|desc('Please submit valid contact information here, otherwise we will be unable to contact you.') ~ '<br /><br />' %}
+                {% endif %}
+                {% set _message2 = 'contactus.view-the-faq.text' | trans({'%url%': path('aw_faq_index')}) | desc('Before submitting this form please, briefly review the <a href="%url%">list of FAQs</a> that we have. For example:') %}
+                {% set _message = _message ~ _message2 %}
+
+                <p>{{ _message|raw }}</p>
+
+                <div class="faq-list">
+                    {% for faq in faqs %}
+                        {{ macro.drawFaq(faq) }}
+                    {% endfor %}
+                </div>
+
+                <div class="more-faqs">
+                    <a href="{{ path('aw_faq_index') }}" target="_blank" class="btn-silver" rel="noopener">{{ 'contactus.more-faq' | trans | desc('More FAQ\'s') }}</a>
+                </div>
+
+                <div class="silver-container">
+                    <p>{{ 'contactus.look-at-status-page.tip' | trans({'%url%': '/status/', '%url2%': 'http://AwardWallet.com/status/'}) | desc('If you are contacting us in regards to a loyalty program please see this status page first: <a href="%url%" rel="noopener">%url2%</a>')|raw }}</p>
+                </div>
+
+                {% if send == false %}
+                    <div class="title-note">
+                        <h3>{{ 'contactus.fill-the-form' | trans | desc('Please fill out the form below to contact us') }}</h3>
+                    </div>
+                {% else %}
+                    <div class="success-message">
+                        <i class="icon-green-check-b"></i>
+                        <p>{{ 'contactus.message-sent.notification' | trans | desc('Thank you, your message has been sent!') }}</p>
+                    </div>
+                {% endif %}
+            </div>
+
+            <form id="contactUsForm" action="" method="post" class="main-form">
+                <div class="main-form-item">
+                    {% for field in form %}
+                        {{ form_row(field) }}
+                    {% endfor %}
+                </div>
+                <div class="row-submit">
+                    <button type="submit" class="btn-blue">{{ 'contactus.send.button'|trans|desc('Send') }}</button>
+                </div>
+                {{ form_rest(form) }}
+            </form>
+        </div>
+        {% if is_granted('ROLE_USER') %}
+            <div class="faq">
+                <div class="faq-blk">
+                    <div class="heading">
+                        <i class="icon-info-small"></i>
+                        {% if is_granted('SITE_BUSINESS_AREA') %}
+                            {% set link = url('aw_profile_overview_business') %}
+                        {% else %}
+                            {% set link = url('aw_profile_overview') %}
+                        {% endif %}
+                        <p>{{ 'contactus.contact-method-info'|trans({'%url%': link })|desc('Please note that in order to contact you we will use the info that is specified in <a href="%url%">your profile</a>. If that info is incorrect please change it before contacting us.')|raw }}</p>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+{% endblock %}

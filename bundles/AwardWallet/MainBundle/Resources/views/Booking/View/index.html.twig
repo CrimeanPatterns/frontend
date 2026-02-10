@@ -1,0 +1,836 @@
+{% extends "@AwardWalletMain/Layout/booking.html.twig" %}
+{% import '@AwardWalletMain/Booking/macros.html.twig' as bookingMacros %}
+{% form_theme propertiesForm '@AwardWalletMain/Booking/fields.html.twig' %}
+{% import '@AwardWalletMain/TwigMacros/assets.html.twig' as assets %}
+{% trans_default_domain "booking" %}
+{% import _self as macros %}
+
+{% macro checkOtherAirportsIcon() %}
+    <span style="cursor:pointer;" title="{{ 'booking.check-other-airports'|trans }}">&#9432;</span>
+{% endmacro %}
+
+{% set canAddTripAction =
+    request.user is not null
+    and is_granted('USER_BOOKING_REFERRAL')
+    and is_granted('VIEW', request)
+%}
+
+{% block title %} {{ 'booking.request'|trans({}, 'booking') }} #{{ request.abrequestid }} {% endblock %}
+
+{% block body_left_widgets %}
+    {{ widget_render('left_top') }}
+    {{ widget_render('bookings') }}
+{% endblock %}
+
+{% block mainContent %}
+    {% set planLink = null %}
+    {% if request.travelplan %}
+        {% set planLink = path('aw_travelplan_shared', {shareCode: request.travelplan.encodedShareCode}) %}
+    {% endif %}
+    <div class="booker" id="requestView"
+         data-id="{{ request.abrequestid }}"
+         data-status="{{ request.realstatus(is_granted('USER_BOOKING_REFERRAL')) }}"
+         data-is-author="{{ not is_granted('USER_BOOKING_REFERRAL') ? 'true' : 'false' }}"
+         data-travel-plan="{{ planLink }}"
+         data-can-add-plan="{{ canAddTripAction ? 'true' : 'false' }}"
+    >
+    {% if request.user is null or is_granted('SITE_BOOKER_AREA') %}
+        <a href="{{ path('aw_booking_list_queue') }}" class="bread-crumbs btn spec"><i class="old-icon-book-prev"></i>{{ 'booking.links.back_to_queue'|trans({}, 'booking') }}</a>
+    {% elseif not request.isActive() %}
+        <a href="{{ url('aw_booking_list_requests') }}?archive=1" class="bread-crumbs btn spec"><i class="old-icon-book-prev"></i>{{ 'booking.links.back_to_past_requests'|trans({}, 'booking')|desc('Back to past requests') }}</a>
+    {% else %}
+        {% if reqRep.getActiveRequestsCountByUser(app.user) > 1 %}
+            <a href="{{ url('aw_booking_list_requests') }}" class="bread-crumbs btn spec"><i class="old-icon-book-prev"></i>{{ 'booking.links.back_to_requests'|trans({}, 'booking') }}</a>
+        {% elseif reqRep.getActiveRequestsCountByUser(app.user) == 1 %}
+            <a href="{{ path('aw_booking_add_index') }}" class="bread-crumbs  btn spec"><i class="old-icon-book-add"></i>{{ 'booking.add-request'|trans({}, 'booking')|desc('New booking request') }}</a>
+        {% endif %}
+    {% endif %}
+
+    {% if is_granted('USER_BOOKING_REFERRAL') %}
+        <a href="{{ path('aw_booking_view_markread', {id: request.abrequestid}) }}" id="mark-as-unread" class="bread-crumbs btn spec f-right">{{ 'mark-as-unread'|trans|desc('Mark as unread') }}</a>
+    {% endif %}
+
+    <div class="booker-block" id="main-blk">
+    <div class="booker-title">
+        {{ 'booking.request'|trans({}, 'booking') }} #<strong>{{ request.abrequestid }}</strong>
+
+        <div class="booker-aw">
+			<div class="booker-logo">
+				{% if is_granted('USER_BOOKING_REFERRAL') %}
+					<img src="{{ asset(reqRep.getRefIcon(request, 'medium', bookerInfo.userID)) }}" alt="fromIcon" width="32" height="32">
+				{% else %}
+					<img src="{{ asset(reqRep.getRefIcon(request, 'medium')) }}" alt="fromIcon" width="32" height="32">
+				{% endif %}
+			</div>
+        </div>
+    </div>
+    <table>
+    <tr>
+        <td><strong>{{ 'booking.class'|trans({}, 'booking') }}:</strong></td>
+        <td>
+            {% set cabins = [] %}
+            {% if request.CabinEconomy %}
+                {% set cabins = cabins|merge(['booking.economy.class'|trans({}, 'booking')|desc('Economy Class')]) %}
+            {% endif %}
+            {% if request.CabinPremiumEconomy %}
+                {% set cabins = cabins|merge(['booking.premium_economy.class'|trans({}, 'booking')|desc('Premium Economy Class')]) %}
+            {% endif %}
+            {% if request.CabinBusiness %}
+                {% set cabins = cabins|merge(['booking.business.class'|trans({}, 'booking')|desc('Business Class')]) %}
+            {% endif %}
+            {% if request.CabinFirst %}
+                {% set cabins = cabins|merge(['booking.first.class'|trans({}, 'booking')|desc('First Class')]) %}
+            {% endif %}
+
+            {{ cabins|join(', ') }}
+        </td>
+    </tr>
+    <tr>
+        <td><strong>{{ 'booking.table.headers.create-date'|trans({}, 'booking') }}:</strong></td>
+        <td>{{ request.createdate|formatTimeAgoTag(request.createdate|leadTZ|formatDatetime('long', 'short')) }}</td>
+    </tr>
+    <tr>
+        <td><strong>{{ 'booking.table.headers.last-update'|trans({}, 'booking') }}:</strong></td>
+        <td>{{ request.LastUpdateDate|formatTimeAgoTag(request.LastUpdateDate|leadTZ|formatDatetime('long', 'short')) }}</td>
+    </tr>
+    <tr>
+        <td><strong>{{ 'booking.table.headers.status'|trans({}, 'booking') }}:</strong></td>
+        <td id="request-status">{{ reqRep.getStatusDescription(request.realstatus(is_granted('USER_BOOKING_REFERRAL')))|trans({}, 'booking') }}</td>
+    </tr>
+    {% if is_granted('USER_BOOKING_REFERRAL') %}
+        <tr>
+            <td><strong>{{ 'account-age'|trans({}, 'booking')|desc('Account Age') }}:</strong></td>
+            <td>{{ clientInfo.accountAge }}</td>
+        </tr>
+        <tr>
+            <td><strong>{{ 'of-tracked-accounts'|trans({}, 'booking')|desc('# of Tracked Accounts') }}:</strong></td>
+            <td>{{ clientInfo.accountsCount }}</td>
+        </tr>
+        <tr>
+            <td><strong>{{ 'past-booking-requests'|trans({}, 'booking')|desc('Past Booking Requests') }}:</strong></td>
+            <td>{{ clientInfo.pastBookingRequests }} <a href="{{ path('aw_booking_list_queue', {user_filter: request.user.userid}) }}">({{ clientInfo.bookingCount }} {{ 'award.account.list.totals'|trans({}, 'messages') }})</a></td>
+        </tr>
+        <tr>
+            <td><strong>{{ 'paid-awplus'|trans({}, 'booking')|desc('Paid for AW Plus') }}:</strong></td>
+            <td>{{ clientInfo.paidAwPlus }}</td>
+        </tr>
+        <tr>
+            <td><strong>{{ 'times-logged-in'|trans({}, 'booking')|desc('Times Logged In') }}:</strong></td>
+            <td>{{ clientInfo.timesLoggedIn }}</td>
+        </tr>
+    {% endif %}
+    <tr>
+    <td colspan="2">
+    <div class="booker-btn">
+        {% if is_granted('CANCEL', request) %}
+            <a href="#" id="request-cancel-btn" data-id="{{request.abrequestid}}"
+               data-href="{{ path('aw_booking_view_cancel', {id: request.abrequestid}) }}">{{ 'booking.cancel.request'|trans({}, 'booking') }}</a>
+        {% endif %}
+        {% if is_granted('REPOST', request) %}
+            <a href="#" id="request-repost-btn" class="btn spec" data-href="{{ path('aw_booking_view_repost', {id: request.abrequestid}) }}" data-id="{{request.abrequestid}}">{{ 'booking.repost.request'|trans({}, 'booking') }}</a>
+        {% endif %}
+    </div>
+    <div class="booker-item">
+        <div class="booker-item-title">{{ 'booking.travelers'|trans({}, 'booking') }}
+                {% if is_granted('EDIT', request) %}
+                    <a href="{{ path('aw_booking_add_edit', {id: request.abrequestid}) }}#tab2" class="btn-edit">
+                        <i class="old-icon-edit-blk"></i>{{ 'booking.edit.request'|trans({}, 'booking') }}
+                    </a>
+                {% endif %}
+        </div>
+        <table id="table-travelers">
+            <thead>
+            <tr>
+                <td>{{ 'personal_info.first_name'|trans({}, 'messages') }}</td>
+                <td>{{ 'personal_info.middle_name'|trans({}, 'messages') }}</td>
+                <td>{{ 'personal_info.last_name'|trans({}, 'messages') }}</td>
+                <td>{{ 'booking.birthday'|trans({}, 'booking') }}</td>
+                <td>{{ 'booking.citizenship'|trans({}, 'booking') }}</td>
+                <td>{{ 'booking.passenger.gender'|trans({}, 'booking') }}</td>
+
+                {% if is_granted('USER_BOOKING_REFERRAL') %}
+                    <td>{{ 'booking.phone'|trans({}, 'booking') }}</td>
+                    <td></td>
+                {% else %}
+                {% endif %}
+            </tr>
+            </thead>
+            {% for passenger in request.passengers %}
+                <tr>
+                    <td>{{ passenger.firstname }}</td>
+                    <td>{{ passenger.middlename }}</td>
+                    <td>{{ passenger.lastname }}</td>
+                    <td>{{ passenger.birthday ? passenger.birthday|formatDatetime('short', 'none') : '' }}</td>
+                    <td>{{ passenger.nationality }}</td>
+                    <td style="width: 60px;">{{ passenger.gender == 'M' ? 'booking.passenger.gender.male'|trans : 'booking.passenger.gender.female'|trans }}</td>
+                    {% if is_granted('USER_BOOKING_REFERRAL') %}
+                        <td>
+                            {% if passenger.firstname ~ " " ~ passenger.lastname in request.ContactName %}
+                                {{ request.ContactPhone }}
+                            {% endif %}
+                        </td>
+                        {% if request.user %}
+                            {% set familyMember = passenger.user.findFamilyMemberByName(passenger.firstname, passenger.lastname) %}
+                            {% set link = agentsRep.getPlansLink(passenger, familyMember, app.user, is_granted('SITE_BUSINESS_AREA')) %}
+                            {% set email = passenger.user.getPlansEmail(familyMember) %}
+                            {#<td>#}
+                            {#<a href="mailto:{{ email }}">{{ email }}</a>#}
+                            {#</td>#}
+                            <td>
+                                {% if link %}
+                                    <a target="_blank" href="{{ link }}">View Travel Plans
+                                        ({{ timelineManager.getSegmentCount(passenger.user, familyMember) }})</a>
+                                {% endif %}
+                                {% if is_granted('EDIT', request) %}
+                                <a id="aw-email-link" data-email="{{ email }}" href="#">AW Email</a>
+                                {% endif %}
+                            </td>
+                        {% else %}
+                            <td></td>
+                        {% endif %}
+                    {% endif %}
+                </tr>
+            {% endfor %}
+        </table>
+    </div>
+    <div class="booker-item">
+        <div class="booker-item-title">{{ 'booking.destination'|trans({}, 'booking') }}{% if is_granted('EDIT', request) %}<a
+                href="{{ path('aw_booking_add_edit', {id: request.abrequestid}) }}#tab3" class="btn-edit"><i
+                        class="old-icon-edit-blk"></i>{{ 'booking.edit.request'|trans({}, 'booking') }}
+                </a>{% endif %}</div>
+        <table id="table-destinations">
+            {% set showDaysColumn = false %}
+            {% for segment in request.segments %}
+                {% if segment.isRoundTrip and (segment.roundTripDaysIdeal or segment.roundTripDaysFlex) %}
+                    {% set showDaysColumn = true %}
+                {% endif %}
+            {% endfor %}
+            <thead>
+            <tr>
+                {#<td class="id">#</td>#}
+                <td>{{ 'new_abrequest.segments.fromto'|trans({}, 'email') }}</td>
+                <td>{{ 'booking.table.headers.departure'|trans({}, 'booking') }}</td>
+                {% if showDaysColumn %}
+                    <td>{{ 'booking.request.add.form.segment.round-trip-days'|trans({}, 'booking') }}</td>
+                {% endif %}
+            </tr>
+            </thead>
+            {% for segment in request.segments %}
+                <tr>
+                    <td>
+                        {{ segment.getDep() }} {{ segment.DepCheckOtherAirports ? macros.checkOtherAirportsIcon() : '' }} -
+                        {{ segment.getArr() }} {{ segment.ArrCheckOtherAirports ? macros.checkOtherAirportsIcon() : '' }}</td>
+
+                    <td>
+                        {% if segment.depdatefrom is defined and segment.depdatefrom is not empty
+                        and segment.depdateto is defined and segment.depdateto is not empty
+                        and segment.depdateideal is defined and segment.depdateideal is not empty
+                        and segment.depDateFlex %}
+                            {{ segment.depdatefrom|weekdayShort }}
+                            - {{ segment.depdateto|weekdayShort}}
+                            <strong>{{ 'booking.date.ideal'|trans({'%date%': segment.depdateideal|weekdayShort }, 'booking') }}</strong>
+
+                        {% elseif segment.depdatefrom is defined and segment.depdatefrom is not empty
+                        and segment.depdateto is defined and segment.depdateto is not empty
+                        and segment.depDateFlex %}
+                            {{ segment.depdatefrom|weekdayShort }}
+                            - {{ segment.depdateto|weekdayShort }}
+
+                        {% elseif segment.depdateideal is defined and segment.depdateideal is not empty %}
+                            {{ segment.depdateideal|weekdayShort }}
+                        {% endif %}
+                    </td>
+                    {% if segment.isRoundTrip and (segment.roundTripDaysIdeal or segment.roundTripDaysFlex) %}
+                        <td rowspan="2">
+                            {% if segment.roundTripDaysIdeal and not segment.roundTripDaysFlex %}
+                                {{ segment.roundTripDaysIdeal }} {{ 'days'|trans({'%count%': segment.roundTripDaysIdeal}, 'messages') }}
+                            {% elseif segment.roundTripDaysIdeal and segment.roundTripDaysFlex %}
+                                {{ segment.roundTripDaysIdeal }}
+                                {{ 'days'|trans({'%count%': segment.roundTripDaysIdeal}, 'messages') }}
+                                ({{ 'booking.request.segment.min-max'|trans({
+                                '%min%':  segment.roundTripDaysFrom ~ ' ' ~ 'days'|trans({'%count%': segment.roundTripDaysFrom}, 'messages'),
+                                '%max%': segment.roundTripDaysTo ~ ' ' ~ 'days'|trans({'%count%': segment.roundTripDaysTo}, 'messages')
+                            }, 'booking')|desc('MIN: %min%, MAX: %max%') }})
+                            {% elseif not segment.roundTripDaysIdeal and segment.roundTripDaysFlex %}
+                                {{ 'booking.request.segment.min-max'|trans({
+                                    '%min%':  segment.roundTripDaysFrom ~ ' ' ~ 'days'|trans({'%count%': segment.roundTripDaysFrom}, 'messages'),
+                                    '%max%': segment.roundTripDaysTo ~ ' ' ~ 'days'|trans({'%count%': segment.roundTripDaysTo}, 'messages')
+                                }, 'booking')|desc('MIN: %min%, MAX: %max%') }}
+                            {% endif %}
+                        </td>
+                    {% elseif showDaysColumn %}
+                        <td> </td>
+                    {% endif %}
+                </tr>
+                {% if segment.isRoundTrip %}
+                    <tr>
+                        <td>{{ segment.getArr() }} - {{ segment.getDep() }}</td>
+                        <td>
+                            {% if segment.returndatefrom is defined and segment.returndatefrom is not empty
+                            and segment.returndateto is defined and segment.returndateto is not empty
+                            and segment.returndateideal is defined and segment.returndateideal is not empty
+                            and segment.returnDateFlex %}
+                                {{ segment.returndatefrom|weekdayShort }}
+                                - {{ segment.returndateto|weekdayShort }}
+                                <strong>{{ 'booking.date.ideal'|trans({'%date%': segment.returndateideal|weekdayShort }, 'booking') }}</strong>
+
+                            {% elseif segment.returndatefrom is defined and segment.returndatefrom is not empty
+                            and segment.returndateto is defined and segment.returndateto is not empty
+                            and segment.returnDateFlex %}
+                                {{ segment.returndatefrom|weekdayShort }}
+                                - {{ segment.returndateto|weekdayShort }}
+
+                            {% elseif segment.returndateideal is defined and segment.returndateideal is not empty %}
+                                {{ segment.returndateideal|weekdayShort }}
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% endif %}
+            {% endfor %}
+
+        </table>
+    </div>
+
+    {% if request.paymentCash %}
+        <div class="green-transparent-block">
+            <i class="old-icon-check-green"></i>
+            <p>
+                {% if is_granted('USER_BOOKING_REFERRAL') %}
+                    {{ 'booking.paying_money_instead_miles.client'|trans|desc('The client is OK with paying money instead of miles for the tickets.') }}
+                {% else %}
+                    {{ 'booking.paying_money_instead_miles.iam'|trans|desc('I am OK with paying money instead of miles for the tickets.') }}
+                {% endif %}
+            </p>
+        </div>
+    {% endif %}
+
+    {% if request.user and (request.ByBooker == false or (request.ByBooker == true and is_granted('USER_BOOKING_REFERRAL'))) %}
+
+        <div class="booker-item booking-form">
+            <div class="booker-item-title">{{ 'booking.miles'|trans({}, 'booking') }}{% if is_granted('EDIT', request) %}<a
+                    href="{{ path('aw_booking_add_edit', {id: request.abrequestid}) }}#tab4" class="btn-edit"><i
+                            class="old-icon-edit-blk"></i>{{ 'booking.edit.request'|trans({}, 'booking') }}
+                    </a>{% endif %}</div>
+            <table id="lp-table">
+                <thead>
+                <tr>
+                    {% if is_granted('USER_BOOKING_REFERRAL') %}
+                        <td class="miles-row-id"></td>{% endif %}
+                    <td>{{ 'booking.display.name'|trans({}, 'booking') }}</td>
+                    <td>{{ 'booking.owner'|trans({}, 'booking') }}</td>
+                    <td>{{ 'booking.elite.status'|trans({}, 'booking') }}</td>
+                    <td>{{ 'booking.balance'|trans({}, 'booking') }}</td>
+                    <td>{{ 'booking.table.headers.last-update'|trans({}, 'booking') }}</td>
+                    {% if is_granted('USER_BOOKING_REFERRAL') %}
+                        <td style="min-width: 100px"></td>
+                    {% endif %}
+                </tr>
+                </thead>
+                <tbody>
+                {% include '@AwardWalletMain/Booking/View/lp-table.html.twig' %}
+                </tbody>
+                <tfoot style="display: none;">
+                <tr id="add-custom-template" class="miles-row">
+                    <td class="miles-row-id">
+                        <input type="checkbox" checked/>
+                    </td>
+                    <td>
+                        <div>{{ 'booking.request.edit.select-provider'|trans({}, 'booking') }}:</div>
+                        <select>
+                            {% for provider in providers %}
+                                <option value="{{ provider.id }}">{{ provider.label }}</option>
+                            {% endfor %}
+                        </select>
+                    </td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                </tfoot>
+            </table>
+            <div id="clarify-template" style="display: none;">
+                <div class="text"></div>
+                <select>
+                    {% for provider in providers %}
+                        <option value="{{ provider.id }}">{{ provider.label }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div id="clarified-template" style="display: none;">
+                <span class="name"></span>
+                <span class="providerName"></span>
+                <a class="btn delete delete-added-custom" href="#">{{ "delete"|trans|desc("Delete") }}</a>
+                <a class="btn delete clarify" href="#">{{ "booking.clarify"|trans|desc("Clarify") }}</a>
+            </div>
+            {% if is_granted('USER_BOOKING_REFERRAL') and is_granted('BUSINESS_ACCOUNTS') %}
+                <div class="add-block">
+                    <a href="#" class="js-request-another-account-for-sharing"><i
+                                class="old-icon-add-another-block"></i>{{ "booking.request.another.sharing"|trans|desc("Request another account for sharing") }}</a>
+                </div>
+                <div class="booker-btn">
+                    <a href="#" class="btn spec" id="send-sharing-request">{{ "booking.request.antoby.sharing"|trans|desc("Request accounts to be shared") }}</a>
+                    {% if is_granted('USER_BOOKING_AW') %}
+                        <a href="{{ path('aw_booking_view_gainfull', {id: request.abrequestid}) }}" class="btn spec" id="gain-full">
+                            {{ "booking.request.full-sharing"|trans|desc("Gain full control of the personal account") }}
+                        </a>
+                    {% endif %}
+                </div>
+            {% endif %}
+        </div>
+
+    {% endif %}
+
+    <div class="booker-item">
+        <div class="booker-item-title">{{ "booking.contact.info"|trans|desc("Contact Info") }}{% if is_granted('EDIT', request) %}<a
+                href="{{ path('aw_booking_add_edit', {id: request.abrequestid}) }}#tab1" class="btn-edit"><i
+                        class="old-icon-edit-blk"></i>{{ "booking.edit.request"|trans|desc("Edit") }}
+                </a>{% endif %}</div>
+        <table id="contact-table">
+            <tr>
+                <td class="silver-row">{{ 'booking.name'|trans({}, 'booking') }}:</td>
+                <td>{{ request.ContactName }}</td>
+            </tr>
+            <tr>
+                <td class="silver-row">{{ 'booking.phone'|trans({}, 'booking') }}:</td>
+                <td>{{ request.contactphone }}</td>
+            </tr>
+            <tr>
+                <td class="silver-row">Email:</td>
+                <td>
+                    {% for email in request.contactemails %}
+                    <a style="padding-right: 0" href="mailto:{{ email }}">{{ email }}</a>{% if not loop.last %}, {% endif %}
+                    {% endfor %}
+                    {% if isNdrContactEmail and is_granted('USER_BOOKING_REFERRAL') %}
+                        {{ 'ndr'|trans|desc("This email is marked as NDR, it means we sent 3 emails to this recipient and they all returned to us as non-deliverable.") }}
+                    {% endif %}
+                </td>
+            </tr>
+            {% if request.priorsearchresults is not null %}
+            <tr>
+                <td class="silver-row">{{ 'booking.prior.searches'|trans({}, 'booking') }}:</td>
+                <td>
+                    {% if request.priorsearchresults != '-' %}
+                        <p>{{ 'prior.search.title'|trans({"%booker%": request.booker.bookerinfo.ServiceName })|desc('The client tried booking this award itinerary prior to contacting %booker% with the following results') }}:</p>
+                        <dl>
+                            {{ request.priorsearchresults|e|auto_link|nl2br }}
+                        </dl>
+                    {% else %}
+                        {{ 'booking.no-priorsearch.text'|trans|desc('The client has not tried booking this award request on his / her own prior to contacting us.') }}
+                    {% endif %}
+                </td>
+            </tr>
+            {% endif %}
+            {% if request.booker.bookerinfo.allowBusinessOrPersonalSelect %}
+                <tr>
+                    <td class="silver-row">{{ "booking.request.add.form.travel_type"|trans }}:</td>
+                    <td>
+                        {% if request.isBusinessTravel %}
+                            {{ "booking.request.add.form.travel_type.business"|trans }}
+                        {% else %}
+                            {{ "booking.request.add.form.travel_type.personal"|trans }}
+                        {% endif %}
+                    </td>
+                </tr>
+            {% endif %}
+            {% if request.notes|length %}
+                <tr>
+                    <td class="silver-row">{{ 'booking.notes'|trans({}, 'booking') }}:</td>
+                    <td>{{ request.notes|e|auto_link|nl2br }}</td>
+                </tr>
+            {% endif %}
+        </table>
+    </div>
+    </td>
+    </tr>
+    </table>
+    </div>
+    {% if is_granted('USER_BOOKING_REFERRAL') %}
+        <div class="booker-item" id="internalMessages"
+             {% if not reqRep.internalCommentCount(request) %}style="display: none"{% endif %}>
+            <div class="booker-item-title">
+                {{ 'booking.internalcomm'|trans({}, 'booking')|desc('Internal Messages') }}
+            </div>
+            <div class="message-body">
+                {{ render(controller('AwardWallet\\MainBundle\\Controller\\Booking\\MessageController::getMessagesAction', { 'id': request.abrequestid, 'internal': 'internal', 'readed': readed })) }}
+            </div>
+        </div>
+        <div class="jump-mes">
+            <a class="btn spec wide" id="jumpto-last-common"
+               href="#">{{ 'jump.to.last.user.message'|trans|desc('Jump to the last user message') }}</a><i
+                    class="old-icon-double-arrow-bottom"></i>
+        </div>
+    {% else %}
+        <div class="jump-mes">
+            <a class="btn spec wide" id="jumpto-last-common"
+               href="#">{{ 'jump.to.last.message'|trans|desc('Jump to the latest message') }}</a><i
+                    class="old-icon-double-arrow-bottom"></i>
+        </div>
+    {% endif %}
+
+    <div class="booker-item" id="commonMessages">
+        <div class="booker-item-title">
+            {{ 'booking.userscomm'|trans({}, 'booking')|desc('Messages') }}
+        </div>
+        <div class="message-body" id="messagesBlock">
+            {{ render(controller('AwardWallet\\MainBundle\\Controller\\Booking\\MessageController::getMessagesAction', { 'id': request.abrequestid, 'internal': 'common', 'readed': readed })) }}
+        </div>
+        {% if is_granted('USER_BOOKING_REFERRAL') and reqRep.internalCommentCount(request) %}
+            <div class="jump-mes">
+                <a class="btn spec wide" id="jumpto-last-internal"
+                   href="#">{{ 'jump.to.last.internal.message'|trans|desc('Jump to the latest internal message') }}</a><i
+                        class="old-icon-double-arrow-top"></i>
+            </div>
+        {% endif %}
+    </div>
+
+    {% if request.user and (is_granted('BUSINESS_ACCOUNTS') or is_granted('NOT_SITE_BUSINESS_AREA')) %}
+        <div id="respond-block" class="booker-block can-show-block">
+            <div class="booker-title">
+                <span>{{ 'booking.message'|trans({}, 'booking')|desc('Message') }}</span>
+
+                    <div class="booker-nav-blk">
+                        <ul id="status-ul">
+                            {% if is_granted('USER_BOOKING_REFERRAL') and is_granted('VIEW', request) %}
+                                <li>
+                                    <a href="#" class="btn-silver" id="create-invoice-btn" data-target="create-invoice"
+                                       data-title="{{ 'create.invoice.title'|trans|desc('Invoice') }}">{{ 'create.invoice.btn'|trans|desc('Create invoice') }}</a>
+                                </li>
+                                <li><a href="#" class="btn-silver" data-target="seat-assignments"
+                                       data-title="{{ 'create.seat-assignments.btn'|trans|desc('Seat Assignments') }}">{{ 'create.seat-assignments.btn'|trans|desc('Seat Assignments') }}</a>
+                                </li>
+                                <li style="display: none"><a href="#" class="btn-silver" data-cancel-btn="true" data-target="create-message"
+                                       data-title="{{ 'booking.message'|trans|desc('Message') }}">{{ 'cancel'|trans|desc('Cancel') }}</a></li>
+                            {% endif %}
+                        </ul>
+                    </div>
+            </div>
+            <div id="create-message">
+                {% include "@AwardWalletMain/Booking/View/addMessage.html.twig" %}
+            </div>
+            {% if is_granted('USER_BOOKING_REFERRAL') and is_granted('VIEW', request)  %}
+                <div id="create-invoice" style="display: none;">
+                    {{ render(controller('AwardWallet\\MainBundle\\Controller\\Booking\\MessageController::createInvoiceAction', { 'id': request.abrequestid })) }}
+                </div>
+                <div id="seat-assignments" style="display: none;">
+                    {{ render(controller('AwardWallet\\MainBundle\\Controller\\Booking\\MessageController::seatAssignmentsAction', { 'id': request.abrequestid })) }}
+                </div>
+            {% endif %}
+        </div>
+    {% endif %}
+
+	{% if is_granted('USER_BOOKING_REFERRAL') %}
+		<a href="{{ path('aw_booking_list_queue') }}" class="btn spec can-show-inline-block" style="margin-top: 20px; margin-bottom: -10px;"><i
+					class="old-icon-book-prev"></i>{{ 'booking.links.back_to_queue'|trans({}, 'booking') }}</a>
+	{% endif %}
+
+    {% if is_granted("USER_BOOKING_REFERRAL") %}
+        {% include "@AwardWalletMain/Booking/View/propertiesForm.html.twig" %}
+    {% endif %}
+
+        {% if 116000 == bookerInfo.getUserID().getUserid() %}<div class="logo-bya-condenast"></div>{% endif %}
+    </div>
+
+    <audio id="online-audio">
+        <source src="/assets/awardwalletnewdesign/sound/online.mp3">
+        <source src="/assets/awardwalletnewdesign/sound/online.ogg">
+        <source src="/assets/awardwalletnewdesign/sound/online.wav">
+    </audio>
+
+    <audio id="new-msg-audio">
+        <source src="/assets/awardwalletnewdesign/sound/newMessage.mp3">
+        <source src="/assets/awardwalletnewdesign/sound/newMessage.ogg">
+        <source src="/assets/awardwalletnewdesign/sound/newMessage.wav">
+    </audio>
+
+{% endblock %}
+
+{% block popups %}
+    {{ parent() }}
+
+    <div id="payment_popup"
+         style="display: none"
+         data-credit-card-disabled="{{ request.booker.bookerinfo.PayPalPassword is null and not app.debug ? 'true' : 'false' }}"
+         data-check-disabled="{{ request.booker.bookerinfo.AcceptChecks ? 'false' : 'true' }}"
+    >
+        <div class="row" data-target="paypal">
+            <input type="radio" name="type" value="paypal" id="pay_by_cc">
+                <label for="pay_by_cc">
+                {% if request.booker.bookerinfo.isIncludeCreditCardFee %}
+                    {{ 'booking.payment.dialog.paypal'|trans|desc('Pay by a Credit Card, 2.9% fee will apply') }}
+                {% else %}
+                    {{ 'booking.payment.dialog.paypal-without-fee'|trans|desc('Pay by a Credit Card') }}
+                {% endif %}
+                </label>
+        </div>
+        <div class="row" data-target="check">
+            <input type="radio" name="type" value="check" id="pay_by_check"> <label
+                    for="pay_by_check">{{ 'booking.payment.dialog.check'|trans|desc('Pay by sending a check') }}</label>
+        </div>
+
+        <div class="check-text" style="display: none;">
+            <p>{{ 'bookindg.payment.dialog.header'|trans({"%booker%": request.booker.bookerinfo.ServiceName })|desc('Please write a check to %booker% and send it to') }}
+                :</p>
+
+            <address>
+                {{ request.booker.bookerinfo.address|raw }}
+            </address>
+            <p>{{ 'booking.payment.dialog.footer'|trans|desc('Please click "Continue" to let us know you are sending a check.') }}</p>
+        </div>
+        <div class="cc-disabled-text" style="display: none;">
+            <p>{{ 'booking.payment.cc-disabled'|trans({"%booker%": request.booker.bookerinfo.ServiceName }, 'booking')|desc('Unfortunately %booker% is not yet set up to accept credit card payments, please contact them to enable this option') }}</p>
+        </div>
+    </div>
+
+    {% if request.status == constant('\\AwardWallet\\MainBundle\\Entity\\AbRequest::BOOKING_STATUS_NOT_VERIFIED') %}
+        {% set closable = is_granted("USER_BOOKING_REFERRAL") or is_granted("SITE_DEV_MODE") or is_granted('ROLE_STAFF') %}
+        <div id="not_verified_popup" style="display: none;" data-id="{{ request.abrequestid }}" data-booker="{{ is_granted("USER_BOOKING_REFERRAL") }}" data-closable="{{ closable }}">
+            <p>{{ 'not-verified.popup.text1'|trans({"%email%": request.booker.bookerinfo.FromEmail |htmlencode, "%requestId%": request.abRequestID })|desc('Your award booking request was successfully submitted but is <b>not complete</b>. We just sent you an email with the following subject: "<b>Award Booking Request #%requestId%</b>", to ensure we can reach you via email going forward please confirm your email address by following a link in that email. Our team will use this messaging platform to discuss award options with you.')|raw }}</p>
+            <br/>
+
+            <p>{{ 'not-verified.popup.text2'|trans({"%booker%": request.booker.bookerinfo.ServiceName })|desc('The %booker% team is looking forward to working with you!') }}</p>
+        </div>
+    {% endif %}
+
+    <div id="delete_message_popup" style="display: none;">
+        {{ 'text.message.delete.question'|trans({}, 'booking')|desc('Are you sure you wish to delete this message?') }}
+    </div>
+    <div id="reveal_password_popup" style="display: none">
+        <div class="copy-pass-message"></div>
+    </div>
+    <div id="cancel_popup" style="display: none;">
+        <p><b>{{ 'cancel.popup.text1'|trans|desc('Are you sure you wish to cancel this booking request?') }}</b></p>
+
+        <p>{{ 'cancel.popup.text2'|trans({"%booker%": request.booker.bookerinfo.ServiceName })|desc('This will tell %booker% to stop working on this booking request.') }}</p>
+    </div>
+    {% if canAddTripAction %}
+        {% set ua = agentsRep.findOneBy({'clientid': request.user, 'agentid': bookerInfo.userID.id}) %}
+
+        <div id="add-trip-popup" style="display: none;">
+            <form class="main-form">
+                <p>{{ 'add-trip.desc'|trans({
+                    '%email%': request.user.getItineraryForwardingEmail(),
+                    '%user%': request.user.getFullName(),
+                    '%createPlanLink%': 'create.plan'|trans({}, 'messages'),
+                    '%shareLink%': 'share'|trans({}, 'messages'),
+                    '%bold_on%': '<b>',
+                    '%bold_off%': '</b>',
+                    '%link_on%': '<a target="_blank" href="' ~ path('aw_timeline_html5', {agentId: ua.id}) ~ '">',
+                    '%link_off%': '</a>'
+                }, 'trips')|desc('
+                    To attach the booked trip segments to this booking request please forward all the booking reservations to
+                    %bold_on%%email%%bold_off%, then open up the %link_on%timeline of %user%%link_off% and create a trip by clicking the "%createPlanLink%" link on
+                    the right. Adjust the beginning and the end points of the trip by dragging them. Once done,
+                    click the "%shareLink%" button on the newly created trip, copy the sharing URL and paste it here:
+                ')|raw }}</p>
+                <div class="row">
+                    <div class="row-item">
+                        <label for="trip-url-input">{{ 'trip-url'|trans({}, 'trips')|desc('Trip URL') }}:</label>
+                        <div class="input">
+                            <div class="input-item">
+                                <input id="trip-url-input" type="text" name="tripUrl">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="info">
+                        <div class="info-icon"></div>
+                        <div class="info-description"><p></p></div>
+                    </div>
+                    <div class="error-message" style="display: none;">
+                        <div class="warning"><i class="icon-warning-small"></i></div>
+                        <div class="error-message-description" style="padding-right: 10px"></div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    {% endif %}
+
+	<div class="js-view-updated-info" data-update-url="{{ url('aw_booking_json_getviewupdates', {id: request.abRequestID}) }}" style="position: fixed; bottom: 0; left: 0; height: 40px; width: 100%;
+	background-color: #ffe664;
+	background: -moz-linear-gradient(top, #ffe664 0%, #f9c600 100%);
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#ffe664), color-stop(100%,#f9c600));
+	background: -webkit-linear-gradient(top, #ffe664 0%,#f9c600 100%);
+	background: -o-linear-gradient(top, #ffe664 0%,#f9c600 100%);
+	background: -ms-linear-gradient(top, #ffe664 0%,#f9c600 100%);
+	background: linear-gradient(to bottom, #ffe664 0%,#f9c600 100%);
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffe664', endColorstr='#f9c600',GradientType=0 );
+	color: #000; text-align: center; font-weight: bold; z-index: 95; box-shadow: 0px 0px 4px 2px #aeaeae; cursor: pointer;
+	display: none">
+		<div style="margin: 12px 0">{{'view.request.updated'|trans|desc('This booking request has been updated')}}</div>
+	</div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script type="text/javascript">
+        requestId = {{ request.abrequestid  }}; // global, used in view.js
+        require([
+            'vendor/clipboard/dist/clipboard.min',
+            'jquery-boot', 'translator-boot',
+            'cookie',
+            'awardwalletmain/js/booking/view',
+            'awardwalletmain/js/booking/messages',
+            'awardwalletmain/js/booking/properties',
+            {% if is_granted('USER_BOOKING_REFERRAL') %}
+                'awardwalletmain/js/booking/booker',
+                'awardwalletmain/js/booking/invoice',
+                {% if request.user %}
+                    'awardwalletmain/js/booking/seatAssignments',
+                {% endif %}
+            {% endif %}
+
+            // assets_form
+            'select2',
+            'awardwalletmain/js/select2_colored',
+            // bookingJs
+            'awardwalletmain/js/booking/common',
+            'awardwalletmain/js/booking/autocomplete',
+            // formKeeperJs
+            'awardwalletmain/js/FormKeeper',
+            'awardwalletmain/js/CollectionManager'
+        ], function (clipboard) {
+            window.Clipboard = clipboard;
+
+            $(function () {
+                {% if not app.user.wpDisableAll %}
+                    require(['common/web-push'], function(webPush){
+                        webPush.init('{{ vapid_public_key }}', '{{ webpush_id }}', {{ request.user.userId }}, {{ is_granted('ROLE_STAFF') ? 'true' : 'false' }});
+                    });
+                {% endif %}
+                $(function () {
+                    $('form[action^="/awardBooking/add_message"]').submit(function(e){
+                        $('#messageFormSubmitButton').attr('disabled', 'disabled');
+                    });
+                });
+                // Scrolling to messages
+                var internal = $('#internalMessages'),
+                        common = $('#commonMessages'),
+                        jump_int_btn = $('#jumpto-last-internal'),
+                        jump_common_btn = $('#jumpto-last-common'),
+                        scroll_to;
+
+                jump_int_btn.click(function (e) {
+                    e.preventDefault();
+                    var last_int_unread = internal.find('table.message-block.new:first'),
+                            last_int = internal.find('table.message-block:last');
+
+                    if (last_int_unread.length)
+                        scroll_to = last_int_unread;
+                    else
+                        scroll_to = last_int;
+
+                    if (scroll_to && scroll_to.length)
+                        $('html, body').animate({
+                            scrollTop: scroll_to.offset().top
+                        }, 300);
+                });
+
+                jump_common_btn.click(function (e) {
+                    e.preventDefault();
+                    var last_common_unread = common.find('table.message-block.new:first'),
+                            last_common = common.find('table.message-block:last');
+
+                    if (last_common_unread.length)
+                        scroll_to = last_common_unread;
+                    else
+                        scroll_to = last_common;
+
+                    if (scroll_to && scroll_to.length)
+                        $('html, body').animate({
+                            scrollTop: scroll_to.offset().top
+                        }, 300);
+                });
+
+                var messages = require('awardwalletmain/js/booking/messages');
+                messages.channels = {{ channels|raw }};
+                messages.socksConfig = {{ messaging|raw }};
+                messages.contactUid = {{ request.user.userId }};
+                messages.contactName = "{{ request.contactName }}";
+
+                {% if is_granted("USER_BOOKING_REFERRAL") %}
+                    messages.url = '{{ path('aw_booking_message_ajaxaddmessage', {id: request.abrequestid}) }}';
+
+                    propertiesFormRequest.url = '{{ path('aw_booking_view_ajaxproperties', {id: request.abrequestid}) }}';
+                    propertiesFormRequest.init();
+                {% endif %}
+
+                messages.init();
+
+                {% if is_granted("USER_BOOKING_REFERRAL") %}
+                    $('#mark-as-unread').click(function(e) {
+                        e.preventDefault();
+                        $.get($(this).attr('href'), {'readed': 'false'}, function(data) {
+                            if (data === 'success') {
+                                document.location.href = "{{ url('aw_booking_list_queue') }}";
+                            }
+                        });
+
+                        return false;
+                    });
+                {% endif %}
+                {% if is_granted('USER_BOOKING_AW') and is_granted('BUSINESS_ACCOUNTS') %}
+                    var doneGainFull = false;
+                    $('#gain-full').click(function(e) {
+                        var _this = this;
+
+                        e.preventDefault();
+                        if (doneGainFull) {
+                            return;
+                        }
+
+                        $(_this).addClass('loader');
+                        $.get($(this).attr('href'), function(data) {
+                            if (data.error) {
+                                jAlert({content: data.error});
+                            } else {
+                                $(_this).addClass('disable');
+                                doneGainFull = true
+                            }
+                        }).always(function() {
+                            $(_this).removeClass('loader');
+                        });
+
+                        return false;
+                    });
+                {% endif %}
+            });
+        });
+    </script>
+    {% if firstView and request.booker.bookerinfo.ServiceName == 'Abroaders' %}
+        {{ bookingMacros.abroadersTrackingScripts() }}
+        <script type="text/javascript">
+            var sale = PostAffTracker.createAction('AwardBooking');
+            sale.setOrderID('{{ request.abrequestid }}');
+            sale.setData2('{{ request.contactEmail }}');
+            sale.setData3('{{ request.contactName }}');
+            sale.setCampaignID('3d9c801b');
+
+            PostAffTracker.register();
+        </script>
+    {% endif %}
+{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    {{ assets.assets_form('css') }}
+    {{ encore_entry_link_tags('booking') }}
+    <style>
+        .message-body {
+            -webkit-transition: height 0.5s ease-out 0.2s;
+            -moz-transition: height 0.5s ease-out 0.2s;
+            -o-transition: height 0.5s ease-out 0.2s;
+            transition: height 0.5s ease-out 0.2s;
+            overflow-y: hidden;
+        }
+
+        .can-show-block { display: none; }
+        .loaded .can-show-block { display: block; }
+        .can-show-inline-block { display: none; }
+        .loaded .can-show-inline-block { display: inline-block; }
+        #messagesBlock { margin-bottom: 20px; }
+        .loaded #messagesBlock { margin-bottom: 0; }
+
+        .ui-dialog { -webkit-transform: translate3d(0,0,0); }
+    </style>
+{% endblock %}

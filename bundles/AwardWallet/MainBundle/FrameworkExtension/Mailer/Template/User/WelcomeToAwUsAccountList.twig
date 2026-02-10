@@ -1,0 +1,88 @@
+{% extends '@MailTemplate/Layout/base.twig' %}
+{% trans_default_domain "email" %}
+
+{% block subject %}{% apply spaceless %}{% autoescape false %}
+    A Quick Guide to Tracking Accounts with AwardWallet
+{% endautoescape %}{% endapply %}{% endblock subject %}
+
+{% block mailPreview %}
+    {% import '@MailTemplate/CommonMacro.twig' as commonMacro %}
+
+    {{ commonMacro.emailPreview('Stay Informed About Everything That Matters in Seconds!') }}
+{% endblock mailPreview %}
+
+{% block restore_row %}{% endblock restore_row %}
+
+{% block content %}
+    {% import '@MailTemplate/CommonMacro.twig' as commonMacro %}
+
+    <div style="padding: 0 10px;">
+        {{ commonMacro.link(
+            'https://awardwallet.com/blog/how-to-track-points-using-awardwallet/?utm_source=aw&utm_medium=email_new-us&awid=aw&mid=email_new-us&rkbtyn=' ~ user.refcode,
+            'Unleash the Power of Automated Points Tracking',
+            {
+                'color': '#186db6',
+                'font-size': '24px',
+                'line-height': '30px',
+                'text-decoration': 'none',
+                'font-weight': 'normal'
+            }
+        ) }}
+        {{ commonMacro.offerRemark(_context) }}
+        {% set paragraphStyles = {
+            'font-size': '14px',
+            'color': '#535457',
+            'line-height': '18px'
+        } %}
+
+        {{ commonMacro.paragraph(
+            'Hi ' ~ user.firstname ~ ',', _context, {}, paragraphStyles
+        ) }}
+        {{ commonMacro.paragraph(
+            'Now that you\'ve signed up for AwardWallet, your next step is to add your loyalty accounts.', _context, {}, paragraphStyles
+        ) }}
+        {{ commonMacro.paragraph(
+            'Here are a few of the types of rewards you can track:', _context, {}, paragraphStyles
+        ) }}
+
+        {% set listStyles = 'font-size: 14px; color: #535457; line-height: 18px' %}
+        <ul>
+            <li><span style="{{ listStyles }}">Airline Frequent Flyer Programs</span></li>
+            <li><span style="{{ listStyles }}">Hotel Loyalty Programs</span></li>
+            <li><span style="{{ listStyles }}">Bank and Credit Card Rewards</span></li>
+            <li><span style="{{ listStyles }}">Car Rental Rewards</span></li>
+            <li><span style="{{ listStyles }}">Trains and Cruises</span></li>
+            <li><span style="{{ listStyles }}">Dining and Shopping Rewards</span></li>
+        </ul>
+
+        {% set link = 'https://awardwallet.com/account/list/?utm_source=aw&utm_medium=email_new-us&awid=aw&mid=email_new-us&rkbtyn=' ~ user.refcode %}
+        {{ commonMacro.paragraph(
+            'When you track a loyalty program, AwardWallet automatically gathers all the details you need and displays them in your '
+                ~ commonMacro.link(link, 'account list', {'font-size': '14px', 'line-height': '18px'}) ~
+            '.',
+            _context,
+            {
+                'escape': false,
+            },
+            paragraphStyles
+        ) }}
+        {{ commonMacro.paragraph(
+            'This means you\'ll be able to see how many points you have, your progress towards elite status, and any freebies you\'ve earned-like free hotel nights, companion certificates, upgrades and more.', _context, {}, paragraphStyles
+        ) }}
+        {{ commonMacro.paragraph(
+            'If you add your credit card or bank loyalty programs, we\'ll also track your rewards cards and associated perks like statement credits.', _context, {}, paragraphStyles
+        ) }}
+        {{ commonMacro.paragraph(
+            'Click below for our quick guide to tracking your rewards with AwardWallet.', _context, {}, paragraphStyles
+        ) }}
+
+        {{ commonMacro.button(
+            'Learn more',
+            'https://awardwallet.com/blog/how-to-track-points-using-awardwallet/?utm_source=aw&utm_medium=email_new-us&awid=aw&mid=email_new-us&rkbtyn=' ~ user.refcode,
+            {
+                'padding': '0 20px',
+                'margin': '15px 0'
+            }
+        ) }}
+    </div>
+{% endblock content %}

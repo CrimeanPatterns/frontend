@@ -1,0 +1,14 @@
+<li class="language">
+    <a class="rel-this" data-target="select-language" href=""><span>{{ ('language.' ~ lang) | trans({}, 'menu') }}<i class="icon-silver-arrow-down"></i></span></a>
+    <ul class="dropdown-submenu" data-role="dropdown" data-id="select-language">
+        {% if current_route not in ['aw_oldsite_bootfirewall', 'aw_timeline'] %}
+            {% for locale in langs %}
+                <li><a href="{% if locale != constant('\AwardWallet\\MainBundle\\FrameworkExtension\\Twig\\MetaExtension::DEFAULT_LOCALE') %}/{{ locale }}{% endif %}{{ path(current_route, route_params) }}"><span>{{ ('language.' ~ locale ) | trans({}, 'menu') }}</span></a></li>
+            {% endfor %}
+        {% else %}
+            {% for locale in langs %}
+                <li><a href="{{ path('aw_set_locale', {'_locale': locale}) }}"><span>{{ ('language.' ~ locale ) | trans({}, 'menu') }}</span></a></li>
+            {% endfor %}
+        {% endif %}
+    </ul>
+</li>

@@ -1,0 +1,59 @@
+{% extends app.user ? "@AwardWalletMain/Layout/trips.html.twig" : "@AwardWalletMain/Layout/not_logged.html.twig" %}
+{% import "@AwardWalletMain/TwigMacros/environment.html.twig" as environmentMacros %}
+
+{% block meta %}
+    {{ parent() }}
+    <base href="{{ path('aw_timeline') }}">
+
+    {% if app.user is null %}
+        <META NAME="description" content="{{ 'timeline.sharing.meta'|trans|desc('AwardWallet is the most comprehensive travel plan management solution on the internet.') }}">
+    {% endif %}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    {# requires config.optimization.chunkIds = 'named' in webpack.config.js to work in production mode #}
+    {% set languages = [] %}
+    {% for file in encore_entry_js_files('new-timeline') %}
+        {% if '/trans-' in file and not (('/trans-' ~ app.request.locale) in file) %}
+            {# convert "/some/path/trans-en.somehash.js" -> "trans-en" #}
+            {% set languages = languages | merge([
+                file
+                | split('/')
+                | filter(v => 'trans-' in v)
+                | join('')
+                | split('.')
+                | slice(0, 1)
+                | join('')
+            ]) %}
+        {% else %}
+            <script src="{{ file }}"></script>
+        {% endif %}
+    {% endfor %}
+    {% if languages is not empty %}
+        <script>
+            {% for language in languages %}
+                (self["webpackChunkAwardWallet"] = self["webpackChunkAwardWallet"] || []).push([[{{ language | json_encode | raw }}],{}]);
+            {% endfor %}
+        </script>
+    {% endif %}
+{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    {{ encore_entry_link_tags('timeline') }}
+{% endblock %}
+
+{% block title %}
+    {% if app.user is null %}
+        {{ 'timeline.sharing.title'|trans|desc('AwardWallet - the best tool for travelers to track their reservations and frequent flier miles') }}
+    {% else %}
+        {{ 'timeline.title.trips'|trans|desc('Trips') }}
+    {% endif %}
+{% endblock %}
+
+{% block content %}
+    <div id="react-app" {{ environmentMacros.dataAttr({
+        'allow-show-deleted': isShowDeleted
+    }) }}></div>
+{% endblock %}

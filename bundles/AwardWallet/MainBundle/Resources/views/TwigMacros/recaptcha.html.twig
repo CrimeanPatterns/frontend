@@ -1,0 +1,204 @@
+{% macro render(captcha_provider, action_name, lazy = false, badge = 'bottomright') %}
+    {% set recaptcha_site_key = captcha_provider.siteKey %}
+    {% set recaptcha_url = captcha_provider.getScriptUrl('onRecaptchaLoaded') %}
+    {% set container_selector = captcha_provider.containerSelector %}
+    {% set container_size = captcha_provider.containerSize %}
+    {% set appearance = captcha_provider.appearance %}
+    {% if recaptcha_enabled %}
+    <script type="text/javascript">
+        function loadRecaptcha() {
+            require(['jquery-boot'], function ($) {
+                $(function () {
+                    $.ajax({
+                        dataType: "script",
+                        cache: true,
+                        url: '{{ recaptcha_url|raw }}'
+                    });
+                });
+            });
+        }
+
+        var lazyLoad = {{ lazy ? 'true' : 'false' }};
+        var recaptchaCallback;
+
+        if (!lazyLoad) {
+            loadRecaptcha();
+        }
+
+        function onRecaptchaSubmit(){
+            console.log('onRecaptchaSubmit');
+            recaptchaCallback(grecaptcha.getResponse());
+        }
+
+        var recaptchaLoaded = false;
+        var recaptchaRendered = false;
+
+        function onRecaptchaLoaded(){
+            console.log('recaptcha loaded from {{ recaptcha_url|raw }}');
+            recaptchaLoaded = true;
+        }
+
+        function renderRecaptcha($_scope){
+            if ('undefined' !== typeof $_scope) {
+                this.$scope = $_scope;
+                this.afterCallback = (e) => {
+                    if ('undefined' !== typeof this.$scope) {
+                        setTimeout(() => {
+                            this.$scope.spinner = false;
+                            this.$scope.$apply();
+                            scrollTop();
+                        }, 500);
+                    }
+                    setTimeout(scrollTop, 1000);
+                };
+            }
+            if(!recaptchaRendered) {
+                console.log('rendering recaptcha');
+                recaptchaRendered = true;
+                if(recaptchaLoaded) {
+                    let forceTheme = {% if theme.currentTheme is null %}null{% else %}'{{ theme.currentTheme }}'{% endif %};
+                    let theme = (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches && 'light' !== forceTheme || 'dark' === forceTheme) ? 'dark' : 'light';
+                    grecaptcha.render("{{ container_selector }}", {"badge" : "{{ badge }}", 'theme' : theme});
+                    undefined !== this.afterCallback ? this.afterCallback() : null;
+                } else
+                    console.log('skip rendering, not loaded');
+            } else {
+                undefined !== this.afterCallback ? this.afterCallback() : null;
+            }
+        }
+
+        function whenRecaptchaSolved(callback){
+            whenRecaptchaLoaded(function(){
+                renderRecaptcha();
+                if(recaptchaLoaded)
+                    grecaptcha.reset();
+                recaptchaCallback = callback;
+                if(recaptchaLoaded)
+                    grecaptcha.execute();
+                else
+                    recaptchaCallback("failed_to_load");
+            });
+        }
+
+        var waitTimes = 0;
+        var alignTimer;
+        var alignAttempts = 0;
+
+        function whenRecaptchaLoaded(callback){
+            console.log("whenRecaptchaReady");
+
+            clearInterval(alignTimer);
+            alignTimer = setInterval(alignCaptchaPopup, 1000);
+
+            if(waitTimes > 20){
+                console.log("failed to load captcha");
+                callback();
+                return;
+            }
+
+            if(recaptchaLoaded) {
+                callback();
+                window.timeoutCallScroll ? clearTimeout(window.timeoutCallScroll) : null; 
+                window.timeoutCallScroll = setTimeout(scrollTop, 1500);
+            }
+            else {
+                if (lazyLoad) {
+                    lazyLoad = false;
+                    loadRecaptcha();
+                } else {
+                    console.log('waiting captcha ' + waitTimes);
+                    waitTimes++;
+                }
+
+                setTimeout(function () {
+                    whenRecaptchaLoaded(callback);
+                }, 500);
+            }
+        }
+
+        function hideRecaptcha() {
+            {% if captcha_provider.vendor == 'cloudflare_turnstile' %}
+                $('{{ container_selector }}').hide();
+            {% endif %}
+        }
+
+        function showRecaptcha() {
+            {% if captcha_provider.vendor == 'cloudflare_turnstile' %}
+                $('{{ container_selector }}').show();
+            {% endif %}
+        }
+
+        function alignCaptchaPopup()
+        {
+        {% if captcha_provider.vendor == 'google_recaptcha' %}
+            var iframe = $('iframe[title*="recaptcha challenge"]');
+            if (iframe.length === 0) {
+                return;
+            }
+            var div = iframe.parent().parent();
+            if (!div.is(":visible")) {
+                return;
+            }
+
+            //console.log('positioned recaptca popup (safari bug?)');
+            div.css('top', '50px');
+            alignAttempts++;
+            if (alignAttempts > 100) {
+                clearInterval(alignTimer);
+            }
+        {% elseif captcha_provider.vendor == 'cloudflare_turnstile' %}
+            var iframe = $('#recaptcha-container > iframe[title*="challenge"]');
+
+            if (iframe.length === 0) {
+                return;
+            }
+
+            if (!iframe.is(":visible")) {
+                return;
+            }
+
+            //console.log('positioned recaptca popup (safari bug?)');
+            iframe.css('position', 'fixed');
+            iframe.css('top', '50%');
+            iframe.css('left', '50%');
+            iframe.css('transform', 'translate(-50%, -50%)');
+            // iframe.css('right', '0px');
+            alignAttempts++;
+            if (alignAttempts > 100) {
+                clearInterval(alignTimer);
+            }
+        {% endif %}
+        }
+
+        function scrollTop() {
+            $('html,body').scrollTop(0);
+        }
+    </script>
+    <div class="g-recaptcha" id="recaptcha-container"
+          data-sitekey="{{ recaptcha_site_key }}"
+          data-callback="onRecaptchaSubmit"
+          data-size="{{ container_size }}"
+          data-action="{{ action_name }}"
+          {% if appearance is defined %}data-appearance="{{ appearance }}"{% endif %}
+    ></div>
+    <style>
+        div.g-recaptcha, div.g-recaptcha *{
+            z-index: 1000;
+        }
+    </style>
+    {% else %}
+        <script type="text/javascript">
+            function whenRecaptchaSolved(callback) {
+                callback("reCAPTCHA is disabled by %recaptcha_enabled% parameter");
+            }
+
+            function whenRecaptchaLoaded(callback) {
+                callback();
+            }
+
+
+            function renderRecaptcha() {
+            }
+        </script>
+    {% endif %}
+{% endmacro %}

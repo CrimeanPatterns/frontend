@@ -1,0 +1,15 @@
+{% set title = "Test GeoCode" %}
+{% extends '@AwardWalletMain/Manager/layout.html.twig' %}
+{% form_theme form with ['form_table_layout.html.twig'] %}
+
+{% block content %}
+
+    <h1>Test geo code</h1>
+    <br/>
+    {{ form(form) }}
+
+    {% if result is not empty %}
+        <pre>{{ result | json_encode(constant('JSON_PRETTY_PRINT') b-or constant('JSON_UNESCAPED_UNICODE')) | raw }}</pre>
+    {% endif %}
+
+{% endblock %}

@@ -1,0 +1,555 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<universal-links xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urlRules.xsd">
+    <host name="%host_name%" scheme="%host_scheme%">
+        <path url="/account/list" event="accountList">
+            <route>aw_account_list</route>
+            <regex pattern="^/account/list$"/>
+            <regex url-part="hash" pattern="^(?:\/\?(account|coupon)=(\d+)|.*)$">
+                <set name="type" key="1"/>
+                <set name="id" key="2"/>
+            </regex>
+            <handler>
+                <choose>
+                    <when var="type" pattern="^account$">
+                        <state route="index.accounts.account-details">
+                            <param name="Id" value="a{{id}}"/>
+                        </state>
+                    </when>
+                    <when var="type" pattern="^coupon$">
+                        <state route="index.accounts.account-details">
+                            <param name="Id" value="c{{id}}"/>
+                        </state>
+                    </when>
+                    <otherwise>
+                        <state route="index.accounts.list"/>
+                    </otherwise>
+                </choose>
+            </handler>
+        </path>
+        <path url="/awardBooking/requests" event="bookingList">
+            <route>aw_booking_list_requests</route>
+            <regex pattern="^/awardBooking/requests$"/>
+            <handler>
+                <state route="index.booking.list"/>
+            </handler>
+        </path>
+        <path url="/awardBooking/view/*" event="bookingDetails">
+            <route>aw_booking_view_index</route>
+            <regex pattern="^/awardBooking/view/(\d+)$">
+                <set name="requestId" key="1"/>
+            </regex>
+            <regex url-part="url" pattern="/awardBooking/view/\d+(?!.*(?:\?|&amp;)invoice=\d+)"/>
+            <handler>
+                <state route="index.booking.request.details">
+                    <param name="Id" value="{{requestId}}"/>
+                </state>
+            </handler>
+        </path>
+        <path url="/account/select-provider" event="selectProvider">
+            <route>aw_select_provider</route>
+            <regex pattern="^/account/select-provider$"/>
+            <regex url-part="hash" pattern="([^\/]*)$">
+                <set name="page" key="1"/>
+            </regex>
+            <handler>
+                <choose>
+                    <when var="page" pattern=".+">
+                        <state route="index.accounts.account-add">
+                            <param name="providerId" value="{{page}}"/>
+                        </state>
+                    </when>
+                    <otherwise>
+                        <state route="index.accounts.add"/>
+                    </otherwise>
+                </choose>
+            </handler>
+        </path>
+        <path url="/account/add/*" event="addAccount">
+            <route>aw_account_add</route>
+            <regex pattern="^/account/add/(\d+)$">
+                <set name="providerId" key="1"/>
+            </regex>
+            <handler>
+                <state route="index.accounts.account-add">
+                    <param name="providerId" value="{{providerId}}"/>
+                </state>
+            </handler>
+        </path>
+        <path url="/account/add" event="addCustomAccount">
+            <route>aw_account_add</route>
+            <regex pattern="^/account/add$"/>
+            <handler>
+                <state route="index.accounts.account-add">
+                    <param name="providerId" value="custom"/>
+                </state>
+            </handler>
+        </path>
+        <path url="/account/edit/*" event="editAccount">
+            <route>aw_account_edit</route>
+            <regex pattern="^/account/edit/(\d+)$">
+                <set name="accountId" key="1"/>
+            </regex>
+            <handler>
+                <state route="index.accounts.account-edit">
+                    <param name="Id" value="a{{accountId}}"/>
+                </state>
+            </handler>
+        </path>
+        <path url="/coupon/add" event="addCoupon">
+            <route>aw_coupon_add</route>
+            <regex pattern="/coupon/add"/>
+            <handler>
+                <state route="index.accounts.account-add">
+                    <param name="providerId" value="coupon"/>
+                </state>
+            </handler>
+        </path>
+        <path url="/coupon/edit/*" event="editCoupon">
+            <route>aw_coupon_edit</route>
+            <regex pattern="^/coupon/edit/(\d+)$">
+                <set name="couponId" key="1"/>
+            </regex>
+            <handler>
+                <state route="index.accounts.account-edit">
+                    <param name="Id" value="c{{couponId}}"/>
+                </state>
+            </handler>
+        </path>
+        <path url="/user/profile" event="profile">
+            <route>aw_profile_overview</route>
+            <regex pattern="^/user/profile$"/>
+            <handler>
+                <state route="index.profile"/>
+            </handler>
+        </path>
+        <path url="/user/personal" event="profilePersonalInfo">
+            <route>aw_profile_personal</route>
+            <regex pattern="^/user/personal$"/>
+            <handler>
+                <state route="index.profile-edit">
+                    <param name="action" value="personal"/>
+                </state>
+            </handler>
+        </path>
+        <path url="/user/change-email" event="profileChangeEmail">
+            <route>aw_user_change_email</route>
+            <regex pattern="^/user/change-email$"/>
+            <handler>
+                <state route="index.profile-edit">
+                    <param name="action" value="changeEmail"/>
+                </state>
+            </handler>
+        </path>
+        <path url="/user/change-password-feedback/*" event="profileChangePasswordFeedback">
+            <route>aw_profile_change_password_feedback</route>
+            <regex pattern="^/user/change-password-feedback/(\d+)/([0-9a-f]{32})$">
+                <set name="userId" key="1"/>
+                <set name="code" key="2"/>
+            </regex>
+            <handler>
+                <state route="unauth.password-recovery.recovery">
+                    <param name="UserId" value="{{userId}}"/>
+                    <param name="Hash" value="{{code}}"/>
+                </state>
+            </handler>
+        </path>
+        <path url="/*user/change-password" event="profileChangePassword">
+            <route>aw_profile_change_password</route>
+            <route>aw_profile_change_password_locale</route>
+            <regex pattern="^(?:/\w+)?/user/change-password$"/>
+            <handler>
+                <state route="index.profile-edit">
+                    <param name="action" value="changePassword"/>
+                </state>
+            </handler>
+        </path>
+        <path url="/user/useCoupon" event="profileUseCoupon" exclude-platform="ios">
+            <route>aw_users_usecoupon</route>
+            <regex pattern="^/user/useCoupon$"/>
+            <handler>
+                <state route="index.profile-edit">
+                    <param name="action" value="useCoupon"/>
+                </state>
+            </handler>
+        </path>
+        <path url="/user/notifications" event="profileNotifications">
+            <route>aw_profile_notifications</route>
+            <regex pattern="^/user/notifications$"/>
+            <handler>
+                <state route="index.profile-edit">
+                    <param name="action" value="notifications"/>
+                </state>
+            </handler>
+        </path>
+        <path url="/user/regional" event="profileRegional">
+            <route>aw_profile_regional</route>
+            <regex pattern="^/user/regional$"/>
+            <handler>
+                <state route="index.profile-edit">
+                    <param name="action" value="regional"/>
+                </state>
+            </handler>
+        </path>
+        <path url="/restore/*" event="profileRestore">
+            <route>aw_users_restore_plain</route>
+            <regex pattern="^/restore/(.+)$">
+                <set name="username" key="1"/>
+            </regex>
+            <handler>
+                <state route="unauth.password-recovery.recovery"/>
+            </handler>
+        </path>
+        <path url="/m/login" event="mobileLogin">
+            <regex pattern="^/m/login$"/>
+            <handler>
+                <state route="unauth.login"/>
+            </handler>
+        </path>
+        <path url="/m/registration" event="mobileRegister">
+            <regex pattern="^/m/registration$"/>
+            <handler>
+                <state route="unauth.registration"/>
+            </handler>
+        </path>
+        <path url="/m/password-recovery/*/*" event="mobilePasswordRecovery">
+            <regex pattern="^/m/password-recovery/(\d+)/([0-9a-f]{32})$">
+                <set name="userId" key="1"/>
+                <set name="code" key="2"/>
+            </regex>
+            <handler>
+                <state route="unauth.password-recovery.recovery">
+                    <param name="UserId" value="{{userId}}"/>
+                    <param name="Hash" value="{{code}}"/>
+                </state>
+            </handler>
+        </path>
+        <path url="/m/password-recovery" event="mobilePasswordRecoveryForm">
+            <regex pattern="^/m/password-recovery$"/>
+            <handler>
+                <state route="unauth.password-recovery"/>
+            </handler>
+        </path>
+        <path url="/m/about" event="mobileAbout">
+            <regex pattern="^/m/about$"/>
+            <handler>
+                <state route="unauth.about"/>
+            </handler>
+        </path>
+        <path url="/m/privacy" event="mobilePrivacy">
+            <regex pattern="^/m/privacy$"/>
+            <handler>
+                <state route="unauth.privacy"/>
+            </handler>
+        </path>
+        <path url="/m/terms" event="mobileTerms">
+            <regex pattern="^/m/terms$"/>
+            <handler>
+                <state route="unauth.terms"/>
+            </handler>
+        </path>
+        <path url="/m/booking" event="mobileBookingList">
+            <regex pattern="^/m/booking$"/>
+            <handler>
+                <state route="index.booking.list"/>
+            </handler>
+        </path>
+        <path url="/m/booking/*/details" event="mobileBookingRequestDetails">
+            <regex pattern="^/m/booking/(\d+)/details$">
+                <set name="requestId" key="1"/>
+            </regex>
+            <handler>
+                <state route="index.booking.request.details">
+                    <param name="Id" value="{{requestId}}"/>
+                </state>
+            </handler>
+        </path>
+        <path url="/m/timeline/shared/*/*/*/*" event="mobileSharedTimelineSegmentDetails">
+            <regex pattern="^/m/timeline/shared/([^/]+)/(T|PU|CI|E)/(\d+)/(details|phones|flights)$">
+                <set name="sharedKey" key="1"/>
+                <set name="segmentType" key="2"/>
+                <set name="segmentId" key="3"/>
+                <set name="subPage" key="4"/>
+            </regex>
+            <handler>
+                <choose>
+                    <when var="subPage" pattern="^flights$">
+                        <state route="shared.segment.flights">
+                            <param name="SharedKey" value="{{sharedKey}}"/>
+                            <param name="Segment" value="{{segmentType}}"/>
+                            <param name="SubId" value="{{segmentId}}"/>
+                        </state>
+                    </when>
+                    <when var="subPage" pattern="^phones$">
+                        <state route="shared.segment.phones">
+                            <param name="SharedKey" value="{{sharedKey}}"/>
+                            <param name="Segment" value="{{segmentType}}"/>
+                            <param name="SubId" value="{{segmentId}}"/>
+                        </state>
+                    </when>
+                    <when var="subPage" pattern="^details">
+                        <state route="shared.segment.details">
+                            <param name="SharedKey" value="{{sharedKey}}"/>
+                            <param name="Segment" value="{{segmentType}}"/>
+                            <param name="SubId" value="{{segmentId}}"/>
+                        </state>
+                    </when>
+                </choose>
+            </handler>
+        </path>
+        <path url="/m/timeline/shared/*" event="mobileSharedTimeline">
+            <regex pattern="^/m/timeline/shared/([^/]+)$">
+                <set name="shareCode" key="1"/>
+            </regex>
+            <handler>
+                <state route="shared.timeline">
+                    <param name="SharedKey" value="{{shareCode}}"/>
+                </state>
+            </handler>
+        </path>
+        <path url="/m/timeline/*/*/*/*" event="mobileTimelineSegmentDetails">
+            <regex pattern="^/m/timeline/(my|\d+)/(T|PU|CI|E)/(\d+)/(details|phones|flights)$">
+                <set name="ua" key="1"/>
+                <set name="segmentType" key="2"/>
+                <set name="segmentId" key="3"/>
+                <set name="subPage" key="4"/>
+            </regex>
+            <handler>
+                <choose>
+                    <when var="subPage" pattern="^flights$">
+                        <state route="index.timeline.segment.flights">
+                            <param name="Id" value="{{ua}}"/>
+                            <param name="Segment" value="{{segmentType}}"/>
+                            <param name="SubId" value="{{segmentId}}"/>
+                        </state>
+                    </when>
+                    <when var="subPage" pattern="^phones$">
+                        <state route="index.timeline.segment.phones">
+                            <param name="Id" value="{{ua}}"/>
+                            <param name="Segment" value="{{segmentType}}"/>
+                            <param name="SubId" value="{{segmentId}}"/>
+                        </state>
+                    </when>
+                    <when var="subPage" pattern="^details">
+                        <state route="index.timeline.segment.details">
+                            <param name="Id" value="{{ua}}"/>
+                            <param name="Segment" value="{{segmentType}}"/>
+                            <param name="SubId" value="{{segmentId}}"/>
+                        </state>
+                    </when>
+                </choose>
+            </handler>
+        </path>
+        <path url="/m/timeline*" event="mobileTimelineList">
+            <regex pattern="^/m/timeline(/(my|\d+)?)?$">
+                <set name="list" key="1"/>
+                <set name="ua" key="2"/>
+            </regex>
+            <handler>
+                <choose>
+                    <when var="list" pattern=".+">
+                        <state route="index.timeline.list">
+                            <param name="Id" value="{{ua}}"/>
+                        </state>
+                    </when>
+                    <otherwise>
+                        <state route="index.timeline.travelers"/>
+                    </otherwise>
+                </choose>
+            </handler>
+        </path>
+        <path url="/m/account/details/*" event="mobileAccountDetails">
+            <regex pattern="^/m/account/details/((?:a|c)\d+)/(\d+)?$">
+                <set name="accountId" key="1"/>
+                <set name="subaccountId" key="2"/>
+            </regex>
+            <handler>
+                <state route="index.accounts.account-details">
+                    <param name="Id" value="{{accountId}}"/>
+                    <param name="subId" value="{{subaccountId}}"/>
+                </state>
+            </handler>
+        </path>
+        <path url="/m/account/barcode/*/*" event="mobileAccountBarcode">
+            <regex pattern="^/m/account/barcode/([^\/]+)/((?:a|c)\d+)(?:/(\d+))?$">
+                <set name="type" key="1"/>
+                <set name="accountId" key="2"/>
+                <set name="subaccountId" key="3"/>
+            </regex>
+            <handler>
+                <state route="index.accounts.account-barcode">
+                    <param name="type" value="{{type}}"/>
+                    <param name="Id" value="{{accountId}}"/>
+                    <param name="subId" value="{{subaccountId}}"/>
+                </state>
+            </handler>
+        </path>
+        <path url="/m/account/add/*" event="mobileAddAccount">
+            <regex pattern="^/m/account/add/(\d+)$">
+                <set name="providerId" key="1"/>
+            </regex>
+            <handler>
+                <state route="index.accounts.account-add">
+                    <param name="providerId" value="{{providerId}}"/>
+                </state>
+            </handler>
+        </path>
+        <path url="/m/account/edit/*" event="mobileEditAccount">
+            <regex pattern="^/m/account/edit/((?:a|c)\d+)$">
+                <set name="accountId" key="1"/>
+            </regex>
+            <handler>
+                <state route="index.accounts.account-edit">
+                    <param name="Id" value="{{accountId}}"/>
+                </state>
+            </handler>
+        </path>
+        <path url="/m/account/phones/*" event="mobileAccountPhones">
+            <regex pattern="^/m/account/phones/((?:a|c)\d+)$">
+                <set name="accountId" key="1"/>
+            </regex>
+            <handler>
+                <state route="index.accounts.account-phones">
+                    <param name="Id" value="{{accountId}}"/>
+                </state>
+            </handler>
+        </path>
+        <path url="/m/accounts/add/kind/*" event="mobileSelectProvider">
+            <regex pattern="^/m/accounts/add/kind/(\d+)$">
+                <set name="kindId" key="1"/>
+            </regex>
+            <handler>
+                <state route="index.accounts.select-provider">
+                    <param name="kindId" value="{{kindId}}"/>
+                </state>
+            </handler>
+        </path>
+        <path url="/m/accounts/add" event="mobileSelectKind">
+            <regex pattern="^/m/accounts/add$"/>
+            <handler>
+                <state route="index.accounts.add"/>
+            </handler>
+        </path>
+        <path url="/m/accounts/totals" event="mobileAccountsTotals">
+            <regex pattern="^/m/accounts/totals$"/>
+            <handler>
+                <state route="index.accounts.totals"/>
+            </handler>
+        </path>
+        <path url="/m/profile/*" event="mobileProfileEdit" exclude-platform="android">
+            <regex pattern="^/m/profile/(.+)$">
+                <set name="page" key="1"/>
+            </regex>
+            <regex pattern="^/m/profile/(?!useCoupon)"/>
+            <handler>
+                <state route="index.profile-edit">
+                    <param name="action" value="{{page}}"/>
+                </state>
+            </handler>
+        </path>
+        <path url="/m/profile/*" event="mobileProfileEdit" exclude-platform="ios">
+            <regex pattern="^/m/profile/(.+)$">
+                <set name="page" key="1"/>
+            </regex>
+            <handler>
+                <state route="index.profile-edit">
+                    <param name="action" value="{{page}}"/>
+                </state>
+            </handler>
+        </path>
+        <path url="/m/profile" event="mobileProfile">
+            <regex pattern="^/m/profile$"/>
+            <handler>
+                <state route="index.profile"/>
+            </handler>
+        </path>
+        <path url="/m/cancel-subscription/*" event="mobileCancelSubscription">
+            <regex pattern="^/m/cancel-subscription/(ios|android)$">
+                <set name="platform" key="1"/>
+            </regex>
+            <handler>
+                <state route="index.cancel-subscription">
+                    <param name="platform" value="{{platform}}"/>
+                </state>
+            </handler>
+        </path>
+        <path url="/m/pay" event="mobilePay">
+            <regex pattern="^/m/pay$"/>
+            <handler>
+                <state route="index.pay"/>
+            </handler>
+        </path>
+        <path url="/m/" event="mobileAccountList">
+            <regex pattern="^/m/$"/>
+            <handler>
+                <state route="index.accounts.list"/>
+            </handler>
+        </path>
+        <path url="/*timeline/shared-plan/*" event="sharedPlan">
+            <route>aw_travelplan_shared</route>
+            <route>aw_travelplan_shared_locale</route>
+            <regex pattern="^(?:/\w+)?/timeline/shared-plan/([^/]+)$">
+                <set name="shareCode" key="1"/>
+            </regex>
+            <handler>
+                <state route="shared.timeline">
+                    <param name="SharedKey" value="{{shareCode}}"/>
+                </state>
+            </handler>
+        </path>
+        <path url="/*timeline/shared/*" event="sharedTimeline">
+            <route>aw_timeline_shared</route>
+            <route>aw_timeline_shared_locale</route>
+            <regex pattern="^(?:/\w+)?/timeline/shared/([^/]+)$">
+                <set name="shareCode" key="1"/>
+            </regex>
+            <handler>
+                <state route="shared.timeline">
+                    <param name="SharedKey" value="{{shareCode}}"/>
+                </state>
+            </handler>
+        </path>
+        <path url="/timeline/" event="timeline">
+            <route>aw_timeline</route>
+            <regex pattern="^/timeline/$"/>
+            <regex url-part="hash" pattern="^(?:\/(\d+)?\?openSegment=(T|PU|CI|E|P)\.(\d+)|.*)$">
+                <set name="ua" key="1"/>
+                <set name="type" key="2"/>
+                <set name="id" key="3"/>
+            </regex>
+            <handler>
+                <choose>
+                    <when var="type" pattern=".+">
+                        <state route="index.timeline.segment.details">
+                            <param name="Id" value="{{ua}}"/>
+                            <param name="Segment" value="{{type}}"/>
+                            <param name="SubId" value="{{id}}"/>
+                        </state>
+                    </when>
+                    <otherwise>
+                        <state route="index.timeline.list"/>
+                    </otherwise>
+                </choose>
+            </handler>
+        </path>
+        <path url="/*page/*" event="page">
+            <route>aw_page_index</route>
+            <route>aw_page_index_locale</route>
+            <regex pattern="^(?:/\w+)?/page/(.+)$">
+                <set name="page" key="1"/>
+            </regex>
+            <handler>
+                <choose>
+                    <when var="page" pattern="^about$">
+                        <state route="unauth.about"/>
+                    </when>
+                    <when var="page" pattern="^privacy$">
+                        <state route="unauth.privacy"/>
+                    </when>
+                    <when var="page" pattern="^terms$">
+                        <state route="unauth.terms"/>
+                    </when>
+                </choose>
+            </handler>
+        </path>
+    </host>
+</universal-links>

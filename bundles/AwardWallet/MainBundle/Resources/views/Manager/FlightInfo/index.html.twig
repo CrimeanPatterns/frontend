@@ -1,0 +1,151 @@
+{% set title = "FlightInfo statistics" %}
+{% use '@AwardWalletMain/FormTheme/oldFields.html.twig' %}
+{% extends '@AwardWalletMain/Manager/layout.html.twig' %}
+{% import _self as macros %}
+
+{% block content %}
+    <style type="text/css">
+        table {
+            border-collapse: collapse;
+        }
+        table td {
+            border: lightgray solid 1px;
+            padding: 7px;
+        }
+        table tr.border-top td {
+            border-top: gray solid 2px;
+        }
+        thead td {
+            font-weight: bold;
+        }
+    </style>
+
+    {#<a href="{{ url('aw_manager_flightinfo_retrieve') }}">Request FlightStats.com service</a> |#}
+    {#<a href="{{ url('aw_manager_flightinfo_stat') }}">FlightInfo statistic</a> |#}
+
+    <a href="{{ url('aw_manager_flightinfo_requests_list') }}">Requests</a> |
+    <a href="{{ url('aw_manager_flightinfo_list_logs') }}">Logs</a> |
+    <a href="{{ url('aw_manager_flightinfo_logstat') }}">Log Stat</a> |
+    <a href="{{ url('aw_manager_flightinfoconfig_index') }}">Config</a> |
+    <a href="{{ url('aw_manager_airline_index') }}">Airlines</a> |
+
+    <hr size="2"/>
+
+    <h1>{{ header }}</h1>
+
+    {{ macros.navigation(year, month, day, level, days, minYear, maxYear) }}
+
+    <hr size="1">
+
+    {% for type, statistic in stat %}{% if statistic|length %}
+        <a name="{{ type }}"></a>
+        <h3>
+            {{ headers[type] }}
+            <small>{% for key, item in menu %}{% if key != type %} &nbsp; <a href="#{{ key }}">{{ item }}</a>{% endif %}{% endfor %}</small>
+        </h3>
+        <table>
+        <thead>
+        <tr>
+            <td style="border-right: gray solid 2px" colspan="4"></td>
+            <td colspan="{{ states|length }}">FlightInfo Statuses</td>
+        </tr>
+        <tr>
+            <td>Provider</td>
+            <td>Segments</td>
+            <td>FlightInfo</td>
+            <td style="border-right: gray solid 2px">Unique FI</td>
+            {% for state in states %}<td>{{ state }}</td>{% endfor %}
+        </tr>
+        </thead>
+        <tbody>
+            <tr style="background-color: #ccc">
+                <td><b>All</b></td>
+                <td>{{ statAll[type].allCnt }}</td>
+                <td>{{ statAll[type].bindCnt }}</td>
+                <td style="border-right: gray solid 2px">{{ statAll[type].uniqueCnt }} / {{ statAll[type].realUniqueCnt }}</td>
+                {% for key, state in states %}
+                    <td>{% if statAll[type].states[key] %}<a href="{{ url('aw_manager_flightinfo_segments_list', {year: year, month: month, day: day, level: level, provider: 'all', state: key, type: type})  }}">{{ statAll[type].states[key] }}</a>{% endif %}</td>
+                {% endfor %}
+            </tr>
+            {% set kind = -1 %}
+            {% for row in statistic %}
+                {% if kind != row.providerKind %}
+                    <tr style="background-color: #eee">
+                        <td style="border-right: gray solid 2px" colspan="4">
+                            {% if row.providerKind == constant('PROVIDER_KIND_AIRLINE') %}Airlines
+                            {% elseif row.providerKind == constant('PROVIDER_KIND_HOTEL') %}Hotels
+                            {% elseif row.providerKind == constant('PROVIDER_KIND_CREDITCARD') %}Credit Cards
+                            {% elseif row.providerKind == constant('PROVIDER_KIND_SHOPPING') %}Shopping
+                            {% elseif row.providerKind == constant('PROVIDER_KIND_CAR_RENTAL') %}Rentals
+                            {% elseif row.providerKind == constant('PROVIDER_KIND_DINING') %}Dining
+                            {% elseif row.providerKind == constant('PROVIDER_KIND_TRAIN') %}Trains
+                            {% elseif row.providerKind == constant('PROVIDER_KIND_CRUISES') %}Cruises
+                            {% elseif row.providerKind == constant('PROVIDER_KIND_SURVEY') %}Surveys
+                            {% elseif row.providerKind == constant('PROVIDER_KIND_OTHER') %}Other
+                            {% else %}-
+                            {% endif %}
+                        </td>
+                        <td colspan="{{ states|length }}"></td>
+                    </tr>
+                    {% set kind = row.providerKind  %}
+                {% endif %}
+                <tr>
+                    <td>{{ row.providerName }}</td>
+                    <td><a href="{{ url('aw_manager_flightinfo_segments_list', {year: year, month: month, day: day, level: level, provider: row.providerId|default(0), type: type}) }}">{{ row.allCnt }}</a></td>
+                    <td{% if row.allCnt != row.bindCnt and type == 'flights' %} style="background-color: red"{% endif %}{% if row.bindCnt > 0 and type == 'nonflights' %} style="background-color: red"{% endif %}>{{ row.bindCnt }}</td>
+                    <td style="border-right: gray solid 2px">{{ row.uniqueCnt }}</td>
+                    {% for key, state in states %}
+                        <td>{% if row.states[key] %}<a href="{{ url('aw_manager_flightinfo_segments_list', {year: year, month: month, day: day, level: level, provider: row.providerId|default(0), state: key, type: type})  }}">{{ row.states[key] }}</a>{% endif %}</td>
+                    {% endfor %}
+                </tr>
+            {% endfor %}
+        </tbody>
+        </table>
+        <br><hr size="1">
+    {% endif %}{% endfor %}
+
+    {{ macros.navigation(year, month, day, level, days, minYear, maxYear) }}
+
+    {% macro navigation(year, month, day, level, days, minYear, maxYear)%}
+        <br/>
+        <table>
+            <tbody>
+            <tr>
+                <td bgcolor="gray"></td>
+                <td>
+                    <a href="?level={{ level }}">Today</a>
+                </td>
+            </tr>
+            <tr>
+                <td bgcolor="gray">Year</td>
+                <td>
+                    {% for y in minYear .. maxYear %}{% if y == year %}<b>{{ y }}</b>{% else %}<a href="?year={{ y }}&month=1&level={{ level }}">{{ y }}</a>{% endif %} {% if not loop.last %}&middot;{% endif %} {% endfor %}
+                </td>
+            </tr>
+            <tr>
+                <td bgcolor="gray">Month</td>
+                <td>
+                    {% if not month %}<b>All</b>{% else %}<a href="?year={{ year }}&month=0&level={{ level }}">All</a>{% endif %} &middot;
+                    {% for m in 1..12 %}{% if m == month %}<b>{{ m }}</b>{% else %}<a href="?year={{ year }}&month={{ m }}&level={{ level }}">{{ m }}</a>{% endif %} {% if not loop.last %}&middot;{% endif %} {% endfor %}
+                </td>
+            </tr>
+            <tr>
+                <td bgcolor="gray">Day</td>
+                <td>
+                    {% if not day %}<b>All</b>{% else %}<a href="?year={{ year }}&month={{ month }}&day={{ 0 }}&level={{ level }}">All</a>{% endif %} &middot;
+                    {% for d in 1..days %}{% if d == day %}<b>{{ d }}</b>{% else %}<a href="?year={{ year }}&month={{ month }}&day={{ d }}&level={{ level }}">{{ d }}</a>{% endif %} {% if not loop.last %}&middot;{% endif %} {% endfor %}
+                </td>
+            </tr>
+            <tr>
+                <td bgcolor="gray">User Level</td>
+                <td>
+                    {% if level == 0 %}<b>All</b>       {% else %}<a href="?year={{ year }}&month={{ month }}&day={{ day }}">All</a>             {% endif %} &middot;
+                    {% if level == 1 %}<b>Regular</b>   {% else %}<a href="?year={{ year }}&month={{ month }}&day={{ day }}&level=1">Regular</a> {% endif %} &middot;
+                    {% if level == 2 %}<b>AWPlus</b>    {% else %}<a href="?year={{ year }}&month={{ month }}&day={{ day }}&level=2">AWPlus</a>  {% endif %}
+                </td>
+            </tr>
+            </tbody>
+        </table>
+        <br/>
+    {% endmacro %}
+{% endblock %}

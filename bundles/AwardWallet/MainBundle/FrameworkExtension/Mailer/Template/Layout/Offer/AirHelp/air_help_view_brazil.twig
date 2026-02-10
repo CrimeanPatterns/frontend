@@ -1,0 +1,83 @@
+{# @var airHelpView \AwardWallet\MainBundle\Service\EmailTemplate\DataProvider\Fixture\AirHelpView #}
+<span style="font-size: 16px; line-height: 1.5; color: #535457">Devido ao {{ airHelpView.flight_status_text_block }}, você pode <b>ter direito a {{ airHelpView.ec261_compensation_localized }}</b>. Achamos que você deve considerar fazer um pedido de compensação junto ao nosso parceiro AirHelp, caso tenha chegado ao seu destino final com mais de 4 horas de atraso (mesmo que tenha perdido um voo de conexão).</span><br />
+&nbsp;
+<table border="0" cellpadding="0" cellspacing="0" width="100%">
+	<tbody>
+		<tr>
+			<td style="padding: 10px 0">
+			<table border="0" cellpadding="0" cellspacing="0" width="100%">
+				<tbody>
+					<tr>
+						<td valign="top" style="width: 50px; text-align: center"><img alt="Airline" height="32" src="https://awardwallet.com/images/uploaded/emails/offer/19986/airlines.png" style="vertical-align: top; border: 0 !important;" width="30" /></td>
+						<td valign="top" style="font-size: 30px; line-height: 34px; color: #4684c4; font-weight: bold;">{{ airHelpView.departure_city }} ({{ airHelpView.flight_start }}) para {{ airHelpView.arrival_city }} ({{ airHelpView.flight_end }})</td>
+					</tr>
+				</tbody>
+			</table>
+			</td>
+		</tr>
+		<tr>
+			<td>
+			<table border="0" cellpadding="0" cellspacing="0" width="100%">
+				<tbody>
+					<tr>
+						<td style="background: #828b99; color: #fff; font-size: 14px; vertical-align: middle; padding: 4px 20px 4px 50px"><span>Confirmação da reserva:</span> <span style="font-size: 22px; vertical-align: middle;">#{{ airHelpView.recordLocator }}</span></td>
+					</tr>
+				</tbody>
+			</table>
+			</td>
+		</tr>
+		<tr>
+			<td align="center" style="padding: 15px; border: 1px solid #d6dae6">
+			<table border="0" cellpadding="0" cellspacing="0" width="100%">
+				<tbody>
+					<tr>
+						<td align="center" style="width:42%">
+						<table border="0" cellpadding="0" cellspacing="0" width="100%">
+							<tbody>
+								<tr>
+									<td align="center" style="height: 26px"><span style="padding: 0 5px;  font-size: 21px; color: #535457; font-weight: bold; ">{{ airHelpView.departure_city }}</span> <span style="height: 26px; line-height: 26px; padding: 0 5px; background: #4684c4; color: #fff; text-transform: uppercase; font-size: 21px">{{ airHelpView.flight_start }}</span></td>
+								</tr>
+							</tbody>
+						</table>
+
+						<center style="padding-top: 10px"><span style="color: #535457; font-size: 13px; display: block; padding: 0 20px">{{ airHelpView.flight_scheduled_departure_localized }}</span></center>
+						</td>
+						<td align="center">
+						<div style="min-height: 26px"><img alt="Airline" height="26" src="https://awardwallet.com/images/uploaded/emails/offer/19986/airplane.png" style="vertical-align: top; border: 0 !important;" width="29" /></div>
+
+						<center style="padding-top: 10px"><b style="color: #cc3d5e; font-size: 13px">{{ airHelpView.flight_status_upper }} {{ airHelpView.delay_info }}</b></center>
+						</td>
+						<td align="center" style="width:42%">
+						<table border="0" cellpadding="0" cellspacing="0" width="100%">
+							<tbody>
+								<tr>
+									<td align="center" style="height: 26px"><span style="padding: 0 5px;  font-size: 21px; color: #535457; font-weight: bold; ">{{ airHelpView.arrival_city }} </span> <span style="height: 26px; line-height: 26px; padding: 0 5px; background: #4684c4; color: #fff; text-transform: uppercase; font-size: 21px">{{ airHelpView.flight_end }}</span></td>
+								</tr>
+							</tbody>
+						</table>
+
+						<center style="padding-top: 10px"><span style="color: #535457; font-size: 13px; display: block; padding: 0 20px">{{ airHelpView.flight_scheduled_arrival_localized }}</span></center>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+			</td>
+		</tr>
+	</tbody>
+</table>
+
+<center style="padding: 30px 0"><span style="font-size: 15px; color: #535457;">Clique no botão abaixo para dar início à sua reclamação, demora apenas 3 minutos.</span></center>
+
+<center>
+<table bgcolor="#125da3" border="0" cellpadding="0" cellspacing="0" style="color: rgb(255, 255, 255); height: 40px" width="200">
+	<tbody>
+		<tr>
+			<td width="20" style="height: 40px;">&nbsp;</td>
+			<td style="height: 40px; padding:5px 0; vertical-align: middle; background-color: #125da3;text-align:center;white-space:nowrap;color: #ffffff"><a href="{{ airHelpView.url }}" style="font-size:16px;text-decoration: none;color: #ffffff;" target="blank">Pedir Compensação</a></td>
+			<td width="20" style="height: 40px;">&nbsp;</td>
+		</tr>
+	</tbody>
+</table>
+</center>
+
+<center style="padding: 30px 0"><b style="font-size: 15px; color: #535457;">Submeter uma reclamação é fácil e seguro.</b></center>

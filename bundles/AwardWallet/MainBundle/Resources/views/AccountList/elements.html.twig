@@ -1,0 +1,1529 @@
+{% block list_elements %}
+    <section data-ng-cloak2 class="main-ui-view" data-ng-controller="listCtrl as list" data-ng-show="main.state.loaded">
+        {{ block('list_rss') }}
+        {{ block('list_filter_reset') }}
+        {{ block('list_table') }}
+        {{ block('list_empty') }}
+        {{ block('list_limit') }}
+        {{ block('list_totals') }}
+    </section>
+{% endblock %}
+
+{% block list_rss %}
+    {% if blogpost is defined and blogpost is not empty %}
+        <div class="rss-feed" id="rss-block">
+            <div class="text-block">{{ 'last.blog.post'|trans|desc('Latest Blog Post') }}: <span class="date-block">{{ blogpost.postDate|patternDatetime('EEEE, LLLL d, y', app.request.locale) }}</span> - </div>
+            <a href="{{ blogpost.postURL|replaceVarInLink({'awid': 'homepage'}, true) }}" target="_blank" class="read-more blue-link js-rss-link ga-accountlist-blog-link">
+                {{ blogpost.title }}
+            </a>
+        </div>
+    {% endif %}
+{% endblock %}
+
+{% block list_filter_reset %}
+    <div class="filtered-row" data-ng-if="main.stateParams.recent || main.stateParams.errors || main.stateParams.sharedWith">
+        <p data-ng-show="main.stateParams.recent == '7'">{{ 'award.account.list.reset.changed_week'|trans|desc('Accounts changed in the last <span class="red">week</span>')|raw }}</p>
+        <p data-ng-show="main.stateParams.recent == '31'">{{ 'award.account.list.reset.changed_month'|trans|desc('Accounts changed in the last <span class="red">month</span>')|raw }}</p>
+        <p data-ng-show="main.stateParams.sharedWith">{{ 'award.account.list.reset.sharedWith'|trans|desc('Accounts shared with')|raw }} <span class="red">[[ main.sharedAgent.name ]]</span></p>
+        <p data-ng-show="main.stateParams.errors && !main.stateParams.recent">{{ 'award.account.list.reset.errors'|trans|desc('Accounts with <span class="red">errors</span>')|raw }}</p>
+
+        <a href="" data-ng-click="main.setOptions({recent: undefined, errors: undefined, archive: undefined, sharedWith:undefined})" class="btn-silver f-right">{{ 'award.account.list.reset.reset'|trans|desc('Switch to full list')|raw }}</a>
+    </div>
+{% endblock %}
+
+{% block list_table %}
+    <div class="account-list" data-ng-class="{'show-owner': list.view.showOwner }">
+        {% if adsData is defined and adsData|length %}
+            <div data-ng-hide="!main.view.grouped" class="advertise-disclosure"><a target="_blank" href="/blog/advertiser-disclosure/">{{ "advertiser.disclosure"|trans|desc("Advertiser Disclosure") }}</a></div>
+        {% endif %}
+        <div data-ng-repeat="row in list.elements.data track by row.ID" data-ng-hide="row.hidden" class="row-[[::row.type]]">
+            {{ block('row_kind') }}
+            {{ block('list_header') }}
+            {{ block('row_kind_user') }}
+            {{ block('row_data') }}
+        </div>
+    </div>
+{% endblock %}
+
+{% block list_totals %}
+    <div data-ng-cloak class="account-totals account-totals-highlight" data-ng-show="list.totals.viewTotal" ng-class="{'account-totals-changed': list.totals.totals.sumTotalChangePoints != 0 || list.totals.mileValue.sumTotalChangeCashEquivalent != 0}">
+        {{ block('list_totals_details') }}
+        <div class="title">{{ "award.account.list.totals"|trans|desc('Totals') }}:</div>
+        <div class="account">
+            <span>[[list.totals.viewTotal]]</span> [[list.view.getItems()]]
+        </div>
+        <div class="balance">
+            [[ list.numberToLocaleString(list.totals.viewBalance) ]]
+            <span class="data-totals-changed" data-ng-if="list.totals.totals.sumTotalChangePoints != 0" data-ng-class="(list.totals.totals.sumTotalChangePoints > 0 ? 'up' : 'down')">
+                <span ng-if="list.totals.totals.sumTotalChangePoints > 0">+</span>[[ list.numberToLocaleString(list.totals.totals.sumTotalChangePoints) ]]
+                <i data-ng-if="list.totals.totals.sumTotalChangePoints < 0" class="icon-blue-down"></i>
+                <i data-ng-if="list.totals.totals.sumTotalChangePoints > 0" class="icon-green-up"></i>
+            </span>
+        </div>
+        <div class="balance cash">
+            [[ list.formatCurrency(list.totals.mileValue.sumTotalCashEquivalent, 0) ]]
+            <span class="data-totals-changed" data-ng-if="list.totals.mileValue.sumTotalChangeCashEquivalent != 0" data-ng-class="(list.totals.mileValue.sumTotalChangeCashEquivalent > 0 ? 'up' : 'down')">
+                <span ng-if="list.totals.mileValue.sumTotalChangeCashEquivalent > 0">+</span>[[ list.formatCurrency(list.totals.mileValue.sumTotalChangeCashEquivalent, 0) ]]
+                <i data-ng-if="list.totals.mileValue.sumTotalChangeCashEquivalent < 0" class="icon-blue-down"></i>
+                <i data-ng-if="list.totals.mileValue.sumTotalChangeCashEquivalent > 0" class="icon-green-up"></i>
+            </span>
+        </div>
+    </div>
+{% endblock %}
+
+{% block list_totals_details %}
+    <div class="account-details">
+        <a
+                href="" class="show-details"
+                data-ng-click="list.details.open($event, 'totals', true); $event.preventDefault(); $event.stopPropagation();"
+                data-ng-mouseenter="list.details.open($event, 'totals', false, 500)"
+                data-ng-mouseleave="list.details.cancelOpen(); list.details.close(false, 350)">
+            <i class="icon-add-silver-b"></i>
+        </a>
+    </div>
+{% endblock %}
+
+{% block list_limit %}
+    <div data-ng-cloak class="accounts-limit" data-ng-if="main.totals.total > 200 && main.accountsLimit">
+        <div class="prev">
+            <i class="icon-warning-b"></i>
+        </div>
+        <div class="description">
+            <p><span class="bold">{{ 'award.account.list.limit.1'|trans({'%count%': total})|desc('You have a total of %count% loyalty programs.') }}</span></p>
+            <p>{{ 'award.account.list.limit.2'|trans({'%limit%': 200})|desc('Personal interface is intended only for a <span class="red bold">maximum of %limit% accounts</span>.')|raw }}</p>
+            {% if app.user.getBusiness() %}
+                <p>{{ 'award.account.list.limit.3'|trans({'%url%': url('aw_security_switch_site', {Goto: '/account/list'})})|desc('You can use "Actions" at the top to transfer accounts in bulk to the <a href="%url%">business interface</a>.')|raw }}</p>
+            {% else %}
+                <p>{{ 'award.account.list.limit.4'|trans({'%url%': '/agent/convertToBusiness.php?Start=1'})|desc('If you are trying to track loyalty accounts for other people our <a href="%url%">special business interface</a> may be more suitable for you as it is designed to work with unlimited number of accounts and unlimited number of users.')|raw }}</p>
+                <p>{{ 'award.account.list.limit.5'|trans|desc('Once you become an owner of a business interface you can use "Actions" at the top to transfer accounts in bulk to the business interface.')|raw }}</p>
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}
+
+{% block list_header %}
+    <div data-ng-if="row.firstRow" class="account-title-row">
+        <div class="check">&nbsp;</div>
+        <div class="account-details">&nbsp;</div>
+        <div class="program">
+            <a href="" data-ng-click="list.view.sort('DisplayName')">{{ "award.account.list.column.program"|trans|desc("Award Program") }}
+                <i data-ng-if="list.view.reverse && list.view.order == 'DisplayName'" class="icon-silver-arrow-down"></i>
+                <i data-ng-if="!list.view.reverse && list.view.order == 'DisplayName'" class="icon-silver-arrow-up"></i>
+            </a>
+        </div>
+        <div class="owner">{{ "award.account.list.column.owner"|trans|desc("Owner") }}</div>
+        <div class="account">{{ "award.account.list.column.account"|trans|desc("Account") }}</div>
+        <div class="status">{{ "award.account.list.column.status"|trans|desc("Status") }}</div>
+        <div class="balance">
+            <a href="" data-ng-click="list.view.sort('BalanceRaw')">{{ "award.account.list.column.balance"|trans|desc("Balance") }}
+                <i data-ng-if="!list.view.reverse && list.view.order == 'BalanceRaw'" class="icon-silver-arrow-down"></i>
+                <i data-ng-if="list.view.reverse && list.view.order == 'BalanceRaw'" class="icon-silver-arrow-up"></i>
+            </a>
+        </div>
+        <div class="cash">{{ 'cash-equivalent'|trans({'%break%':'<br> '})|desc("Cash%break%Equivalent")|raw }}</div>
+        <div class="expire">
+            <a href="" data-ng-click="list.view.sort('ExpirationDateTs')">{{ "award.account.list.column.expire"|trans|desc("Expire") }}
+                <i data-ng-if="list.view.reverse && list.view.order == 'ExpirationDateTs'" class="icon-silver-arrow-down"></i>
+                <i data-ng-if="!list.view.reverse && list.view.order == 'ExpirationDateTs'" class="icon-silver-arrow-up"></i>
+            </a>
+        </div>
+        <div class="lastupdate">
+            <a href="" data-ng-click="list.view.sort('LastUpdatedDateTs')">{{ "award.account.list.column.lastupdate"|trans|desc("Last Updated") }}
+                <i data-ng-if="list.view.reverse && list.view.order == 'LastUpdatedDateTs'" class="icon-silver-arrow-down"></i>
+                <i data-ng-if="!list.view.reverse && list.view.order == 'LastUpdatedDateTs'" class="icon-silver-arrow-up"></i>
+            </a>
+        </div>
+        <div class="actions">&nbsp;</div>
+    </div>
+{% endblock %}
+
+{% block list_empty %}
+    <div data-ng-cloak2 data-ng-show="!list.totals.viewTotal && list.totals.total">
+        <div class="not-found" data-ng-if="list.view.search">
+            <i class="icon-warning-small"></i>
+            <p>{{ "award.account.list.search.not-found"|trans|desc('The query string did not produce any results, please try changing what you are searching for.') }}</p>
+        </div>
+        <div class="not-found" data-ng-if="main.stateParams.agentId && main.stateParams.agentId != 'my' && !(list.view.search || main.stateParams.recent || main.stateParams.active || main.stateParams.errors || list.hasFilters())">
+            <i class="icon-info-small"></i>
+            <p>{{ "award.account.list.not-found"|trans|desc('This user has not yet shared any award program information for you to view.') }}</p>
+        </div>
+        <div class="not-found" data-ng-if="!list.view.search && (main.stateParams.recent || main.stateParams.active || main.stateParams.errors || list.hasFilters())">
+            <i class="icon-info-small"></i>
+            <p>{{ "award.account.filters.not-found"|trans|desc("At this point you don't have any accounts that match the filter you selected.") }}</p>
+        </div>
+        <div class="not-found" data-ng-if="!list.view.search && main.stateParams.archive && (!main.stateParams.agentId || main.stateParams.agentId == 'my') && !(main.stateParams.recent || main.stateParams.active || main.stateParams.errors || list.hasFilters())">
+            <i class="icon-info-small"></i>
+            <p>{{ 'award.accounts.filters.archived.not-found'|trans|desc("You currently have no archived accounts. To archive any accounts, return to your 'Active Accounts' tab. Select the accounts you wish to archive, then click on the 'Actions' button at the top of the screen and choose 'Archive Accounts'. Archiving will move accounts out of your 'Active Accounts' tab without losing any data. Use this feature to organize and declutter your 'Active Accounts' tab.") }}</p>
+        </div>
+         <div class="not-found"
+         data-ng-if="!list.view.search && !main.stateParams.archive && (!main.stateParams.agentId || main.stateParams.agentId == 'my') && !(main.stateParams.recent || main.stateParams.errors || list.hasFilters())"
+         >
+            <i class="icon-info-small"></i>
+            <p>{{ 'award.accounts.filters.active.not-found'|trans|desc("You currently have no active accounts. To move archived accounts into the 'Active Accounts' tab, switch to the 'Archived Accounts' tab, select the accounts you wish to move, then click on the 'Actions' button at the top of the screen and choose 'Move to Active Accounts'.") }}</p>
+        </div>
+    </div>
+    <div data-ng-cloak2 data-ng-show="!list.totals.total">
+        <div class="not-found">
+            <i class="icon-info-small"></i>
+            <p>{{ "award.account.accounts.not-found"|trans({'%url%': url('aw_select_provider')})|desc("You have no accounts added to this profile. <a href='%url%'>Click here to proceed</a>.")|raw }}</p>
+        </div>
+    </div>
+{% endblock %}
+
+{% block row_kind %}
+    <div data-ng-if="::(row.type == 'kind')" class="title-note" data-ng-controller="kindRowCtrl as kindRow">
+        <h3>[[ ::row.fields.name ]]</h3>
+        <a class="card-offer" data-ng-if="::(row.promo)" target="_blank" data-ng-href="[[ ::row.promo.link ]]">
+            <div class="details">
+                <div class="title">[[ ::row.promo.title ]]</div>
+                <div class="description">
+                    <span ng-bind-html="row.promo.description | unsafe"></span>
+                    <span class="blue-link">
+                        [{{ "cc.promo.apply-now"|trans|desc("Apply Now") }}]
+                    </span>
+                </div>
+            </div>
+            <div class="thumb">
+                <img data-ng-src="[[ ::row.promo.image ]]" alt="cc_promo">
+            </div>
+        </a>
+        <div data-fico data-ng-if="kindRow.visibleFicoAccounts.length > 0" data-ng-show="kindRow.shouldShow" data-fico-accounts="kindRow.visibleFicoAccounts"></div>
+        
+    </div>
+{% endblock %}
+
+{% block row_kind_user %}
+    <div data-ng-if="::(row.type == 'kind-user')" class="user-row">
+        <div class="user-item">
+            <div class="user-icon"><div class="user-icon-item"><i class="icon-user"></i></div></div>
+            <h3 data-ng-bind-html="row.fields.name | htmlencode | unsafe"></h3>
+        </div>
+    </div>
+{% endblock %}
+
+{% block row_data %}
+    <div class="account-row" data-ng-if="::(row.type == 'account' || row.type == 'coupon')" data-ng-controller="elementCtrl as element">
+        <div id="[[ ::element.account.FID ]]">
+            {{ block('row_account') }}
+        </div>
+    </div>
+    {#<div class="account-row" data-ng-if="::(row.type == 'subaccount')" data-ng-controller="elementCtrl as element">#}
+        {#<div id="[[ ::element.account.FID ]]">#}
+            {#{{ block('row_subaccount') }}#}
+        {#</div>#}
+    {#</div>#}
+    {#<div class="account-row" data-ng-if="::(row.type == 'coupon')" data-ng-controller="elementCtrl as element">
+        <div id="[[ ::element.account.FID ]]">
+            {{ block('row_coupon') }}
+        </div>
+    </div>#}
+{% endblock %}
+
+{% block row_account %}
+    {{ block('row_column_tip') }}
+    <div class="account-row-block" data-ng-class="{
+        errored: (element.account.ProgramMessage.Type == 5 && (element.account.ErrorCode > 1 || element.account.ErrorCode < 0) && (main.view.showErrors || element.updater.state) && (!element.account.Disabled || element.updater.state)),
+        active: element.check.checked || element.account.ChangesConfirmed === false,
+        disabled: element.account.Disabled,
+        'coupon-row-v2': element.account.TableName == 'Coupon',
+        'row-balancewatch': element.account.BalanceWatchExpirationDate > 0,
+        'row-balancewatch-subs' : (element.account.BalanceWatchExpirationDate > 0 && element.account.EmbeddedAccountsList && element.account.EmbeddedAccountsList.length)
+    }">
+        {{ block('row_column_check') }}
+        {{ block('row_column_detail') }}
+        {{ block('row_column_program') }}
+        {{ block('row_column_owner') }}
+        {{ block('row_column_account') }}
+        {{ block('row_update') }}
+        {{ block('row_column_status') }}
+        {{ block('row_column_balance') }}
+        {{ block('row_column_cash') }}
+        {{ block('row_column_expire') }}
+        {{ block('row_column_lastupdate') }}
+        {{ block('row_column_actions') }}
+    </div>
+    {{ block('row_account_error') }}
+    {{ block('row_account_balance_watch') }}
+    {{ block('row_embedded') }}
+
+{#    {{ block('row_subaccount') }}#}
+{#    {{ block('row_connected_coupons') }}#}
+{% endblock %}
+
+{% block row_embedded %}
+    <div class="sub-account-row-block"
+         data-ng-if="element.account.EmbeddedAccountsList.length"
+         data-ng-repeat="item in element.account.EmbeddedAccountsList"
+         data-ng-init="elementId = item.type === 'coupon' ? 'emb-' + item.FID : ''"
+         data-ng-attr-id="[[ ::elementId ]]"
+         data-ng-class="{
+            active: item.type === 'subaccount' && element.check.checked,
+            'coupon-sub': item.type === 'coupon',
+            inactive: item.type === 'subaccount' && (item.Properties.Quantity.Val == 0 || item.ExpirationState == 'expired'),
+            'row-unhideable': item.type === 'subaccount' && element.account.Complex
+         }"
+         data-ng-hide="
+            (item.type === 'subaccount' && (item.Properties.Quantity.Val == 0 || item.ExpirationState == 'expired') && !main.view.showInactive) || !main.view.showSubaccounts
+         "
+    >
+        <div data-ng-if="item.type === 'subaccount'" id="s[[ ::item.SubAccountID ]]">
+            <i data-tip
+               title="{{ "award.account.list.state.tip"|trans }}"
+               data-ng-if="['inc', 'dec'].indexOf(item.StateBar) != -1"
+               data-ng-class='{"icon-increased": item.StateBar == "inc", "icon-decreased": item.StateBar == "dec"}'></i>
+            <i data-ng-if="item.StateBar == 'error'" class="icon-errored"></i>
+
+            <div class="check"></div>
+
+            <div class="account-details">
+                <a data-ng-if="::element.account.Access.read_extproperties"
+                   href="{{ url('aw_account_list') }}?account=[[ ::element.account.ID ]]&subaccount=[[ ::item.SubAccountID ]]"
+                   class="show-details"
+                   data-ng-click="element.details.open($event, element.account.FID+'-'+item.SubAccountID, true); $event.preventDefault(); $event.stopPropagation();"
+                   data-ng-mouseenter="element.details.open($event, element.account.FID+'-'+item.SubAccountID, false, 500)"
+                   data-ng-mouseleave="element.details.cancelOpen(); element.details.close(false, 350)">
+                    <i class="icon-add-silver-b"></i>
+                </a>
+            </div>
+
+            <div class="program">
+                <div class="program-title">
+                    <p data-ng-if="::!element.account.Access.autologin"
+                       data-ng-bind-html="item.DisplayName | highlight:element.search:false:'green' | unsafe"></p>
+                    <a data-ng-if="::(element.account.Access.autologin && !element.account.Access.autologinExtension)"
+                       href="[[ ::item.RedirectLink ]]" class="title" target="_blank"
+                       data-ng-bind-html="item.DisplayName | highlight:element.search:false:'green' | unsafe"></a>
+                    <a data-ng-if="::(element.account.Access.autologin && element.account.Access.autologinExtension)"
+                       data-ng-click="browserExt.autoLoginClick(element.account.ID, this);"
+                       href="[[ ::item.RedirectLink ]]" class="title" target="_blank"
+                       data-ng-bind-html="item.DisplayName | highlight:element.search:false:'green' | unsafe"></a>
+                </div>
+            </div>
+
+            <div class="update" data-ng-show="element.updater.process && element.updater.progress == 100 && element.updater.resultState != 'error'">
+                <div class="update-row">
+                    <div class="update-row-item">
+                        <p data-ng-show="item.ChangedOverPeriodPositive == null" data-ng-bind-html="item.updater.unchangeText | unsafe" class="subacc-unchanged"></p>
+                        <div data-ng-show="item.ChangedOverPeriodPositive != null">
+                            <p data-ng-bind-html="item.updater.changeText | unsafe"></p>
+                            <span data-ng-if="(item.ChangedOverPeriodPositive != null)" data-ng-class="(item.ChangedOverPeriodPositive ? 'up' : 'down')">
+                            <i data-ng-if="(!item.ChangedOverPeriodPositive)" class="icon-blue-down"></i>
+                            <i data-ng-if="(item.ChangedOverPeriodPositive)" class="icon-green-up"></i>
+                        </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="balance updating" data-ng-show="element.updater.process && ['failed', 'disabled'].indexOf(element.updater.state) == -1 && element.updater.progress < 100 && element.updater.resultState != 'error'"></div>
+            <div class="balance" data-ng-hide="element.updater.process">
+                <div data-ng-class="{'balance-row': true, 'unhideable': item.Unhideable}">
+                    <p>
+                        [[ item.Balance | unsafe ]]
+                        <span data-ng-if="(item.ChangedOverPeriodPositive != null)" data-ng-class="(item.ChangedOverPeriodPositive ? 'up' : 'down')">
+                            [[ item.LastChange ]]
+                            <i data-ng-if="(!item.ChangedOverPeriodPositive)" class="icon-blue-down"></i>
+                            <i data-ng-if="(item.ChangedOverPeriodPositive)" class="icon-green-up"></i>
+                        </span>
+                    </p>
+                </div>
+            </div>
+
+            <div class="balance cash" data-ng-hide="element.updater.process">
+                <div class="balance-row cash-row" data-ng-if="item.USDCash">
+                    <p class="balanceRaw">
+                        [[item.USDCash | unsafe]]
+                        <span data-ng-if="(item.ChangedOverPeriodPositive != null && item.USDCashChange)" data-ng-class="(element.account.ChangedOverPeriodPositive ? 'up' : 'down')">
+                        [[ item.USDCashChange ]]
+                    </span>
+                    </p>
+                </div>
+            </div>
+
+            <div class="expire" data-ng-hide="element.updater.process">
+                <div class="expire-blk" data-ng-if="element.account.Access.read_extproperties && item.ExpirationStateType && !element.view.isHiddenDate(item)">
+                    <i class="icon-green-check" data-tip title="[[ item.ExpirationStateTip ]]"
+                       data-ng-show="(item.ExpirationState == 'far')"></i>
+                    <i class="icon-warning-small" data-tip title="[[ item.ExpirationStateTip ]]"
+                       data-ng-show="(item.ExpirationState == 'soon')"></i>
+                    <i class="icon-red-error" data-tip title="[[ item.ExpirationStateTip ]]"
+                       data-ng-show="(item.ExpirationState == 'expired')"></i>
+
+                    <p data-tip title="[[item.ExpirationDateTip]]">[[ item.ExpirationDate ]]</p>
+                </div>
+                <div class="expire-blk" data-ng-if="element.view.isHiddenDate(item)">
+                    <a style="margin-left: 19px" href="{{ path('aw_users_pay') }}">{{ 'please-upgrade'|trans|desc('Please upgrade') }}</a>
+                </div>
+            </div>
+
+            <div class="actions">
+                <ul data-ng-if="item.isCoupon">
+                    <li data-ng-if="item.Properties.UnablePrint == undefined || item.Properties.UnablePrint.Val == 0">
+                        <a href="" data-tip title="{{ "award.account.list.button.print"|trans|desc("Print") }}"><i
+                                    class="icon-print"></i></a></li>
+                    <li data-ng-if="item.Properties.UnableMark == undefined || item.Properties.UnableMark.Val == 0">
+                        <a href="" data-tip title="{{ "award.account.list.button.mark"|trans|desc("Used/unused") }}"><i
+                                    class="icon-dark-check"></i></a></li>
+                </ul>
+            </div>
+        </div>
+        <div data-ng-if="item.type === 'coupon'">
+            <div class="check"></div>
+
+            <div class="account-details">
+                <a href="{{ url('aw_account_list') }}?coupon=[[ ::item.ID ]]" class="show-details"
+                   data-ng-click="element.details.open($event, item.FID, true); $event.preventDefault(); $event.stopPropagation();"
+                   data-ng-mouseenter="element.details.open($event, item.FID, false, 500)"
+                   data-ng-mouseleave="element.details.cancelOpen(); element.details.close(false, 350)">
+                    <i class="icon-add-silver-b"></i>
+                </a>
+            </div>
+
+            <div class="program" style="overflow: hidden;">
+                <div class="program-title" style="width: 100% !important; height: inherit;" simple-ellipsis="main.state.loaded">
+                    <p>[[ item.extendedStatus ]]</p>
+                </div>
+            </div>
+
+            <div class="account">
+                <div class="account-blk">
+                    <p class="number" data-selectable data-ng-class="{long: item.decorate.LoginFirstLong}"
+                       data-ng-bind-html="item.LoginFieldFirst | highlight:element.search:false:'green' | unsafe"></p>
+                </div>
+            </div>
+
+            <div class="balance">
+                <div class="balance-row" ng-show="item.Balance">
+                    <p class="balanceRaw">
+                        <i class="icon-info-small-s" data-tip title="{{ 'account.coupon.not-updated'|trans }}"></i>
+                        [[ item.Balance | unsafe ]]
+                        <span data-ng-if="(item.ChangedOverPeriodPositive != null)" data-ng-class="(item.ChangedOverPeriodPositive ? 'up' : 'down')">
+                        [[ item.LastChange ]]
+                        <i data-ng-if="(!item.ChangedOverPeriodPositive)" class="icon-blue-down"></i>
+                        <i data-ng-if="(item.ChangedOverPeriodPositive)" class="icon-green-up"></i>
+                    </span>
+                    </p>
+                </div>
+            </div>
+
+            <div class="balance cash">
+                <div class="balance-row cash-row" data-ng-if="item.USDCash">
+                    <p class="balanceRaw">
+                        [[item.USDCash | unsafe]]
+                        <span data-ng-if="(item.ChangedOverPeriodPositive != null)" data-ng-class="(element.account.ChangedOverPeriodPositive ? 'up' : 'down')">
+                        [[ item.LastChange ]]
+                    </span>
+                    </p>
+                </div>
+            </div>
+
+            <div class="expire">
+                <div class="expire-blk" data-ng-if="item.Access.read_extproperties && item.ExpirationStateType">
+                    <i class="icon-green-check" data-tip title="[[ item.ExpirationStateTip ]]"
+                       data-ng-show="(item.ExpirationState == 'far')"></i>
+                    <i class="icon-warning-small" data-tip title="[[ item.ExpirationStateTip ]]"
+                       data-ng-show="(item.ExpirationState == 'soon')"></i>
+                    <i class="icon-red-error" data-tip title="[[ item.ExpirationStateTip ]]"
+                       data-ng-show="(item.ExpirationState == 'expired')"></i>
+                    <p data-tip title="[[item.ExpirationDateTip]]">[[ item.ExpirationDate ]]</p>
+                </div>
+            </div>
+
+            <div class="actions" style="display: inline-block;">
+                <a data-ng-if="::item.Access.delete" data-tip ng-click="main.view.removeItem(item)" title="{{ "award.account.list.button.delete"|trans|desc("Delete") }}"><i class="icon-delete"></i></a>
+                <a data-ng-if="::item.Access.edit" href="[[ ::item.EditLink ]]" data-tip title="{{ "award.account.list.button.edit"|trans|desc("Edit") }}"><i class="icon-edit"></i></a>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block row_column_tip %}
+    <i data-tip title="{{ "award.account.list.state.tip"|trans|desc("Balance was changed within last 24 hours") }}"
+       data-ng-if="element.account.StateBar == 'inc'" class="icon-increased"></i>
+    <i data-tip title="{{ "award.account.list.state.tip"|trans }}"
+       data-ng-if="element.account.StateBar == 'dec'" class="icon-decreased"></i>
+    <i data-ng-if="element.account.StateBar == 'error'" class="icon-errored"></i>
+    <i data-ng-if="element.account.StateBar == 'warning'" class="icon-warning"></i>
+    <i data-tip title="{{ "account.disabled"|trans }}"
+       data-ng-if="element.account.StateBar == 'disabled'" class="icon-disabled"></i>
+    <i data-ng-if="element.account.BalanceWatchExpirationDate > 0" class="icon-infoed" data-tip title="{{ 'account.list.balancewatch.monitored-changes'|trans }}"></i>
+{% endblock %}
+
+{% block row_column_check %}
+    <div class="check">
+        <input type="checkbox" class="checkbox" id="[[ ::element.decorate.accountFID ]]" data-ng-model="element.check.checked"
+               data-ng-disabled="element.updater.state" data-ng-click="element.view.selectOne($event)">
+        <label for="[[ ::element.decorate.accountFID ]]" class="label"></label>
+    </div>
+{% endblock %}
+
+{% block row_column_detail %}
+    <div class="account-details">
+        <a href="{{ url('aw_account_list') }}?account=[[ ::element.account.ID ]]" class="show-details" data-ng-hide="!element.account.Access.read_extproperties"
+           data-ng-click="element.details.open($event, element.account.FID, true); $event.preventDefault(); $event.stopPropagation();"
+           data-ng-mouseenter="element.details.open($event, element.account.FID, false, 500)"
+           data-ng-mouseleave="element.details.cancelOpen(); element.details.close(false, 350)">
+            <i class="icon-add-silver-b"></i>
+        </a>
+    </div>
+{% endblock %}
+
+{% block row_column_program %}
+    <div class="program">
+        <div class="program-title">
+            <p data-ng-if="::(!element.account.Access.autologin && !element.account.isCustom)">
+                <a data-ng-bind-html="element.account.DisplayNameFormated | highlight:element.search:false:'green' | unsafe" target="_blank" href="[[ ::element.account.RedirectLink ]]"></a>
+                <a class="info-message" data-tip title="{{ "autologin.disabled"|trans|desc("No Autologin") }}"><i class="icon-small-green-autologin"></i></a>
+            </p>
+            <p data-ng-if="::(!element.account.AutoLogin && element.account.DisableClientPasswordAccess && !element.account.isCustom)">
+                <a class="info-message" data-tip title="{{ "autologin.disabled-by-user"|trans|desc('Auto-login disabled by user') }}"><i class="icon-small-green-autologin"></i></a>
+            </p>
+                <a data-ng-if="::(element.account.Access.autologin && !element.account.Access.autologinExtension)" href="[[ ::element.account.RedirectLink ]]" class="title" target="_blank" data-ng-bind-html="element.account.DisplayNameFormated | highlight:element.search:false:'green' | unsafe"></a>
+                <a data-ng-if="::(element.account.Access.autologin && element.account.Access.autologinExtension)" data-ng-click="element.view.autologin($event)" href="[[ ::element.account.RedirectLink ]]" class="title" target="_blank" data-ng-bind-html="element.account.DisplayNameFormated | highlight:element.search:false:'green' | unsafe"></a>
+                <p data-ng-if="::(element.account.isCustom)">
+                    <a data-ng-if="::(element.account.LoginURL)" href="{{ path('aw_out') }}?url=[[ ::element.account.LoginURL ]]" class="title" target="_blank" data-ng-bind-html="element.account.DisplayNameFormated | highlight:element.search:false:'green' | unsafe"></a>
+                    <span data-ng-if="::(!element.account.LoginURL && !element.account.isDocument)" data-ng-bind-html="element.account.DisplayNameFormated | highlight:element.search:false:'green' | unsafe"></span>
+                    <span data-ng-if="::(element.account.isDocument)" data-ng-bind-html="element.account.document.formattedName | highlight:element.search:false:'green' | unsafe"></span>
+                    <a href="#" data-ng-if="!element.account.isDocument" class="info-message title" data-tip title="{{ 'account.coupon.not-updated'|trans|desc("This is custom entry, the balance is not updated automatically by AwardWallet") }}"><i class="icon-small-green-custom-program"></i></a>
+                </p>
+        </div>
+        {{ block('row_column_program_alliance') }}
+    </div>
+{% endblock %}
+
+{% block row_column_program_alliance %}
+    <div data-ng-if="element.account.AllianceIcon" class="alliance">
+        <a href="" data-ng-click="main.view.alliancePopup(element.account.AllianceAlias, $event)" class="alliance-item" data-tip title="[[ element.account.AllianceLevel ]]">
+            <div class="picture">
+                <img class="picture__dark" data-ng-src="[[ element.account.AllianceIcon.replace('alliances/', 'alliances/dark/') + (main.devicePixelRatio && main.devicePixelRatio == 2 ? '@2x.png' : '.png') ]]" alt="" height="28" width="23"/>
+                <img class="picture__light" data-ng-src="[[ element.account.AllianceIcon + (main.devicePixelRatio && main.devicePixelRatio == 2 ? '@2x.png' : '.png') ]]" alt="" height="28" width="23"/>
+            </div>
+        </a>
+    </div>
+{% endblock %}
+
+{% block row_column_owner %}
+    <div class="owner">
+        <div class="owner-blk">
+            
+                <p class="number"
+                   data-ng-bind-html="element.decorate.userName | htmlencode | highlight:element.search:false:'green' | unsafe"></p>
+                 <p data-ng-if="element.account.FamilyMemberName"
+                   class="email comment"
+                   data-ng-bind-html="element.account.FamilyMemberName | htmlencode | highlight:element.search:false:'green' | unsafe"></p>
+        </div>
+    </div>
+{% endblock %}
+
+{% block row_column_account %}
+    <div class="account">
+        <a href="" class="info-message" data-ng-show="(element.account.SavePassword == 2 && 1 == element.account.PasswordRequired)">
+            <i data-tip
+               title="{{ "award.account.list.local-password.tip"|trans|desc("The password for this reward program is stored locally and not in the AwardWallet database.") }}"
+               class="icon-small-green-local-password"></i>
+        </a>
+
+        <div class="account-blk" ng-if="!element.account.isDocument">
+                <p class="number" data-selectable data-ng-class="{long: element.decorate.LoginFirstLong}"
+                   data-ng-bind-html="element.account.LoginFieldFirst | highlight:element.search:false:'green' | unsafe"></p>
+                <p data-ng-if="::element.account.LoginFieldLast" class="email comment" data-selectable  data-ng-class="{long: element.decorate.LoginLastLong}"
+                   data-ng-bind-html="element.account.LoginFieldLast | highlight:element.search:false:'green' | unsafe"></p>
+        </div>
+
+        <div class="account-blk" data-ng-if="element.account.isDocument">
+            <div data-ng-if="element.account.document.passport">
+                <p class="number" data-selectable data-ng-class="{long: element.account.document.passport.number && element.account.document.passport.number.length > 9}"
+                    data-ng-bind-html="element.account.document.passport.number | highlight:element.search:false:'green' | unsafe"></p>
+                <p class="email comment" ng-if='element.account.document.passport.name'>
+                    <span>{{ 'user-name'|trans({}, 'email') }}: </span>
+                    <span data-selectable data-ng-bind-html="element.account.document.passport.name | highlight:element.search:false:'green' | unsafe"></span>
+                </p>
+            </div>
+            <div data-ng-if="element.account.document.trustedTraveler">
+                <p class="number" ng-class="{'long': element.account.document.trustedTraveler.travelerNumber && element.account.document.trustedTraveler.travelerNumber.length > 9}" data-selectable>[[ element.account.document.trustedTraveler.travelerNumber ]]</p>
+            </div>
+            <div data-ng-if="element.account.document.status">
+                <p class="number" data-ng-if="element.account.document.status.first">
+                    <span data-ng-bind-html="element.account.document.status.first|unsafe"></span>
+                </p>
+                <p class="number" data-ng-if="element.account.document.status.second">
+                    <span data-ng-bind-html="element.account.document.status.second|unsafe"></span>
+                </p>
+                <p class="email comment" data-ng-if="element.account.document.status.second_sub">
+                    <span data-ng-bind-html="element.account.document.status.second_sub|unsafe"></span>
+                </p>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block row_column_status %}
+    <div class="status" data-ng-hide="element.updater.process || element.account.ChangesConfirmed === false">
+        <p data-ng-bind-html="element.account.AccountStatus | highlight:element.search:false:'green' | unsafe"></p>
+        <div data-ng-if="element.account.AccountStatus" data-ng-click="element.details.open($event, element.account.FID, true, 0, 'elitelevel'); $event.preventDefault(); $event.stopPropagation();" data-tip class="progress" data-ng-class="'seg' + element.account.EliteLevelsCount" data-bind-html-compile="element.decorate.eliteLevels"></div>
+    </div>
+{% endblock %}
+
+{% block row_column_balance %}
+    <div class="balance" data-ng-hide="element.updater.process || element.account.ChangesConfirmed === false">
+        <div data-ng-class="{'balance-row': true, 'unhideable': element.account.Complex}">
+                <p class="balanceRaw">
+                    <i ng-if="::(element.account.isCustom && !element.account.isDocument) " class="icon-info-small-s" data-tip title="{{ 'account.coupon.not-updated'|trans }}"></i>
+                    <i class="icon-warning-small" data-tip title="{{ "account.disabled"|trans }}"
+                       data-ng-if="element.account.StateBar == 'disabled'"></i>
+                    [[ element.account.Balance | unsafe ]]
+                    <span data-ng-if="(element.account.ChangedOverPeriodPositive != null)" data-ng-class="(element.account.ChangedOverPeriodPositive ? 'up' : 'down')">
+                        [[ element.account.LastChange ]]
+                        <i data-ng-if="(!element.account.ChangedOverPeriodPositive)" class="icon-blue-down"></i>
+                        <i data-ng-if="(element.account.ChangedOverPeriodPositive)" class="icon-green-up"></i>
+                    </span>
+                </p>
+                <a ng-if="element.account.BackgroundCheckState && 1 == element.account.PasswordRequired" href="#" class="info-message" data-tip title="[[element.account.BackgroundCheckState]]">
+                    <i class="icon-small-green-updating-turned-off"></i>
+                </a>
+        </div>
+        <div data-ng-if="element.account.Goal" data-tip title="[[ element.account.GoalTip ]]" class="progress seg10" data-ng-bind-html="element.decorate.goalLevels"></div>
+    </div>
+{% endblock %}
+
+{% block row_column_cash %}
+    <div class="balance cash" data-ng-hide="element.updater.process || element.account.ChangesConfirmed === false">
+        <div class="balance-row cash-row">
+            <p class="balanceRaw" data-ng-if="element.account.USDCash && !element.account.USDCashMileValue">
+                [[element.account.USDCash | unsafe]]
+                <span data-ng-if="(element.account.ChangedOverPeriodPositive != null)" data-ng-class="(element.account.ChangedOverPeriodPositive ? 'up' : 'down')">
+                    [[ element.account.LastChange ]]
+                </span>
+            </p>
+            <p class="balanceRaw" data-ng-if="element.account.USDCashMileValue && element.account.MileValue.approximate" data-tip title="[[element.account.MileValue.awEstimate.value]]">
+                [[element.account.MileValue.approximate.value | unsafe]]
+                <span data-ng-if="(element.account.ChangedOverPeriodPositive != null)" data-ng-class="(element.account.MileValue.balanceChange.changedPositive ? 'up' : 'down')">
+                    [[ element.account.MileValue.balanceChange.value ]]
+                    {# <i data-ng-if="(!element.account.MileValue.balanceChange.changedPositive)" class="icon-blue-down"></i>
+                    <i data-ng-if="(element.account.MileValue.balanceChange.changedPositive)" class="icon-green-up"></i> #}
+                </span>
+            </p>
+            <p data-ng-if="element.account.Access.edit && !element.account.MileValue.approximate && !element.account.USDCash && !element.account.USDCashMileValue && 'Account' == element.account.TableName && element.account.StateBar != 'disabled' && !element.account.MileValue.isDeniedSet">
+                <a class="cash-set" href="" data-ng-click="element.mileValueSet(element.account)" ng-hide="list.isBusiness && element.account.isCustom">{{ 'set-value'|trans|desc("set value") }}</a>
+            </p>
+        </div>
+    </div>
+{% endblock %}
+
+{% block row_column_expire %}
+    <div class="expire" data-ng-hide="element.updater.process || element.account.ChangesConfirmed === false">
+        <div class="expire-blk" data-ng-if="element.account.Access.read_extproperties && element.account.ExpirationStateType && !element.view.isHiddenDate()">
+            <a data-ng-if="element.decorate.expirationModeClass" href="" class="info-message"><i data-tip title="[[ element.account.ExpirationModeTip ]]" data-ng-class="element.decorate.expirationModeClass"></i></a>
+            <i data-ng-if="element.decorate.expirationStateClass" data-ng-class="element.decorate.expirationStateClass" data-tip title="[[ element.account.ExpirationStateTip ]]"></i>
+
+            <a data-ng-if="element.account.ExpirationDetails" data-tip title="[[ element.account.ExpirationDateTip ]]" href="" data-ng-click="element.view.showPopupExpiration()">[[ element.account.ExpirationDate ]]</a>
+            <p data-ng-if="!element.account.ExpirationDetails && !element.account.ExpirationBlogPost.isShowDetailsPopup" data-tip title="[[ element.account.ExpirationDateTip ]]">[[ element.account.ExpirationDate ]]</p>
+
+            <a data-ng-if="element.account.ExpirationBlogPost.isShowDetailsPopup" data-tip title="[[ element.account.ExpirationDateTip ]]" href="" data-ng-click="element.view.showPopupExpiration(element.account.Kind)">[[ element.account.ExpirationDate ]]</a>
+        </div>
+        <div class="expire-blk" data-ng-if="element.view.isHiddenDate()">
+            <a style="margin-left: 19px" href="{{ path('aw_users_pay') }}">{{ 'please-upgrade'|trans|desc('Please upgrade') }}</a>
+        </div>
+    </div>
+{% endblock %}
+
+{% block row_column_lastupdate %}
+    <div class="lastupdate" data-ng-if="element.account.LastUpdatedDate.ago" data-ng-hide="element.updater.process || element.account.ChangesConfirmed === false">
+        <div class="lastupdate-blk">
+            <div class="lastupdate-row" data-tip title="[[ element.account.LastUpdatedDate.date ]]">[[ element.account.LastUpdatedDate.ago ]]</div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block row_column_actions %}
+    <div class="actions" data-ng-hide="element.updater.process || element.updater.state || element.account.ChangesConfirmed === false">
+        <a data-ng-if="::element.account.Access.oneUpdate" href="" data-ng-click="element.view.update()" data-tip title="{{ "award.account.list.button.update"|trans|desc("Update") }}"><i class="icon-dark-refresh" data-ng-class="{disable: element.view.updateInProgress() }"></i></a>
+        <a data-ng-if="!element.account.Access.oneUpdate && element.account.Access.edit && -1 != ['26', '7', '145', '16'].indexOf(element.account.ProviderID)" href="[[ ::element.account.EditLink ]]#update-manual" data-tip title="{{ 'manual-update'|trans|desc("Manual Update") }}"><i class="icon-dark-refresh"></i></a>
+        <a data-ng-if="::element.account.Access.edit" href="[[ element.account.EditLinkTmp || element.account.EditLink ]]" data-tip title="{{ "award.account.list.button.edit"|trans|desc("Edit") }}"><i class="icon-edit"></i></a>
+    </div>
+{% endblock %}
+
+{% block row_update %}
+    <div class="update" data-ng-if="element.account.ChangesConfirmed === false && !element.updater.process">
+        <div class="update-row">
+            <div class="update-row-item">
+                <p data-ng-bind-html="element.account.ChangedText | unsafe">{{ 'award.account.list.updating.changed'|trans|desc('Updated from %lastBalance% to <strong>%balance%</strong><span class="%changeClass%">%lastChange%</span>') | raw }}</p>
+                <i data-ng-class="element.updater.changeClass"></i>
+                <a class="btn-blue small loader" ng-if="element.confirmPending"></a>
+                <a class="btn-blue small" ng-if="!element.confirmPending" data-ng-click="element.view.confirmChanges(true)">{{ 'button.ok'|trans }}</a>
+            </div>
+        </div>
+    </div>
+    <div class="update" data-ng-show="element.updater.process">
+        <div class="update-row">
+            <div class="update-row-item" data-ng-show="element.updater.visualState == 'queue'">
+                <p><span>{{ 'award.account.list.updating.queue.1'|trans|desc('Account update was queued up') }}</span><span>{{ 'award.account.list.updating.queue.2'|trans|desc('Updating will start soon') }}</span></p>
+                <div class="loader"></div>
+                <a href="" data-ng-click="element.view.cancelUpdate()" class="btn-blue small" data-ng-if="element.updating.active">{{ 'cancel'|trans }}</a>
+            </div>
+            <div class="update-row-item" data-ng-show="element.updater.visualState == 'checking'">
+                <div class="progress-row">
+                    <div class="progress-bar"><div class="progress-bar-row"><span data-ng-style="element.updater.progressStyle"></span></div></div>
+                    <a href="" data-ng-click="element.view.cancelUpdate()" class="btn-blue small" data-ng-if="element.updating.active">{{ 'cancel'|trans }}</a>
+                </div>
+            </div>
+            <div class="update-row-item" data-ng-show="element.updater.visualState == 'changed'">
+                <p data-ng-bind-html="element.updater.changeText | unsafe">{{ 'award.account.list.updating.changed'|trans|desc('Updated from %lastBalance% to <strong>%balance%</strong><span class="%changeClass%">%lastChange%</span>') | raw }}</p>
+                <i data-ng-class="element.updater.changeClass"></i>
+                <a class="btn-blue small" data-ng-click="element.view.doneUpdate()">{{ 'button.ok'|trans }}</a>
+            </div>
+            <div class="update-row-item" data-ng-show="element.updater.visualState == 'unchanged'">
+                <p data-ng-bind-html="element.updater.unchangeText | unsafe">{{ 'award.account.list.updating.unchanged'|trans|desc('Updated without changes <strong>%balance%</strong>') | raw }}</p>
+                <i class="icon-" style="width: 13px;"></i>
+                <a class="btn-blue small" data-ng-click="element.view.doneUpdate()">{{ 'button.ok'|trans }}</a>
+            </div>
+            <div class="update-row-item" data-ng-show="element.updater.visualState == 'error'">
+                <p class="red">{{ 'award.account.list.updating.error-text'|trans|desc('Error occurred') }}
+                    <span class="silver">{{ 'award.account.list.updating.error-below'|trans|desc('For details see below') }}</span>
+                </p>
+                <i class="icon-red-error"></i>
+                <a class="btn-blue small" data-ng-click="element.view.doneUpdate()">{{ 'button.ok'|trans }}</a>
+            </div>
+            <div class="{{ bem('account-update-failed-cell') }}" data-ng-show="element.updater.visualState == 'failed'">
+                <div class="{{ bem('account-update-failed-cell', 'cell-wrapper') }}">
+                    <div class="{{ bem('account-update-failed-cell', 'message-wrapper') }}">
+                        <div class="{{ bem('account-update-failed-cell', 'icon') }}"></div>
+                        <p class="{{ bem('account-update-failed-cell', 'message') }}" data-ng-bind-html="element.updater.failedText | unsafe">{{ 'award.account.list.updating.failed'|trans|desc('Server communication error') | raw }}</p>
+                    </div>
+                    <a class="{{ bem('button') }} {{ bem('account-update-failed-cell', 'button') }}" data-ng-click="element.view.doneUpdate(element.updater.visualParams)" data-ng-bind="element.updater.visualParams.buttonName || '{{ 'button.ok'|trans }}'">{{ 'button.ok'|trans }}</a>
+                </div>
+            </div>
+            <div class="update-row-item" data-ng-show="element.updater.visualState == 'disabled'">
+                <p>
+                    <span>{{ 'award.account.list.updating.disabled.1'|trans|desc('This account is marked as "Disabled"') }}</span>
+                    <span data-ng-bind-html="element.updater.disabledText | unsafe">
+                        {{ 'award.account.list.updating.disabled.2'|trans|desc('To update <a href="%url%">please uncheck</a> the "Disabled" checkbox') | raw }}
+                        {{ 'award.account.list.updating.disabled.3'|trans|desc('Please ask account owner to uncheck the "Disabled" checkbox') | raw }}
+                    </span>
+                </p>
+                <i class="icon-warning-small"></i>
+                <a class="btn-blue small" data-ng-click="element.view.doneUpdate()">{{ 'button.ok'|trans }}</a>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block row_account_error %}
+    <div data-ng-if="(element.account.ProgramMessage.Type == 5 && element.account.ErrorCode > 1 && (main.view.showErrors || element.updater.state) && (!element.account.Disabled || element.updater.state))" class="account-row-error" data-ng-class="{active: element.check.checked}">
+        <div class="error-message">
+            <i data-ng-class="{'icon-red-error': element.account.ErrorCode != {{ constant('ACCOUNT_WARNING') }}, 'icon-warning-small': element.account.ErrorCode == {{ constant('ACCOUNT_WARNING') }}}"></i>
+            <span data-ng-class="{red: element.account.ErrorCode != {{ constant('ACCOUNT_WARNING') }}, orange: element.account.ErrorCode == {{ constant('ACCOUNT_WARNING') }}}">[[ element.account.ProgramMessage.Title ]]<span data-ng-if="element.account.ProgramMessage.BeforeError">.</span></span> <span data-ng-bind-html="element.account.ProgramMessage.BeforeError | unsafe"></span>
+            <div data-ng-class="{'error-balance-blk': element.account.ErrorCode != {{ constant('ACCOUNT_WARNING') }}, 'warn-balance-blk': element.account.ErrorCode == {{ constant('ACCOUNT_WARNING') }}}">
+                <a href="" data-ng-click="element.view.errorInfo($event)" style="float: right; margin-right: -30px"><i class="icon-close-white"></i></a>
+                <span data-ng-bind-html="element.account.ProgramMessage.Error | unsafe"></span>
+                <a href="" class="read-more" data-ng-hide="element.view.showError" data-ng-click="element.view.showError = true">{{ "award.account.list.more-info"|trans|desc("More Info")|add_down_arrow({ 'icon': 'icon-double-arrow-right-white', 'addToLastWord': false }) }}</a>
+            </div>
+            <div class="error-information" data-ng-if="element.view.showError">
+                <p data-ng-if="element.account.ProgramMessage.Description || element.account.ProgramMessage.DateInfo">
+                            <span data-ng-if="element.account.ProgramMessage.Description"
+                                  data-ng-bind-html="element.account.ProgramMessage.Description | unsafe"></span>
+                            <span data-ng-if="element.account.ProgramMessage.DateInfo"
+                                  data-bind-html-compile="element.account.ProgramMessage.DateInfo | unsafe"></span>
+                    <a href="" class="less-info" data-ng-click="element.view.showError = false"><i class="icon-double-arrow-left-silver"></i>{{ "award.account.list.less-info"|trans|desc("Less info") }}
+                    </a>
+                </p>
+            </div>
+        </div>
+    </div>
+    <div data-ng-if="(element.account.ErrorCode == {{ constant('AwardWallet\\MainBundle\\Updater\\Event\\LimitEvent::ERROR_CODE_LOCKOUT') }} && (main.view.showErrors || element.updater.state))" class="account-row-error">
+        <div class="error-message">
+            <i class="icon-red-error"></i><span class="red">{{ 'please-upgrade'|trans }}</span>
+            <div class="error-balance-blk">
+                <a href="#" data-ng-click="element.view.errorInfo($event)" style="float: right; margin-right: -30px"><i class="icon-red-error"></i></a>
+                <span>[[element.account.ErrorMessage]]</span>
+                <a href="{{ url('aw_users_pay') }}" class="read-more" target="pay">{{ 'upgrade-now'|trans }}</a>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block row_account_balance_watch %}
+    <div class="account-row-info" ng-if="element.account.BalanceWatchExpirationDate > 0">
+        <div class="info-message">
+            <div class="info-message__item">
+                {{ 'account.list.balancewatch.monitored-changes'|trans|desc('This account is being monitored for changes.') }} {{ 'remaining-time-col'|trans|desc('Remaining time:') }} <strong time-remaining data-expire="[[element.account.BalanceWatchExpirationDate]]"></strong>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{#% block row_coupon %}
+    <div class="account-row-block coupon-row-v2" data-ng-class="{active: element.check.checked}">
+        <div class="check">
+            <input type="checkbox" class="checkbox" id="account_[[ ::element.account.FID ]]" data-ng-model="element.check.checked"
+                   data-ng-disabled="element.disable" data-ng-click="element.view.selectOne($event)">
+            <label for="account_[[ ::element.account.FID ]]" class="label"></label>
+        </div>
+
+        <div class="account-details">
+            <a data-ng-if="::element.account.Access.read_value"
+                    href="#/?coupon=[[ ::element.account.ID ]]" class="show-details"
+                    data-ng-click="element.details.open($event, element.account.FID, true); $event.preventDefault(); $event.stopPropagation();"
+                    data-ng-mouseenter="element.details.open($event, element.account.FID, false, 500)"
+                    data-ng-mouseleave="element.details.cancelOpen(); element.details.close(false, 350)">
+                <i class="icon-add-silver-b"></i>
+            </a>
+        </div>
+
+        <div class="program">
+            <div class="program-title">
+                    <p data-ng-bind-html="element.account.DisplayNameFormated | highlight:element.search:false:'green' | unsafe"></p>
+            </div>
+        </div>
+
+        {{ block('row_column_owner') }}
+
+        <div class="account">
+            <div class="account-blk">
+                    <p class="number" data-selectable data-ng-class="{long: element.decorate.LoginFirstLong}"
+                       data-ng-bind-html="element.account.LoginFieldFirst | highlight:element.search:false:'green' | unsafe"></p>
+                    <p data-ng-if="::element.account.LoginFieldLast" class="email comment" data-selectable  data-ng-class="{long: element.decorate.LoginLastLong}"
+                       data-ng-bind-html="element.account.LoginFieldLast | highlight:element.search:false:'green' | unsafe"></p>
+            </div>
+        </div>
+
+        {{ block('row_column_status') }}
+        {{ block('row_column_balance') }}
+
+        <div class="expire">
+            <div class="expire-blk" data-ng-if="element.account.ExpirationStateType && !element.view.isHiddenDate()">
+                    <i class="icon-green-check" data-tip title="[[ element.account.ExpirationStateTip ]]"
+                       data-ng-show="(element.account.ExpirationState == 'far')"></i>
+                    <i class="icon-warning-small" data-tip title="[[ element.account.ExpirationStateTip ]]"
+                       data-ng-show="(element.account.ExpirationState == 'soon')"></i>
+                    <i class="icon-red-error" data-tip title="[[ element.account.ExpirationStateTip ]]"
+                       data-ng-show="(element.account.ExpirationState == 'expired')"></i>
+
+                    <p data-tip title="[[element.account.ExpirationDateTip]]">[[ element.account.ExpirationDate ]]</p>
+            </div>
+            <div class="expire-blk" data-ng-if="element.view.isHiddenDate()">
+                    <a style="margin-left: 19px" href="{{ path('aw_users_pay') }}">{{ 'please-upgrade'|trans|desc('Please upgrade') }}</a>
+            </div>
+        </div>
+
+        <div class="actions">
+            <a  data-ng-if="::element.account.Access.edit" href="[[ ::element.account.EditLink ]]" data-tip
+                       title="{{ "award.account.list.button.edit"|trans|desc("Edit") }}"><i class="icon-edit"></i></a>
+        </div>
+    </div>
+{% endblock %#}
+
+{% block account_details_popup %}
+    <div data-ng-cloak2 data-ng-controller="detailsCtrl as details">
+        <div id="accountDetails"
+             data-show-element="details.popup.show"
+             data-after-show-callback="details.popup.position()"
+             data-ng-mouseenter="details.popup.cancelClose()"
+             data-ng-mouseleave="details.popup.close(false, 750)" class="ui-dialog account-popup details-provider-[[details.accountInfo.ProviderCode]]">
+
+            <div class="arrow-popup" data-ng-show="details.popup.arrow"></div>
+            <div class="ajax-loader" data-show-element="details.popup.showLoader" data-after-show-callback="details.popup.position()">
+                <div class="loading"></div>
+            </div>
+            <div class="content-popup" data-show-element="details.popup.showContent" data-after-show-callback="details.popup.position()">
+                <div class="title">
+                    <div class="title-row f-left">
+                        <i class="icon-silver-arrow-down"></i>
+                        <h3 data-ng-bind-html="details.accountInfo.DisplayName | displayName | unsafe"></h3>
+                        <b class="balance" ng-if="details.accountInfo.Balance" data-ng-bind-html="details.accountInfo.Balance|unsafe"></b>
+                        <span class="status" ng-if="details.accountInfo.MainProperties.Status" data-ng-bind-html="details.accountInfo.MainProperties.Status.Status|unsafe"></span>
+                    </div>
+                    <div class="profile f-right" data-ng-show="details.accountInfo.UserName">
+                        <p data-ng-bind-html="details.accountInfo.UserName | unsafe"></p>
+
+                        <div class="prev">
+                            <a data-ng-if="details.accountInfo.AccountOwner == 'my'" href="{{ url('aw_profile_personal') }}" target="_blank">
+                                <i data-ng-if="!details.accountInfo.AvatarSrc" class="icon-default-avatar"></i>
+                                <img data-ng-if="details.accountInfo.AvatarSrc" data-ng-src="[[ details.accountInfo.AvatarSrc ]]" alt="avatar"></i>
+                            </a>
+                            <div data-ng-if="details.accountInfo.AccountOwner != 'my'">
+                                <i data-ng-if="!details.accountInfo.AvatarSrc" class="icon-default-avatar"></i>
+                                <img data-ng-if="details.accountInfo.AvatarSrc" data-ng-src="[[ details.accountInfo.AvatarSrc ]]" alt="avatar"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="clear"></div>
+                </div>
+                <div class="disabled-title" data-ng-show="details.accountInfo.Disabled">
+                    <i class="icon-warning-small-white"></i>
+                    <span>{{ 'account.disabled'|trans|desc('Disabled account. This account is not being updated by AwardWallet.') }}</span>
+                </div>
+
+                <div data-tabs data-id="'details'">
+
+                    <div data-pane data-pane-id="details" data-enable="1" data-title="{{ "account.summary.title"|trans|desc("SUMMARY")|raw }}">
+                        <div data-ng-if="details.accountInfo.TableName == 'Account'">
+                            <div class="row f-left col2" data-ng-class="{'one-column': (details.accountInfo.Properties | visibleProp).length == 0}">
+                                <div class="title-note">
+                                    <h4>{{ 'account.details.common.title'|trans|desc('Account details') }}</h4>
+                                </div>
+                                <table class="main-table account-details">
+                                    <tbody>
+                                    <tr class="account-details-balance" ng-if="details.accountInfo.Balance != ''">
+                                        <td>
+                                            <b>{{ 'account.balance'|trans }}:</b>
+                                            <div class="balance-changed" ng-if="details.accountInfo.LastChangeDateFrendly">
+                                                {{ 'changed'|trans|desc('Changed') }} [[details.accountInfo.LastChangeDateFrendly]]
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <i class="icon-warning-small" data-tip title="{{ 'account.disabled'|trans }}" data-ng-show="details.accountInfo.Disabled"></i>
+                                            <b data-ng-bind-html="details.accountInfo.Balance | unsafe"></b>
+                                            <div class="balance-changed-value" ng-if="details.accountInfo.LastChange">
+                                                <span data-ng-class="(details.accountInfo.ChangedPositive ? 'green' : 'blue')">
+                                                    <i data-ng-if="(!details.accountInfo.ChangedPositive)" class="icon-blue-down"></i>
+                                                    <i data-ng-if="(details.accountInfo.ChangedPositive)" class="icon-green-up"></i>
+                                                    [[ details.accountInfo.LastChange ]]
+                                                </span>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr class="account-details-balance" data-ng-if="details.accountInfo.USDCashMileValue && details.accountInfo.MileValue.approximate">
+                                        <td class="cash-value-label">
+                                            <b><a href="[[details.accountInfo.MileValue.awEstimate.link]]" target="_blank">{{ 'approximate-cash-value'|trans|desc('Approximate Cash Value') }}:</a></b>&nbsp;<i data-tip title="[[details.accountInfo.MileValue.approximate.hint]]" class="icon-info-silver" ng-if="'' != details.accountInfo.MileValue.approximate.hint"></i>
+                                            <div class="balance-changed" ng-if="details.accountInfo.LastChangeDateFrendly && details.accountInfo.MileValue.balanceChange.value">
+                                                {{ 'changed'|trans }} [[details.accountInfo.LastChangeDateFrendly]]
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <b data-ng-bind-html="details.accountInfo.MileValue.approximate.value|unsafe"></b>
+                                            <div class="balance-changed-value" ng-if="details.accountInfo.LastChangeDateFrendly && details.accountInfo.MileValue.balanceChange.value">
+                                                <span data-ng-class="(details.accountInfo.MileValue.balanceChange.changedPositive ? 'green' : 'blue')">
+                                                    <i data-ng-if="(!details.accountInfo.MileValue.balanceChange.changedPositive)" class="icon-blue-down"></i>
+                                                    <i data-ng-if="(details.accountInfo.MileValue.balanceChange.changedPositive)" class="icon-green-up"></i>
+                                                    [[ details.accountInfo.MileValue.balanceChange.value ]]
+                                                </span>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr data-ng-if="details.accountInfo.ExpirationDate">
+                                        <td>
+                                            <b ng-if="!details.accountInfo.ExpirationBlogPost.postURL">{{ 'account.label.expiration'|trans }}:</b>
+                                            <a ng-if="details.accountInfo.ExpirationBlogPost.postURL" href="[[ details.accountInfo.ExpirationBlogPost.postURL ]]" data-tip title="{{ 'learn-more'|trans|desc('Learn more') }}" target="_blank">
+                                                {{ 'account.label.expiration'|trans }}:<i class="icon-info-silver"></i>
+                                            </a>
+                                        </td>
+                                        <td data-ng-if="!details.accountInfo.HideProperties || !details.accountInfo.ExpirationKnown">
+                                            <i class="icon-green-check" data-tip title="[[ details.accountInfo.ExpirationStateTip ]]" data-ng-show="(details.accountInfo.ExpirationState == 'far')"></i>
+                                            <i class="icon-warning-small" data-tip title="[[ details.accountInfo.ExpirationStateTip ]]" data-ng-show="(details.accountInfo.ExpirationState == 'soon')"></i>
+                                            <i class="icon-red-error" data-tip title="[[ details.accountInfo.ExpirationStateTip ]]" data-ng-show="(details.accountInfo.ExpirationState == 'expired')"></i>
+                                            <span title="[[ details.accountInfo.ExpirationDate ]]" data-tip>[[ details.accountInfo.ExpirationDateFrendly ]]</span>
+                                        </td>
+                                        <td data-ng-if="details.accountInfo.HideProperties && details.accountInfo.ExpirationKnown" data-ng-bind-html="details.accountInfo | upgrade:true | unsafe"></td>
+                                    </tr>
+                                    <tr data-ng-if="details.accountInfo.AccountStatus" class="account-details-status">
+                                        <td>
+                                            <div ng-if="isTabEnabled('elitelevel')" class="account-details-status-var">
+                                                <a ng-click="tabSelect('elitelevel')" href="#">{{ 'account.status'|trans }}:</a>
+                                                <span>{{ 'form.button.next'|trans }}</span>
+                                            </div>
+                                            <b ng-if="!isTabEnabled('elitelevel')">{{ 'account.status'|trans }}:</b>
+                                        </td>
+                                        <td>
+                                            <span data-ng-bind-html="details.accountInfo.AccountStatus | unsafe"></span>
+                                            <span ng-if="details.accountInfo.Properties.NextEliteLevel.Val" class="account-details-status-val">
+                                                <span data-ng-bind-html="details.accountInfo.Properties.NextEliteLevel.Val | upgrade:details.accountInfo.HideProperties | unsafe"></span>
+                                            </span>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td><b>{{ 'account.label'|trans|desc('Account') }}:</b></td>
+                                        <td data-ng-bind-html="details.accountInfo.MainProperties.Login | unsafe"></td>
+                                    </tr>
+                                    <tr data-ng-if="details.accountInfo.USDCashMileValue && details.accountInfo.MileValue.awEstimate">
+                                        <td>
+                                            <a href="[[details.accountInfo.MileValue.awEstimate.link]]" target="_blank">{{ 'estimated-point-value'|trans|desc('Estimated Point Value') }}:</a>
+                                            <i data-tip title="[[details.accountInfo.MileValue.awEstimate.hint]]" class="icon-info-silver" ng-if="'' != details.accountInfo.MileValue.awEstimate.hint"></i>
+                                        </td>
+                                        <td><span data-ng-bind-html="details.accountInfo.MileValue.awEstimate.value|unsafe"></span></td>
+                                    </tr>
+                                    <tr data-ng-if="details.accountInfo.LastUpdatedDate">
+                                        <td><b>{{ 'last-successful-update'|trans|desc('Last successful update') }}:</b></td>
+                                        <td><span data-tip title="[[ details.accountInfo.LastUpdatedDate ]]" data-date="[[ details.accountInfo.LastUpdatedDateTs ]]">[[ details.accountInfo.LastUpdatedDateFrendly ]]</span></td>
+                                    </tr>
+
+                                    <tr data-ng-if="details.accountInfo.USDCashMileValue && details.accountInfo.MileValue.personalRedemptions">
+                                        <td>{{ 'personal-redemptions'|trans }} <i data-tip title="[[details.accountInfo.MileValue.personalRedemptions.hint]]" class="icon-info-silver"></i></td>
+                                        <td><span data-ng-bind-html="details.accountInfo.MileValue.personalRedemptions.value|unsafe"></span></td>
+                                    </tr>
+                                    <tr data-ng-if="details.accountInfo.Rating != undefined">
+                                        <td>
+                                            <a data-ng-href="[[ ratingUrl(details.accountInfo.RatingUrl) ]]" target="_blank">
+                                                {{ 'write_review'|trans }}<span ng-if="details.accountInfo.RatingCount > 0"> ([[ details.accountInfo.RatingCount ]])</span>:
+                                            </a>
+                                        </td>
+                                        <td>
+                                            <a data-ng-href="[[ ratingUrl(details.accountInfo.RatingUrl) ]]" target="_blank">
+                                                <div class="rating">
+                                                    <span data-ng-repeat="i in [1,2,3,4,5]" data-ng-class="{'blue-star': i<=details.accountInfo.Rating, 'silver-star': i>details.accountInfo.Rating}"></span>
+                                                </div>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="row f-right col2" data-ng-if="(details.accountInfo.Properties | visibleProp).length > 0">
+                                <div class="title-note">
+                                    <h4>{{ 'account.details.additional.title'|trans|desc('Additional account information') }}</h4>
+                                </div>
+                                <table class="main-table account-details">
+                                    <tr data-ng-repeat="prop in details.accountInfo.Properties | visibleProp | orderBy:'SortIndex'" ng-if="prop.Code != 'NextEliteLevel'{% if not is_granted('ROLE_STAFF') %} && prop.Code != 'NextAccountUpdate'{% endif %}">
+                                        <td>
+                                            <a ng-if="prop.Code == 'AccountComment' && isTabEnabled('comments')" ng-click="tabSelect('comments')" href="#"><b>[[ prop.Name ]]:</b></a>
+                                            <b ng-if="prop.Code != 'AccountComment' || !isTabEnabled('comments')">[[ prop.Name ]]:</b>
+                                        </td>
+                                        <td data-ng-bind-html="prop.Val | upgrade:details.accountInfo.HideProperties | unsafe" data-tip title="[[prop.Tip]]"></td>
+                                    </tr>
+                                </table>
+                            </div>
+                            <div class="clear"></div>
+                            <div ng-if="details.accountInfo">
+                                <div class="expiration-details-post-row" ng-repeat="post in details.accountInfo.Blogs.BlogIds">
+                                    <a href="[[post.postURL]]" target="_blank">
+                                        <div><img ng-src="[[post.imageURL]]" alt=""></div><span>[[post.title]]</span>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div data-ng-if="details.accountInfo.TableName == 'Coupon'">
+                            <div class="row f-left col2" data-ng-class="{'one-column': (details.accountInfo.Properties | visibleProp).length == 0}">
+                                <div class="title-note">
+                                    <h4 ng-if="!details.accountInfo.isDocument">{{ 'account.details.common.title'|trans|desc('Account details') }}</h4>
+                                    <h4 ng-if="details.accountInfo.isDocument">{{ 'account.details.document.title'|trans|desc('Document details') }}</h4>
+                                </div>
+                                <table class="main-table account-details">
+                                    <tbody>
+                                    <tr class="account-details-balance" data-ng-if="details.accountInfo.LoginFieldFirst && details.accountInfo.LoginFieldFirst != details.accountInfo.comment">
+                                        <td>{{ 'coupon.cardnumber'|trans }}:</td>
+                                        <td data-ng-bind-html="details.accountInfo.LoginFieldFirst | upgrade:details.accountInfo.HideProperties|unsafe"></td>
+                                    </tr>
+                                    <tr class="account-details-balance" data-ng-if="details.accountInfo.LoginFieldLast">
+                                        <td>{{ 'coupon.value'|trans }}:</td>
+                                        <td data-ng-bind-html="details.accountInfo.LoginFieldLast | upgrade:details.accountInfo.HideProperties|unsafe"></td>
+                                    </tr>
+                                    <tr data-ng-if="!details.accountInfo.isDocument">
+                                        <td>{{ 'coupon.type'|trans }}:</td>
+                                        <td data-ng-bind-html="details.accountInfo.MainProperties.Type|unsafe"></td>
+                                    </tr>
+                                    <tr ng-if="details.accountInfo.document.trustedTraveler.travelerNumber">
+                                        <td>{{ 'traveler_profile.number'|trans }}:</td>
+                                        <td data-ng-bind="details.accountInfo.document.trustedTraveler.travelerNumber"></td>
+                                    </tr>
+                                    <tr ng-if="details.accountInfo.document.passport.name">
+                                        <td>{{ 'traveler_profile.passport-name'|trans }}:</td>
+                                        <td data-ng-bind="details.accountInfo.document.passport.name"></td>
+                                    </tr>
+                                    <tr ng-if="details.accountInfo.document.passport.number">
+                                        <td>{{ 'traveler_profile.passport-number'|trans }}:</td>
+                                        <td data-ng-bind="details.accountInfo.document.passport.number"></td>
+                                    </tr>
+                                    <tr ng-if="details.accountInfo.document.passport.issueDate">
+                                        <td>{{ 'traveler_profile.passport-issueDate'|trans }}:</td>
+                                        <td data-ng-bind="details.accountInfo.document.passport.issueDate | date:'MMM dd, yyyy'"></td>
+                                    </tr>
+                                    <tr ng-if="details.accountInfo.document.passport.country">
+                                        <td>{{ 'traveler_profile.passport-country'|trans }}:</td>
+                                        <td data-ng-bind="details.accountInfo.document.passport.country"></td>
+                                    </tr>
+                                    <tr ng-if="details.accountInfo.document.vaccineCard.passportName">
+                                        <td>{{ 'traveler_profile.passport-name'|trans }}:</td>
+                                        <td data-ng-bind="details.accountInfo.document.vaccineCard.passportName"></td>
+                                    </tr>
+                                    <tr ng-if="details.accountInfo.document.vaccineCard.dateOfBirth">
+                                        <td>{{ 'traveler_profile.date-of-birth'|trans }}:</td>
+                                        <td data-ng-bind="details.accountInfo.document.vaccineCard.dateOfBirth"></td>
+                                    </tr>
+                                    <tr ng-if="details.accountInfo.document.vaccineCard.passportNumber">
+                                        <td>{{ 'traveler_profile.passport-number'|trans }}:</td>
+                                        <td data-ng-bind="details.accountInfo.document.vaccineCard.passportNumber"></td>
+                                    </tr>
+                                    <tr ng-if="details.accountInfo.document.vaccineCard.certificateIssued">
+                                        <td>{{ 'certificate-issued'|trans }}:</td>
+                                        <td data-ng-bind="details.accountInfo.document.vaccineCard.certificateIssued"></td>
+                                    </tr>
+                                    <tr ng-if="details.accountInfo.document.vaccineCard.countryIssue">
+                                        <td>{{ 'country-issue'|trans }}:</td>
+                                        <td data-ng-bind="details.accountInfo.document.vaccineCard.countryIssue"></td>
+                                    </tr>
+                                    <tr ng-if="details.accountInfo.document.insuranceCard.insuranceType">
+                                        <td>{{ 'insurance-type'|trans }}:</td>
+                                        <td data-ng-bind="details.accountInfo.document.insuranceCard.insuranceType"></td>
+                                    </tr>
+                                    <tr ng-if="details.accountInfo.document.insuranceCard.insuranceCompany">
+                                        <td>{{ 'insurance-company'|trans }}:</td>
+                                        <td data-ng-bind="details.accountInfo.document.insuranceCard.insuranceCompany"></td>
+                                    </tr>
+                                    <tr ng-if="details.accountInfo.document.insuranceCard.nameOnCard">
+                                        <td>{{ 'name-on-card'|trans }}:</td>
+                                        <td data-ng-bind="details.accountInfo.document.insuranceCard.nameOnCard"></td>
+                                    </tr>
+                                    <tr ng-if="details.accountInfo.document.insuranceCard.memberNumber">
+                                        <td>{{ 'member-number-id'|trans }}:</td>
+                                        <td data-ng-bind="details.accountInfo.document.insuranceCard.memberNumber"></td>
+                                    </tr>
+                                    <tr ng-if="details.accountInfo.document.insuranceCard.groupNumber">
+                                        <td>{{ 'group-number'|trans }}:</td>
+                                        <td data-ng-bind="details.accountInfo.document.insuranceCard.groupNumber"></td>
+                                    </tr>
+                                    <tr ng-if="details.accountInfo.document.insuranceCard.policyHolder">
+                                        <td>{{ 'policy-holder'|trans }}:</td>
+                                        <td data-ng-bind="details.accountInfo.document.insuranceCard.policyHolder"></td>
+                                    </tr>
+                                    <tr ng-if="details.accountInfo.document.visa.numberEntries">
+                                        <td>{{ 'number-of-entries'|trans }}:</td>
+                                        <td data-ng-bind="details.accountInfo.document.visa.numberEntries"></td>
+                                    </tr>
+                                    <tr ng-if="details.accountInfo.document.visa.fullName">
+                                        <td>{{ 'cart.full-name'|trans }}:</td>
+                                        <td data-ng-bind="details.accountInfo.document.visa.fullName"></td>
+                                    </tr>
+                                    <tr ng-if="details.accountInfo.document.visa.issueDate">
+                                        <td>{{ 'issue-date'|trans }}:</td>
+                                        <td data-ng-bind="details.accountInfo.document.visa.issueDate"></td>
+                                    </tr>
+                                    <tr ng-if="details.accountInfo.document.visa.validFrom">
+                                        <td>{{ 'valid-from'|trans }}:</td>
+                                        <td data-ng-bind="details.accountInfo.document.visa.validFrom"></td>
+                                    </tr>
+                                    <tr ng-if="details.accountInfo.document.visa.validUntil">
+                                        <td>{{ 'valid-until'|trans }}:</td>
+                                        <td data-ng-bind="details.accountInfo.document.visa.validUntil"></td>
+                                    </tr>
+                                    <tr ng-if="details.accountInfo.document.driversLicense.fullName">
+                                        <td>{{ 'cart.full-name'|trans }}:</td>
+                                        <td data-ng-bind="details.accountInfo.document.driversLicense.fullName"></td>
+                                    </tr>
+                                    <tr ng-if="details.accountInfo.document.driversLicense.licenseNumber">
+                                        <td>{{ 'driver-license-number'|trans }}:</td>
+                                        <td data-ng-bind="details.accountInfo.document.driversLicense.licenseNumber"></td>
+                                    </tr>
+                                    <tr ng-if="details.accountInfo.document.driversLicense.internationalLicense">
+                                        <td>{{ 'international-drivers-license'|trans }}</td>
+                                        <td><i class="icon-green-check"></i></td>
+                                    </tr>
+                                    <tr ng-if="details.accountInfo.document.driversLicense.dateOfBirth">
+                                        <td>{{ 'traveler_profile.date-of-birth'|trans }}:</td>
+                                        <td data-ng-bind="details.accountInfo.document.driversLicense.dateOfBirth"></td>
+                                    </tr>
+                                    <tr ng-if="details.accountInfo.document.driversLicense.issueDate">
+                                        <td>{{ 'issue-date'|trans }}:</td>
+                                        <td data-ng-bind="details.accountInfo.document.driversLicense.issueDate"></td>
+                                    </tr>
+                                    <tr ng-if="details.accountInfo.document.priorityPass.accountNumber">
+                                        <td>{{ 'priority-pass-number'|trans }}:</td>
+                                        <td data-ng-bind="details.accountInfo.document.priorityPass.accountNumber"></td>
+                                    </tr>
+                                    <tr ng-if="details.accountInfo.document.priorityPass.isSelect">
+                                        <td>{{ 'pass-type'|trans }}:</td>
+                                        <td><i class="icon-green-check"></i>{{ 'aw.onecard.th.select'|trans }}</td>
+                                    </tr>
+                                    <tr ng-if="details.accountInfo.document.priorityPass.creditCardId">
+                                        <td>{{ 'credit-card'|trans }}:</td>
+                                        <td data-ng-bind-html="details.accountInfo.document.priorityPass.creditCardId|unsafe"></td>
+                                    </tr>
+                                    <tr ng-if="details.accountInfo.Description && !details.accountInfo.Properties.AccountComment.Val">
+                                        <td>{{ 'account.label.comment'|trans }}:</td>
+                                        <td data-ng-bind="details.accountInfo.Description"></td>
+                                    </tr>
+                                    <tr data-ng-if="details.accountInfo.ExpirationDate && !details.accountInfo.isInsuranceCard && !details.accountInfo.isVisa"
+                                        data-ng-class="{'expiration-details-row': details.accountInfo.ExpirationBlogPost.title && details.accountInfo.ExpirationBlogPost.imageURL && details.accountInfo.ExpirationBlogPost.postURL}">
+                                        <td>
+                                            <span ng-if="!details.accountInfo.ExpirationBlogPost.postURL">{{ 'account.label.expiration'|trans }}:</span>
+                                            <a ng-if="details.accountInfo.ExpirationBlogPost.postURL" href="[[ details.accountInfo.ExpirationBlogPost.postURL ]]" data-tip title="{{ 'learn-more'|trans }}" target="_blank">
+                                                {{ 'account.label.expiration'|trans }}:
+                                            </a>
+                                        </td>
+                                        <td data-ng-if="!details.accountInfo.HideProperties || !details.accountInfo.ExpirationKnown">
+                                            <i class="icon-green-check" data-tip title="[[ details.accountInfo.ExpirationStateTip ]]" data-ng-show="(details.accountInfo.ExpirationState == 'far')"></i>
+                                            <i class="icon-warning-small" data-tip title="[[ details.accountInfo.ExpirationStateTip ]]" data-ng-show="(details.accountInfo.ExpirationState == 'soon')"></i>
+                                            <i class="icon-red-error" data-tip title="[[ details.accountInfo.ExpirationStateTip ]]" data-ng-show="(details.accountInfo.ExpirationState == 'expired')"></i>
+                                            <span title="[[ details.accountInfo.ExpirationDate ]]" data-tip>[[ details.accountInfo.ExpirationDateFrendly ]]</span>
+                                        </td>
+                                        <td data-ng-if="details.accountInfo.HideProperties && details.accountInfo.ExpirationKnown" data-ng-bind-html="details.accountInfo | upgrade:true | unsafe"></td>
+                                    </tr>
+                                    <tr class="expiration-details-post-row" data-ng-if="details.accountInfo.ExpirationBlogPost.title && details.accountInfo.ExpirationBlogPost.imageURL && details.accountInfo.ExpirationBlogPost.postURL">
+                                        <td colspan="2">
+                                            <a href="[[details.accountInfo.ExpirationBlogPost.postURL]]" target="_blank">
+                                                <div><img ng-src="[[details.accountInfo.ExpirationBlogPost.imageURL]]" alt=""></div><span>[[details.accountInfo.ExpirationBlogPost.title]]</span>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                    <tr ng-if="details.accountInfo.Properties.AccountComment.Val && !(!details.accountInfo.isDocument || details.accountInfo.isVaccineCard || details.accountInfo.isInsuranceCard || details.accountInfo.isVisa || details.accountInfo.isDriversLicense)">
+                                        <td>
+                                            <a ng-if="isTabEnabled('comments')" ng-click="tabSelect('comments')" href="#">{{ 'account.label.comment'|trans }}:</a>
+                                            <span ng-if="!isTabEnabled('comments')">{{ 'account.label.comment'|trans }}:</span>
+                                        </td>
+                                        <td data-ng-bind-html="details.accountInfo.Properties.AccountComment.Val | unsafe"></td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="row f-right col2" data-ng-if="(details.accountInfo.Properties | visibleProp).length > 0 && (!details.accountInfo.isDocument || details.accountInfo.isVaccineCard || details.accountInfo.isInsuranceCard || details.accountInfo.isVisa || details.accountInfo.isDriversLicense)">
+                                <div class="title-note">
+                                    <h4 ng-if="!details.accountInfo.isVaccineCard && !details.accountInfo.isInsuranceCard && !details.accountInfo.isVisa">{{ 'account.details.additional.title'|trans|desc('Additional account information') }}</h4>
+                                    <h4 ng-if="details.accountInfo.isVaccineCard">{{ 'doses'|trans }}</h4>
+                                    <h4 ng-if="details.accountInfo.isInsuranceCard || details.accountInfo.isVisa">&nbsp;</h4>
+                                </div>
+                                <table class="main-table account-details">
+                                    <tr data-ng-repeat="prop in details.accountInfo.Properties | visibleProp | orderBy:'SortIndex'">
+                                        <td>
+                                            <a ng-if="prop.Code == 'AccountComment' && isTabEnabled('comments')" ng-click="tabSelect('comments')" href="#">[[ prop.Name ]]:</a>
+                                            <span ng-if="prop.Code != 'AccountComment' || !isTabEnabled('comments')">[[ prop.Name ]]:</span>
+                                        </td>
+                                        <td ng-if="!prop.hideVal" data-ng-bind-html="prop.Val | upgrade:details.accountInfo.HideProperties | unsafe"></td>
+                                        <td ng-if="prop.hideVal && true === prop.checked"><i class="icon-green-check"></i></td>
+                                    </tr>
+                                </table>
+                            </div>
+                            <div class="clear"></div>
+                        </div>
+
+                        <div class="error-account" data-ng-if="(details.accountInfo.ProgramMessage.Type == 5 && details.accountInfo.ErrorCode != 1)">
+                            <div data-ng-if="details.accountInfo.ProgramMessage.Error.length > 0">
+                                <i data-ng-class="{'icon-red-error': details.accountInfo.ErrorCode != {{ constant('ACCOUNT_WARNING') }}, 'icon-warning-small': details.accountInfo.ErrorCode == {{ constant('ACCOUNT_WARNING') }}}"></i>
+                                <p><span data-ng-class="{red: details.accountInfo.ErrorCode != {{ constant('ACCOUNT_WARNING') }}, orange: details.accountInfo.ErrorCode == {{ constant('ACCOUNT_WARNING') }}}">[[ details.accountInfo.ProgramMessage.Title ]].</span> [[ details.accountInfo.ProgramMessage.BeforeError ]]</p>
+                                <div data-ng-class="{'error-blk': details.accountInfo.ErrorCode != {{ constant('ACCOUNT_WARNING') }}, 'warn-blk': details.accountInfo.ErrorCode == {{ constant('ACCOUNT_WARNING') }}}" data-ng-bind-html="details.accountInfo.ProgramMessage.Error | unsafe"></div>
+                            </div>
+                            <p data-ng-if="details.accountInfo.ProgramMessage.Description" data-ng-bind-html="details.accountInfo.ProgramMessage.Description | unsafe"></p>
+                            <p data-ng-if="details.accountInfo.ProgramMessage.DateInfo" class="last-time">
+                                <i class="icon-last-time"></i>
+                                <span data-bind-html-compile="details.accountInfo.ProgramMessage.DateInfo | unsafe"></span>
+                            </p>
+                        </div>
+                        <div class="error-account" data-ng-if="[1, 2, 3, 4].indexOf(details.accountInfo.ProgramMessage.Type) != -1 && !details.accountInfo.isDocument">
+							<i class="icon-info-small"></i>
+                            <p data-ng-bind-html="details.accountInfo.ProgramMessage.Description | unsafe"></p>
+                        </div>
+                    </div>
+
+                    <div data-pane data-pane-id="history" data-enable="0" data-title="{{ "account.details.history.title"|trans|desc("HISTORY")|raw }}">
+                        <div data-ng-if="!details.accountInfo.HideProperties" data-ng-controller="accountHistoryCtrl" id="history-container" style="overflow-y: auto; min-height: 200px;" data-du-scroll-container="history-container" data-ng-style="{height: details.tabHeight - 70}">
+                            <div class="upgrade-blk" ng-if="details.accountInfo.linkTransactionAnalyzer">
+                                <div class="item">{{ 'we-analyzed-all-transactions-see-results'|trans|desc("We've analyzed all of your transactions on this card, click below to see the results") }}</div>
+                            </div>
+                            <div class="history-box-list" data-ng-class="{'non-us-box':accountInfo.isNonUSAccount}" ng-if="!details.accountInfo.linkTransactionAnalyzer">
+{#                                <div class="t-right">#}
+{#                                    <a href="[[ accountInfo.editHistory ]]" class="btn-blue">{{ 'button.edit'|trans }}</a>#}
+{#                                </div>#}
+                                <div class="not-found inside" data-ng-hide="historyItems.length">
+                                    <div class="item-block">
+                                        <i class="icon-warning-small"></i>
+                                        <p>{{ "account.history.not-exist"|trans|desc("History does not exist yet")|raw }}</p>
+                                    </div>
+                                </div>
+                                <table class="main-table"
+                                       data-infinite-scroll="nextPage()"
+                                       data-infinite-scroll-container="'#history-container'"
+                                       data-infinite-scroll-distance="2"
+                                       data-infinite-scroll-disabled="busy"
+                                       data-ng-show="historyItems.length">
+                                    <thead>
+                                    <tr>
+                                        <th
+                                            data-ng-style="{width: ($index == 1)? '40%' : 'auto'}"
+                                            data-ng-class="{ 'balance-cell': column.isBalance, 'offer-cell': column.isOffer }"
+                                            data-ng-repeat="column in historyColumns"
+                                        >[[ column.name ]]</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr data-ng-repeat="(i, row) in historyItems track by i"
+                                            data-ng-class="{ green: row.isPositiveTransaction, blue: !row.isPositiveTransaction }"
+                                        >
+                                            <td data-ng-repeat="(j, cell) in row.cells track by j"
+                                                class="[[cell.color]]"
+                                                data-ng-class="{
+                                                    'balance-cell': historyColumns[j].isBalance && cell.type === 'string',
+                                                    'points-cell': cell.multiplier && cell.type === 'string',
+                                                    'potential-cell': cell.type === 'offer',
+                                                    'transp-like': cell.type === 'thumb_up',
+                                                    'pointer': cell.type === 'offer',
+                                                    'offer-cell': cell.type === 'offer'
+                                                }"
+                                                data-ng-click="cell.type === 'offer' ? showOfferPopup(row.uuid, row.merchantName) : null"
+                                            >
+                                                <div data-ng-if="cell.type === 'string'">
+                                                    <span data-ng-if="!cell.multiplier || cell.multiplier <= 1"
+                                                          data-ng-bind="cell.valueFormatted"
+                                                          data-ng-class="{ bold: historyColumns[j].isBalance && j === row.cells.length-1 }"
+                                                    ></span>
+                                                    <span data-ng-if="cell.multiplier > 1">
+                                                        <div data-ng-bind="cell.valueFormatted + '&nbsp;'"></div>
+                                                        <div class="up-block">
+                                                            <div data-ng-bind="cell.multiplier + 'x'" class="up-counter"></div>
+                                                        </div>
+                                                    </span>
+                                                </div>
+                                                <div data-ng-if="cell.type === 'empty'">
+                                                </div>
+                                                <div data-ng-if="cell.type === 'thumb_up'">
+                                                    <div class="inner">
+                                                        <i class="icon-like"></i>
+                                                    </div>
+                                                </div>
+                                                <div data-ng-if="cell.type === 'offer'">
+                                                    <div class="inner">
+                                                        <div data-ng-bind="cell.valueFormatted"></div>
+                                                        {#<div data-ng-if="!cell.multiplier">&nbsp;</div>#}
+                                                        <div class="up-block">
+                                                            <div data-ng-bind="cell.multiplier+'x'" class="up-counter"></div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="arrow"><i class="icon-double-arrow-right-white"></i></div>
+                                                </div>
+                                            </td>
+                                            <td class="actions">
+                                                {% if is_granted('ROLE_STAFF') %}
+                                                    <ul class="list-actions" data-ng-if="row.tripId" >
+                                                        <li data-tip title="{{ 'go_to_timeline_segment'|trans }}">
+                                                            <a href="[[ tripLink(row.tripId) ]]" target="_blank">
+                                                                <i class="icon-go-timeline"></i>
+                                                            </a>
+                                                        </li>
+                                                    </ul>
+                                                {% endif %}
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="history-box-offerdata">
+                                <span class="ui-dialog-title" data-ng-bind-html="ccOfferData.title|unsafe"></span>
+                                <p data-ng-bind-html="ccOfferData.info|unsafe"></p>
+                                <div class="credit-card-info">
+                                    <a href="[[ ccOfferData.blogUrl ]]" target="_blank">
+                                        <span data-ng-bind-html="ccOfferData.offer|unsafe"></span>
+                                        <i class="icon-double-arrow-right-blue"></i>
+                                    </a>
+                                </div>
+                                <div class="remark-info small">
+                                    <i>
+                                        {{ 'credit-card.offer.popup.remark.info'|trans({
+                                            '%advertisers-link-begin%': '<a target="_blank" href="https://awardwallet.com/blog/advertiser-disclosure/">',
+                                            '%advertisers-link-end%': '</a>'
+                                        })| raw }}
+                                    </i>
+                                </div>
+                            </div>
+                            <div data-ng-cloak2>
+                                <dialog id="credit-card-offer-popup" data-auto-open="false" data-modal="true" data-width="700">
+                                    <div data-ng-show="!offerLoading" data-ng-bind-html="offerDialogContent | unsafe"></div>
+                                    <div class="ajax-loader" data-ng-show="offerLoading"><div class="loading"></div></div>
+                                </dialog>
+                            </div>
+                        </div>
+                        <div data-ng-if="!details.accountInfo.HideProperties && details.accountInfo.linkTransactionAnalyzer" class="details-footer-fix" data-ng-hide="!details.accountInfo.HistoryTab">
+                            <a href="[[ details.accountInfo.linkTransactionAnalyzer ]]" class="btn-blue wide">{{'view-transaction-analyzer-card'|trans|desc("View Transaction Analyzer for This Card") }} <i class="icon-double-arrow-right-white"></i></a>
+                        </div>
+                        <div data-ng-if="!details.accountInfo.HideProperties && !details.accountInfo.linkTransactionAnalyzer" class="details-footer-fix" data-ng-hide="!details.accountInfo.HistoryTab">
+                            <a href="[[ details.accountInfo.editHistory ]]" class="btn-blue wide">{{ 'account.full_view'|trans|desc("Full Page View") }} <i class="icon-double-arrow-right-white"></i></a>
+                        </div>
+                        <div class="history-offerdata-foot">
+                            <div class="ui-dialog-buttonpane ui-widget-content ui-helper-clearfix">
+                                <div class="ui-dialog-buttonset">
+                                    <button type="button" class="btn-blue ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only" role="button" aria-disabled="false" data-ng-click="details.accountInfo.historyBoxToggle();"><span class="ui-button-text">OK</span></button>
+                                </div>
+                            </div>
+                        </div>
+                        <div data-ng-if="details.accountInfo.HideProperties" class="upgrade-blk">
+                            <div class="item">
+                                <i class="icon-warning-small"></i>
+                                <span>{{ 'please-upgrade-detail'|trans({'%link%': path('aw_users_pay')})|raw }}</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div data-pane data-pane-id="chart" data-enable="0" data-title="{{ "account.details.chart.title"|trans|desc("BALANCE CHART")|raw }}">
+                        <div data-ng-controller="chartCtrl">
+                            <div class="ajax-loader" data-show-element="chartLoader && !details.accountInfo.HideProperties" data-after-show-callback="details.popup.position()">
+                                <div class="loading"></div>
+                            </div>
+                            <img width="700" data-ng-if="!chartLoader && chartUrl && !details.accountInfo.HideProperties" data-ng-src="[[ chartUrl ]]" alt="chart">
+                            <div data-ng-if="details.accountInfo.HideProperties" class="upgrade-blk">
+                                <div class="item">
+                                    <i class="icon-warning-small"></i>
+                                    <span>{{ 'please-upgrade-detail'|trans({'%link%': path('aw_users_pay')})|desc('Available to AwardWallet Plus members only, please <a target="_blank" href="%link%">upgrade today</a>.')|raw }}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div data-pane data-pane-id="elitelevel" data-enable="0" data-title="{{ "account.details.elitelevels.title"|trans|desc("ELITE LEVELS")|raw }}">
+                        <div data-ng-if="details.accountInfo.HideProperties" class="upgrade-blk">
+                            <div class="item">
+                                <i class="icon-warning-small"></i>
+                                <span>{{ 'please-upgrade-detail'|trans({'%link%': path('aw_users_pay')})|raw }}</span>
+                            </div>
+                        </div>
+                        <div data-ng-if="!details.accountInfo.HideProperties">
+                            <div data-ng-controller="elitelevelCtrl" data-ng-bind-html="details.accountInfo.EliteLevelTab | unsafe"></div>
+                        </div>
+                    </div>
+
+                    <div data-pane
+                         data-pane-id="cardimage"
+                         data-enable="0"
+                         data-title="[[ details.accountInfo.isDocument ? '{{ "account.details.document-image.title"|trans|desc("IMAGE")|raw }}' : '{{ "account.details.cardimage.title"|trans|desc("CARD IMAGE")|raw }}' ]]"
+                         data-ng-class="details.accountInfo.Access.edit ? 'cardimage-edit':'cardimage-share'"
+                    >
+                        <div data-ng-show="!details.accountInfo.CardImageTab.isCreditCard" data-ng-controller="cardimageCtrl">
+                            <div ng-if="!details.accountInfo.isMultipleImages">
+                                <div class="slim left">
+                                    <img class="js-cardimage-kind1">
+                                    <div class="cardimage-show"></div>
+                                    <input type="file" accept="image/jpeg,image/png,image/gif">
+                                    <div class="delete-popup">
+                                        <div class="header-text">{{ 'card-pictures.confirm-delete'|trans }}</div>
+                                        <div class="buttonpane"><button class="btn-silver js-cancel">{{ 'button.no'|trans }}</button><button class="btn-blue js-confirm">{{ 'button.yes'|trans }}</button><p>{{ 'please-wait'|trans }}</p></div>
+                                    </div>
+                                </div>
+                                <div class="slim right">
+                                    <img class="js-cardimage-kind2">
+                                    <div class="cardimage-show"></div>
+                                    <input type="file" accept="image/jpeg,image/png,image/gif">
+                                    <div class="delete-popup">
+                                        <div class="header-text">{{ 'card-pictures.confirm-delete'|trans }}</div>
+                                        <div class="buttonpane"><button class="btn-silver js-cancel">{{ 'button.no'|trans }}</button><button class="btn-blue js-confirm">{{ 'button.yes'|trans }}</button><p>{{ 'please-wait'|trans }}</p></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div ng-if="details.accountInfo.isMultipleImages" class="slim-container">
+                                <div class="slim slim-document" ng-repeat="image in documentImages">
+                                    <img class="js-cardimage-kind[[$index]]">
+                                    <div class="cardimage-show"></div>
+                                    <input type="file" accept="image/jpeg,image/png,image/gif">
+                                    <div class="delete-popup">
+                                        <div class="header-text">{{ 'card-pictures.confirm-delete'|trans }}</div>
+                                        <div class="buttonpane"><button class="btn-silver js-cancel">{{ 'button.no'|trans }}</button><button class="btn-blue js-confirm">{{ 'button.yes'|trans }}</button><p>{{ 'please-wait'|trans }}</p></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div data-ng-if="!details.accountInfo.CardImageTab.isCreditCard" class="info-account">
+                            <i class="icon-info-small"></i>
+                            <p>{{ 'card-pictures.you-can-upload-image'|trans }}</p>
+                        </div>
+                        <div data-ng-if="details.accountInfo.CardImageTab.isCreditCard" class="not-found no-border small">
+                            <i class="icon-warning-small"></i>
+                            <p>{{ 'card-pictures.disabled-security-reason'|trans }}</p>
+                        </div>
+                    </div>
+
+                    <div data-pane data-pane-id="promotions" data-enable="0" data-title="{{ "account.details.promotions.title"|trans|desc("PROMOTIONS")|raw }}">
+                        <div class="promotions">
+                            <div ng-if="details.accountInfo.PromotionsBlogPost" class="listItem" data-ng-repeat="blogpost in details.accountInfo.PromotionsBlogPost">
+                                <div class="title">
+                                    <a target="_blank" href="[[blogpost.postURL]]">[[ blogpost.title | unsafe]]</a>
+                                </div>
+                            </div>
+                            <div data-ng-repeat="promo in details.accountInfo.PromotionsTab" class="listItem" data-ng-class="{listItemNew: promo.isNew, listItemFollow: promo.markFollow, listItemApply: promo.markApplied}">
+                                <div class="title">
+                                    <a target="_blank" data-ng-href="/promos#[[ promo.id ]]">[[ promo.title | unsafe ]]</a>
+                                    <span class="regionName" data-ng-if="promo.region">([[ promo.region ]])</span>
+                                </div>
+                                <b class="new"> </b>
+                                <b class="follow"></b>
+                                <b class="apply"></b>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div data-pane data-pane-id="detectedcreditcard" data-enable="0" data-scrollable="true" data-title="{{ "account.details.detectedcreditcard.title"|trans|desc("DETECTED CARDS")|raw }}">
+                        <div data-ng-if="details.accountInfo.DetectedCreditCardTab" data-ng-style="{'overflow-y': 'auto'}">
+                            <table class="main-table">
+                                <thead>
+                                <tr>
+                                    <th colspan="2" style="text-align: left;">{{ 'account.details.detected-cc.note'|trans|desc("We were able to login to your account and we see that you have the following cards in your profile, please read the notes for each card") }}</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr data-ng-repeat="card in details.accountInfo.DetectedCreditCardTab">
+                                    <td data-ng-bind-html="(card.DisplayName + ':') | unsafe"></td>
+                                    <td data-ng-bind-html="card.CardDescription | unsafe"></td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div data-pane data-pane-id="comments" data-enable="0" data-title="{{ "account.details.comments.title"|trans|desc("COMMENTS")|raw }}">
+                        <div data-ng-style="{height: details.tabHeight - 40, 'overflow-y': 'scroll'}" data-ng-bind-html="details.accountInfo.comment | unsafe"></div>
+                    </div>
+
+                    <div class="data-totals" data-pane data-pane-id="totals" data-enable="0" data-title="{{ "account.details.totals.title"|trans|desc("TOTALS")|raw }}">
+                        <div data-ng-controller="listTotalsCtrl">
+                            <div class="title-note">
+                                <h4>[[ title ]]</h4>
+                            </div>
+                            <table class="main-table">
+                                <thead>
+                                <tr>
+                                    <th></th>
+                                    <th></th>
+                                    <th>{{ "account.details.totals.accounts"|trans|desc("Accounts")|raw }}</th>
+                                    <th>{{ "account.details.totals.total"|trans|desc("Total")|raw }}</th>
+                                    <th>{{ 'cash-equivalent'|trans({'%break%':' '})|raw }}</th>
+                                    <th></th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr data-ng-repeat="kind in kinds" data-ng-show="totals.byKind[kind.ID].viewCount" ng-if="kind.ID !== {{ constant('PROVIDER_KIND_DOCUMENT') }}">
+                                    <td></td>
+                                    <td>[[ kind.name ]]</td>
+                                    <td>[[ totals.byKind[kind.ID].viewCount | number:0 ]]</td>
+                                    <td><p class="big">[[ numberToLocaleString(totals.byKind[kind.ID].viewBalance) ]] <span class="silver">[[ view.getItems(kind.ID, totals.byKind[kind.ID].viewBalance) ]]</span></p></td>
+                                    <td>[[ formatCurrency(totals.byKind[kind.ID].cashEquivalent, 0) ]]</td>
+                                    <td></td>
+                                </tr>
+                                <tr class="data-totals-gap">
+                                    <td></td>
+                                    <td colspan="4"></td>
+                                    <td></td>
+                                </tr>
+                                </tbody>
+                                <tfoot>
+                                    <tr>
+                                        <td></td>
+                                        <td>
+                                            <b>{{ 'award.account.list.totals'|trans }}:</b>
+                                        </td>
+                                        <td>
+                                            <b data-ng-bind-html="writeTotals(totals)|unsafe"></b>
+                                        </td>
+                                        <td>
+                                            <b>[[ numberToLocaleString(totals.viewBalance) ]]</b>
+                                            <span class="data-totals-changed" data-ng-if="totals.totals.sumTotalChangePoints != 0" data-ng-class="(totals.totals.sumTotalChangePoints > 0 ? 'up' : 'down')">
+                                                <i data-ng-if="totals.totals.sumTotalChangePoints < 0" class="icon-blue-down"></i>
+                                                <i data-ng-if="totals.totals.sumTotalChangePoints > 0" class="icon-green-up"></i>
+                                                <span ng-if="totals.totals.sumTotalChangePoints > 0">+</span>[[ numberToLocaleString(totals.totals.sumTotalChangePoints) ]]
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <b data-tip title="[[ totals.mileValue.accounts ]] accounts">[[ formatCurrency(totals.mileValue.sumTotalCashEquivalent, 0) ]]</b>
+                                            <span class="data-totals-changed" data-ng-if="totals.mileValue.sumTotalChangeCashEquivalent != 0" data-ng-class="(totals.mileValue.sumTotalChangeCashEquivalent > 0 ? 'up' : 'down')">
+                                                <i data-ng-if="totals.mileValue.sumTotalChangeCashEquivalent < 0" class="icon-blue-down"></i>
+                                                <i data-ng-if="totals.mileValue.sumTotalChangeCashEquivalent > 0" class="icon-green-up"></i>
+                                                <span ng-if="totals.mileValue.sumTotalChangeCashEquivalent > 0">+</span>[[ formatCurrency(totals.mileValue.sumTotalChangeCashEquivalent, 0) ]]
+                                            </span>
+                                        </td>
+                                        <td></td>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="overlay detailsFader"
+             data-ng-click="details.popup.close(true)"
+             data-ng-show="details.popup.show && details.popup.hold">
+        </div>
+    </div>
+{% endblock %}

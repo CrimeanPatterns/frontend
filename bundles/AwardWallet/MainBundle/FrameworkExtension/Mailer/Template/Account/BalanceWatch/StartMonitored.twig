@@ -1,0 +1,24 @@
+{% extends '@MailTemplate/Layout/base.twig' %}
+{% trans_default_domain "email" %}
+
+{% block subject %}{% apply spaceless %}{% autoescape false %}
+    {{ 'account.balancewatch.start-monitored.subject'
+    |trans({
+        '%providerName%' : account.getProviderid.getDisplayname(),
+        '%accountLogin%' : account.getAccountNumber(),
+    }, 'email', lang)
+    |desc('%providerName% account %accountLogin% is being monitored for changes') }}
+{%  endautoescape %}{% endapply %}{% endblock subject %}
+
+{% block content %}
+    {% import '@MailTemplate/CommonMacro.twig' as commonMacro %}
+
+    {{ commonMacro.hello(user.firstname, _context) }}
+
+    {{ commonMacro.paragraph('account.balancewatch.start-monitored.message'|trans({
+        '%providerName%' : account.getProviderid.getDisplayname(),
+        '%accountLogin%' : account.getAccountNumber(),
+    }, 'email', lang)|desc('%providerName% account %accountLogin% is being monitored for changes by AwardWallet.
+<br>You should get a push notification and an email if a change is detected.'|raw), _context, {escape: false}) }}
+
+{% endblock content %}

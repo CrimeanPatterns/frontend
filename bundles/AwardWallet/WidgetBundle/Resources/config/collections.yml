@@ -1,0 +1,21 @@
+parameters:
+
+
+services:
+    aw.widget.whitelabel:
+        class: AwardWallet\WidgetBundle\Widget\CollectionWidget
+        public: true
+        parent: aw.widget_abstract
+        tags:
+            - { name: aw.widget_container }
+
+    aw.widget.user_collection:
+        class: AwardWallet\WidgetBundle\Widget\CollectionWidget
+        public: true
+        parent: aw.widget_abstract
+        arguments:
+            - user_info: "@aw.widget.user_info"
+              button_balance: "@aw.widget.button_balance"
+              button_trips: "@aw.widget.button_trips"
+        tags:
+            - { name: aw.widget_container }

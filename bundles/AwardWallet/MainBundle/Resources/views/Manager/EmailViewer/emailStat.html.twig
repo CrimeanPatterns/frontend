@@ -1,0 +1,55 @@
+{% set title = 'Sent mail' %}
+{% extends "@AwardWalletMain/Manager/layout.html.twig" %}
+{% form_theme form with ['form_table_layout.html.twig'] %}
+
+{% import _self as macro %}
+
+{% macro color(value) %}{% apply spaceless %}
+    hsl({{ (1-value)*200 }}, 100%, 85%)
+{% endapply %}{% endmacro %}
+
+{% block content %}
+
+    <form action="#" method="post">
+        {{ form_widget(form) }}
+    </form>
+
+    {% if formData is defined %}
+        <div>Displaying emails {{ formData.start_date|formatDatetime('long', null) }} <= Sent Date <= {{ formData.end_date|formatDatetime('long', null) }} </div><br>
+
+        {% if stats|length > 0 %}
+            {% set tdStyleHead = 'style="padding: 8px; background-color: #D2D2D2; font-weight: bolder;"' %}
+            {% set tdStyle = 'style="padding: 8px; background-color: #FFF;"' %}
+            {% set tdStyle2 = 'style="padding: 8px; background-color: #ECE9E9;"' %}
+            <table cellpadding="0" cellspacing="2" border="0" width="100%">
+                <tr>
+                    <td {{ tdStyleHead|raw }} width="25%">Kind</td>
+                    <td {{ tdStyleHead|raw }}>Description</td>
+                    <td {{ tdStyleHead|raw }} width="10%">Messages</td>
+                    <td {{ tdStyleHead|raw }} width="10%">Actions</td>
+                </tr>
+                {% for kind, data in stats %}
+                    <tr>
+                        <td {{ cycle([tdStyle, tdStyle2], loop.index0)|raw }}>{{ kind }}</td>
+                        <td {{ cycle([tdStyle, tdStyle2], loop.index0)|raw }}>{{ data.Description|default('no') }}</td>
+                        <td style="background-color: {{ macro.color(data.Messages / max)|raw }}; padding: 8px;">{{ data.Messages|formatNumber }}</td>
+                        <td {{ cycle([tdStyle, tdStyle2], loop.index0)|raw }}>
+                            {% if data.NewFormat %}
+                                <a href="{{ url('aw_manager_emailviewer', {id: data.Code}) }}" target="_blank">Details</a><br>
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% endfor %}
+                <tr>
+                    <td {{ tdStyle|raw }}>&nbsp;</td>
+                    <td {{ tdStyle|raw }}>&nbsp;</td>
+                    <td {{ tdStyleHead|raw }}>{{ totals|formatNumber }}</td>
+                    <td {{ tdStyle|raw }}>&nbsp;</td>
+                </tr>
+            </table>
+        {% else %}
+            <h3>No Results</h3>
+        {% endif %}
+    {% endif %}
+
+{% endblock %}

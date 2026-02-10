@@ -1,0 +1,264 @@
+{% extends '@MailTemplate/Layout/base.twig' %}
+{% trans_default_domain "email" %}
+
+{% block subject %}{% apply spaceless %}{% autoescape false %}
+    {{ 'welcome.subject'|trans({}, 'email', lang)|desc('Welcome to AwardWallet.com') }}
+{% endautoescape %}{% endapply %}{% endblock subject %}
+
+{% block content_row %}
+    {% import '@MailTemplate/CommonMacro.twig' as commonMacro %}
+
+    <tr>
+        <td colspan="3" style="line-height: 24px;font-size: 16px;border: solid 1px #a6aab3;background: #fff;padding: 10px 10px 20px 10px;border-top: none;" class="email-white">
+            <table width="100%" cellpadding="0" border="0" cellspacing="0">
+                <tr>
+                    <td style="padding: 10px 20px;line-height: 24px;background: #4dbfa2;color: #fff;font-size: 16px;text-align: center;">
+                        <img src="{{ baseImagesPath }}/green-success.png" alt="success" border="0" width="17" height="13">&nbsp;&nbsp;
+                        {{ 'welcome.thank_you'|trans({'%awardWallet.com%': '<strong>AwardWallet</strong>'}, 'email', lang)|desc('Thank you for registering with %awardWallet.com%')|raw }}
+                    </td>
+                </tr>
+            </table>
+
+            <table width="100%" cellpadding="0" border="0" cellspacing="0">
+                <tr>
+                    <td style="text-align: center;font-size: 16px;color: #3d424d;padding: 15px 0;">
+                        <strong>
+                            {% set selection = commonMacro.span('$$')|split('$$') %}
+                            {{ 'welcome.your_login'|trans({
+                                '%login%': user.login|htmlencode,
+                                '%span_on%': selection[0],
+                                '%span_off%': selection[1]
+                            }, 'email', lang)|desc('Your login ID is: %span_on% %login% %span_off%')|raw }}
+                        </strong>
+                    </td>
+                </tr>
+            </table>
+
+            <table width="100%" cellpadding="0" border="0" cellspacing="0" style="border-top: 2px solid #ffaa33; font-size: 16px; color: #535457; line-height: 22px; border-bottom: 2px solid #ffaa33; margin-bottom: 20px;">
+                <tr>
+                   <td width="20" align="center" valign="top" style="line-height:1px;width:23px;padding-top:10px;padding-bottom:9px;vertical-align:top;text-align:left"><img src="{{ baseImagesPath }}/warning-small.png" alt="" border="0" width="14" height="13"></td>
+                    <td style="padding:6px 0">
+                        {{ 'welcome.verify_email'|trans({}, 'email', lang)|desc('In order to verify your email address please follow this link:') }}
+                        <br>
+                        {% set link = baseUrl ~ path('aw_email_verify', {login: user.login, id: user.EmailVerificationHash}) %}
+                        {{ commonMacro.link(link, link|preg_replace("/([^ ]{30})(?=[^ ])/ims", "$1<wbr>"),{
+                            'font-size': '15px',
+                            'word-break': 'break-all',
+                            'margin-top': '5px'
+                        }, {escape: false}) }}
+                    </td>
+                </tr>
+            </table>
+
+            <div style="color:#535457">
+                {{ 'welcome.quick_introduction_v2'|trans({}, 'email', lang)|desc('We appreciate your interest in AwardWallet and want to provide you with some suggestions, along with a quick introduction to the most frequently used features of AwardWallet:') }}
+            </div>
+
+            <table width="100%" cellpadding="0" border="0" cellspacing="0">
+                <tr>
+                    <td style="padding:40px 0 15px">
+                        <table width="100%" cellpadding="0" border="0" cellspacing="0">
+                            <tr>
+                                <td align="right">
+                                    <img src="{{ baseImagesPath }}/credit-card.png?v=5" width="300" height="80" border="0" alt="" style="vertical-align:top">
+                                    <div style="padding:0;margin:0; font-size:0; line-height:1; height:1px; width:100%; background:#bec2cc;background: -moz-linear-gradient(left, #ffffff 0%, #bec2cc 50%, #ffffff 100%); background: -webkit-linear-gradient(left, #ffffff 0%,#bec2cc 50%,#ffffff 100%); background: linear-gradient(to right, #ffffff 0%,#bec2cc 50%,#ffffff 100%);"></div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="font-size: 20px;color: #3d424d; padding-top:15px">{{ 'welcome.choose_cc_v2'|trans({}, 'email', lang)|desc('Choose the Right Rewards Credit Card') }}</td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+            </table>
+
+            <div style="color:#535457;">
+                {% set blog1Link = commonMacro.link(baseUrl ~ "/blog/hot-deals/", '$$')|split('$$') %}
+                {% set blog2Link = commonMacro.link(baseUrl ~ "/blog/why-the-chase-sapphire-preferred-is-the-best-beginners-travel-rewards-card-for-2017/", '$$')|split('$$') %}
+                {{ 'welcome.choose_cc.desc_v2'|trans({
+                    '%link1_on%': blog1Link[0],
+                    '%link1_off%': blog1Link[1],
+                    '%link2_on%': blog2Link[0],
+                    '%link2_off%': blog2Link[1]
+                }, 'email', lang)|desc('If you are serious about earning miles & points, you need to know the %link1_on%best reward credit cards%link1_off% available on the market today. Rewards cards are a big key to quickly racking up miles. Our #1 pick %link2_on%is a flexible travel rewards credit card%link2_off% , which allows you to redeem your rewards like cash or transfer to air/hotel travel partners.')|raw }}
+            </div>
+
+            <table width="100%" cellpadding="0" border="0" cellspacing="0">
+                <tr>
+                    <td style="padding:40px 0 15px">
+                        <table width="100%" cellpadding="0" border="0" cellspacing="0">
+                            <tr>
+                                <td align="right">
+                                    <img src="{{ baseImagesPath }}/lotalty-cards.png?v=5" width="300" height="80" border="0" alt="" style="vertical-align:top">
+                                    <div style="padding:0;margin:0; font-size:0; line-height:1; height:1px; width:100%; background:#bec2cc;background: -moz-linear-gradient(left, #ffffff 0%, #bec2cc 50%, #ffffff 100%); background: -webkit-linear-gradient(left, #ffffff 0%,#bec2cc 50%,#ffffff 100%); background: linear-gradient(to right, #ffffff 0%,#bec2cc 50%,#ffffff 100%);"></div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="font-size: 20px;color: #3d424d; padding-top:15px">{{ 'welcome.add_loyalty_cards'|trans({}, 'email', lang)|desc('Add all of your loyalty cards') }}</td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+            </table>
+
+            <div style="color:#535457;">
+                {% set selectProviderLink = commonMacro.link(baseUrl ~ path('aw_select_provider'), '$$')|split('$$') %}
+                {% set factorLink = commonMacro.link(baseUrl ~ path('aw_faq_index') ~ '#44', '$$')|split('$$') %}
+                {% set securitylink = baseUrl ~ path('aw_faq_index') ~ '#10' %}
+
+                {{ 'welcome.add_loyalty_cards.desc_v2'|trans({
+                    '%link1_on%': selectProviderLink[0],
+                    '%link1_off%': selectProviderLink[1],
+                    '%link2%': commonMacro.link(securitylink, securitylink),
+                    '%link3_on%': factorLink[0],
+                    '%link3_off%': factorLink[1],
+                    '%status%': '<br><br>',
+                }, 'email', lang)|desc('AwardWallet is not solely about travel; while we hope you use AwardWallet to track your frequent flyer miles and hotel points, we’re fanatics about all types of rewards. We cover retail loyalty programs like Starbucks and Best Buy along with rewards programs associated with all the major banks; in all, we support almost 700 programs. Browse the %link1_on%list of our supported programs%link1_off%. %status%Concerned about security? So are we. We don’t fool around when it comes to our members and their rewards. Here is our statement about security: %link2%. We recommend you also consider setting up %link3_on%two-factor authentication%link3_off% for added protection.')|raw }}
+            </div>
+
+            <table width="100%" cellpadding="0" border="0" cellspacing="0">
+                <tr>
+                    <td style="padding:40px 0 15px">
+                        <table width="100%" cellpadding="0" border="0" cellspacing="0">
+                            <tr>
+                                <td align="right">
+                                    <img src="{{ baseImagesPath }}/blog.png?v=5"  width="300" height="80" border="0" alt="" style="vertical-align:top">
+                                    <div style="padding:0;margin:0; font-size:0; line-height:1; height:1px; width:100%; background:#bec2cc;background: -moz-linear-gradient(left, #ffffff 0%, #bec2cc 50%, #ffffff 100%); background: -webkit-linear-gradient(left, #ffffff 0%,#bec2cc 50%,#ffffff 100%); background: linear-gradient(to right, #ffffff 0%,#bec2cc 50%,#ffffff 100%);"></div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="font-size: 20px;color: #3d424d; padding-top:15px">
+                                    {{ 'welcome.subscribe'|trans({}, 'email', lang)|desc("Subscribe to Our Blog & Join Our Facebook Community")|html_entity_decode }}
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+            </table>
+
+            <div style="color:#535457;">
+                {% set blogLink = commonMacro.link(baseUrl ~ "/blog", '$$')|split('$$') %}
+                {{ 'welcome.blog'|trans({
+                    '%link1_on%': blogLink[0],
+                    '%link1_off%': blogLink[1],
+                }, 'email', lang)|desc("We’ve created a blog to %link1_on%deliver points and miles content to you on a daily basis%link1_off%. We cover everything from relevant news to how to get the best value from your points and miles.")|raw }}
+            </div>
+
+            <table width="100%" cellpadding="0" border="0" cellspacing="0">
+                <tr>
+                    <td align="center" style="padding:15px 0">
+                        <img src="{{ baseImagesPath }}/award-travel-101.png" width="200" height="64" border="0" style="vertical-align: top;" alt="">
+                    </td>
+                </tr>
+            </table>
+
+            <div style="color:#535457;">
+                {% set facebookLink = commonMacro.link("http://award.travel/101", '$$')|split('$$') %}
+                {{ 'welcome.facebook'|trans({
+                    '%link1_on%': facebookLink[0],
+                    '%link1_off%': facebookLink[1],
+                }, 'email', lang)|desc("We also have a Facebook community, %link1_on%Award Travel 101%link1_off%, with tens of thousands of members. If you’ve got a rewards question that you want answered, this is your go-to place!")|raw }}
+            </div>
+
+            <table width="100%" cellpadding="0" border="0" cellspacing="0">
+                <tr>
+                    <td style="padding:40px 0 15px">
+                        <table width="100%" cellpadding="0" border="0" cellspacing="0">
+                            <tr>
+                                <td align="right">
+                                    <img src="{{ baseImagesPath }}/mobile-app.png?v=5" width="300" height="80" border="0" alt="" style="vertical-align:top">
+                                    <div style="padding:0;margin:0; font-size:0; line-height:1; height:1px; width:100%; background:#bec2cc;background: -moz-linear-gradient(left, #ffffff 0%, #bec2cc 50%, #ffffff 100%); background: -webkit-linear-gradient(left, #ffffff 0%,#bec2cc 50%,#ffffff 100%); background: linear-gradient(to right, #ffffff 0%,#bec2cc 50%,#ffffff 100%);"></div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="font-size: 20px;color: #3d424d; padding-top:15px">{{ 'welcome.get_app'|trans({}, 'email', lang)|desc('Get the AwardWallet app') }}</td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+            </table>
+
+            <table width="100%" cellpadding="0" border="0" cellspacing="0">
+                <tr>
+                    <td style="color:#535457;line-height: 24px; font-size: 16px;">
+                        {% set iosLink = commonMacro.link("https://itunes.apple.com/us/app/awardwallet/id388442727?mt=8", '$$')|split('$$') %}
+                        {% set androidLink = commonMacro.link("https://play.google.com/store/apps/details?id=com.itlogy.awardwallet&hl=en", '$$')|split('$$') %}
+                        {{ 'welcome.get_app.desc_v2'|trans({
+                            '%link1_on%': iosLink[0],
+                            '%link1_off%': iosLink[1],
+                            '%link2_on%': androidLink[0],
+                            '%link2_off%': androidLink[1]
+                        }, 'email', lang)|desc('We have an awesome app for %link1_on%iOS%link1_off% and %link2_on%Android%link2_off% devices. If you have an AwardWallet account already, installing our mobile app keeps you closer to your points and miles.')|raw }}
+                    </td>
+                    <!-- <td width="120" align="right">
+                        <a href="https://itunes.apple.com/us/app/awardwallet/id388442727?mt=8" target="blank" style="text-decoration:none">
+                            <img src="{{ baseImagesPath }}/app-apple.png" width="100" height="30" border="0" alt="IOS app">
+                        </a>
+                        <div style="height:5px;font-size:0;line-height:0; width:100%"></div>
+                        <a href="https://play.google.com/store/apps/details?id=com.itlogy.awardwallet&hl=en" target="blank" style="text-decoration:none">
+                            <img src="{{ baseImagesPath }}/app-google.png" width="100" height="30" border="0" alt="Android app">
+                        </a>
+                    </td> -->
+                </tr>
+            </table>
+
+            <table width="100%" cellpadding="0" border="0" cellspacing="0">
+                <tr>
+                    <td style="padding:40px 0 15px">
+                        <table width="100%" cellpadding="0" border="0" cellspacing="0">
+                            <tr>
+                                <td align="right">
+                                    <img src="{{ baseImagesPath }}/trips.png?v=5" width="300" height="80" border="0" alt="" style="vertical-align:top">
+                                    <div style="padding:0;margin:0; font-size:0; line-height:1; height:1px; width:100%; background:#bec2cc;background: -moz-linear-gradient(left, #ffffff 0%, #bec2cc 50%, #ffffff 100%); background: -webkit-linear-gradient(left, #ffffff 0%,#bec2cc 50%,#ffffff 100%); background: linear-gradient(to right, #ffffff 0%,#bec2cc 50%,#ffffff 100%);"></div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="font-size: 20px;color: #3d424d; padding-top:15px">{{ 'welcome.organize_trips_v2'|trans({}, 'email', lang)|desc('Organize Your Trips') }}</td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+            </table>
+
+            <div style="color:#535457">
+                {% set link = baseUrl ~ path('aw_trips_add') %}
+                {% set email = user.login ~ '@AwardWallet.com' %}
+                {{ 'welcome.organize_trips.desc_v2'|trans({
+                    '%link%': commonMacro.link(link, link),
+                    '%email%': commonMacro.link('mailto:' ~ email, email)
+                }, 'email', lang)|desc('Want a single place to keep all of your travel plans? We’ve got you covered. AwardWallet can take each travel component for all of your trips from different providers, including air, hotel, rental cars, and dining, organize them, put all of them into one - easy to use timeline. You can import your trips by pulling them from your loyalty accounts: %link% or you can email them to your custom AwardWallet mailbox: %email%.')|raw }}
+            </div>
+
+            <table width="100%" cellpadding="0" border="0" cellspacing="0">
+                <tr>
+                    <td style="padding:40px 0 15px">
+                        <table width="100%" cellpadding="0" border="0" cellspacing="0">
+                            <tr>
+                                <td align="right">
+                                    <img src="{{ baseImagesPath }}/rewards-tickets.png?v=5" width="300" height="80" border="0" alt="" style="vertical-align:top">
+                                    <div style="padding:0;margin:0; font-size:0; line-height:1; height:1px; width:100%; background:#bec2cc;background: -moz-linear-gradient(left, #ffffff 0%, #bec2cc 50%, #ffffff 100%); background: -webkit-linear-gradient(left, #ffffff 0%,#bec2cc 50%,#ffffff 100%); background: linear-gradient(to right, #ffffff 0%,#bec2cc 50%,#ffffff 100%);"></div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="font-size: 20px;color: #3d424d; padding-top:15px">{{ 'welcome.book_reward_tickets_v2'|trans({}, 'email', lang)|desc('Redeem Points & Miles') }}</td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+            </table>
+
+            <div style="color:#535457;">
+                {% set link = baseUrl ~ path('aw_booking_add_index') %}
+                {{ 'welcome.book_reward_tickets.desc_v2'|trans({
+                    '%link%': commonMacro.link(link, link)
+                }, 'email', lang)|desc('Ready to take a trip but having difficulties redeeming your hard-earned miles? We have a team that is ready to help! Tell us where you want to go by submitting a booking request: %link% and we will find the best use of your points miles, and book your tickets for you.')|raw }}
+            </div>
+
+
+            {% block restore_row %}
+                {{ parent() }}
+            {% endblock restore_row %}
+
+        </td>
+    </tr>
+{% endblock content_row %}

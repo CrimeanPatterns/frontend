@@ -1,0 +1,70 @@
+{% set title = "Security questions" %}
+{% set contentTitle = "" %}
+{% extends '@AwardWalletMain/Manager/layout.html.twig' %}
+{% form_theme form with ['form_table_layout.html.twig'] %}
+
+{% block content %}
+
+    <h1>Security questions for user {{ userId }}</h1>
+    <br/>
+    <form method="POST">
+        {{ form_errors(form) }}
+        {{ form_rest(form) }}
+        <br/><br/>
+    </form>
+    {% if userId %}
+        {% if willAskQuestions %}
+            <div>
+                <div style="font-weight: bold; color: red;">We will ask questions on next logon</div>
+                <input type="button" onclick="dontAsk()" value="Don't ask"/><br/><br/>
+            </div>
+        {% else %}
+            <div>We will not ask questions on next logon</div><br/>
+        {% endif %}
+    {% endif %}
+    <h2>Possible questions on next logon (this list could be updated each 5 minutes)</h2>
+    <table border="1" cellspacing="0" cellpadding="5">
+        <tr>
+            <th>Question</th>
+        </tr>
+        {% for row in possibleQuestions %}
+        <tr>
+            <td>{{ row }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+    <h2>Loyalty programs security questions</h2>
+    <table border="1" cellspacing="0" cellpadding="5">
+        <tr>
+            <th>Question</th>
+            <th>Answer</th>
+            <th>Create Date</th>
+            <th>Login</th>
+            <th>Valid Account</th>
+        </tr>
+        {% for row in questions %}
+        <tr>
+            <td>{{ row.Question }}</td>
+            <td>{{ row.Answer }}</td>
+            <td>{{ row.CreateDate }}</td>
+            <td>{{ row.Login }}</td>
+            <td>{{ row.CheckedAccount }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+
+    <script>
+        function dontAsk() {
+            if (window.confirm('Disable questions?')) {
+                $.ajax({
+                    url: '{{ path('aw_manager_questions_dont_ask', {userid: (userId ? userId : 0)}) }}',
+                    type: 'POST',
+                    success: function () {
+                        document.location.reload()
+                    }
+                })
+            }
+        }
+    </script>
+
+{% endblock %}

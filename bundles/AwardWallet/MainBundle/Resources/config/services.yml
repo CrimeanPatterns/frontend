@@ -1,0 +1,2684 @@
+services:
+    _defaults:
+        public: true
+        bind:
+            $aircodeRepository: '@AwardWallet\MainBundle\Entity\Repositories\AircodeRepository'
+            $answerRepository: '@AwardWallet\MainBundle\Entity\Repositories\AnswerRepository'
+            $archiveConnection: '@doctrine.dbal.archive_connection'
+            $aviaSalesApiToken: "%aviasales_api_token%"
+            $aviaSalesMarker: "%aviasales_marker%"
+            $backupProcessors: !tagged aw.backup_processor
+            $blogApiSecret: '%blog.api.secret%'
+            $cacheDir: '%kernel.cache_dir%'
+            $camoufoxEndpoint: '%env(CAMOUFOX_ENDPOINT)%'
+            $cardImageParserHandlerDryRun: '@aw.card_image.parser_handler.dry_run'
+            $cardImageParserHandler: '@aw.card_image.parser_handler'
+            $cardImageRepository: '@AwardWallet\MainBundle\Entity\Repositories\CardImageRepository'
+            $cdnHost: '%cdn_host%'
+            $channel: '%requires_channel%'
+            $clickhouse: '@aw.clickhouse'
+            $clickhouseConnection: "@doctrine.dbal.clickhouse_connection"
+            $coinPaymentsPrivateKey: '%cp.private_key%'
+            $coinPaymentsPublicKey: '%cp.public_key%'
+            $curlDriver: '@aw.curl_driver'
+            $debug: '%kernel.debug%'
+            $duffelApiKey: "%duffel_api_key%"
+            $elasticSearchHost: '%env(ELASTICSEARCH_HOST)%'
+            $emailApi: '%email_api%'
+            $emailLogger: '@monolog.logger.email'
+            $flightInfoAppId: '%flight_info.app_id%'
+            $flightInfoAppKey: '%flight_info.app_key%'
+            $fplUserName: "%fpl_username%"
+            $fplPassword: "%fpl_password%"
+            $fsLogger: '@monolog.logger.fsstat'
+            $geoCoders: !tagged_locator { tag: 'aw.geo.coder' }
+            $googleClient: '@aw.google_play_client'
+            $googleServiceAndroidPublisher: '@aw.google_service_android_publisher'
+            $googlePurchasesSubscriptions: '@Google\Service\AndroidPublisher\Resource\PurchasesSubscriptions'
+            $host: '%host%'
+            $businessHost: '%business_host%'
+            $kiwiMultiCityApiKey: "%kiwi_multi_city_api_key%"
+            $kiwiSearchApiKey: "%kiwi_search_api_key%"
+#            $loyaltyApiCommunicators: !tagged_locator { tag: 'aw.loyalty.api_communicator', index_by: 'cluster_name' }
+            $mileValueCombinedPriceSource: '@AwardWallet\MainBundle\Service\MileValue\PriceSource\CombinedPriceSource'
+            $mileValueDataSources: !tagged aw.mile_value_data_source
+            $mileValuePriceSources: !tagged aw.mile_value_price_source
+            $notificationsMailboxLogin: '%notifications.mailbox.login%'
+            $paymentLogger: '@monolog.logger.payment'
+            $protoAndHost: '%requires_channel%://%host%'
+            $providerPropertyRepository: '@AwardWallet\MainBundle\Entity\Repositories\ProviderpropertyRepository'
+            $providerRepository: '@AwardWallet\MainBundle\Entity\Repositories\ProviderRepository'
+            $replicaUnbufferedConnection: '@doctrine.dbal.read_replica_unbuffered_connection'
+            $replicaConnection: '@doctrine.dbal.read_replica_connection'
+            $replicaEntityManager: '@doctrine.orm.read_replica_entity_manager'
+            $rootDir: '%kernel.root_dir%'
+            $s3BucketPrefix: '%aws_s3_bucket_prefix%'
+            $s3Client: '@Aws\S3\S3Client'
+            $schemas: !tagged_locator { tag: 'aw.manager.schema', index_by: 'schema' } # schema attr set by SchemaCompilerPass
+            $secret: '%secret%'
+            $securityLogger: '@monolog.logger.security'
+            $pushLogger: '@monolog.logger.push'
+            $securityRememberMeLifetime: '%security.rememberme_lifetime%'
+            $skyscannerApiKey: '%skyscanner_api_key%'
+            $sphinxConnection: '@doctrine.dbal.sphinx_connection'
+            $stagingUnbufConnection: '@doctrine.dbal.read_staging_unbuffered_connection'
+            $statLogger: '@monolog.logger.stat'
+            $tpoMarker: "%tpo_marker%"
+            $tpoToken: "%tpo_token%"
+            $tripAlertsAppId: '%flight_info.trip_alert.app_id%'
+            $tripAlertsAppKey: '%flight_info.trip_alert.app_key%'
+            $tripAlertsLogger: '@monolog.logger.tripalerts'
+            $tripAlertsUpdaterProducer: '@old_sound_rabbit_mq.trip_alerts_updater_producer'
+            $tripitConsumerKey: '%tripit_consumer_key%'
+            $tripitConsumerSecret: '%tripit_consumer_secret%'
+            $unbufConnection: '@doctrine.dbal.unbuffered_connection'
+            $apiVersionMobile: '@aw.api.versioning.mobile'
+            $unbufferedArchiveConnection: '@doctrine.dbal.unbuffered_archive_connection'
+            $itNotificationDelayedProducer: '@aw.rabbitmq.delayed_producer.itinerary_notification'
+            $itMailerEnabled: "%new.its.mailer.enable%"
+            $loungeParsers: !tagged aw.lounge_parser
+            $loungeAccessCategories: !tagged aw.lounge_access_category
+            $loungeReviewCategories: !tagged aw.lounge_review_category
+            $loungeRepository: '@AwardWallet\MainBundle\Entity\Repositories\LoungeRepository'
+            $byaMailchimpApiKey: "%bya_mailchimp_api%"
+            $byaMailchimpListId: "%bya_mailchimp_list_id%"
+            $byaMailchimpEndpoint: "%bya_mailchimp_endpoint%"
+            $oldSoundRabbitMqPushNotificationProducer: "@old_sound_rabbit_mq.push_notification_producer"
+            $oldSoundRabbitMqPushNotificationDelayedProducer: "@old_sound_rabbit_mq.push_notification_delayed_producer"
+            $loyaltyCallbackDelayedProducer: "@old_sound_rabbit_mq.loyalty_callback_processor_delayed_producer"
+            $quinstreetLogin: "%quinstreet_login%"
+            $quinstreetPassword: "%quinstreet_password%"
+            $guzzleClientDefault: "@guzzle_client_default"
+            $cometServerUrl: "%comet_server_url%"
+            $cometServerSecret: "%comet_server_secret%"
+            $googleApiKey: "%google_api_key%"
+            $providersWithLocations: { kroger: "PreferredStore" }
+            $tipDefinitions: !tagged tip.handler
+            $webPushSafariCertPath: "%webpush.safari_cert_path%"
+            $webPushSafariBetaCertPath: "%webpush.safari_beta_cert_path%"
+            $webPushSafariCertPass: "%webpush.safari_cert_pass%"
+            $webPushId: "%webpush.id%"
+            $clickhouseHost: "%clickhouse_host%"
+            $doctrineDefaultConfiguration: '@doctrine.orm.default_configuration'
+            $geoIpCountry: '@aw.geoip.country'
+            $geoIpCity: '@aw.geoip.city'
+            $googleAnalyticsTrackingIdGa4: "%google_analytics.tracking_id.ga4%"
+            $googleAnalyticsMeasurementProtocol: "%google_analytics.measurement_protocol%"
+            $googleClientId: "%google_client_id%"
+            $googleClientSecret: "%google_client_secret%"
+            $mailboxRefreshToken: "%notifications.mailbox.refresh_token%"
+            $loyaltyLocationMaxTracked: "%aw.loyalty_location.max_tracked%"
+            $loyaltyLocationMaxTrackedStaff: "%aw.loyalty_location.max_tracked.staff%"
+            $securityAntibruteforceMerchantLookupIp: "@aw.security.antibruteforce.merchant_lookup_ip"
+            $securityAntibruteforceMerchantLookupUser: "@aw.security.antibruteforce.merchant_lookup_user"
+            $securityAntibruteforcePageVisitLocker: "@aw.security.antibruteforce.page_visit_locker"
+            $vendorConnection: "@doctrine.dbal.vendor_connection"
+            $mailerDeliveryAddress: "%mailer_delivery_address%"
+            $imageProxyKey: "%image_proxy_key%"
+            $redirectOutKey: "%redirect_out_key%"
+            $gitModules: "%git.modules%"
+            $affiliateStatsPath: "%affiliate_stats_path%"
+            $routeLocales: "%route_locales%"
+            $projectDir: '%kernel.project_dir%'
+            $env: '%kernel.environment%'
+            $raApiCommunicator: "@aw.ra_awardwallet.api_communicator"
+            $raCallbackPassword: "%reward_availability_callback_pass%"
+            $webParsingServiceLocator: '@aw.parsing.web.service_locator'
+            $emailApiUrl: '%email.api_url%'
+            $enhancedCustomActionLocator: !tagged_locator { tag: 'aw.enhanced_admin.action', default_index_method: 'getSchema' }
+            $enhancedEditActionLocator: !tagged_locator { tag: 'aw.enhanced_admin.edit_action', default_index_method: 'getSchema' }
+            $enhancedListActionLocator: !tagged_locator { tag: 'aw.enhanced_admin.list_action', default_index_method: 'getSchema' }
+            $enhancedAutocompleteActionLocator: !tagged_locator { tag: 'aw.enhanced_admin.autocomplete_action', default_index_method: 'getSchema' }
+            $enhancedDeleteActionLocator: !tagged_locator { tag: 'aw.enhanced_admin.delete_action', default_index_method: 'getSchema' }
+            $openAiApiKey: '%openai_key%'
+            $deepseekApiKey: '%deepseek_key%'
+            $claudeKey: '%claude_key%'
+            $repositories: !tagged aw.itinerary_repository
+            $hotelsApiKey: "%ra_hotels_api_auth%"
+            $raHotelCallbackPassword: "%ra_hotel_callback_pass%"
+            $updaterTimeout: "%updater.timeout%"
+            $taskSchedulerConsumerList: !tagged_locator { tag: 'aw.task_scheduler.consumer' }
+            $oldSoundRabbitMqTaskSchedulerProducer: "@old_sound_rabbit_mq.task_scheduler_producer"
+            $sparkpostApiKey: '%sparkpost_api_key%'
+            $loungePredictorComparators: !tagged aw.lounge_predictor.comparator
+            $aiProviders: !tagged aw.ai_model.provider
+            $loungeMatchers: !tagged aw.lounge_matcher
+            $dnsRepository: '@AwardWallet\MainBundle\Entity\Repositories\DonotsendRepository'
+            $mobileDeviceRepository: '@AwardWallet\MainBundle\Entity\Repositories\MobileDeviceRepository'
+            $availableLanguages: '%locales%'
+
+    _instanceof:
+        \AwardWallet\MainBundle\Service\ItineraryFormatter\Layer\DILayerInterface:
+            tags: ['aw.itinerary_formatter.layer']
+        Symfony\Component\Console\Command\Command:
+            tags: ['console.command']
+        Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepositoryInterface:
+            tags: ['doctrine.repository_service']
+        \TBaseSchema:
+            tags: ['aw.manager.schema']
+        \TBaseList:
+            tags: ['aw.manager.list']
+        \AwardWallet\MainBundle\Security\Voter\MessagingChannelVoter\MessagingChannelAccessCheckerInterface:
+            tags:
+              - { name: aw.voter.messaging_channel.access_checker }
+        \AwardWallet\MainBundle\Worker\AsyncProcess\ExecutorInterface:
+            tags: ['aw.async_executor']
+        \AwardWallet\MainBundle\Service\Backup\BackupProcessorInterface:
+            tags: ['aw.backup_processor']
+        \AwardWallet\Manager\FormTunerInterface:
+            tags: ['aw.manager.form_tuner']
+        \AwardWallet\MainBundle\Service\MileValue\PriceSource\PriceSourceInterface:
+            tags: ['aw.mile_value_price_source']
+        \AwardWallet\MainBundle\Service\MileValue\DataSource\DataSourceInterface:
+            tags: ['aw.mile_value_data_source']
+        \AwardWallet\MainBundle\Service\AccountHistory\Formatter\HistoryFormatterInterface:
+            tags: ['aw.account_history.formatter']
+        \AwardWallet\MainBundle\Service\Itinerary\Converter\FormConverter\ItineraryConverterInterface:
+            tags: ['aw.itinerary_form_converter']
+        \AwardWallet\MainBundle\Service\Lounge\Parser\ParserInterface:
+            tags: ['aw.lounge_parser']
+        \AwardWallet\MainBundle\Service\Lounge\Category\AccessLevelInterface:
+            tags: ['aw.lounge_access_category']
+        \AwardWallet\MainBundle\Service\Lounge\Category\ReviewInterface:
+          tags: [ 'aw.lounge_review_category' ]
+        \AwardWallet\MainBundle\Service\Tip\Definition\TipDefinitionInterface:
+            tags: ['tip.handler']
+        \AwardWallet\MainBundle\Service\OutboxProcessorInterface:
+            tags: ['aw.outbox_processor']
+        \AwardWallet\MainBundle\Service\EnhancedAdmin\ActionInterface:
+            tags: [ 'aw.enhanced_admin.action' ]
+        \AwardWallet\MainBundle\Service\EnhancedAdmin\EditActionInterface:
+            tags: ['aw.enhanced_admin.edit_action']
+        \AwardWallet\MainBundle\Service\EnhancedAdmin\ListActionInterface:
+            tags: [ 'aw.enhanced_admin.list_action' ]
+        \AwardWallet\MainBundle\Service\EnhancedAdmin\AutocompleteActionInterface:
+            tags: [ 'aw.enhanced_admin.autocomplete_action' ]
+        \AwardWallet\MainBundle\Service\EnhancedAdmin\DeleteActionInterface:
+            tags: [ 'aw.enhanced_admin.delete_action' ]
+        \AwardWallet\MainBundle\Updater\Plugin\PluginInterface:
+            tags: ['aw.updater.plugin']
+        \AwardWallet\MainBundle\Service\TaskScheduler\ConsumerInterface:
+            tags: ['aw.task_scheduler.consumer']
+        \AwardWallet\MainBundle\Service\Lounge\Predictor\ComparatorInterface:
+          tags: [ 'aw.lounge_predictor.comparator' ]
+        \AwardWallet\MainBundle\Service\AIModel\ProviderInterface:
+          tags: ['aw.ai_model.provider']
+        \AwardWallet\MainBundle\Service\Lounge\MatcherInterface:
+          tags: ['aw.lounge_matcher']
+
+
+    AwardWallet\MainBundle\Service\:
+        resource: '../../Service'
+        exclude:
+            - '../../Service/**/Annotation/*'
+            - '../../Service/**/Annotations/*'
+            - '../../Service/**/DTO/*'
+            - '../../Service/**/DataStructure/*'
+            - '../../Service/**/DataStructures/*'
+            - '../../Service/**/Event/*'
+            - '../../Service/**/*Event.php'
+            - '../../Service/**/Events/*'
+            - '../../Service/**/Exception/*'
+            - '../../Service/**/Exceptions/*'
+            - '../../Service/**/*Exception.php'
+            - '../../Service/**/Model/*'
+            - '../../Service/**/Models/*'
+            - '../../Service/**/Structures/*'
+            - '../../Service/**/Blocks/*'
+            - '../../Service/**/*Task.php'
+            - '../../Service/EmailTemplate/DataProvider/*'
+            - '../../Service/EmailParsing/Client/Model/*.php'
+            - '../../Service/FlightStats/TripAlerts/API'
+            - '../../Service/InAppPurchase/{Consumable,Subscription}'
+            - '../../Service/ItineraryComparator/Property*'
+            - '../../Service/Lounge/{Formatter/Mobile/*View.php}'
+            - '../../Service/DelayedProducer.php'
+        autowire: true
+
+    controllers:
+        namespace: AwardWallet\MainBundle\Service\
+        resource: '../../Service/**/*Controller.php'
+        autowire: true
+        autoconfigure: true
+        tags: ['controller.service_arguments']
+
+    AwardWallet\MainBundle\Repository\:
+        resource: '../../Repository'
+        autowire: true
+
+    # mile value
+    AwardWallet\MainBundle\Service\MileValue\UserPointValueService:
+        autowire: true
+        tags:
+            - { name: kernel.event_listener, event: aw.account_changed, method: onAccountChanged }
+
+    AwardWallet\MainBundle\Service\MileValue\MileValueCache:
+        autowire: true
+
+    AwardWallet\MainBundle\FrameworkExtension\Monolog\:
+        resource: '../../FrameworkExtension/Monolog'
+        exclude: '../../FrameworkExtension/Monolog/{Handler/FlashBagHandler,Processor/TraceProcessor}.php'
+        autowire: true
+
+    Monolog\Logger: '@logger'
+
+    AwardWallet\MainBundle\Globals\Cart\:
+        resource: '../../Globals/Cart'
+        autowire: true
+        exclude: '../../Globals/Cart/CartUserInfo.php'
+
+    AwardWallet\MainBundle\Globals\Cart\Manager:
+        autowire: true
+        public: true
+
+    AwardWallet\MainBundle\Command\:
+        resource: '../../Command'
+        public: true
+        tags: ['console.command']
+        exclude: '../../Command/UpgradeVIPUsers/*2024_11_18.php'
+        autowire: true
+
+    AwardWallet\MainBundle\Command\Fix\FixChaseRefundsCommand:
+        autowire: true
+        arguments:
+            $clickhouse: '@aw.clickhouse'
+
+    AwardWallet\MainBundle\Command\UploadMilesCommand:
+        autowire: true
+        arguments:
+            $channel: '%requires_channel%'
+            $host: '%host%'
+            $remoteFile: '%points_aa_csv_path%'
+
+    AwardWallet\MainBundle\Command\Fix\FixCategoriesCommand:
+        autowire: true
+        arguments:
+            $clickhouse: '@aw.clickhouse'
+            $unbufConnection: '@doctrine.dbal.read_replica_unbuffered_connection'
+
+    AwardWallet\MainBundle\Command\FlightStatsFixFlightNumberCommand:
+        autowire: true
+        bind:
+            $flightNumberFilter: '@aw.flight_number_filter'
+
+    AwardWallet\MainBundle\Command\SendEmailTemplateCommand:
+        autowire: true
+        bind:
+            $relaysParameters: '%relays%'
+
+    AwardWallet\MainBundle\Command\RemoveRefundableSubscriptionsCommand:
+        autowire: true
+        bind:
+            $payPalParameters: '%paypal%'
+
+    AwardWallet\MainBundle\Command\Translation\ExtractAllCommand:
+        autowire: true
+        bind:
+            $rootDir: '%kernel.root_dir%'
+            $dumpLocalesParameters: '%dump-locales%'
+
+    AwardWallet\MainBundle\Command\GenerateMobileUsersCommand:
+        autowire: true
+
+    AwardWallet\MainBundle\Command\Stat\CalcCrossAirlinesCommand:
+        autowire: true
+        bind:
+            $awsS3Bucket: '%aws_s3_bucket%'
+
+    AwardWallet\MainBundle\Command\Update\UpdateRAFlightStatCommand:
+        autowire: true
+        bind:
+            $unbufConnection: '@doctrine.dbal.unbuffered_connection'
+
+    AwardWallet\MainBundle\Command\UpdateIataStationsCommand:
+        autowire: true
+        bind:
+            $iataCodesApiKey: '%iatacodes_org.api_key%'
+
+    AwardWallet\MainBundle\Command\SendRetentionUserEmailCommand:
+        autowire: true
+        bind:
+            $geoIpCountryPathParameter: '%geoip.country.path%'
+
+    AwardWallet\MainBundle\Command\SparkPostCommand:
+        autowire: true
+        bind:
+            $sparkpostApiKey: '%sparkpost_api_key%'
+
+    AwardWallet\MainBundle\Command\SavePageCommand:
+        autowire: true
+        bind:
+            $requiresChannelParameter: '%requires_channel%'
+
+    AwardWallet\MainBundle\Command\GenerateGoogleCloudVisionOcrResultCommand:
+        autowire: true
+        bind:
+            $googleApiKey: '%google_api_key%'
+
+    AwardWallet\MainBundle\Command\Fix\FixLocalPasswordsKeyCommand:
+        autowire: true
+        bind:
+            $localPasswordsKey: '%local_passwords_key%'
+            $localPasswordsKeyOld: '%local_passwords_key_old%'
+
+    AwardWallet\MainBundle\Command\Fix\Fix10752Command:
+        autowire: true
+        bind:
+            $paypalParameter: '%paypal%'
+    AwardWallet\MainBundle\Service\Backup\BackupCommand:
+        autowire: true
+        bind:
+            $databaseNameParameter: '%database_name%'
+            $databaseUserParameter: '%database_user%'
+
+    AwardWallet\MainBundle\Command\TestAffiliateLinksCommand:
+        autowire: true
+        bind:
+            $flexOffersApiKeyParameter: '%flexoffers.api_key%'
+            $cjApiKeyParameter: '%commissionjunction.api_key%'
+
+    AwardWallet\MainBundle\Service\HotelPointValue\HotelSourceInterface: '@AwardWallet\MainBundle\Service\HotelPointValue\SingleHotelSource'
+
+    aw.single_hotel_finder:
+        class: AwardWallet\MainBundle\Service\HotelPointValue\HotelFinder
+        autowire: true
+        arguments:
+          $hotelSource: '@AwardWallet\MainBundle\Service\HotelPointValue\SingleHotelSource'
+
+    aw.multi_hotel_finder:
+        class: AwardWallet\MainBundle\Service\HotelPointValue\HotelFinder
+        autowire: true
+        arguments:
+          $hotelSource: '@AwardWallet\MainBundle\Service\HotelPointValue\MultiHotelSource'
+
+    AwardWallet\MainBundle\Service\HotelPointValue\PriceFinder:
+        autowire: true
+        arguments:
+          $hotelFinder: '@aw.single_hotel_finder'
+
+    AwardWallet\MainBundle\Service\HotelPointValue\CalcHotelPointValueCommand:
+        autowire: true
+        arguments:
+          $hotelFinder: '@aw.multi_hotel_finder'
+
+    AwardWallet\MainBundle\Service\HotelPointValue\ItineraryUpdateListener:
+        autowire: true
+        tags:
+          - { name: kernel.event_listener, event: aw.itinerary.saved, method: onItinerarySaved }
+
+    AwardWallet\MainBundle\Scanner\:
+        resource: '../../Scanner'
+        autowire: true
+
+    AwardWallet\Manager\:
+        resource: '../../../Manager/'
+        autowire: true
+        exclude: '../../../Manager/Schema/{*List.php,Itinerary/*List.php}'
+    AwardWallet\Manager\SchemaFactory:
+      autowire: true
+      public: true # remove after delete.php migration
+    AwardWallet\Manager\SchemaController:
+      autowire: true
+      autoconfigure: true
+      tags: ['controller.service_arguments']
+      arguments:
+        $lists: !tagged_locator { tag: 'aw.manager.list', index_by: 'schema' } # schema attr set by SchemaCompilerPass
+        $formTuners: !tagged { tag: 'aw.manager.form_tuner' }
+    AwardWallet\Manager\ListFactory:
+      autowire: true
+      public: true # for import.php
+      arguments:
+        $lists: !tagged_locator { tag: 'aw.manager.list', index_by: 'schema' } # schema attr set by SchemaCompilerPass
+
+    AwardWallet\MainBundle\Command\MysqlBenchmarkCommand:
+        arguments:
+          - "@logger"
+        tags:
+          - { name: 'console.command', command: 'aw:mysql-benchmark' }
+
+    AwardWallet\MainBundle\Command\Test\BenchmarkUsersCommand:
+        autowire: true
+        tags:
+          - { name: 'console.command' }
+
+    AwardWallet\MainBundle\Command\Stat\RecordSiteStatsCommand:
+        autowire: true
+        tags: ['console.command']
+
+    AwardWallet\MainBundle\Command\ImportOldItinerariesCommand:
+        autowire: true
+        tags: ['console.command']
+        arguments:
+          $geo: '@aw.geo.cheap_geocoder'
+
+    AwardWallet\MainBundle\Command\Fix\FixAirlinesCommand:
+        autowire: true
+        tags: ['console.command']
+
+    AwardWallet\MainBundle\Command\Fix\FixAirCodesCommand:
+        autowire: true
+        tags: ['console.command']
+        arguments:
+          $googleGeo: '@aw.geo.cheap_geocoder'
+
+    AwardWallet\MainBundle\Command\MergeExtPropertiesCommand:
+        autowire: true
+        tags: ['console.command']
+
+    AwardWallet\MainBundle\Command\SendToPruvoCommand:
+        autowire: true
+        arguments:
+          $pruvoAuthKey: '%pruvo_auth_key%'
+        tags:
+          - { name: 'console.command', command: 'aw:send-to-pruvo' }
+
+    AwardWallet\MainBundle\Command\ExportPoint72Command:
+        autowire: true
+        arguments:
+          $unbufConnection: '@doctrine.dbal.unbuffered_connection'
+          $secret: '%secret%'
+        tags:
+          - { name: 'console.command' }
+
+    AwardWallet\MainBundle\Entity\Query\:
+        resource: '../../Entity/Query'
+        autowire: true
+
+    AwardWallet\MainBundle\Service\ItineraryFormatter\Layer\LayerLocator:
+        autowire: true
+        arguments: [!tagged aw.itinerary_formatter.layer]
+
+    AwardWallet\MainBundle\Command\ConvertJsonl2CsvCommand:
+        autowire: true
+        tags:
+          - { name: 'console.command' }
+
+    AwardWallet\MainBundle\Command\Test\EmailPerformanceCommand:
+        autowire: true
+        tags:
+          - { name: 'console.command' }
+        arguments:
+          $usrRepository: '@AwardWallet\MainBundle\Entity\Repositories\UsrRepository'
+
+    AwardWallet\MainBundle\Command\LoadJsonl2ElasticCommand:
+        autowire: true
+        tags:
+          - { name: 'console.command' }
+
+    AwardWallet\MainBundle\Command\SimulateUsersCommand:
+        arguments:
+          - "@logger"
+          - "@database_connection"
+        tags:
+          - { name: 'console.command', command: 'aw:simulate-users' }
+
+    AwardWallet\MainBundle\Command\AnalyzeElasticIndexesCommand:
+        autowire: true
+        tags:
+          - { name: 'console.command', command: 'aw:analyze-elasticsearch' }
+
+    AwardWallet\MainBundle\Command\CheckPwnedAccountsCommand:
+        autowire: true
+        arguments:
+            $unbufConnection: '@doctrine.dbal.unbuffered_connection'
+        tags:
+          - { name: 'console.command', command: 'aw:check-pwned-accounts' }
+
+    AwardWallet\MainBundle\Command\History\ConvertInfoColumnCommand:
+      autowire: true
+      arguments:
+        $replicaConnection: "@doctrine.dbal.read_replica_unbuffered_connection"
+      tags:
+        - { name: 'console.command', command: 'aw:history:convert-info-column' }
+
+    AwardWallet\MainBundle\Command\CreditCards\CompleteTransactionsCommand\CompleteTransactionsCommand:
+        autowire: true
+
+    AwardWallet\Common\Doctrine\BatchUpdater:
+        shared: false
+        autowire: true
+
+    AwardWallet\MainBundle\Command\CreditCards\CompleteTransactionsCommand\HistoryRowsProcessor:
+        autowire: true
+
+    AwardWallet\MainBundle\Command\CreditCards\CompleteTransactionsCommand\MainQuery:
+        autowire: true
+
+    AwardWallet\MainBundle\Command\Update\UpdateItineraryCheckErrorCommand:
+        arguments:
+          - "@logger"
+          - "@doctrine.orm.default_entity_manager"
+          - '@AwardWallet\MainBundle\Service\ParserNoticeProvider'
+        tags:
+          - { name: 'console.command', command: 'aw:update-itinerary-check-error' }
+
+    AwardWallet\MainBundle\Command\CheckRetrieveConfNoCommand:
+        arguments:
+          - "@logger"
+          - "@doctrine.orm.default_entity_manager"
+          - '@AwardWallet\MainBundle\Loyalty\ApiCommunicator'
+          - '@AwardWallet\MainBundle\Loyalty\Converter'
+          - "@aw.globals"
+        tags:
+          - { name: 'console.command' }
+
+    aw.loyalty.itineraries_listener:
+        public: true
+        class: AwardWallet\MainBundle\Loyalty\Listener\ItinerariesListener
+        arguments:
+        - "@logger"
+        - "@doctrine.orm.entity_manager"
+        - !tagged aw.itinerary_repository
+        tags:
+        - { name: kernel.event_listener, event: aw.account_updated, method: onAccountUpdated }
+
+    AwardWallet\MainBundle\Command\Update\UpdateQsCreditCardCommand:
+        autowire: true
+        tags:
+            - { name: 'console.command', command: 'aw:update-qs-credit-card' }
+
+    AwardWallet\MainBundle\Command\Update\UpdateQsTransactionCommand:
+        arguments:
+            - "@logger"
+            - "@database_connection"
+            - '@AwardWallet\MainBundle\Service\AppBot\AppBot'
+            - '@AwardWallet\MainBundle\Service\Statistics'
+            - '@AwardWallet\MainBundle\Service\Charts\QsTransactionChart'
+            - "%affiliate_stats_path%"
+            - { login: "%quinstreet_login%", password: "%quinstreet_password%" }
+        tags:
+            - { name: 'console.command' }
+
+    AwardWallet\MainBundle\Command\DailyHeartbeatCommand:
+        autowire: true
+        tags:
+            - { name: 'console.command' }
+
+    AwardWallet\MainBundle\Command\TravelStatisticsCommand:
+        autowire: true
+        arguments:
+            $clickhouse: "@doctrine.dbal.clickhouse_connection"
+        tags: ['console.command']
+
+    AwardWallet\MainBundle\Command\CardSpendSentEmailCommand:
+        autowire: true
+        arguments:
+          $mailer: "@aw.email.mailer"
+        tags:
+            - { name: 'console.command', command: 'aw:cardspend:sent-email' }
+
+#    AwardWallet\MainBundle\Command\RewardsActivityCommand:
+#        autowire: true
+#        bind:
+#            $rewardsActivityProvider: '@aw.email.provider.rewards_activity'
+
+    AwardWallet\MainBundle\Command\TransferTimesCommand:
+        arguments:
+            - '@AwardWallet\MainBundle\Service\TransferTimes'
+            - "@logger"
+        tags:
+            - { name: 'console.command', command: 'aw:update-transfer-times' }
+
+    AwardWallet\MainBundle\Command\CancelAT201AccessCommand:
+        autowire: true
+        arguments:
+            $calculator: '@AwardWallet\MainBundle\Service\Billing\ExpirationCalculator'
+        tags:
+            - { name: 'console.command', command: 'aw:cancel-at201-access' }
+
+    AwardWallet\MainBundle\Command\AT201ImportMembershipCommand:
+        autowire: true
+        arguments:
+            $filePath: "%kernel.root_dir%/cache/at201-membership.csv"
+        tags:
+            - { name: 'console.command', command: 'aw:at201-import-membership' }
+
+    AwardWallet\Common\FlightStats\StatWriter:
+        arguments:
+          - "frontend"
+          - "@monolog.logger.fsstat"
+        tags:
+          - { name: kernel.event_listener, event: aw_flightstats_call, method: onCall }
+
+    AwardWallet\MainBundle\Globals\GlobalVariables:
+        autowire: true
+        public: true
+        shared: true
+        arguments:
+            $requestStack: "@?request_stack"
+
+    aw.globals:
+        alias: AwardWallet\MainBundle\Globals\GlobalVariables
+
+    Buzz\Client\Curl:
+        public: true
+        shared: false
+
+    guzzle_client_factory:
+        public: true
+        class: AwardWallet\MainBundle\Globals\GuzzleClientFactory
+
+    guzzle_client_default:
+        public: true
+        class: GuzzleHttp\Client
+        factory: ['@guzzle_client_factory', 'createClient']
+
+    aw.view.elements:
+        public: true
+        class: AwardWallet\MainBundle\Globals\ViewElementCreator
+        arguments: []
+
+    AwardWallet\MainBundle\Globals\StandartViewCreator:
+        public: true
+        autowire: true
+        arguments:
+            $view: "@aw.view.elements"
+
+    aw.user.service:
+        public: true
+        class: AwardWallet\MainBundle\Globals\UserHandleService
+        arguments: ["@security.token_storage", "@doctrine.orm.entity_manager"]
+
+    AwardWallet\MainBundle\Globals\ThrottlerCounter:
+        arguments: ["@aw.memcached"]
+
+    aw.email.callback_processor:
+        alias: 'AwardWallet\MainBundle\Email\CallbackProcessor'
+    AwardWallet\MainBundle\Email\BlogUnsubscriber:
+      autowire: true
+    AwardWallet\MainBundle\Email\CallbackProcessor:
+        autowire: true
+    AwardWallet\MainBundle\Email\ItineraryProcessor:
+        autowire: true
+    AwardWallet\MainBundle\Email\EmailAttachmentProcessor:
+        autowire: true
+    AwardWallet\MainBundle\Email\RetrieveConfirmationSender:
+        autowire: true
+        arguments:
+            $memcached: '@aw.memcached'
+    AwardWallet\MainBundle\Email\StatementProcessor:
+        public: true
+        arguments:
+            - '@logger'
+            - '@doctrine.orm.entity_manager'
+            - '@AwardWallet\MainBundle\Entity\Repositories\ProviderRepository'
+            - '@AwardWallet\MainBundle\Entity\Repositories\AccountRepository'
+            - '@aw.email.statement_matcher'
+            - '@aw.email.statement_saver'
+    aw.email.statement_processor:
+        alias: 'AwardWallet\MainBundle\Email\StatementProcessor'
+    AwardWallet\MainBundle\Email\ProviderCouponProcessor:
+        autowire: true
+    AwardWallet\MainBundle\Email\GmailFilter:
+        autowire: true
+    AwardWallet\MainBundle\Email\EmailAddressManager:
+        autowire: true
+
+    AwardWallet\MainBundle\Email\StatementMatcher:
+        public: true
+        class: AwardWallet\MainBundle\Email\StatementMatcher
+        arguments:
+            - '@AwardWallet\MainBundle\Entity\Repositories\AccountRepository'
+            - '@logger'
+    aw.email.statement_matcher:
+        alias: 'AwardWallet\MainBundle\Email\StatementMatcher'
+    AwardWallet\MainBundle\Email\StatementSaver:
+        public: true
+        autowire: true
+    aw.email.statement_saver:
+        alias: 'AwardWallet\MainBundle\Email\StatementSaver'
+    AwardWallet\MainBundle\Email\BoardingPassProcessor:
+        public: true
+        arguments:
+            - '@logger'
+            - '@database_connection'
+            - '@doctrine.orm.entity_manager'
+            - '@AwardWallet\MainBundle\Entity\Repositories\TripsegmentRepository'
+            - '@router'
+            - '@Aws\S3\S3Client'
+            - "%aws_s3_boarding_bucket%"
+    aw.email.discovered_migrator:
+        public: true
+        class: AwardWallet\MainBundle\Email\DiscoveredAccountMigrator
+        arguments:
+            - '@doctrine.orm.entity_manager'
+            - '@logger'
+        tags:
+            - { name: kernel.event_listener, event: aw.account_form_saved, method: onSave }
+    AwardWallet\MainBundle\Email\UtilBusiness:
+        public: true
+        autowire: true
+
+    AwardWallet\MainBundle\Loyalty\Converters\PropertiesItinerariesConverter:
+        autowire: true
+
+    AwardWallet\MainBundle\Globals\Updater\Engine\Wsdl:
+        autowire: true
+        #arguments: ["%wsdl.address%", "%wsdl.debug_address%", "%wsdl.login%", "%wsdl.password%", "@security.authorization_checker", "@aw.memcached", '@AwardWallet\MainBundle\Loyalty\ApiCommunicator', '@AwardWallet\MainBundle\Loyalty\Converter', '%checker_logs_dir%']
+        public: false
+        lazy: true
+
+    AwardWallet\MainBundle\Globals\Updater\Engine\Local:
+        arguments:
+          - "@logger"
+          - "@aw.loyalty.account_saving.processor"
+          - '@AwardWallet\MainBundle\Entity\Repositories\AccountRepository'
+          - "@database_connection"
+          - '@AwardWallet\MainBundle\Loyalty\AccountSaving\Processors\ItinerariesProcessor'
+          - '@AwardWallet\MainBundle\Service\AccountCheckReportConverter'
+          - '@AwardWallet\MainBundle\Loyalty\Converters\PropertiesItinerariesConverter'
+          - '@AwardWallet\Common\Parsing\ParsingConstants'
+          - '@event_dispatcher'
+          - '@aw.solver.master'
+          - '@AwardWallet\MainBundle\Loyalty\AccountSaving\CheckAccountResponsePreparer'
+          - '@AwardWallet\MainBundle\Updater\AccountProgress'
+        public: true
+        lazy: true
+
+    AwardWallet\MainBundle\Globals\Updater\Engine\UpdaterEngineInterface:
+        alias: 'AwardWallet\MainBundle\Globals\Updater\Engine\Wsdl'
+        public: true # for redirectFrame.php and friends
+
+    AwardWallet\MainBundle\Updater\Plugin\:
+        resource: '../../Updater/Plugin'
+        public: true
+        autowire: true
+
+    AwardWallet\MainBundle\Updater\Formatter\EventsFormatterDesktop:
+        autowire: true
+
+    aw.updater_session.desktop:
+        class: AwardWallet\MainBundle\Updater\UpdaterSession
+        public: true
+        autowire: true
+        shared: false
+        arguments:
+            $formatter: '@AwardWallet\MainBundle\Updater\Formatter\EventsFormatterDesktop'
+            $plugins: !tagged aw.updater.plugin
+
+    aw.updater_session.mobile:
+        class: AwardWallet\MainBundle\Updater\UpdaterSession
+        public: true
+        shared: false
+        autowire: true
+        arguments:
+            $formatter: '@AwardWallet\MainBundle\Updater\Formatter\EventsFormatterMobile'
+            $plugins: !tagged aw.updater.plugin
+
+    AwardWallet\MainBundle\Updater\Formatter\EventsFormatterMobile:
+        public: true
+        autowire: true
+        arguments:
+            $translator: "@translator_hijacker"
+
+    AwardWallet\MainBundle\Updater\ExtensionV3SessionMap:
+      autowire: true
+    AwardWallet\MainBundle\Updater\TimeoutResolver:
+        public: true
+        autowire: true
+        arguments:
+            - 180
+            - 600
+
+    aw.updater.request_handler:
+        autowire: true
+        public: true
+        class: AwardWallet\MainBundle\Updater\RequestHandler
+    AwardWallet\MainBundle\Updater\RequestHandler: '@aw.updater.request_handler'
+
+    AwardWallet\MainBundle\FrameworkExtension\FormErrorHandler: '@aw.extension.form.error_handler'
+
+    AwardWallet\MainBundle\Updater\AccountProgress:
+        autowire: true
+        tags:
+            - { name: kernel.event_listener, event: aw.loyalty.prepare_account_request, method: onLoyaltyPrepareAccountRequest }
+            - { name: kernel.event_listener, event: aw.account_updated, method: onAccountUpdated, priority: 1 }
+
+    AwardWallet\MainBundle\Updater\AccountUpdateListener:
+        autowire: true
+        tags:
+            - { name: kernel.event_listener, event: aw.account_updated, method: onAccountUpdated }
+            - { name: kernel.event_listener, event: AwardWallet\MainBundle\Service\OneTimeCodeProcessor\Event\AccountSentOTCRecheckEvent, method: onAccountOTCRecheck }
+
+    AwardWallet\MainBundle\Updater\UpdaterSessionManager:
+        autowire: true
+
+    AwardWallet\MainBundle\Updater\UpdaterChannelAccessChecker:
+        autowire: true
+
+    AwardWallet\MainBundle\Updater\UpdaterSessionStorage:
+        autowire: true
+
+    AwardWallet\MainBundle\Updater\UpdaterSessionFactory:
+        autowire: true
+        arguments: ["@service_container"]
+
+    AwardWallet\MainBundle\Updater\TickScheduler:
+        autowire: true
+
+    AwardWallet\MainBundle\Updater\RequestSerializer:
+        autowire: true
+
+    AwardWallet\MainBundle\Updater\ExtensionV3SupportLoader:
+        autowire: true
+
+    AwardWallet\MainBundle\Updater\ExtensionV3LocalPasswordWaitMapOps:
+        autowire: true
+
+    AwardWallet\MainBundle\Updater\ExtensionV3IsolatedCheckWaitMapOps:
+        autowire: true
+
+    AwardWallet\MainBundle\Updater\ClientCheckSlotsCalculator:
+        autowire: true
+
+    AwardWallet\MainBundle\Updater\EventsChannelMigrator:
+        autowire: true
+
+    AwardWallet\MainBundle\Globals\SymfonyEnvironmentExecutor\SymfonyEnvironmentExecutor:
+        autowire: true
+        arguments:
+            $localeListener: "@aw.locale.listener"
+            $apiVersionListener: "@aw.listener.api_version"
+
+    aw.account_list.builder.kind:
+        public: true
+        class: AwardWallet\MainBundle\Manager\AccountList\Kind\Builder
+        arguments: ["@service_container"]
+
+    aw.account_list.builder.provider:
+        public: true
+        class: AwardWallet\MainBundle\Manager\AccountList\Provider\Builder
+        arguments: ["@service_container"]
+
+    aw.account_list.resolver.provider.access:
+        public: true
+        class: AwardWallet\MainBundle\Manager\AccountList\Provider\AccessResolver
+        arguments: ["@security.token_storage"]
+
+    aw.account_list.resolver.provider.accounts:
+        public: true
+        class: AwardWallet\MainBundle\Manager\AccountList\Provider\AccountsResolver
+        arguments: ['@AwardWallet\MainBundle\Entity\Repositories\ProviderRepository', "@security.token_storage"]
+
+    aw.account_list.resolver.provider.alliance:
+        public: true
+        class: AwardWallet\MainBundle\Manager\AccountList\Provider\AllianceResolver
+        arguments: ["@doctrine.orm.entity_manager"]
+
+    aw.account_list.resolver.provider.elitelevels:
+        public: true
+        class: AwardWallet\MainBundle\Manager\AccountList\Provider\EliteLevelsResolver
+        arguments: ["@doctrine.orm.entity_manager"]
+
+    aw.account_list.resolver.provider.stats:
+        public: true
+        class: AwardWallet\MainBundle\Manager\AccountList\Provider\StatsResolver
+
+
+    aw.security.role_manager:
+        public: true
+        class: AwardWallet\MainBundle\Security\RoleManager
+        arguments: ["@security.token_storage", "@security.role_hierarchy"]
+
+    AwardWallet\MainBundle\Security\RoleManager: '@aw.security.role_manager'
+
+    AwardWallet\MainBundle\Security\TwoFactorAuthentication\QuestionGenerator: '@aw.question_generator'
+
+    aw.email.api:
+        public: true
+        class: AwardWallet\MainBundle\Email\Api
+        arguments: ["%email_api%"]
+
+    aw.htmleditor.form.type:
+        public: true
+        class: AwardWallet\MainBundle\Form\Type\HtmleditorType
+        tags:
+            - { name: form.type }
+
+    aw.htmleditor.transformer.html_purifier:
+        public: true
+        class: AwardWallet\MainBundle\Form\Transformer\HTMLPurifierTransformer
+        tags:
+            - { name: htmleditor.transformer }
+
+    aw.listener.oldbrowser:
+        public: true
+        class: AwardWallet\MainBundle\FrameworkExtension\Listeners\OldBrowserListener
+        arguments: [ "@service_container" ]
+        tags:
+            - { name: kernel.event_listener, event: kernel.request, method: onKernelRequest }
+            - { name: kernel.event_listener, event: kernel.exception, method: onKernelException, priority: 200 }
+
+    AwardWallet\MainBundle\Email\BookerMailImporter:
+        autowire: true
+
+    aw.listener.referal:
+        autowire: true
+        public: true
+        class: AwardWallet\MainBundle\FrameworkExtension\Listeners\ReferalListener
+        tags:
+            - { name: kernel.event_listener, event: kernel.request, method: onKernelRequest }
+
+    aw.elitelevel.drawer:
+      public: true
+      class: AwardWallet\MainBundle\Globals\EliteLevelProgressDrawer
+      arguments:
+        - "@doctrine.orm.entity_manager"
+        - "@translator"
+        - '@AwardWallet\MainBundle\Globals\Localizer\LocalizeService'
+        - "@monolog.logger.stat"
+    AwardWallet\MainBundle\Globals\EliteLevelProgressDrawer: '@aw.elitelevel.drawer'
+
+    AwardWallet\MainBundle\Globals\AccountInfo\Info:
+      public: true
+      arguments:
+        - "@doctrine.orm.entity_manager"
+        - '@AwardWallet\MainBundle\Globals\Localizer\LocalizeService'
+        - "@translator"
+        - "@kernel"
+        - '@AwardWallet\MainBundle\Service\AccountHistory\BankTransactionsAnalyser'
+        - '@AwardWallet\MainBundle\Service\CheckerFactory'
+        - '@AwardWallet\MainBundle\Service\GeoLocation\GeoLocation'
+        - '@logger'
+    aw.accountinfo: '@AwardWallet\MainBundle\Globals\AccountInfo\Info'
+
+    AwardWallet\MainBundle\Globals\AccessLevel\AccessControlList: '@aw.security.access.control'
+
+    AwardWallet\MainBundle\Globals\ClientVerificationHandler: '@aw.client_verification'
+
+    AwardWallet\Common\Memcached\Factory:
+
+    Memcached:
+        public: true
+        class: Memcached
+        factory: ['@AwardWallet\Common\Memcached\Factory', 'create']
+        arguments:
+          - "%memcached_host%"
+          - "%memcached_port%"
+
+    aw.memcached: '@Memcached'
+
+    aw.shared_memcached:
+        public: true
+        class: Memcached
+        factory: ['@AwardWallet\Common\Memcached\Factory', 'create']
+        arguments:
+            - "%shared_memcached_host%"
+
+    Symfony\Component\Lock\Store\MemcachedStore:
+        class: Symfony\Component\Lock\Store\MemcachedStore
+        arguments: ['@Memcached']
+
+    Symfony\Component\Lock\Factory:
+        autowire: true
+        arguments: ['@Symfony\Component\Lock\Store\MemcachedStore']
+
+    Symfony\Component\Lock\LockFactory:
+        autowire: true
+        arguments: ['@Symfony\Component\Lock\Store\MemcachedStore']
+
+    AwardWallet\MainBundle\Service\FlightInfo\FlightInfo:
+        public: true
+        autowire: true
+        arguments:
+            -
+                flight_stats.update:
+                    service: '@AwardWallet\MainBundle\Service\FlightInfo\Request\FlightStats\FlightStatusFactory'
+                    request: 'flight_status'
+            - "@doctrine.orm.entity_manager"
+            - "@logger"
+            - "@old_sound_rabbit_mq.flight_info_updater_delayed_producer"
+            - '@AwardWallet\MainBundle\Service\AirlineNameResolver'
+            - "@router"
+            - "@aw.memcached"
+            - "@aw.diff.it_tracker"
+            - '@AwardWallet\MainBundle\Entity\Repositories\AircraftRepository'
+        tags:
+            - { name: doctrine.event_listener, event: onClear, lazy: true }
+
+    AwardWallet\MainBundle\Service\FlightInfo\Engine\MemcacheLocker:
+        public: true
+        autowire: true
+        arguments:
+            $failures_to_lockout: 5
+            $lockout_timeout: 600
+            $reset_timeout: 60
+            $locker_key: "flight_stats_requests"
+
+    AwardWallet\MainBundle\Service\FlightInfo\Engine\LockableEngine:
+        public: true
+        autowire: true
+        arguments:
+            $request_timeout: 3
+            $statLogger: "@monolog.logger.fsstat"
+
+    AwardWallet\MainBundle\Service\FlightInfo\Request\FlightStats\FlightStatusFactory:
+        public: true
+        autowire: true
+        arguments:
+            $app_id: "%flight_info.app_id%"
+            $app_key: "%flight_info.app_key%"
+
+    aw.manager.mobile_device_manager:
+        autowire: true
+        public: true
+        class: AwardWallet\MainBundle\Manager\MobileDeviceManager
+        arguments:
+          $securityLogger: "@monolog.logger.security"
+
+    AwardWallet\MainBundle\Manager\MobileDeviceManager: "@aw.manager.mobile_device_manager"
+
+    AwardWallet\MainBundle\Manager\OfferManager: '@aw.manager.offer'
+
+    aw.push_notification.itinerary.listener:
+        public: true
+        autowire: true
+        class: AwardWallet\MainBundle\Event\PushNotification\ItineraryListener
+        tags:
+            - { name: monolog.logger, channel: push }
+            - { name: kernel.event_listener, event: aw.itinerary.update, method: onItineraryUpdate }
+
+    aw.push_notification.account.listener:
+        public: true
+        autowire: true
+        class: AwardWallet\MainBundle\Event\PushNotification\AccountListener
+        tags:
+            - { name: kernel.event_listener, event: aw.account.update, method: onAccountUpdate }
+            - { name: kernel.event_listener, event: aw.account.expire, method: onAccountExpire }
+            - { name: kernel.event_listener, event: aw.passport.expire, method: onPassportExpire }
+            - { name: kernel.event_listener, event: AwardWallet\MainBundle\Event\AccountBalanceChangedEvent, method: onAccountBalanceChanged }
+
+    aw.push_notification.profile.listener:
+        public: true
+        class: AwardWallet\MainBundle\Event\PushNotification\ProfileListener
+        autowire: true
+        tags:
+            - { name: kernel.event_listener, event: aw.security.one_time_code, method: onOneTimeCode }
+
+    aw.push_notification.booking.listener:
+        public: true
+        class: AwardWallet\MainBundle\Event\PushNotification\BookingMobileListener
+        arguments:
+            - '@AwardWallet\MainBundle\Service\SocksMessaging\Client'
+            - '@AwardWallet\MainBundle\Service\SocksMessaging\BookingMessaging'
+            - '@AwardWallet\MainBundle\Service\Notification\Sender'
+            - "@aw.api.versioning.mobile"
+            - "@monolog.logger.stat"
+        tags:
+            - { name: kernel.event_listener, event: aw.booking.message.new, method: onBookingMessage }
+
+    AwardWallet\MainBundle\Service\Notification\Sender:
+        autowire: true
+        calls:
+            - ["addTransformer", [1, '@AwardWallet\MainBundle\Service\Notification\Transformer\Mobile']]
+            - ["addTransformer", [2, '@AwardWallet\MainBundle\Service\Notification\Transformer\Mobile']]
+            - ["addTransformer", [3, '@AwardWallet\MainBundle\Service\Notification\Transformer\Desktop']]
+            - ["addTransformer", [4, '@AwardWallet\MainBundle\Service\Notification\Transformer\Desktop']]
+            - ["addTransformer", [5, '@AwardWallet\MainBundle\Service\Notification\Transformer\Desktop']]
+            - ["addTransformer", [6, '@AwardWallet\MainBundle\Service\Notification\Transformer\Mobile']]
+
+    aw.rms_push_notifications.os.chrome:
+        public: true
+        class: AwardWallet\MainBundle\Worker\PushNotification\Platform\ChromeSender
+        arguments:
+            - "%push_notifications.vapid.public_key%"
+            - "%push_notifications.vapid.private_key%"
+            - "%push_notifications.android.gcm.api_key%"
+            - "@logger"
+        tags:
+            - { name: rms_push_notifications.handler, osType: aw.rms_push_notifications.os.chrome }
+
+    aw.rms_push_notifications.os.pushy:
+        public: true
+        class: AwardWallet\MainBundle\Worker\PushNotification\Platform\PushySender
+        arguments:
+            - "@guzzle_client_default"
+            - "%push_notifications.pushy.api_key%"
+        tags:
+            - { name: rms_push_notifications.handler, osType: aw.rms_push_notifications.os.pushy }
+
+    aw.rms_push_nofifications.os.ios:
+        public: true
+        class: AwardWallet\MainBundle\Worker\PushNotification\Platform\IosSender
+        arguments:
+            - "%push_notifications.ios.awardwallet_team.pem_path%"
+            - "%push_notifications.ios.awardwallet_team.pem_passphrase%"
+            - "%rms_push_notifications.ios.sandbox%"
+        tags:
+            - { name: rms_push_notifications.handler, osType: rms_push_notifications.os.ios }
+
+    AwardWallet\MainBundle\Worker\PushNotification\Platform\FirebaseSender:
+        public: true
+        autowire: true
+        lazy: true
+        arguments:
+          $firebasePrivateKeyFile: '%firebase_private_key%'
+        tags:
+            - { name: rms_push_notifications.handler, osType: rms_push_notifications.os.android.gcm }
+
+    aw.push_notifications.log_helper.notification:
+        public: true
+        class: AwardWallet\MainBundle\Worker\PushNotification\LogHelper
+        arguments: ['notification']
+
+    aw.push_notifications.notification_helper:
+        public: true
+        class: AwardWallet\MainBundle\Worker\PushNotification\NotificationHelper
+        arguments:
+            - "@old_sound_rabbit_mq.push_notification_producer"
+            - "@old_sound_rabbit_mq.push_notification_delayed_producer"
+            - "@monolog.logger.push"
+            - "@aw.push_notifications.log_helper.notification"
+        tags:
+            - { name: monolog.logger, channel: push }
+
+
+    aw.push_notifications.handler.mac:
+        public: true
+        class: AwardWallet\MainBundle\Worker\PushNotification\Platform\MacHandler
+        arguments:
+            - "@aw.push_notifications.notification_helper"
+            - "@aw.push_notifications.log_helper.notification"
+            - "@monolog.logger.push"
+        tags:
+            - { name: monolog.logger, channel: push }
+
+    aw.push_notifications.handler.ios:
+        public: true
+        class: AwardWallet\MainBundle\Worker\PushNotification\Platform\IosHandler
+        arguments:
+            - "@aw.push_notifications.notification_helper"
+            - "@aw.push_notifications.log_helper.notification"
+            - "@monolog.logger.push"
+            - "@rms_push_notifications.ios"
+        tags:
+            - { name: monolog.logger, channel: push }
+
+    aw.push_notifications.handler.android:
+        public: true
+        class: AwardWallet\MainBundle\Worker\PushNotification\Platform\AndroidHandler
+        arguments:
+            - "@aw.push_notifications.notification_helper"
+            - "@aw.push_notifications.log_helper.notification"
+            - "@monolog.logger.push"
+        tags:
+            - { name: monolog.logger, channel: push }
+
+
+    aw.push_notifications.handler.chrome:
+        public: true
+        arguments:
+            - "@aw.push_notifications.notification_helper"
+            - "@aw.push_notifications.log_helper.notification"
+            - "@monolog.logger.push"
+        class: AwardWallet\MainBundle\Worker\PushNotification\Platform\ChromeHandler
+        tags:
+            - { name: monolog.logger, channel: push }
+
+    aw.push_notifications.handler.pushy:
+        public: true
+        class: AwardWallet\MainBundle\Worker\PushNotification\Platform\PushyHandler
+        arguments:
+            - "@aw.push_notifications.notification_helper"
+            - "@aw.push_notifications.log_helper.notification"
+            - "@monolog.logger.push"
+        tags:
+            - { name: monolog.logger, channel: push }
+
+    AwardWallet\MainBundle\Service\BusinessTransaction\BusinessTransactionListener:
+        public: true
+        autowire: true
+        tags:
+            - { name: kernel.event_listener, event: aw.business.payment, method: onBusinessPayment }
+
+    aw.rabbitmq.delayed_producer.push_notification:
+        public: true
+        class: AwardWallet\MainBundle\Service\DelayedProducer
+        arguments:
+            - "@old_sound_rabbit_mq.connection.default"
+            - push_notification
+            - push_notification
+
+    aw.rabbitmq.delayed_producer.itinerary_notification:
+        public: true
+        class: AwardWallet\MainBundle\Service\DelayedProducer
+        arguments:
+            - "@old_sound_rabbit_mq.connection.default"
+            - itinerary_notification
+            - itinerary_notification
+
+    aw.worker.push_notification.sender:
+        public: true
+        autowire: true
+        class: AwardWallet\MainBundle\Worker\PushNotification\NotificationWorker
+        arguments:
+            $sender: "@rms_push_notifications"
+            $producer: "@old_sound_rabbit_mq.push_notification_producer"
+            $delayedProducer: "@old_sound_rabbit_mq.push_notification_delayed_producer"
+        calls:
+            - [addHandler, [!php/const AwardWallet\MainBundle\Entity\MobileDevice::TYPE_SAFARI, "@aw.push_notifications.handler.mac"]]
+            - [addHandler, [!php/const AwardWallet\MainBundle\Entity\MobileDevice::TYPE_IOS, "@aw.push_notifications.handler.ios"]]
+            - [addHandler, [!php/const AwardWallet\MainBundle\Entity\MobileDevice::TYPE_CHROME, "@aw.push_notifications.handler.chrome"]]
+            - [addHandler, [!php/const AwardWallet\MainBundle\Entity\MobileDevice::TYPE_FIREFOX, "@aw.push_notifications.handler.chrome"]]
+            - [addHandler, [!php/const AwardWallet\MainBundle\Entity\MobileDevice::TYPE_ANDROID, "@aw.push_notifications.handler.android"]]
+            - [addHandler, [!php/const AwardWallet\MainBundle\Entity\MobileDevice::TYPE_PUSHY_ANDROID, "@aw.push_notifications.handler.pushy"]]
+
+    aw.worker.push_notification.device:
+        public: true
+        class: AwardWallet\MainBundle\Worker\PushNotification\DeviceWorker
+        arguments: [ "@database_connection", "@aw.manager.mobile_device_manager", "@monolog.logger.push" ]
+
+    aw.worker.itinerary_notification:
+        public: true
+        class: AwardWallet\MainBundle\Worker\ItineraryNotificationWorker
+        arguments:
+            - "@doctrine.orm.default_entity_manager"
+            - "@monolog.logger.email"
+            - '@AwardWallet\MainBundle\Service\ItineraryMail\Sender'
+        tags:
+            - { name: monolog.logger, channel: email }
+
+    aw.worker.async_processor:
+        public: true
+        class: AwardWallet\MainBundle\Worker\AsyncProcess\Worker
+        autowire: true
+        arguments:
+          $container: !tagged_locator { tag: 'aw.async_executor' }
+
+    AwardWallet\MainBundle\Worker\AsyncProcess\HttpRequestTaskFactory:
+        autowire: true
+
+    AwardWallet\MainBundle\Worker\AsyncProcess\AsyncControllerAction:
+        autowire: true
+
+    AwardWallet\MainBundle\Worker\AsyncProcess\HttpRequestExecutor:
+        public: true
+        autowire: true
+
+    AwardWallet\MainBundle\Worker\ProcessControlWrapper:
+        public: true
+
+    aw.worker.flight_info_updater:
+        public: true
+        class: AwardWallet\MainBundle\Worker\FlightInfoUpdaterWorker
+        arguments:
+            - "@doctrine"
+            - '@AwardWallet\MainBundle\Service\FlightInfo\FlightInfo'
+            - "@aw.diff.it_tracker"
+            - "@aw.memcached"
+            - "@old_sound_rabbit_mq.flight_info_updater_delayed_producer"
+            - "@logger"
+
+    aw.worker.manager_send_notification:
+        public: true
+        class: AwardWallet\MainBundle\Worker\ManagerSendNotificationWorker
+        arguments:
+            - "@doctrine"
+            - "@aw.memcached"
+            - '@AwardWallet\MainBundle\Service\ManagerSendNotification'
+            - "@logger"
+
+    AwardWallet\MainBundle\Globals\ApiVersioning\ApiVersioningService: "@aw.api.versioning"
+
+    aw.api.versioning:
+        public: true
+        autowire: true
+        class: AwardWallet\MainBundle\Globals\ApiVersioning\ApiVersioningService
+
+    aw.api.versioning.mobile:
+        public: true
+        class: AwardWallet\MainBundle\Globals\ApiVersioning\ApiVersioningService
+        autowire: true
+        calls:
+            - [setVersionsProvider, ["@aw.api.versioning.provider.mobile"]]
+
+    aw.api.versioning.provider.mobile:
+        public: true
+        class: AwardWallet\MainBundle\Globals\ApiVersioning\MobileVersions
+        arguments: ['web']
+
+    AwardWallet\MainBundle\Service\Cache\CacheManager:
+        public: true
+        autowire: true
+        arguments:
+          $throwOnSerializationError: "%aw.cache_manager.throw_on_serialization_error%"
+
+    AwardWallet\MainBundle\Service\Cache\Invalidator:
+        public: true
+        autowire: true
+        tags:
+            - { name: doctrine.event_listener, event: onFlush }
+            - { name: doctrine.event_listener, event: preUpdate }
+            - { name: doctrine.event_listener, event: preRemove }
+            - { name: doctrine.event_listener, event: postRemove }
+            - { name: doctrine.event_listener, event: postPersist }
+            - { name: doctrine.event_listener, event: postFlush }
+
+    AwardWallet\MainBundle\Service\AppBot\Adapter\Slack:
+        arguments: ["@aw.curl_driver", "@logger", "%slack%", "%kernel.environment%"]
+
+    AwardWallet\MainBundle\Service\AppBot\AppBot:
+        arguments: ['@AwardWallet\MainBundle\Service\AppBot\Adapter\Slack']
+
+    AwardWallet\MainBundle\FrameworkExtension\Error\SimpleErrorReporter:
+        autowire: true
+
+    AwardWallet\MainBundle\FrameworkExtension\Error\AggregateErrorReporter:
+        autowire: true
+        shared: false
+
+    AwardWallet\MainBundle\FrameworkExtension\Error\SimpleLeveledErrorReporter:
+        autowire: true
+
+    AwardWallet\MainBundle\FrameworkExtension\Error\SafeExecutorFactory:
+        public: true
+        autowire: true
+        shared: false
+        arguments:
+          $isDebug: "%kernel.debug%"
+
+    AwardWallet\MainBundle\Globals\Geo:
+        public: true
+        autowire: true
+        arguments:
+            - "@logger"
+            - "@translator"
+            - "@doctrine.orm.entity_manager"
+            - "@aw.geoip.city"
+
+    aw.globals.geo:
+        alias: AwardWallet\MainBundle\Globals\Geo
+        public: true
+
+    aw.geoip.city:
+        public: true
+        class: GeoIp2\Database\Reader
+        arguments: [ "%geoip.city.path%" ]
+        lazy: true
+
+    aw.geoip.country:
+        public: true
+        class: GeoIp2\Database\Reader
+        arguments: [ "%geoip.country.path%" ]
+        lazy: true
+    GeoIp2\Database\Reader: '@aw.geoip.country'
+
+    AwardWallet\MainBundle\Controller\SparkPostController:
+        public: true
+        autoconfigure: true
+        autowire: true
+        arguments: ["@logger", "%sparkpost_callback_password%", '@AwardWallet\MainBundle\Manager\NDRManager']
+
+    AwardWallet\MainBundle\Worker\AsyncProcess\Storage:
+        arguments: ["@aw.memcached", "%secret%"]
+
+    AwardWallet\MainBundle\Worker\AsyncProcess\Process:
+        arguments: ["@old_sound_rabbit_mq.async_processor_2_producer", '@AwardWallet\MainBundle\Worker\AsyncProcess\Storage']
+    aw.async.process:
+        # it's public for usage from old code, like getSymfonyContainer()->get(Process::class)
+        # remove this alias after merging and replacing usages in service repo
+        public: true
+        alias: 'AwardWallet\MainBundle\Worker\AsyncProcess\Process'
+
+    aw.async.executor.sql:
+        public: true
+        class: AwardWallet\MainBundle\Worker\AsyncProcess\SqlExecutor
+        arguments: ['@doctrine.dbal.default_connection']
+
+    aw.async.executor.history_types:
+        autowire: true
+        public: true
+        class: AwardWallet\MainBundle\Worker\AsyncProcess\HistoryTypesExecutor
+
+    aw.async.executor.expiration:
+        public: true
+        class: AwardWallet\MainBundle\Worker\AsyncProcess\ExpirationExecutor
+        arguments: ["@doctrine.dbal.unbuffered_connection", '@AwardWallet\MainBundle\Service\CheckerFactory']
+
+    aw.async.executor.store_location_finder:
+        public: true
+        class: AwardWallet\MainBundle\Worker\AsyncProcess\StoreLocationFinderExecutor
+        arguments:
+            - '@AwardWallet\MainBundle\Service\StoreLocationFinder\StoreLocationFinder'
+            - "@doctrine.orm.default_entity_manager"
+
+    AwardWallet\MainBundle\Worker\AsyncProcess\Callback\CallbackTaskExecutor:
+        arguments:
+            - "@service_container"
+            - "@old_sound_rabbit_mq.async_processor_delayed_producer"
+            - "@monolog.logger.stat"
+            - "%secret%"
+
+    aw.async.executor.callback: '@AwardWallet\MainBundle\Worker\AsyncProcess\Callback\CallbackTaskExecutor'
+
+    AwardWallet\MainBundle\Worker\AsyncProcess\UpdaterTaskExecutor:
+        public: true
+        autowire: true
+
+    AwardWallet\MainBundle\Worker\AsyncProcess\EmailCallbackExecutor:
+        public: true
+        autowire: true
+
+    AwardWallet\MainBundle\Loyalty\AccountSaving\Processors\SubAccountProcessor:
+        public: true
+        arguments:
+            - "@logger"
+            - "@doctrine.orm.entity_manager"
+            - '@AwardWallet\MainBundle\Service\CreditCards\CreditCardMatcher'
+
+    AwardWallet\MainBundle\Loyalty\HistoryState\HistoryStateBuilder:
+      autowire: true
+      arguments:
+        $historyStateKey: '%loyalty_encryption_key%'
+    AwardWallet\MainBundle\Loyalty\HistoryState\HistoryDateFinder:
+      autowire: true
+
+    AwardWallet\MainBundle\Loyalty\Converter:
+        public: true
+        autowire: true
+        arguments:
+            $callbackUrlAccount: '%requires_channel%://%host%/api/awardwallet/loyalty/callback-v2/account'
+            $callbackUrlConfirmation: '%requires_channel%://%host%/api/awardwallet/loyalty/callback-v2/confirmation'
+            $localPasswordsKey: '%local_passwords_key%'
+
+    AwardWallet\MainBundle\Loyalty\CurlSender:
+        public: true
+        class: AwardWallet\MainBundle\Loyalty\CurlSender
+        arguments:
+            - "%loyalty.api_url%"
+            - "%email.api_http_auth%"
+            - "@logger"
+            - "%loyalty.account_access_proxy_token%"
+
+    aw.juicymiles.curl_sender:
+        class: AwardWallet\MainBundle\Loyalty\CurlSender
+        arguments:
+            - "%juicymiles.api_url%"
+            - "%juicymiles.api_auth%"
+            - "@logger"
+            - "%loyalty.account_access_proxy_token%"
+
+    aw.ra_awardwallet.curl_sender:
+        class: AwardWallet\MainBundle\Loyalty\CurlSender
+        arguments:
+            - "%ra_awardwallet.api_url%"
+            - "%ra_awardwallet.api_auth%"
+            - "@logger"
+            - "%loyalty.account_access_proxy_token%"
+
+    AwardWallet\MainBundle\Loyalty\ApiCommunicator:
+        public: true
+        autowire: true
+        tags:
+            - { name: 'aw.loyalty.api_communicator', cluster_name: 'awardwallet' }
+
+    aw.juicymiles.api_communicator:
+        class: AwardWallet\MainBundle\Loyalty\ApiCommunicator
+        public: true
+        autowire: true
+        arguments:
+          $sender: '@aw.juicymiles.curl_sender'
+        tags:
+            - { name: 'aw.loyalty.api_communicator', cluster_name: 'juicymiles' }
+
+    aw.ra_awardwallet.api_communicator:
+        class: AwardWallet\MainBundle\Loyalty\ApiCommunicator
+        public: true
+        autowire: true
+        arguments:
+          $sender: '@aw.ra_awardwallet.curl_sender'
+        tags:
+            - { name: 'aw.loyalty.api_communicator', cluster_name: 'ra-awardwallet' }
+
+    aw.loyalty_api.email_history.parser:
+        public: true
+        class: AwardWallet\MainBundle\Loyalty\EmailApiHistoryParser
+        arguments:
+            - "@aw.email.api"
+            - "@aw.globals"
+            - "@router"
+            - "@logger"
+            - "@doctrine.orm.entity_manager"
+            - "@aw.loyalty.account_saving.history"
+            - "@jms_serializer"
+            - "%email.api_http_auth%"
+
+    AwardWallet\MainBundle\Controller\LoyaltyCallbackController:
+        public: true
+        autoconfigure: true
+        autowire: true
+        arguments:
+            - "@old_sound_rabbit_mq.loyalty_callback_processor_producer"
+            - "@logger"
+            - "@event_dispatcher"
+            - "@doctrine.orm.entity_manager"
+            - "@jms_serializer"
+            - "%loyalty.callback_password%"
+
+    AwardWallet\MainBundle\Controller\RewardAvailabilityCallbackController:
+        public: true
+        autoconfigure: true
+        autowire: true
+        arguments:
+            - "@logger"
+            - "@doctrine.orm.entity_manager"
+            - "@jms_serializer"
+            - "%reward_availability_callback_pass%"
+
+    AwardWallet\MainBundle\Controller\EmailCallbackController:
+        autowire: true
+        autoconfigure: true
+        public: true
+        arguments:
+            $emailCallbackPassword: '%email.callback_password%'
+
+    aw.loyalty_api.email_history_response.param_converter:
+        public: true
+        class: AwardWallet\MainBundle\Loyalty\Converters\EmailApiHistoryResponseConverter
+        tags:
+            - { name: request.param_converter, converter: email_api.history_converter }
+        arguments:
+            - "@jms_serializer"
+            - "@validator"
+            - "@monolog.logger"
+
+    aw.loyalty_api.callback_worker:
+        public: true
+        class: AwardWallet\MainBundle\Worker\LoyaltyCallbackWorker
+        autowire: true
+    AwardWallet\MainBundle\Worker\LoyaltyCallbackWorker: '@aw.loyalty_api.callback_worker'
+
+    AwardWallet\MainBundle\Loyalty\Listener\UserDataDeserializer:
+        autowire: true
+        tags:
+            - { name: jms_serializer.event_listener, event: serializer.pre_deserialize, method: onDeserializeCheckAccountResponse, class: AwardWallet\MainBundle\Loyalty\Resources\CheckAccountResponse, direction: deserialization }
+
+    AwardWallet\MainBundle\Globals\JsonSerialize\BooleanToStringHandler:
+        autowire: true
+        tags:
+            - { name: jms_serializer.handler, direction: 'serialization', type: 'boolean_custom', format: 'json', method: 'serializeBooleanToString' }
+            - { name: jms_serializer.handler, direction: 'deserialization', type: 'boolean_custom', format: 'json', method: 'deserializeBooleanFromString' }
+
+    AwardWallet\MainBundle\Service\SocksMessaging\ClientInterface: '@AwardWallet\MainBundle\Service\SocksMessaging\Client'
+
+    aw.booking.message.email_listener:
+        public: true
+        autowire: true
+        class: AwardWallet\MainBundle\Event\BookingMessage\EmailListener
+        arguments:
+            $tokenStorage: '@security.token_storage'
+        tags:
+            - { name: kernel.event_listener, event: aw.booking.message.new, method: onBookingNewMessage }
+
+    aw.booking.message.socket_listener:
+        public: true
+        class: AwardWallet\MainBundle\Event\BookingMessage\SocketListener
+        arguments:
+            - '@AwardWallet\MainBundle\Service\SocksMessaging\Client'
+            - '@AwardWallet\MainBundle\Service\SocksMessaging\BookingMessaging'
+            - "@monolog.logger.stat"
+        tags:
+            - { name: kernel.event_listener, event: aw.booking.message.new, method: onBookingNewMessage }
+            - { name: kernel.event_listener, event: aw.booking.message.edit, method: onBookingEditMessage }
+            - { name: kernel.event_listener, event: aw.booking.message.delete, method: onBookingDeleteMessage }
+
+    AwardWallet\MainBundle\Service\WebPush\WebPushListener:
+        autowire: true
+        tags:
+            - { name: kernel.event_listener, event: aw.booking.message.new, method: onBookingNewMessage }
+#            - { name: kernel.event_listener, event: aw.booking.message.edit, method: onBookingEditMessage }
+#            - { name: kernel.event_listener, event: aw.booking.message.delete, method: onBookingDeleteMessage }
+
+    aw.curl_driver:
+        public: true
+        class: CurlDriver
+
+    AwardWallet\MainBundle\Service\Billing\PaypalSoapApi:
+        autowire: true
+        arguments:
+            $paypalParams: "%paypal%"
+            $passwordDecryptor: '@AwardWallet\Common\PasswordCrypt\PasswordDecryptor'
+
+    AwardWallet\MainBundle\Service\Billing\PaypalSoapCancelListener:
+        autowire: true
+        tags:
+        - { name: kernel.event_listener, event: aw.cancel_recurring_payment, method: cancelRecurring }
+
+    AwardWallet\MainBundle\Service\Billing\PaypalRestApi:
+        arguments:
+            $clientId: "%paypal_client_id%"
+            $secret: "%paypal_secret%"
+            $live: "%paypal_live%"
+            $logger: "@monolog.logger.payment"
+
+    AwardWallet\MainBundle\Service\Billing\PaypalRestCancelListener:
+        autowire: true
+        tags:
+            - { name: kernel.event_listener, event: aw.cancel_recurring_payment, method: cancelRecurring }
+
+    AwardWallet\MainBundle\Service\Billing\StripeCancelListener:
+        autowire: true
+        tags:
+            - { name: kernel.event_listener, event: aw.cancel_recurring_payment, method: cancelRecurring }
+
+    AwardWallet\MainBundle\Service\InAppPurchase\GooglePlayCancelListener:
+        autowire: true
+        tags:
+            - { name: kernel.event_listener, event: aw.cancel_recurring_payment, method: cancelRecurring }
+
+    AwardWallet\MainBundle\Service\Billing\FirstTimeSubscriptionRemover:
+        autowire: true
+        tags:
+          - { name: kernel.event_listener, event: aw.cancel_recurring_payment, method: onCancelRecurring }
+
+    AwardWallet\MainBundle\Service\Billing\PaypalRestApiFactory:
+        arguments:
+          - "%paypal_live%"
+          - "@monolog.logger.payment"
+          - '@AwardWallet\Common\PasswordCrypt\PasswordDecryptor'
+
+    Aws\S3\S3Client:
+        public: true
+        lazy: true
+        arguments:
+            -
+                region: "%aws_region%"
+                version: '2006-03-01'
+
+    Aws\DynamoDb\DynamoDbClient:
+        lazy: true
+        arguments:
+            -
+                region: "%aws_region%"
+                version: "2012-08-10"
+                profile: "default"
+
+    aw.aws_ec2_client:
+        public: true
+        class: Aws\Ec2\Ec2Client
+        lazy: true
+        arguments:
+            -
+                region: "%aws_region%"
+                version: "2016-11-15"
+
+    aw.aws_elastic_load_balancing_client:
+        public: true
+        class: Aws\ElasticLoadBalancing\ElasticLoadBalancingClient
+        lazy: true
+        arguments:
+            -
+                region: "%aws_region%"
+                version: "2012-06-01"
+
+    Aws\CloudWatch\CloudWatchClient:
+        public: true
+        lazy: true
+        arguments:
+            -
+                region: "%aws_region%"
+                version: "2010-08-01"
+
+    aw.aws_test_s3_client:
+        public: true
+        lazy: true
+        class: AwardWallet\MainBundle\FrameworkExtension\TestS3Client
+        arguments: ["%aws_test_s3_bucket_dir%"]
+
+    aw.card_image.http_handler.mobile:
+        public: true
+        class: AwardWallet\MainBundle\Manager\CardImage\HttpHandler\MobileHandler
+        arguments:
+            - "@security.authorization_checker"
+            - "@aw.security.token_storage"
+            - '@AwardWallet\MainBundle\Entity\Repositories\CardImageRepository'
+            - "@aw.card_image_manager"
+            - "@doctrine.orm.entity_manager"
+            - '@AwardWallet\MainBundle\Manager\AccountListManager'
+            - '@AwardWallet\MainBundle\Globals\AccountList\OptionsFactory'
+            - "@router"
+            - "@aw.google.vision_client"
+            - '@AwardWallet\MainBundle\Entity\Repositories\ProviderRepository'
+            - "@aw.form.dehydrator"
+            - "@form.factory"
+            - "@translator"
+            - "@aw.api.versioning"
+            - "@aw.card_image.provider_detector"
+            - '@AwardWallet\MainBundle\Worker\AsyncProcess\Process'
+            - "@aw.card_image.parser_handler"
+
+    aw.card_image.matcher.standard:
+        public: true
+        class: AwardWallet\MainBundle\Manager\CardImage\Matcher\StandardMatcher
+
+    aw.card_image.regexp_compiler:
+        public: true
+        class: AwardWallet\MainBundle\Manager\CardImage\RegexpHandler\RegexpCompiler
+
+    aw.card_iamge.regexp_handler:
+        public: true
+        class: AwardWallet\MainBundle\Manager\CardImage\RegexpHandler\RegexpHandler
+        arguments:
+            - "@aw.card_image.matcher.standard"
+
+    aw.card_image.provider_detector:
+        public: true
+        class: AwardWallet\MainBundle\Manager\CardImage\ProviderDetector
+        arguments:
+            - "@aw.card_iamge.regexp_handler"
+            - "@aw.card_image.regexp_compiler"
+            - '@AwardWallet\MainBundle\Entity\Repositories\ProviderRepository'
+            - "@monolog.logger.stat"
+            - "@doctrine.dbal.unbuffered_connection"
+
+    aw.card_image.parser_handler:
+        public: true
+        class: AwardWallet\MainBundle\Manager\CardImage\ParserHandler
+        arguments:
+            - '@AwardWallet\CardImageParser\CardImageParserLoader'
+            - "@aw.card_iamge.dom_converter"
+            - "@doctrine.orm.default_entity_manager"
+            - "@aw.card_image.image_censor"
+            - "@aw.card_image.card_recognition_result_factory"
+            - "@logger"
+
+    aw.card_image.parser_handler.dry_run:
+        public: true
+        class: AwardWallet\MainBundle\Manager\CardImage\ParserHandler
+        arguments:
+            - '@AwardWallet\CardImageParser\CardImageParserLoader'
+            - "@aw.card_iamge.dom_converter"
+            - "@doctrine.orm.default_entity_manager"
+            - "@aw.card_image.image_censor"
+            - "@aw.card_image.card_recognition_result_factory"
+            - "@logger"
+            - true
+
+    aw.card_image.image_censor:
+        public: true
+        class: AwardWallet\MainBundle\Manager\CardImage\ImageCensor
+        arguments:
+            - "/www/awardwallet/data/fonts/arial.ttf"
+            - "@aw.card_image_manager"
+            - "@logger"
+
+    aw.card_image.card_recognition_result_factory:
+        public: true
+        class: AwardWallet\MainBundle\Manager\CardImage\CardRecognitionResultFactory
+        arguments:
+            - "@aw.card_iamge.dom_converter"
+
+    aw.async.executor.card_image_provider_detection:
+        public: true
+        class: AwardWallet\MainBundle\Worker\AsyncProcess\CardImageProviderDetectionTaskExecutor
+        arguments:
+            - '@AwardWallet\MainBundle\Entity\Repositories\CardImageRepository'
+            - "@aw.card_image_manager"
+            - "@aw.google.vision_client"
+            - "@aw.google.vision_response_converter"
+            - "@aw.card_image.provider_detector"
+            - "@doctrine.orm.default_entity_manager"
+            - "@form.factory"
+            - "@aw.card_image.parser_handler"
+
+    ############ FlightStats Trip Alerts ############
+
+    AwardWallet\MainBundle\Service\FlightStats\TripAlerts\TripChangeListener:
+        autowire: true
+        tags:
+            - { name: kernel.event_listener, event: aw.itinerary.update, method: onItineraryUpdate }
+
+    aw.google.vision_client:
+        public: true
+        class: AwardWallet\MainBundle\Globals\GoogleVision\GoogleVisionClient
+        arguments:
+            - "@guzzle_client_default"
+            - "@logger"
+            - "@aw.throttler.google_vision"
+            - "@aw.google.vision_response_converter"
+            - "%google_api_key%"
+
+    aw.google.vision_response_converter:
+        public: true
+        class: AwardWallet\MainBundle\Globals\GoogleVision\GoogleVisionResponseConverter
+
+    aw.throttler.google_vision:
+        public: true
+        class: AwardWallet\MainBundle\Security\AntiBruteforceLockerService
+        arguments:
+            - "@aw.memcached"
+            - 'google_vision'
+            - 1
+            - 1
+            - 8
+            - 'Google Vision requests limit exceeded.'
+            - "@monolog.logger.stat"
+
+    aw.throttler.account_access_api:
+        public: true
+        class: AwardWallet\MainBundle\Security\AntiBruteforceLockerService
+        arguments:
+            - "@aw.memcached"
+            - 'account_access_api'
+            - 60
+            - 10
+            - 20
+            - 'Google Vision requests limit exceeded.'
+            - "@monolog.logger.stat"
+
+    AwardWallet\MainBundle\Service\BackgroundCheckUpdater:
+        autowire: true
+        tags:
+            - { name: kernel.event_listener, event: user_plus_changed, method: onPlusChanged }
+            - { name: kernel.event_listener, event: aw.account_changed, method: onAccountChanged }
+
+    AwardWallet\MainBundle\Loyalty\BackgroundCheck\AsyncExecutor:
+        autowire: true
+
+    aw.legacy_common_check_account_factory:
+        public: true
+        class: AwardWallet\MainBundle\Globals\LegacyCommonCheckAccountFactoryService
+    aw.tripsegment.listener:
+        public: true
+        class: AwardWallet\MainBundle\Entity\Listener\TripsegmentListener
+        arguments:
+            - "@service_container"
+            - "@old_sound_rabbit_mq.trip_alerts_updater_producer"
+            - "@doctrine.orm.entity_manager"
+        tags:
+            - { name: doctrine.orm.entity_listener }
+    aw.owner_choice.type:
+        public: true
+        class: AwardWallet\MainBundle\Form\Type\OwnerChoiceType
+        arguments:
+            - '@aw.security.token_storage'
+            - '@AwardWallet\MainBundle\Entity\Repositories\OwnerRepository'
+            - "@translator"
+        tags:
+            - { name: form.type }
+    aw.owner_autocomplete.type:
+        public: true
+        class: AwardWallet\MainBundle\Form\Type\OwnerAutocompleteType
+        autowire: true
+        tags:
+            - { name: form.type }
+    aw.owner_meta.type:
+        public: true
+        class: AwardWallet\MainBundle\Form\Type\OwnerMetaType
+        arguments:
+            - '@security.authorization_checker'
+        tags:
+            - { name: form.type }
+
+    AwardWallet\MainBundle\Service\Lounge\Schema\Form\LoungeType:
+        autowire: true
+        tags:
+            - { name: form.type }
+
+    AwardWallet\MainBundle\Service\Lounge\Schema\Form\FreezeActionType:
+        autowire: true
+        tags:
+          - { name: form.type }
+
+    AwardWallet\MainBundle\Service\RA\Flight\Schema\Form\RAFlightSearchQueryType:
+        autowire: true
+        tags:
+          - { name: form.type }
+
+    AwardWallet\MainBundle\Service\Blog\Blog:
+        autowire: true
+
+    AwardWallet\MainBundle\Service\Blog\BlogPost:
+        autowire: true
+
+    AwardWallet\MainBundle\Service\Blog\BlogNewPostMailSender:
+        public: true
+        autowire: true
+        arguments:
+            $logger: "@monolog.logger.email"
+
+    AwardWallet\MainBundle\Service\Blog\BlogNewPostPushSender:
+        public: true
+        autowire: true
+        tags:
+            - { name: monolog.logger, channel: push }
+
+    AwardWallet\MainBundle\Service\Blog\BlogCommentNotification:
+        public: true
+        autowire: true
+        arguments:
+           $logger: "@monolog.logger.email"
+
+    AwardWallet\MainBundle\Service\Blog\BlogPostInterface: '@AwardWallet\MainBundle\Service\Blog\BlogPost'
+
+    AwardWallet\MainBundle\Globals\UnbufferedConnectionFactory:
+        autowire: true
+        public: true
+        arguments:
+            - "@doctrine.dbal.connection_factory"
+            # default
+            - "%database_host%"
+            - "%database_port%"
+            - "%database_name%"
+            - "%database_user%"
+            - "%database_password%"
+            # archive
+            - "%archive_database_host%"
+            - "%archive_database_port%"
+            - "%archive_database_name%"
+            - "%archive_database_user%"
+            - "%archive_database_password%"
+
+    aw.unbuffered_connection_factory: '@AwardWallet\MainBundle\Globals\UnbufferedConnectionFactory'
+
+    aw.card_image.exporter:
+        public: true
+        class: AwardWallet\MainBundle\Globals\CardImageParser\CardImageExporter
+        arguments:
+            - "@aw.unbuffered_connection_factory"
+            - "@router"
+
+    aw.card_iamge.dom_converter:
+        public: true
+        class: AwardWallet\CardImageParser\DOMConverter\DOMConverter
+
+    AwardWallet\CardImageParser\CardImageParserLoader:
+        public: true
+        arguments:
+            - "@logger"
+            - "%engine_path%"
+
+    aw.text_type_sanitizer_extension:
+            public: true
+            class: AwardWallet\MainBundle\Form\Extension\TextTypeSanitizerExtension
+            arguments:
+              - "@translator"
+              - "@logger"
+            tags:
+                - { name: form.type_extension, extended_type: Symfony\Component\Form\Extension\Core\Type\TextType }
+
+    aw.textarea_type_sanitizer_extension:
+            public: true
+            class: AwardWallet\MainBundle\Form\Extension\TextareaTypeSanitizerExtension
+            arguments:
+              - "@translator"
+              - "@logger"
+            tags:
+                - { name: form.type_extension, extended_type: Symfony\Component\Form\Extension\Core\Type\TextareaType }
+
+    AwardWallet\MainBundle\Service\EmailParsing\Client\Api\EmailScannerApi:
+        public: true
+        autowire: true
+        factory: ['@AwardWallet\MainBundle\Service\EmailParsing\EmailScannerApiFactory', 'getApi']
+
+    AwardWallet\MainBundle\Scanner\NotifyNotConnectedCommand:
+      autowire: true
+      tags: ['console.command']
+    AwardWallet\MainBundle\Scanner\CacheMailboxInfoCommand:
+      autowire: true
+      tags: ['console.command']
+
+    AwardWallet\MainBundle\Scanner\MailboxManager:
+        autowire: true
+        arguments:
+          $logger: "@monolog.logger.email"
+
+    AwardWallet\MainBundle\Scanner\AntibruteforceChecker:
+        public: true
+        autowire: true
+        arguments:
+          $ipLocker:       "@aw.security.antibruteforce.mailbox_ip"
+          $userLocker:     "@aw.security.antibruteforce.mailbox_user"
+          $passwordLocker: "@aw.security.antibruteforce.mailbox_password"
+          $emailLocker:    "@aw.security.antibruteforce.mailbox_email"
+          $logger:         "@monolog.logger.security"
+
+    AwardWallet\MainBundle\Scanner\AnalyticsLogger:
+        autowire: true
+        shared: false
+
+    AwardWallet\MainBundle\Service\EmailParsing\Client\Configuration:
+        public: true
+        calls:
+          - [setHost, ["%email.api_url%"]]
+          - [setApiKey, ["X-Authentication", "%email.api_http_auth%"]]
+
+
+    AwardWallet\MainBundle\Security\Captcha\:
+        resource: '../../Security/Captcha'
+        autowire: true
+        exclude:
+            - '../../Security/Captcha/Provider/*'
+            - '../../Security/Captcha/Validator/*'
+
+    AwardWallet\MainBundle\Security\Captcha\Resolver\DesktopCaptchaResolver:
+        autowire: true
+        arguments:
+            $turnstileCaptchaProvider: "@aw.captcha_provider.cloudflare_turnstile"
+            $googleRecaptchaCaptcha: "@aw.captcha_provider.site_recaptcha"
+
+    AwardWallet\MainBundle\Security\Captcha\Resolver\MobileCaptchaResolver:
+        autowire: true
+        arguments:
+            $cloudflareTurnstileProvider: "@aw.captcha_provider.cloudflare_turnstile"
+            $siteRecaptchaProvider: "@aw.captcha_provider.site_recaptcha"
+            $recaptchaV2NotARobotProvider: "@aw.captcha_provider.recaptcha_v2_not_a_robot"
+            $recaptchaV2AndroidProvider: "@aw.captcha_provider.recaptcha_v2_android"
+
+    aw.captcha_provider.cloudflare_turnstile:
+        class: AwardWallet\MainBundle\Security\Captcha\Provider\CloudflareTurnstileCaptchaProvider
+        arguments:
+            - "@aw.cloudflare_turnstile_validator"
+            - "%cloudflare_turnstile_site_key%"
+
+    aw.captcha_provider.cloudflare_turnstile_bypassing:
+        class: AwardWallet\MainBundle\Security\Captcha\Provider\CloudflareTurnstileCaptchaProvider
+        arguments:
+            - "@aw.cloudflare_turnstile_bypassing_validator"
+            - "%cloudflare_turnstile_site_key%"
+
+    aw.captcha_provider.site_recaptcha:
+        class: AwardWallet\MainBundle\Security\Captcha\Provider\GoogleRecaptchaCaptchaProvider
+        arguments:
+            - "@aw.recaptcha_validator"
+            - "%recaptcha_site_key%"
+
+    aw.captcha_provider.recaptcha_v2_not_a_robot:
+        class: AwardWallet\MainBundle\Security\Captcha\Provider\GoogleRecaptchaCaptchaProvider
+        arguments:
+            - "@aw.recaptcha_validator.v2_not_a_robot"
+            - "%recaptcha_v2_not_a_robot_site_key%"
+
+    aw.captcha_provider.recaptcha_v2_android:
+        class: AwardWallet\MainBundle\Security\Captcha\Provider\GoogleRecaptchaCaptchaProvider
+        arguments:
+            - "@aw.recaptcha_validator.v2_android"
+            - "%recaptcha_v2_android_site_key%"
+
+    aw.cloudflare_turnstile_bypassing_validator:
+        public: true
+        class: AwardWallet\MainBundle\Security\Captcha\Validator\CloudflareTurnstileBypassingCaptchaValidator
+        arguments:
+            - "@monolog.logger.security"
+
+    aw.cloudflare_turnstile_validator:
+        class: AwardWallet\MainBundle\Security\Captcha\Validator\RecaptchaValidator
+        arguments:
+          - 'cloudflare_turnstile'
+          - 'https://challenges.cloudflare.com/turnstile/v0/siteverify'
+          - "%cloudflare_turnstile_secret%"
+          - "@monolog.logger.security"
+          - "@aw.curl_driver"
+          - "%recaptcha_enabled%"
+
+    aw.recaptcha_validator:
+        public: true
+        class: AwardWallet\MainBundle\Security\Captcha\Validator\RecaptchaValidator
+        arguments:
+          - 'google_recaptcha'
+          - 'https://www.google.com/recaptcha/api/siteverify'
+          - "%recaptcha_secret%"
+          - "@monolog.logger.security"
+          - "@aw.curl_driver"
+          - "%recaptcha_enabled%"
+
+    aw.recaptcha_validator.v2_android:
+        public: true
+        class: AwardWallet\MainBundle\Security\Captcha\Validator\RecaptchaValidator
+        arguments:
+          - 'google_recaptcha_v2_android'
+          - 'https://www.google.com/recaptcha/api/siteverify'
+          - "%recaptcha_v2_android_secret%"
+          - "@monolog.logger.security"
+          - "@aw.curl_driver"
+          - "%recaptcha_enabled%"
+
+    aw.recaptcha_validator.v2_not_a_robot:
+        public: true
+        class: AwardWallet\MainBundle\Security\Captcha\Validator\RecaptchaValidator
+        arguments:
+          - 'google_recaptcha_v2_not_a_robot'
+          - 'https://www.google.com/recaptcha/api/siteverify'
+          - "%recaptcha_v2_not_a_robot_secret%"
+          - "@monolog.logger.security"
+          - "@aw.curl_driver"
+          - "%recaptcha_enabled%"
+
+    aw.referral_income_manager:
+        public: true
+        class: AwardWallet\MainBundle\Globals\AwReferralIncomeManager
+        arguments:
+            - "@database_connection"
+            - '@AwardWallet\MainBundle\Entity\Repositories\BonusConversionRepository'
+            - [291066, 238779, 46793, 20642, 11354, 12169, 143124, 93959, 89019, 118716, 106229, 327542, 25309, 93614, 233689, 20465, 314105, 123911, 308749, 439421]
+
+    AwardWallet\MainBundle\Globals\AwReferralIncomeManager: '@aw.referral_income_manager'
+
+    AwardWallet\MainBundle\Service\StoreLocationFinder\AccountListener:
+        autowire: true
+        tags:
+            - { name: kernel.event_listener, event: aw.account.update, method: onAccountUpdate }
+
+    AwardWallet\MainBundle\Globals\BarcodeCreatorFactory:
+        public: true
+        autowire: true
+
+    AwardWallet\MainBundle\Service\AccountHistory\MerchantRecommendationBuilder:
+        autowire: true
+        lazy: true
+
+    aw.merchant_lookup.replica:
+        class: AwardWallet\MainBundle\Service\MerchantLookup
+        autowire: true
+        arguments:
+            $databaseConnection: "@doctrine.dbal.read_replica_connection"
+
+    aw.merchant_lookup_handler.replica:
+        class: AwardWallet\MainBundle\Service\MerchantLookupHandler
+        autowire: true
+        arguments:
+            $merchantLookup: '@aw.merchant_lookup.replica'
+
+    AwardWallet\MainBundle\Loyalty\Listener\SpentAnalysisEmailListener:
+      autowire: true
+      public: true
+      arguments:
+        $mailer: '@aw.email.mailer'
+      tags:
+        - { name: kernel.event_listener, event: aw.account_updated, method: onAccountUpdated }
+
+    ###########################
+    ####### selenium ##########
+    ###########################
+
+    aw.selenium_memcached:
+        public: true
+        class: Memcached
+        factory: ['@AwardWallet\Common\Memcached\Factory', 'create']
+        arguments:
+            - '%selenium_memcached_host%'
+    AwardWallet\Common\Selenium\SeleniumDriverFactory:
+      autowire: true
+      arguments:
+        $seleniumConnector: '@aw.selenium_connector'
+
+    ############ Tips ############
+
+    aw.tip.twig_extension:
+        public: true
+        class: AwardWallet\WidgetBundle\FrameworkExtension\Twig\TipExtension
+        arguments:
+            - '@AwardWallet\MainBundle\Service\Tip\TipHandlerCollection'
+            - "@aw.security.token_storage"
+            - "@aw.extension.translation.entity"
+            - "@request_stack"
+            - "@aw.twig.extension.replacement"
+            - "@doctrine.orm.entity_manager"
+        tags: [twig.extension]
+
+    aw.password_vault.listener:
+        public: true
+        class: AwardWallet\MainBundle\FrameworkExtension\Listeners\AddPasswordVaultListener
+        arguments:
+            - "@logger"
+            - "@aw.email.mailer"
+            - "@doctrine.orm.entity_manager"
+            - '@AwardWallet\MainBundle\Service\AppBot\AppBot'
+            - "%requires_channel%://%host%"
+        tags:
+            - { name: kernel.event_listener, event: aw.password_vault.add, method: onAddPasswordVault }
+
+    AwardWallet\MainBundle\Service\BalanceWatch\BalanceWatchListener:
+        autowire: true
+        tags:
+        - { name: kernel.event_listener, event: aw.account_updated, method: onAccountUpdated }
+        - { name: kernel.event_listener, event: AwardWallet\MainBundle\Event\AccountBalanceChangedEvent, method: onAccountBalanceChanged }
+
+    AwardWallet\MainBundle\Service\BalanceWatch\BalanceWatchManager:
+        autowire: true
+        public: true
+        tags:
+          - { name: kernel.event_listener, event: cart_refund, method: onRefund }
+          - { name: kernel.event_listener, event: cart_markpaid, method: onCartMarkPaid }
+
+    aw.stat_logger:
+        public: true
+        alias: 'monolog.logger.stat'
+
+    AwardWallet\MainBundle\Globals\AwDataGenerator:
+        public: true
+        autowire: true
+
+    HttpDriverInterface: "@aw.curl_driver"
+    AwardWallet\Common\Memcached\Util:
+        autowire: true
+
+    AwardWallet\MainBundle\Scanner\MailboxStatusHelper:
+        autowire: true
+        public: true
+
+    AwardWallet\MainBundle\Scanner\MailboxOwnerHelper:
+        autowire: true
+        public: true
+
+    AwardWallet\MainBundle\Scanner\MailboxProgress:
+        autowire: true
+        public: true
+
+    AwardWallet\Common\TimeCommunicator:
+
+#    AwardWallet\MainBundle\Controller\Sonata\QsTransactionAdminController:
+#        autoconfigure: true
+#        arguments: ["@database_connection", "@router"]
+
+    aw.expression_language:
+        class: Symfony\Component\ExpressionLanguage\ExpressionLanguage
+        shared: false
+
+    AwardWallet\MainBundle\FrameworkExtension\Doctrine\DoctrineJsonTypeConfigurator:
+        autowire: true
+
+    Aws\Ssm\SsmClient:
+        public: true
+        class: Aws\Ssm\SsmClient
+        lazy: true
+        arguments:
+            -
+                region: "%aws_region%"
+                version: '2014-11-06'
+
+    AwardWallet\MainBundle\FrameworkExtension\Ssm\SSMParameterStoreEnvVarProcessor:
+        tags: ['container.env_var_processor']
+        autowire: true
+        arguments:
+            $defaultPath: '%ssm_path%'
+            $fake: '%env(SSM_FAKE)%'
+
+    AwardWallet\S3EnvVarProcessor\S3EnvVarProcessor:
+        tags: ['container.env_var_processor']
+        autowire: true
+        arguments:
+            $bucket: 'aw-frontend-data'
+            $fake: '%env(S3_FAKE)%'
+
+    AwardWallet\MainBundle\FrameworkExtension\Ssm\Cache:
+        arguments:
+            $paths:
+                - '%ssm_path%'
+            $names:
+                - '/parsing/prod/luminati_pass'
+                - '/parsing/prod/antigate_key'
+                - '/parsing/prod/rucaptcha_key'
+        autowire: true
+
+    AwardWallet\MainBundle\FrameworkExtension\Ssm\TestSsmCommand:
+        autowire: true
+        tags: ['console.command']
+
+    AwardWallet\MainBundle\FrameworkExtension\Ssm\PutToSsmCommand:
+        autowire: true
+        tags: ['console.command']
+
+    AwardWallet\MainBundle\FrameworkExtension\Ssm\FixParamNamesCommand:
+        autowire: true
+        tags: ['console.command']
+
+    AwardWallet\MainBundle\Command\Fix\FixLeakedPasswordsCommand:
+      autowire: true
+      tags:
+        - { name: 'console.command' }
+
+    AwardWallet\MainBundle\Command\Stat\RegisteredUsersWithFirstSucceededAccountStatsCommand:
+        autowire: true
+        tags:
+          - { name: 'console.command' }
+
+    AwardWallet\MainBundle\FrameworkExtension\Ssm\WarmupCacheCommand:
+        autowire: true
+        tags: ['console.command']
+
+    AwardWallet\MainBundle\Service\AppBot\AT201Notifier:
+        arguments:
+            $bot: '@AwardWallet\MainBundle\Service\AppBot\AppBot'
+            $basePath: "%requires_channel%://%host%"
+
+    AwardWallet\MainBundle\FrameworkExtension\Listeners\AT201CartPaidListener:
+        autowire: true
+        tags:
+            - { name: kernel.event_listener, event: cart_markpaid, method: onCartMarkPaid }
+
+    AwardWallet\MainBundle\Service\Billing\PaypalCartPaidListener:
+        autowire: true
+        tags:
+            - { name: kernel.event_listener, event: cart_markpaid, method: onCartMarkPaid }
+
+    AwardWallet\MainBundle\Service\Billing\GooglePlayCartPaidListener:
+        autowire: true
+        tags:
+            - { name: kernel.event_listener, event: cart_markpaid, method: onCartMarkPaid }
+
+    AwardWallet\MainBundle\FrameworkExtension\Listeners\CouponReferralListener:
+        autowire: true
+        tags:
+          - { name: kernel.event_listener, event: cart_markpaid, method: onCartMarkPaid }
+
+    AwardWallet\MainBundle\Security\SiegeModeDetector:
+        autowire: true
+
+    AwardWallet\MainBundle\Loyalty\Stats\Calculator:
+        autowire: true
+        arguments:
+          $elasticSearchHost: '%stat_elasticsearch_host%'
+
+    AwardWallet\MainBundle\Loyalty\Stats\CalcStatsCommand:
+        autowire: true
+        tags: ['console.command']
+
+    AwardWallet\MainBundle\Security\LoginGenerator:
+        autowire: true
+
+    AwardWallet\MainBundle\Scanner\UserAgentValidator:
+        autowire: true
+
+    AwardWallet\MainBundle\Entity\Listener\ItineraryListener:
+        autowire: true
+        tags:
+          - { name: doctrine.entity_listener }
+
+    AwardWallet\MainBundle\Command\CheckPaypalProfilesCommand:
+        autowire: true
+        tags: ['console.command']
+
+    AwardWallet\MainBundle\Command\Fix\FixNullDatesCommand:
+        autowire: true
+        tags: ['console.command']
+
+    Symfony\Component\Form\FormBuilderInterface:
+      factory: ['@form.factory', 'createBuilder']
+      shared: false
+
+    AwardWallet\MainBundle\Parameter\:
+        resource: '../../Parameter'
+        autowire: true
+
+    AwardWallet\MainBundle\Security\LoginRedirector:
+        autowire: true
+
+    AwardWallet\MainBundle\FrameworkExtension\Doctrine\AwNamingStrategy:
+        autowire: true
+
+    AwardWallet\MainBundle\Service\UserAvatar:
+        autowire: true
+        public: true
+        tags:
+          - { name: twig.extension }
+
+    AwardWallet\Common\Parsing\ParsingConstants:
+        arguments:
+            $params: "%parsing_constants%"
+            $checkerLogDir: '%kernel.logs_dir%'
+
+    AwardWallet\MainBundle\FrameworkExtension\Listeners\GiftAWPlusCartPaidListener:
+        autowire: true
+        tags:
+            - { name: kernel.event_listener, event: cart_markpaid, method: onCartMarkPaid }
+
+    AwardWallet\MainBundle\Service\CapitalcardsHelper:
+        autowire: true
+        arguments:
+          $rewardsSandbox: "%capitalcards_sandbox%"
+          $clientId: "%capitalcards_client_id%"
+          $clientSecret: "%capitalcards_client_secret%"
+          $txSandbox: "%capitalcards_tx_sandbox%"
+          $txClientId: "%capitalcards_tx_client_id%"
+          $txClientSecret: "%capitalcards_tx_client_secret%"
+          $apiHost: '%capitalcards_api_emulator_host%'
+          $localPasswordsKey: '%local_passwords_key%'
+
+    AwardWallet\MainBundle\FrameworkExtension\Listeners\ExternalTracking\ExternalTrackingListHandler:
+        public: true
+        autowire: true
+
+    aw.clickhouse:
+        class: 'FOD\DBALClickHouse\Connection'
+        factory: ['@AwardWallet\MainBundle\Service\ClickhouseFactory', 'getConnection']
+
+    Doctrine\Migrations\Version\DbalMigrationFactory:
+        autowire: true
+
+    AwardWallet\MainBundle\FrameworkExtension\Migrations\MigrationFactoryDecorator:
+      decorates: Doctrine\Migrations\Version\DbalMigrationFactory
+      arguments: ['@AwardWallet\MainBundle\FrameworkExtension\Migrations\MigrationFactoryDecorator.inner', '@service_container' ]
+
+    AwardWallet\MainBundle\Service\OneTimeCodeProcessor\AccountTracker:
+        autowire: true
+        tags:
+            - { name: kernel.event_listener, event: aw.loyalty.prepare_account_request, method: onLoyaltyPrepareAccountRequest }
+            - { name: kernel.event_listener, event: aw.account_updated, method: onAccountUpdated, priority: 1 }
+
+    Clock\ClockNative: ~
+    Clock\ClockInterface: '@Clock\ClockNative'
+
+    Symfony\Component\HttpFoundation\Session\Storage\Handler\MemcachedSessionHandler:
+      arguments:
+        $memcached: '@Memcached'
+
+    AwardWallet\Common\PasswordCrypt\PasswordEncryptor:
+        autowire: true
+        public: true # for PasswordVault, UserAdmin schema
+        arguments:
+            $privateKey: '%passwords_private_key%'
+            $keyPassPhrase: '%passwords_private_key_pass_phrase%'
+
+    AwardWallet\Common\PasswordCrypt\PasswordDecryptor:
+        autowire: true
+        public: true # for PasswordVault schema and redirectProxy.php
+        arguments:
+            $publicKey: '%passwords_public_key%'
+
+    AwardWallet\MainBundle\Factory\AccountFactory:
+        autowire: true
+
+    AwardWallet\Common\MemoryCache\Cache:
+        autowire: true
+
+    AwardWallet\MainBundle\Loyalty\AccountSaving\AccountListener:
+        autowire: true
+        tags:
+            - { name: kernel.event_listener, event: AwardWallet\MainBundle\Loyalty\AccountSaving\AccountUpdateEvent, method: onAccountUpdate }
+
+    AwardWallet\MainBundle\Service\FlightNotification\FlightListener:
+        autowire: true
+        tags:
+            - { name: kernel.event_listener, event: AwardWallet\MainBundle\Loyalty\AccountSaving\ItineraryUpdateEvent, method: onItineraryUpdate }
+
+    AwardWallet\MainBundle\FrameworkExtension\Listeners\EntityListener:
+        autowire: true
+        tags:
+            - { name: doctrine.event_listener, event: preRemove }
+            - { name: doctrine.event_listener, event: postRemove }
+
+    AwardWallet\MainBundle\Service\Itinerary\:
+        resource: '../../Service/Itinerary'
+        autowire: true
+        autoconfigure: true
+
+    AwardWallet\MainBundle\Service\Itinerary\Controller\ItineraryController:
+        autowire: true
+        autoconfigure: true
+        arguments:
+            $antiBruteforceLockerService: "@aw.security.antibruteforce.flight_fill"
+            $converters: !tagged aw.itinerary_form_converter
+        tags: ['controller.service_arguments']
+
+    AwardWallet\MainBundle\Service\InAppPurchase\AppleAppStore\Provider:
+        autowire: true
+        autoconfigure: true
+        arguments:
+            $secret: "%aw.mobile.iap_apple_secret%"
+            $isSandbox: "%aw.mobile.iap_apple_sandbox%"
+
+    AwardWallet\MainBundle\Service\InAppPurchase\GooglePlay\Decoder:
+        autowire: true
+        autoconfigure: true
+        arguments:
+            - "%aw.mobile.iap_google_public_key%"
+
+    AwardWallet\MainBundle\Service\InAppPurchase\GooglePlay\Provider:
+        autowire: true
+        autoconfigure: true
+        arguments:
+            $isSandbox: "%aw.mobile.iap_google_sandbox%"
+            $serviceAccountConfig: "%aw.mobile.iap_google_service_account_file%"
+
+    aw.google_play_client:
+        class: Google_Client
+        calls:
+            - [setAuthConfig, ["%aw.mobile.iap_google_service_account_file%"]]
+            - [setScopes, [[!php/const \Google_Service_AndroidPublisher::ANDROIDPUBLISHER, !php/const \Google\Service\Storage::DEVSTORAGE_READ_ONLY]]]
+#            - [setScopes, [!php/const \Google\Service\Storage::DEVSTORAGE_READ_ONLY]]
+            - [setApplicationName, ["AwardWallet"]]
+            - [setLogger, ["@logger"]]
+
+    aw.google_service_android_publisher:
+        class: Google_Service_AndroidPublisher
+        arguments:
+            - '@aw.google_play_client'
+
+    Google\Service\Storage:
+        arguments:
+            - '@aw.google_play_client'
+
+    Google\Cloud\Storage\StorageClient:
+        arguments:
+              -
+                keyFilePath: "%aw.mobile.iap_google_service_account_file%"
+
+    Google\Service\AndroidPublisher\Resource\PurchasesSubscriptions:
+        factory: ['@AwardWallet\MainBundle\Service\Billing\GooglePurchasesSubscriptionsFactory', 'getPurchasesSubscriptions']
+
+    AwardWallet\MainBundle\Service\InAppPurchase\ProviderRegistry:
+        calls:
+            - [ addProvider, [ '@AwardWallet\MainBundle\Service\InAppPurchase\AppleAppStore\Provider' ] ]
+            - [ addProvider, [ '@AwardWallet\MainBundle\Service\InAppPurchase\GooglePlay\Provider' ] ]
+
+    AwardWallet\MainBundle\Service\ItineraryMail\UpdateListener:
+        autowire: true
+        tags:
+            - { name: kernel.event_listener, event: aw.itinerary.update, method: onItineraryUpdate }
+
+    AwardWallet\MainBundle\Service\SocksMessaging\NullClient:
+        autowire: true
+
+    AwardWallet\MainBundle\FrameworkExtension\Twig\BemExtension:
+        public: true
+        autowire: true
+        tags:
+            - { name: twig.extension }
+
+    AwardWallet\MainBundle\FrameworkExtension\Twig\ClosureExtension:
+        public: true
+        autowire: true
+        tags:
+            - { name: twig.extension }
+
+    AwardWallet\MainBundle\FrameworkExtension\Twig\ImageExtension:
+        public: true
+        autowire: true
+        tags:
+            - { name: twig.extension }
+
+    AwardWallet\MainBundle\FrameworkExtension\Twig\MetaExtension:
+        public: true
+        autowire: true
+        tags:
+            - { name: twig.extension }
+
+    AwardWallet\MainBundle\FrameworkExtension\Twig\UserAgentExtension:
+        public: true
+        autowire: true
+        tags:
+            - { name: twig.extension }
+
+    AwardWallet\ElasticSearch\Util\Client:
+        autowire: true
+        arguments:
+            $elasticSearchHost: '%env(ELASTICSEARCH_HOST)%'
+
+    Stripe\StripeClient:
+        arguments:
+            - '%stripe_secret_key%'
+
+    AwardWallet\MainBundle\Command\ProcessOutboxCommand:
+        autowire: true
+        arguments:
+            $outboxProcessors: !tagged_iterator { tag: 'aw.outbox_processor', default_index_method: 'getSupportedOutboxType' }
+
+    PhpAmqpLib\Connection\AbstractConnection: '@old_sound_rabbit_mq.connection.default'
+
+    AwardWallet\MainBundle\Entity\Repositories\OwnerRepository:
+        autowire: true
+
+    AwardWallet\MainBundle\Service\Lounge\Logger:
+        public: true
+        autowire: true
+        shared: false
+
+    AwardWallet\MainBundle\Service\Lounge\LogProcessor:
+        public: true
+        autowire: true
+        shared: false
+
+    AwardWallet\MainBundle\Command\Test\SearchLogRACommand:
+      arguments:
+        - "@logger"
+        - '%env(ELASTICSEARCH_HOST)%'
+      tags:
+        - { name: 'console.command'}
+
+    AwardWallet\MainBundle\Service\MileValue\Async\TripUpdatedSubscriber:
+      autowire: true
+      tags:
+        - { name: kernel.event_listener, event: aw.itinerary.update, method: onItineraryUpdate }
+
+    AwardWallet\MainBundle\Service\Hotels\Thumbnail:
+      autowire: true
+
+    AwardWallet\MainBundle\Globals\Utils\ConcurrentArrayFactory:
+      autowire: true
+
+    AwardWallet\MainBundle\Service\Lounge\CurlBrowser:
+      autowire: true
+      shared: false
+
+    AwardWallet\MainBundle\Service\Lounge\SeleniumBrowser:
+      autowire: true
+      shared: false
+
+    AwardWallet\MainBundle\Service\TrackedLocationsLimiter:
+      autowire: true
+
+    AwardWallet\MainBundle\Service\Billing\EmailPlusOnlyOptionsListener:
+      autowire: true
+      tags:
+          - { name: kernel.event_listener, event: user_plus_changed, method: onPlusChanged }
+
+    AwardWallet\MainBundle\Service\ExpirationDate\ExpirationDate:
+      autowire: true
+      shared: false
+
+    AwardWallet\MainBundle\Service\BackgroundCheckScheduler:
+      autowire: true
+      tags:
+        - { name: kernel.event_subscriber }
+
+    Elasticsearch\Client:
+      factory: ['@AwardWallet\MainBundle\Service\ElasticSearchFactory', 'create']
+
+    AwardWallet\MainBundle\Loyalty\SuccessRate\SuccessRateCalculator:
+      public: true
+      autowire: true
+
+    AwardWallet\MainBundle\Loyalty\AutologinLinkValidator:
+      public: true # for EmailHelper
+      autowire: true

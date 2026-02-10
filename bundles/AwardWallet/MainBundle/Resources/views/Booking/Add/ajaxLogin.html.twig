@@ -1,0 +1,33 @@
+<div class="row">
+    <div class="input">
+        <input type="text" id="booking_request_ContactName"
+                              onfocus="$(this).closest('.row').addClass('focused'); return false;"
+                              onblur="$(this).closest('.row').removeClass('focused'); return false;"
+                              name="booking_request[ContactName]" required="required"
+                              value="{{ name }}" />
+        <label for="booking_request_ContactName" class="required">{{ 'booking.contact'|trans({}, 'booking') }}<span class="required">*</span></label>
+    </div>
+    <div class="message"></div>
+</div>
+<div class="row">
+    <div class="input">
+        <input type="email" id="booking_request_ContactEmail"
+                              onfocus="$(this).closest('.row').addClass('focused'); return false;"
+                              onblur="$(this).closest('.row').removeClass('focused'); return false;"
+                              name="booking_request[ContactEmail]" required="required"
+                              value="{{ email }}" />
+        <label for="booking_request_ContactEmail" class="required">{{ 'booking.contactemail'|trans({}, 'booking') }}<span class="required">*</span></label>
+    </div>
+    <div class="message"></div>
+</div>
+<div class="row">
+    <div class="input">
+        <input type="text" id="booking_request_ContactPhone"
+                              onfocus="$(this).closest('.row').addClass('focused'); return false;"
+                              onblur="$(this).closest('.row').removeClass('focused'); return false;"
+                              name="booking_request[ContactPhone]" required="required"
+                              value="{{ phone }}" />
+        <label for="booking_request_ContactPhone" class="required">{{ 'booking.phone'|trans({}, 'booking') }}<span class="required">*</span></label>
+    </div>
+    <div class="message"></div>
+</div>

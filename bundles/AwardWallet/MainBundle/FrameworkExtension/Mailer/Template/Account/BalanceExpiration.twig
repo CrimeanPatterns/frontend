@@ -1,0 +1,186 @@
+{% extends '@MailTemplate/Layout/base.twig' %}
+{% trans_default_domain "email" %}
+
+{% block subject %}{% apply spaceless %}{% autoescape false %}
+    {% import _self as macro %}
+    {% if accounts|length == 1 and accounts[0]["Header"] is defined %}
+        {{ accounts[0]["Header"].getValue()|htmldecode }}
+    {% else %}
+        {{ 'balance_expiration.alert_title.default'|trans({}, 'email', lang) }}
+    {% endif %}
+{% endautoescape %}{% endapply %}{% endblock subject %}
+
+{% block content %}
+    {% import '@MailTemplate/CommonMacro.twig' as commonMacro %}
+    {% import _self as macro %}
+
+    {{ commonMacro.paragraph(
+        'balance_expiration.expire_soon'|trans({}, 'email', lang)|desc('According to our records the following points, miles, coupons or documents are going to expire soon:'),
+        _context
+    ) }}
+
+    <table width="100%" cellpadding="0" border="0" cellspacing="0" style="margin-top:15px;line-height:18px;border-top:2px solid #bec2cc;">
+    {% for account in accounts %}
+        <tr>
+            <td style="padding:10px 0; border-bottom:1px dotted #8e9199">
+                <table width="100%" cellpadding="0" border="0" cellspacing="0" style="line-height:20px">
+                    {% for property in account %}
+                        {% if property.isVisible() %}
+                            {% if loop.first %}
+                                <tr>
+                                    <td  width="150" class="first-cell" valign="top" style="font-size:15px;color:#70798c;padding-right:15px;padding-top:1px;">
+                                        {{ macro.draw(property.getName(), true, _context) }}:
+                                    </td>
+                                    <td width="75%" valign="bottom" style="font-size:16px;color:#535457;">
+                                        {{ macro.draw(property.getValue(), true, _context) }}
+                                    </td>
+                                </tr>
+                            {% else %}
+                                <tr>
+                                    <td  width="150" class="first-cell" valign="top" style="font-size:15px;color:#70798c;padding-right:15px;padding-top:5px;">
+                                        {{ macro.draw(property.getName(), true, _context) }}:
+                                    </td>
+                                    <td width="75%" valign="bottom" style="padding-top:5px;font-size:16px;color:#535457;">
+                                        {{ macro.draw(property.getValue(), true, _context) }}
+                                    </td>
+                                </tr>
+                            {% endif %}
+                        {% endif %}
+                    {% endfor %}
+
+                    {% if account.Note is defined %}
+                        <tr>
+                            <td colspan="2" class="first-cell" valign="top" style="font-size:15px;color:#70798c;padding-right:5px;padding-top:5px;">
+                                {{ macro.draw(account.Note.getName(), true, _context) }}:
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="2" style="padding-top:5px;font-size:16px;color:#535457;line-height:24px">
+                                {{ macro.draw(account.Note.getValue(), true, _context) }}
+                            </td>
+                        </tr>
+                        {% if account.expirationNote is defined %}
+                            <tr>
+                                <td colspan="2" style="padding-top:5px;font-size:16px;color:#535457;line-height:24px">
+                                    {{ commonMacro.updateLinks(account.expirationNote.getValue(), {"font-size": "inherit"}) }}
+                                </td>
+                            </tr>
+                        {% endif %}
+                    {% endif %}
+
+                    {% if account.ExpireUnknown is defined %}
+                        <tr>
+                            <td colspan="2" class="first-cell" valign="top" style="padding-right:5px;padding-top:5px;">
+                                <div style="background-color: rgba(70, 132, 196, 0.15); border-radius: 8px; padding: 15px 15px; color: #4684C4; font-size: 16px; line-height: 18.75px;">
+                                    <table width="100%" cellpadding="0" border="0" cellspacing="0">
+                                        <tr>
+                                            <td style="background-color: #4684C4; width: 5px; border-radius: 5px;"> </td>
+                                            <td style="color: #4684C4; font-size: 16px; line-height: 18.75px; padding-left: 15px;">
+                                                {{ 'balance_expiration.expire_note'|trans({}, 'email', lang)|desc('
+                                                    Please note, that AwardWallet hasn\'t been able to verify the expiration date
+                                                    on this account; therefore, it\'s showing you the last known expiration date,
+                                                    which may be incorrect as of now. We recommend that you doublecheck this
+                                                    expiration date directly with the provider.
+                                                ') }}
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </td>
+                        </tr>
+                    {% endif %}
+
+                    {% if account.BlogPost is defined %}
+                        <tr>
+                            <td colspan="2" class="first-cell" valign="top" style="padding-right:5px;padding-top:5px;">
+                                <a href="{{ account.BlogPost.getValue.Url }}" style="text-decoration: none; display: block; margin-top: 5px;">
+                                    <table cellpadding="0" cellspacing="0" style="width: 100%; border: 1px solid #d6dae6; border-radius: 6px; overflow: hidden;">
+                                        <tr>
+                                            <td style="width: 80px; padding: 0; text-align: center; vertical-align: middle; background-image: url('{{ account.BlogPost.getValue.PreviewUrl }}'); background-size: cover; background-position: center; background-repeat: no-repeat; height: 62px;"></td>
+                                            <td style="padding: 10px; text-align: left; color: #535457; font-size: 16px; font-family: Arial, sans-serif; line-height: 1.4;">
+                                                {{ account.BlogPost.getValue.Title }}
+                                            </td>
+                                            <td width="25" align="right" valign="middle" style="padding: 15px;">
+                                                <img src="{{ baseImagesPath }}/arrow-right-blue.png" alt="" width="7" height="9" border="0">
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </a>
+                            </td>
+                        </tr>
+                    {% endif %}
+                </table>
+            </td>
+        </tr>
+    {% endfor %}
+    </table>
+
+    {% if user is instanceof('\\AwardWallet\\MainBundle\\Entity\\Usr') %}
+        {% set link = commonMacro.link(baseUrl ~ path('aw_account_list'), '$$')|split('$$') %}
+        {{ commonMacro.paragraph(
+            'balance_expiration.list-link-v2'|trans({
+                '%link_on%': link[0],
+                '%link_off%': link[1]
+            }, 'email', lang)|desc('AwardWallet makes every effort to ensure the information is up to date; however, we recommend that you %link_on%log in to AwardWallet%link_off% and follow the auto-login links to the websites on which your points may expire. To auto-login to any account, simply click the name of the Award Program in the account list.'),
+            _context, {escape: false}
+        ) }}
+    {% endif %}
+
+    {% if advt is defined and advt is not null %}
+        {{ commonMacro.adFrame(advt, _context) }}
+    {% endif %}
+
+{% endblock content %}
+
+{% block restore_row %}
+    {% if businessRecipient is null %}
+        {{ parent() }}
+    {% endif %}
+{% endblock restore_row %}
+
+{% block unsubscribe %}
+    {% import '@MailTemplate/CommonMacro.twig' as commonMacro %}
+    {{ commonMacro.familyMemberUnsubscribeLink(user, unsubscribeLink ~ '#rewardsExpiration', _context) }}
+{% endblock unsubscribe %}
+
+{% macro draw(value, expanded, context) %}{% trim %}{% autoescape false %}
+    {% import _self as macro %}
+    {% import '@MailTemplate/CommonMacro.twig' as commonMacro %}
+
+    {% if value is instanceof('\\AwardWallet\\MainBundle\\Service\\Account\\Model\\ExpiredAccount\\Group') %}
+        {% for item in value.getItems() %}
+            {{ macro.draw(item, expanded, context) }}{% if not loop.last %}{{ value.getSeparator() }}{% endif %}
+        {% endfor %}
+    {% elseif value is instanceof('\\AwardWallet\\MainBundle\\Service\\Account\\Model\\ExpiredAccount\\Balance') %}
+        {{ value.getValue()|formatNumber(null, context.locale) }}
+    {% elseif value is instanceof('\\AwardWallet\\MainBundle\\Service\\Account\\Model\\ExpiredAccount\\Translatable') %}
+        {% if value.getCount() is not null %}
+            {% set v = value.getKey()|trans(value.getParameters()|merge({'%count%': value.getCount()}), value.getDomain(), context.lang) %}
+        {% else %}
+            {% set v = value.getKey()|trans(value.getParameters(), value.getDomain(), context.lang) %}
+        {% endif %}
+        {% set linkAttrs = {
+            'style': {
+                'color': 'white',
+                'font-size': 'inherit',
+            }
+        } %}
+        {% if value.isEscape() %}
+            {{ v }}
+        {% else %}
+            {{ commonMacro.updateLinks(v|auto_link(null, false, null, linkAttrs)|auto_mailto(linkAttrs), {"font-size": "inherit"})|preg_replace('/(?<=\>)\.$/ims') }}
+        {% endif %}
+    {% elseif value is instanceof('\\AwardWallet\\MainBundle\\Service\\Account\\Model\\ExpiredAccount\\DateTimeAgo') %}
+        {% if expanded %}
+            {{ context.now|formatRelativeTime(value, true, true, false, context.locale) }} <span style="display: inline-block">({{ value|formatDatetime('long', 'none', context.locale) }})</span>
+        {% else %}
+            {{ value|formatDatetime('long', 'none', context.locale) }}
+        {% endif %}
+    {% elseif value is instanceof('\\DateTime') %}
+        {{ value|formatDatetime('long', 'none', context.locale) }}
+    {% elseif value is instanceof('\\AwardWallet\\MainBundle\\Service\\Account\\Model\\ExpiredAccount\\Currency') %}
+        {{ value.value|entransChoice('plural', value.amount, {}, null, context.lang)|htmldecode }}
+    {% else %}
+        {{ value|htmldecode }}
+    {% endif %}
+{% endautoescape %}{% endtrim %}{% endmacro %}

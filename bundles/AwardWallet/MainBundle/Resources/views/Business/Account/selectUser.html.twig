@@ -1,0 +1,18 @@
+{% extends "@AwardWalletMain/Layout/business_default.html.twig" %}
+{% import '@AwardWalletMain/Business/Members/_searchBox.html.twig' as searchbox %}
+
+{% block title %}Add account{% endblock %}
+
+{% block content %}
+    <div class="main-blk">
+        <div class="search-box">
+            {{ searchbox.draw(
+                'aw_business_members_dropdown_accounts',
+                'select.user'|trans|desc('Start typing the name of user'),
+                true,
+                "function(id){ return Routing.generate('aw_select_provider', {'agentId': id }); }",
+                true
+            ) }}
+        </div>
+    </div>
+{% endblock %}

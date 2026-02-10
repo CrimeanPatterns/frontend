@@ -1,0 +1,62 @@
+{% set MAIN_BODY_CLASSES = {
+    'landing': true,
+    'not-logged': false,
+    'manual-hidden': false,
+    'responsive': false,
+    'hide-menu': false
+} %}
+
+{% extends "@AwardWalletMain/Layout/not_logged.html.twig" %}
+
+{% block content %}
+    {% if confirmed %}
+        <div class="ui-dialog" style="width: 600px; margin-left: -300px; margin-top: -100px; position: fixed; top: 50%; left: 50%">
+            <div class="ui-dialog-titlebar">
+                <h3>{{ 'landing.dialog.forgot.header'|trans|desc('Forgot my password') }}</h3>
+            </div>
+            <div class="ui-dialog-content ui-widget-content" style="padding: 40px 30px;">
+                {% if success %}
+                    <div class='successful-message'><i class='icon-green-check-b'></i> <span>{{ 'landing.dialog.forgot.success_header'|trans }}</span></div>
+                {% else %}
+                    <div class='successful-message'><i class="icon-warning-small"></i> <span class="black">{{ error }}</span></div>
+                {% endif %}
+            </div>
+
+            <div class="ui-dialog-buttonpane ui-widget-content ui-helper-clearfix">
+                <div class="ui-dialog-buttonset">
+                    <a href="{{ url('aw_home') }}" class="btn-blue">{{ 'button.close'|trans }}</a>
+                </div>
+            </div>
+        </div>
+    {% else %}
+        <form method="post" id="confirm-form">
+            <input type="hidden" name="exp" id="exp-input"/>
+            <div class="ui-dialog" style="width: 600px; margin-left: -300px; margin-top: -100px; position: fixed; top: 50%; left: 50%">
+                <div class="ui-dialog-titlebar">
+                    <h3>{{ 'alerts.text.confirm'|trans }}</h3>
+                </div>
+                <div class="ui-dialog-content ui-widget-content" style="padding: 40px 30px;">
+                    <div class='successful-message'><span class="black">{{ 'confirm-password-reset'|trans|desc('We are about to email you a link that will allow you to reset your AwardWallet password, please confirm that this is what you want.') }}</span></div>
+                </div>
+
+                <div class="ui-dialog-buttonpane ui-widget-content ui-helper-clearfix">
+                    <div class="ui-dialog-buttonset">
+                        <a href="#" onclick="document.getElementById('confirm-form').submit(); return false;" class="btn-blue">{{ 'ok.button'|trans }}</a>
+                        <a href="{{ url('aw_home') }}" class="btn-silver">{{ 'button.cancel'|trans }}</a>
+                    </div>
+                </div>
+            </div>
+        </form>
+    {% endif %}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    {% if not confirmed %}
+        <script type="text/javascript">
+            require(['jquery-boot'], function(){
+                document.getElementById('exp-input').value = {{ exp|raw }};
+            });
+        </script>
+    {% endif %}
+{% endblock %}

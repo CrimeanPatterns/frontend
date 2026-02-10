@@ -1,0 +1,108 @@
+{% set MAIN_BODY_CLASSES = {
+    'not-logged': app.user is null
+}|merge(MAIN_BODY_CLASSES|default({})) %}
+
+{% extends "@AwardWalletMain/Layout/main.html.twig" %}
+{% import "@AwardWalletMain/TwigMacros/environment.html.twig" as environmentMacros %}
+{% set business = app.request.host == business_host %}
+
+{% block stylesheets %}
+    {% if isHomePage() %}
+        {% if business %}
+            {{ encore_entry_link_tags('main') }}
+        {% endif %}
+        {% if isMobileDevice() %}
+            {{ encore_entry_link_tags('landing-mobile') }}
+        {% else %}
+            {{ encore_entry_link_tags('landing') }}
+        {% endif %}
+    {% else %}
+        {{ encore_entry_link_tags('main') }}
+    {% endif %}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    {% if not (isMobileDevice() and isHomePage()) %}
+        {% if not webpack|default(false) %}
+            <script type="text/javascript">
+                require(["jquery-boot", "lib/customizer", 'jqueryui'], function ($, customizer) {
+                    $(function () {
+                        customizer.initDropdowns($('body'));
+                    })
+                });
+            </script>
+        {% else %}
+            {{ encore_entry_script_tags('not-logged', null, '_default', {'defer': true}) }}
+        {% endif %}
+        
+    {% endif %}
+{% endblock %}
+
+{% block body %}
+    <body {{ environmentMacros.globalDataAttr(_context) }}>
+    {% include '@AwardWalletMain/Layout/vendor_body-top.html.twig' %}
+    <div class="{{ html_classes(MAIN_BODY_CLASSES) }}" id="main-body">
+        {% block before_header %}
+            {% if MOBILE_NAV is defined %}
+                <div class="fixed-header">
+                    <div class="menu-button"></div>
+                    <a class="logo" href="/"></a>
+                </div>
+                {% if app.user is null  %}
+                    {% if not webpack|default(false) %}
+                        <script>require(['lib/customizer', 'lib/design'], (customizer) => customizer.navMobile());</script>
+                    {% else %}
+                        {{ encore_entry_script_tags('not-logged-nav-mobile', null, '_default', {'defer': true}) }}
+                    {% endif %}
+                    
+                {% endif %}
+            {% endif %}
+        {% endblock %}
+        <!-- header -->
+        <header class="header-site {% if business %}{# no voters on 404 page #}business{% endif %}" {% block header_attr %}{% endblock %}>
+            <div class="item">
+                {% block logo %}
+                    {{ widget_render('logo', {'not_logged': true}) }}
+                {% endblock %}
+                <ul class="user-buttons ">
+                    {% block header_middle_buttons %}
+                        {% if app.user is null or loggedOut is defined %}
+                            {% if business %}{# no voters on 404 page #}
+                                <li><a href="{{ path('aw_register_business') }}" {% block register_business_button_options %}{% endblock %} class="btn-rose">{{ 'buttons.register'|trans }}</a></li>
+                            {% else %}
+                                <li><a href="{{ path('aw_register') }}" {% block register_button_options %}{% endblock %} class="btn-rose">{{ 'buttons.register'|trans }}</a></li>
+                            {% endif %}
+                            <li><a href="{{ path('aw_login') }}" {% block login_button_options %}{% endblock %} class="btn-light-silver">{{ 'login.button.login'|trans }}</a></li>
+                        {% endif %}
+                    {% endblock %}
+                </ul>
+                {{ widget_render('not_logged_header_menu') }}
+                {% if isHomePage() %}
+                    {{ widget_render('not_logged_header_menu_mobile') }}
+
+                {% elseif MOBILE_NAV is defined %}
+                    {{ widget_render('aw.widget.not_logged_header_menu_mobile_register') }}
+
+                {% endif %}
+            </div>
+        </header>
+
+
+        {% block page %}
+            <div class="content" id="contentTable"{# id=contentTable for booking scripts #}>
+                {% block content %}
+                {% endblock %}
+                {% block mainContent %}
+                {% endblock %}
+            </div>
+        {% endblock %}
+
+    </div>
+
+    <!-- footer -->
+    <footer class="footer-site">
+        {{ widget_render('footer') }}
+    </footer>
+    </body>
+{% endblock %}

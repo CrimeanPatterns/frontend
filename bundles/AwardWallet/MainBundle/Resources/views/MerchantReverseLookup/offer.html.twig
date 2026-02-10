@@ -1,0 +1,910 @@
+{% extends app.request.query.has('noBody') ? "@AwardWalletMain/MerchantReverseLookup/noBody.html.twig" : "@AwardWalletMain/MerchantReverseLookup/body.html.twig" %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        setTimeout(function () {
+            var merchants = document.getElementsByClassName('container__link');
+            for (var i = 0; i < merchants.length; i++) {
+
+                merchants[i].addEventListener('click', function (evt) {
+                    evt.preventDefault();
+                    this.parentElement.classList.toggle("show-details");
+                    if (window.hasOwnProperty('sendClientHeight')) {
+                        window.sendClientHeight();
+                    }
+                    return false;
+                });
+            }
+        }, 500);
+    </script>
+{% endblock %}
+{% block body %}
+<style>
+    @import url('https://fonts.googleapis.com/css?family=Open+Sans:400,400i,700|Roboto:400,400i,700');
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        -webkit-text-size-adjust: none;
+        -webkit-tap-highlight-color:rgba(0, 0, 0, 0);
+    }
+    .search-box__offer-content{
+        font-family: 'Open Sans', sans-serif;
+        padding-bottom: constant(safe-area-inset-bottom);
+        padding-bottom: env(safe-area-inset-bottom);
+    }
+    .search-box__offer-content .red {
+        color: #cc3d5e;
+    }
+    .search-box__offer-content .blue{
+        color: #4684c4;
+    }
+    .search-box__offer-content strong,
+    .search-box__offer-content .bold{
+        font-family: 'Open Sans', sans-serif;
+        font-weight: bold !important;
+    }
+    .search-box__offer-top {
+        background: #f9f9fa;
+        border: 1px solid #d6dae6;
+        padding: 15px 0;
+        margin-bottom: 25px;
+    }
+    .search-box__offer-top-wrap {
+        display: -webkit-flex;
+        display: -ms-flexbox;
+        display: -ms-flex;
+        display: flex;
+        -webkit-flex-flow: row nowrap;
+        -ms-flex-flow: row nowrap;
+        flex-flow: row nowrap;
+        -webkit-justify-content: space-between;
+        -ms-justify-content: space-between;
+        justify-content: space-between;
+        -webkit-align-items: center;
+        -ms-align-items: center;
+        align-items: center;
+        padding: 0 15px;
+    }
+    .search-box__offer-title {
+        font-size: 15px;
+        color: #5c6373;
+    }
+    .search-box__offer-top-details {
+    }
+    .search-box__offer-top-container {
+        border-top: 2px solid #d6dae6;
+        margin-top: 10px;
+        font-size: 13px;
+        color: #535457;
+    }
+    .search-box__offer-top-container__row {
+        display: -webkit-flex;
+        display: -ms-flexbox;
+        display: -ms-flex;
+        display: flex;
+        -webkit-flex-flow: row nowrap;
+        -ms-flex-flow: row nowrap;
+        flex-flow: row nowrap;
+        padding: 12px 0;
+    }
+    .search-box__offer-top-container__row:not(:first-child) {
+        border-top: 1px solid #d6dae6;
+    }
+    .search-box__offer-top-container__col:first-child {
+        width: 80px;
+        padding-right: 5px;
+    }
+    .search-box__offer-top-container__col:last-child {
+        width: calc(100% - 80px);
+    }
+    .modal p,
+    .content-popup p {
+        font-size: 13px;
+        line-height: 1.5;
+        color: #535457;
+        margin-top: 15px;
+    }
+    .content-popup p:first-child{
+        margin-top: 0;
+    }
+    .modal .up-counter {
+        display: inline-block;
+        background: #8e9199;
+        height: 17px;
+        line-height: 17px;
+        color: #fff;
+        padding: 0 3px;
+        text-align: center;
+        font-size: 13px;
+        font-weight: bold;
+    }
+    .modal .credit-card-info {
+        margin-top: 12px;
+    }
+    .modal a{
+        font-weight: bold;
+        font-size: 13px;
+        color: #4684c4;
+        text-decoration: none;
+    }
+    .modal a:hover {
+        text-decoration: underline;
+    }
+    .modal .remark-info.small {
+        font-size: 11px;
+        margin: 25px -15px 0;
+        padding: 12px 15px;
+        background: #f9f9fa;
+    }
+    .modal .remark-info.small a {
+        font-size: 11px;
+    }
+    .modal {
+        padding: 20px 30px;
+        font-size: 13px;
+        line-height: 1.5;
+        color: #535457;
+        font-family: 'Open Sans', sans-serif;
+    }
+    .modal .icon-double-arrow-right-blue {
+        display: inline-block;
+        vertical-align: middle;
+        margin-left: 5px;
+        width: 11px;
+        height: 7px;
+        background-image: url(https://awardwallet.com/assets/awardwalletnewdesign/img/sprite.png?v=18);
+        background-repeat: no-repeat;
+        background-position: -166px -81px;
+    }
+    .container{
+        border-top: 2px solid #bec2cc;
+        margin: 5px 0 20px;
+        color: #535457;
+    }
+    .container__link{
+        display: block;
+        height: 40px;
+        line-height: 40px;
+        position: relative;
+        text-decoration: none;
+        font-size: 13px;
+        color: #535457 !important;
+        font-weight: normal !important;
+        padding-left: 20px;
+        border-bottom: 1px dotted #8e9199;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+    .container__link:hover{
+        text-decoration: none !important;
+        color: #4684c4 !important;
+    }
+    .container__link:after{
+        position: absolute;
+        content: "";
+        width: 9px;
+        height: 6px;
+        transform: rotate(-90deg);
+        background-image: url(https://awardwallet.com/assets/awardwalletnewdesign/img/sprite.png?v=18);
+        background-repeat: no-repeat;
+        background-position: -32px -66px;
+        pointer-events: none;
+        display: block;
+        left: 4px;
+        top: 50%;
+        margin-top: -3px;
+        -webkit-transition: transform .5s ease;
+        -moz-transition: transform .5s ease;
+        -o-transition: transform .5s ease;
+        transition: transform .5s ease;
+    }
+    .container__row.show-details .container__details{
+        max-height: 9999px;
+        overflow: visible;
+        padding: 20px 20px 8px;
+        border-bottom: 1px dotted #8e9199;
+    }
+    .container__row.show-details .container__link:after{
+        transform: rotate(0deg);
+    }
+    .container__details{
+        overflow: hidden;
+        max-height: 0;
+        background: #f9f9fa;
+    }
+    .container__details p:first-child{
+        margin-top: 0;
+    }
+    .check-list{
+        margin-top: 3px;
+    }
+    .check-list li {
+      display: block;
+      list-style: none;
+      padding-left: 15px;
+      position: relative;
+      font-size: 13px;
+      color: #535457;
+      font-weight: bold;
+    }
+    .check-list li:before {
+      position: absolute;
+      content: '';
+      top: 3px;
+      left: 0;
+      width: 9px;
+      height: 7px;
+      background-image: url('https://awardwallet.com/assets/awardwalletnewdesign/img/sprite.png?v=18');
+      background-repeat: no-repeat;
+      background-position: -753px -102px;
+    }
+    ul.check-list li{
+        line-height: 1;
+    }
+    ul.check-list li:not(:first-child) {
+      margin-top: 8px;
+    }
+    @media (-webkit-min-device-pixel-ratio: 1.5), (min--moz-device-pixel-ratio: 1.5), (-o-min-device-pixel-ratio: 3/2), (min-resolution: 1.5dppx) {
+      .modal .icon-double-arrow-right-blue,
+      .check-list li:before,
+      .container__link:after {
+        background-image: url("https://awardwallet.com/assets/awardwalletnewdesign/img/sprite@2x.png?v=18");
+        background-size: 800px 600px;
+      }
+    }
+
+    /*dark mode*/
+    {% if not is_granted('SITE_MOBILE_AREA') %}
+        @media (prefers-color-scheme: dark){
+            .search-box__offer-top {
+                background: #1c1c1e;
+                border-color: #5a5a5f;
+            }
+            .container,
+            .search-box__offer-top-container,
+            .search-box__offer-top-container__row:not(:first-child),
+            .container__title span,
+            .container__row,
+            .container__row.show-details .container__details{
+                border-color: #5a5a5f;
+            }
+            .container__details,
+            .modal .remark-info.small{
+                background: #1c1c1e;
+            }
+            .search-box__offer-content .red {
+                color: #EA3C48;
+            }
+            .search-box__offer-content .blue,
+            .modal a,
+            a.blue-link{
+                color: #0984FF;
+            }
+            .container__link{
+                border-color: #5a5a5f;
+                color: #fff !important;
+            }
+            .check-list li,
+            .modal,
+            .search-box__offer-title,
+            .modal p,
+            .content-popup p,
+            .container__title,
+            .search-box__offer-top-container,
+            .container__title span,
+            .container{
+                color: #fff;
+            }
+            .container__link:hover{
+                color: #0984FF !important;
+            }
+            .modal .up-counter {
+                background: #5a5a5f;
+            }
+        }
+    {% endif %}
+    html.dark-mode .search-box__offer-top {
+        background: #1c1c1e;
+        border-color: #5a5a5f;
+    }
+    html.dark-mode .container,
+    html.dark-mode .search-box__offer-top-container,
+    html.dark-mode .search-box__offer-top-container__row:not(:first-child),
+    html.dark-mode .container__title span,
+    html.dark-mode .container__row,
+    html.dark-mode .container__row.show-details .container__details{
+        border-color: #5a5a5f;
+    }
+    html.dark-mode .container__details,
+    html.dark-mode .modal .remark-info.small{
+        background: #1c1c1e;
+    }
+    html.dark-mode .search-box__offer-content .red {
+        color: #EA3C48;
+    }
+    html.dark-mode .search-box__offer-content .blue,
+    html.dark-mode .modal a,
+    html.dark-mode a.blue-link{
+        color: #0984FF;
+    }
+    html.dark-mode .container__link{
+        border-color: #5a5a5f;
+        color: #fff !important;
+    }
+    html.dark-mode .check-list li,
+    html.dark-mode .modal,
+    html.dark-mode .search-box__offer-title,
+    html.dark-mode .modal p,
+    html.dark-mode .content-popup p,
+    html.dark-mode .container__title,
+    html.dark-mode .search-box__offer-top-container,
+    html.dark-mode .container__title span,
+    html.dark-mode .container{
+        color: #fff;
+    }
+    html.dark-mode .container__link:hover{
+        color: #0984FF !important;
+    }
+    html.dark-mode .modal .up-counter {
+        background: #5a5a5f;
+    }
+    /*end*/
+    html.light-mode .container{
+        color: #535457;
+    }
+    html.light-mode .search-box__offer-content .blue,
+    html.light-mode .modal a,
+    html.light-mode a.blue-link{
+        color: #4684c4;
+    }
+    html.light-mode .container,
+    html.light-mode .container__link{
+        color: #535457 !important;
+        border-color: #bec2cc;
+    }
+    html.light-mode .container__link:hover{
+        color: #4684c4 !important;
+    }
+    html.light-mode .container__details,
+    html.light-mode .modal .remark-info.small{
+        background: #f9f9fa;
+    }
+
+    .device-ios .search-box__offer-top,
+    .device-android .search-box__offer-top{
+        border-top: 0;
+        border-right: 0;
+        border-left: 0;
+        margin-bottom: 20px;
+    }
+
+    .device-ios .search-box__offer-top-wrap,
+    .device-android .search-box__offer-top-wrap{
+        display: block;
+    }
+
+    .device-ios .search-box__offer-title,
+    .device-android .search-box__offer-title{
+        display: block;
+        padding-bottom: 2px;
+    }
+
+    .device-android .modal p:first-child,
+    .device-ios .modal p:first-child{
+        margin-top: 0;
+    }
+
+    .device-ios .modal .blue-text,
+    .device-android .modal .blue-text{
+        padding: 3px 5px;
+        height: auto;
+        color: #fff;
+        display: inline-block;
+        line-height: 1;
+    }
+
+    .device-ios .modal .blue-text{
+        background: #4684c4;
+    }
+
+    .device-android .modal .blue-text{
+        background: #146ac4;
+    }
+    
+    /*ios*/
+    .device-ios .search-box__offer-title{
+        font-size: 17px;
+        color: #8e9199;
+    }
+
+    .device-ios .search-box__offer-title .red{
+        color: #5c6373;
+    }
+
+    .device-ios .modal{
+        padding: 15px 15px 0;
+    }
+
+    .device-ios .container{
+        border-top: 1px solid #dfe1e6;
+        margin: 10px -15px 0;
+    }
+
+    .device-ios .container__link{
+        border-bottom: 1px solid #dfe1e6;
+        padding: 0 15px 0 40px;
+        font-size: 15px;
+    }
+
+    .device-ios .container__link:after{
+        left: 15px;
+    }
+
+    .device-ios .container__row.show-details .container__link{
+        border-color: transparent;
+    }
+
+    .device-ios .container__row.show-details .container__details{
+        background: transparent;
+        padding: 0 15px;
+        border-bottom: 2px solid #bec2cc;
+    }
+
+    .device-ios .search-box__offer-top-container{
+        margin-left: -15px;
+        margin-right: -15px;
+    }
+
+    .device-ios .search-box__offer-top-container__row{
+        padding: 0;
+        display: block;
+    }
+
+    .device-ios .search-box__offer-top-container__col:first-child,
+    .device-ios .search-box__offer-top-container__col:last-child{
+        width: 100%;
+        padding: 0;
+    }
+
+    .device-ios .search-box__offer-top-container__col:first-child{
+        background: #f9f9fa;
+        border-bottom: 1px solid #dfe1e6;
+        padding: 6px 15px;
+        min-height: 30px;
+        font-size: 15px;
+        position: relative;
+        color: #8e9199;
+    }
+
+    .device-ios .search-box__offer-top-container__col:first-child:before,
+    .device-ios .search-box__offer-top-container__col:first-child:after{
+        position: absolute;
+        content: '';
+        left: 15px;
+        border-left: 7px solid transparent;
+        border-right: 7px solid transparent;
+    }
+
+    .device-ios .search-box__offer-top-container__col:first-child:before{
+        bottom: -7px;
+        border-top: 7px solid #dfe1e6;
+    }
+
+    .device-ios .search-box__offer-top-container__col:first-child:after{
+        bottom: -6px;
+        border-top: 7px solid #f9f9fa;
+    }
+
+    .device-ios .search-box__offer-top-container__col .check-list li:before{
+        top: 12px;
+        left: 15px;
+    }
+
+    .device-ios .search-box__offer-top-container__col .check-list li{
+        display: block;
+        padding: 8px 15px 8px 40px;
+        border-top: 1px solid #dfe1e6;
+        font-size: 15px;
+        margin: 0;
+        font-weight: normal;
+    }
+
+    .device-ios .search-box__offer-top-container__col .check-list li:first-child{
+        border-top: 0;
+    }
+
+    .device-ios sub{
+        bottom: auto;
+        font-size: 13px;
+        display: block;
+        line-height: 1.3;
+        margin-top: 2px;
+    }
+    .device-ios .modal .remark-info.small{
+        margin-top: 20px;
+    }
+    .device-ios .modal .credit-card-info{
+        margin: 0 -15px -20px;
+    }
+    .device-ios .modal .credit-card-info a{
+        text-decoration: none;
+        color: #535457;
+        font-weight: normal;
+        font-size: 15px;
+        line-height: 1.3;
+        display: block;
+        position: relative;
+        padding: 20px 40px 20px 15px;
+        transition: background .3s ease;
+    }
+    .device-ios .modal .up-counter{
+        font-weight: normal;
+    }
+    .device-ios .container__link a{
+        font-size: 0;
+        color: transparent;
+        position: absolute;
+        top:0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        display: block;
+        text-decoration: none;
+    }
+    .device-ios .modal .credit-card-info a:after{
+        position: absolute;
+        content: '';
+        right: 15px;
+        top: 50%;
+        margin-top: -9px;
+        width: 11px;
+        height: 19px;
+        background-image: url(https://awardwallet.com/assets/awardwalletnewdesign/img/offer-arrow.png);
+        background-repeat: no-repeat;
+        z-index: 3;
+    }
+
+    @media (-webkit-min-device-pixel-ratio: 1.5), (min--moz-device-pixel-ratio: 1.5), (-o-min-device-pixel-ratio: 3/2), (min-resolution: 1.5dppx) {
+      .device-ios .modal .credit-card-info a:after {
+        background-image: url("https://awardwallet.com/assets/awardwalletnewdesign/img/offer-arrow@2x.png");
+        background-size: 11px 19px;
+      }
+    }
+
+    /*Android*/
+    .device-android .modal,
+    .device-android .search-box__offer-content{
+        font-family: 'Roboto', sans-serif;
+        min-height: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+    }
+    .device-android .modal{
+        padding: 16px 16px 0;
+    }
+    .device-android .search-box__offer-title{
+        font-size: 20px;
+        color: #212121;
+    }
+    .device-android .search-box__offer-title .red {
+        color: #212121;
+    }
+
+    .device-android .container{
+        border-top: 1px solid #dfe1e6;
+        margin: 10px -16px 0;
+    }
+
+    .device-android .container__link{
+        border-bottom: 1px solid #dfe1e6;
+        padding: 0 16px 0 40px;
+        font-size: 16px;
+    }
+
+    .device-android .container__link:after{
+        left: 16px;
+    }
+
+    .device-android .container__row.show-details .container__link{
+        border-color: transparent;
+    }
+
+    .device-android .container__row.show-details .container__details{
+        background: transparent;
+        padding: 0 16px;
+        border-color: transparent;
+    }
+    .device-android .search-box__offer-top-container{
+        margin-left: -16px;
+        margin-right: -16px;
+        border-top: 0;
+        border-bottom: 3px solid #e0e0e0;
+    }
+
+    .device-android .search-box__offer-top-container__row{
+        padding: 0;
+        display: block;
+        border: 0;
+    }
+
+    .device-android .search-box__offer-top-container__col:first-child,
+    .device-android .search-box__offer-top-container__col:last-child{
+        width: 100%;
+        padding: 0;
+    }
+
+    .device-android .search-box__offer-top-container__col:first-child{
+        background: #eeeeee;
+        padding: 6px 16px;
+        font-size: 14px;
+        position: relative;
+        color: #757575;
+    }
+
+    .device-android .search-box__offer-top-container__col .check-list li:before{
+        top: 12px;
+        left: 20px;
+    }
+
+    .device-android .search-box__offer-top-container__col .check-list li{
+        display: block;
+        padding: 8px 16px 8px 40px;
+        border-bottom: 1px solid #e0e0e0;
+        font-size: 16px;
+        margin: 0;
+        color: #212121;
+        font-weight: normal;
+    }
+
+    .device-android sub{
+        bottom: auto;
+        font-size: 14px;
+        color: #757575;
+        display: block;
+        line-height: 1.3;
+        margin-top: 2px;
+    }
+    .device-android .modal .remark-info.small{
+        margin-top: 20px;
+    }
+    .device-android .modal .credit-card-info{
+        margin: 0 -16px -20px;
+    }
+    .device-android .modal .credit-card-info a{
+        text-decoration: none;
+        color: #212121;
+        font-weight: normal;
+        font-size: 15px;
+        line-height: 1.3;
+        display: block;
+        padding: 20px 16px;
+        transition: background .3s ease;
+    }
+    .device-android .modal .up-counter{
+        font-weight: normal;
+    }
+    .device-android .modal .remark-info.small{
+        padding: 12px 16px;
+    }
+    .device-ios .container__link a:active,
+    .device-android .container__link a:active,
+    .device-ios .modal .credit-card-info a:active,
+    .device-android .modal .credit-card-info a:active,
+    .device-ios .modal .credit-card-info a:focus,
+    .device-android .modal .credit-card-info a:focus{
+        background: #F2F5F7;
+    }
+
+    /*dark mode*/
+    .dark-mode.device-ios body,
+    .dark-mode.device-ios .search-box__offer-top-container__col:first-child,
+    .dark-mode.device-android body,
+    .dark-mode.device-android .search-box__offer-top-container__col:first-child {
+        background: #141414;
+    }
+    .dark-mode.device-ios .modal .remark-info.small,
+    .dark-mode.device-ios .search-box__offer-top,
+    .dark-mode.device-ios .search-box__offer-top-container__col:last-child,
+    .dark-mode.device-android .modal .remark-info.small,
+    .dark-mode.device-android .search-box__offer-top,
+    .dark-mode.device-android .search-box__offer-top-container__col:last-child{
+        background: #1c1c1e;
+    }
+    .dark-mode.device-ios .search-box__offer-top-container__col:first-child:after,
+    .dark-mode.device-android .search-box__offer-top-container__col:first-child:after{
+        border-top-color: #141414;
+    }
+    .dark-mode.device-ios .search-box__offer-top-container__col:first-child:before,
+    .dark-mode.device-android .search-box__offer-top-container__col:first-child:before{
+        border-top-color: #2E2E31;
+    }
+    .dark-mode.device-ios .container,
+    .dark-mode.device-ios .container__title,
+    .dark-mode.device-ios .modal p,
+    .dark-mode.device-ios .modal .credit-card-info a,
+    .dark-mode.device-ios .modal,
+    .dark-mode.device-ios .container__title span,
+    .dark-mode.device-ios .search-box__offer-title,
+    .dark-mode.device-ios .check-list li,
+    .dark-mode.device-ios .search-box__offer-top-container__col:first-child,
+    .dark-mode.device-android .container,
+    .dark-mode.device-android .container__title,
+    .dark-mode.device-android .modal p,
+    .dark-mode.device-android .modal .credit-card-info a,
+    .dark-mode.device-android .modal,
+    .dark-mode.device-android .container__title span,
+    .dark-mode.device-android .search-box__offer-title,
+    .dark-mode.device-android .check-list li,
+    .dark-mode.device-android .search-box__offer-top-container__col:first-child{
+        color: #fff;
+    }
+    .dark-mode.device-ios .modal .credit-card-info,
+    .dark-mode.device-ios .modal .credit-card-info a,
+    .dark-mode.device-android .modal .credit-card-info,
+    .dark-mode.device-android .modal .credit-card-info a{
+        color: #8e8e93;
+    }
+    .dark-mode.device-ios .container__row,
+    .dark-mode.device-ios .search-box__offer-top-container__col:first-child,
+    .dark-mode.device-ios .search-box__offer-top.expanded .search-box__offer-top-details,
+    .dark-mode.device-ios .container__link,
+    .dark-mode.device-android .container__row,
+    .dark-mode.device-android .search-box__offer-top-container__col:first-child,
+    .dark-mode.device-android .search-box__offer-top.expanded .search-box__offer-top-details,
+    .dark-mode.device-android .container__link{
+        border-top: 1px solid #2E2E31;
+    }
+    .dark-mode.device-ios .container__row.show-details .container__details,
+    .dark-mode.device-android .container__row.show-details .container__details{
+        border-top: 2px solid #2E2E31;
+    }
+    .dark-mode.device-ios .search-box__offer-top-container__col:first-child:before,
+    .dark-mode.device-android .search-box__offer-top-container__col:first-child:before{
+        border-top: 7px solid #2E2E31;
+    }
+    .dark-mode.device-ios .search-box__offer-top,
+    .dark-mode.device-android .search-box__offer-top{
+        border-bottom: 0;
+        padding-bottom: 0;
+    }
+    .dark-mode.device-ios .container__title span,
+    .dark-mode.device-ios .search-box__offer-top-container,
+    .dark-mode.device-android .container__title span,
+    .dark-mode.device-android .search-box__offer-top-container{
+        border-top: 2px solid #2E2E31;
+    }
+    .dark-mode.device-ios a.blue-link,
+    .dark-mode.device-ios .search-box__offer-content .blue,
+    .dark-mode.device-ios .modal a,
+    .dark-mode.device-android a.blue-link,
+    .dark-mode.device-android .search-box__offer-content .blue,
+    .dark-mode.device-android .modal a{
+        color: #0984FF;
+    }
+    .dark-mode.device-ios .modal .up-counter,
+    .dark-mode.device-android .modal .up-counter {
+        background: #5a5a5f;
+    }
+    .dark-mode.device-ios .container__link a:before,
+    .dark-mode.device-android .container__link a:before{
+        background: #1c1c1e;
+    }
+    .dark-mode.device-ios .container__link,
+    .dark-mode.device-android .container__link{
+        color: #fff !important;
+    }
+    .dark-mode.device-ios .search-box__offer-content .red,
+    .dark-mode.device-android .search-box__offer-content .red{
+        color: #EA3C48;
+    }
+    .dark-mode.device-ios .modal .blue-text,
+    .dark-mode.device-android .modal .blue-text{
+        background: #0984FF;
+    }
+    .dark-mode.device-ios .search-box__offer-top.expanded .search-box__offer-top-details p,
+    .dark-mode.device-android .search-box__offer-top.expanded .search-box__offer-top-details p{
+        color: #fff;
+    }
+    .dark-mode.device-ios .search-box__offer-top-container__col .check-list li,
+    .dark-mode.device-ios .search-box__offer-top-container__row:not(:first-child),
+    .dark-mode.device-android .search-box__offer-top-container__col .check-list li,
+    .dark-mode.device-android .search-box__offer-top-container__row:not(:first-child){
+        border-top-color: #2E2E31;
+    }
+    .dark-mode.device-ios .icon-green-check,
+    .dark-mode.device-android .icon-green-check{
+        background-position: -319px -172px;
+    }
+    .dark-mode.device-ios .icon-orange-check,
+    .dark-mode.device-android .icon-orange-check{
+        background-position: -342px -172px;
+    }
+    .dark-mode.device-ios .icon-red-error,
+    .dark-mode.device-android .icon-red-error{
+        background-position: -365px -172px;
+    }
+    .dark-mode.device-ios .check-list li:before,
+    .dark-mode.device-android .check-list li:before{
+        background-position: -388px -172px;
+    }
+    .dark-mode.device-ios .container,
+    .dark-mode.device-android .container{
+        border-color: #2E2E31;
+    }
+</style>
+<div class="search-box__offer-content">
+    <div class="search-box__offer-top">
+        <div class="search-box__offer-top-wrap">
+            <div class="search-box__offer-title">
+                <span>{{ cardName }}</span>
+                <span class="blue"> ({{ category }}) <strong>{{ [multiplier, 'x']|join }}</strong></span>
+            </div>
+        </div>
+    </div>
+    <div class="modal">
+        <p>
+            {{ 'credit-card.offer.popup.merchant-reverse'|trans({
+                '%strong_on%': '<strong>',
+                '%strong_off%': '</strong>',
+                '%multiplier%': [multiplier, 'x']|join,
+                '%category%': category
+            })|desc("Currently, the following merchants earn %strong_on%%multiplier%%strong_off% at %strong_on%%category%%strong_off%:") | raw }}
+        </p>
+        <div class="container">
+            {% for merchant in merchants %}
+                <div class="container__row"> <!-- .show-details -->
+                    <a href="#" class="container__link">
+                        {{ merchant.name }}
+                    </a>
+
+                    {% if merchant.knownCategories is defined %}
+                        <div class="container__details">
+                            <p>{{ merchant.name }} has been seen to be coded as:</p>
+                            <div class="search-box__offer-top-container">
+
+                                {% for provider, categories in merchant.knownCategories %}
+                                <div class="search-box__offer-top-container__row">
+                                    <div class="search-box__offer-top-container__col">by {{ provider }}:</div>
+                                    <div class="search-box__offer-top-container__col">
+                                        <ul class="check-list">
+                                            {% for category in categories %}
+                                                <li>{{ category.name|raw }} (<span class="red">{{ category.percentage }}%</span>)</li>
+                                            {% endfor %}
+                                        </ul>
+                                    </div>
+                                </div>
+                                {% endfor %}
+
+                            </div>
+                        </div>
+                    {% endif %}
+                </div>
+            {% endfor %}
+        </div>
+        <div class="credit-card-info">
+            <a href="{{ blogUrl }}" target="_blank">
+                {{ 'credit-card.offer.popup.merchant.offer'|trans({
+                    '%up-counter-on%': '<span class="up-counter">',
+                    '%up-counter-off%': '</span>',
+                    '%blue-text-on%': '<span class="blue-text">',
+                    '%blue-text-off%': '</span>',
+                    '%potential%': [multiplier, 'x']|join,
+                    '%category%': category
+                })|desc('How to Earn up to %up-counter-on%%potential%%up-counter-off% points per dollar at %blue-text-on%%category%%blue-text-off%*') | raw }}
+            </a>
+        </div>
+        <div class="remark-info small">
+            <i>
+                {{ 'credit-card.offer.popup.remark.info'|trans({
+                    '%advertisers-link-begin%': '<a target="_blank" href="https://awardwallet.com/blog/advertiser-disclosure/">',
+                    '%advertisers-link-end%': '</a>'
+                })| raw }}
+            </i>
+        </div>
+    </div>
+</div>
+{% endblock %}

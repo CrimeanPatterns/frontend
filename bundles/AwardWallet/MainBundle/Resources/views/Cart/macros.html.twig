@@ -1,0 +1,315 @@
+{% trans_default_domain "messages" %}
+
+{#
+ # Helper macros for common rendering patterns
+ #}
+{% macro formatPrice(price, currency = "USD") %}
+    {{ price|formatCurrency(currency, false) }}
+{% endmacro %}
+
+{% macro renderField(label, value) %}
+    <dt>{{ label }}:</dt>
+    <dd>{{ value|default('') }}</dd>
+{% endmacro %}
+
+{% macro renderTableCell(content, class = "") %}
+    <td{% if class %} class="{{ class }}"{% endif %}>{{ content|raw }}</td>
+{% endmacro %}
+
+{#
+ # Cart item type renderers
+ # Each macro handles a specific type of cart item
+ #}
+{% macro renderDiscountItem(item, showQnt) %}
+    <tr>
+        {{ _self.renderTableCell('<strong class="red">' ~ item.getName ~ '</strong>') }}
+        {% if showQnt %}
+            {{ _self.renderTableCell(item.getQuantity) }}
+        {% endif %}
+        {{ _self.renderTableCell('<strong class="red">' ~ _self.formatPrice(item.getTotalPrice) ~ '</strong>', 't-right') }}
+    </tr>
+{% endmacro %}
+
+{% macro renderBusinessCreditItem(item) %}
+    <tr>
+        <td>
+            {{ 'aw.credit.amount'|trans({
+                '%silver_on%': '<span class="silver">',
+                '%silver_off%': '</span>',
+                '%monthlyEstimate%': item.getMonthlyEstimate
+            })|desc('AwardWallet Credit Amount: %silver_on%(Your estimated monthly cost is about $%monthlyEstimate% per month)%silver_off%')|raw }}
+        </td>
+        <td class="total-price t-right">
+            <span class="red">{{ _self.formatPrice(item.getTotalPrice) }}</span>
+            <span class="silver">
+                {% set estimatedMonths = item.getMonthlyEstimate > 0 ? item.getPrice / item.getMonthlyEstimate : 0 %}
+                ({{ 'business.estimated.cost.monthly'|trans({
+                    '%count%': estimatedMonths
+                })|raw }})
+            </span>
+        </td>
+    </tr>
+{% endmacro %}
+
+{% macro renderPlusPrepaidItem(item) %}
+    <tr>
+        {{ _self.renderTableCell(item.getName) }}
+        {{ _self.renderTableCell(_self.formatPrice(item.getTotalPrice), 't-right') }}
+    </tr>
+    {% if item.getDescription %}
+        <tr>
+            {{ _self.renderTableCell(item.getDescription) }}
+            {{ _self.renderTableCell('', 't-right') }}
+        </tr>
+    {% endif %}
+{% endmacro %}
+
+{% macro renderFreeSubscriptionItem(item, user) %}
+    <tr>
+        {{ _self.renderTableCell(item.getName) }}
+        {{ _self.renderTableCell(item.getDescription) }}
+        {{ _self.renderTableCell(_self.formatPrice(item.priceForUser(user)), 't-right') }}
+    </tr>
+{% endmacro %}
+
+{% macro renderAwPlusRecurringItem(item, user) %}
+    <tr>
+        {{ _self.renderTableCell(item.getName) }}
+        {% if showQnt %}
+            {{ _self.renderTableCell(item.getQuantity) }}
+        {% endif %}
+        {{ _self.renderTableCell('na'|trans|desc("n/a"), 't-right') }}
+    </tr>
+{% endmacro %}
+
+{% macro renderStandardItem(item, showQnt) %}
+    <tr>
+        {{ _self.renderTableCell(item.getName) }}
+        {% if showQnt %}
+            {{ _self.renderTableCell(item.getQuantity) }}
+        {% endif %}
+        {{ _self.renderTableCell(_self.formatPrice(item.getTotalPrice), 't-right') }}
+    </tr>
+{% endmacro %}
+
+{#
+ # Main cart item rendering macro
+ # Maps each item type to appropriate renderer
+ #}
+{% macro drawCartItem(item, showQnt = false, user = null) %}
+    {# Discount items #}
+    {% if item is instanceof('\\AwardWallet\\MainBundle\\Entity\\CartItem\\Discount') %}
+        {{ _self.renderDiscountItem(item, showQnt) }}
+
+    {# Business credit items #}
+    {% elseif item is instanceof('\\AwardWallet\\MainBundle\\Entity\\CartItem\\AwBusinessCredit') %}
+        {{ _self.renderBusinessCreditItem(item) }}
+
+    {# Prepaid items #}
+    {% elseif item is instanceof('\\AwardWallet\\MainBundle\\Entity\\CartItem\\AwPlusPrepaid') %}
+        {{ _self.renderPlusPrepaidItem(item) }}
+
+    {# Free subscription items #}
+    {% elseif
+        (
+            item is instanceof('\\AwardWallet\\MainBundle\\Entity\\CartItem\\AwPlusSubscription')
+            or item is instanceof('\\AwardWallet\\MainBundle\\Entity\\CartItem\\AwPlusWeekSubscription')
+        )
+        and not item.getTotalPrice
+    %}
+        {{ _self.renderFreeSubscriptionItem(item, user) }}
+
+    {# Recurring items #}
+    {% elseif item is instanceof('\\AwardWallet\\MainBundle\\Entity\\CartItem\\AwPlusRecurring') %}
+        {{ _self.renderAwPlusRecurringItem(item, showQnt) }}
+
+    {# Standard items #}
+    {% else %}
+        {{ _self.renderStandardItem(item, showQnt) }}
+    {% endif %}
+{% endmacro %}
+
+{#
+ # Cart table headers rendering
+ #}
+{% macro renderCartTableHeader(showQnt = false) %}
+    <thead>
+        <tr>
+            <th class="item">{{ 'user-pay.column.item.title'|trans }}</th>
+            {% if showQnt %}
+                <th class="quantity">{{ 'user-pay.column.quantity.title'|trans }}</th>
+            {% endif %}
+            <th class="t-right">{{ 'user-pay.column.price.title'|trans }}</th>
+        </tr>
+    </thead>
+{% endmacro %}
+
+{#
+ # Business credit cart table rendering
+ #}
+{% macro renderBusinessCreditCart(cart) %}
+    {% set showQnt = cart.hasItemsWithQuantity() %}
+
+    <table class="main-table payment-business">
+        <tbody>
+        {% for item in cart.getItems %}
+            {{ _self.drawCartItem(item, showQnt, cart.user) }}
+        {% endfor %}
+        </tbody>
+    </table>
+{% endmacro %}
+
+{% macro renderAwPlusSubscriptionWithFirstTimeCouponCart(cart) %}
+    <table class="main-table payment">
+        {{ _self.renderCartTableHeader(true) }}
+        <tbody>
+            <tr>
+                {% set coupon = cart.coupon %}
+
+                <tr>
+                    {{ _self.renderTableCell('cart.coupon.applied.message.v2'|trans({
+                        '%code%': coupon.code
+                    })|desc('Coupon code applied: %code%. Complementary AwardWallet Plus Upgrade for 6 Months')) }}
+
+                    {{ _self.renderTableCell(
+                        'cart.coupon.duration.message'|trans({
+                            '%duration%': 'interval_short.months'|trans({'%count%': 6 }),
+                            '%start_date%': date('now')|formatDatetime('short', 'none'),
+                            '%end_date%': 'now'|date_modify('+6 months')|formatDatetime('short', 'none')
+                        })|desc('%duration% (From %start_date% until %end_date%)')
+                    ) }}
+                    {{ _self.renderTableCell(_self.formatPrice(0), 't-right') }}
+                </tr>
+
+                {% for item in cart.getItems %}
+                    {% if
+                        item.isVisibleInCart and
+                        (
+                            not item is instanceof('\\AwardWallet\\MainBundle\\Entity\\CartItem\\Discount')
+                            and not (
+                                item is instanceof('\\AwardWallet\\MainBundle\\Entity\\CartItem\\AwPlus')
+                                and not item is instanceof('\\AwardWallet\\MainBundle\\Entity\\CartItem\\AwPlusSubscription')
+                            )
+                        ) %}
+                        {{ _self.drawCartItem(item, true, cart.user) }}
+                    {% endif %}
+                {% endfor %}
+            </tr>
+        </tbody>
+    </table>
+
+    <table class="main-table total">
+        <tr class="totals">
+            <td><strong class="red">{{ 'user-pay.total'|trans|desc("Total")|raw }}:</strong></td>
+            <td class="total-price t-right"><span class="red">{{ _self.formatPrice(cart.getTotalPrice) }}</span></td>
+        </tr>
+    </table>
+{% endmacro %}
+
+{#
+ # Standard cart table rendering with totals
+ #}
+{% macro renderStandardCart(cart) %}
+    {% set user = cart.user %}
+    {% set prepaid = cart.hasPrepaidAwPlusSubscription() %}
+    {% set showQnt = cart.hasItemsWithQuantity() and not prepaid %}
+
+    {# Main items table #}
+    <table class="main-table payment">
+        {{ _self.renderCartTableHeader(showQnt) }}
+        <tbody>
+            {# Regular items #}
+            {% for item in cart.getItems %}
+                {% if item.isVisibleInCart and (not prepaid or not (item is instanceof('\\AwardWallet\\MainBundle\\Entity\\CartItem\\AwPlusSubscription'))) %}
+                    {{ _self.drawCartItem(item, showQnt, user) }}
+                {% endif %}
+            {% endfor %}
+
+            {# Discount items - rendered separately to appear at the bottom #}
+            {% for item in cart.getItems %}
+                {% if item is instanceof('\\AwardWallet\\MainBundle\\Entity\\CartItem\\Discount') %}
+                    {{ _self.drawCartItem(item, showQnt, user) }}
+                {% endif %}
+            {% endfor %}
+
+            {# Balance watch credit #}
+            {% if cart.isGiveBalanceWatchCredit %}
+                <tr>
+                    <td>{{ 'cart.item.type.balancewatch-credit'|trans }}</td>
+                    {% if showQnt %}<td>{{ constant('AwardWallet\\MainBundle\\Service\\BalanceWatch\\Constants::GIFT_COUNT') }}</td>{% endif %}
+                    <td class="t-right">{{ _self.formatPrice(0) }}</td>
+                </tr>
+            {% endif %}
+        </tbody>
+    </table>
+
+    {# Totals table #}
+    <table class="main-table total">
+        <tr class="totals">
+            <td><strong class="red">{{ 'user-pay.total'|trans|desc("Total")|raw }}:</strong></td>
+            <td class="total-price t-right"><span class="red">{{ _self.formatPrice(cart.getTotalPrice) }}</span></td>
+        </tr>
+    </table>
+{% endmacro %}
+
+{#
+ # Main cart rendering macro
+ # Handles cart type detection and delegates rendering
+ #}
+{% macro drawCart(cart) %}
+    {# Render appropriate cart type #}
+    {% if cart.hasAwBusinessCredit() %}
+        {{ _self.renderBusinessCreditCart(cart) }}
+    {% elseif cart.isAwPlusSubscription() and cart.coupon != null and cart.coupon.firsttimeonly %}
+        {{ _self.renderAwPlusSubscriptionWithFirstTimeCouponCart(cart) }}
+    {% else %}
+        {{ _self.renderStandardCart(cart) }}
+    {% endif %}
+{% endmacro %}
+
+{#
+ # Billing address rendering macro
+ #}
+{% macro drawBillingAddress(cart) %}
+    <div class="title-note">
+        <h3>{{ 'billing.address'|trans|desc('Billing address') }}</h3>
+    </div>
+    <dl class="payment-details">
+        {{ _self.renderField('cart.full-name'|trans, cart.getBillfirstname ~ ' ' ~ cart.getBilllastname) }}
+        {{ _self.renderField('cart.address1'|trans, cart.getBilladdress1) }}
+        {{ _self.renderField('cart.address2'|trans, cart.getBilladdress2) }}
+        {{ _self.renderField('cart.city'|trans, cart.getBillcity) }}
+        {{ _self.renderField('cart.state'|trans, cart.getBillstate.getName is defined ? cart.getBillstate.getName : null) }}
+        {{ _self.renderField('cart.country'|trans, cart.getBillcountry.getName is defined ? cart.getBillcountry.getName : null) }}
+        {{ _self.renderField('cart.zip'|trans, cart.getBillzip) }}
+    </dl>
+{% endmacro %}
+
+{#
+ # Credit card information rendering macro
+ #}
+{% macro drawCardInfo(cart) %}
+    <div class="title-note">
+        <h3>{{ 'cart.cc-info'|trans|desc("Credit Card Info") }}</h3>
+    </div>
+    <dl class="payment-details">
+        {{ _self.renderField('cart.cc-type'|trans, cart.getCreditcardtype()) }}
+        {{ _self.renderField('cart.full-name'|trans, cart.getBillfirstname() ~ ' ' ~ cart.getBilllastname()) }}
+        {{ _self.renderField('cart.cc-number'|trans, cart.getCreditcardnumber()) }}
+        {{ _self.renderField('cart.cc-expiration'|trans, '****/**') }}
+    </dl>
+{% endmacro %}
+
+{#
+ # Extending the cart functionality
+ #
+ # 1. To add a new cart item type renderer:
+ #    - Create a new macro with the pattern "render[Type]Item"
+ #    - Add a new condition in drawCartItem to detect your type
+ #    - Call your render macro from there
+ #
+ # 2. To add a new cart display style:
+ #    - Create a new render macro with the pattern "render[Style]Cart"
+ #    - Add detection logic in drawCart
+ #    - Call your render macro from there
+ #}

@@ -1,0 +1,15 @@
+[mysqld]
+character-set-server = utf8mb4
+skip-character-set-client-handshake = 1
+wait_timeout = 60
+connect_timeout = 60
+interactive_timeout = 300
+innodb_flush_log_at_trx_commit = 0
+max_allowed_packet = 64M
+sync_binlog = 0
+innodb_ft_min_token_size = 1
+disable_log_bin
+bind-address = 0.0.0.0
+
+# general_log = on
+# general_log_file = /tmp/sql.log

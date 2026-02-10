@@ -1,0 +1,5 @@
+<td>
+    {% if object.userid is not empty and object.userid.facebookUserId is not empty %}
+        <a href="https://facebook.com/{{ object.userid.facebookUserId }}" target="_blank">Show Profile</a>
+    {% endif %}
+</td>

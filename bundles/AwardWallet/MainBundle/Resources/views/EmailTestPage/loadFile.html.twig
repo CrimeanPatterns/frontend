@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset={{ _charset }}"/>
+        <meta name="robots" content="noindex,nofollow" />
+        <title>{% block title %}Email Scanner - Admin{% endblock %}</title>
+        <link rel="stylesheet" href="../../assets/awardwalletnewdesign/css/main.css">
+
+        {% block head %}{% endblock %}
+    </head>
+    <body style="margin: 2px 0;">
+        <form method="post" id="form" enctype="multipart/form-data">
+            <div class="row">
+                <div class="row-item">
+                    <div class="input">
+                        <div class="input-item">
+                            <div class="upload-btn">
+
+                            <input type="file" id="file" name="file"/>
+            <span class="btn-silver">Choose File</span>
+            <span class="upload-btn__file">No file choosen</span>
+                            </div></div></div></div></div>
+        </form>
+        <script type="text/javascript">
+            document.getElementById("file").onchange = function() {
+                document.getElementById("form").submit();
+            };
+            {% if file is defined %}
+            setTimeout(function() {
+                parent.postMessage({file: "{{ file }}"}, '{{ app.request.scheme }}://{{ app.request.host }}');
+            }, 2000);
+            {% endif %}
+        </script>
+    </body>
+</html>

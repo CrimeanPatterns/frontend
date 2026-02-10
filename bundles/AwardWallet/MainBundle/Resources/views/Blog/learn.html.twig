@@ -1,0 +1,130 @@
+{% extends "@AwardWalletMain/Layout/main.html.twig" %}
+
+{% import '@AwardWalletMain/Blog/components/blog_menu.html.twig' as menuRender %}
+{% import '@AwardWalletMain/Blog/components/hero.html.twig' as heroComponent %}
+{% import '@AwardWalletMain/Blog/components/loader.html.twig' as loaderComponent %}
+
+{% block title %}AwardWallet Learn{% endblock %}
+
+{% set pageName = 'page-learn' %}
+{% set pageAssetsPath = pageName ~ '/assets' %}
+{% set isSearch = search is defined and search is not empty %}
+
+{% block meta %}
+    {{ parent() }}
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0, minimum-scale=1, maximum-scale=5, viewport-fit=cover">
+    <meta name="theme-color" content="#292a2d" media="(prefers-color-scheme: dark)">
+    <meta name="theme-color" content="#f5f6f8" media="(prefers-color-scheme: light)">
+{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    {{ encore_entry_link_tags('global-loader') }}
+    {{ encore_entry_link_tags('palettes/learn-palette') }}
+    {{ encore_entry_link_tags(pageName) }}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        {% for key, data in dataset %}
+            window['{{ key }}'] = {{ data|json_encode|raw }};
+        {% endfor %}
+
+        window.labels = {{ labels|json_encode|raw }}
+        console.log({{groups|json_encode|raw}});
+
+        
+        {% if app.user is defined %}
+            window.userRef = '{{app.user.refCode}}';
+        {% endif %}
+        
+        window.apiSearch = {{apiSearch|json_encode|raw}}
+        window.isSearchPage = {{ isSearch ? 'true' : 'false' }}
+
+
+
+        {% set allPosts = [] %}
+        {% for group in groups %}
+            {% if group.nextPage is defined and group.nextPage and group.posts is defined and group.posts|length > 0 %}
+                {% set allPosts = allPosts|merge(group.posts) %}
+            {% endif %}
+        {% endfor %}
+
+        window.initialPosts = {{ allPosts|json_encode|raw }};
+    </script>
+    {{ encore_entry_script_tags('trans/' ~ app.request.locale) }}
+    {{ encore_entry_script_tags(pageName, null, '_default', {'defer': true}) }}
+{% endblock javascripts %}
+
+{% block body %}
+    {% include '@AwardWalletMain/Layout/global-loader.html.twig' %}
+
+
+    {% include '@AwardWalletMain/Blog/components/header.html.twig' with {
+            'user': user,
+            'pageName': pageName,
+            'pageAssetsPath': pageAssetsPath,
+            'menu': menu,
+            'isSearch': isSearch
+        } %}
+
+    <main data-user={{ user ? "true":"false" }}>
+
+        {% if isSearch %}
+            {% include '@AwardWalletMain/Blog/components/search_block.html.twig' with {
+            'pageName': pageName,
+            'offers': offers,
+        } %}
+
+        {% endif %}
+
+        {% if not isSearch %}
+
+            {{ heroComponent.render(labels, pageName) }}
+
+            {{ loaderComponent.render(pageName) }}
+            <div class="{{ bem(pageName, 'content-wrapper') }}">
+                <section style="{% if app.request.attributes.get('_route') != 'aw_blog_learn' %}display:none;{% endif %}" class="{{ bem(pageName, 'container') }} {{ bem(pageName, 'recommended-offer') }}">
+                    {% if recommendedOffer is defined and recommendedOffer.posts is defined and recommendedOffer.posts is not empty %}
+                        {% include '@AwardWalletMain/Blog/components/recommended_offer.html.twig' with {
+                            'recommendedOffer': recommendedOffer,
+                            'pageName': pageName
+                        } %}
+                    {% endif %}
+                </section>
+            
+                <section style="{% if app.request.attributes.get('_route') != 'aw_blog_learn' %}display:none;{% endif %}" class="{{ bem(pageName, 'latest-news') }}">
+                    {% if latestNews is defined and latestNews.posts is defined and latestNews.posts is not empty%}
+                        {% include '@AwardWalletMain/Blog/components/latest_news.html.twig' with {
+                            'latestNews': latestNews,
+                            'pageName': pageName
+                        } %}
+                    {% endif %}
+                </section>
+                {% include '@AwardWalletMain/Blog/components/offered_cards.html.twig' with {
+                    'pageName': pageName,
+                    'offers': offers,
+                } %}
+                <div class="{{ bem(pageName, 'container') }} {{ bem(pageName, 'content-grid',['shown']) }}">
+                    {% include '@AwardWalletMain/Blog/components/post_groups.html.twig' %}
+
+                    {% include '@AwardWalletMain/Blog/components/offers_sidebar.html.twig' with {
+                        'offers': offers,
+                        'isSearchPage': false,
+                    } %}
+
+                </div>
+            </div>
+
+
+
+
+
+        {% endif %}
+    </main>
+
+
+
+{% endblock %}

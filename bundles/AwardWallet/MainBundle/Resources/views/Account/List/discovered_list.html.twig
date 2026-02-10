@@ -1,0 +1,68 @@
+<div style="display:block" data-ng-controller="discoveredAccountsCtrl as ctrl">
+    <div class="block-content">
+        <p>
+            {{ "discovered-accounts-description"|trans({
+                '%link_on%': '<a href="#" class="blue-link" onclick="$(\'#ui-id-29\').click(); event.preventDefault();">',
+                '%link_off%': '</a>'
+            })|desc("The following accounts were found via your mailbox, please add them to AwardWallet so that we can track your account balances and expiration dates for you. Alternatively, you can add other loyalty accounts to be tracked via AwardWallet by following %link_on%this link%link_off%.")|raw }}
+        </p>
+    </div>
+    <div class="title-note">
+        <h3>{{ "discovered-loyalty-accounts"|trans|desc("Discovered Loyalty Accounts") }}</h3>
+    </div>
+    <table
+            class="main-table no-border discovered-accounts"
+            data-ng-style="{ opacity: (ctrl.state.isLoading == true) ? '0.25' : '1' }"
+    >
+        <thead>
+        <tr>
+            <th class="check-cell">
+                <input type="checkbox" class="checkbox" id="check_all" data-ng-click="ctrl.toggleSelectAll($event)"
+                       data-ng-model="ctrl.state.selectAll">
+                <label for="check_all" class="label"></label>
+            </th>
+            <th>{{ "loyalty-program"|trans|desc('Loyalty Program') }}</th>
+            <th>{{ "status.account"|trans }}</th>
+            <th>{{ "owner"|trans|desc('Owner') }}</th>
+            <th class="balance-cell">{{ "last-known-balance"|trans|desc('Last Known Balance') }}</th>
+            <th>{{ "sent-to"|trans|desc('Sent to') }}</th>
+            <th></th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr
+            data-ng-repeat="(i, item) in ctrl.discoveredAcconts track by i"
+            data-ng-class="{ 'active': ctrl.state.selected[item.accountId] === true }"
+        >
+            <td class="check-cell">
+                <input type="checkbox" class="checkbox" id="[['check_'+item.accountId]]"
+                       data-ng-model="ctrl.state.selected[item.accountId]">
+                <label for="[['check_'+item.accountId]]" class="label"></label>
+            </td>
+            <td data-ng-bind="item.provider"></td>
+            <td class="text-ellipsis" data-ng-bind="item.login"></td>
+            <td data-ng-bind="item.fullName"></td>
+            <td class="balance-cell" data-ng-bind="item.balance"></td>
+            <td class="text-ellipsis" title="[[ item.email ]]" data-ng-bind="item.email"></td>
+            <td class="t-right">
+                <a href="[[ctrl.getSetupLink(item.accountId)]]?" class="blue-link">
+                    {{ "set-up-now"|trans|desc("Set Up Now") }} <i class="icon-double-arrow-right-blue"></i>
+                </a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+    <div class="row-submit bottom-side">
+        <button
+                data-ng-disabled="ctrl.disableRemoveButton()"
+                class="btn-blue"
+                type="button"
+                data-ng-click="ctrl.removeAccounts($event);"
+        >
+            {{ "award.account.list.delete-selected"|trans }}
+        </button>
+        <a href="#/auto" class="btn-blue" onclick="$('#auto-track-tab').click(); event.preventDefault();">
+            {{ "add-other-loyalty-accounts"|trans|desc('Add Other Loyalty Accounts') }}
+        </a>
+    </div>
+</div>

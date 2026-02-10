@@ -1,0 +1,183 @@
+{% block account_type %}
+    {% if user.accountlevel == constant('ACCOUNT_LEVEL_FREE') %}
+    <div class="account-type free">
+        <div>
+            <p class="faded">{{ 'account_type'|trans|desc('Account Type') }}</p>
+            <h5 class="account-type-title">{{ 'subscription-info.free'|trans({'%middle%': '<span class="faded">', '%end%': '</span>'})|desc('AwardWallet%middle%Free%end%')|raw }}</h5>
+            <ul class="account-type-details">
+                <li>
+                    <span class="element-icon">
+                        <svg class="no-fill" width="12" height="12" viewBox="0 0 12 12"><g opacity="0.3"><path d="M12 10H0V2.00006H12V10ZM11.5 3.49997H0.500063V4.99997H11.5V3.49997ZM5.50003 7.5H1.5V8.50003H5.50003V7.5ZM7.99997 6.49997H1.5V6.99994H7.99997V6.49997Z"/></g></svg>
+                    </span>
+                    <span class="element-description faded">{{ 'recurring_payment.disabled'|trans|desc('Recurring payment is turned off') }}</span>
+                </li>
+            </ul>
+        </div>
+        <div>
+            <a class="button-upgrade" href="{{ path('aw_users_pay') }}">
+                <div class="btn-text">{{ 'subscription.upgrade_button'|trans({'%middle%': '</div><div class="type-label blue"><span class="type-label-icon"></span><span class="type-label-text">', '%end%': '</span>'})|desc('Upgrade to AwardWallet%middle%Plus%end%')|raw }}</div>
+            </a>
+        </div>
+    </div>
+    {% elseif user.accountlevel == constant('ACCOUNT_LEVEL_AWPLUS') and not subscription.hasSubscription %}
+    <div class="account-type plus">
+        <p>{{ 'account_type'|trans|desc('Account Type') }}</p>
+        {% if isTrial %}
+        <h5 class="account-type-title">{{ 'subscription-info.plus-trial'|trans({'%middle%': '<span class="type-label blue"><span class="type-label-icon"></span><span class="type-label-text">', '%end%': '</span></span>'})|desc('AwardWallet%middle%Plus Trial%end%')|raw }}</h5>
+        {% else %}
+        <h5 class="account-type-title">{{ 'subscription-info.plus'|trans({'%middle%': '<span class="type-label blue"><span class="type-label-icon"></span><span class="type-label-text">', '%end%': '</span></span>'})|desc('AwardWallet%middle%Plus%end%')|raw }}</h5>
+        {% endif %}
+        <ul class="account-type-details">
+            <li>
+                <span class="element-icon">
+                    <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M11.9868 3.21L10.2869 1.515L5.19691 6.60497L2.36688 3.77494L0.671875 5.47491L5.19691 9.99994L11.9869 3.20991L11.9868 3.21Z" fill="#4dbfa2"/></svg>
+                </span>
+                <span class="element-description">{{ subscription.expirationDate }}</span>
+            </li>
+            <li>
+                {% if subscription.expirationDateAt201 is null %}
+                <span class="element-icon">
+                    <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><g opacity="0.5"><path d="M12 10.0001H0V2.00012H12V10.0001ZM11.5 3.50003H0.500063V5.00003H11.5V3.50003ZM5.50003 7.50006H1.5V8.50009H5.50003V7.50006ZM7.99997 6.50003H1.5V7H7.99997V6.50003Z" fill="#ffffff"/></g></svg>
+                </span>
+                <span class="element-description faded">{{ 'recurring_payment.disabled'|trans|desc('Recurring payment is turned off') }}</span>
+                {% else %}
+                <span class="element-icon">
+                    <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M11.9868 3.21L10.2869 1.515L5.19691 6.60497L2.36688 3.77494L0.671875 5.47491L5.19691 9.99994L11.9869 3.20991L11.9868 3.21Z" fill="#4dbfa2"/></svg>
+                </span>
+                <span class="element-description">{{ 'subscription.including_at201'|trans|desc('AwardWallet Plus included with AwardTravel 201 subscription.') }}</span>
+                {% endif %}
+            </li>
+        </ul>
+        <div class="account-type-buttons large">
+            <a href="{{ path('aw_users_pay') }}">
+                <div class="btn-icon">
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="8" fill="#ffffff"/><path d="M8.7694 7.23441H11.5408V8.80114H8.7694V11.5554H7.20109V8.80114H4.42969V7.23441H7.20109V4.44434H8.7694V7.23441Z" fill="#0168ca"/></svg>
+                </div>
+                <div class="btn-text">{{ 'subscription.add'|trans|desc('Add subscription') }}</div>
+            </a>
+        </div>
+    </div>
+        {# If the user has access to "AwardTravel 201" but the subscription has been canceled #}
+        {% if subscription.expirationDateAt201 %}
+        <div class="account-type at201">
+            <h5 class="account-type-title">
+                <span>AwardTravel</span>
+                <span class="type-label orange"><span class="type-label-icon"></span><span class="type-label-text">201</span></span>
+            </h5>
+            <ul class="account-type-details">
+                <li>
+                    <span class="element-icon">
+                        <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M11.9868 3.21L10.2869 1.515L5.19691 6.60497L2.36688 3.77494L0.671875 5.47491L5.19691 9.99994L11.9869 3.20991L11.9868 3.21Z" fill="#4dbfa2"/></svg>
+                    </span>
+                    <span class="element-description">{{ subscription.expirationDateAt201 }}</span>
+                </li>
+                <li>
+                    <span class="element-icon">
+                        <svg class="no-fill" width="12" height="12" viewBox="0 0 12 12"><g opacity="0.4"><path d="M12 10H0V2.00006H12V10ZM11.5 3.49997H0.500063V4.99997H11.5V3.49997ZM5.50003 7.5H1.5V8.50003H5.50003V7.5ZM7.99997 6.49997H1.5V6.99994H7.99997V6.49997Z"/></g></svg>
+                    </span>
+                    <span class="element-description">{{ 'recurring_payment.disabled'|trans|desc('Recurring payment is turned off') }}</span>
+                </li>
+            </ul>
+            <div class="account-type-buttons large">
+                <a href="{{ path('aw_at201_payment', {'type': 203}) }}">
+                    <div class="btn-icon">
+                        <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="8" fill="#ffffff"/><path d="M8.7694 7.23441H11.5408V8.80114H8.7694V11.5554H7.20109V8.80114H4.42969V7.23441H7.20109V4.44434H8.7694V7.23441Z" fill="#ff6723"/></svg>
+                    </div>
+                    <div class="btn-text">{{ 'subscription.add'|trans|desc('Add subscription') }}</div>
+                </a>
+            </div>
+        </div>
+        {% endif %}
+    {% elseif user.accountlevel == constant('ACCOUNT_LEVEL_AWPLUS') and subscription.hasSubscription and subscription.expirationDateAt201 is null %}
+    <div class="account-type plus">
+        <p>{{ 'account_type'|trans|desc('Account Type') }}</p>
+        <h5 class="account-type-title">{{ 'subscription-info.plus'|trans({'%middle%': '<span class="type-label blue"><span class="type-label-icon"></span><span class="type-label-text">', '%end%': '</span></span>'})|desc('AwardWallet%middle%Plus%end%')|raw }}</h5>
+        <ul class="account-type-details">
+            <li>
+                <span class="element-icon">
+                    <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M11.9868 3.21L10.2869 1.515L5.19691 6.60497L2.36688 3.77494L0.671875 5.47491L5.19691 9.99994L11.9869 3.20991L11.9868 3.21Z" fill="#4dbfa2"/></svg>
+                </span>
+                <span class="element-description">{{ subscription.expirationDate }}</span>
+            </li>
+            <li>
+                <span class="element-icon">
+                    <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M12 10.0001H0V2.00012H12V10.0001ZM11.5 3.50003H0.500063V5.00003H11.5V3.50003ZM5.50003 7.50006H1.5V8.50009H5.50003V7.50006ZM7.99997 6.50003H1.5V7H7.99997V6.50003Z" fill="#ffffff"/></svg>
+                </span>
+                <span class="element-description">{{ subscription.paymentTypeText }}</span>
+            </li>
+        </ul>
+        <div class="account-type-buttons">
+            <a href="{{ path('aw_user_subscription_get_cancel') }}">
+                <div class="btn-icon">
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><g opacity="0.3"><path d="M10.9291 3.85656C10.8119 3.7394 10.622 3.7394 10.5048 3.85656L8.04503 6.31636L5.54164 3.81297C5.42448 3.69581 5.23453 3.69581 5.11737 3.81297L3.81443 5.11591C3.69727 5.23307 3.69727 5.42302 3.81443 5.54017L6.31782 8.04356L3.85802 10.5034C3.74086 10.6205 3.74086 10.8105 3.85802 10.9276L5.07378 12.1434C5.19094 12.2605 5.38089 12.2605 5.49805 12.1434L7.95784 9.68359L10.4612 12.187C10.5784 12.3041 10.7683 12.3041 10.8855 12.187L12.1884 10.884C12.3056 10.7669 12.3056 10.5769 12.1884 10.4598L9.68505 7.95638L12.1448 5.49658C12.262 5.37942 12.262 5.18948 12.1448 5.07232L10.9291 3.85656Z" fill="#ffffff"/></g></svg>
+                </div>
+                <div class="btn-text">{{ 'subscription.cancel'|trans|desc('Cancel subscription') }}</div>
+            </a>
+            {% if subscription.paymentType != constant('PAYMENTTYPE_APPSTORE') %}
+            <a href="{{ path('aw_cart_change_payment_method_authorized') }}">
+                <div class="btn-icon">
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><g opacity="0.3"><path d="M1.5 10H1.33337C0.597 10 0 9.403 0 8.66663V2C0 1.26363 0.597 0.666626 1.33337 0.666626H12C12.7364 0.666626 13.3334 1.26363 13.3334 2V4.83338H11.8334V2.16675H1.5V10ZM16 7.33338V14C16 14.7364 15.403 15.3334 14.6666 15.3334H4C3.26363 15.3334 2.66663 14.7364 2.66663 14V7.33338C2.66663 6.597 3.26363 6 4 6H14.6666C15.403 6 16 6.597 16 7.33338ZM14.5 7.5H4.16663V13.8334H14.5V7.5ZM13.3334 8.66663H5.33337V10.3333H13.3334V8.66663ZM9.33337 11.5866H5.33337V12.5866H9.33337V11.5866ZM10.6666 3.58663H2.66663V4.58663H10.6666V3.58663Z" fill="#ffffff"/></g></svg>
+                </div>
+                <div class="btn-text">{{ 'change_payment_method'|trans|desc('Change payment method') }}</div>
+            </a>
+            {% endif %}
+        </div>
+    </div>
+    {% elseif user.accountlevel == constant('ACCOUNT_LEVEL_AWPLUS') and subscription.hasSubscription and subscription.expirationDateAt201 %}
+    <div class="account-type plus">
+        <p>{{ 'account_type'|trans|desc('Account Type') }}</p>
+        <h5 class="account-type-title">{{ 'subscription-info.plus'|trans({'%middle%': '<span class="type-label blue"><span class="type-label-icon"></span><span class="type-label-text">', '%end%': '</span></span>'})|desc('AwardWallet%middle%Plus%end%')|raw }}</h5>
+        <ul class="account-type-details">
+            <li>
+                <span class="element-icon">
+                    <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M11.9868 3.21L10.2869 1.515L5.19691 6.60497L2.36688 3.77494L0.671875 5.47491L5.19691 9.99994L11.9869 3.20991L11.9868 3.21Z" fill="#4dbfa2"/></svg>
+                </span>
+                <span class="element-description">{{ subscription.expirationDate }}</span>
+            </li>
+            <li>
+                <span class="element-icon">
+                    <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M11.9868 3.21L10.2869 1.515L5.19691 6.60497L2.36688 3.77494L0.671875 5.47491L5.19691 9.99994L11.9869 3.20991L11.9868 3.21Z" fill="#4dbfa2"/></svg>
+                </span>
+                <span class="element-description">{{ 'subscription.including_at201'|trans|desc('AwardWallet Plus included with AwardTravel 201 subscription.') }}</span>
+            </li>
+        </ul>
+    </div>
+
+    <div class="account-type at201">
+        <h5 class="account-type-title">
+            <span>AwardTravel</span>
+            <span class="type-label orange"><span class="type-label-icon"></span><span class="type-label-text">201</span></span>
+        </h5>
+        <ul class="account-type-details">
+            <li>
+                <span class="element-icon">
+                    <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M11.9868 3.21L10.2869 1.515L5.19691 6.60497L2.36688 3.77494L0.671875 5.47491L5.19691 9.99994L11.9869 3.20991L11.9868 3.21Z" fill="#4dbfa2"/></svg>
+                </span>
+                <span class="element-description">{{ subscription.expirationDateAt201 }}</span>
+            </li>
+            <li>
+                <span class="element-icon">
+                    <svg class="no-fill" width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M12 10H0V2.00006H12V10ZM11.5 3.49997H0.500063V4.99997H11.5V3.49997ZM5.50003 7.5H1.5V8.50003H5.50003V7.5ZM7.99997 6.49997H1.5V6.99994H7.99997V6.49997Z"/></svg>
+                </span>
+                <span class="element-description">{{ subscription.paymentTypeText }}</span>
+            </li>
+        </ul>
+        <div class="account-type-buttons">
+            <a href="{{ path('aw_user_subscription_get_cancel') }}">
+                <div class="btn-icon">
+                    <svg class="no-fill" width="16" height="16" viewBox="0 0 16 16" fill="none"><g opacity="0.3"><path d="M10.9291 3.85659C10.8119 3.73943 10.622 3.73943 10.5048 3.85659L8.04503 6.31639L5.54164 3.813C5.42448 3.69584 5.23453 3.69584 5.11737 3.813L3.81443 5.11594C3.69727 5.2331 3.69727 5.42305 3.81443 5.5402L6.31782 8.04359L3.85802 10.5034C3.74086 10.6205 3.74086 10.8105 3.85802 10.9277L5.07378 12.1434C5.19094 12.2606 5.38089 12.2606 5.49805 12.1434L7.95784 9.68362L10.4612 12.187C10.5784 12.3042 10.7683 12.3042 10.8855 12.187L12.1884 10.8841C12.3056 10.7669 12.3056 10.577 12.1884 10.4598L9.68505 7.95641L12.1448 5.49661C12.262 5.37946 12.262 5.18951 12.1448 5.07235L10.9291 3.85659Z"/></g></svg>
+                </div>
+                <div class="btn-text">{{ 'subscription.cancel'|trans|desc('Cancel subscription') }}</div>
+            </a>
+            {% if subscription.paymentType != constant('PAYMENTTYPE_APPSTORE') %}
+            <a href="{{ path('aw_cart_change_payment_method_authorized') }}">
+                <div class="btn-icon">
+                    <svg class="no-fill" width="16" height="16" viewBox="0 0 16 16" fill="none"><g opacity="0.3"><path d="M1.5 10H1.33337C0.597 10 0 9.403 0 8.66663V2C0 1.26363 0.597 0.666626 1.33337 0.666626H12C12.7364 0.666626 13.3334 1.26363 13.3334 2V4.83338H11.8334V2.16675H1.5V10ZM16 7.33338V14C16 14.7364 15.403 15.3334 14.6666 15.3334H4C3.26363 15.3334 2.66663 14.7364 2.66663 14V7.33338C2.66663 6.597 3.26363 6 4 6H14.6666C15.403 6 16 6.597 16 7.33338ZM14.5 7.5H4.16663V13.8334H14.5V7.5ZM13.3334 8.66663H5.33337V10.3333H13.3334V8.66663ZM9.33337 11.5866H5.33337V12.5866H9.33337V11.5866ZM10.6666 3.58663H2.66663V4.58663H10.6666V3.58663Z"/></g></svg>
+                </div>
+                <div class="btn-text">{{ 'change_payment_method'|trans|desc('Change payment method') }}</div>
+            </a>
+            {% endif %}
+        </div>
+    </div>
+    {% endif %}
+{% endblock %}

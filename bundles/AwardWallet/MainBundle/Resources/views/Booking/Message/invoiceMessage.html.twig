@@ -1,0 +1,141 @@
+{% set bookerInfo = message.request.booker.bookerinfo %}
+<div class="invoice_view_container" data-paid="{% if message.invoice.isPaid %}true{% else %}false{% endif %}">
+    <div class="invoice_top">
+        <div class="invoice_top_right">
+            <div class="linear_gradient_gray">
+                <a target="_blank" href="{{ url('aw_out', {url: bookerInfo.serviceURL }) }}" class="invoiceLogo" style="background-image: url('{{ asset(message.request.booker.bookerInfo.getLogo('invoice')) }}')"></a>
+            </div>
+        </div>
+        <div class="invoice_top_left">
+            <div style="padding-top: 45px;">
+                {{ "invoice.message.intro"|trans({'%contactname%': message.request.contactname |htmlencode}, 'booking')|desc("Dear %contactname%, <br><br>Your invoice is attached. Please remit payment at your earliest convenience.<br>Thank you for your business, we appreciate it very much.")|raw }}
+            </div>
+        </div>
+    </div>
+
+    <div class="invoice_middle">
+        <h1 class="linear_gradient_gray">{{ "invoice.invoice"|trans({}, 'booking')|desc('Invoice') }}</h1>
+
+        <div class="invoice_wrapper">
+            <div class="invoice">
+                <div class="data_1">
+                    <div class="data_1_right">
+                        <table style="width: 100%" class="invoice_table">
+                            <tbody>
+                            <tr>
+                                <td class="caption linear_gradient_gray nowrap field_invoice_caption">{{ "invoice.invoice"|trans({}, 'booking')|desc('Invoice') }} #</td>
+                                <td class="border nowrap field_invoice_value">{{ message.invoice.id }}</td>
+                                <td class="caption linear_gradient_gray nowrap field_billto_caption" style="width:285px;">{{ "invoice.message.bill-to"|trans({}, 'booking')|desc('Bill To') }}</td>
+                            </tr>
+                            <tr>
+                                <td class="caption linear_gradient_gray nowrap field_terms_caption">{{ "invoice.message.terms"|trans({}, 'booking')|desc('Terms') }}</td>
+                                <td class="border nowrap field_terms_value">{{ "invoice.message.due-on-receipt"|trans({}, 'booking')|desc('Due on receipt') }}</td>
+                                <td rowspan="3" class="border nowrap field_billto_value" style="padding: 15px 12px;">
+                                    {{ message.request.contactname }}<br>
+                                    {{ message.request.contactphone }}<br>
+                                    {#{{ message.request.user.address1 }}<br>#}
+                                    {#{{ message.request.user.address2 }}<br>#}
+                                    <a href="mailto:{{ message.request.contactemail }}">{{ message.request.contactemail }}</a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="caption linear_gradient_gray nowrap field_date_caption">{{ "invoice.message.invoice-date"|trans({}, 'booking')|desc('Invoice Date') }}</td>
+                                <td class="border nowrap field_date_value">{{ message.createdate|leadTZ|formatDatetime('medium', 'none') }}</td>
+                            </tr>
+                            <tr>
+                                <td colspan="2">&nbsp;</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="booker_info">
+                        {{ bookerInfo.address|raw }}<br/>
+                        <a href="mailto:{{ bookerInfo.FromEmail }}">{{ bookerInfo.FromEmail }}</a>
+                    </div>
+                    <div style="clear: both;"></div>
+                </div>
+
+                <hr>
+
+                <div class="data_2">
+                    <table style="width: 100%;" class="invoice_table">
+                        <tbody>
+                        <tr>
+                            <td class="caption linear_gradient_gray nowrap">{{ "invoice.message.date"|trans({}, 'booking')|desc('Date') }}</td>
+                            <td width="50%" class="caption linear_gradient_gray nowrap">{{ "invoice.message.description"|trans({}, 'booking')|desc('Description') }}</td>
+                            <td class="caption linear_gradient_gray nowrap">{{ "user-pay.column.quantity.title"|trans({}, 'messages')|desc('Quantity') }}</td>
+                            <td class="caption linear_gradient_gray nowrap">{{ "invoice.message.rate"|trans({}, 'booking')|desc('Rate') }}</td>
+                            <td width="22%" class="caption linear_gradient_gray nowrap">{{ "business.transactions.amount"|trans({}, 'messages')|desc('Amount') }}</td>
+                        </tr>
+
+                        {% for item in message.invoice.items %}
+                            <tr>
+                                <td class="border invoice_data nowrap field_date_value">{{ message.createdate|leadTZ|formatDatetime('medium', 'none') }}</td>
+                                <td class="border invoice_data nowrap field_desc_value">
+                                    {{ item.description }}
+                                </td>
+                                <td class="border invoice_data nowrap field_quan_value">
+                                    {{ item.quantity|formatNumber }}
+                                </td>
+                                <td class="border invoice_data nowrap field_rate_value">
+                                    {{ item.price|formatCurrency(bookerInfo.currency.code) }}
+                                </td>
+                                <td class="border invoice_data nowrap field_amount_value">
+                                    {{ item.priceTotal|formatCurrency(bookerInfo.currency.code) }}
+                                    {% if item.discount > 0 %}
+                                        <span style="color:red">- {{ item.discount|formatNumber }}% {{ "invoice.message.discount"|trans({}, 'booking')|desc('discount') }}</span><br>= <span class="final-fee">{{ item.total|formatCurrency(bookerInfo.currency.code) }}</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        {% endfor %}
+
+                        {% for program in message.invoice.miles %}
+                            <tr class="last_row">
+                                <td class="border invoice_data nowrap field_date_value">{{ message.createdate|leadTZ|formatDatetime('medium', 'none') }}</td>
+                                <td class="border invoice_data nowrap field_desc_value" colspan="3">
+                                    {{ "invoice.message.program-miles"|trans({'%program%': program.customname, '%owner%': program.owner }, 'booking')|desc('%program% miles belonging to %owner%') }}
+                                </td>
+                                <td class="border invoice_data nowrap field_amount_value">
+                                    {{ program.balance|formatNumber }}
+                                </td>
+                            </tr>
+                        {% endfor %}
+                        <tr>
+                            <td class="invoice_data" colspan="2">&nbsp;</td>
+                            <td class="caption linear_gradient_gray invoice_data nowrap" style="text-align: right; padding-right: 23px;" colspan="2">{{ "total"|trans({}, 'messages') }}</td>
+                            <td class="caption invoice_total nowrap linear_gradient_total"><span id="invoice-total">{{ message.invoice.total|formatCurrency(bookerInfo.currency.code) }}</span></td>
+                        </tr>
+                        <tr>
+                            <td style="text-align: right" colspan="5"></td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <div class="invoice_bottom">
+        <div class="invoice_bottom_right">
+            <div class="invoice_status_{% if message.invoice.isPaid %}paid{% else %}unpaid{% endif %}"></div>
+        </div>
+        <div class="invoice_bottom_left">
+            <p>
+                {{ "invoice.message.footer"|trans({}, 'booking')|desc('We appreciated the opportunity to be your personal mileage bloodhound! Hope your travels are festive and meaningful.') }}
+            </p>
+            {% if message.invoice.isPaid %}
+                {% if is_granted('USER_BOOKING_REFERRAL') and bookerInfo.acceptChecks %}
+                    <a id="invoice_mark_as_paid" data-paid="false" data-id="{{ message.invoice.id }}" class="btn spec wide" href="#">{{ "invoice.mark-as-not-paid"|trans({}, 'booking')|desc('MARK AS NOT PAID') }}</a>
+                {% endif %}
+            {% else %}
+                {% if is_granted('USER_BOOKING_REFERRAL') %}
+                    {% if bookerInfo.acceptChecks %}
+                        <a id="invoice_mark_as_paid" data-paid="true" data-id="{{ message.invoice.id }}" class="btn spec wide" href="#">{{ "invoice.mark-as-paid"|trans({}, 'booking')|desc('MARK AS PAID') }}</a>
+                    {% endif %}
+                {% else %}
+                    <a class="btn spec wide invoice_proceed" href="#">{{ "invoice.message.payment-button"|trans({}, 'booking')|desc('PROCEED TO MAKING THE PAYMENT NOW') }}</a>
+                {% endif %}
+            {% endif %}
+        </div>
+    </div>
+</div>

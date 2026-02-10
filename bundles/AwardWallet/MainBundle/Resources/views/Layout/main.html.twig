@@ -1,0 +1,211 @@
+<!doctype html>
+{% set currentRoute = app.request.get('_route') %}
+{% set theme = theme.currentTheme %}
+{% set htmlCls = '' %}
+{% if isMobileDevice() %}
+    {% set htmlCls = htmlCls ~ 'mobile-device ' %}
+{% endif %}
+{% if theme and theme != '' %}
+    {% set htmlCls = htmlCls ~ theme ~ '-mode' %}
+{% endif %}
+{% if isHomePage() or currentRoute in ['aw_profile_change_password', 'aw_profile_change_password_locale', 'aw_profile_change_password_feedback', 'aw_user_delete'] %}
+    {% set htmlCls = htmlCls ~ ' ' ~ 'l-home' %}
+{% endif %}
+<html lang="{{ app.request.locale|replace({'_': '-'}) }}" class="{{ htmlCls }}">
+<head>
+    {% block meta %}
+        <meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
+        <link rel="chrome-webstore-item" href="https://chrome.google.com/webstore/detail/lppkddfmnlpjbojooindbmcokchjgbib"/>
+    {% endblock %}
+    <!-- <link rel="shortcut icon" href="{{ asset('favicon.ico') }}"/> -->
+    <link rel="apple-touch-icon" href="/apple-touch-icon-120x120.png">
+    <link rel="apple-touch-icon" sizes="57x57" href="/apple-touch-icon-57x57.png">
+    <link rel="apple-touch-icon" sizes="60x60" href="/apple-touch-icon-60x60.png">
+    <link rel="apple-touch-icon" sizes="72x72" href="/apple-touch-icon-72x72.png">
+    <link rel="apple-touch-icon" sizes="76x76" href="/apple-touch-icon-76x76.png">
+    <link rel="apple-touch-icon" sizes="114x114" href="/apple-touch-icon-114x114.png">
+    <link rel="apple-touch-icon" sizes="120x120" href="/apple-touch-icon-120x120.png">
+    <link rel="apple-touch-icon" sizes="144x144" href="/apple-touch-icon-144x144.png">
+    <link rel="apple-touch-icon" sizes="152x152" href="/apple-touch-icon-152x152.png">
+    <link rel="apple-touch-icon" sizes="167x167" href="/apple-touch-icon-167x167.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon-180x180.png">
+    <link rel="icon" type="image/png" href="/favicon-32x32.png" sizes="32x32">
+    <link rel="icon" type="image/png" href="/android-chrome-192x192.png" sizes="192x192">
+    <link rel="icon" type="image/png" href="/favicon-128x128.png" sizes="128x128">
+    <link rel="icon" type="image/png" href="/favicon-96x96.png" sizes="96x96">
+    <link rel="icon" type="image/png" href="/favicon-16x16.png" sizes="16x16">
+    <link rel="manifest" href="{{ path('aw_push_chrome_manifest') }}">
+    <meta name="msapplication-TileColor" content="#ffffff">
+    <meta name="msapplication-TileImage" content="/mstile-144x144.png">
+    <meta name="theme-color" content="#ffffff">
+    <meta name="csrf-token" content="{{ csrf_token('') }}">
+
+    {{ canonical_tag() }}
+    {{ alternate_tag() }}
+    {{ meta_android_alternate() }}
+
+    {% block header_metatags %}{% endblock %}
+
+    {% set china_locale = app.request.locale in ['zh_TW', 'zh_CN'] %}
+
+    <title>{% block title %}AwardWallet{% endblock %}</title>
+
+    {% block stylesheets %}
+        {# All styles must be imported inside the webpack entry page, not layout #}
+        {{ encore_entry_link_tags('main') }}
+    {% endblock %}
+
+    {# requirejs used on both old and new pages (webpack) #}
+    {% if is_granted("SITE_PROD_MODE") %}
+        <script src="{{ cdn_host }}/b/{{ assets_version }}/boot.js"></script>
+        <script type="text/javascript">window.debugMode = false;</script>
+    {% else %}
+        <script src="/assets/common/vendors/requirejs/require.js"></script>
+        <script src="/assets/requireConfig.js"></script>
+        <script type="text/javascript">window.debugMode = true;</script>
+    {% endif %}
+
+    <script>
+        {# backward compatibility #}
+        {% if is_granted('ROLE_IMPERSONATED') %}
+            window.impersonated = true;
+        {% endif %}
+        {% if webpack|default(false) %}
+            window.wpEnabled = true;
+        {% endif %}
+    </script>
+
+    {% if not webpack|default(false) %}
+        <script type="text/javascript">
+            var extraModules = [];
+            var isIE11 = !!window.MSInputMethodContext && !!document.documentMode;
+            if (isIE11) {
+                extraModules.push('vendor/es6-shim/es6-shim');
+            }
+            define('translator-boot', ['translations/{{ app.request.locale }}']);
+            if (typeof(Intl) === 'undefined'){
+                console.log('loading intl polyfill');
+                define('intl-base', ['intl-path/dist/Intl'], function(intl){
+                    console.log(intl);
+                    window.Intl = intl;
+                    window.IntlPolyfill = intl;
+                    console.log('intl globals set');
+
+                    return intl;
+                });
+                require.config({
+                    shim: {
+                        'intl-path/locale-data/jsonp/{{ app.request.locale }}': {
+                            deps: ['intl-base']
+                        }
+                    }
+                });
+                define('intl', ['intl-path/locale-data/jsonp/{{ app.request.locale }}'].concat(extraModules));
+            } else {
+                define('intl', extraModules);
+            }
+
+            window._hmt = window._hmt || [];
+        </script>
+    {% else %}
+        {# fix missing module intl #}
+        <script type="text/javascript">
+            define('intl');
+        </script>
+    {% endif %}
+    {% if isHomePage() and is_granted("SITE_PROD_MODE") %}
+        <script data-ad-client="ca-pub-4469520556727079" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+    {% endif %}
+
+    {% include '@AwardWalletMain/Layout/vendor_head.html.twig' %}
+</head>
+
+{% set MAIN_BODY_CLASSES = {
+    'main-body': true,
+    'from-app': is_granted("SITE_FROM_APP"),
+    'manual-hidden': false,
+    'responsive': false,
+    'hide-menu': false
+}|merge(MAIN_BODY_CLASSES|default({})) %}
+{% block body %}{% endblock %}
+
+{% block javascripts %}
+    {% if not webpack|default(false) %}
+        {% if is_granted('ROLE_TRANSLATOR') or is_granted('USER_ENABLE_TRANSHELPER') %}
+            {{ include("@AwardWalletMain/Layout/transHelper.html.twig") }}
+        {% endif %}
+
+        <script type="text/javascript">
+            require(['lazysizes']);
+        </script>
+         <script type="text/javascript">
+        var google_conversion_id = 983305737;
+        var google_custom_params = window.google_tag_params;
+        var google_remarketing_only = true;
+
+        require(["jquery-boot"], function ($) {
+            $(function () {
+                {% if load_external_scripts %}
+                    {% if load_avatar_facebook_app|default(true) %}
+                        $.ajax({
+                            dataType: "script",
+                            cache: true,
+                            url: '//connect.facebook.net/en_US/sdk.js'
+                        });
+                        window.fbAsyncInit = function() {
+                            FB.init({
+                                appId: '75330755697',
+                                cookie: true,
+                                xfbml: true,
+                                version: 'v2.1' // or v2.0, v2.1, v2.0
+                            });
+                        };
+                    {% endif %}
+                {% endif %}
+            });
+        });
+    </script>
+    {% endif %}
+    {% if webpack|default(false) %}
+        {% if load_external_scripts %}
+            {% if load_avatar_facebook_app|default(true) %}
+                {{ encore_entry_script_tags('main-layout', null, '_default', {'defer': true}) }}
+            {% endif %}
+        {% endif %}
+    {% endif %}
+
+   
+
+    {% set refSessionKey = constant('\\AwardWallet\\MainBundle\\Manager\\UserManager::SESSION_KEY_REFERRAL') %}
+    {% set superflyRef = constant('\\AwardWallet\\MainBundle\\Controller\\HomeController::SUPERFLY_LEAD_ID') %}
+    {% set referral = app.user is not null ? app.session.get(refSessionKey) : 0 %}
+    {% set showPixelAfterRegister = app.user is not null and referral is same as(superflyRef) %}
+    {% if (isFacebookPixel is defined and isFacebookPixel is same as(true)) or showPixelAfterRegister %}
+        <!-- Facebook Pixel Code -->
+        <script>
+            !function(f,b,e,v,n,t,s)
+            {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+                n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+                if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+                n.queue=[];t=b.createElement(e);t.async=!0;
+                t.src=v;s=b.getElementsByTagName(e)[0];
+                s.parentNode.insertBefore(t,s)}(window, document,'script',
+                'https://connect.facebook.net/en_US/fbevents.js');
+            fbq('init', '465413901088236');
+            fbq('track', 'PageView');
+            {% if showPixelAfterRegister %}
+                fbq('track', 'CompleteRegistration');
+                {{ app.session.remove(refSessionKey) }}
+            {% endif %}
+        </script>
+        <noscript><img height="1" width="1" style="display:none" src="https://www.facebook.com/tr?id=465413901088236&ev=PageView&noscript=1"/></noscript>
+        <!-- End Facebook Pixel Code -->
+    {% endif %}
+{% endblock %}
+{% if load_external_scripts and china_locale is same as(true) %}
+<script type="text/javascript">
+    var _bdhmProtocol = (("https:" == document.location.protocol) ? " https://" : " http://");
+    document.write(unescape("%3Cscript src='" + _bdhmProtocol + "hm.baidu.com/h.js%253378fe4a0654dca9a6e3a4236e0538' type='text/javascript'%3E%3C/script%3E"));
+</script>
+{% endif %}
+</html>

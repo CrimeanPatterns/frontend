@@ -1,0 +1,44 @@
+{# Issue #7630 #}
+
+{% extends "@AwardWalletMain/Offer/standard.html.twig" %}
+{% import '@AwardWalletMain/Offer/offerMacros.html.twig' as offerMacros %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    {{ encore_entry_link_tags('offer') }}
+    {{ encore_entry_link_tags('offers/omnihotels') }}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        {{ offerMacros.jsOfferYes(_context, ApplyURL, Code, OfferUserID, defaultRedirectLocation) }}
+        {{ offerMacros.jsOfferNo(_context, Code, OfferUserID, defaultRedirectLocation) }}
+    </script>
+{% endblock %}
+
+{% block content %}
+    <div id="offer_wrap">
+        <div id="offer_bg" class="omnihotels_bg">
+            <div class="offer_title omnihotels_title">
+                A getaway for two.
+                Extend your escape
+                with a free night!
+            </div>
+            <div class="omnihotels_ul">
+                We thought you might enjoy this Omni Hotels & Resorts offer of a free night for your next visit to <strong>{{ City }}</strong> on <strong>{{ Date }}</strong>. For more details please click the button below.
+            </div>
+            <div class="omnihotels_image">
+            </div>
+            <div class="offer_btn omnihotels_btn" onclick="offerYes();">
+                Get 1 free night with Omni Hotels
+            </div>
+        </div>
+        <div class="offer_declinekind" onclick="offerNo();">
+            Never show this ad again
+        </div>
+        <div class="offer_toaccount omnihotels_toaccount" onclick="window.location = '{{ defaultRedirectLocation }}'">
+            Proceed to my account
+        </div>
+    </div>
+{% endblock %}

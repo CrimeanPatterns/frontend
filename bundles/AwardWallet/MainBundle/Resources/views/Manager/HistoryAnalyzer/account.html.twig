@@ -1,0 +1,79 @@
+{% extends "@AwardWalletMain/Manager/layout.html.twig" %}
+{% set title = 'History analysis for account ' ~ account.id ~ ', Login: ' ~ account.login ~ ', ' ~ account.providerid.displayname %}
+
+{% block content %}
+    <h1>{{ title }}</h1>
+
+    <h2>totals</h2>
+    <table class="data-table" cellpadding="0" cellspacing="0">
+        <thead>
+            <tr>
+                <td colspan="2">Volume of Points</td>
+                <td colspan="2">Transaction Frequency</td>
+                <td colspan="2">Transaction Recency</td>
+            </tr>
+            <tr>
+                <td>Flights</td>
+                <td>Other</td>
+                <td>Flights</td>
+                <td>Other</td>
+                <td>Flights</td>
+                <td>Other</td>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>{{ response.volumeOfPoints.flights }}</td>
+                <td>{{ response.volumeOfPoints.other }}</td>
+                <td>{{ response.transactionFrequency.flights }}</td>
+                <td>{{ response.transactionFrequency.other }}</td>
+                <td>{{ response.transactionRecency.flights }}</td>
+                <td>{{ response.transactionRecency.other }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2>raw data</h2>
+    {% if response.rows is empty %}
+        No data
+    {% else %}
+        <style>
+            .data-table{
+                border-collapse: collapse;
+            }
+            .data-table td{
+                padding: 2px;
+                border: 1px solid grey;
+            }
+            .data-table thead td{
+                font-weight: bold;
+            }
+            .data-table tr.excluded td{
+                text-decoration: line-through;
+                color: grey;
+            }
+        </style>
+        <table class="data-table" cellpadding="0" cellspacing="0">
+            <thead>
+                <tr>
+                    <td>Date</td>
+                    <td>Description</td>
+                    <td>Miles</td>
+                    <td>Type</td>
+                    <td>Info</td>
+                </tr>
+            </thead>
+            <tbody>
+            {% for row in response.rows %}
+                <tr{% if row['Excluded'] %} class="excluded"{% endif %}>
+                    <td>{{ row['PostingDate'] }}</td>
+                    <td>{{ row['Description'] }}</td>
+                    <td>{{ row['Miles'] }}</td>
+                    <td>{{ row['Type'] }}{% if row['Excluded'] %}<br/>(excluded){% endif %}</td>
+                    <td>{{ row['Info'] | raw }}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    {% endif %}
+{% endblock %}

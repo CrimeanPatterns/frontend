@@ -1,0 +1,27 @@
+services:
+    _defaults:
+        autowire: true
+        public: true
+        bind:
+            $translator: "@translator_hijacker"
+            $apiVersioning: "@aw.api.versioning"
+
+    AwardWallet\MainBundle\Globals\AccountList\:
+        resource: '../../Globals/AccountList'
+        public: true
+        autowire: true
+
+    AwardWallet\MainBundle\Globals\AccountList\Mapper\Mapper:
+        lazy: true
+
+    AwardWallet\MainBundle\Globals\AccountList\Mapper\MobileMapper:
+        lazy: true
+
+    AwardWallet\MainBundle\Globals\AccountList\Mapper\DesktopInfoMapper:
+        lazy: true
+
+    AwardWallet\MainBundle\Globals\AccountList\Mapper\DesktopListMapper:
+        lazy: true
+
+    AwardWallet\MainBundle\Globals\AccountList\Mapper\ExportListMapper:
+        lazy: true

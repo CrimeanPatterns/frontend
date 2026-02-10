@@ -1,0 +1,153 @@
+{% extends '@MailTemplate/Layout/base.twig' %}
+{% trans_default_domain "email" %}
+
+{% block subject %}{% apply spaceless %}{% autoescape false %}
+    {{ 'invitation.subject'|trans({}, 'email', lang)|desc('Invitation to AwardWallet.com') }}
+{% endautoescape %}{% endapply %}{% endblock subject %}
+
+{% block content %}
+    {% import '@MailTemplate/CommonMacro.twig' as commonMacro %}
+    {% set inviter = invite.inviterid %}
+    {% set invitationLink = personalHost ~ '/?code=' ~ invite.code ~ '&invId=' ~ invite.invitesid %}
+    {% set mailtoLink = null %}
+    {% if not inviter.isBusiness %}
+        {% set mailtoLink = commonMacro.link('mailto:'~inviter.email, inviter.email) %}
+    {% endif %}
+
+    {{ commonMacro.hello(null, _context) }}
+
+    {% if not reminder %}
+        {{ commonMacro.paragraph(
+            'invitation.accept'|trans({
+                '%bold_on%': '<b style="color:#3d424d;">',
+                '%bold_off%': mailtoLink is null ? '</b>' : '</b> ('~mailtoLink~')',
+                '%userName%': inviter.fullname|htmlencode,
+                '%awardwallet%': 'AwardWallet',
+                '%bold2_on%': '<b>',
+                '%bold2_off%': '</b>'
+            }, 'email', lang)|desc("%bold_on%%userName%%bold_off% has invited you to use %bold2_on%%awardwallet%%bold2_off% website, to accept this invitation please use the following link, this way %bold2_on%%userName%%bold2_off% will get credit for it:"),
+            _context, {escape: false}
+        ) }}
+    {% else %}
+        {{ commonMacro.paragraph(
+            'invitation.reminder-accept'|trans({
+                '%bold_on%': '<b style="color:#3d424d;">',
+                '%bold_off%': mailtoLink is null ? '</b>' : '</b> ('~mailtoLink~')',
+                '%userName%': inviter.fullname|htmlencode,
+                '%awardwallet%': 'AwardWallet',
+                '%bold2_on%': '<b>',
+                '%bold2_off%': '</b>'
+            }, 'email', lang)|desc("This is a reminder that %bold_on%%userName%%bold_off% has invited you to use %bold2_on%%awardwallet%%bold2_off% website, to accept this invitation please use the following link, this way %bold2_on%%userName%%bold2_off% will get credit for it:"),
+            _context, {escape: false}
+        ) }}
+    {% endif %}
+
+    {{ commonMacro.dottedLink(invitationLink, invitationLink, _context, {}, {'margin-top': '15px'}) }}
+
+    {{ commonMacro.paragraph(
+        'invitation.one-place'|trans({
+            '%awardwallet%': 'AwardWallet',
+            '%bold_on%': '<b>',
+            '%bold_off%': '</b>',
+            '%bold2_on%': '<b>',
+            '%bold2_off%': '</b>'
+        }, 'email', lang)|desc("%bold_on%%awardwallet%%bold_off% tracks your award program points and itineraries %bold2_on%in one place%bold2_off%."),
+        _context, {escape: false}, {'margin-top': '15px'}
+    ) }}
+
+    {{ commonMacro.header(
+        'invitation.easy-as'|trans({}, 'email', lang)|desc("It's as easy as:"),
+        _context, {}, {
+            "font-size": "25px",
+            "padding": "5px 0 7px 0",
+            "line-height": "24px"
+        }, {'margin-top': '20px'}
+    ) }}
+
+    <table width="100%" cellpadding="0" border="0" cellspacing="0" style="border-bottom: 1px dotted #8e9199; margin-bottom:20px">
+        <tr>
+            <td valign="top" width="35">
+                <div style="display:block;background: #4684c4; color: #fff; width: 25px; text-align: center; padding-top: 2px; margin-top: 8px; font-size: 18px;" >1</div>
+            </td>
+            <td style="line-height: 24px;color: #535457;font-size: 16px; padding: 0 0 10px 0;border-bottom: 1px dotted #8e9199;">
+                {{ commonMacro.paragraph(
+                    'invitation.join'|trans({
+                        '%awardwallet%': 'AwardWallet',
+                        '%bold_on%': '<b>',
+                        '%bold_off%': '</b>',
+                        '%bold2_on%': '<b>',
+                        '%bold2_off%': '</b>'
+                    }, 'email', lang)|desc("%bold_on%JOIN%bold_off%&nbsp;%bold2_on%%awardwallet%%bold2_off% for free and add your reward programs."),
+                    _context, {escape: false},
+                    {
+                        'margin-top': '10px'
+                    }
+                ) }}
+            </td>
+        </tr>
+        <tr>
+            <td valign="top" width="35">
+                <div style="display:block;background: #4684c4; color: #fff; width: 25px; text-align: center; padding-top: 2px; margin-top: 8px; font-size: 18px;" >2</div>
+            </td>
+            <td style="line-height: 24px;color: #535457;font-size: 16px; padding: 0 0 10px 0;border-bottom: 1px dotted #8e9199;">
+                {{ commonMacro.paragraph(
+                    'invitation.track'|trans({
+                        '%awardwallet%': 'AwardWallet',
+                        '%bold_on%': '<b>',
+                        '%bold_off%': '</b>',
+                        '%bold2_on%': '<b>',
+                        '%bold2_off%': '</b>'
+                    }, 'email', lang)|desc("Let %bold_on%%awardwallet%%bold_off%&nbsp;%bold2_on%TRACK%bold2_off% your reward program balances and itineraries for you."),
+                    _context, {escape: false},
+                    {
+                        'margin-top': '10px'
+                    }
+                ) }}
+            </td>
+        </tr>
+        <tr>
+            <td valign="top" width="35">
+                <div style="display:block;background: #4684c4; color: #fff; width: 25px; text-align: center; padding-top: 2px; margin-top: 8px; font-size: 18px;" >3</div>
+            </td>
+            <td style="line-height: 24px;color: #535457;font-size: 16px; padding: 0 0 10px 0;">
+                {{ commonMacro.paragraph(
+                    'invitation.get-notified'|trans({
+                        '%bold_on%': '<b>',
+                        '%bold_off%': '</b>'
+                    }, 'email', lang)|desc("%bold_on%GET NOTIFIED%bold_off% when your balances change or before they expire."),
+                    _context, {escape: false},
+                    {
+                        'margin-top': '10px'
+                    }
+                ) }}
+            </td>
+        </tr>
+    </table>
+
+
+    {{ commonMacro.paragraph(
+        'invitation.get-rewards'|trans({
+            '%bold_on%': '<b>',
+            '%bold_off%': '</b>'
+        }, 'email', lang)|desc("Get %bold_on%the most%bold_off% out of your rewards, right here, right now."),
+        _context, {escape: false}
+    ) }}
+
+    {% if reminder %}
+        {% set link = commonMacro.link(invitationLink, '$$')|split('$$') %}
+
+        {{ commonMacro.paragraph(
+            'invitation.already-registered'|trans({
+                '%awardwallet%': 'AwardWallet',
+                '%bold_on%': '<b>',
+                '%bold_off%': '</b>',
+                '%bold2_on%': '<b style="color:#3d424d;">',
+                '%bold2_off%': mailtoLink is null ? '</b>' : '</b> ('~mailtoLink~')',
+                '%userName%': inviter.fullname|htmlencode,
+                '%link_on%': link[0],
+                '%link_off%': link[1]
+            }, 'email', lang)|desc("If you have already registered on %bold_on%%awardwallet%%bold_off% please %link_on%follow this link%link_off% so that %bold2_on%%userName%%bold2_off% can get credit for it."),
+            _context, {escape: false}
+        ) }}
+    {% endif %}
+{% endblock content %}

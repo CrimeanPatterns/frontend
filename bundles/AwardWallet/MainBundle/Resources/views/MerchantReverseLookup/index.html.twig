@@ -1,0 +1,151 @@
+{% extends app.user is not null ? "@AwardWalletMain/Layout/common.html.twig" : "@AwardWalletMain/Layout/not_logged.html.twig" %}
+{% import '@AwardWalletMain/Faq/macro.html.twig' as macro %}
+
+{% block body_left_widgets %}
+    {{ widget_render('left_top') }}
+    {{ widget_render('credit_card_tools_zone') }}
+    {{ widget_render('left_bottom') }}
+{% endblock %}
+
+{#{% set isAwPlus = false %}#}
+{#{% if app.user is not null and app.user.isAwPlus %}#}
+    {% set isAwPlus = true %}
+{#{% endif %}#}
+
+{% block stylesheets %}
+    {{ parent() }}
+{% endblock %}
+
+{% block title %}
+    {{ 'merchant_reverse_lookup.title'|trans|desc('Merchant Category Code Reverse Lookup (Beta)') }}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    {% if isAwPlus %}
+        <script type="text/javascript">
+            require([
+                'jquery-boot',
+                'angular-boot',
+                'pages/merchantReverseLookup',
+                'lib/design'
+            ], function ($, angular) {
+                window.InitDataTest = {{ initData|json_encode|default('false')|raw }};
+
+                angular.module('merchantReverseLookupApp').constant('InitData', InitDataTest);
+                $(function () {
+                    angular.bootstrap( $('div.content').get(), ['merchantReverseLookupApp']);
+                });
+            });
+        </script>
+    {% endif %}
+{% endblock %}
+
+{% block content %}
+    <div class="main-blk" data-ng-controller="mainCtrl as main">
+        <div class="main-blk-head main-head-flex">
+            <h1>{{ 'merchant_reverse_lookup.title'|trans|desc('Merchant Category Code Reverse Lookup (Beta)') }}</h1>
+            <div class="disclaimer-calculated-box">
+                {{ 'rewards-values-calculated-aw'|trans({
+                    '%link1_on%': '<a href="/blog/awardwallet-mile-valuations/" target="_blank">',
+                    '%link1_off%': '</a>',
+                    '%link2_on%': '<a href="/blog/advertiser-disclosure/" target="_blank">',
+                    '%link2_off%': '</a>',
+                })|raw }}
+            </div>
+        </div>
+
+        {% if isAwPlus %}
+            <div class="overlay" data-ng-hide="main.state.loaded"></div>
+            <div class="search-box" data-ng-class="{ 'load-offer': main.offer.loaded || main.offer.loading}">
+                <form class="main-form search-form">
+                    <div class="row">
+                        <div class="row-item">
+                            <label for="account_owner">Credit Card:</label>
+                            <div class="input">
+                                <div class="input-item">
+                                    <div class="styled-select">
+                                        <div>
+                                            <select data-ng-model="main.currentCardId" data-ng-change="main.selectCard()">
+                                                <option data-ng-repeat="card in main.cardsList"
+                                                        value="[[ card.cardId ]]"
+                                                        data-ng-bind="card.name"
+                                                />
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="info">
+                            <div class="info-icon"></div>
+                            <div class="info-description"><p></p></div>
+                        </div>
+                        <div class="error-message">
+                            <div class="warning"><i class="icon-warning-small"></i></div>
+                            <div class="error-message-description">This field is required</div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="row-item">
+                            <label for="account_owner">Category:</label>
+                            <div class="input">
+                                <div class="input-item">
+                                    <div class="styled-select">
+                                        <div>
+                                            <select data-ng-model="main.currentGroupId" data-ng-change="main.selectGroup()">
+                                                <option
+                                                        data-ng-repeat="group in main.currentCard.multipliers"
+                                                        value="[[ group.groupId ]]"
+                                                        data-ng-bind="group.groupName + ' (' + group.multiplier + 'x)'"
+                                                />
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="info">
+                            <div class="info-icon"></div>
+                            <div class="info-description"><p></p></div>
+                        </div>
+                        <div class="error-message">
+                            <div class="warning"><i class="icon-warning-small"></i></div>
+                            <div class="error-message-description">This field is required</div>
+                        </div>
+                    </div>
+                </form>
+                <div class="search-box__offer">
+                    <div class="ajax-loader" data-ng-show="main.offer.loading"><div class="loading"></div></div>
+
+                    <div class="search-box__offer-content" data-ng-show="!main.offer.loading && main.offer.loaded" data-ng-bind-html="main.offer.content | unsafe">
+                        <!-- HERE OFFER HTML -->
+                    </div>
+
+                </div>
+            </div>
+        {% else %}
+             <div class="not-found no-border">
+                <i class="icon-warning-small"></i>
+                <p>{{ 'award.account.popup.need-upgrade.p1'|trans }}</p>
+            </div>
+
+            <div class="row-submit bottom-border">
+                <a href="{{ url('aw_users_pay') }}" class="btn-blue">{{ 'upgrade-now'|trans }}</a>
+            </div>
+
+            <div class="main-blk-content">
+                <div class="faq-list">
+                    {{ macro.drawFaq(faq, true) }}
+                    <!-- here faq #21 -->
+                </div>
+            </div>
+
+            <div class="row-submit">
+                <a href="{{ url('aw_users_pay') }}" class="btn-blue">{{ 'upgrade-now'|trans }}</a>
+            </div>
+        {% endif %}
+
+    </div>
+
+{% endblock %}

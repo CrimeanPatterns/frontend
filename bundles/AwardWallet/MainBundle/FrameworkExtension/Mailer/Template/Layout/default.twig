@@ -1,0 +1,169 @@
+{% trans_default_domain "email" %}
+
+{% block body_html %}
+    <html lang="{{ lang }}">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="format-detection" content="telephone=no">
+        <meta name="format-detection" content="address=no"/>
+        <meta http-equiv="x-rim-auto-match" content="none">
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <meta name="viewport" content="width=device-width"/>
+        <meta name="color-scheme" content="light dark">
+        <meta name="supported-color-schemes" content="light dark">
+        <style type="text/css">
+        :root {
+          color-scheme: light dark;
+          supported-color-schemes: light dark;
+        }
+        </style>
+        <title>{{ block('subject') }}</title>
+        {% block headStyle %}
+        <!--[if mso]>
+            <style type="text/css">
+            body, table, td {font-family: Arial, Helvetica, serif !important;}
+            </style>
+        <![endif]-->
+        {% endblock headStyle %}
+    </head>
+    <body style="padding: 0; margin:0; font-size: 14px; font-family: Arial, sans-serif; -webkit-font-smoothing:antialiased; -webkit-text-size-adjust:none;" class="body">
+        {% block mailPreview %}
+            {% if preview is defined  %}
+                {{ preview|raw }}
+            {% endif %}
+        {% endblock mailPreview %}
+        <table width="100%" cellpadding="0" border="0" cellspacing="0" style="min-height:100%; max-width:800px; margin-left:auto; margin-right:auto; min-width:300px">
+            <tr>
+                <td height="100%" valign="top" style="border:1px solid #ccc; border-bottom:0; min-width: 300px;min-height:100%;background:#f0f1f2;" class="email-page">
+                    {% block contentBody %}
+                    {% endblock contentBody %}
+                </td>
+            </tr>
+
+            <tr>
+                <td align="center" style="color:#828b99;font-size:11px;border-top:1px solid #ccc; line-height:1.5; padding:5px 0; background: #fff" valign="top" bgcolor="#fff" class="footer-info email-white">
+                    {% block unsubscribe_row %}
+                        {% if unsubscribeLink is defined and unsubscribeLink is not empty %}
+                            <span>
+                            {% block unsubscribe %}
+                                {% import '@MailTemplate/CommonMacro.twig' as commonMacro %}
+                                {{ commonMacro.baseUnsubscribeLink(unsubscribeLink, _context) }}
+                            {% endblock unsubscribe %}
+                            </span>
+                            <br>
+                        {% endif %}
+                    {% endblock unsubscribe_row %}
+                    {% block physical_address_row %}
+                        <span>{{ constant('EMAIL_PHYSICAL_ADDRESS_PLAIN') }}</span>
+                    {% endblock physical_address_row %}
+                </td>
+            </tr>
+
+        </table>
+        {% block bodyStyle %}
+            <style>
+                .moreBtn{
+                    width: auto !important;
+                }
+                .footer-info a{
+                    font-size:11px;
+                    color:#4684c4;
+                    text-decoration:none;
+                    display:inline-block;
+                    font-weight:bold;
+                }
+                .note-text *{
+                    color:#535457 !important;
+                    font-family: arial, sans-serif !important;
+                }
+                .note-text li{
+                    padding: 0 !important;
+                    margin: 0 !important;
+                }
+                .note-text ul{
+                    margin: 0 !important;
+                    padding: 0 0 0 10px !important;
+                }
+                .emailImage{
+                    max-height:  auto !important;
+                    min-height: auto !important;
+                    height:auto !important;
+                    max-width:600px !important;
+                    width: 100% !important;
+                }
+                @media only screen and (max-device-width: 600px) {
+                    img[class="arrow"] {
+                        display: none;
+                    }
+                    .emailImage{
+                        min-height: auto !important;
+                        height:auto !important;
+                        max-height:  auto !important;
+                        max-width:600px !important;
+                        width: 100% !important;
+                    }
+                }
+                @media (prefers-color-scheme: dark ) {
+                    .body,
+                    [data-ogsc] .body,
+                    .email-page,
+                    [data-ogsc] .email-page,
+                    .email-white,
+                    [data-ogsc] .email-white{
+                        background: #141414 !important;
+                        color: #ffffff  !important;
+                    }
+
+                    [data-ogsc] h1, h1,
+                    [data-ogsc] h2, h2,
+                    [data-ogsc] h3, h3,
+                    [data-ogsc] p, p,
+                    [data-ogsc] td, td,
+                    [data-ogsc] div, div,
+                    [data-ogsc] span, span,
+                    [data-ogsc] b, b,
+                    [data-ogsc] strong, strong,
+                    [data-ogsc] center, center,
+                    [data-ogsc] .white-text, .white-text {
+                        color: #ffffff !important;
+                    }
+
+                    .email-silver,
+                    [data-ogsc] .email-silver{
+                        background: #1c1c1e !important;
+                        color: #fff !important;
+                    }
+
+                    .header,
+                    [data-ogsc] .header{
+                        background: #d7d8db !important;
+                    }
+
+                    .dark-img,
+                    [data-ogsc] .dark-img{
+                        display: block !important;
+                        width: auto !important;
+                        overflow: visible !important;
+                        float: none !important;
+                        max-height: inherit !important;
+                        max-width: inherit !important;
+                        line-height: auto !important;
+                        margin-top: 0px !important;
+                        visibility: inherit !important;
+                    }
+
+                    .light-img,
+                    [data-ogsc] .light-img{
+                        display:none;
+                        display:none !important;
+                    }
+                    .title-link,
+                    [data-ogsc] .title-link {
+                        color: #fff !important;
+                    }
+                }
+            </style>
+        {% endblock bodyStyle %}
+    </body>
+    </html>
+{% endblock body_html %}

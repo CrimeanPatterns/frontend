@@ -1,0 +1,9 @@
+{% macro contentTypeText(type) %}{% apply spaceless %}
+    {% if type == constant('\\AwardWallet\\MainBundle\\Service\\Notification\\Content::TYPE_OFFER') %}
+        Promotional Offers
+    {% elseif type == constant('\\AwardWallet\\MainBundle\\Service\\Notification\\Content::TYPE_PRODUCT_UPDATES') %}
+        Product Updates
+    {% elseif type == constant('\\AwardWallet\\MainBundle\\Service\\Notification\\Content::TYPE_BLOG_POST') %}
+        New Blog Posts
+    {% endif %}
+{% endapply %}{% endmacro %}

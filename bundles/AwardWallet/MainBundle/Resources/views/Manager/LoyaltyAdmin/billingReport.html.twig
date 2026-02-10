@@ -1,0 +1,20 @@
+{% set title = "Loyalty Billing Stats" %}
+{% extends '@AwardWalletMain/Manager/layout.html.twig' %}
+
+{% block content %}
+
+    <h1>{{ title }}</h1>
+
+    <style>
+        .billing-report-table td, .billing-report-table th {
+            border: 1px solid gray;
+            padding: 3px;
+        }
+        .billing-report-table {
+            border-collapse: collapse;
+        }
+    </style>
+
+    {{ report | raw }}
+
+{% endblock %}

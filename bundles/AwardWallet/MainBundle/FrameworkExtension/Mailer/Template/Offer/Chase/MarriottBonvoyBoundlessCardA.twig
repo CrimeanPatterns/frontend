@@ -1,0 +1,41 @@
+{% extends '@MailTemplate/Offer/Chase/BaseTemplate.twig' %}
+{% trans_default_domain "email" %}
+
+{% block subject %}{% apply spaceless %}{% autoescape false %}
+    Your Upcoming Stay in {{ location }}
+{% endautoescape %}{% endapply %}{% endblock subject %}
+
+{% block content %}
+    {% import '@MailTemplate/CommonMacro.twig' as commonMacro %}
+
+    <div style="padding: 0 10px">
+        {{ commonMacro.link(link, 'Save Big with a Marriott Annual Free Night Certificate', {
+            'color': '#1D6CB5',
+            'font-size': '25px',
+            'line-height': '1.2',
+            'margin': '0',
+            'padding': '5px 0 10px 0',
+            'font-weight': 'normal'
+        }) }}
+        {{ commonMacro.offerRemark(_context) }}
+
+        {{ commonMacro.dear(user.firstname, _context) }}
+
+        {{ commonMacro.paragraph(
+            'We hope you have a great trip to ' ~ location ~ '. If your future plans include more stays with Marriott, you might want to consider the <a href="' ~ link ~ '">Marriott Bonvoy Boundless™ Credit Card</a>.', _context, {escape: false, fix_link: true}
+        ) }}
+        {{ commonMacro.paragraph(
+            'In addition to earning 6X points at participating Marriott Bonvoy hotels, 15 Elite Night Credits each calendar year, and automatic Silver Elite status, this card earns a free night award every year after your account aniversary—valid for a one-night stay at a property with a redemption value up to 35,000 points.', _context
+        ) }}
+        {{ commonMacro.paragraph(
+            'The annual free night award makes this card a great value if you plan to make more stays like your upcoming trip to ' ~ location ~ '.', _context
+        ) }}
+        {{ commonMacro.paragraph(
+            'You can check out <a href="' ~ link ~ '">our full card review</a> on the blog.', _context, {escape: false, fix_link: true}
+        ) }}
+
+        <div style="text-align: center; margin-top: 15px;">
+            {{ commonMacro.button('Learn more', link) }}
+        </div>
+    </div>
+{% endblock content %}

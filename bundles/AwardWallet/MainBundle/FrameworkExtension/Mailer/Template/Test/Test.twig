@@ -1,0 +1,9 @@
+{% extends '@MailTemplate/Layout/base.twig' %}
+{% trans_default_domain "email" %}
+
+{% block subject %}{% apply spaceless %}{% autoescape false %}
+    Test message
+{% endautoescape %}{% endapply %}{% endblock subject %}
+{% block content %}
+    Hello
+{% endblock content %}

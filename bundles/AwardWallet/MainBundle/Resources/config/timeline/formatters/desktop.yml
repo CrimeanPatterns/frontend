@@ -1,0 +1,117 @@
+services:
+    _defaults:
+        autowire: true
+        public: true
+        bind:
+            $tripHelper: "@aw.timeline.formatter.trip_helper"
+
+    # Format Handler
+
+    AwardWallet\MainBundle\Timeline\Formatter\FormatHandlerGeneric:
+        lazy: true
+        tags:
+            - { name: timeline.format_handler, format: desktop }
+
+    # Formatters
+
+    AwardWallet\MainBundle\Timeline\Formatter\Desktop\AirTrip:
+        tags:
+            - { name: timeline.item_formatter, format: desktop, type: airtrip }
+
+    AwardWallet\MainBundle\Timeline\Formatter\Desktop\BusTrip:
+        tags:
+            - { name: timeline.item_formatter, format: desktop, type: bustrip }
+
+    AwardWallet\MainBundle\Timeline\Formatter\Desktop\CruiseTrip:
+        tags:
+            - { name: timeline.item_formatter, format: desktop, type: cruisetrip }
+
+    AwardWallet\MainBundle\Timeline\Formatter\Desktop\FerryTrip:
+        tags:
+            - { name: timeline.item_formatter, format: desktop, type: ferrytrip }
+
+    AwardWallet\MainBundle\Timeline\Formatter\Desktop\TrainTrip:
+        tags:
+            - { name: timeline.item_formatter, format: desktop, type: traintrip }
+
+    AwardWallet\MainBundle\Timeline\Formatter\Desktop\Transfer:
+        tags:
+            - { name: timeline.item_formatter, format: desktop, type: transfer }
+
+    AwardWallet\MainBundle\Timeline\Formatter\Desktop\Checkin:
+        tags:
+            - { name: timeline.item_formatter, format: desktop, type: checkin }
+
+    AwardWallet\MainBundle\Timeline\Formatter\Desktop\Checkout:
+        tags:
+            - { name: timeline.item_formatter, format: desktop, type: checkout }
+
+    AwardWallet\MainBundle\Timeline\Formatter\Desktop\LayoverCruise:
+        tags:
+            - { name: timeline.item_formatter, format: desktop, type: layovercruise }
+
+    AwardWallet\MainBundle\Timeline\Formatter\Desktop\Date:
+        tags:
+            - { name: timeline.item_formatter, format: desktop, type: date }
+
+    AwardWallet\MainBundle\Timeline\Formatter\Desktop\Dropoff:
+        tags:
+            - { name: timeline.item_formatter, format: desktop, type: dropoff }
+
+    AwardWallet\MainBundle\Timeline\Formatter\Desktop\Event:
+        tags:
+            - { name: timeline.item_formatter, format: desktop, type: restaurant }
+
+    AwardWallet\MainBundle\Timeline\Formatter\Desktop\Layover:
+        autowire: true
+        tags:
+            - { name: timeline.item_formatter, format: desktop, type: layover }
+
+    AwardWallet\MainBundle\Timeline\Formatter\Desktop\ParkingEnd:
+        tags:
+            - { name: timeline.item_formatter, format: desktop, type: parkingend }
+
+    AwardWallet\MainBundle\Timeline\Formatter\Desktop\ParkingStart:
+        tags:
+            - { name: timeline.item_formatter, format: desktop, type: parkingstart }
+
+    AwardWallet\MainBundle\Timeline\Formatter\Desktop\Pickup:
+        tags:
+            - { name: timeline.item_formatter, format: desktop, type: pickup }
+
+    AwardWallet\MainBundle\Timeline\Formatter\Desktop\PlanEnd:
+        tags:
+            - { name: timeline.item_formatter, format: desktop, type: planend }
+
+    AwardWallet\MainBundle\Timeline\Formatter\Desktop\PlanStart:
+        tags:
+            - { name: timeline.item_formatter, format: desktop, type: planstart }
+
+    AwardWallet\MainBundle\Timeline\Formatter\Desktop\TaxiRide:
+        tags:
+            - { name: timeline.item_formatter, format: desktop, type: taxi_ride }
+
+    # Helpers
+
+    AwardWallet\MainBundle\Timeline\Formatter\Origin:
+        autowire: true
+        public: true
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

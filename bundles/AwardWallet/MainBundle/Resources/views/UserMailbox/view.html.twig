@@ -1,0 +1,293 @@
+{% set MAIN_BODY_CLASSES = {
+    'hide-menu': true,
+    'manual-hidden': true,
+    'responsive': false,
+}|merge(MAIN_BODY_CLASSES|default({})) %}
+
+{% extends is_granted('SITE_BUSINESS_AREA') ? "@AwardWalletMain/Layout/business_default.html.twig" : "@AwardWalletMain/Layout/default.html.twig" %}
+
+{% block body_left_widgets %}
+    {{ widget_render('left_top') }}
+    {{ widget_render('left_bottom') }}
+{% endblock %}
+
+{% macro oauthError() %}
+    {% for login in app.session.flashbag.get('error-mailbox-login') %}
+        <div class="error-message-blk error-mailbox-login">
+            <i class="icon-warning-small"></i>
+
+            <p>{{ 'award.mailbox.email.already-added'|trans({'%login%':login|htmlencode})|desc('Mailbox <strong>%login%</strong> was already added')|raw }}</p>
+        </div>
+    {% endfor %}
+{% endmacro %}
+
+{% macro addMailboxForm() %}
+    <div class="other f-left">
+        <p>
+            {{ 'award.mailbox.oauth'|trans|desc('Add your Google mailbox, or Microsoft mailbox') }} <br>
+            (@hotmail.com, @live.com, @outlook.com, @msn.com, @yahoo.com, @aol.com):
+        </p>
+        <ul>
+            <li>
+                <a href="{{ url('aw_usermailbox_oauth', {type: 'google'}) }}" class="google-mailbox add-mailbox-link">
+                    <span class="prev"><i class="icon-google-mailbox"></i></span>
+                    <span class="text">{{ 'award.mailbox.google'|trans|desc('Sign in with Google') }}</span>
+                </a>
+            </li>
+            <li>
+                <a href="{{ url('aw_usermailbox_oauth', {type: 'microsoft'}) }}" class="microsoft-mailbox add-mailbox-link">
+                    <span class="prev"><i class="icon-microsoft-mailbox"></i></span>
+                    <span class="text">{{ 'award.mailbox.misrosoft'|trans|desc('Sign in with Microsoft') }}</span>
+                </a>
+            </li>
+            <li>
+                <a href="{{ url('aw_usermailbox_oauth', {type: 'yahoo'}) }}" class="yahoo-mailbox add-mailbox-link">
+                    <span class="prev"><i class="icon-yahoo-mailbox"></i></span>
+                    <span class="text">{{ 'award.mailbox.yahoo'|trans|desc('Sign in with Yahoo') }}</span>
+                </a>
+            </li>
+            <li>
+                <a href="{{ url('aw_usermailbox_oauth', {type: 'aol'}) }}" class="yahoo-mailbox add-mailbox-link">
+                    <span class="prev"><i class="icon-aol"></i></span>
+                    <span class="text">{{ 'award.mailbox.aol'|trans|desc('Sign in with Aol') }}</span>
+                </a>
+            </li>
+        </ul>
+    </div>
+    <div class="either">{{ 'or'|trans|desc('or') }}</div>
+    <form action="#" class="main-form f-right" name="user_mailbox" method="post" id="add-form" novalidate>
+        <div class="main-form-item" id="user_mailbox">
+            <div class="row row-email">
+                <div class="row-item">
+                    <label for="user_mailbox_email">{{ 'award.mailbox.th-email'|trans }}<span class="required">*</span></label>
+                    <div class="input">
+                        <div class="input-item">
+                            <input type="text" style="position: absolute;left: -5000px" tabindex="-1">
+                            <input type="email" id="user_mailbox_email" name="user_mailbox[email]" required="required" value="">
+                        </div>
+                    </div>
+                </div>
+                <div class="info">
+                    <div class="info-icon"></div>
+                    <div class="info-description"><p></p></div>
+                </div>
+                <div class="error-message" data-type="valueMissing" style="display: none">
+                    <div class="warning"><i class="icon-warning-small"></i></div>
+                    <div class="error-message-description">
+                        {{ 'notblank'|trans({}, 'validators') }}
+                    </div>
+                </div>
+                <div class="error-message" data-type="typeMismatch" style="display: none">
+                    <div class="warning"><i class="icon-warning-small"></i></div>
+                    <div class="error-message-description">
+                        {{ 'user.email.invalid'|trans({}, 'validators') }}
+                    </div>
+                </div>
+                <div class="error-message" data-type="serverError" style="display: none">
+                    <div class="warning"><i class="icon-warning-small"></i></div>
+                    <div class="error-message-description"></div>
+                </div>
+            </div>
+            <div class="row row-password" style="display: none;">
+                <div class="row-item">
+                    <label for="user_mailbox_password">{{ 'email.password'|trans|desc('Email password') }}<span class="required">*</span></label>
+                    <div class="input">
+                        <div class="input-item">
+                            <input type="password" style="position: absolute;left: -5000px" tabindex="-1">
+                            <input type="password" id="user_mailbox_password" name="user_mailbox[password]" required="required" value="">
+                        </div>
+                    </div>
+                </div>
+                <div class="info">
+                    <div class="info-icon"></div>
+                    <div class="info-description"><p></p></div>
+                </div>
+                <div class="error-message" data-type="valueMissing" style="display: none">
+                    <div class="warning"><i class="icon-warning-small"></i></div>
+                    <div class="error-message-description">
+                        {{ 'notblank'|trans({}, 'validators') }}
+                    </div>
+                </div>
+            </div>
+
+            <div class="row-submit">
+                <div class="row-submit-item">
+                    <div class="submit"><input type="submit" class="btn-blue" value="{{ 'button.add'|trans|desc('Add') }}"></div>
+                </div>
+            </div>
+        </div>
+    </form>
+{% endmacro %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    {{ encore_entry_link_tags('scanner') }}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    {% if not webpack|default(false) %}
+        <script>
+            require([
+                'pages/mailbox/add',
+                'pages/mailbox/list',
+                'pages/mailbox/request',
+                'lib/customizer',
+                'select2',
+                'lib/design'
+            ], function (addMailbox, listMailbox, request) {
+                $(function() {
+                    var container = $('.scanner');
+
+                    request.setContainer(container);
+                    addMailbox.setFamilyMembers('{{ vars.businessUser.fullName }}', {{ family_members|json_encode|raw }});
+                    addMailbox.subscribe();
+                    listMailbox.init({{ centrifuge_config|json_encode|raw }}, {{ userId }}, container);
+                    $('#mailboxes').on('click', 'a.action:has(.icon-delete)', function() {
+                        listMailbox.deleteMailbox(this);
+                    });
+                    $('#mailboxes').on('click', 'a.action:has(.icon-reauth)', function() {
+                        listMailbox.reauthMailbox(this);
+                    });
+                    $('#add-another').on('click', function() {
+                        listMailbox.addFormShow();
+                    });
+
+                    var deleteMailboxId = location.search.match(/delete-mailbox=(\d+)/);
+
+                    if (deleteMailboxId && deleteMailboxId[1]) {
+                        var mailboxRow = $('tr.mailbox_row[data-id="' + deleteMailboxId[1] + '"]');
+
+                        if (mailboxRow.length) {
+                            listMailbox.deleteMailbox(mailboxRow.find('a.action:has(.icon-delete)'));
+                        }
+                    }
+                });
+            });
+        </script>
+    {% else %}
+        <script>
+            window.userMailboxBusinessUserFullName = '{{ vars.businessUser.fullName }}';
+            window.userMailboxFamilyMembers = {{ family_members|json_encode|raw }};
+            window.userMailboxCentrifugeConfig = {{ centrifuge_config|json_encode|raw }};
+            window.userMailboxUserId = {{ userId }};
+        </script>
+        {{ encore_entry_script_tags('user-mailbox', null, '_default', {'defer': true}) }}
+    {% endif %}
+    <script>
+        {% if added_type is not empty %}
+            console.log('sending mailbox added event: {{ added_type }}');
+            window.dataLayer = window.dataLayer || [];
+            window.dataLayer.push({ 'event': 'user_mailbox_added', 'addedType': '{{ added_type }}' });
+        {% endif %}
+    </script>
+{% endblock %}
+{% block content %}
+    <div class="scanner">
+        <div id="intro"{% if mailboxes|length > 0 %} style="display: none;"{% endif %}>
+            {{ 'scanner.empty.intro'|trans|desc('<p>Please link your mailbox to your AwardWallet account so that we can do all the work for you! Specifically,
+            we will scan you mailbox for the loyalty programs you participate in and will add them to your profile automatically.</p>
+            <p>If we find upcoming travel plans in your inbox we will also have them imported into AwardWallet. This is the easiest way to get set up with AwardWallet.
+            We will not be gathering any of your contacts or sending any of them any emails. This step is needed only to get your AwardWallet account set up.</p>')|raw }}
+        </div>
+        {% if mailboxes|length == 0 %}
+            {{ _self.oauthError() }}
+        {% endif %}
+        <div id="mailboxes"{% if mailboxes|length == 0 %} style="display: none;"{% endif %}>
+            <div class="title">
+                <h1>{{ 'award.mailbox.title'|trans|desc('List of mailboxes linked to your AwardWallet account') }}</h1>
+            </div>
+
+            {% if mailboxes|length > 0 %}
+                {{ _self.oauthError() }}
+            {% endif %}
+
+            <div class="scanner-item">
+                <table class="main-table scanner-list">
+                    <thead>
+                        <tr>
+                            <th class="email">{{ 'award.mailbox.th-email'|trans|desc('Email') }}</th>
+                            <th class="status">{{ 'award.mailbox.th-status'|trans|desc('Status') }}</th>
+                            <th class="owner">{{ 'award.account.list.column.owner'|trans|desc('Owner') }}</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    {% for k, mailbox in mailboxes %}
+                        <tr class="mailbox_row" data-id="{{ mailbox.id }}" data-status="{{ mailbox.state }}" data-type="{{ mailbox.type }}">
+                            <td class="email">{% if mailbox.type == 'imap' %}{{ mailbox.login }}{% else %}{{ mailbox.email }}{% endif %}</td>
+                            <td class="status">
+                                <div class="prev"><i class="{{ icons[k] }}"></i></div>
+                                <p>{{ statuses[k] }}</p>
+                            </td>
+                            <td class="owner">{{ owners[k] }}</td>
+                            <td class="actions">
+                                <ul>
+                                    {% if mailbox.type != 'imap' and mailbox.state == 'error' and mailbox.errorCode == 'authentication' %}
+                                        <li>
+                                            <a href="#" class="btn-silver-w action">
+                                                <i class="icon-reauth"></i><span>{{ 'mailbox.reauthenticate'|trans|desc('Re-authenticate') }}</span>
+                                            </a>
+                                        </li>
+                                    {% endif %}
+                                    <li>
+                                        <a href="#" class="btn-silver-w action">
+                                            <i class="icon-delete"></i><span>{{ 'award.mailbox.delete-btn'|trans|desc('Delete') }}</span>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+                <div class="scanner-progress-note">
+                    <i class="icon-info-small"></i>
+                    {% if is_granted('SITE_BUSINESS_AREA') %}
+                        {% set link = url('aw_profile_overview_business') %}
+                    {% else %}
+                        {% set link = url('aw_profile_overview') %}
+                    {% endif %}
+                    {{ 'mailbox.progress-note'|trans({
+                        '%link_on%': '<a target="_blank" href="' ~ link ~ '">',
+                        '%link_off%': '</a>',
+                        '%linkLabel%': 'personal_info.site_settings.email_scanner.mailboxes'|trans,
+                    })|desc('This process can take a while, but you can safely leave this page and the process will not stop. You can
+                    come back to this page from %link_on%your profile%link_off%. Just follow the link to "%linkLabel%".
+                    ')|raw }}
+                </div>
+            </div>
+        </div>
+        <div class="scanner-bottom" {% if mailboxes|length > 0 %} style="display: none;" {% endif %}>
+            {{ _self.addMailboxForm() }}
+        </div>
+        <div class="scanner-bottom">
+            <p>
+                {{ 'mailbox.travel_plans_filter'|trans({
+                    '%link_on%': '<a href="' ~ path('aw_gmail_forwarding') ~ '" class="blue-link">',
+                    '%link_off%': '</a>',
+                })|desc('Not comforable with sharing access to your inbox? If you are a Gmail user, you can %link_on%create a filter%link_off% designed to automatically route any emails about travel plans directly to us.')|raw }}
+            </p>
+        </div>
+        <div class="scanner-buttons" id="mailboxes-buttons" style="{% if mailboxes|length == 0 %}display: none;{% endif %}">
+            <ul class="{% if mailboxes|length > 0 %}f-right{% endif %}">
+                <li>
+                    <a href="#" id="add-another" class="btn-blue">
+                        <i class="icon-add-white"></i>{{ 'award.mailbox.add-another-btn'|trans|desc('Add another mailbox') }}
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ path("aw_account_list", {}) }}" id="done-continue" class="btn-light-w">
+                        {{ 'award.mailbox.continue-btn'|trans|desc('I’m done linking mailboxes, continue') }}
+                    </a>
+                </li>
+            </ul>
+        </div>
+        <div class="scanner-buttons" id="skip-buttons" style="{% if mailboxes|length > 0 %}display: none;{% endif %}">
+            <a href="{{ path('aw_account_list') }}" id="skip" class="btn-light-w">
+                {{ 'award.mailbox.skip-btn'|trans|desc('Skip this step and add account manually') }}
+            </a>
+        </div>
+        <div></div>
+    </div>
+{% endblock %}

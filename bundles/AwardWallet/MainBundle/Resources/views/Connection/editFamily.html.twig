@@ -1,0 +1,95 @@
+{% form_theme form with ['@AwardWalletMain/FormTheme/fields.html.twig', '@AwardWalletMain/FormTheme/sharingTimelines.html.twig'] %}
+{% extends "@AwardWalletMain/Layout/edit_connections.html.twig" %}
+{% set agentName = userAgent.agentId.isBusiness ? userAgent.agentId.getCompany : userAgent.getFullName %}
+
+{% block title %}
+    {{ 'connection.edit.title'|trans({'%name%': agentName}) }}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        require(['pages/userConnections/editMember'], function($) {
+        });
+    </script>
+{% endblock %}
+
+{% block content %}
+    <div class="main-blk shortened">
+        <h1>{{ 'connection.edit.title'|trans({'%name%': agentName}) }}</h1>
+        <form class="main-form spinnerable" action="{{ path('aw_user_family_edit', {userAgentId: userAgent.getUseragentid}) }}" method="post" enctype="multipart/form-data" autocomplete="off" novalidate>
+            {% if form.vars.errors|length or form.avatar.vars.errors|length %}
+                <div class="error-message-blk">
+                    {% for error in form.vars.errors %}
+                        <i class="icon-warning-small"></i>
+                        <p>{{ error.message|raw }}</p>
+                    {% endfor %}
+                    {% for error in form.avatar.vars.errors %}
+                        <i class="icon-warning-small"></i>
+                        <p>{{ error.message|raw }}</p>
+                    {% endfor %}
+                </div>
+            {% endif %}
+            <div class="main-form-item">
+                {% for key, field in form %}
+                    {% if key != 'avatar' %}
+                        {{ form_row(field) }}
+                    {% endif %}
+                {% endfor %}
+                <div class="row">
+                    <div class="row-item">
+                        <label for="family_member_avatar">{{ 'personal_info.avatar'|trans }}</label>
+                        <div class="input">
+                            <div class="input-item">
+                                <div class="photo-blk new">
+                                    <div class="js-avatar photo-prev">
+                                        <img src="{{ userAgent.avatarSrc ?: '/assets/awardwalletnewdesign/img/no-avatar.gif' }}" alt="avatar">
+                                    </div>
+                                    <div class="photo-action">
+                                        <span class="btn-silver">{{ 'personal_info.avatar.upload'|trans }}</span>
+                                        <input id="family_member_avatar" name="family_member[avatar]" type="file">
+                                        <div class="delete-photo">
+                                            <a href="#" class="js-avatar-delete"><i class="icon-delete"></i><span>{{ 'personal_info.avatar.delete'|trans }}</span></a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="info">
+                        <div class="info-icon"></div>
+                        <div class="info-description"><p></p></div>
+                    </div>
+                </div>
+            </div>
+            <div class="row-submit">
+                <div class="row-submit-item">
+                    <button type="submit" class="btn-blue">{{ 'form.button.update'|trans }}</button>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <style type="text/css">
+        .js-avatar,
+        .js-avatar img {
+            overflow: hidden;
+            width: 64px;
+            height: 64px;
+        }
+
+        .photo-action {
+            position: relative;
+        }
+
+        #family_member_avatar {
+            position: absolute;
+            left: 0;
+            top: 0;
+            cursor: pointer;
+            width: 100%;
+            height: 32px;
+            opacity: 0;
+        }
+    </style>
+{% endblock %}

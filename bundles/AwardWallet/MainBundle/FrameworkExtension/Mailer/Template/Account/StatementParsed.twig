@@ -1,0 +1,44 @@
+{% extends '@MailTemplate/Layout/base.twig' %}
+{% trans_default_domain "email" %}
+
+{% block subject %}{% apply spaceless %}{% autoescape false %}
+    {{ 'statement_parsed.subject'|trans({
+        '%providerName%': account['ProviderName']
+    }, 'email', lang)|desc('Your %providerName% statement was successfully processed and account updated') }}
+{%  endautoescape %}{% endapply %}{% endblock subject %}
+
+{% block content %}
+    {% import '@MailTemplate/CommonMacro.twig' as commonMacro %}
+    {% import '@MailTemplate/AccountMacro.twig' as accountMacro %}
+
+    {{ commonMacro.hello(user.firstname, _context) }}
+
+    {{ commonMacro.paragraph(
+        'statement_parsed.balance_updated'|trans({
+            '%bold_on%': '<b>',
+            '%bold_off%': '</b>',
+            '%providerName%': account['DisplayName']|htmlencode
+        }, 'email', lang)|desc("your %bold_on%%providerName%%bold_off% balance was just updated based on your recent statement as follows:"),
+        _context, {escape: false}
+    ) }}
+
+    {{ accountMacro.renderAccount(account, user, _context) }}
+
+    {% if hasMailbox == false %}
+        {{ commonMacro.infoWithButton(
+            'statement_parsed.mailbox_offer'|trans({}, 'email', lang)|desc('Did you know that the best way to import all of your account statements for Delta, United, and Southwest (as well as all of your travel plans) is to link your mailbox to AwardWallet?'),
+            'link_mailbox_now.btn'|trans({}, 'email', lang)|desc('Link My Mailbox Now'),
+            personalHost ~ path('aw_usermailbox_view', {utm_source: 'automatedEmails', utm_medium: 'email', utm_campaign: 'StatementProcessed'}),
+            _context,
+            {}, {}, {},
+            {
+                width: 12,
+                height: 7,
+                imgPath: baseImagesPath ~ '/double-arrow-w.png'
+            }
+        ) }}
+    {% endif %}
+    {% if advt is defined and advt is not null %}
+        {{ commonMacro.adFrame(advt, _context) }}
+    {% endif %}
+{% endblock content %}

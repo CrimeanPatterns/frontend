@@ -1,0 +1,43 @@
+POST https://api.paypal.com/v1/payments/payment
+Authorization: Bearer {{access_token}}
+Content-Type: application/json
+
+{
+  "intent": "sale",
+  "payer": {
+    "funding_instruments": [
+      {
+        "credit_card_token": {
+          "credit_card_id": "CARD-11W47223G8127620CMJWGUFQ"
+        }
+      }
+    ],
+    "payer_info": {
+      "email": "NKochergin@awardwallet.com",
+      "first_name": "Nickolay",
+      "last_name": "Kochergin"
+    },
+    "payment_method": "credit_card"
+  },
+  "transactions": [
+    {
+      "amount": {
+        "currency": "USD",
+        "total": "1"
+      },
+      "description": "Order #1432323",
+      "invoice_number": "1432323-1680601773",
+      "item_list": {
+        "items": [
+          {
+            "currency": "USD",
+            "description": "test old saved card from SiteAdmin",
+            "name": "test",
+            "price": "1",
+            "quantity": 1
+          }
+        ]
+      }
+    }
+  ]
+}

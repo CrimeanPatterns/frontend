@@ -1,0 +1,12 @@
+services:
+    _defaults:
+        public: true
+
+    AwardWallet\MainBundle\Form\Type\AbInvoiceItemType:
+        public: true
+        autowire: true
+        tags:
+          - { name: form.type }
+
+    AwardWallet\MainBundle\Form\Transformer\InvoiceItemTransformer:
+        autowire: true

@@ -1,0 +1,62 @@
+{% import '@AwardWalletMain/Blog/components/post.html.twig' as postComponent %}
+
+{% if groups is defined and groups|length > 0 %}
+    {% for group in groups|filter(group => group|length > 0) %}
+        {{ _self.renderGroup(group, pageName) }}
+    {% endfor %}
+{% endif %}
+
+{% macro renderGroup(group, pageName) %}
+    {% import '@AwardWalletMain/Blog/components/icons.html.twig' as icons %}
+
+    {% set categoryTitleBlockClass = bem(pageName, 'category-title-block') %}
+    {% set readMoreLinkClass = bem(pageName, 'read-more-link') %}
+    
+    <div class="{{ categoryTitleBlockClass }}">
+        <h3 class="{{ bem(pageName, 'category-title') }}">
+            {{ group.title|raw }}
+        </h3>
+        {% if group.more is defined %}
+            <a href="{{ group.more.link }}" class="{{ bem(pageName, 'category-link',['desktop'])}} {{ readMoreLinkClass }}">
+                {{ group.more.text }}
+                <span class="{{ bem(pageName, 'arrow-icon') }}">
+                    {{ icons.arrowIcon() }}
+                </span>
+            </a>    
+        {% endif %}
+    </div>
+    
+    <div class="{{ bem(pageName, 'category-posts') }}"
+         {% if group.nextPage is defined %}
+         id="infinity-content"
+         data-nextPage="{{ group.nextPage }}"
+         style="position:relative;"
+         {% endif %}
+    >
+        
+        {% for post in group.posts %}
+            {% set needs_additional_block = post.meta.expiring is defined or post.meta.subAccount is defined or post.supporting is defined %}
+            {{ postComponent.renderPost(
+                post, 
+                'large', 
+                needs_additional_block ? postComponent.renderAdditionalBlock(post) : null
+            ) }}
+        {% endfor %}
+    </div>
+    
+    {% if group.more is defined %}
+        <a href="{{ group.more.link }}" class="{{ bem(pageName, 'category-link', ['mobile'])}} {{ readMoreLinkClass }}">
+            {{ group.more.text }}
+            <span class="{{ bem(pageName, 'arrow-icon') }}">
+                {{ icons.arrowIcon() }}
+            </span>
+        </a>    
+    {% endif %}
+    
+    {% if group.nextPage is defined %}
+        <p id="infinity-loader" class="{{ bem(pageName, 'infinity-loader') }}" style="display:none;">
+            {{ icons.spinnerIcon() }}
+        </p>
+        
+    {% endif %}
+{% endmacro %}

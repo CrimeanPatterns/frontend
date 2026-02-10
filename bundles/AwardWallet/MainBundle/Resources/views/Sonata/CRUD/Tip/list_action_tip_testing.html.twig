@@ -1,0 +1,8 @@
+{% if '{' in admin.routeList[object.route] %}
+    <span class="label label-default" style="margin-left: 8px">?tip={{ object.element }}</span>
+{% else %}
+    <a class="btn btn-sm btn-default" href="{{ path(object.route, { 'tip' : object.element }) }}" target="tip">
+        <i class="fas fa-external-link" aria-hidden="true"></i>
+        Persist link
+    </a>
+{% endif %}

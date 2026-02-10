@@ -1,0 +1,165 @@
+{% extends "@AwardWalletMain/Manager/layout.html.twig" %}
+{% set title = "Cache control panel" %}
+{% block content %}
+    <script type="text/babel">
+        var initialStats = {{ initialState|raw }};
+
+        class StatsList extends React.Component {
+            render () {
+                var data = this.props.data;
+
+                return (
+                    <table>
+                        <tbody>
+                            {Object.keys(data).map(key => <StatsRow name={key} key={key} value={data[key]} />)}
+                        </tbody>
+                    </table>
+                )
+            }
+        };
+
+        class StatsRow extends  React.Component {
+            render() {
+                return (
+                    <tr>
+                        <td>{this.props.name}</td>
+                        <td>{this.props.value}</td>
+                    </tr>
+                )
+            }
+        }
+
+        class TagsForm extends React.Component {
+            constructor () {
+                super();
+                this.state =  {selected: [], loading: false};
+            }
+
+            onTagChecked (name, checked) {
+                var selected = this.state.selected;
+
+                if (checked) {
+                    selected.push(name);
+                } else {
+                    selected = selected.filter(e => name !== e)
+                }
+                
+                this.setState({selected: selected});
+            }
+
+            handleSubmit(e) {
+                e.preventDefault(e);
+
+                if (this.state.loading) {
+                    return;
+                }
+
+                if (this.state.selected.length == 0) {
+                    alert('Select some tags!');
+
+                    return;
+                }
+
+                this.setState({loading: true});
+
+                $.ajax({
+                    url: '{{ path('cache_control_invalidate') }}',
+                    contentType: 'application/json',
+                    data: JSON.stringify({tags: this.state.selected}),
+                    type: 'POST',
+                    success: data => { 
+                        this.setState({selected: [], loading: false});
+                        
+                        if (data.success) {
+                            alert("Invalidated!") 
+                        } else {
+                            alert(data.error);
+                        }
+                    },
+                    error: (x, s, e) => { 
+                        this.setState({selected: [], loading: false}); 
+                        console.log(e.toString());
+                    }
+                })
+            }
+
+            render() {
+                return (
+                    <form name="tagsForm" onSubmit={this.handleSubmit.bind(this)}>
+                        {this.props.tags.map(tag => (
+                            <TagElem 
+                                name={tag.name} 
+                                desc={tag.desc} 
+                                onTagChecked={this.onTagChecked.bind(this)}
+                                checked={this.state.selected.indexOf(tag.name) != -1}
+                                key={tag.name}
+                            />))}
+                        <br/>
+                        <input type="submit" value="Invalidate selected"/>
+                    </form>
+                );
+            }
+        }
+
+        class TagElem extends React.Component {
+            handleChange(e) {
+                this.props.onTagChecked(this.props.name, e.target.checked);
+            }
+
+            render() {
+                return (
+                    <div>
+                        <input type="checkbox" onChange={this.handleChange.bind(this)} checked={this.props.checked} /><b>{this.props.name}</b> ({this.props.desc})
+                    </div>
+                );
+            }
+        };
+
+        class CacheControlPanel extends React.Component {
+            constructor() {
+                super();
+                this.state = {data: initialStats, loading: false};
+            }
+
+            componentDidMount () {
+                setInterval(() => {
+                        if (this.state.loading) {
+                            return;
+                        }
+
+                        this.setState({loading: true});
+
+                        $.ajax({
+                            url: '{{ path('cache_control_stats') }}',
+                            dataType: 'json',
+                            cache: false,
+                            success: data => { this.setState({data: data, loading: false}) },
+                            error: (x, s, e) => { this.setState({loading: false}); console.error(e.toString()) }
+                        })
+                    }, 
+                    2500
+                );
+            }
+
+            render () {
+                return (
+                    <div>
+                        <h3>Tags</h3>
+                        <TagsForm tags={this.state.data.tags} />
+                        <br/>
+                        <br/>
+                        <h3>Memcached stats</h3>
+                        <StatsList data={this.state.data.memcached} />
+                    </div>
+                );
+            }
+        }
+
+        ReactDOM.render(
+            <CacheControlPanel />,
+            document.getElementById("ccp")
+        );
+    </script>
+    <h1>Cache Control Panel</h1>
+    <div id="ccp"></div>
+{% endblock %}

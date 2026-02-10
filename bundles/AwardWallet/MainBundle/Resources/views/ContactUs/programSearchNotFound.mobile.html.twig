@@ -1,0 +1,26 @@
+{% apply spaceless %}
+    <container>
+        <div class="icon">
+            <i class="warning"></i>
+        </div>
+        <div class="content">
+            <div class="text">
+                {{ 'lp-not-found.mobile'|trans({
+                    '%name%': name,
+                })|desc('We did not find a loyalty program that has "%name%" in its name. If you wish to track this program please:') }}
+            </div>
+            <div class="linkWrap">
+                <a class="row" href="ContactUs">
+                    {{ 'lp-not-found.mobile.contact-our-support'|trans|desc('Contact Our Support') }}
+                </a>
+            </div>
+            <div class="text">
+                {{ 'lp-not-found.mobile.and-provide'|trans|desc('And provide the following:') }}
+            </div>
+            <ol>
+                <li>{{ 'lp-not-found.mobile.provide-program-name'|trans|desc('name of the program you wish to track') }}</li>
+                <li>{{ 'lp-not-found.mobile.provide-url'|trans|desc('URL where you can see your loyalty balance') }}</li>
+            </ol>
+        </div>
+    </container>
+{% endapply %}

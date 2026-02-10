@@ -1,0 +1,113 @@
+{% set title = "Send Notifications" %}
+{% extends '@AwardWalletMain/Manager/layout.html.twig' %}
+{% form_theme testForm with ['form_table_layout.html.twig'] %}
+
+{% block content %}
+    {% import '@AwardWalletMain/Manager/SendNotification/macro.twig' as macro %}
+    <style type="text/css">
+        table {
+            border-collapse: collapse;
+        }
+        table td {
+            border: lightgray solid 1px;
+            padding: 7px;
+        }
+        thead td {
+            font-weight: bold;
+        }
+        table tr.separator td  {
+            border-top: lightgray solid 3px;
+        }
+        code {
+            font-family: monospace,monospace;
+            font-size: 1.2em;
+            padding: 2px 4px;
+            color: #c7254e;
+            background-color: #f9f2f4;
+            border-radius: 4px;
+        }
+    </style>
+
+    <a href="{{ url('aw_manager_sendnotification_index') }}">List of push notifications</a> |
+    <a href="{{ url('aw_manager_sendnotification_view', {id: notification.notificationTemplateID }) }}">{{ notification.title }}</a>
+
+    <hr size="2"/>
+
+    <h1>
+        Notification {{ notification.title }}
+        {% if notification.state < 2 %}
+            <small> &nbsp; <a href="{{ url('aw_manager_sendnotification_edit', {id: notification.notificationTemplateID}) }}">Edit</a></small>
+            <small> &nbsp; <a href="{{ url('aw_manager_sendnotification_delete', {id: notification.notificationTemplateID}) }}">Delete</a></small>
+        {% endif %}
+    </h1>
+
+    <br/>
+    <table>
+        <tbody>
+        <tr><td bgcolor="#eee">Content Type</td>        <td>{{ macro.contentTypeText(notification.type) }}</td></tr>
+        <tr><td bgcolor="#eee">Title</td>               <td>{{ notification.title }}</td></tr>
+        <tr><td bgcolor="#eee">Body</td>                <td>{{ notification.message|nl2br }}</td></tr>
+        <tr><td bgcolor="#eee">URL</td>                 <td>{{ notification.link }}</td></tr>
+        <tr><td bgcolor="#eee">TTL</td>                 <td>{{ notification.TTL|formatDatetime('long') }} (UTC)</td></tr>
+        <tr><td bgcolor="#eee">Auto-close</td>          <td>{% if notification.autoClose == 1 %}Yes{% elseif notification.autoClose == 0 %}No{% else %}Undefined{% endif %}</td></tr>
+        <tr class="separator">
+            <td bgcolor="#eee">User Groups</td>         <td>{% for g in notification.userGroups %}{{ userGroups[g] }}<br>{% endfor %}</td></tr>
+        <tr><td bgcolor="#eee">Delivery Mode</td>       <td>{% if notification.deliveryMode == 0 %}Mobile and Desktop{% elseif notification.deliveryMode == 1 %}Mobile{% elseif notification.deliveryMode == 2 %}Desktop{% else %}?{% endif %}</td></tr>
+        <tr class="separator">
+            <td bgcolor="#eee">State</td>               <td>{% if notification.state == 0 %}New{% elseif notification.state == 1 %}Tested{% elseif notification.state == 2 %}Sending{% else %}Done{% endif %}</td></tr>
+        <tr><td bgcolor="#eee">Created</td>             <td>{{ notification.createDate|formatDatetime('long') }}</td></tr>
+        <tr><td bgcolor="#eee">Updated</td>             <td>{{ notification.updateDate|formatDatetime('long') }}</td></tr>
+        </tbody>
+    </table>
+
+    {% set jenkinsLink = 'https://jenkins.awardwallet.com/job/Frontend/job/send-notification/parambuild?' ~ ({'notificationId': notification.notificationTemplateID, 'title': notification.title} | url_encode) %}
+    <p>To start, open link:<br>
+        <a href="{{ jenkinsLink }}" target="_blank">{{ jenkinsLink }}</a>
+    </p>
+
+    {#{% if notification.state <= 1 %}#}
+    {#<br/>#}
+    {#<form name="edit" method="get" action="{{ url('aw_manager_sendnotification_send', {id: notification.notificationTemplateID}) }}" autocomplete="off">#}
+        {#<input type="hidden" value="{{ notification.notificationTemplateID }}" name="id">#}
+        {#<input class="buttonBg" value="Start Sending" type="submit">#}
+    {#</form>#}
+    {#{% endif %}#}
+
+    <br/>
+    <hr size="1"/>
+
+    <h1>Testing</h1>
+
+    <br/>
+
+    {% if notification.TTL < date() %}<div style="background-color: red; color: white;">This push is expired, and will not be sent. Edit TTL to send it.</div>{% endif %}
+
+    <form name="edit" method="post" action="{{ url('aw_manager_sendnotification_test', {id: notification.notificationTemplateID}) }}" autocomplete="off">
+        <input name="form[type]" value="staff" type="hidden">
+        <input class="buttonBg" value="Send notification to Staff users" type="submit"> all users from group <b>staff:marketing</b>
+    </form>
+    <form name="edit" method="post" action="{{ url('aw_manager_sendnotification_test', {id: notification.notificationTemplateID}) }}" autocomplete="off">
+        <input name="form[type]" value="self" type="hidden">
+        <input class="buttonBg" value="Send notification to Self Registered User" type="submit"> all devices of user <b>{{ user.login }}</b>
+    </form>
+
+    <form name="edit" method="post" action="{{ url('aw_manager_sendnotification_test', {id: notification.notificationTemplateID}) }}" autocomplete="off">
+        <input name="form[type]" value="self_anon" type="hidden">
+        <input class="buttonBg" value="Send notification to Self Anonymous User" type="submit"> last registered browser with IP <b>{{ ip }}</b>
+    </form>
+
+
+    <hr size="1"/>
+
+    <br/>
+    <form name="edit" method="post" action="{{ url('aw_manager_sendnotification_test', {id: notification.notificationTemplateID}) }}" autocomplete="off">
+        Send Notification to:<br>
+        <b>User ID or Email or Login or IP</b>, one user per line<br>
+        <input name="form[type]" value="custom" type="hidden">
+        {{ form_widget(testForm.users) }}
+        <br/>
+        <input class="buttonBg" value="Test" type="submit">
+    </form>
+
+{% endblock %}
+

@@ -1,0 +1,179 @@
+{% extends '@AwardWalletMain/Manager/layout.html.twig' %}
+{% set title = "RA Register Config" %}
+{% set contentTitle = "RA Register Config" %}
+{% set postUrl = path('aw_manager_loyalty_ra_accounts_register_config_post') %}
+
+{% block content %}
+    {% include '@AwardWalletMain/Manager/LoyaltyAdmin/style/ra-register_style.html.twig' %}
+    <select onchange="checkCluster(this);">
+        {% for c in clustersList %}
+            <option value="{{ c }}" {% if cluster==c %}selected="selected"{% endif %}>{{ c }}</option>
+        {% endfor %}
+    </select>
+    <section class="container">
+        <div class="form-container">
+            <form class="form" action="{{ postUrl }}" method="POST">
+                <input type="hidden" name="cluster" value="{{ cluster }}">
+                <h2>Auto-registration config form</h2>
+                <span>
+                    <label>Create <input type="radio" name="action" value="create" checked></label>
+                    <label>Update <input type="radio" name="action" value="update"></label>
+                </span>
+                <span>
+                    <label for="id">Id</label>
+                    <select name="id" id="id" disabled>
+                            <option value=""></option>
+                        {% for config in configs %}
+                            <option value="{{ config.id }}">{{ config.provider }} ( {{ config.id }} )</option>
+                        {% endfor %}
+                    </select>
+                </span>
+                <span>
+                    <label for="provider">Provider</label>
+                    <select name="provider" id="provider">
+                        <option value=""></option>
+                        {% for prov in providerList %}
+                            <option value="{{ prov.provider }}">{{ prov.name }}</option>
+                        {% endfor %}
+                    </select>
+                </span>
+                <span>
+                    <label for="defaultEmail">Default email</label>
+                    <input name="defaultEmail" id="defaultEmail" type="email" required>
+                </span>
+                <span>
+                    <label for="ruleForEmail">Rule</label>
+                    <select name="ruleForEmail" id="ruleForEmail" required>
+                      <option selected value="dots">dots</option>
+                    </select>
+                </span>
+                <span>
+                    <label for="minCountEnabled">Minimum count enabled</label>
+                    <input name="minCountEnabled" id="minCountEnabled" type="number" min="0" required>
+                </span>
+                <span>
+                    <label for="minCountReserved">Minimum count reserved</label>
+                    <input name="minCountReserved" id="minCountReserved" type="number" min="0" required>
+                </span>
+                <span>
+                    <label for="delay">Delay (sec)</label>
+                    <input name="delay" id="delay" type="number" min="0"  required>
+                </span>
+                <span>
+                    <label for="isActive">Is active</label>
+                    <select name="isActive" id="isActive" required>
+                            <option value="1" selected>True</option>
+                            <option value="0" selected>False</option>
+                    </select>
+                </span>
+                <span>
+                    <label for="is2Fa">Is 2FA</label>
+                    <select name="is2Fa" id="is2Fa" required>
+                            <option value="1" selected>True</option>
+                            <option value="0" selected>False</option>
+                    </select>
+                </span>
+                <button type="submit">Send</button>
+            </form>
+            <div class="result">
+                <h2>Log</h2>
+                <code>
+                    {{ log }}
+                </code>
+            </div>
+        </div>
+        <div class="report-container">
+            <div class="report">
+                <h2>Auto-registration config list</h2>
+                {% if configs %}
+                    <table>
+                        <tbody>
+                            <tr>
+                                <th>Id</th>
+                                <th>Provider</th>
+                                <th>Default email</th>
+                                <th>Rule for email</th>
+                                <th>Min count enabled</th>
+                                <th>Min count reserved</th>
+                                <th>Delay</th>
+                                <th>Is active</th>
+                                <th>Is 2FA</th>
+                                <th>Action</th>
+                            </tr>
+                            {% for record in configs%}
+                                {% set isActive = (record.isActive) ? 'True' : 'False' %}
+                                {% set is2Fa = (record.is2Fa) ? 'True' : 'False' %}
+                                <tr>
+                                    <td>{{ record.id }}</td>
+                                    <td>{{ record.provider }}</td>
+                                    <td>{{ record.defaultEmail }}</td>
+                                    <td>{{ record.ruleForEmail }}</td>
+                                    <td>{{ record.minCountEnabled }}</td>
+                                    <td>{{ record.minCountReserved }}</td>
+                                    <td>{{ record.delay }}</td>
+                                    <td>{{ isActive }}</td>
+                                    <td>{{ is2Fa }}</td>
+                                    <td>
+                                        <form action="{{ postUrl }}" method="post">
+                                            <input type="hidden" name="cluster" value="{{ cluster }}">
+                                            <input type="hidden" name="id" value="{{ record.id }}">
+                                            <input type="hidden" name="action" value="delete">
+                                            <button type="submit">Delete</button>
+                                        </form>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                {% else %}
+                    Empty
+                {% endif %}
+            </div>
+        </div>
+    </section>
+    <script>
+        function checkCluster(e) {
+            document.location = '{{ path('aw_manager_loyalty_ra_accounts_register_config') }}' + '?cluster=' + e.value;
+        }
+
+        $("input[name='action']").click(function () {
+            let action = $(this).val();
+            if (action === 'update') {
+                $("#id").removeAttr('disabled');
+                $("#provider").attr("disabled", true).attr('value', null);
+
+            } else {
+                $("#id").attr("disabled", true).attr('value', null);
+                $("#provider").removeAttr('disabled');
+            }
+        })
+        $("select[name='id']").on('change',function () {
+            let checkedId = $(this).val();
+            console.log(checkedId);
+            let dataConfigs = JSON.parse('{{ configs|json_encode|raw }}');
+            let fields = dataConfigs.filter((o)=> o.id===checkedId)[0];
+            if (typeof fields === 'object') {
+                $('#defaultEmail').val(fields.defaultEmail);
+                $('#delay').val(fields.delay);
+                if (fields.is2Fa)
+                    $('#is2Fa option[value=1]').prop('selected', true);
+                else
+                    $('#is2Fa option[value=0]').prop('selected', true);
+                if (fields.isActive)
+                    $('#isActive option[value=1]').prop('selected', true);
+                else
+                    $('#isActive option[value=0]').prop('selected', true);
+                $('#minCountEnabled').val(fields.minCountEnabled);
+                $('#minCountReserved').val(fields.minCountEnabled);
+            } else {
+                // reset
+                $('#defaultEmail').val('');
+                $('#delay').val('');
+                $('#is2Fa option[value=0]').prop('selected', true);
+                $('#isActive option[value=0]').prop('selected', true);
+                $('#minCountEnabled').val('');
+                $('#minCountReserved').val('');
+            }
+        })
+    </script>
+{% endblock %}

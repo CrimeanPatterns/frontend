@@ -1,0 +1,20 @@
+{% form_theme form with ['@Module/EnhancedAdmin/Template/form_layout.html.twig'] %}
+{% extends "@Module/EnhancedAdmin/Template/layout.html.twig" %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    {{ encore_entry_link_tags('page-manager/form') }}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    {{ encore_entry_script_tags('page-manager/form', null, '_default', {'defer': true}) }}
+{% endblock %}
+
+{% block content %}
+    <div class="col-8">
+        <h1>{{ title }}</h1>
+
+        {{ form(form) }}
+    </div>
+{% endblock %}

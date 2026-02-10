@@ -1,0 +1,215 @@
+parameters:
+
+services:
+    _defaults:
+        public: true
+
+    AwardWallet\MainBundle\Manager\BookingRequestManager:
+        public: true
+        autowire: true
+        class: AwardWallet\MainBundle\Manager\BookingRequestManager
+        arguments:
+            $env: "%kernel.environment%"
+
+    aw.manager.abrequest_manager:
+        alias: AwardWallet\MainBundle\Manager\BookingRequestManager
+        public: true
+
+    aw.manager.program_share_manager:
+        public: true
+        class: AwardWallet\MainBundle\Manager\ProgramShareManager
+        arguments:
+            - "@doctrine.orm.default_entity_manager"
+            - "@aw.security.token_storage"
+            - "@aw.email.mailer"
+            - "@router"
+            - "@doctrine"
+            - "%kernel.environment%"
+            - "@aw.manager.local_passwords_manager"
+            - '@AwardWallet\MainBundle\Service\Cache\Invalidator'
+            - '@AwardWallet\MainBundle\Service\Cache\CacheManager'
+            - '@AwardWallet\MainBundle\Manager\AccountListManager'
+            - '@AwardWallet\MainBundle\Globals\AccountList\OptionsFactory'
+            - '@AwardWallet\MainBundle\Manager\AccountManager'
+            - "@aw.manager.logo"
+            - "%secret%"
+
+    AwardWallet\MainBundle\Manager\ProgramShareManager: '@aw.manager.program_share_manager'
+
+    AwardWallet\MainBundle\Manager\UserManager:
+        autowire: true
+        public: true
+        arguments:
+            $rememberKey: "%security.rememberme_key%"
+            $forgotLocker: "@aw.security.antibruteforce.forgot"
+            $securityLogger: "@monolog.logger.security"
+
+    aw.manager.user_manager: '@AwardWallet\MainBundle\Manager\UserManager'
+
+    aw.manager.useragent_manager:
+        public: true
+        class: AwardWallet\MainBundle\Manager\UseragentManager
+        arguments:
+            - "@logger"
+            - "@doctrine.orm.default_entity_manager"
+            - "@security.token_storage"
+
+    AwardWallet\MainBundle\Manager\AccountManager:
+        public: true
+        autowire: true
+
+    AwardWallet\MainBundle\Manager\LocalPasswordsManager:
+        autowire: true
+        public: true
+        arguments:
+            $localPasswordsKey: "%local_passwords_key%"
+            $localPasswordsKeyOld: "%local_passwords_key_old%"
+        lazy: false
+
+    aw.manager.local_passwords_manager:
+        alias: AwardWallet\MainBundle\Manager\LocalPasswordsManager
+
+    AwardWallet\MainBundle\Manager\AccountListManager:
+        public: true
+        autowire: true
+
+    AwardWallet\MainBundle\Manager\LegacySchemaManagerFactory:
+        public: true
+        autowire: true
+
+    aw.manager.cart:
+        alias: AwardWallet\MainBundle\Globals\Cart\Manager
+
+    aw.manager.rewards_transfer:
+        public: true
+        class: AwardWallet\MainBundle\Manager\RewardsTransferManager
+        arguments:
+            - "@doctrine.orm.entity_manager"
+            - '@AwardWallet\MainBundle\Entity\Repositories\ProviderRepository'
+            - '@AwardWallet\MainBundle\Entity\Repositories\AccountRepository'
+            - '@AwardWallet\MainBundle\Entity\Repositories\RewardsTransferRepository'
+            - "@logger"
+    AwardWallet\MainBundle\Manager\RewardsTransferManager: '@aw.manager.rewards_transfer'
+
+    aw.manager.geotag:
+        public: true
+        class: AwardWallet\MainBundle\Manager\GeoTagManager
+        arguments:
+            - "@database_connection"
+
+    aw.manager.logo:
+        public: true
+        class: AwardWallet\MainBundle\Manager\LogoManager
+        arguments:
+            - "@service_container"
+    AwardWallet\MainBundle\Manager\LogoManager: '@aw.manager.logo'
+
+    aw.manager.dbtranslation:
+        public: true
+        class: AwardWallet\MainBundle\Manager\DbTranslationManager
+        arguments:
+            - "@database_connection"
+            - "@translator"
+            - "%locales%"
+            - "@logger"
+        calls:
+            - [ addTable, ['Faq', ['Question', 'Answer']] ]
+            - [ addTable, ['FaqCategory', ['CategoryTitle']] ]
+            - [ addTable, ['Currency', ['Name', 'Plural']]]
+            - [ addTable, ['Provider', ['DisplayName'], 'Code IN (%translation_filter_providers%)']]
+            - [ addTable, ['ProviderProperty', ['Name'], 'ProviderID IN (SELECT ProviderID FROM Provider WHERE Code IN (%translation_filter_providers%)) AND (Visible = 1 OR ProviderID is null)']]
+            - [ addTable, ['Tip', ['Title', 'Description']]]
+        tags:
+            - { name: jms_translation.extractor, alias: dbextractor }
+    AwardWallet\MainBundle\Manager\DbTranslationManager: '@aw.manager.dbtranslation'
+
+    aw.manager.offer:
+        public: true
+        class: AwardWallet\MainBundle\Manager\OfferManager
+        arguments:
+            - "@doctrine"
+            - "@security.authorization_checker"
+            - "@security.token_storage"
+
+    AwardWallet\MainBundle\Manager\NDRManager:
+        autowire: true
+
+    AwardWallet\MainBundle\Manager\ConnectionManager:
+        public: true
+        arguments:
+            - '@AwardWallet\MainBundle\Entity\Repositories\UseragentRepository'
+            - '@AwardWallet\MainBundle\Entity\Repositories\InvitesRepository'
+            - '@AwardWallet\MainBundle\Entity\Repositories\UsrRepository'
+            - '@AwardWallet\MainBundle\Entity\Repositories\TimelineShareRepository'
+            - '@doctrine.orm.entity_manager'
+            - '@aw.email.mailer'
+            - '@AwardWallet\MainBundle\Service\Cache\Invalidator'
+            - '@translator'
+            - '@monolog.logger.security'
+            - "@aw.security.invite_locker"
+            - "@validator"
+            - "@aw.extension.form.error_handler"
+            - "@aw.security.antibruteforce.connection_search"
+            - '@AwardWallet\MainBundle\Manager\AccountManager'
+            - '@router'
+
+    aw.manager.connection_manager:
+        public: true
+        alias: AwardWallet\MainBundle\Manager\ConnectionManager
+
+    AwardWallet\MainBundle\Manager\CardImage\CardImageManager:
+        public: true
+        autowire: true
+        class: AwardWallet\MainBundle\Manager\CardImage\CardImageManager
+        arguments:
+            $cardImageRep: '@AwardWallet\MainBundle\Entity\Repositories\CardImageRepository'
+
+    aw.card_image_manager:
+        public: true;
+        alias: AwardWallet\MainBundle\Manager\CardImage\CardImageManager
+
+    AwardWallet\MainBundle\Manager\CardImage\DocumentImageManager:
+        public: true
+        autowire: true
+        class: AwardWallet\MainBundle\Manager\CardImage\DocumentImageManager
+        arguments:
+            $documentImageRep: '@AwardWallet\MainBundle\Entity\Repositories\DocumentImageRepository'
+
+    aw.document_image_manager:
+        public: true
+        alias: AwardWallet\MainBundle\Manager\CardImage\DocumentImageManager
+
+    aw.manager.email_queue_watcher:
+        public: true
+        class: AwardWallet\MainBundle\Manager\EmailQueueWatcher
+        arguments:
+            - "%aws_region%"
+            - "@aw.memcached"
+            - "%kernel.environment%"
+
+    aw.manager.custom_loyalty_property:
+        public: true
+        autowire: true
+        class: AwardWallet\MainBundle\Manager\CustomLoyaltyPropertyManager
+        tags:
+            - { name: monolog.logger, channel: stat }
+
+
+    AwardWallet\MainBundle\Manager\Ad\AdManager:
+        public: true
+        autowire: true
+
+    aw.manager.advt:
+        alias: AwardWallet\MainBundle\Manager\Ad\AdManager
+
+    AwardWallet\MainBundle\Manager\SiteAdManager:
+        autowire: true
+        public: true
+        arguments:
+            - "@database_connection"
+
+    AwardWallet\MainBundle\Manager\Files\PlanFileManager:
+        autowire: true
+
+    AwardWallet\MainBundle\Manager\Files\ItineraryFileManager:
+        autowire: true

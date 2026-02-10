@@ -1,0 +1,51 @@
+services:
+    _defaults:
+        public: true
+
+    # Types
+
+    AwardWallet\MobileBundle\Form\Type\AddAgentType:
+        autowire: true
+        public: true
+        autoconfigure: true
+
+    AwardWallet\MainBundle\Form\Type\AddAgentType:
+        public: true
+        autowire: true
+        autoconfigure: true
+
+    # Transformers
+
+    AwardWallet\MainBundle\Form\Transformer\AddAgentTransformer:
+        autowire: true
+        public: true
+
+    # Validators
+
+    aw.mobile.form.validator.add_agent:
+        autowire: true
+        public: true
+        class: AwardWallet\MainBundle\Validator\AddAgentValidator
+        arguments:
+            $translator: '@aw.extension.translation.translator_hijacker'
+
+    # Handlers
+
+    aw.form.add_agent.handler.mobile:
+        public: true
+        parent: aw.form.generic_request_handler
+        calls:
+            - [setChannels, [["form.mobile", "form.generic.add_agent", "form.generic"]]]
+            - [addHandlerSubscriber, ['@AwardWallet\MainBundle\Form\Handler\Subscriber\AddAgentGeneric']]
+            - [addHandlerSubscriber, ["@aw.form.subscriber.mobile.request_data_transformer"]]
+
+    aw.form.add_agent.handler.desktop:
+        public: true
+        parent: aw.form.generic_request_handler
+        calls:
+            - [setChannels, [["form.generic.add_agent", "form.generic"]]]
+            - [addHandlerSubscriber, ['@AwardWallet\MainBundle\Form\Handler\Subscriber\AddAgentGeneric']]
+
+    AwardWallet\MainBundle\Form\Handler\Subscriber\AddAgentGeneric:
+        public: true
+        autowire: true

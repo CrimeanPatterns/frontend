@@ -1,0 +1,119 @@
+text:
+  type: 'text'
+  options:
+    required: false
+
+text_required:
+  extend: text
+  options:
+    required: true
+
+text_error:
+  extend: text
+  error: Text Error
+
+text_multi_error:
+  extend: text
+  error:
+    - Text Error One
+    - Text Error Two
+
+textarea:
+  type: 'textarea'
+  options:
+    required: false
+
+textarea_required:
+  extend: textarea
+  options:
+    required: true
+
+textarea_error:
+  extend: textarea
+  error: TextArea Error
+
+email:
+  type: 'email'
+
+password:
+  type: 'password'
+
+checkbox:
+  type: 'checkbox'
+
+checkbox_checked:
+  type: 'checkbox'
+  options:
+    data: true
+    value: 1
+
+radio:
+  type: 'radio'
+
+radio_checked:
+  type: 'radio'
+  options:
+    data: true
+    value: 1
+
+select:
+  type: 'choice'
+  options:
+    empty_value: select value
+    choices:
+      1: value 1
+      2: value 2
+
+select_expanded:
+  extend: select
+  options:
+    expanded: true
+
+select_multiple:
+  extend: select
+  options:
+    multiple: true
+
+select_error:
+  extend: select
+  error: 'Select Error'
+
+file:
+  type: 'file'
+
+date:
+  type: 'date'
+
+datetime:
+  type: 'datetime'
+
+time:
+  type: 'time'
+
+integer:
+  type: 'integer'
+
+money:
+  type: 'money'
+
+number:
+  type: 'number'
+
+percent:
+  type: 'percent'
+
+search:
+  type: 'search'
+
+url:
+  type: 'url'
+
+button:
+  type: button
+
+reset:
+  type: reset
+
+submit:
+  type: submit
+

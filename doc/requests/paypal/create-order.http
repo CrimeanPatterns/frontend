@@ -1,0 +1,41 @@
+POST https://api.paypal.com/v2/checkout/orders
+Authorization: Bearer {{access_token}}
+Content-Type: application/json
+PayPal-Request-Id: 4d0f9f0c-0f9f-4f0c-9f0c-0f9f0cf0c900
+
+{
+  "intent": "CAPTURE",
+  "purchase_units": [
+    {
+      "amount": {
+        "custom_id": "1432323-1680601773",
+        "invoice_id": "1432323-1680601773",
+        "description": "Order #1432323",
+        "currency_code": "USD",
+        "value": "1.00",
+        "items": [
+          {
+            "name": "AwardWallet Plus yearly subscription",
+            "quantity": 1,
+            "unit_amount": {
+              "currency_code": "USD",
+              "value": "1"
+            },
+            "category": "DIGITAL_GOODS",
+            "description": "test"
+          }
+        ]
+      }
+    }
+  ],
+  "payment_source": {
+    "card": {
+      "vault_id": "cpbsvt9a",
+      "stored_credential": {
+        "payment_initiator": "CUSTOMER",
+        "payment_type": "RECURRING",
+        "usage": "DERIVED"
+      }
+    }
+  }
+}

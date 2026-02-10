@@ -1,0 +1,72 @@
+{% macro oauthButtons(action) %}
+    {% set signUp = action == 'register' %}
+    <div class="buttons-list oauth-buttons-list">
+        <a target="_self" data-action="{{ action }}" data-type="google" href="#" class="btn-white-border js-google-auth">
+            <span class="btn-white-border__icon">
+                <i class="icon-google"></i>
+            </span>
+            {% if signUp %}
+                <span>{{ 'sign-up-btn.google'|trans|desc('Sign up with Google') }}</span>
+            {% else %}
+                <span>{{ 'award.mailbox.google'|trans|desc('Sign in with Google') }}</span>
+            {% endif %}
+        </a>
+        <a target="_self" data-action="{{ action }}" data-type="microsoft"  href="#" class="btn-white-border js-microsoft-auth">
+            <span class="btn-white-border__icon">
+                <i class="icon-microsoft"></i>
+            </span>
+            {% if signUp %}
+                <span>{{ 'sign-up-btn.microsoft'|trans|desc('Sign up with Microsoft') }}</span>
+            {% else %}
+                <span>{{ 'award.mailbox.misrosoft'|trans|desc('Sign in with Microsoft') }}</span>
+            {% endif %}
+        </a>
+        <a target="_self" data-action="{{ action }}" data-type="yahoo"  href="#" class="btn-white-border js-yahoo-auth">
+            <span class="btn-white-border__icon">
+                <i class="icon-yahoo"></i>
+            </span>
+            {% if signUp %}
+                <span>{{ 'sign-up-btn.yahoo'|trans|desc('Sign up with Yahoo') }}</span>
+            {% else %}
+                <span>{{ 'award.mailbox.yahoo'|trans|desc('Sign in with Yahoo') }}</span>
+            {% endif %}
+        </a>
+        <a target="_self" data-action="{{ action }}" data-type="aol"  href="#" class="btn-white-border js-aol-auth">
+            <span class="btn-white-border__icon">
+                <i class="icon-aol"></i>
+            </span>
+            {% if signUp %}
+                <span>{{ 'sign-up-btn.aol'|trans|desc('Sign up with Aol') }}</span>
+            {% else %}
+                <span>{{ 'award.mailbox.aol'|trans|desc('Sign in with Aol') }}</span>
+            {% endif %}
+        </a>
+        <a target="_self" data-action="{{ action }}" data-type="apple"  data-mailbox-support="off" href="#" class="btn-white-border js-apple-auth">
+            <span class="btn-white-border__icon">
+                <i class="icon-apple"></i>
+            </span>
+            {% if signUp %}
+                <span>{{ 'sign-up-btn.apple'|trans|desc('Sign up with Apple') }}</span>
+            {% else %}
+                <span>{{ 'sign-in-btn.apple'|trans|desc('Sign in with Apple') }}</span>
+            {% endif %}
+        </a>
+    </div>
+    <div class="buttons-list-details">
+        {% if signUp %}
+            {{ 'sign-up.agreement'|trans({
+                '%link1_on%': '<a href="' ~ path('aw_page_index', {'page': 'terms'}) ~ '" target="_blank" rel="noopener">',
+                '%link1_off%': '</a>',
+                '%link2_on%': '<a href="' ~ path('aw_page_index', {'page': 'privacy'}) ~ '" target="_blank" rel="noopener">',
+                '%link2_off%': '</a>',
+            })|desc('By clicking any of the Sign up buttons above, you agree to our %link1_on%Terms of Use%link1_off% and %link2_on%Privacy Notice%link2_off%.')|raw }}
+        {% else %}
+            {{ 'sign-in.agreement'|trans({
+                '%link1_on%': '<a href="' ~ path('aw_page_index', {'page': 'terms'}) ~ '" target="_blank" rel="noopener">',
+                '%link1_off%': '</a>',
+                '%link2_on%': '<a href="' ~ path('aw_page_index', {'page': 'privacy'}) ~ '" target="_blank" rel="noopener">',
+                '%link2_off%': '</a>',
+            })|desc('By clicking any of the Sign in buttons above, you agree to our %link1_on%Terms of Use%link1_off% and %link2_on%Privacy Notice%link2_off%.')|raw }}
+        {% endif %}
+    </div>
+{% endmacro %}

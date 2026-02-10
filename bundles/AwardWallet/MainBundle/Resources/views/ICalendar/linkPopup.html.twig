@@ -1,0 +1,17 @@
+<div class="sharing-reservation">
+	<div id="calendarLinkContainer" style="display: none;">
+		<p>{{ 'calendar.link.label'|trans|desc('Here is your public AwardWallet calendar link:') }}</p>
+		<input type="text" id="calendarLink" onclick="this.select()" readonly/>
+	</div>
+	<div id="linkRemovedContainer" style="display: none;">
+		<p>{{ 'calendar.link.remove.label'|trans|desc('Your public AwardWallet calendar link was removed') }}</p>
+	</div>
+	<div>
+		<p>{{ 'calendar.link.faqs.label'|trans|desc('If you need help on adding this calendar feed to your calendar<br>please take a look the following FAQs:')|raw }}</p>
+		<ul class="calendar-buttons">
+			<li><a href="/faqs.php#40" target="_blank"><i class="cal-icon-google"></i><span>Google Calendar</span></a></li>
+			<li><a href="/faqs.php#41" target="_blank"><i class="cal-icon-ical"></i><span>iCal</span></a></li>
+			<li><a href="/faqs.php#42" target="_blank"><i class="cal-icon-outlook"></i><span>Outlook</span></a></li>
+		</ul>
+	</div>
+</div>

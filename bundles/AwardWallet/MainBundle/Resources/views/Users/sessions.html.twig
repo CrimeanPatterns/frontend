@@ -1,0 +1,66 @@
+{% extends "@AwardWalletMain/Layout/default.html.twig" %}
+
+{% block sessions %}{% endblock %}
+
+{% block title %}
+    {{ 'session.warning.title'|trans|desc("Activity on this account") }}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        {% if not app.user.wpDisableAll and not is_granted('SITE_BUSINESS_AREA') %}
+        function signOuts() {
+            require(['common/web-push', 'centrifuge'], function(webPush, Centrifuge) {
+                webPush.forceResubscribe();
+                webPush.init('{{ vapid_public_key }}', '{{ webpush_id }}', {{ app.user.userId }}, {{ is_granted('ROLE_STAFF') ? 'true' : 'false' }});
+            });
+        }
+        {% endif %}
+        require(['pages/userProfile/profileOverview'], function() {});
+    </script>
+{% endblock %}
+
+{% block content %}
+    <div class="main-blk shortened">
+        <h1>{{ 'session.warning.title'|trans|desc("Activity on this account") }}</h1>
+
+        {% if app.user is not null %}
+            {% set _sessions = session_detector.detectOtherSessions(app.request.session.id, app.user.userid, app.request.clientIp) %}
+            {% if _sessions|length > 0  %}
+            <div class="warning-blk">
+                <i class="icon-warning-small-white"></i>
+                <p>
+                    {{ 'session.warning.description'|trans({'%count%': _sessions|length})
+                    |desc("{1}This account is currently being used in one other location.|]1,Inf]This account is currently being used in %count% other locations.") }}
+                    <span class="small">({{ 'session.location.desc'|trans|desc("Location may refer to a different session on the same computer.") }})</span>
+                </p>
+            </div>
+            {% endif %}
+        {% endif %}
+
+        <div class="main-blk-content">
+            <div class="session-list session-list-many">
+                {% include '@AwardWalletMain/Users/sessionsList.html.twig' with {'sessions': identifications, 'logout': true, title: 'personal_info.authorized_devices'|trans|desc('Authorized Devices')} %}
+            </div>
+
+            <div class="row-button">
+                <br>
+                {% if identifications|length > 2 %}
+                    <br>
+                    <div style="text-align: right">
+                        <button id="sessionSignouts" class="btn-blue">{{ 'session.logout-all-sessions'|trans }}</button>
+                    </div>
+                {% endif %}
+            </div>
+
+            {% if sessions|length > 0 %}
+            <div class="session-list">
+                {% include '@AwardWalletMain/Users/sessionsList.html.twig' with {'sessions': sessions, 'logout': false, title: 'session.warning.recent.title'|trans|desc('Recent activity')} %}
+            </div>
+            {% endif %}
+
+        </div>
+
+    </div>
+{% endblock %}

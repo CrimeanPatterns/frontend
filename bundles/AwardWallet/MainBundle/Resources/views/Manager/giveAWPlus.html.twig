@@ -1,0 +1,15 @@
+{% set title = "Give AWPlus" %}
+{% extends '@AwardWalletMain/Manager/layout.html.twig' %}
+{% form_theme form with ['form_table_layout.html.twig'] %}
+
+{% block content %}
+
+    <h1>Give AW Plus</h1>
+    <br/>
+    {% if message is not empty %}
+        {{ message }}
+    {% else %}
+        {{ form(form) }}
+    {% endif %}
+
+{% endblock %}

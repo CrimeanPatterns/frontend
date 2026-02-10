@@ -1,0 +1,155 @@
+{% set title = "Messages list" %}
+{% use '@AwardWalletMain/FormTheme/oldFields.html.twig' %}
+{% extends '@AwardWalletMain/Manager/layout.html.twig' %}
+{% block content %}
+    <link href="{{ asset('assets/awardwalletmain/css/manualParser.css') }}" rel="stylesheet" type="text/css" media="all" />
+    <link rel="stylesheet" href="{{ asset('/assets/awardwalletmain/css/flags.css') }}?id=1"/>
+    <script type="text/javascript">
+        function matchRows() {
+            var newSubject = false;
+            var newSubjectP = false;
+            var newFrom = false;
+            var el = $('input#subject');
+            if (el.length > 0)
+                newSubject = el.val().toLowerCase();
+            el = $('input#subjectP');
+            if (el.length > 0)
+                newSubjectP = el.val().toLowerCase();
+            el = $('input#from');
+            if (el.length > 0)
+                newFrom = el.val().toLowerCase();
+            if (newSubject !== subject || newSubjectP !== subjectP || newFrom !== from) {
+                subject = newSubject;
+                subjectP = newSubjectP;
+                from = newFrom;
+                var rows = $('tr.list_row');
+                if ((newSubject === false || newSubject === "")
+                 && (newSubjectP === false || newSubjectP === "")
+                 && (newFrom === false || newFrom === ""))
+                    rows.show();
+                else {
+                    rows.hide();
+                    for (var i = 0; i < rows.length; i++) {
+                        if (subject !== false) {
+                            var s = $(rows[i]).find('td').eq(1).attr('title').toLowerCase();
+                            var sp = $(rows[i]).find('td').eq(2).attr('title').toLowerCase();
+                            if ((subject == "" || s.indexOf(subject) >= 0)
+                             && (subjectP == "" || sp.indexOf(subjectP) >= 0))
+                                $(rows[i]).show();
+                        }
+                        else {
+                            var f = $(rows[i]).find('td').eq(1).attr('title').toLowerCase();
+                            if (from == "" || f.indexOf(from) >= 0)
+                                $(rows[i]).show();
+                        }
+                    }
+                }
+            }
+        }
+        var subject = false;
+        var subjectP = false;
+        var from = false;
+        setInterval(matchRows, 200);
+    </script>
+    {% if region starts with 'us' %}
+        <div class="flag_mini us" title="US"></div>
+    {% elseif region starts with 'eu' %}
+        <div class="flag_mini eu" title="EU"></div>
+    {% endif %}
+    <a href="{{ path("aw_manager_manualparser_list", {}) }}">Return to list</a>
+    {% for flashMessage in app.session.flashbag.get('notice') %}
+        <div class="flash-message">
+            <em>Notice</em>: {{ flashMessage }}
+        </div>
+    {% endfor %}
+    <div style="float: right;">
+        {% for r in regions %}
+            {% if region == r %}
+                <b>{{ r }}</b>
+            {% else %}
+                <a href="{{ path("aw_manager_manualparser_switchregion", {"r": r}) }}">{{ r }}</a>
+            {% endif %}
+        {% endfor %}
+    </div>
+    <form name='manage' id='manage' method='GET'>
+        Group by
+        <select name="group">
+            <option value="subject" {% if params.group == 'subject' %}selected{% endif %}>Subject</option>
+            <option value="from" {% if params.group == 'from' %}selected{% endif %}>From</option>
+        </select>
+        | Show
+        <select name='results'>
+            <option value="200" {% if params.results == '200' %}selected{% endif %}>200</option>
+            <option value="100" {% if params.results == '100' %}selected{% endif %}>100</option>
+            <option value="50" {% if params.results == '50' %}selected{% endif %}>50</option>
+            <option value="25" {% if params.results == '25' %}selected{% endif %}>25</option>
+        </select>
+        top results
+        | Minimum of
+        <select name='matches'>
+            <option value="2" {% if params.matches == '2' %}selected{% endif %}>2</option>
+            <option value="10" {% if params.matches == '10' %}selected{% endif %}>10</option>
+            <option value="50" {% if params.matches == '50' %}selected{% endif %}>50</option>
+            <option value="100" {% if params.matches == '100' %}selected{% endif %}>100</option>
+            <option value="500" {% if params.matches == '500' %}selected{% endif %}>500</option>
+        </select>
+        matches |
+        Go to:
+        <select id="kindChecked">
+            <option value="parse" {% if kind == 'parse' %}selected{% endif %}>PARSE</option>
+            <option value="scan" {% if kind == 'scan' %}selected{% endif %}>SCAN</option>
+            <option value="all" {% if kind == 'all' %}selected{% endif %}>ALL</option>
+        </select>
+        |
+        <input type='submit' value="OK" onclick="$('#manage').prop('action','{{ path("aw_manager_manualparser_report") }}/'+$('#kindChecked').val());  $('#fader').show(); return true;">
+    </form>
+
+    <table class="mp_table" cellspacing="0" cellpadding="0" width="98%">
+        {% if params.group == 'subject' %}
+        <tr class="caption">
+            <td class="mp bothBorder"><b>Example ID</b></td>
+            {% if params.group == 'subject' %}
+                <td class="mp rightBorder"><b>Example Subject</b></td>
+                <td class="mp rightBorder"><b>Subject Pattern</b></td>
+            {% endif %}
+            <td class="mp rightBorder"><b>Count</b></td>
+        </tr>
+        <tr class='filters'>
+            <td class="mp bothBorder"></td>
+            <td class="mp rightBorder"><input id='subject' type='text' autocomplete="off"></td>
+            <td class="mp rightBorder"><input id='subjectP' type='text' autocomplete="off"></td>
+            <td class="mp rightBorder"></td>
+        </tr>
+        {% endif %}
+        {% if params.group == 'from' %}
+        <tr class="caption">
+            <td class="mp bothBorder"><b>Example ID</b></td>
+            {% if params.group == 'from' %}
+                <td class="mp rightBorder"><b>From</b></td>
+            {% endif %}
+            <td class="mp rightBorder"><b>Count</b></td>
+        </tr>
+        <tr class='filters'>
+            <td class="mp bothBorder"></td>
+            <td class="mp rightBorder"><input id="from" type='text' autocomplete="off"></td>
+            <td class="mp rightBorder"></td>
+        </tr>
+        {% endif %}
+        {% for row in report %}
+            <tr class='list_row{% if loop.index0 is even %} odd{% endif %}'>
+                <td class="mp bothBorder subject"><a target="_blank" href="{{ path("aw_manager_manualparser_list", {"kind": kind, "id": row.id, "region": region, "show": "all"}) }}">{{ row.id }}</a></td>
+                {% if params.group == 'subject' %}
+                    <td class="mp rightBorder subject" title="{{ row.subject }}"><a target="_blank" href="{{ path("aw_manager_manualparser_list", {"kind": kind, "subject": row.subject, "region": region}) }}">{{ row.subject[:70] }}{% if row.subject|length > 70 %}...{% endif %}</a></td>
+                    <td class="mp rightBorder subject" title="{{ row.subjectPattern }}">{{ row.subjectPattern }}</td>
+                {% endif %}
+                {% if params.group == 'from' %}
+                    <td class="mp rightBorder" title="{{ row.fromEmail }}"><a target="_blank" href="{{ path("aw_manager_manualparser_list", {"kind": kind, "from": row.fromEmail, "region": region}) }}">{{ row.fromEmail }}</a></td>
+                {% endif %}
+                <td class="mp rightBorder">{{ row.cnt }}</td>
+            </tr>
+        {% endfor %}
+    </table>
+    <div id='fader' style="display: none; padding-left: 50%; padding-top: 150px; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-color: white; -ms-row. \'progid:DXImageTransform.Microsoft.Alpha(Opacity=80)\'; row. alpha(opacity=80); opacity: 0.8; z-index: 100;">
+        <h3>Loading...</h3>
+    </div>
+{% endblock %}

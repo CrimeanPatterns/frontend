@@ -1,0 +1,64 @@
+services:
+  _defaults:
+    public: true
+    autowire: true
+    bind:
+      $businessHost: '%business_host%'
+      $host: '%host%'
+  _instanceof:
+    \AwardWallet\MainBundle\Security\OAuth\BaseOAuth:
+      tags: ['aw.oauth_provider']
+      shared: false
+
+  AwardWallet\MainBundle\Security\OAuth\:
+    resource: '../../Security/OAuth/*'
+    exclude: '../../Security/OAuth/OAuthCallbackHandler/{Result,OAuthCallbackHandler.php}'
+
+  AwardWallet\MainBundle\Security\OAuth\Factory:
+    arguments:
+      $providers: !tagged aw.oauth_provider
+  AwardWallet\MainBundle\Security\OAuth\GoogleOAuth:
+    arguments:
+      $clientId: '%google_client_id%'
+      $clientSecret: '%google_client_secret%'
+  AwardWallet\MainBundle\Security\OAuth\MicrosoftOAuth:
+    arguments:
+      $clientId: '%microsoft_client_id%'
+      $clientSecret: '%microsoft_client_secret%'
+  AwardWallet\MainBundle\Security\OAuth\YahooOAuth:
+    arguments:
+      $clientId: '%yahoo_client_id%'
+      $clientSecret: '%yahoo_client_secret%'
+  AwardWallet\MainBundle\Security\OAuth\AolOAuth:
+    arguments:
+      $clientId: '%aol_client_id%'
+      $clientSecret: '%aol_client_secret%'
+  AwardWallet\MainBundle\Security\OAuth\AppleOAuth:
+    arguments:
+      $clientId: '%apple_client_id%'
+      $privateKey: '%apple_private_key%'
+      $teamId: '%apple_team_id%'
+      $keyId: '%apple_key_id%'
+
+  aw.oauth.provider.apple_ios:
+    class: AwardWallet\MainBundle\Security\OAuth\AppleOAuth
+    shared: false
+    arguments:
+      $clientId: '%apple_ios_client_id%'
+      $privateKey: '%apple_private_key%'
+      $teamId: '%apple_team_id%'
+      $keyId: '%apple_key_id%'
+
+  AwardWallet\MainBundle\Security\OAuth\OAuthCallbackHandler\MobileOauthFactory:
+    arguments:
+      $mobileAppleOauth: "@aw.oauth.provider.apple_ios"
+
+  aw.oauth.callback_handler.mobile:
+    class: AwardWallet\MainBundle\Security\OAuth\OAuthCallbackHandler\OAuthCallbackHandler
+    arguments:
+      $oauthFactory: '@AwardWallet\MainBundle\Security\OAuth\OAuthCallbackHandler\MobileOauthFactory'
+
+  aw.oauth.callback_handler.desktop:
+    class: AwardWallet\MainBundle\Security\OAuth\OAuthCallbackHandler\OAuthCallbackHandler
+    arguments:
+      $oauthFactory: '@AwardWallet\MainBundle\Security\OAuth\Factory'

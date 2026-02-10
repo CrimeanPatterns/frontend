@@ -1,0 +1,33 @@
+{% set MAIN_BODY_CLASSES = {
+    'responsive': true,
+    'hide-footer': true
+}|merge(MAIN_BODY_CLASSES|default({})) %}
+
+{% extends "@AwardWalletMain/Layout/hidden_left_menu.html.twig" %}
+
+{% if form is defined %}
+    {% form_theme form with ['@AwardWalletMain/FormTheme/fields.html.twig'] %}
+{% endif %}
+
+{% block meta %}
+    {{ parent() }}
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0, viewport-fit=cover">
+{% endblock %}
+
+{% block before_header %}
+    <div class="fixed-header">
+        <div class="menu-button"></div>
+        <h1>Subscription</h1>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        require([
+            'lib/design', 'pages/billing'
+        ], function () {
+
+        });
+    </script>
+{% endblock %}

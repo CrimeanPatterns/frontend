@@ -1,0 +1,35 @@
+{% extends "@Module/Itinerary/Resources/templates/itinerary.html.twig" %}
+
+{% block title %}
+    {% if edit|default(false) %}
+        {{ 'flight.edit'|trans([], 'trips') }}
+    {% else %}
+        {{ 'flight.add'|trans([], 'trips') }}
+    {% endif %}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    {% if not webpack|default(false) %}
+        <script>
+            require(['pages/itinerary/flight/edit', 'lib/accountAutocomplete'], function () {})
+        </script>
+    {% else %}
+        {{ encore_entry_script_tags('flight', null, '_default', {'defer': true}) }}
+    {% endif %}
+{% endblock %}
+
+{% block main_form %}
+    {{- form_start(form, {
+        'attr': {
+            'data-files': files|json_encode,
+            'class': 'main-form',
+            'novalidate': 'true',
+            'id': form.vars.full_name
+        }
+    }) -}}
+    {{- form_widget(form, {'noSubmit': true}) -}}
+    {{ block('submit_button') }}
+    {{- form_end(form) -}}
+    <script id="segmentTemplate" type="text/plain">{{ form_row(form.segments.vars.prototype) }}</script>
+{% endblock %}

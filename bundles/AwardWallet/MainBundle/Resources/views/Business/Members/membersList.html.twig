@@ -1,0 +1,266 @@
+{% extends "@AwardWalletMain/Layout/business_default.html.twig" %}
+{% import "@AwardWalletMain/TwigMacros/new.html.twig" as macros %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        window.membersData = {{ membersData|json_encode|raw }};
+        require([
+            'pages/businessMembers/main',
+            'lib/design',
+            'lib/customizer'
+        ], function () {
+
+        });
+    </script>
+{% endblock %}
+
+{% block content %}
+    <div class="main-blk" data-ng-controller="businessMembersPageCtrl as membersCtrl">
+
+        <h1>{{ 'business.members.page_heading'|trans()|desc('Members') }}</h1>
+
+        <div class="main-blk-content">
+            <table class="main-table t-left member-list">
+                <thead>
+                <tr>
+                    <th></th>
+                    <th>
+                        <a data-ng-click="sortBy('Name')">
+                            {{ 'business.members.table_header.name'|trans()|desc('Name') }}
+                            <i data-ng-class="{'icon-silver-arrow-up': sort == '+Name', 'icon-silver-arrow-down': sort == '-Name'}"></i>
+                        </a>
+                    </th>
+                    <th>
+                        <a data-ng-click="sortBy('UserEmail')">
+                            {{ 'business.members.table_header.email'|trans()|desc('Email') }}
+                            <i data-ng-class="{'icon-silver-arrow-up': sort == '+UserEmail', 'icon-silver-arrow-down': sort == '-UserEmail'}"></i>
+                        </a>
+                    </th>
+                    <th>
+                        <a data-ng-click="sortBy('type')">
+                            {{ 'business.members.table_header.type'|trans()|desc('Type') }}
+                            <i data-ng-class="{'icon-silver-arrow-up': sort == '+type', 'icon-silver-arrow-down': sort == '-type'}"></i>
+                        </a>
+                    </th>
+                    <th>
+                        <a data-ng-click="sortBy('Programs')">
+                            {{ 'business.members.table_header.Programs'|trans()|desc('Programs') }}
+                            <i data-ng-class="{'icon-silver-arrow-up': sort == '+Programs', 'icon-silver-arrow-down': sort == '-Programs'}"></i>
+                        </a>
+                    </th>
+                    <th>
+                        <a data-ng-click="sortBy('Trips')">
+                            {{ 'business.members.table_header.Trips'|trans()|desc('Trips') }}
+                            <i data-ng-class="{'icon-silver-arrow-up': sort == '+Trips', 'icon-silver-arrow-down': sort == '-Trips'}"></i>
+                        </a>
+                    </th>
+                    <th>
+                        <a data-ng-click="sortBy('abRequests')">
+                            {{ 'business.members.table_header.abRequests'|trans()|desc('Booking Requests') }}
+                            <i data-ng-class="{'icon-silver-arrow-up': sort == '+abRequests', 'icon-silver-arrow-down': sort == '-abRequests'}"></i>
+                        </a>
+                    </th>
+                    <th>
+                        <a data-ng-click="sortBy('AccountLevel')">
+                            {{ 'award.account.list.column.status'|trans()|desc('Status') }}
+                            <i data-ng-class="{'icon-silver-arrow-up': sort == '+AccountLevel', 'icon-silver-arrow-down': sort == '-AccountLevel'}"></i>
+                        </a>
+                    </th>
+                    <th>
+                        <a data-ng-click="sortBy('KeepUpgraded')">
+                            {{ 'user.keep_upgraded'|trans()|desc('Keep Upgraded') }}
+                            <i data-ng-class="{'icon-silver-arrow-up': sort == '+KeepUpgraded', 'icon-silver-arrow-down': sort == '-KeepUpgraded'}"></i>
+                        </a>
+                    </th>
+                    <th></th>
+                </tr>
+                </thead>
+                <tbody data-ng-cloak>
+                <tr class="filter">
+                    <td class="person">
+                        <div></div>
+                    </td>
+
+                    <td class="name">
+                        <div>
+                            <input type="text" data-ng-model="memberName" ng-model-options="{ debounce: 500 }" autocomplete="off" spellcheck="false"/>
+                        </div>
+                    </td>
+
+                    <td class="email">
+                        <div>
+                            <input type="text" data-ng-model="memberEmail" ng-model-options="{ debounce: 500 }" autocomplete="off" spellcheck="false"/>
+                        </div>
+                    </td>
+
+                    <td class="type">
+                        <div>
+                            <div class="styled-select">
+                                <select data-ng-model="membersType">
+                                    <option value="" selected="selected">{{ 'business.members.table_filter.not_set'|trans()|desc('Not Set') }}</option>
+                                    <option value="2">{{ 'business.members.table_filter.not_connected'|trans()|desc('Not Connected') }}</option>
+                                    <option value="0">{{ 'business.members.table_filter.pending'|trans()|desc('Pending') }}</option>
+                                    <option value="1">{{ 'business.members.table_filter.connected'|trans()|desc('Connected') }}</option>
+                                </select>
+                            </div>
+                        </div>
+                    </td>
+
+                    <td class="programs">
+                        <div></div>
+                    </td>
+
+                    <td class="trips">
+                        <div></div>
+                    </td>
+
+                    <td class="booking-requests">
+                        <div></div>
+                    </td>
+
+                    <td class="user-status">
+                        <div></div>
+                    </td>
+
+                    <td class="keep-upgraded">
+                        <div></div>
+                    </td>
+
+                    <td class="t-right">
+                        <div>
+                            <a data-ng-href="#" data-ng-click="clearFilters()">
+                                {{ 'business.members.table_filter.clear_filters'|trans()|desc('Clear filters') }}
+                            </a>
+                        </div>
+                    </td>
+                </tr>
+
+                <tr data-ng-repeat="member in shown | page:(activePage*onPage):onPage" data-ng-if="shown.length > 0">
+                    <td class="person">
+                        <i data-ng-class="isAdmin(member)"></i>
+                    </td>
+                    <td class="name">
+                        <p data-ng-if="member.Programs"><a href="{{ url('aw_business_account_list') }}?agentId=[[ member.LinkUserAgentID ]]" data-ng-bind-html="member.Name | htmlencode | highlight:memberName:false:'green' | unsafe"></a></p>
+                        <p data-ng-if="!member.Programs" data-ng-bind-html="member.Name ? member.Name : 'N/A' | htmlencode | highlight:memberName:false:'green' | unsafe"></p>
+                    </td>
+                    <td class="type">
+                        <span data-ng-if="member.UserEmail" class="blue bold" data-ng-bind-html="member.UserEmail | htmlencode | highlight:memberEmail:false:'green' | unsafe"></span>
+                        <span data-ng-if="!member.UserEmail">{{ 'abbr.not_available'|trans() }}</span>
+                    </td>
+                    <td class="type">
+                        [[ type[member.type] ]]
+                    </td>
+                    <td class="programs">
+                        <a href="{{ url('aw_business_account_list') }}?agentId=[[ member.LinkUserAgentID ]]" data-ng-if="member.Programs > 0 || member.type == 2">[[ member.Programs ]]</a>
+                        <span data-ng-if="!member.Programs && member.type != 2">{{ 'abbr.not_available'|trans() }}</span>
+                    </td>
+                    <td class="trips">
+                        <a href="{{ url('aw_timeline') }}[[ member.LinkUserAgentID ]]?agent=[[member.LinkUserAgentID]]" data-ng-if="member.Trips || member.Trips === 0">[[ member.Trips ]]</a>
+                        <span data-ng-if="member.Trips === false"><i class="loader"></i></span>
+                        <span data-ng-if="member.Trips === ''">{{ 'abbr.not_available'|trans() }}</span>
+                    </td>
+                    <td class="booking-requests">
+                        <a href="{{ url('aw_booking_list_queue') }}?name_filter=[[member.Name.replace(' ', '+')]]&user_filter=[[ member.AgentID ]]"
+                           data-ng-if="member.abRequests">[[ member.abRequests ]]</a>
+                        <span data-ng-if="!member.abRequests">{{ 'abbr.not_available'|trans() }}</span>
+                    </td>
+
+                    <td class="user-status">
+                        <span data-ng-if="member.AccountLevel" data-ng-bind="awplus[member.AccountLevel]"></span>
+                        <span data-ng-if="!member.AccountLevel">{{ 'abbr.not_available'|trans() }}</span>
+                    </td>
+
+                    <td class="keep-upgraded">
+                        <span data-ng-if="member.AccountLevel" ng-bind="member.KeepUpgraded ? '{{ 'button.yes'|trans() }}' : '{{ 'button.no'|trans() }}' "></span>
+                        <span data-ng-if="!member.AccountLevel">{{ 'abbr.not_available'|trans() }}</span>
+                    </td>
+
+
+                    <td class="actions">
+                        <ul class="list-actions">
+
+                            <li data-ng-if="member.ClientID && member.type == '1' ">
+                                <a href="/members/connection/[[ member.UserAgentID ]]"
+                                   data-tip
+                                   title="{{ 'business.members.tooltip.edit' | trans() | desc('Edit') }}">
+                                    <i class="icon-edit"></i>
+                                </a>
+                            </li>
+
+                            <li data-ng-if=" ! member.ClientID && !member.InviteCodeID">
+                                <a href="/user/family/[[ member.UserAgentID ]]"
+                                   data-tip
+                                   title="{{ 'business.members.tooltip.edit' | trans() | desc('Edit') }}">
+                                    <i class="icon-edit"></i>
+                                </a>
+                            </li>
+
+                            <li data-ng-if=" ! member.ClientID && !member.InviteCodeID">
+                                <a data-ng-click="inviteFamilyMember(member)"
+                                   data-tip
+                                   title="{{ 'business.members.tooltip.invite' | trans() | desc('Invite') }}">
+                                    <i data-ng-class="{'loader': member.sending, 'icon-user-add': ! member.sent && !member.sending, 'icon-sent': member.sent && !member.sending }"></i>
+                                </a>
+                            </li>
+
+                            <li data-ng-if="(member.ClientID && member.IsApproved == '0') || member.InviteCodeID ">
+                                <a data-ng-click="sendReminder(member)"
+                                   data-tip
+                                   title="{{ 'business.members.tooltip.resend' | trans() | desc('Resend') }}">
+                                    <i data-ng-class="{'loader': member.sending, 'icon-user-update': ! member.sent && !member.sending, 'icon-sent': member.sent && !member.sending}"></i>
+                                </a>
+                            </li>
+
+                            {% if is_granted('USER_BUSINESS_ADMIN') %}
+                                <li>
+                                    <a data-ng-click="memberDisconnect(member, $index)"
+                                       data-tip
+                                       data-ng-attr-title="[[ member.ClientID && '{{ 'business.members.tooltip.disconnect' | trans() | desc('Disconnect') }}' || '{{ 'business.members.tooltip.delete' | trans() | desc('Delete') }}' ]]">
+                                        <i data-ng-class="{'icon-delete': !member.ClientID && !member.InviteCodeID, 'icon-pending': member.ClientID || member.InviteCodeID }"></i>
+                                    </a>
+                                </li>
+                            {% endif %}
+
+                        </ul>
+
+                    </td>
+                </tr>
+
+                </tbody>
+            </table>
+
+            {{ macros.drawSplashScreen() }}
+
+            <p data-ng-show="shown.length == 0" class="no-result" data-ng-cloak>
+                <i class="icon-warning-small"></i>
+                <span>
+                    {{ 'business.members.no_records_found'|trans()|desc('No records found that match your criteria') }}
+                    </span>
+            </p>
+
+        </div>
+
+        <ul class="pagination" data-ng-cloak data-ng-if="pages.length > 1">
+            <li data-ng-if="activePage - 5 > 0">
+                <a data-ng-click="setActivePage(0)"><</a>
+            </li>
+            <li data-ng-repeat="page in pages | page:(activePage - 5):11" data-ng-class="{'active': page == activePage}">
+                <a data-ng-click="setActivePage(page)">[[ page + 1 ]]</a>
+            </li>
+            <li data-ng-if="pages.length > 11 && activePage + 6 < pages.length">
+                <a data-ng-click="setActivePage(pages.length - 1)">></a>
+            </li>
+        </ul>
+
+        <div class="row-submit" data-ng-cloak>
+            <button class="btn-blue js-add-new-person">
+                {{ 'business.members.add_member'|trans()|desc('Add new member') }}
+            </button>
+        </div>
+
+
+    </div>
+
+
+{% endblock %}

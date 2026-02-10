@@ -1,0 +1,32 @@
+{# Issue #9687 #}
+
+{% extends popup is defined and popup ? "@AwardWalletMain/Offer/_offerPopup.html.twig" : "@AwardWalletMain/Offer/standard.html.twig" %}
+{% import '@AwardWalletMain/Offer/offerMacros.html.twig' as offerMacros %}
+{% import '@AwardWalletMain/TwigMacros/assets.html.twig' as assets %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    {{ encore_entry_link_tags('offer') }}
+    {{ encore_entry_link_tags('offers/newawmobileapp') }}
+    {% if popup is not defined %}
+        {{ assets.assets_form('css') }}
+    {% endif %}
+{% endblock %}
+
+
+{% block content %}
+    <div id="offer_wrap">
+        <div class="offer-mobile-app">
+            <div class="offer-mobile-app-item">
+                <div class="description">
+                    <h3>AwardWallet <br>has a mobile app <br>for iOS and Android!</h3>
+                    <p>Our mobile app works offline so that you can always have access to all of your account numbers and travel plans on the go even if there is no internet connectivity where you are. <br><br>
+                    Get it today from <br>
+                    <a class="app-store-btn" href="https://itunes.apple.com/us/app/awardwallet/id388442727?mt=8" target="_blank" rel="noopener noreferrer">iTunes</a><br>
+                    <a class="google-play-btn" href="https://play.google.com/store/apps/details?id=com.itlogy.awardwallet&feature=search_result" target="_blank" rel="noopener noreferrer">Google Play store</a>.</p>
+                </div>
+            </div>
+            <a href="/account/list.php?UserAgentID=All" class="offer_toaccount">Proceed to my account</a>
+        </div>
+    </div>
+{% endblock %}

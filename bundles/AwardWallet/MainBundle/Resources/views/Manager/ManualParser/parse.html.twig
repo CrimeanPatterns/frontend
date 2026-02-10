@@ -1,0 +1,354 @@
+{% set title = "Manual Parser" %}
+{% extends '@AwardWalletMain/Manager/layout.html.twig' %}
+{% block content %}
+    <link rel="stylesheet" type="text/css" href="/assets/awardwalletmain/css/manualParser.css?v=312">
+    <style type="text/css">
+        .wrapper{
+            position:absolute;
+            width:100%;
+            bottom:0;
+            top:50px; /* compensate #top height */
+        }
+        .left{
+            position:absolute;
+            height:100%;
+            width:430px;   /* See #right left value */
+            overflow:auto; /* make scrollable if content overflows */
+        }
+        .right{
+            position:absolute;
+            right:0;
+            left:430px; /* compensate #left width */
+            bottom:0;
+            height:100%;
+        }
+        .page{
+            position:absolute;
+            width:97%;
+            overflow-y:scroll;
+            top:1px;    /* header height */
+            bottom:1px; /* bottom height */
+        }
+        .header{
+            position:fixed;
+            width:100%;   /* (100% cause of fixed pos) */
+            height:1px;  /* see #page top value */
+        }
+        .footer{
+            position:fixed;
+            width:100%; /* (100% cause of fixed) */
+            bottom:0;
+            height:1px; /* see #page bottom value */
+        }
+    </style>
+    <script language="JavaScript" src="/assets/awardwalletmain/js/manualParser.js?v=312"></script>
+
+    <div class="wrapper">
+        <div class="left">
+            {% if email.kind == 1 %}
+                <div id="inputs">
+                    <label for='providerCode'>Provider Code</label>
+                    <select id='providerCode' onchange="parser.loadProperties(this.value);">
+                        <option value="">Select provider</option>
+                        {% for code in codes %}
+                            <option data-short="{{ code.ShortName }}" value="{{ code.Code }}">{{ code.Name }}</option>
+                        {% endfor %}
+                    </select>
+                    <input type='button' value='Junk mail' onclick='return parser.junkMail();'>
+                    <div class='mpbox'>
+                        <form name='properties' style="display: none;">
+                            <table class='properties'>
+                                <tr style='display: none;'>
+                                    <td>Email Type *</td>
+                                    <td><input id='email_type' type='text'></td>
+                                </tr>
+                                <tr class='custom_template' style="display: none;">
+                                    <td class='name'><input type='text'></td>
+                                    <td class='value'><input type='text'></td>
+                                    <td><input type='button' value="ok"></td>
+                                </tr>
+                                <tr class='balance property'>
+                                    <td class="name">Balance</td>
+                                    <td class="value"><input type='text' id='balance' data-kind='property' data-type="number" data-property='Balance'></td>
+                                    <td class="button" style="display: none;">
+                                    </td>
+                                </tr>
+                                <tr class='add_property' style='display: none;'>
+                                    <td>Add property</td>
+                                    <td>
+                                        <select id='add_property' onchange="if (this.value) $('input#add_property_button').show(); else $('input#add_property_button').hide();">
+                                            <option value="">Select property</option>
+                                            <option value="-1">Custom</option>
+                                        </select>
+                                    </td>
+                                    <td><input id='add_property_button' style="display: none;" type='button' value="+" onclick="return parser.addProperty();"></td>
+                                </tr>
+                            </table>
+                        </form>
+                    </div>
+                    <div class='it_buttons' style="display: none;">
+                        <input type='button' value="Add trip" onclick="return parser.addItinerary('trip');">
+                        <input type='button' value="Add hotel reservation" onclick="return parser.addItinerary('hotel');">
+                        <input type='button' value="Add car rental" onclick="return parser.addItinerary('rental');">
+                        <input type='button' value="Add restaurant" onclick="return parser.addItinerary('diner');">
+                    </div>
+                </div>
+                <input id='submit' type='button' value='Submit' onclick='return parser.submitForm();' style='font-size: large; width: 100px; display: none;'>
+            {% endif %}
+        </div>
+
+        <div class="right">
+            <div class="header"></div>
+            <div class="page">
+                <b>From: </b>{{ email.from }}<br>
+                <b>To: </b>{{ email.to }}<br>
+                <b>Subject: </b>{{ email.subject }}<br>
+                <b>Email date: </b>{{ email.date }}<br>
+                {% if attachments | length > 0 %}
+                    <select id="body_select">
+                        <option value="{{ path("aw_manager_manualparser_emailframe", { 'id': email.id }) }}">Body</option>
+                        {% for item in attachments %}
+                            <option {% if not item.enabled %}disabled{% endif %} value="{{ path("aw_manager_manualparser_emailframe", { 'id': email.id, 'a': item.index }) }}">{{ item.name }}</option>
+                        {% endfor %}
+                    </select>
+                {% endif %}
+                <div id='email_html'>
+                    <iframe style="width: 97%;height: 500px; resize: both;" src="{{ path("aw_manager_manualparser_emailframe", { 'id': email.id }) }}">
+                        Loading...
+                    </iframe>
+                {% if email.body is defined %}
+                    <input type='button' id='click_body' value='Show email source' onclick='return parser.clickBody();'>
+                    <div id='email_source' style='display: none;'>
+                        <textarea style='width: 97%; height: 500px;'>{{ email.body }}</textarea>
+                    </div>
+                {% else %}
+                    <input type="button" disabled value="Source unavailable">
+                {% endif %}
+                </div>
+            </div>
+            <div class="footer"></div>
+        </div>
+    </div>
+
+
+
+    <script type='text/javascript'>
+        var parser;
+        $(document).ready(function(){
+            parser = new manualParser();
+            parser.propertiesUrl = "{{ path("aw_manager_manualparser_properties", {}) }}";
+            parser.dateUrl = "{{ path("aw_manager_manualparser_date", {}) }}";
+            parser.rejectUrl = "{{ path("aw_manager_manualparser_reject", {"id": app.request.get('id')}) }}";
+            parser.submitUrl = "{{ path("aw_manager_manualparser_submit", {"id": app.request.get('id'), "region": region }) }}";
+            parser.listUrl = "{{ path("aw_manager_manualparser_list") }}";
+            $('#balance').one('keydown', function(){
+                if ($('#email_type').val().length == 0)
+                    $('#email_type').val('Statement');
+            });
+            {% if email.providerCode is defined %}
+            $('select#providerCode').val('{{ email.providerCode }}');
+            parser.loadProperties('{{ email.providerCode }}');
+            {% endif %}
+            {% if attachments | length > 0 %}
+                $('#body_select').change(function(e){
+                    $('#email_html iframe')[0].src = e.target.value;
+                });
+            {% endif %}
+        });
+
+    </script>
+
+    <div class='templates' style='display: none;'>
+        <div class='mpbox diner'>
+            <div class='it_header it_header_diner'>
+                Restaurant
+                <input type='button' value='-'>
+            </div>
+            <form class='it_diner'>
+                <table>
+                    <tr><td><input type='hidden' data-kind='diner_property' data-property='Kind' value='E'></td></tr>
+                    <tr class='watch_date'><td>Reservation Date</td><td><input type='text' data-kind='diner_property' data-property='ReservationDate' data-type="date"></td></tr>
+                    <tr class='date_result'><td colspan="2"></td></tr>
+                    <tr><td>Number *</td><td><input type='text' data-kind='diner_property' data-property='ConfNo' data-required='expected'><button onclick="$(this).parent('td').find('input').val('{{ unknownNumber }}'); return false;">?</button></td></tr>
+                    <tr><td>Event Name *</td><td><input type='text' data-kind='diner_property' data-property='Name' data-required='required'></td></tr>
+                    <tr class='watch_date'><td>Start Date *</td><td><input type='text' data-kind='diner_property' data-property='StartDate' data-type='date' data-required='required'></td></tr>
+                    <tr class='date_result'><td colspan="2"></td></tr>
+                    <tr class='watch_date'><td>End Date</td><td><input type='text' data-kind='diner_property' data-property='EndDate' data-type='date'></td></tr>
+                    <tr class='date_result'><td colspan="2"></td></tr>
+                    <tr><td>Address</td><td><textarea type='text' data-kind='diner_property' data-property='Address'></textarea></td></tr>
+                    <tr><td>Phone</td><td><input type='text' data-kind='diner_property' data-property='Phone'></td></tr>
+                    <tr><td>Person's Name</td><td><input type='text' data-kind='diner_property' data-property='DinerName'></td></tr>
+                    <tr><td>Number of guests</td><td><input type='text' data-kind='diner_property' data-property='Guests' data-type='number'></td></tr>
+                    <tr><td>Cost</td><td><input type='text' data-kind='diner_property' data-property='Cost' data-type='number'></td></tr>
+                    <tr><td>Taxes</td><td><input type='text' data-kind='diner_property' data-property='Tax' data-type='number'></td></tr>
+                    <tr><td>Total charge</td><td><input type='text' data-kind='diner_property' data-property='TotalCharge' data-type='number'></td></tr>
+                    <tr><td>Currency</td>
+                        <td><select data-kind='diner_property' data-property='Currency'>
+                                {% for cur in currency %}
+                                    <option value="{{ cur.Code }}">{{ cur.Name }}</option>
+                                {% endfor %}
+                            </select>
+                        </td>
+                    </tr>
+                    <tr><td>Status</td><td><input type='text' data-kind='diner_property' data-property='Status'></td></tr>
+                </table>
+            </form>
+        </div>
+        <div class='mpbox rental'>
+            <div class='it_header it_header_rental'>
+                Car rental
+                <input type='button' value='-'>
+            </div>
+            <form class='it_rental'>
+                <table>
+                    <tr><td><input type='hidden' data-kind='rental_property' data-property='Kind' value='L'></td></tr>
+                    <tr class='watch_date'><td>Reservation Date</td><td><input type='text' data-kind='rental_property' data-property='ReservationDate' data-type="date"></td></tr>
+                    <tr class='date_result'><td colspan="2"></td></tr>
+                    <tr><td>Number *</td><td><input type='text' data-kind='rental_property' data-property='Number' data-required='expected'><button onclick="$(this).parent('td').find('input').val('{{ unknownNumber }}'); return false;">?</button></td></tr>
+                    <tr class='watch_date'><td>Pickup Date *</td><td><input type='text' data-kind='rental_property' data-property='PickupDatetime' data-type='date' data-required='required'></td></tr>
+                    <tr class='date_result'><td colspan="2"></td></tr>
+                    <tr><td>Pickup Location *</td><td><textarea type='text' data-kind='rental_property' data-property='PickupLocation' data-required='required'></textarea></td></tr>
+                    <tr><td>Pickup Phone</td><td><input type='text' data-kind='rental_property' data-property='PickupPhone'></td></tr>
+                    <tr class='watch_date'><td>Dropoff Date *</td><td><input type='text' data-kind='rental_property' data-property='DropoffDatetime' data-type='date' data-required='required'></td></tr>
+                    <tr class='date_result'><td colspan="2"></td></tr>
+                    <tr><td>Dropoff Location *</td><td><textarea type='text' data-kind='rental_property' data-property='DropoffLocation' data-required='required'></textarea></td></tr>
+                    <tr><td>Dropoff Phone</td><td><input type='text' data-kind='rental_property' data-property='DropoffPhone'></td></tr>
+                    <tr><td>Renter Name *</td><td><input type='text' data-kind='rental_property' data-property='RenterName' data-required='required'></td></tr>
+                    <tr><td>Account Numbers</td><td><input type='text' data-kind='rental_property' data-property='AccountNumbers'></td></tr>
+                    <tr><td>Rental Company</td><td><input type='text' data-kind='rental_property' data-property='RentalCompany'></td></tr>
+                    <tr><td>Car Type</td><td><input type='text' data-kind='rental_property' data-property='CarType'></td></tr>
+                    <tr><td>Car Model</td><td><input type='text' data-kind='rental_property' data-property='CarModel'></td></tr>
+                    <tr><td>Taxes</td><td><input type='text' data-kind='rental_property' data-property='TotalTaxAmount' data-type='number'></td></tr>
+                    <tr><td>Total charge</td><td><input type='text' data-kind='rental_property' data-property='TotalCharge' data-type='number'></td></tr>
+                    <tr><td>Currency</td>
+                        <td><select data-kind='rental_property' data-property='Currency'>
+                                {% for cur in currency %}
+                                    <option value="{{ cur.Code }}">{{ cur.Name }}</option>
+                                {% endfor %}
+                            </select>
+                        </td>
+                    </tr>
+                    <tr><td>Status</td><td><input type='text' data-kind='rental_property' data-property='Status'></td></tr>
+                </table>
+            </form>
+        </div>
+        <div class='mpbox hotel'>
+            <div class='it_header it_header_hotel'>
+                Hotel reservation
+                <input type='button' value='-'>
+            </div>
+            <form class='it_hotel'>
+                <table>
+                    <tr><td><input type='hidden' data-kind='hotel_property' data-property='Kind' value='R'></td></tr>
+                    <tr class='watch_date'><td>Reservation Date</td><td><input type='text' data-kind='hotel_property' data-property='ReservationDate' data-type="date"></td></tr>
+                    <tr class='date_result'><td colspan="2"></td></tr>
+                    <tr><td>Confirmation Number *</td><td><input type='text' data-kind='hotel_property' data-property='ConfirmationNumber' data-required="expected"><button onclick="$(this).parent('td').find('input').val('{{ unknownNumber }}'); return false;">?</button></td></tr>
+                    <tr><td>Hotel Name *</td><td><input type='text' data-kind='hotel_property' data-property='HotelName' data-required="required"></td></tr>
+                    <tr><td>Address *</td><td><textarea data-kind='hotel_property' data-property='Address' data-required="required"></textarea></td></tr>
+                    <tr class='watch_date'><td>Check In Date *</td><td><input type='text' data-kind='hotel_property' data-property='CheckInDate' data-type='date' data-required="required"></td></tr>
+                    <tr class='date_result'><td colspan="2"></td></tr>
+                    <tr class='watch_date'><td>Check Out Date *</td><td><input type='text' data-kind='hotel_property' data-property='CheckOutDate' data-type='date' data-required="required"></td></tr>
+                    <tr class='date_result'><td colspan="2"></td></tr>
+                    <tr><td>Guest Names *</td><td rowspan="2"><textarea data-kind='hotel_property' data-property='GuestNames' data-required="required"></textarea></td></tr>
+                    <tr><td colspan="2" style="font-size: small; vertical-align: top;">1 name per line</td></tr>
+                    <tr><td>Account Numbers</td><td><input type='text' data-kind='hotel_property' data-property='AccountNumbers'></td></tr>
+                    <tr><td>Guests</td><td><input type='text' data-kind='hotel_property' data-property='Guests' data-type='number'></td></tr>
+                    <tr><td>Kids</td><td><input type='text' data-kind='hotel_property' data-property='Kids' data-type='number'></td></tr>
+                    <tr><td>Rooms</td><td><input type='text' data-kind='hotel_property' data-property='Rooms' data-type='number'></td></tr>
+                    <tr><td>Rate</td><td><input type='text' data-kind='hotel_property' data-property='Rate'></td></tr>
+                    <tr><td>Room type</td><td><input type='text' data-kind='hotel_property' data-property='RoomType'></td></tr>
+                    <tr><td>Cost</td><td><input type='text' data-kind='hotel_property' data-property='Cost' data-type='number'></td></tr>
+                    <tr><td>Taxes</td><td><input type='text' data-kind='hotel_property' data-property='Taxes' data-type='number'></td></tr>
+                    <tr><td>Total</td><td><input type='text' data-kind='hotel_property' data-property='Total' data-type='number'></td></tr>
+                    <tr><td>Currency</td>
+                        <td><select data-kind='hotel_property' data-property='Currency'>
+                                {% for cur in currency %}
+                                    <option value="{{ cur.Code }}">{{ cur.Name }}</option>
+                                {% endfor %}
+                            </select>
+                        </td>
+                    </tr>
+                    <tr><td>Phone</td><td><input type='text' data-kind='hotel_property' data-property='Phone'></td></tr>
+                    <tr><td>Status</td><td><input type='text' data-kind='hotel_property' data-property='Status'></td></tr>
+                    <tr><td>Cancellation Policy</td><td><textarea data-kind='hotel_property' data-property='CancellationPolicy'></textarea></td></tr>
+                </table>
+            </form>
+        </div>
+        <div class='mpbox trip'>
+            <div class='it_header it_header_trip'>
+                Trip itinerary
+                <input type='button' value='-'>
+            </div>
+            <form class='it_trip'>
+                <table>
+                    <tr><td><input type='hidden' data-kind='trip_property' data-property='Kind' value="T"></td></tr>
+                    <tr><td colspan="2"><select data-kind='trip_property' data-property='TripCategory'>
+                                {% for cat in categories %}
+                                    <option value="{{ cat.Code }}">{{ cat.Name }}</option>
+                                {% endfor %}
+                            </select></td></tr>
+                    <tr class='watch_date'><td>Reservation Date</td><td><input type='text' data-kind='trip_property' data-property='ReservationDate' data-type="date"></td></tr>
+                    <tr class='date_result'><td colspan="2"></td></tr>
+                    <tr><td>Record Locator *</td><td><input type='text' data-kind='trip_property' data-property='RecordLocator' data-required="expected"><button onclick="$(this).parent('td').find('input').val('{{ unknownNumber }}'); return false;">?</button></td></tr>
+                    <tr><td>Passengers *</td><td rowspan="2"><textarea data-kind='trip_property' data-property='Passengers' data-required="required"></textarea></td></tr>
+                    <tr><td colspan="2" style="font-size: small; vertical-align: top;">1 name per line</td></tr>
+                    <tr><td>Account Numbers</td><td><input type='text' data-kind='trip_property' data-property='AccountNumbers'></td></tr>
+                    <tr><td>Base Fare</td><td><input type='text' data-kind='trip_property' data-property='BaseFare' data-type="number"></td></tr>
+                    <tr><td>Tax</td><td><input type='text' data-kind='trip_property' data-property='Tax' data-type="number"></td></tr>
+                    <tr><td>Total</td><td><input type='text' data-kind='trip_property' data-property='TotalCharge' data-type="number"></td></tr>
+                    <tr><td>Currency</td>
+                        <td><select data-kind='rental_property' data-property='Currency'>
+                                {% for cur in currency %}
+                                    <option value="{{ cur.Code }}">{{ cur.Name }}</option>
+                                {% endfor %}
+                            </select>
+                        </td>
+                    </tr>
+                    <tr><td>Status</td><td><input type='text' data-kind='trip_property' data-property='Status'></td></tr>
+                </table>
+                <input type='button' class='add_segment' value='Add segment'>
+            </form>
+        </div>
+        <div class='mpbox segment'>
+            <div class='it_header it_header_segment'>
+                Trip segment
+                <input type='button' value='-'>
+            </div>
+            <form class='it_trip_segment'>
+                <table>
+                    <tr><td>Flight Number</td><td><input type='text' data-kind='segment_property' data-property='FlightNumber'></td></tr>
+                    <tr class='watch_date'><td>Dep Date *</td><td><input type='text' data-kind='segment_property' data-property='DepDate' data-type='date' data-required="required"></td></tr>
+                    <tr class='date_result'><td colspan="2"></td></tr>
+                    <tr><td>Dep Name *</td><td><input type='text' data-kind='segment_property' data-property='DepName' data-required="required"></td></tr>
+                    <tr><td>Dep Code *</td><td><input type='text' data-kind='segment_property' data-property='DepCode' data-required="required"><button onclick="$(this).parent('td').find('input').val('{{ unknownCode }}'); return false;">?</button></td></tr>
+                    <tr class='watch_date'><td>Arr Date *</td><td><input type='text' data-kind='segment_property' data-property='ArrDate' data-type='date' data-required="required"></td></tr>
+                    <tr class='date_result'><td colspan="2"></td></tr>
+                    <tr><td>Arr Name *</td><td><input type='text' data-kind='segment_property' data-property='ArrName' data-required="required"></td></tr>
+                    <tr><td>Arr Code *</td><td><input type='text' data-kind='segment_property' data-property='ArrCode' data-required="required"><button onclick="$(this).parent('td').find('input').val('{{ unknownCode }}'); return false;">?</button></td></tr>
+                    <tr><td>Airline Name</td><td><input type='text' data-kind='segment_property' data-property='AirlineName'></td></tr>
+                    <tr><td>Seats</td><td><input type='text' data-kind='segment_property' data-property='Seats'></td></tr>
+                    <tr><td>Aircraft</td><td><input type='text' data-kind='segment_property' data-property='Aircraft'></td></tr>
+                    <tr><td>Cabin</td><td><input type='text' data-kind='segment_property' data-property='Cabin'></td></tr>
+                    <tr><td>Booking Class</td><td><input type='text' data-kind='segment_property' data-property='BookingClass'></td></tr>
+                    <tr><td>Duration</td><td><input type='text' data-kind='segment_property' data-property='Duration'></td></tr>
+                </table>
+            </form>
+        </div>
+    </div>
+    <div id=popup>
+        <div id='errors'>
+            Following errors were found:
+            <ul></ul>
+        </div>
+        <div id='warnings'>
+            Non-critical errors were found:
+            <ul></ul>
+        </div>
+        <div id='text'></div>
+        <div id="popup_buttons">
+            <div id="popup_submit" onclick="return parser.popupAction();">Submit</div>
+            <div id="popup_cancel" onclick="return parser.cancelPopup();">Cancel</div>
+        </div>
+    </div>
+
+{% endblock %}

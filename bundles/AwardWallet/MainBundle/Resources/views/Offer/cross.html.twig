@@ -1,0 +1,86 @@
+{% extends popup is defined and popup ? "@AwardWalletMain/Offer/_offerPopup.html.twig" : "@AwardWalletMain/Offer/standard.html.twig" %}
+{% import '@AwardWalletMain/TwigMacros/common.html.twig' as interfaceMacros %}
+{% import '@AwardWalletMain/Offer/spgPopupData.html.twig' as spgMacros %}
+{% import '@AwardWalletMain/Offer/deltaPopupData.html.twig' as deltaMacros %}
+{% import '@AwardWalletMain/Offer/offerMacros.html.twig' as offerMacros %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    {{ encore_entry_link_tags('offer') }}
+    {{ encore_entry_link_tags('offers/cross') }}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        {{ offerMacros.jsOfferNo(_context, Code, OfferUserID, defaultRedirectLocation) }}
+        function offerAgreed() {
+            {% autoescape false %}
+            {% if (preview != 1) and (src != 1) %}
+            {% if vars.isLocalProd == false %}
+            $.post("{{ url('aw_offer_agree', { 'offerUserId': OfferUserID, 'agreed': '1' } ) }}");
+            {% endif %}
+            {% endif %}
+            {% endautoescape %}
+            showPopupWindow(document.getElementById('deltaPopupCrossover'), true);
+            return true;
+        }
+    </script>
+{% endblock %}
+
+{% block permanent %}
+    {{ parent() }}
+{% endblock %}
+
+{% block content %}
+    <div id="cross_wrap">
+        <div id="cross_bg">
+            <span id="cross_title">Take advantage of Crossover Rewards with SPG and Delta today!</span>
+
+            <div id="cross_plane">
+            </div>
+            <div id="cross_hotel">
+            </div>
+            <div id="cross_text1">
+                <span class="cross_largetext">SPG Platinum and Gold members</span> earn 1 Starpoint for every dollar
+                spent on eligible Delta flights. Plus, SPG Platinum members enjoy elite benefits when traveling with
+                Delta, such as priority check-in, Priority Boarding and first checked bag free.
+            </div>
+            <div id="cross_text2">
+                <span class="cross_largetext">SkyMiles Diamond, Platinum, Gold and Silver Medallion&reg; members</span>
+                earn 1 mile for every dollar spent on eligible room rates at over 1,100 Starwood hotels and resorts
+                globally. Plus, SkyMiles Diamond and Platinum Medallion members receive additional SPG benefits at
+                Starwood hotels and resorts &ndash; 4 p.m. late checkout, access to the SPG elite check-in line,
+                complimentary in-room Internet access and an upgrade to an enhanced room at check-in, when available.
+            </div>
+            {% if spgAccounts|length == 1 %}
+                <a target="_blank" href="{{ url('aw_account_redirect', {ID: spgAccounts[0].AccountID, step: 'crossover'}) }}">
+                    <div class="offer_btn" id="cross_registration" onclick='offerAgreed();'>
+                        Proceed to Registration
+                    </div>
+                </a>
+            {% else %}
+                <div class="offer_btn" id="cross_registration"
+                     onclick="showPopupWindow(document.getElementById('spgPopupCrossover'), true);">
+                    Proceed to Registration
+                </div>
+            {% endif %}
+        </div>
+        <div id="cross_bottom">
+            <div class="offer_declinekind" style = "margin-top: 0px" onclick="offerNo();">
+                Never show this ad again
+            </div>
+            <span id="cross_account"><a class="cross_a" href="/account/list.php?UserAgentID=All">Proceed to my
+                    Account</a></span>
+        </div>
+    </div>
+    <div class="offer_preload1">
+    </div>
+    <div class="offer_preload2">
+    </div>
+{% endblock %}
+
+{% block popups %}
+    {{ spgMacros.drawAccountsPopup(spgAccounts) }}
+    {{ deltaMacros.drawAccountsPopup(deltaAccounts) }}
+{% endblock %}

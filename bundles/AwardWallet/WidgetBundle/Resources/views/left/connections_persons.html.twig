@@ -1,0 +1,24 @@
+<div class="row">
+	<div class="heading silver">
+		<i class="icon-silver-arrow-down"></i>
+
+		<h3>{{ 'menu.header.connections.edit' | trans({}, 'menu') | desc('CONNECTIONS') }}</h3>
+		<ul>
+			<li>
+				<a href="{{ path('aw_user_connections') }}"
+				   class="add btn-light-white"
+				   data-role="tooltip"
+				   title="{{ 'menu.header.persons.manage' | trans({}, 'menu') | desc('Manage connected persons') }}">
+					<i class="icon-settings"></i>
+					{% if pendingCount is defined and pendingCount %}<span class="count-small">{{ pendingCount }}</span>{% endif %}
+				</a>
+			</li>
+			<li><a href="#" class="add btn-light-white" data-role="tooltip" title="{{ 'menu.header.persons.add-person' | trans({}, 'menu') | desc('Add another person') }}" id="add-person-btn"><i class="icon-add-dark"></i></a></li>
+		</ul>
+	</div>
+	<ul class="default">
+		{% for item in items %}
+			{{ widget_render(item) }}
+		{% endfor %}
+	</ul>
+</div>

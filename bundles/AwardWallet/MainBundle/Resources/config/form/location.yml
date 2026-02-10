@@ -1,0 +1,74 @@
+parameters:
+    aw.loyalty_location.max: 1000
+    aw.loyalty_location.max_tracked: 20
+    aw.loyalty_location.max_tracked.staff: 100
+    aw.loyalty_location.custom_radiuses: []
+
+services:
+    _defaults:
+        public: true
+
+    # Types
+    aw.mobile.loyalty_location:
+        public: true
+        class: AwardWallet\MobileBundle\Form\Type\LoyaltyLocationType
+        arguments:
+            - "@translator"
+            - "@aw.form.transformer.generic.loyalty_location"
+            - '@AwardWallet\MainBundle\Service\LoyaltyLocation'
+            - '@AwardWallet\MainBundle\Service\TrackedLocationsLimiter'
+        tags:
+            - { name: form.type}
+
+    aw.mobile.loyalty_location_list:
+        public: true
+        class: AwardWallet\MobileBundle\Form\Type\Profile\LoyaltyLocationListType
+        arguments:
+            - "@translator"
+            - '@AwardWallet\MainBundle\Service\LoyaltyLocation'
+            - '@AwardWallet\MainBundle\Service\TrackedLocationsLimiter'
+            - "@aw.mobile.url_transformer"
+            - '@AwardWallet\MainBundle\Form\Helper\MobileExtensionLoader'
+        tags:
+            - { name: form.type}
+
+    # Transformers
+    aw.form.transformer.generic.loyalty_location:
+        public: true
+        class: AwardWallet\MainBundle\Form\Transformer\LoyaltyLocationTransformer
+
+    # Handlers
+    aw.form.loyalty_location.subscriber.generic:
+        public: true
+        class: AwardWallet\MainBundle\Form\Handler\Subscriber\LoyaltyLocationGeneric
+        arguments:
+            - "@doctrine.orm.default_entity_manager"
+            - "@aw.form.handler_helper"
+            - "@aw.form.transformer.generic.loyalty_location"
+            - '@AwardWallet\MainBundle\Service\TrackedLocationsLimiter'
+            - "%aw.loyalty_location.custom_radiuses%"
+
+    aw.form.loyalty_location.handler.mobile:
+        public: true
+        parent: aw.form.generic_request_handler
+        calls:
+            - [setChannels, [["form.mobile", "form.generic.loyalty_location"]]]
+            - [addHandlerSubscriber, ["@aw.form.loyalty_location.subscriber.generic"]]
+            - [addHandlerSubscriber, ["@aw.form.subscriber.mobile.request_data_transformer"]]
+
+    aw.form.loyalty_location_list.subscriber.generic:
+        public: true
+        class: AwardWallet\MainBundle\Form\Handler\Subscriber\Profile\LoyaltyLocationListGeneric
+        arguments:
+            - "@doctrine.orm.default_entity_manager"
+            - "@aw.form.handler_helper"
+            - '@AwardWallet\MainBundle\Service\LoyaltyLocation'
+            - '@AwardWallet\MainBundle\Service\Cache\CacheManager'
+
+    aw.form.loyalty_location_list.handler.mobile:
+        public: true
+        parent: aw.form.generic_request_handler
+        calls:
+            - [setChannels, [["form.mobile", "form.generic.loyalty_location_list"]]]
+            - [addHandlerSubscriber, ["@aw.form.loyalty_location_list.subscriber.generic"]]
+            - [addHandlerSubscriber, ["@aw.form.subscriber.mobile.request_data_transformer"]]

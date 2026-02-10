@@ -1,0 +1,53 @@
+{% block checkbox_widget %}
+    <input type="checkbox" {{ block('widget_attributes') }}{% if value %} value="{{ value }}"{% endif %}{% if checked %} checked="checked"{% endif %} />
+{% endblock checkbox_widget %}
+
+{% block text_widget %}
+    <input type="text" {{ block('widget_attributes') }} {% if value %}value="{{ value }}"{% endif %} />
+{% endblock %}
+
+{% block email_widget %}
+    <input type="email" {{ block('widget_attributes') }} {% if value %}value="{{ value }}"{% endif %} />
+{% endblock %}
+
+{% block password_widget %}
+    <input type="password" {{ block('widget_attributes') }} {% if value %}value="{{ value }}"{% endif %} />
+{% endblock %}
+
+{% block form_errors %}
+    {% if errors|length %}
+        <div class="error">{{ errors[0].messageTemplate|trans({}, 'validators') }}</div>
+    {% endif %}
+{% endblock %}
+
+{% block repeated_row %}
+    {{ block('form_rows') }}
+{% endblock repeated_row %}
+
+{% block form_label %}
+    {% if label is empty %}
+        {% set label = name|humanize %}
+    {% endif %}
+    <label class="label" for="{{ id }}">{{ label|trans|raw }}{% if required %}<span class="required">*</span>{% endif %}</label>
+{% endblock %}
+
+{% block submit_widget %}
+    <div class="submit">
+        <button type="submit" class="btn-blue">Register</button>
+    </div>
+{% endblock %}
+
+{% block form_row %}
+    {% apply spaceless %}
+        <div class="row" {% if errors|length %}data-error="{{ errors[0].messageTemplate()|trans(errors[0].messageParameters, 'validators') }}"{% endif %}>
+            <div class="row-item">
+                {{ form_label(form) }}
+                <div class="input">
+                    <div class="input-item">
+                        {{ form_widget(form) }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% endapply %}
+{% endblock %}

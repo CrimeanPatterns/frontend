@@ -1,0 +1,233 @@
+{% set title = "RA Hot Sessions State" %}
+{% set contentTitle = "Hot Sessions State" %}
+{% extends '@AwardWalletMain/Manager/layout.html.twig' %}
+{% block content %}
+    <style>
+        table {
+            border: 1px solid #C7C4BF;
+            border-spacing: 0;
+            border-collapse: collapse;
+        }
+        table.detailsTable th.head {
+            background-color: whitesmoke;
+            font-weight: bold;
+            border-top: #D0D0D0 1px solid;
+            border-bottom: #D0D0D0 1px solid;
+            text-align: center;
+            padding: 5px;
+        }
+
+        td, th {
+            border: 1px solid #C7C4BF;
+            text-align: left;
+            padding: 3px;
+        }
+        .accrow.current {
+            background-color: #f5f5f5;
+        }
+        button.gray {
+            padding: 0;
+            padding-right: 2px;
+            background: none;
+            border: none;
+            color: gray;
+            cursor: pointer;
+            font-size: x-small;
+        }
+        table {
+            counter-reset: rowNumber;
+        }
+
+        table tbody tr {
+            counter-increment: rowNumber;
+        }
+
+        table tr td:first-child::before {
+            content: counter(rowNumber);
+            min-width: 1em;
+            margin-right: 0.5em;
+        }
+    </style>
+    <span style="float: right">sessions shown:&nbsp;<span id="shown_sessions"></span></span>
+    <span id="show_link" style="float: right; display: none; margin-right: 15pt;">Kibana logs:&nbsp;<a id="kibana_link" target="_blank">open</a></span>
+    <select onchange="checkCluster(this);">
+        {% for c in clustersList %}
+            <option value="{{ c }}" {% if cluster==c %}selected="selected"{% endif %}>{{ c }}</option>
+        {% endfor %}
+    </select>
+    <table class="detailsTable">
+        <thead>
+        <tr>
+            <th class="head">#</th>
+            <th class="head">id</th>
+            <th class="head">Provider</th>
+            <th class="head">Prefix</th>
+            <th class="head">AccountKey</th>
+            <th class="head" onclick="sortTable($('.detailsTable').get(0),4)" style="text-decoration: underline;">Start Date</th>
+            <th class="head" onclick="sortTable($('.detailsTable').get(0),5)" style="text-decoration: underline;">Last Used</th>
+            <th class="head">isLocked</th>
+            <th class="head">Action</th>
+        </tr>
+        <tr>
+            <th></th>
+            <th></th>
+            <th>
+                <select id="sel_provider">
+                    <option value="">ALL</option>
+                    {% for code in providers %}
+                        <option value="{{ code }}">{{ code }}</option>
+                    {% endfor %}
+                </select>
+            </th>
+            <th><input id="sel_prefix" title="enter and press enter"></th>
+            <th><input id="sel_account" title="enter and press enter"></th>
+            <th></th>
+            <th></th>
+            <th>
+                <select id="sel_locked">
+                    <option value="">ALL</option>
+                    <option value="true">true</option>
+                    <option value="false">false</option>
+                </select>
+            </th>
+            <th></th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for row in list %}
+            <tr id="{{ row.id }}" class="accrow {{ row.provider }} pref-{{ row.prefix }} acc-{{ row.accountKey }} locked-{{ row.isLocked ? 'true' : 'false' }}">
+                <td></td>
+                <td>{{ row.id }}</td>
+                <td>{{ row.provider }}</td>
+                <td>{{ row.prefix }}</td>
+                <td>{{ row.accountKey }}</td>
+                <td>{{ row.startDate|replace({'T':' '})|slice(0,19) }}</td>
+                <td>{{ row.lastUseDate|replace({'T':' '})|slice(0,19) }}</td>
+                <td>{{ row.isLocked ? 'true' : 'false' }}</td>
+                <td>
+                    <button class="gray" title="stop session" onclick="stopSession('{{ row.id }}');">stop</button>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    <script type="text/javascript">
+        function checkCluster(e) {
+            document.location = '{{ path('aw_manager_loyalty_hot_session') }}' + '?cluster=' + e.value;
+        }
+        function kibanaLink() {
+            var code = $('#sel_provider').get(0).value;
+
+            if (code)
+                $('#show_link').show();
+            else
+                $('#show_link').hide();
+            $('#kibana_link').attr('href',"https://kibana.awardwallet.com/app/discover#/?_g=(filters:!(),refreshInterval:(pause:!t,value:0),time:(from:now-12h,to:now))&_a=(columns:!(message,extra.provider),filters:!(('$state':(store:appState),meta:(alias:!n,disabled:!f,index:f7bcf3e0-1a67-11e9-8067-9bee5e3ddf43,key:extra.worker,negate:!f,params:(query:KeepActiveHotSession),type:phrase),query:(match_phrase:(extra.worker:KeepActiveHotSession))),('$state':(store:appState),meta:(alias:!n,disabled:!f,index:f7bcf3e0-1a67-11e9-8067-9bee5e3ddf43,key:extra.provider,negate:!f,params:(query:"+code+"),type:phrase),query:(match_phrase:(extra.provider:"+code+"))),('$state':(store:appState),meta:(alias:!n,disabled:!f,index:f7bcf3e0-1a67-11e9-8067-9bee5e3ddf43,key:message,negate:!f,params:(query:'logs%20uploaded%20to%25'),type:phrase),query:(match_phrase:(message:'logs%20uploaded%20to%25')))),index:f7bcf3e0-1a67-11e9-8067-9bee5e3ddf43,interval:auto,query:(language:kuery,query:'*'),sort:!())");
+        }
+        function setFilter() {
+            var code = $('#sel_provider').get(0).value;
+            var prefix = $('#sel_prefix').get(0).value;
+            var account = $('#sel_account').get(0).value;
+            var locked = $('#sel_locked').get(0).value;
+            localStorage.setItem('ra_hot_provider', code);
+            localStorage.setItem('ra_hot_prefix', prefix);
+            localStorage.setItem('ra_hot_account', account);
+            localStorage.setItem('ra_hot_locked', locked);
+
+            $('.accrow').hide();
+            var cl = '.accrow';
+            if (code)
+                cl += '.' + code;
+            if (account)
+                cl += '.acc-' + account;
+            if (prefix)
+                cl += '.pref-' + prefix;
+            if (locked)
+                cl += '.locked-' + locked;
+
+            $(cl).show();
+            $('#shown_sessions').html($('.accrow:visible').length);
+        }
+        function stopSession(id) {
+            $.ajax({
+                url: "{{ path('aw_manager_loyalty_hot_session_stop') }}",
+                type: "POST",
+                dataType: "json",
+                data: {
+                    id: id,
+                    cluster: '{{ cluster }}'
+                },
+                // async: true,
+                success: function () {
+                    $('#' + id).hide();
+                }
+            });
+        }
+        function sortTable(table, col)
+        {
+            toSortRows = $(table).find('tr').get();
+            resultRows = [];
+            $(toSortRows[0].cells).css('background', 'ghostwhite');
+            $(toSortRows[0].cells[col]).css('background', 'aliceblue');
+            resultRows.push(toSortRows[0]);
+            resultRows.push(toSortRows[1]);
+
+            toSortRows = toSortRows.slice(2);
+
+            // col=0;
+            let sortedRows = Array.from(toSortRows)
+                .sort((rowA, rowB) => {
+                    dataA = rowA.cells[col];
+                    dataB = rowB.cells[col];
+                    valA = dataA.innerHTML;
+                    valB = dataB.innerHTML;
+                    cond = (valA > valB);
+                    return (cond ? 1 : -1);
+                });
+
+            sortedRows.forEach(function (row) {
+                resultRows.push(row);
+            });
+
+            table.tBodies[0].append(...resultRows);
+        }
+        $(document).ready(function(){
+            $('#sel_provider').on('change', function(){
+                kibanaLink();
+                setFilter();
+            });
+            $('#sel_prefix').on('change', function(){
+                setFilter();
+            });
+            $('#sel_account').on('change', function(){
+                setFilter();
+            });
+            $('#sel_locked').on('change', function(){
+                setFilter();
+            });
+            $('.accrow').on('mouseenter', function(){
+                $('.accrow').removeClass('current');
+                $(this).addClass('current');
+            });
+
+            var code = localStorage.getItem('ra_hot_provider');
+            $('#sel_provider').get(0).value = code;
+            var prefix = localStorage.getItem('ra_hot_prefix');
+            $('#sel_prefix').get(0).value = prefix;
+            var account = localStorage.getItem('ra_hot_account');
+            $('#sel_account').get(0).value = account;
+            var locked = localStorage.getItem('ra_hot_locked');
+            $('#sel_locked').get(0).value = locked;
+            kibanaLink();
+            setFilter();
+            // reload page every 5 min
+            let timerId = setTimeout(function () {
+                window.location.reload();
+            }, 1000 * 60 * 5);
+        });
+
+        {%  if res is defined and res is not empty  %}
+        alert('{{ res }}');
+        {% endif %}
+    </script>
+{% endblock %}

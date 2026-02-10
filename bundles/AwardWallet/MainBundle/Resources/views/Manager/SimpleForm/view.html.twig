@@ -1,0 +1,13 @@
+{% extends '@AwardWalletMain/Manager/layout.html.twig' %}
+{% form_theme form with ['form_table_layout.html.twig'] %}
+
+{% block content %}
+    <h2>{{ description }}</h2>
+    <br/>
+    <form method="POST">
+        {{ form_errors(form) }}
+        {{ form_rest(form) }}
+        <br/><br/>
+    </form>
+
+{% endblock %}

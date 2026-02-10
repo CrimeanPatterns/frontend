@@ -1,0 +1,101 @@
+{% trans_default_domain "email" %}
+
+{% block content %}
+DTSTART;VALUE=DATE:{{ dateStart }}
+DTSTAMP:{{ dateCreate }}
+UID:{{ uid }}
+SUMMARY:{{ title|raw }}
+TRANSP:TRANSPARENT
+DESCRIPTION:{{ descr_text|raw }}
+{#X-ALT-DESC;FMTTYPE=text/html:{{ descr_html|raw }}#}
+{#{{ alarms|raw }}#}
+{% endblock content %}
+
+{% block alarms %}
+{% for days in daysBeforeAlarm %}
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:This is an event reminder
+TRIGGER:-P{{ days-1 }}DT12H0M0S
+END:VALARM
+{% endfor %}
+{% endblock alarms %}
+
+{% block subject %}{% apply spaceless %}{% autoescape false %}
+    {% import _self as macro %}
+    {% if account["Currency"] is defined
+        and account["ExpiringBalance"] is defined
+        and account["ExpiringBalanceRaw"] is defined
+        and account["ProgramName"] is defined
+    %}
+        {% if account["PointsExpire"] is defined %}
+            {{ 'balance_expiration.single-plural.subject'|trans({
+                '%count%': account["ExpiringBalanceRaw"].getValue(),
+                '%balance%': macro.draw(account["ExpiringBalance"].getValue(), false, _context),
+                '%programName%': macro.draw(account["ProgramName"].getValue(), false, _context),
+                '%currency%': macro.draw(account["Currency"].getValue(), false, _context),
+                '%date%': macro.draw(account["PointsExpire"].getValue(), false, _context)
+            }, 'email', lang)|desc('%balance% %programName% %currency% expires on %date%|%balance% %programName% %currency% expire on %date%') }}
+        {% else %}
+            {{ 'balance_expiration.today.single-plural.subject'|trans({
+                '%count%': account["ExpiringBalanceRaw"].getValue(),
+                '%balance%': macro.draw(account["ExpiringBalance"].getValue(), false, _context),
+                '%programName%': macro.draw(account["ProgramName"].getValue(), false, _context),
+                '%currency%': macro.draw(account["Currency"].getValue(), false, _context)
+            }, 'email', lang)|desc('%balance% %programName% %currency% expires today|%balance% %programName% %currency% expire today') }}
+        {% endif %}
+    {% else %}
+        {{ 'balance_expiration.subject'|trans({}, 'email', lang)|desc('Award program point expiration notice') }}
+    {% endif %}
+{% endautoescape %}{% endapply %}{% endblock subject %}
+
+{% block descr %}
+    {% import '@MailTemplate/CommonMacro.twig' as commonMacro %}
+    {% import _self as macro %}
+
+    {% for property in account %}
+        {% if property.isVisible() %}
+            {{ macro.draw(property.getName(), true, _context) }}: {{ macro.draw(property.getValue(), false, _context) }}\n
+        {% endif %}
+    {% endfor %}
+
+    {% if account.Note is defined %}
+        {{ macro.draw(account.Note.getName(), true, _context) }}: {{ macro.draw(account.Note.getValue(), true, _context) }}\n
+        {% if account.expirationNote is defined %}
+            {{ macro.draw(account.expirationNote.getValue(), true, _context) }}\n
+            {#{{ commonMacro.updateLinks(account.expirationNote.getValue(), {"font-size": "inherit"}) }}#}
+        {% endif %}
+    {% endif %}
+{% endblock descr %}
+
+{% macro draw(value, expanded, context) %}{% trim %}{% autoescape false %}
+    {% import _self as macro %}
+    {% import '@MailTemplate/CommonMacro.twig' as commonMacro %}
+
+    {% if value is instanceof('\\AwardWallet\\MainBundle\\Service\\Account\\Model\\ExpiredAccount\\Group') %}
+        {% for item in value.getItems() %}
+            {{ macro.draw(item, expanded, context) }}{% if not loop.last %}{{ value.getSeparator() }}{% endif %}
+        {% endfor %}
+    {% elseif value is instanceof('\\AwardWallet\\MainBundle\\Service\\Account\\Model\\ExpiredAccount\\Balance') %}
+        {{ value.getValue()|formatNumber(null, context.locale) }}
+    {% elseif value is instanceof('\\AwardWallet\\MainBundle\\Service\\Account\\Model\\ExpiredAccount\\Translatable') %}
+        {% if value.getCount() is not null %}
+            {% set v = value.getKey()|trans(value.getParameters()|merge({'%count%': value.getCount()}), value.getDomain(), context.lang) %}
+        {% else %}
+            {% set v = value.getKey()|trans(value.getParameters(), value.getDomain(), context.lang) %}
+        {% endif %}
+        {% if value.isEscape() %}{{ v }}{% else %}{{ commonMacro.updateLinks(v, {"font-size": "inherit"}) }}{% endif %}
+    {% elseif value is instanceof('\\AwardWallet\\MainBundle\\Service\\Account\\Model\\ExpiredAccount\\DateTimeAgo') %}
+        {% if expanded %}
+            {{ value|formatTimeAgo(true, true, false, context.locale) }} ({{ value|formatDatetime('long', 'none', context.locale) }})
+        {% else %}
+            {{ value|formatDatetime('long', 'none', context.locale) }}
+        {% endif %}
+    {% elseif value is instanceof('\\DateTime') %}
+        {{ value|formatDatetime('long', 'none', context.locale) }}
+    {% elseif value is instanceof('\\AwardWallet\\MainBundle\\Service\\Account\\Model\\ExpiredAccount\\Currency') %}
+        {{ value.value|entransChoice('plural', value.amount, {}, null, context.lang)|htmldecode }}
+    {% else %}
+        {{ value|htmldecode }}
+    {% endif %}
+{% endautoescape %}{% endtrim %}{% endmacro %}

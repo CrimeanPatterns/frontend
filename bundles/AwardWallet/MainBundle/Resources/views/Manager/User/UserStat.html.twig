@@ -1,0 +1,237 @@
+{% extends '@AwardWalletMain/Manager/layout.html.twig' %}
+
+{% block content %}
+    <style type="text/css">
+        h2 {
+            padding-left: 10px;
+        }
+
+        body {
+            padding: 0 !important;
+        }
+
+        #form {
+            display: inline-block;
+            width: 100%;
+            background: #eee;
+        }
+
+        .qs-form label {
+            cursor: pointer
+        }
+
+        .qs-filter-date label span {
+            display: inline-block;
+            width: 190px;
+        }
+
+        .tstat {
+            border-collapse: collapse;
+        }
+
+        .tstat tbody th {
+            text-align: left;
+            min-width: 300px;
+        }
+        .tstat tbody td {
+            min-width: 100px;
+            text-align: right;
+        }
+
+        .tstat th, .tstat td {
+            padding: 5px 10px;
+            border: solid 1px #ddd;
+        }
+
+        .tstat {
+            margin-right: 2rem;
+        }
+
+        .ustat-form-wrap {
+            width: 100%;
+            display: flex;
+            flex-wrap: wrap;
+        }
+
+        .ustat-form-wrap > div {
+            width: 33%;
+            min-width: 600px;
+        }
+
+        .select2-container {
+            width: calc(100% - 120px);
+        }
+
+        .btn {
+            padding: 5px 15px;
+            margin: 15px 5px;
+        }
+    </style>
+    <script>
+        $(document).ready(function() {
+            const $extForm = $('#extForm');
+
+            $('#choosePeriod').change(function() {
+                var dates = $(this).val().split("=");
+                $('input[name="dfrom"]', $extForm).val(dates[0]);
+                if (undefined !== dates[1])
+                    $('input[name="dto"]', $extForm).val(dates[1]);
+            });
+
+        });
+    </script>
+
+    <div id="form">
+        <div style="padding: 1rem;">
+            <form id="extForm" method="get" class="qs-form">
+                <div class="ustat-form-wrap">
+                    <div style="min-width:650px">
+                        <div class="qs-filter-date" style="padding: 5px 0;">
+                            <div style="width: 700px;"> User Creation Date:
+                                <label style="display: inline-block;padding-left:32px;">from
+                                    <input type="date" name="dfrom" value="{{ app.request.query.get('dfrom', '2000-01-01') }}" title="date from"></label>
+                                <label>to <input type="date" name="dto" value="{{ app.request.query.get('dto', '2050-01-01') }}" title="date to"></label> or
+                                <select id="choosePeriod">
+                                    {% for period in periods %}
+                                        <option value="{{ period.value }}">{{ period.label }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                        <div class="qs-filter-date" style="padding: 5px 0;">
+                            <label><span>Report Duration:</span>
+                                <input name="duration" type="number" value="{{ app.request.query.get('duration') }}"> </label>
+                            <br><sup>Number of days after signup for which earnings and other stats will be calculated</sup>
+                        </div>
+                        <div class="qs-filter-date" style="padding: 5px 0;">
+                            <label><span>Installed Mobile App:</span>
+                                <input name="isMobileApp" type="checkbox" value="1"{% if 1 == app.request.query.get('isMobileApp') %}checked{% endif %}>
+                            </label>
+                        </div>
+                        <div class="qs-filter-date" style="padding: 5px 0;"><label><span>Purchased AW Plus:</span>
+                                <input name="isPurchasedAwPlus" type="checkbox" value="1"{% if 1 == app.request.query.get('isPurchasedAwPlus') %}checked{% endif %}></label>
+                        </div>
+                        <div class="qs-filter-date" style="padding: 5px 0;">
+                            <label><span>Users:</span>
+                                <label><input type="radio" name="users" value="0"{% if app.request.query.get('users') > 2 or app.request.query.get('users') == 0 %} checked{% endif %}> All</label>
+                                <label><input type="radio" name="users" value="1"{% if app.request.query.get('users') == 1 %} checked{% endif %}> Only US</label>
+                                <label><input type="radio" name="users" value="2"{% if app.request.query.get('users') == 2 %} checked{% endif %}> Except US</label>
+                            </label>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="qs-filter-date" style="padding: 5px 0;">
+                            <label><span>Added "n" Loyalty Programs:</span>
+                                <input name="minPrograms" type="number" value="{{ app.request.query.get('minPrograms') }}" placeholder="min"> -
+                                <input name="maxPrograms" type="number" value="{{ app.request.query.get('maxPrograms') }}" placeholder="max"></label>
+                        </div>
+                        <div class="qs-filter-date" style="padding: 5px 0;"><label><span>Added "n" Travel Plans:</span>
+                                <input name="minTPlans" type="number" value="{{ app.request.query.get('minTPlans') }}" placeholder="min"> -
+                                <input name="maxTPlans" type="number" value="{{ app.request.query.get('maxTPlans') }}" placeholder="max"></label>
+                        </div>
+                        <div class="qs-filter-date" style="padding: 5px 0;"><label><span>Connected "n" Mailboxes:</span>
+                                <input name="minMailboxes" type="number" value="{{ app.request.query.get('minMailboxes') }}" placeholder="min"> -
+                                <input name="maxMailboxes" type="number" value="{{ app.request.query.get('maxMailboxes') }}" placeholder="max"></label>
+                        </div>
+                        <div class="qs-filter-date" style="padding: 5px 0;"><label><span>Generated "n" CC Clicks:</span>
+                                <input name="minCCClicks" type="number" value="{{ app.request.query.get('minCCClicks') }}" placeholder="min"> -
+                                <input name="maxCCClicks" type="number" value="{{ app.request.query.get('maxCCClicks') }}" placeholder="max"></label>
+                        </div>
+                        <div class="qs-filter-date" style="padding: 5px 0;">
+                            <label><span>Generated "n" CC Approvals:</span>
+                                <input name="minCCApprovals" type="number" value="{{ app.request.query.get('minCCApprovals') }}" placeholder="min"> -
+                                <input name="maxCCApprovals" type="number" value="{{ app.request.query.get('maxCCApprovals') }}" placeholder="max"></label>
+                        </div>
+                    </div>
+                    <div>
+                        <label style="padding-left:32px;width:100%;display: block;">
+                            <span>Base Lead:</span>
+                            <select id="baseLead" name="baseLead[]" title="ref - Description - (total registered users using link with ref=)" multiple>
+                                <option value=""></option>
+                                {% for lead in baseLeads %}
+                                    <option value="{{ lead.SiteAdID }}"{% if lead.SiteAdID == app.request.query.get('baseLead') %} selected{% endif %}>{{ lead.SiteAdID }} - {{ lead.Description }} - (total: {{ lead.usersCount|formatNumber }})</option>
+                                {% endfor %}
+                            </select>
+                        </label>
+                    </div>
+                    <div style="width:100%;min-width: 100%;padding: .5rem 0;">
+                        <button class="btn" type="submit" name="submit" value="default">Apply</button>
+                        <button class="btn" type="submit" name="submit" value="report_var2" style="margin-right: 2rem;float: right;">
+                            Get CSV Report (var2)
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        $(document).ready(function() {
+            $('#baseLead').select2();
+        });
+    </script>
+
+    {% if channel is not null %}
+        <h2>Results</h2>
+
+        <div style="display: flex;padding:10px;">
+            <div id="tstat1t">
+                <h3>Loading...</h3>
+                <table id="tstat1" class="table tstat">
+                    <thead></thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
+            <div id="tstat2t">
+                <table id="tstat2" class="table tstat">
+                    <thead></thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+
+        <script>
+            window.isSendedReport = false;
+            require(['centrifuge'], function(Centrifuge) {
+                const client = new Centrifuge({{ centrifuge_config | json_encode | raw }});
+                client.on('connect', function() {
+
+                    const onMessage = function onMessage(data) {
+                        if ('report' == data.data.type && false === window.isSendedReport) {
+                            location.replace(data.data.link);
+                            $('#tstat1t').text('Report complete');
+                            window.isSendedReport = true;
+                            return;
+                        }
+
+                        if ('table1' == data.data.type) {
+                            $('#tstat1t').html(data.data.html);
+                        }
+                        if ('table2' == data.data.type) {
+                            $('#tstat2t').html(data.data.html);
+                        }
+                    };
+
+                    const subscription = client.subscribe({{ channel | json_encode | raw }}, onMessage);
+                    subscription.history()
+                        .then(function(response) {
+
+                            $.each(response.data.reverse(), function(index, value) {
+                                onMessage(value);
+                            });
+
+                        }, function(err) {
+                            console.log('failed', err);
+                        });
+
+                });
+                client.connect();
+            });
+        </script>
+
+    {% endif %}
+
+{% endblock %}

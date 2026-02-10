@@ -1,0 +1,16 @@
+{% extends '@MailTemplate/Layout/Offer/row.twig' %}
+
+{% block content_row %}
+    <tr>
+        <td style="line-height:18px;font-size:14px; border: solid 1px #a6aab3;background:#fff;border-top:0;" class="email-white">
+            <!-- content -->
+            {% block content %}
+                {% block offer_content %}{% endblock offer_content %}
+                {% if blogpostsNewsletter is defined and blogpostsNewsletter is not empty %}
+                    {{ blogpostsNewsletter|raw }}
+                {% endif %}
+            {% endblock content %}
+            <!-- end -->
+        </td>
+    </tr>
+{% endblock content_row %}

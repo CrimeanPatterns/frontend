@@ -1,0 +1,40 @@
+{% import "@AwardWalletMain/TwigMacros/environment.html.twig" as environmentMacros %}
+{% extends app.user is not null? "@AwardWalletMain/Layout/common.html.twig" : "@AwardWalletMain/Layout/not_logged.html.twig" %}
+{% import "@AwardWalletMain/TwigMacros/recaptcha.html.twig" as recaptcha %}
+
+{% block meta %}
+    {{ parent() }}
+    <base href="{{ app.request.pathInfo | raw }}">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0, viewport-fit=cover">
+{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+
+    {{ encore_entry_link_tags('global-loader') }}
+    {{ encore_entry_link_tags('new-pages') }}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    {{ encore_entry_script_tags('trans/' ~ app.request.locale) }}
+    {{ encore_entry_script_tags('new-pages') }}
+{% endblock %}
+
+{% block body_left_widgets %}
+    {{ widget_render('left_top') }}
+    {{ widget_render('credit_card_tools_zone') }}
+    {{ widget_render('left_bottom') }}
+{% endblock %}
+
+{% block title %}Hotels{% endblock %}
+
+{% block content %}
+    {% include '@AwardWalletMain/Layout/global-loader.html.twig' %}
+    <div id="content" class="hotels__container" {{ environmentMacros.dataAttr({
+        'providers': providers,
+        'centrifuge': centrifuge,
+        'debug': debug,
+    }) }}></div>
+{% endblock %}

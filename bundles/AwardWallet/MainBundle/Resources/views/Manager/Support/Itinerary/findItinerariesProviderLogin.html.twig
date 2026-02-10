@@ -1,0 +1,26 @@
+<div class="box" id="row-login2">
+    {% if Login2.Login2choices|length > 0 %}
+        Login2:&nbsp;<label for="login2">{{ Login2.Login2Caption }}</label>
+        <select id="login2" >
+            {% for key,value in Login2.Login2choices %}
+                <option value='{{ value }}'>{{ key }}</option>
+            {% endfor %}
+        </select>
+    {% elseif not(Login2.Login2Caption is empty) %}
+        Login2:&nbsp;<label for="login2">{{ Login2.Login2Caption }}</label>
+        <input id="login2" >
+    {% endif %}
+</div>
+<div class="box" id="row-login3" style="display: none;">
+    {% if Login3.Login3choices|length > 0 %}
+        Login3:&nbsp;<label for="login3">{{ Login3.Login3Caption }}</label>
+        <select id="login3" >
+            {% for key,value in Login3.Login3choices %}
+                <option value='{{ value }}'>{{ key }}</option>
+            {% endfor %}
+        </select>
+    {% elseif not(Login3.Login3Caption is empty) %}
+        Login3:&nbsp;<label for="login3">{{ Login3.Login3Caption }}</label>
+        <input id="login3">
+    {% endif %}
+</div>

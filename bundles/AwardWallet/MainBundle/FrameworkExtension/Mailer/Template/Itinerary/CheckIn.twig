@@ -1,0 +1,120 @@
+{% extends '@MailTemplate/Itinerary/ReservationNew.twig' %}
+{% trans_default_domain "email" %}
+
+{% block subject %}{% apply spaceless %}{% autoescape false %}
+    {% set segment = itineraries[0].getSegments()[0] %}
+    {% set depDate = segment.getItinerary().getDepdate() %}
+    {% if segment.hasProperty('AirlineName') %}
+        {% set flightName = segment.getProperty('AirlineName').getFormattedNewValue(locale) %}
+        {% if segment.hasProperty('FlightNumber') and segment.getProperty('FlightNumber').getValue() != 'n/a' %}
+            {% set flightName = flightName ~ ' ' ~ segment.getProperty('FlightNumber').getFormattedNewValue(locale) %}
+        {% endif %}
+        {{ 'checkin.subject'|trans({
+            '%time%': depDate|formatDatetime('none', 'short', locale),
+            '%flightName%': flightName
+        }, 'email', lang)|desc('✈ %time%, %flightName%, online check-in reminder') }}
+    {% else %}
+        {{ 'checkin.subject.without-name'|trans({
+            '%time%': depDate|formatDatetime('none', 'short', locale)
+        }, 'email', lang)|desc('✈ %time%, online check-in reminder') }}
+    {% endif %}
+{% endautoescape %}{% endapply %}{% endblock subject %}
+
+{% block content %}
+    {% import '@MailTemplate/CommonMacro.twig' as commonMacro %}
+    {% import '@MailTemplate/ItineraryMacro.twig' as itineraryMacro %}
+
+    {% set segment = itineraries[0].getSegments()[0] %}
+    {% set tripSegment = segment.getItinerary() %}
+    {% set trip = tripSegment.getTripid() %}
+    {% set depDate = tripSegment.getDepdate() %}
+    {% set args = {
+        '%bold_on%': '<b style="color:#3d424d">',
+        '%bold_off%': '</b>',
+        '%from%': segment.getProperty('DepName').getFormattedNewValue(locale)|htmlencode,
+        '%to%': segment.getProperty('ArrName').getFormattedNewValue(locale)|htmlencode,
+        '%date%': depDate|formatDatetime('medium', 'none', locale)|htmlencode
+    } %}
+    {% if originalRecipient is defined and originalRecipient is not null %}
+        {% set text = 'checkin.to_ua'|trans(args|merge({
+            '%userName%': originalRecipient.fullname|htmlencode
+        }), 'email', lang)|desc('This is a reminder for %bold_on%%userName%%bold_off% to check-in for a flight from %bold_on%%from%%bold_off% to %bold_on%%to%%bold_off% on %bold_on%%date%%bold_off%. Please remember to double-check your departure time with your carrier.') %}
+    {% else %}
+        {% set text = 'checkin.to_user'|trans(args, 'email', lang)|desc('This is a reminder to check-in for a flight from %bold_on%%from%%bold_off% to %bold_on%%to%%bold_off% on %bold_on%%date%%bold_off%. Please remember to double-check your departure time with your carrier.') %}
+    {% endif %}
+
+    {{ itineraryMacro.departingEvent(depDate, args['%to%'], _context) }}
+    <br>
+
+    <div style="padding-left:10px">
+        {{ commonMacro.hello(user.firstname, _context) }}
+        {{ commonMacro.paragraph(text, _context, {escape: false}) }}
+    </div>
+
+
+    {% if user is instanceof("\\AwardWallet\\MainBundle\\Entity\\Usr") and (originalRecipient is not defined or originalRecipient is null) and trip.provider %}
+        {% set autologin = false %}
+        {% set account = trip.account %}
+        {% if account %}
+            {% if account.providerid and account.providerid.state != constant('PROVIDER_DISABLED') and account.providerid.canAutologin() %}
+                {% set autologin = true %}
+            {% endif %}
+        {% elseif trip.canAutologinWithConfNo() %}
+            {% set autologin = true %}
+        {% endif %}
+        {% if autologin %}
+            {% set link = baseUrl ~ path('aw_account_redirect', {
+                'itID': trip.id,
+                'table': 'T'
+            }) %}
+            {{ commonMacro.autologinLink(
+                link,
+                'checkin.autologin'|trans({
+                    '%bold_on%': '<b>',
+                    '%bold_off%': '</b>',
+                    '%displayName%': trip.provider.getDisplayName()|htmlencode
+                }, 'email', lang)|desc('You can use the following link to automatically log into the %bold_on%%displayName%%bold_off% website') ~ ':',
+                _context, {escape: false}
+            ) }}
+        {% endif %}
+    {% endif %}
+
+    {% for itinerary in itineraries %}
+        {% set ad_option = {} %}
+        {% if loop.first and advt is defined and advt is not null %}
+            {% set ad_option = {after_first_segment: commonMacro.ad(advt, _context)} %}
+        {% endif %}
+
+        {{ itineraryMacro.renderItinerary(itinerary, _context, {
+            'higher_property_style': 'color:#3d424d'
+        }|merge(ad_option|default({}))) }}
+    {% endfor %}
+
+    {% if noForeignFeesCards is defined and noForeignFeesCards is not null %}
+        {{ itineraryMacro.renderNoForeignFeesCards(noForeignFeesCards, baseUrl) }}
+    {% endif %}
+
+{% endblock content %}
+
+{% block unsubscribe %}
+    {% import '@MailTemplate/CommonMacro.twig' as commonMacro %}
+    {% if user is instanceof("\\AwardWallet\\MainBundle\\Entity\\Useragent") and (originalRecipient is not defined or originalRecipient is null) %}
+        {{ commonMacro.familyMemberUnsubscribeLink(user, unsubscribeLink, _context) }}
+    {% else %}
+        {% set copy = originalRecipient is defined and originalRecipient is not null %}
+        {% set hash = copy ? '#notConnectedMemberAlerts' : '#flightReminders' %}
+        {% set unsubscribe_link = commonMacro.link(unsubscribeLink ~ hash, '$$')|split('$$') %}
+        {% if copy %}
+            {{ 'unsubscribe.profile-checkbox'|trans({
+                '%link_on%': unsubscribe_link[0],
+                '%link_off%': unsubscribe_link[1],
+                '%option%': 'notification.not-connected-alerts'|trans({}, 'messages', lang)|htmlencode
+            }, 'email', lang)|raw }}
+        {% else %}
+            {{ 'unsubscribe.profile'|trans({
+                '%link_on%': unsubscribe_link[0],
+                '%link_off%': unsubscribe_link[1]
+            }, 'email', lang)|desc("If you do not want to receive these reminders you can %link_on%disable them in your profile%link_off%")|raw }}
+        {% endif %}
+    {% endif %}
+{% endblock unsubscribe %}

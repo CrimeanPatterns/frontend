@@ -1,0 +1,20 @@
+{% extends "@AwardWalletWidget/menu.html.twig" %}
+
+{% block item %}
+	{% if item is LinkWidget %}
+        <li class="header-menu-{{ key }}{%- if item.items is defined and item.items|length %} has-dropdown{% endif %}">
+            {{ widget_render(item, {class: 'btn-light-silver'}) }}
+            {%- if item.items is defined and item.items|length %}
+                <ul class="dropdown-submenu">{{ item.subMenu|raw }}</ul>
+            {% endif -%}
+        </li>
+    {% else %}
+        {{ widget_render(item) }}
+    {% endif %}
+{% endblock %}
+
+{% block menu %}
+    <ul class="nav-buttons">
+        {{ block('items') }}
+    </ul>
+{% endblock %}

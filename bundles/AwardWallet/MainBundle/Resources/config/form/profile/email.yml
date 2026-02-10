@@ -1,0 +1,47 @@
+services:
+    _defaults:
+        public: true
+
+    # Types
+
+    aw.mobile.profile_change_email:
+        public: true
+        class: AwardWallet\MobileBundle\Form\Type\Profile\ChangeEmailType
+        arguments: ["@aw.form.transformer.generic.profile_change_email", "@aw.api.versioning"]
+        tags:
+            - {name: form.type}
+
+    aw.desktop.profile_change_email:
+        public: true
+        class: AwardWallet\MainBundle\Form\Type\ChangeUserEmailType
+        arguments: ["@aw.form.transformer.generic.profile_change_email"]
+        tags:
+            - {name: form.type}
+
+    # Transformers
+
+    aw.form.transformer.generic.profile_change_email:
+        public: true
+        class: AwardWallet\MainBundle\Form\Transformer\Profile\ChangeEmailTransformer
+
+    # Handlers
+
+    aw.form.profile_email.subscriber.generic:
+        public: true
+        autowire: true
+        class: AwardWallet\MainBundle\Form\Handler\Subscriber\Profile\EmailGeneric
+
+    aw.form.profile_email.handler.desktop:
+        public: true
+        parent: aw.form.generic_request_handler
+        calls:
+            - [setChannel, ["form.generic.profile_email"]]
+            - [addHandlerSubscriber, ["@aw.form.profile_email.subscriber.generic"]]
+
+    aw.form.profile_email.handler.mobile:
+        public: true
+        parent: aw.form.generic_request_handler
+        calls:
+            - [setChannels, [["form.mobile", "form.generic.profile_email"]]]
+            - [addHandlerSubscriber, ["@aw.form.profile_email.subscriber.generic"]]
+            - [addHandlerSubscriber, ["@aw.form.subscriber.mobile.request_data_transformer"]]

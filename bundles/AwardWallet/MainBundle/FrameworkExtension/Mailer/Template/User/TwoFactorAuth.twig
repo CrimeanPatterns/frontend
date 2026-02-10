@@ -1,0 +1,39 @@
+{% extends '@MailTemplate/Layout/base.twig' %}
+
+{% block subject %}{% apply spaceless %}{% autoescape false %}
+    {% if disabled %}
+        {{ 'twofactor.disabled.subject'|trans({}, 'email', lang)|desc('AwardWallet two-factor authentication disabled') }}
+    {% else %}
+        {{ 'twofactor.enabled.subject'|trans({}, 'email', lang)|desc('AwardWallet two-factor authentication enabled') }}
+    {% endif %}
+{% endautoescape %}{% endapply %}{% endblock subject %}
+
+{% block content %}
+    {% import '@MailTemplate/CommonMacro.twig' as commonMacro %}
+
+    {{ commonMacro.hello(user.firstname, _context) }}
+
+    {% if not disabled %}
+        {{ commonMacro.paragraph(
+            'twofactor.twofactor-enabled'|trans({}, 'email', lang)|desc("
+                This email confirms that you have enabled two-factor authentication on your AwardWallet account. Please print out or write down the recovery key that was given to you at the time of the set up. When you lose your phone or get your Google Authenticator
+                app deleted (and yes, sooner or later this will happen) the ONLY way for you to get into your account would be to use this recovery key. If you don't keep this recovery key you will, sooner or later, lose access to your AwardWallet profile as phones and tablets
+                don't last forever.
+            "), _context
+        ) }}
+    {% else %}
+        {{ commonMacro.paragraph(
+            'twofactor.twofactor-disable'|trans({}, 'email', lang)|desc("
+                This email confirms that two-factor authentication has been removed from your AwardWallet account.
+            "), _context
+        ) }}
+        {{ commonMacro.paragraph(
+            'twofactor.twofactor-disable.recommend'|trans({}, 'email', lang)|desc("
+                We strongly recommend you setting it back up by following this link:
+            "), _context
+        ) }}
+
+        {% set link = baseUrl ~ path('aw_profile_settings') %}
+        {{ commonMacro.dottedLink(link, link, _context) }}
+    {% endif %}
+{% endblock %}

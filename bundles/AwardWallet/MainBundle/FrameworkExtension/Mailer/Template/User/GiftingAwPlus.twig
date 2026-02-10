@@ -1,0 +1,206 @@
+{% extends '@MailTemplate/Layout/gift.twig' %}
+{% trans_default_domain "email" %}
+
+{% block subject %}{% apply spaceless %}{% autoescape false %}
+    You’ve just been given a year of AwardWallet Plus!
+{% endautoescape %}{% endapply %}{% endblock subject %}
+
+{% block content %}
+	<script>
+		function render(data) {
+			if ('' === data.message) {
+				document.getElementById('givingMessageRow').style.display = 'none';
+			} else {
+				document.getElementById('givingMessageRow').style.display = 'table-row';
+				document.getElementById('givingMessage').innerHTML = data.message;
+			}
+		}
+	</script>
+	<table cellpadding="0" cellspacing="0" border="0" width="100%">
+		<tr>
+			<td background="{{ baseImagesPath }}/gift/image-background.png" bgcolor="#4682c3" valign="top">
+				<!--[if gte mso 9]>
+				<v:rect xmlns:v="urn:schemas-microsoft-com:vml" fill="true" stroke="false" style="mso-width-percent:1000;">
+					<v:fill type="tile" src="{{ baseImagesPath }}/gift/image-background.png" color="#4682c3" />
+					<v:textbox style="mso-fit-shape-to-text:true" inset="0,0,0,0">
+				<![endif]-->
+				<table cellpadding="0" cellspacing="0" border="0" width="100%">
+					<tr>
+						<td>
+							<img src="{{ baseImagesPath }}/gift/image-ribbon-bow.png" width="335" height="95" style="vertical-align: top; border: 0">
+						</td>
+					</tr>
+					<tr>
+						<td style="padding: 5px 20px">
+							<table cellpadding="0" cellspacing="0" border="0" width="100%">
+								<tr>
+									<td>
+										<table cellpadding="0" cellspacing="0" border="0" width="100%" style="background: #fff; border-radius: 5px; overflow: hidden" class="email-silver">
+											<tr>
+												<td style="padding: 15px; font-size: 16px; color: #535457; line-height: 1.4" class="white-text">
+													{{ 'giver-gifted-awplus-year'|trans({
+														'%givingName%' : '<span id="givingName1">'~  givingName ~'</span>'
+													})|desc('%givingName% just gifted you a year of AwardWallet Plus; this is a gift that keeps on giving as we monitor all of your loyalty programs throughout the year and alert you before your points or miles expire.')|raw }}
+												</td>
+											</tr>
+											<tr id="givingMessageRow" {% if message is not defined or message is empty %}style="display: none;"{% endif %}>
+												<td style="padding: 15px; font-size: 16px; color: #535457; line-height: 1.4; background: #f4f4f5" class="email-silver">
+													<table cellpadding="0" cellspacing="0" border="0" width="100%">
+														<tr>
+															<td style="font-size: 15px; color: #535457; padding-bottom: 10px; border-bottom: 1px solid #e3e4e6; text-transform: uppercase" class="white-text">
+																{{ 'giver-left-following-msg'|trans({
+																	'%givingName%': '<span id="givingName2">'~ givingName ~'</span>'
+																})|desc('%givingName% left the following message for you')|raw }}:
+															</td>
+														</tr>
+														<tr>
+															<td style="padding-top: 10px">
+																<span id="givingMessage">{{ message|raw }}</span>
+															</td>
+														</tr>
+													</table>
+												</td>
+											</tr>
+										</table>
+									</td>
+								</tr>
+								<tr>
+									<td style="padding: 10px 0"></td>
+								</tr>
+								<tr>
+									<td>
+										<table cellpadding="0" cellspacing="0" border="0" width="100%" style="background: #fff; border-radius: 5px; overflow: hidden" class="email-silver">
+											<tr>
+												<td style="padding: 15px">
+													<table cellpadding="0" cellspacing="0" border="0" width="100%">
+														<tr>
+															<td style="font-size: 15px; color: #535457; padding-bottom: 10px; border-bottom: 1px solid #e3e4e6" class="white-text; text-transform: uppercase">{{ 'what-you-get-with-subscription'|trans|desc('Here is what you get with this subscription') }}:</td>
+														</tr>
+														<tr>
+															<td>
+																<table cellpadding="0" cellspacing="0" border="0" width="100%">
+																	<tr>
+																		<td style="padding-top: 10px" valign="top" width="20">
+																			<img src="{{ baseImagesPath }}/gift/icon-1.png" width="20" height="20" style="vertical-align: top; border: 0">
+																		</td>
+																		<td style="font-size: 16px; color: #535457; line-height: 1.4; padding-left: 10px; padding-top: 10px" class="white-text" valign="top">
+																			{{ 'display-all-known-expiration-dates'|trans|desc('Display all known expiration dates of your miles or points') }}
+																		</td>
+																	</tr>
+																	<tr>
+																		<td style="padding-top: 10px" valign="top" width="20">
+																			<img src="{{ baseImagesPath }}/gift/icon-2.png" width="20" height="20" style="vertical-align: top; border: 0">
+																		</td>
+																		<td style="font-size: 16px; color: #535457; line-height: 1.4; padding-left: 10px; padding-top: 10px" class="white-text" valign="top">
+																			{{ 'do-unlimited-account-updates'|trans|desc('Do unlimited account updates anytime you need') }}
+																		</td>
+																	</tr>
+																	<tr>
+																		<td style="padding-top: 10px" valign="top" width="20">
+																			<img src="{{ baseImagesPath }}/gift/icon-3.png" width="20" height="20" style="vertical-align: top; border: 0">
+																		</td>
+																		<td style="font-size: 16px; color: #535457; line-height: 1.4; padding-left: 10px; padding-top: 10px" class="white-text" valign="top">
+																			{{ 'export-balances-into-formats'|trans|desc('Export award balances into Excel or PDF formats') }}
+																		</td>
+																	</tr>
+																	<tr>
+																		<td style="padding-top: 10px" valign="top" width="20">
+																			<img src="{{ baseImagesPath }}/gift/icon-4.png" width="20" height="20" style="vertical-align: top; border: 0">
+																		</td>
+																		<td style="font-size: 16px; color: #535457; line-height: 1.4; padding-left: 10px; padding-top: 10px" class="white-text" valign="top">
+																			{{ 'account-updates-in-parallel'|trans|desc('Account updates happen in parallel (up to 5X faster)') }}
+																		</td>
+																	</tr>
+																	<tr>
+																		<td style="padding-top: 10px" valign="top" width="20">
+																			<img src="{{ baseImagesPath }}/gift/icon-5.png" width="20" height="20" style="vertical-align: top; border: 0">
+																		</td>
+																		<td style="font-size: 16px; color: #535457; line-height: 1.4; padding-left: 10px; padding-top: 10px" class="white-text" valign="top">
+																			{{ 'display-history-transactions'|trans|desc('Display historical transactions for some of your loyalty accounts') }}
+																		</td>
+																	</tr>
+																	<tr>
+																		<td style="padding-top: 10px" valign="top" width="20">
+																			<img src="{{ baseImagesPath }}/gift/icon-6.png" width="20" height="20" style="vertical-align: top; border: 0">
+																		</td>
+																		<td style="font-size: 16px; color: #535457; line-height: 1.4; padding-left: 10px; padding-top: 10px" class="white-text" valign="top">
+																			{{ 'display-extra-reward-properties'|trans|desc('Display extra reward account properties') }}
+																		</td>
+																	</tr>
+																	<tr>
+																		<td style="padding-top: 10px" valign="top" width="20">
+																			<img src="{{ baseImagesPath }}/gift/icon-7.png" width="20" height="20" style="vertical-align: top; border: 0">
+																		</td>
+																		<td style="font-size: 16px; color: #535457; line-height: 1.4; padding-left: 10px; padding-top: 10px" class="white-text" valign="top">
+																			{{ 'view-travel-summary-reports'|trans|desc('View your travel summary reports') }}
+																		</td>
+																	</tr>
+																</table>
+															</td>
+														</tr>
+														{% if previewMode is not defined or previewMode is empty %}
+														<tr>
+															<td style="padding: 25px 0;">
+																<table width="100%" cellpadding="0" border="0" cellspacing="0">
+																	<tr>
+																		<td style="text-align: center"><a href="{{ path('aw_home') }}" style="background: #125da3; display: inline-block; padding: 10px 35px; color: #fff; text-decoration: none; font-size: 15px">{{ 'proceed-to-aw-account'|trans|desc('Proceed to Your AwardWallet Account') }}</a></td>
+																	</tr>
+																</table>
+															</td>
+														</tr>
+														{% endif %}
+														<tr>
+															<td>
+																{% set restore_user = null %}
+									                            {% if previewMode is empty and user is defined and user is instanceof('\\AwardWallet\\MainBundle\\Entity\\Usr') %}
+									                                {% set restore_user = user %}
+									                            {% endif %}
+																{% block restore_row %}
+					                                                {% if restore_user is defined and restore_user %}
+					                                                    {% block restore_text %}
+					                                                        {% import '@MailTemplate/CommonMacro.twig' as commonMacro %}
+
+					                                                        {% set restore_link = baseUrl ~ path('aw_users_restore_plain', {username: restore_user.username|base64encode}) %}
+					                                                        {% set textLink = commonMacro.link(restore_link, '$$')|split('$$') %}
+					                                                        <table width="100%" cellpadding="0" border="0" cellspacing="0" style="margin-top: 15px">
+					                                                            <tr>
+					                                                                <td style="padding:10px;border:1px solid #ddd; background:#fcfcfc;" class="email-silver">
+					                                                                    <span style="line-height:22px;color:#535457;font-size:16px;display:block">
+					                                                                        {{ 'restore_description_v2'|trans({
+					                                                                            '%link_on%': textLink[0],
+					                                                                            '%link_off%': textLink[1]
+					                                                                        }, 'email', lang)|desc('%link_on%Click here%link_off% if you don\'t know your username or password. If the link doesn\'t work, please copy/paste this into your browser:')|raw }}
+					                                                                    </span>
+					                                                                    {{ commonMacro.dottedLink(restore_link, restore_link, _context) }}
+					                                                                </td>
+					                                                            </tr>
+					                                                        </table>
+					                                                    {% endblock restore_text %}
+					                                                {% endif %}
+					                                            {% endblock restore_row %}
+															</td>
+														</tr>
+													</table>
+												</td>
+											</tr>
+										</table>
+									</td>
+								</tr>
+							</table>
+						</td>
+					</tr>
+					<tr>
+						<td align="right">
+							<img src="{{ baseImagesPath }}/gift/image-ribbon.png" width="285" height="80" style="vertical-align: top; border: 0">
+						</td>
+					</tr>
+				</table>
+				<!--[if gte mso 9]>
+					</v:textbox>
+				</v:rect>
+				<![endif]-->
+			</td>
+		</tr>
+	</table>
+
+{% endblock content %}

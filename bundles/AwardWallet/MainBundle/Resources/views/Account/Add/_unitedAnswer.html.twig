@@ -1,0 +1,48 @@
+{% block _account_united_row %}
+    {% apply spaceless %}
+        {% set attr2 = block('widget_attributes') %}
+        <div class="row">
+            <div class="row-item">
+                <label>{{ label|trans|raw }}</label>
+                <div class="input">
+                    <div class="input-item">
+                        <div class="styled-select inline-select">
+                            <div>
+                            <select {{ block('widget_attributes') }}{% if multiple %} multiple="multiple"{% endif %}>
+                                <option value="">{{ 'question.select'|trans|desc('Select question') }}</option>
+                            </select>
+                            </div>
+                        </div>
+                        <div class="styled-select inline-select">
+                            <div>
+                            <select {% autoescape false %}{{ attr2|raw|replace({'unitedquest':'unitedanswer', 'answers-q':'answers-a'}) }}{% endautoescape %}>
+                                <option value="">{{ 'question.select-answer'|trans|desc('Select your answer') }}</option>
+                            </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="info">
+                <div class="info-icon"></div>
+                <div class="info-description"><p></p></div>
+            </div>
+            <div class="error-message">
+                <div class="warning"><i class="icon-warning-small"></i></div>
+                <div class="error-message-description">{{ 'notblank'|trans({}, 'validators') }}</div>
+            </div>
+        </div>
+    {% endapply %}
+{% endblock %}
+
+{% block _account_unitedquest1_row %}{{ block('_account_united_row') }}{% endblock %}
+{% block _account_unitedquest2_row %}{{ block('_account_united_row') }}{% endblock %}
+{% block _account_unitedquest3_row %}{{ block('_account_united_row') }}{% endblock %}
+{% block _account_unitedquest4_row %}{{ block('_account_united_row') }}{% endblock %}
+{% block _account_unitedquest5_row %}{{ block('_account_united_row') }}{% endblock %}
+
+{% block _account_unitedanswer1_row %}{% endblock %}
+{% block _account_unitedanswer2_row %}{% endblock %}
+{% block _account_unitedanswer3_row %}{% endblock %}
+{% block _account_unitedanswer4_row %}{% endblock %}
+{% block _account_unitedanswer5_row %}{% endblock %}

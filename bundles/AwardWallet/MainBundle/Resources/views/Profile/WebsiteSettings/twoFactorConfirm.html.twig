@@ -1,0 +1,26 @@
+{% form_theme form with ['@AwardWalletMain/FormTheme/fields.html.twig'] %}
+{% extends "@AwardWalletMain/Layout/profile.html.twig" %}
+
+{% block title %}{{ 'two-factor.confirm.title'|trans|desc("Setup almost complete") }}{% endblock %}
+
+{% block content %}
+    <div class="main-blk shortened">
+        <h1>{{ 'two-factor.confirm.title'|trans|desc("Setup almost complete") }}</h1>
+        <div class="main-blk-content">
+            <p>{{ 'two-factor.confirm.instruction'|trans|desc('You are awesome! You just made your AwardWallet profile bulletproof, but you are not done yet, there is one last, <strong>very important</strong> step. Please save this recovery key:')|raw }}</p>
+            <p class="t-center code"><strong>{{ recoverCode }}</strong></p>
+            <p>{{ 'two-factor.confirm.instruction2'|trans|desc('When you lose your phone or get your Google Authenticator app deleted (and yes, sooner or later this will happen) the ONLY way for you to get into your account would be to use this recovery key. If you don\'t keep this recovery key you will, sooner or later, lose access to your AwardWallet profile as phones and tablets don\'t last forever.')|raw }}</p>
+        </div>
+        <form class="main-form spinnerable"
+              action="{{ path('aw_profile_2factor_confirm') }}"
+              method="post"
+        >
+            {{ form_rest(form) }}
+            <div class="row-submit">
+                <button type="submit" class="btn-blue">
+                    {{ 'complete_setup'|trans|desc('Complete Setup') }}
+                </button>
+            </div>
+        </form>
+    </div>
+{% endblock %}

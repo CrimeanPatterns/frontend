@@ -1,0 +1,56 @@
+{% set title = "Check spam filters" %}
+{% extends '@AwardWalletMain/Manager/layout.html.twig' %}
+{% block content %}
+    <link href="{{ asset('assets/awardwalletmain/css/manualParser.css') }}" rel="stylesheet" type="text/css" media="all" />
+    <script type="application/javascript">
+        $('document').ready(function(){
+        	$('.show-example').click(function(e){
+        		$('tr[data-for-id="' + $(e.srcElement).attr('data-id') + '"]').show();
+        		return false;
+            });
+        });
+    </script>
+    <a href="{{ path("aw_manager_manualparser_filters", {}) }}">< Filters</a>
+    {% if dry %}
+        <p>Following {{ rows | length }} spam filters will be <b>deleted</b></p>
+        <form method="post"><input type="submit" value="OK"></form>
+        <table class="mp_table" cellspacing="0" cellpadding="0" width="98%">
+            <tr class="caption">
+                <td class="mp bothBorder">ID</td>
+                <td class="mp rightBorder">Subject filter</td>
+                <td class="mp rightBorder">From filter</td>
+                <td class="mp rightBorder">Reason</td>
+            </tr>
+            {% for row in rows %}
+                <tr class='list_row'>
+                    <td class="mp bothBorder">{{ row.row.ID }}</td>
+                    <td class="mp rightBorder subject" title="{{ row.row.Subject }}">{{ row.row.Subject[:70] }}{% if row.row.Subject|length > 70 %}...{% endif %}</td>
+                    <td class="mp rightBorder">{{ row.row.FromEmail }}</td>
+                    <td class="mp rightBorder">
+                        {% if row.reason ==  "empty" %}
+                            Filter is empty
+                        {% elseif row.reason == "useless" %}
+                            There are no emails matching this filter
+                        {% elseif row.reason == "success" %}
+                            There are emails marked as 'parsed' that match this filter. <a href="#" class="show-example" data-id="{{ row.row.ID }}">Show</a>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% if row.reason == "success" %}
+                {% for email in row.example %}
+                    <tr class='list_row parsed' data-for-id="{{ row.row.ID }}" style="display: none;">
+                        <td class="mp bothBorder">{{ email.ID }}</td>
+                        <td nowrap class="mp rightBorder subject"
+                            title="{{ email.Subject }}">{{ email.Subject[:70] }}{% if email.Subject|length > 70 %}...{% endif %}</td>
+                        <td nowrap class="mp rightBorder from"
+                            title="{{ email.FromEmail }}">{{ email.FromEmail[:70] }}{% if email.FromEmail|length > 70 %}...{% endif %}</td>
+                        <td class="mp rightBorder"></td>
+                    </tr>
+                {% endfor %}
+                {% endif %}
+            {% endfor %}
+        </table>
+    {% else %}
+        <p>{{ rows | length }} filters were deleted</p>
+    {% endif %}
+{% endblock %}

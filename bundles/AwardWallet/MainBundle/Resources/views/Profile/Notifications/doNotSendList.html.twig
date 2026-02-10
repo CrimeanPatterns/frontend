@@ -1,0 +1,55 @@
+{% extends app.user is not null ? "@AwardWalletMain/Layout/profile.html.twig" : "@AwardWalletMain/Layout/not_logged.html.twig" %}
+
+{% block title %}
+    {{ 'unsubscribe.title'|trans|desc('Add Email to Do Not Send List') }}
+{% endblock %}
+
+{% block meta %}
+    {{ parent() }}
+    <meta name="robots" content="noindex,nofollow"/>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        require([
+            'lib/design'
+        ], function($){
+
+        });
+    </script>
+{% endblock %}
+
+{% block content %}
+    {% form_theme form with ['@AwardWalletMain/FormTheme/fields.html.twig'] %}
+
+    <div class="main-blk shortened">
+        <h1>{{ 'unsubscribe.title'|trans|desc('Add Email to Do Not Send List') }}</h1>
+        <div class="main-blk-content">
+            <p>{{ 'unsubscribe.desc'|trans|desc('At AwardWallet.com we too hate spam. We apologize for any inconvenience we have caused you. Please enter your email address below and we will be sure to exclude it from any further communications from AwardWallet.com.') }}</p>
+            <p>{{ 'unsubscribe.note'|trans|desc('Note: If you have an account on AwardWallet.com you can modify your email preferences by logging on and clicking on My Account link at the top of the page.') }}</p>
+            <p>{{ 'unsubscribe.address'|trans({'%address%': constant('EMAIL_PHYSICAL_ADDRESS_PLAIN'), '%contactUs%': url('aw_contactus_index')})|desc('If you have any questions or concerns, you can contact us via <a target="_blank" href="%contactUs%">this page</a> or send snail mail to: <b>%address%</b>')|raw }}</p>
+
+            {% if success %}
+                <div class="success-message">
+                    <i class="icon-green-check-b"></i>
+                    <p>{{ 'unsubscribe.success'|trans({'%email%': data.email})|desc('The email address "%email%" has been submitted to our Do Not Send list') }}</p>
+                </div>
+            {% endif %}
+        </div>
+
+        {% if not success %}
+            <form action="" method="post" class="main-form">
+                <div class="main-form-item">
+                    {% for field in form %}
+                        {{ form_row(field) }}
+                    {% endfor %}
+                </div>
+                <div class="row-submit">
+                    <button type="submit" class="btn-blue">{{ 'form.button.submit'|trans }}</button>
+                </div>
+                {{ form_rest(form) }}
+            </form>
+        {% endif %}
+    </div>
+{% endblock %}

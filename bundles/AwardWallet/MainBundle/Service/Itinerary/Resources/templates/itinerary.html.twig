@@ -1,0 +1,35 @@
+{% form_theme form with ['form_div_layout.html.twig', '@AwardWalletMain/FormTheme/fields.html.twig', '@Module/Itinerary/Resources/templates/fields.html.twig'] %}
+{% extends "@AwardWalletMain/Layout/trips.html.twig" %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    {{ encore_entry_link_tags('itinerary-edit') }}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    {{ encore_entry_script_tags('trans/' ~ app.request.locale) }}
+    {{ encore_entry_script_tags('itinerary-edit') }}
+{% endblock %}
+
+{% block content %}
+    <div class="main-blk">
+        <h1>{{ block('title') }}</h1>
+
+        {% block main_form %}{% endblock %}
+    </div>
+{% endblock content %}
+
+{% block submit_button %}
+    <div class="row-submit">
+        <div class="row-submit-item">
+            <button type="submit" class="btn-blue">
+                {% if edit|default(false) %}
+                    {{ 'form.button.save'|trans({}, 'messages') }}
+                {% else %}
+                    {{ 'create'|trans({}, 'trips') }}
+                {% endif %}
+            </button>
+        </div>
+    </div>
+{% endblock submit_button %}

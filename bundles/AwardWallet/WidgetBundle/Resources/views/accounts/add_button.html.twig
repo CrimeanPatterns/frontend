@@ -1,0 +1,9 @@
+<div class="add-new-program">
+    <a href="{{ path('aw_select_provider') }}" class="btn-blue" tabindex="698">{{ 'menu.button.add-account' | trans({}, 'menu') | desc('Add Award Program to Track') }}</a>
+</div>
+
+{% if showPopup and not webpack|default(false) %}
+    <script>
+        require(['pages/hasPendingDialog']);
+    </script>
+{% endif %}

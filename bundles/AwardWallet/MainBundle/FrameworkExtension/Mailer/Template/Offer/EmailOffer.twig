@@ -1,0 +1,28 @@
+{% extends '@MailTemplate/Layout/Offer/'~ layout ~'.twig' %}
+{% trans_default_domain "email" %}
+
+{% block subject %}{% apply spaceless %}{% autoescape false %}
+    {{ subject|raw }}
+{% endautoescape %}{% endapply %}{% endblock subject %}
+
+{% block headerLogoWrapper %}
+    {% if logo is empty %}
+        {{ parent() }}
+    {% else %}
+        {{ logo|raw }}
+    {% endif %}
+{% endblock %}
+
+{% block offer_content %}
+    {{ body|raw }}
+{% endblock offer_content %}
+
+{% block headStyle %}
+    {{ parent() }}
+    {{ head|raw }}
+{% endblock headStyle %}
+
+{% block bodyStyle %}
+    {{ parent() }}
+    {{ style|raw }}
+{% endblock bodyStyle %}

@@ -1,0 +1,201 @@
+{% extends "@Module/EnhancedAdmin/Template/layout.html.twig" %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    {{ encore_entry_link_tags('page-manager/list') }}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    {{ encore_entry_script_tags('page-manager/list', null, '_default', {'defer': true}) }}
+{% endblock %}
+
+{% block content %}
+    {% import _self as macro %}
+
+    {% set primaryField = config.PrimaryField %}
+    <div class="container-fluid">
+        <h1>{{ title }}</h1>
+
+        {{ config.BeforeListHtml|default('')|raw }}
+        {{ macro.pagination(config, totals, maxPage) }}
+
+        <table id="entity-list" {{ macro.drawAttrs(config.TableAttrs) }} {{ macro.drawAttrs({
+            'data-config-page': config.Page,
+            'data-config-page-size': config.PageSize,
+            'data-config-sort1-field': config.Sort1.Field.Property,
+            'data-config-sort1-direction': config.Sort1.Asc ? 'asc' : 'desc'
+        }) }}>
+            <thead {{ macro.drawAttrs(config.TableHeaderAttrs) }}>
+            <tr>
+                {% for field in config.Fields %}
+                    <th {{ macro.drawAttrs(field.ColumnAttrs) }}>
+                        {% if field.Sortable %}
+                            {% set sorted = field.Property == config.Sort1.Field.Property %}
+                            {% set newDirection = sorted ? (config.Sort1.Asc ? 'desc' : 'asc') : 'asc' %}
+
+                            <a href="#" data-sort-field="{{ field.Property }}" data-sort-direction="{{ newDirection }}">
+                                {{ field.Label }}
+                                {% if sorted %}
+                                    <span class="sort-icon{{ config.Sort1.Asc == false ? ' desc' : '' }}"></span>
+                                {% endif %}
+                            </a>
+                        {% else %}
+                            {{ field.Label }}
+                        {% endif %}
+                    </th>
+                {% endfor %}
+            </tr>
+            </thead>
+            <tbody>
+            {% for item in items %}
+                <tr data-primary-key="{{ macro.rawValue(primaryField, accessor.value(item, primaryField.Property)) }}">
+                    {% for field in config.Fields %}
+                        {% if accessor.isReadable(item, field.Property) %}
+                            {% set rawValue = accessor.value(item, field.Property) %}
+                        {% else %}
+                            {% set rawValue = '' %}
+                        {% endif %}
+
+                        {% if field.AutoFormat and not field.Primary %}
+                            {% set formattedValue = macro.formatValue(field, rawValue) %}
+                        {% else %}
+                            {% set formattedValue = rawValue %}
+                        {% endif %}
+
+                        {% if field.Mapper %}
+                            {% set mappedValue = closure(field.Mapper, [rawValue, formattedValue, item]) %}
+                        {% else %}
+                            {% set mappedValue = formattedValue %}
+                        {% endif %}
+
+                        {% if field.Custom %}
+                            <td>
+                                {% if field.MappedHtml %}
+                                    {{ mappedValue|raw }}
+                                {% else %}
+                                    {{ mappedValue }}
+                                {% endif %}
+                            </td>
+                        {% else %}
+                            <td data-raw-value="{{ macro.rawValue(field, rawValue) }}">
+                                {% if field.MappedHtml %}
+                                    {{ mappedValue|raw }}
+                                {% else %}
+                                    {{ mappedValue }}
+                                {% endif %}
+                            </td>
+                        {% endif %}
+                    {% endfor %}
+                </tr>
+            {% else %}
+                <tr>
+                    <td colspan="{{ config.Fields|length }}">
+                        <div class="alert alert-info">
+                            No items found
+                        </div>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+
+        {{ macro.pagination(config, totals, maxPage) }}
+        {{ config.AfterListHtml|default('')|raw }}
+    </div>
+{% endblock %}
+
+{% macro formatValue(field, rawValue) %}{% trim %}
+    {% if field is instanceof('\\AwardWallet\\MainBundle\\Service\\EnhancedAdmin\\ListConfig\\DateField') %}
+        {{ rawValue|formatDatetime(field.Format, 'none') }}
+    {% elseif field is instanceof('\\AwardWallet\\MainBundle\\Service\\EnhancedAdmin\\ListConfig\\DateTimeField') %}
+        {{ rawValue|formatDatetime(field.DateFormat, field.TimeFormat) }}
+    {% elseif field is instanceof('\\AwardWallet\\MainBundle\\Service\\EnhancedAdmin\\ListConfig\\IntegerField') %}
+        {{ rawValue|formatNumber }}
+    {% elseif field is instanceof('\\AwardWallet\\MainBundle\\Service\\EnhancedAdmin\\ListConfig\\FloatField') %}
+        {{ rawValue|formatNumber(field.Precision) }}
+    {% elseif field is instanceof('\\AwardWallet\\MainBundle\\Service\\EnhancedAdmin\\ListConfig\\CurrencyField') %}
+        {{ rawValue|formatCurrency(field.CurrencyCode, field.Round) }}
+    {% elseif field is instanceof('\\AwardWallet\\MainBundle\\Service\\EnhancedAdmin\\ListConfig\\BooleanField') %}
+        {% if rawValue %}Yes{% else %}No{% endif %}
+    {% else %}
+        {{ rawValue }}
+    {% endif %}
+{% endtrim %}{% endmacro %}
+
+{% macro rawValue(field, rawValue) %}{% trim %}
+    {% if field is instanceof('\\AwardWallet\\MainBundle\\Service\\EnhancedAdmin\\ListConfig\\DateField') %}
+        {{ rawValue|date('c') }}
+    {% elseif field is instanceof('\\AwardWallet\\MainBundle\\Service\\EnhancedAdmin\\ListConfig\\DateTimeField') %}
+        {{ rawValue|date('c') }}
+    {% elseif field is instanceof('\\AwardWallet\\MainBundle\\Service\\EnhancedAdmin\\ListConfig\\BooleanField') %}
+        {% if rawValue %}1{% else %}0{% endif %}
+    {% else %}
+        {{ rawValue }}
+    {% endif %}
+{% endtrim %}{% endmacro %}
+
+{% macro drawAttrs(attrs) %}{% trim %}
+    {%- for attrname, attrvalue in attrs -%}
+        {{- " " -}}
+        {%- if attrvalue is typeof('string') -%}
+            {{ attrname }}="{{ attrvalue|e('html_attr') }}"
+        {%- elseif attrvalue is not same as(false) and attrvalue is not null -%}
+            {{ attrname }}="{{ attrvalue|json_encode|e('html_attr') }}"
+        {%- endif -%}
+    {%- endfor -%}
+{% endtrim %}{% endmacro %}
+
+{% macro pagination(config, totals, maxPage) %}
+    <div class="row justify-content-between">
+        <div class="form-group col-md-6">
+            <label for="results-per-page">Results per page</label>
+            <select id="results-per-page" class="form-control form-control-sm col-md-2" data-set-page-size>
+                {% for option in config.PagesSizes %}
+                    <option value="{{ option }}" {% if option == config.PageSize %}selected{% endif %}>{{ option }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="col-md-6 text-right">
+            <div>
+                Total items: {{ totals }}
+            </div>
+            <div>
+                <nav aria-label="pagination">
+                    <ul class="pagination pagination-sm justify-content-end">
+                        {% set startPage = config.Page - 1 %}
+                        {% set endPage = config.Page + 1 %}
+
+                        {% if startPage < 1 %}
+                            {% set startPage = 1 %}
+                            {% set endPage = 3 %}
+                        {% endif %}
+
+                        {% if endPage > maxPage %}
+                            {% set startPage = maxPage - 2 %}
+                            {% set endPage = maxPage %}
+                        {% endif %}
+
+                        {% if startPage > 1 %}
+                            <li class="page-item">
+                                <a class="page-link" href="#" data-set-page="1">1</a>
+                            </li>
+                        {% endif %}
+
+                        {% for page in startPage..endPage %}
+                            <li class="page-item {% if page == config.Page %}active{% endif %}">
+                                <a class="page-link" href="#" data-set-page="{{ page }}">{{ page }}</a>
+                            </li>
+                        {% endfor %}
+
+                        {% if endPage < maxPage %}
+                            <li class="page-item">
+                                <a class="page-link" href="#" data-set-page="{{ maxPage }}">{{ maxPage }}</a>
+                            </li>
+                        {% endif %}
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </div>
+{% endmacro %}

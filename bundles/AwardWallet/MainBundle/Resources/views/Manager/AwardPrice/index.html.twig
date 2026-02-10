@@ -1,0 +1,484 @@
+{% set title = "Award Price" %}
+{% set contentTitle = "Award Price" %}
+{% if inputValue.daysBeforeDepMin is defined %}
+    {% set minDays = inputValue.daysBeforeDepMin %}
+{% else %}
+    {% set minDays = '' %}
+{% endif %}
+{% if inputValue.daysBeforeDepMax is defined %}
+    {% set maxDays = inputValue.daysBeforeDepMax %}
+{% else %}
+    {% set maxDays = '' %}
+{% endif %}
+{% if inputValue.fileName is defined %}
+    {% set fileName = inputValue.fileName %}
+{% else %}
+    {% set fileName = '' %}
+{% endif %}
+{% if inputValue.searchDate1 is defined %}
+    {% set searchDate1 = inputValue.searchDate1 %}
+{% else %}
+    {% set searchDate1 = '' %}
+{% endif %}
+{% if inputValue.searchDate2 is defined %}
+    {% set searchDate2 = inputValue.searchDate2 %}
+{% else %}
+    {% set searchDate2 = '' %}
+{% endif %}
+{% if inputValue.travelDate1 is defined %}
+    {% set travelDate1 = inputValue.travelDate1 %}
+{% else %}
+    {% set travelDate1 = '' %}
+{% endif %}
+{% if inputValue.travelDate2 is defined %}
+    {% set travelDate2 = inputValue.travelDate2 %}
+{% else %}
+    {% set travelDate2 = '' %}
+{% endif %}
+{% use '@AwardWalletMain/FormTheme/oldFields.html.twig' %}
+{% extends '@AwardWalletMain/Manager/layout.html.twig' %}
+{% block content %}
+    <script src="/lib/scripts/scw.js"></script>
+    <script src="/lib/3dParty/jquery/plugins/jquery.balloon.js"></script>
+
+    <style>
+        input, label {
+            display: block;
+        }
+
+        table.tableRes {
+            border-spacing: 0;
+            border-collapse: separate;
+        }
+
+        table.tableRes td {
+            padding: 4px;
+            vertical-align: text-top;
+        }
+
+        table.tableRes th {
+            background-color: whitesmoke;
+            font-weight: bold;
+            border-top: #D0D0D0 1px solid;
+            border-bottom: #D0D0D0 1px solid;
+            text-align: center;
+        }
+
+        table.tableRes {
+            border-width: 0 !important;
+            vertical-align: middle;
+        }
+
+        table.tableRes .bothBorder {
+            border-left: #D0D0D0 1px solid;
+            border-right: #D0D0D0 1px solid;
+        }
+
+        table.tableRes .leftBorder {
+            border-left: #D0D0D0 1px solid;
+        }
+
+        table.tableRes .rightBorder {
+            border-right: #D0D0D0 1px solid;
+        }
+
+        table.tableRes .topBorder {
+            border-top: #D0D0D0 1px solid;
+        }
+
+        table.tableRes .bottomBorder {
+            border-bottom: #D0D0D0 1px solid;
+        }
+    </style>
+
+    <script>
+        function showSelect(point, type, elem) {
+            if (type === null) {
+                $('#' + point).html('');
+                type = elem.value;
+                id = null;
+            } else {
+                if (type !== 3)
+                    return false;
+                $('#' + point + 'AirlineRegionBlock').remove();
+                type = 4
+                id = elem.value;
+            }
+            $('#fader').show();
+            $.ajax({
+                url: '{{ path('aw_award_price_dictionary') }}',
+                type: 'POST',
+                data: {
+                    point: point,
+                    type: type,
+                    id: id
+                },
+                async: false,
+                success: function (response) {
+                    if (typeof (response)) {
+                        $('#' + point).append(response);
+                    }
+                    return true;
+                },
+                complete: function () {
+                    $('#fader').hide();
+                }
+            });
+        }
+        function onInput() {
+            if (isEmailValid(input.value)) {
+                input.style.borderColor = 'green';
+            } else {
+                input.style.borderColor = 'red';
+            }
+        }
+        function isEmailValid(value) {
+            // EMAIL_REGEXP = /^(([^<>()[\].,;:\s@"]+(\.[^<>()[\].,;:\s@"]+)*)|(".+"))@(([^<>()[\].,;:\s@"]+\.)+[^<>()[\].,;:\s@"]{2,})$/iu;
+            EMAIL_REGEXP = /^(([^<>()[\].,;:\s@"]+(\.[^<>()[\].,;:\s@"]+)*)|(".+"))@awardwallet\.com$/iu;
+
+            return EMAIL_REGEXP.test(value);
+        }
+
+        function isValid(value1, value2) {
+            if (value1.length === 0 || value2.length === 0)
+                return true;
+
+            return value1 <= value2;
+        }
+
+        function isValidDateRange(value1, value2) {
+            if (value1.length === 0 || value2.length === 0)
+                return true;
+
+            return Date.parse(value1) <= Date.parse(value2);
+        }
+
+        $(document).ready(function () {
+            $('#fader').hide();
+            $("#origType").trigger("change");
+            $("#destType").trigger("change");
+            $("#ignoreProvider").change( function (){
+                if ($(this).prop('checked'))
+                    $('#providerCode').each(function(s){this.disabled=true;});
+                else
+                    $('#providerCode').each(function(s){this.disabled=false;});
+            });
+            $("#ignoreCabinType").change( function (){
+                if ($(this).prop('checked'))
+                    $('#cabinType').each(function(s){this.disabled=true;});
+                else
+                    $('#cabinType').each(function(s){this.disabled=false;});
+            });
+            $("#ignoreFlightType").change( function (){
+                if ($(this).prop('checked'))
+                    $('#flightType').each(function(s){this.disabled=true;});
+                else
+                    $('#flightType').each(function(s){this.disabled=false;});
+            });
+            $("#ignoreProvider").trigger("change");
+            $("#ignoreCabinType").trigger("change");
+            $("#ignoreFlightType").trigger("change");
+
+            {% if inputValue.origRegion is defined %}
+                $('#origRegion option[value={{ inputValue.origRegion }}]').prop('selected', true);
+                $("#origRegion").trigger("change");
+            {% endif %}
+            {% if inputValue.origCountry is defined %}
+                $('#origCountry option[value={{ inputValue.origCountry }}]').prop('selected', true);
+                $("#origCountry").trigger("change");
+            {% endif %}
+            {% if inputValue.origAwardChart is defined %}
+                $('#origAwardChart option[value="{{ inputValue.origAwardChart }}"]').prop('selected', true);
+                $("#origAwardChart").trigger("change");
+            {% endif %}
+            {% if inputValue.origAirlineRegion is defined %}
+                $('#origAirlineRegion option[value="{{ inputValue.origAirlineRegion }}"]').prop('selected', true);
+                $("#origAirlineRegion").trigger("change");
+            {% endif %}
+            {% if inputValue.destRegion is defined %}
+                $('#destRegion option[value="{{ inputValue.destRegion }}"]').prop('selected', true);
+                $("#destRegion").trigger("change");
+            {% endif %}
+            {% if inputValue.destCountry is defined %}
+                $('#destCountry option[value="{{ inputValue.destCountry }}"]').prop('selected', true);
+                $("#destCountry").trigger("change");
+            {% endif %}
+            {% if inputValue.destAwardChart is defined %}
+                $('#destAwardChart option[value="{{ inputValue.destAwardChart }}"]').prop('selected', true);
+                $("#destAwardChart").trigger("change");
+            {% endif %}
+            {% if inputValue.destAirlineRegion is defined %}
+                $('#destAirlineRegion option[value="{{ inputValue.destAirlineRegion }}"]').prop('selected', true);
+                $("#destAirlineRegion").trigger("change");
+            {% endif %}
+
+            $(document).on('input', '#emailAddress', function () {
+                if (isEmailValid(this.value)) {
+                    this.style.borderColor = 'green';
+                } else {
+                    this.style.borderColor = 'red';
+                }
+            });
+
+
+            var addr = localStorage.getItem('awpEmailAddress');
+            if (typeof addr != 'undefined' && addr != null)
+                $('#emailAddress').get(0).value = addr;
+            else
+                $('#emailAddress').get(0).value = '{{ email }}';
+
+            {% if inputValue.msg is defined %}
+            // reload page every 5 min
+            let timerId = setTimeout(function () {
+                window.location.reload();
+            }, 1000 * 60 * 5);
+            {% endif %}
+            $('#filterForm').submit(function () {
+                if ($('#noData').length) {
+                    $('#noData').remove();
+                }
+                if (!isEmailValid($('#emailAddress').get(0).value)){
+                    alert('check email. can use only @awardwallet.com');
+                    return false;
+                }
+                if (!isValidDateRange($('#searchDate1').get(0).value, $('#searchDate2').get(0).value)){
+                    alert('check search date: start Search Date greater then end one');
+                    return false;
+                }
+                if (!isValidDateRange($('#travelDate1').get(0).value, $('#travelDate2').get(0).value)){
+                    alert('check travel date: start Travel Date greater then end one');
+                    return false;
+                }
+                if (!isValid($('#daysBeforeDepMin').get(0).value, $('#daysBeforeDepMax').get(0).value)){
+                    alert('check days before departure: min days before departure greater than max');
+                    return false;
+                }
+                localStorage.setItem('awpEmailAddress', $('#emailAddress').get(0).value);
+                let empt = [];
+                $(document)
+                    .find('select.required[name]')
+                    .filter(function () {
+                        return !this.value;
+                    })
+                    .each(function (s) {
+                        empt.push($(this).prop('name'));
+                    });
+                if (empt.length > 0) {
+                    let msg = [];
+                    empt.forEach(function (s) {
+                        msg.push($('label[for="' + s + '"]').text().replace(':', ''));
+                    })
+                    alert('check data:' + msg.join(', '));
+                    return false;
+                }
+                if ($('#origAwardChartBlock').parent().find('select').length === 1) {
+                    alert('origin has no airline region');
+                    return false;
+                }
+
+                if ($('#destAwardChartBlock').parent().find('select').length === 1) {
+                    alert('destination has no airline region');
+                    return false;
+                }
+
+                $(this)
+                    .find('input[name]')
+                    .filter(function () {
+                        return !this.value;
+                    })
+                    .prop('name', '');
+            });
+        });
+    </script>
+    <div id='fader'
+         style="display: block; padding-left: 50%; padding-top: 150px; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: white; -ms-filter: \'progid:DXImageTransform.Microsoft.Alpha(Opacity=80)\'; filter: alpha(opacity=80); opacity: 0.8; z-index: 1000;">
+        <h3>Loading...</h3>
+    </div>
+
+{#    <form method="post" id="filterForm" action="{{ path('aw_award_price_export') }}">#}
+    <form method="post" id="filterForm" action="{{ path('aw_award_price_task') }}">
+        <table>
+            <tr style="vertical-align: top">
+                <td style="padding-left: 20px">
+                    <h2>Required</h2>
+                    <br>
+
+                    <label for="providerCode">Provider:</label>
+                    <select class="required ignore" style="width: 200px;" id="providerCode" name="providerCode">
+                        {% for row in provider %}
+                            <option value='{{ row.ID }}' {% if inputValue.providerCode is defined and row.ID==inputValue.providerCode %} selected {% endif %}>{{ row.Name }}</option>
+                        {% endfor %}
+                    </select>
+                    <div><input type="checkbox" name="ignoreProvider" id="ignoreProvider" style="float: left; margin-top: 2pt;" {% if inputValue.ignoreProvider is defined and inputValue.ignoreProvider == 'on' %} checked="checked"{% endif %}></div>
+                    <label for="ignoreProvider">ignore provider (group by ...)</label>
+                    <br>
+                    <br>
+                    <label for="cabinType">Cabin Type:</label>
+                    <select class="required ignore" style="width: 200px;" id="cabinType" name="cabinType">
+                        {% for row in cabinType %}
+                            <option value='{{ row }}' {% if inputValue.cabinType is defined and row==inputValue.cabinType %} selected {% endif %}>{{ row }}</option>
+                        {% endfor %}
+                    </select>
+                    <div><input type="checkbox" name="ignoreCabinType" id="ignoreCabinType" style="float: left; margin-top: 2pt;"  {% if inputValue.ignoreCabinType is defined and inputValue.ignoreCabinType == 'on' %} checked="checked"{% endif %}></div>
+                    <label for="ignoreCabinType">ignore cabin type (group by ...)</label>
+                    <br><br>
+                    <label for="flightType">Flight Type:</label>
+                    <select class="required ignore" style="width: 200px;" id="flightType" name="flightType">
+                        {% for i,row in flightType %}
+                            <option value='{{ i }}' {% if inputValue.flightType is defined and i==inputValue.flightType %} selected {% endif %}>{{ row }}</option>
+                        {% endfor %}
+                    </select>
+                    <div><input type="checkbox" name="ignoreFlightType" id="ignoreFlightType" style="float: left; margin-top: 2pt;"  {% if inputValue.ignoreFlightType is defined and inputValue.ignoreFlightType == 'on' %} checked="checked"{% endif %}></div>
+                    <label for="ignoreFlightType">ignore flight type (group by ...)</label>
+                    <br>
+                    <br>
+                    <table>
+                        <tr>
+                            <td>
+                                <label for="origType">Origin Type:</label>
+                                <select class="required" style="width: 200px;" id="origType" name="origType"
+                                        onchange="showSelect('orig', null, this)">
+                                    <option value=''>...</option>
+                                    {% for num,row in origType %}
+                                        <option value='{{ num }}' {% if inputValue.origType is defined and num==inputValue.origType %} selected {% endif %}>{{ row }}</option>
+                                    {% endfor %}
+                                </select>
+
+                            </td>
+                            <td>
+                                <label for="destType">Destination Type:</label>
+                                <select class="required" style="width: 200px;" id="destType"
+                                        name="destType" onchange="showSelect('dest', null, this)">
+                                    <option value=''>...</option>
+                                    {% for num,row in destType %}
+                                        <option value='{{ num }}' {% if inputValue.destType is defined and num==inputValue.destType %} selected {% endif %}>{{ row }}</option>
+                                    {% endfor %}
+                                </select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td id="orig" style="vertical-align: top; height: 105px">
+                            </td>
+                            <td id="dest" style="vertical-align: top;">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <label for="origIncChild">Include children:</label>
+                                <input id="origIncChild" name="origIncChild" type="checkbox"{% if inputValue.origIncChild is defined and inputValue.origIncChild == 'on' %} checked="checked"{% endif %}>
+                            </td>
+                            <td>
+                                <label for="destIncChild">Include children:</label>
+                                <input id="destIncChild" name="destIncChild" type="checkbox"{% if inputValue.destIncChild  is defined and inputValue.destIncChild == 'on' %} checked="checked"{% endif %}>
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+                <td style="padding-left: 20px">
+                    <h2>Optional</h2>
+                    <div>
+                        <span>Search Date:</span>
+                        <table>
+                            <tr>
+                                <td>
+                                    <label>start</label>
+                                    {% set widget = 'single_text' %}
+                                    {% set attr = { } %}
+                                    {% set name = 'datePick' %}
+                                    {% set value = searchDate1 %}
+                                    {% set id = 'searchDate1' %}
+                                    {% set full_name = 'searchDate1' %}
+                                    {% set required = false %}
+                                    {% set pattern = '' %}
+                                    {{ block('date_widget') }}
+                                </td>
+                                <td><label>end</label>
+                                    {% set widget = 'single_text' %}
+                                    {% set attr = { } %}
+                                    {% set name = 'datePick' %}
+                                    {% set value = searchDate2 %}
+                                    {% set id = 'searchDate2' %}
+                                    {% set full_name = 'searchDate2' %}
+                                    {% set required = false %}
+                                    {% set pattern = '' %}
+                                    {{ block('date_widget') }}
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div>
+                        <span>Travel Date:</span>
+                        <table>
+                            <tr>
+                                <td>
+                                    <label>start</label>
+                                    {% set widget = 'single_text' %}
+                                    {% set attr = { } %}
+                                    {% set name = 'datePick' %}
+                                    {% set value = travelDate1 %}
+                                    {% set id = 'travelDate1' %}
+                                    {% set full_name = 'travelDate1' %}
+                                    {% set required = false %}
+                                    {% set pattern = '' %}
+                                    {{ block('date_widget') }}
+                                </td>
+                                <td><label>end</label>
+                                    {% set widget = 'single_text' %}
+                                    {% set attr = { } %}
+                                    {% set name = 'datePick' %}
+                                    {% set value = travelDate2 %}
+                                    {% set id = 'travelDate2' %}
+                                    {% set full_name = 'travelDate2' %}
+                                    {% set required = false %}
+                                    {% set pattern = '' %}
+                                    {{ block('date_widget') }}
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div>
+                        <span>Days Before Departure:</span>
+                        <table style="width: 100%">
+                            <tr>
+                                <td>
+                                    <span>min</span>
+                                    <input style="width: 96%" name="daysBeforeDepMin" id="daysBeforeDepMin" value="{{ minDays }}">
+                                </td>
+                                <td>
+                                    <span>max</span>
+                                    <input style="width: 96%" name="daysBeforeDepMax" id="daysBeforeDepMax" value="{{ maxDays }}">
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    {% if inputValue.noData is defined %}
+                        <div id="noData" style="color: red;font-weight: bold; float: right;">No data</div>
+                        <br>
+                    {% endif %}
+                    {% if inputValue.msg is defined %}
+                        <div id="noData" style="color: #d07d7d;font-weight: bold;">{{ inputValue.msg }}
+                        <br>
+                        {{ inputValue.fileName }}</div>
+                        <br>
+                    {% else %}
+                        <span>send report to Email</span>
+                        <input style="width: 250px" id="emailAddress" name="emailAddress" type="email" value="">
+
+                        <button style="float: right; padding: 5px; margin-top: 8px;" type="submit">Export Award Price to CSV</button>
+                    {% endif %}
+                </td>
+            </tr>
+        </table>
+
+    </form>
+    <span style="color: #9fb6cd; font-size: xx-small;" id="nnn"></span>
+    <script>
+        var d = new Date();
+        var n = d.toLocaleTimeString();
+        $('#nnn').text(n);
+    </script>
+{% endblock %}

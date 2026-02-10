@@ -1,0 +1,24 @@
+{% trans_default_domain "booking" %}
+
+{{ 'booking.seat-assignments.message'|trans|desc('As seat preferences are a very personal issue, to ensure you get the seat assignments that best meet your needs, please contact the airlines directly:') }}
+
+<table class="share-account">
+    <thead>
+        <tr>
+            <td>{{ 'booking.forms.seat_assignments.provider'|trans }}</td>
+            <td>{{ 'booking.forms.seat_assignments.phone'|trans }}</td>
+        </tr>
+    </thead>
+    <tbody>
+    {% for number in message.getPhoneNumbers %}
+        <tr>
+            <td>
+                {{ number.Provider|html_entity_decode }}
+            </td>
+            <td>
+                {{ number.Phone }}
+            </td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>

@@ -1,0 +1,339 @@
+services:
+    _defaults:
+        autowire: true
+        autoconfigure: true
+        public: true
+        tags: ['controller.service_arguments']
+        bind:
+          $jmsSerializer: '@jms_serializer'
+          $accountRepository: '@AwardWallet\MainBundle\Entity\Repositories\AccountRepository'
+          $accountAccessApiLocker: "@aw.throttler.account_access_api"
+          $bestCreditCardsLocker: '@aw.security.antibruteforce.best_credit_cards_locker'
+          $providerCouponRepository: '@AwardWallet\MainBundle\Repository\ProvidercouponRepository'
+          $providerRepository: '@AwardWallet\MainBundle\Entity\Repositories\ProviderRepository'
+          $useragentRepository: '@AwardWallet\MainBundle\Entity\Repositories\UseragentRepository'
+          $accountShareRepository: '@AwardWallet\MainBundle\Entity\Repositories\AccountshareRepository'
+          $providerCouponShareRepository: '@AwardWallet\MainBundle\Entity\Repositories\ProvidercouponshareRepository'
+          $usrRepository: '@AwardWallet\MainBundle\Entity\Repositories\UsrRepository'
+          $faqRepository: '@AwardWallet\MainBundle\Entity\Repositories\FaqRepository'
+          $faqCategoryRepository: '@AwardWallet\MainBundle\Entity\Repositories\FaqCategoryRepository'
+          $socialadRepository: '@AwardWallet\MainBundle\Entity\Repositories\SocialadRepository'
+          $documentImageRepository: '@AwardWallet\MainBundle\Entity\Repositories\DocumentImageRepository'
+          $abRequestRepository: '@AwardWallet\MainBundle\Entity\Repositories\AbRequestRepository'
+          $emailCallbackPassword: '%email.callback_password%'
+          $paymentLogger: '@monolog.logger.payment'
+          $loggerStat: '@monolog.logger.stat'
+          $fsstatLogger: '@monolog.logger.fsstat'
+          $loyaltyApiCommunicators: !tagged_locator { tag: 'aw.loyalty.api_communicator', index_by: 'cluster_name' }
+          $mlParsingAdminEndPoint: '%ml_parsing_admin_endpoint%'
+          $securityLogger: '@monolog.logger.security'
+          $tripalertsLogger: '@monolog.logger.tripalerts'
+          $checkerLogDir: '%checker_logs_dir%'
+          $securityAntibruteforceConnectionSearch: "@aw.security.antibruteforce.connection_search"
+          $securityAntibruteforceCaptcha: "@aw.security.antibruteforce.captcha"
+          $securityAntibruteforceApiExport: '@aw.security.antibruteforce.api_export'
+          $securityAntibruteforceCheckEmail: '@aw.security.antibruteforce.check_email'
+          $securityAntibruteforceCheckLogin: '@aw.security.antibruteforce.check_login'
+          $securityAntibruteforceEmail: '@aw.security.antibruteforce.email'
+          $securityAntibruteforceForgot: '@aw.security.antibruteforce.forgot'
+          $stripePublishableKey: '%stripe_publishable_key%'
+          $formAddAgentHandlerDesktop: '@aw.form.add_agent.handler.desktop'
+          $formProviderCouponHandlerDesktop: '@aw.form.providercoupon.handler.desktop'
+          $formFamilyMemberHandlerDesktop: '@aw.form.family_member.handler.desktop'
+          $formEditConnectionHandlerDesktop: '@aw.form.edit_connection.handle.desktop'
+          $formProfileRegionalHandlerDesktop: '@aw.form.profile_regional.handler.desktop'
+          $formDocumentHandlerDesktop: '@aw.form.document.handler.desktop'
+          $cardImageHttpHandlerMobile: '@aw.card_image.http_handler.mobile'
+          $inviteCodeRepository: '@AwardWallet\MainBundle\Entity\Repositories\InvitecodeRepository'
+          $emailLogger: '@monolog.logger.email'
+          $emailApi: '@aw.email.api'
+          $emailApiParams: '%email_api%'
+          $securityAntibruteforceGoogleRequest: "@aw.security.antibruteforce.google_request"
+          $accountHandlerDesktop: '@aw.form.account.handler.desktop'
+          $notificationHandlerDesktop: '@aw.form.notification.handler.desktop'
+          $profileBusinessHandlerDesktop: '@aw.form.profile_business.handler.desktop'
+          $profileCouponHandlerDesktop: '@aw.form.profile_coupon.handler.desktop'
+          $profileEmailHandlerDesktop: '@aw.form.profile_email.handler.desktop'
+          $profilePasswordHandlerDesktop: '@aw.form.profile_password.handler.desktop'
+          $profilePersonalHandlerDesktop: '@aw.form.profile_personal.handler.desktop'
+          $updaterSessionDesktop: '@aw.updater_session.desktop'
+          $localPasswordsKey: '%local_passwords_key%'
+          $recaptchaValidator: '@aw.recaptcha_validator'
+          $blogApiSecret: '%blog.api.secret%'
+          $secretParam: '%secret%'
+          $locale: '%locale%'
+          $locales: '%locales%'
+          $requiresChannel: '%requires_channel%'
+          $host: '%host%'
+          $emailApiUrl: '%email.api_url%'
+          $emailApiHttpAuth: '%email.api_http_auth%'
+          $vapidPublicKey: '%push_notifications.vapid.public_key%'
+          $webpushIdParam: '%webpush.id%'
+          $googleClientId: "%google_client_id%"
+          $googleIosClientId: '%google_ios_client_id%'
+          $googleApiKeyMobileMaps: "%google_api_key_mobile_maps%"
+          $mobileIapAppleSecret: "%aw.mobile.iap_apple_secret%"
+          $responseStreaming: "%response_streaming%"
+          $rootDir: "%kernel.root_dir%"
+          $projectDir: "%kernel.project_dir%"
+          $emailApiConfig: "%email_api%"
+          $loyaltyLocationMax: "%aw.loyalty_location.max%"
+          $awFormAccountHandlerMobile: "@aw.form.account.handler.mobile"
+          $awFormProviderCouponHandlerMobile: "@aw.form.providercoupon.handler.mobile"
+          $awFormDocumentHandlerMobile: "@aw.form.document.handler.mobile"
+          $awFormAddAgentHandlerMobile: "@aw.form.add_agent.handler.mobile"
+          $awSecurityAntibruteforceSearch: "@aw.security.antibruteforce.connection_search"
+          $awFormAbMessageHandler: "@aw.form.ab_message.handler.generic"
+          $awFormFamilyMemberHandlerMobile: "@aw.form.family_member.handler.mobile"
+          $awFormEditConnectionHandleMobile: "@aw.form.edit_connection.handle.mobile"
+          $awFormProfilePasswordHandlerMobile: "@aw.form.profile_password.handler.mobile"
+          $awFormProfileCouponHandlerMobile: "@aw.form.profile_coupon.handler.mobile"
+          $awMobileUrlTransformer: "@aw.mobile.url_transformer"
+          $awFormLoyaltyLocationListHandlerMobile: "@aw.form.loyalty_location_list.handler.mobile"
+          $awFormProfilePersonalHandlerMobile: "@aw.form.profile_personal.handler.mobile"
+          $awFormProfileEmailHandlerMobile: "@aw.form.profile_email.handler.mobile"
+          $awFormProfileRegionalHandlerMobile: "@aw.form.profile_regional.handler.mobile"
+          $awFormNotificationHandlerMobile: "@aw.form.notification.handler.mobile"
+          $awFormOtherSettingsHandlerMobile: "@aw.form.other_settings.handler.mobile"
+          $awManagerMobileDeviceManager: "@aw.manager.mobile_device_manager"
+          $awTimelineHelperMobile: "@aw.timeline.helper.mobile"
+          $awMobileProfileOverview: "@aw.mobile.profile_overview"
+          $awMobileViewBookingDetails: "@aw.mobile_view.booking_details"
+          $awManagerCustomLoyaltyProperty: "@aw.manager.custom_loyalty_property"
+          $awFormLoyaltyLocationHandlerMobile: "@aw.form.loyalty_location.handler.mobile"
+          $awSecurityAntibruteforceLogin: "@aw.security.antibruteforce.login"
+          $awSecurityAntibruteforceCentrifugeChannelAuth: "@aw.security.antibruteforce.centrifuge_channel_auth"
+          $awFormAttachProvidercouponToAccountHelper: "@aw.form.attach_providercoupon_to_account_helper"
+          $awMobileViewBookingMessageLoader: "@aw.mobile_view.booking_messages_loader"
+          $awMobileViewBookingMessagesFormatter: "@aw.mobile_view.booking_messages_formatter"
+          $awSyncExecutorCallback: "@aw.async.executor.callback"
+          $awUpdaterSessionMobile: "@aw.updater_session.mobile"
+          $awExtensionTranslationEntity: "@aw.extension.translation.entity"
+          $env: '%kernel.environment%'
+          $cdnHost: '%cdn_host%'
+          $debug: '%kernel.debug%'
+          $stripeWebhookSecret: '%stripe_webhook_secret%'
+          AwardWallet\MainBundle\Service\MerchantLookupHandler $merchantLookupHandlerReplica: "@aw.merchant_lookup_handler.replica"
+
+    AwardWallet\MainBundle\Controller\:
+        autowire: true
+        autoconfigure: true
+        resource: '../../Controller/'
+        tags: [ 'controller.service_arguments' ]
+
+    AwardWallet\MobileBundle\Controller\:
+      autowire: true
+      autoconfigure: true
+      resource: '../../../MobileBundle/Controller/'
+      tags: [ 'controller.service_arguments' ]
+
+    AwardWallet\MainBundle\Controller\ConnectionController:
+        public: true
+        autoconfigure: true
+        arguments:
+            - "@aw.security.token_storage"
+            - "@doctrine.orm.entity_manager"
+            - "@translator"
+            - '@AwardWallet\MainBundle\Service\AccessGrantedHelper'
+            - "@service_container"
+            - "@aw.manager.connection_manager"
+
+    AwardWallet\MainBundle\Controller\TravelPlanController:
+        public: true
+        arguments:
+            - "@aw.timeline.plan_manager"
+            - '@AwardWallet\MainBundle\Entity\Repositories\UseragentRepository'
+            - '@AwardWallet\MainBundle\Entity\Repositories\TimelineShareRepository'
+            - "@aw.security.token_storage"
+            - "@security.authorization_checker"
+            - "@doctrine"
+            - "@monolog.logger.stat"
+
+    AwardWallet\MainBundle\Controller\Manager\GeoCodeTestController:
+        autowire: true
+        autoconfigure: true
+        arguments:
+            $geoCoders: !tagged_locator { tag: 'aw.geo.coder' }
+
+    AwardWallet\MainBundle\Controller\Auth\CapitalcardsController:
+        public: true
+        autowire: true
+        arguments:
+          $localPasswordsKey: "%local_passwords_key%"
+    AwardWallet\MainBundle\Controller\Auth\BankofamericaController:
+        arguments:
+          - "%bankofamerica_client_id%"
+          - "%bankofamerica_client_secret%"
+          - "%bankofamerica_client_id_2025%"
+          - "%bankofamerica_client_secret_2025%"
+          - "%bankofamerica_ssl_cert_file%"
+          - "@router"
+          - "@aw.memcached"
+          - "@logger"
+          - "%kernel.debug%"
+          - "@doctrine.orm.default_entity_manager"
+          - "@translator"
+          - "%local_passwords_key%"
+          - "@security.authorization_checker"
+          - "@aw.security.token_storage"
+    AwardWallet\MainBundle\Controller\Account\HistoryController:
+            public: true
+            class: AwardWallet\MainBundle\Controller\Account\HistoryController
+            arguments:
+              - "@aw.security.token_storage"
+              - "@security.authorization_checker"
+              - "@aw.accountinfo"
+              - '@AwardWallet\MainBundle\Service\AccountHistory\HistoryService'
+              - '@AwardWallet\MainBundle\Service\AccountHistory\Formatter\DesktopHistoryFormatter'
+              - "@doctrine.orm.entity_manager"
+              - "@request_stack"
+              - "@router"
+              - "@form.factory"
+              - "@aw.loyalty_api.email_history.parser"
+              - "%email.callback_password%"
+              - "@twig"
+              - "@session"
+
+    AwardWallet\MainBundle\Controller\Account\ExtensionController:
+        public: true
+        autoconfigure: true
+        arguments:
+          - "@doctrine.orm.entity_manager"
+          - "@aw.security.token_storage"
+          - "@security.authorization_checker"
+          - "@aw.loyalty.account_saving.processor"
+          - "@logger"
+          - "@aw.extension.twig.aw_extension"
+          - "@database_connection"
+        calls:
+          - [setContainer, ["@service_container"]]
+
+    AwardWallet\MainBundle\Controller\SpentAnalysisController:
+        public: true
+        arguments:
+            $checker: "@security.authorization_checker"
+            $router: "@router"
+
+    AwardWallet\MainBundle\Controller\Account\AddController:
+      autowire: true
+      autoconfigure: true
+      arguments:
+        $addMoreMenu: "@aw.widget.accounts_add_more_menu"
+        $accountsMenu: "@aw.widget.accounts_main_menu"
+        $popularityHandler: '@AwardWallet\MainBundle\Service\PopularityHandler'
+
+    AwardWallet\MainBundle\Controller\Business\SpentAnalysisController:
+        autowire: true
+        autoconfigure: true
+
+    AwardWallet\MainBundle\Controller\TransferTimesController:
+        autowire: true
+        public: true
+        arguments:
+            - "@database_connection"
+            - '@AwardWallet\MainBundle\Globals\Localizer\LocalizeService'
+            - '@AwardWallet\MainBundle\Service\TransferTimes'
+
+    AwardWallet\MainBundle\Controller\MerchantLookupController:
+        autowire: true
+
+    AwardWallet\MobileBundle\Controller\Timeline\PlanController:
+      arguments:
+        - "@aw.timeline.plan_manager"
+        - "@aw.timeline.formatter.mobile.block_helper"
+        - "@doctrine.orm.entity_manager"
+
+    AwardWallet\MainBundle\Controller\MileValueController:
+        arguments:
+            - '@AwardWallet\MainBundle\Service\MileValue\MileValueService'
+            - "@security.token_storage"
+            - "@security.authorization_checker"
+
+    AwardWallet\MainBundle\Controller\Account\EmailParseController:
+        arguments:
+            - "@logger"
+            - '@router'
+            - "@aw.email.api"
+            - "%email.api_http_auth%"
+            - "%comet_server_url%"
+            - "%comet_server_secret%"
+
+    AwardWallet\MainBundle\Controller\EmailTestPageController:
+      arguments:
+        - "%email.api_url%"
+        - "@aw.curl_driver"
+        - "@logger"
+
+    AwardWallet\MainBundle\Controller\Cart\CommonController:
+        autowire: true
+        arguments:
+            $logoManager: "@aw.manager.logo"
+            $isDebug: "%kernel.debug%"
+
+    AwardWallet\MobileBundle\Controller\UserController:
+      bind:
+        $googleRecaptchaNotARobotV2CaptchaProvider: "@aw.captcha_provider.recaptcha_v2_not_a_robot"
+        $cloudflareTurnstileCaptchaProvider: "@aw.captcha_provider.cloudflare_turnstile"
+
+    AwardWallet\MainBundle\Controller\TravelSummaryController:
+        autowire: true
+        arguments:
+          $googleKey: "%google_api_key_client_side%"
+
+    AwardWallet\MobileBundle\Controller\OauthController:
+        autowire: true
+        arguments:
+            $googleClientId: "%google_client_id%"
+            $googleIosClientId: "%google_ios_client_id%"
+            $appleClientId: "%apple_client_id%"
+            $appleIosOauthProvider: "@aw.oauth.provider.apple_ios"
+            $oauthCallbackHandler: "@aw.oauth.callback_handler.mobile"
+
+    AwardWallet\MainBundle\Controller\OAuthController:
+      autowire: true
+      autoconfigure: true
+      bind:
+        $protoAndHost: "%requires_channel%://%host%"
+      arguments:
+        $oauthCallbackHandler: "@aw.oauth.callback_handler.desktop"
+
+    AwardWallet\MainBundle\Controller\HotelRewardController:
+        arguments:
+            $antiBruteforceLockerService: "@aw.security.antibruteforce.google_request"
+
+    AwardWallet\MainBundle\Controller\TripsController:
+      bind:
+        $awsS3BoardingBucket: '%aws_s3_boarding_bucket%'
+
+    AwardWallet\MainBundle\Controller\UsersController:
+      bind:
+        $businessHost: '%business_host%'
+
+    AwardWallet\MainBundle\Controller\Manager\Tools\FareDropUsersController:
+        arguments:
+            $unbufConnection: '@doctrine.dbal.read_replica_unbuffered_connection'
+
+    AwardWallet\MainBundle\Controller\Cart\CoinPaymentsController:
+        bind:
+            $cpMerchantId: '%cp.merchant_id%'
+            $cpCallbackSecret: '%cp.callback_secret%'
+
+    AwardWallet\MainBundle\Controller\Manager\BillingController:
+        bind:
+            $paypal: '%paypal%'
+
+    AwardWallet\MainBundle\Controller\Manager\HistoryAnalyzerController:
+        bind:
+            $awsS3Bucket: '%aws_s3_bucket%'
+
+    AwardWallet\MainBundle\Controller\Manager\WsdlProxyController:
+        bind:
+            $wsdlProxyAuth: '%wsdl_proxy_auth%'
+
+    AwardWallet\MainBundle\Controller\WebPush\ChromeController:
+        bind:
+            $pushNotificationsAndroidSenderId: '%push_notifications.android.gcm.sender_id%'
+
+    AwardWallet\MainBundle\Controller\Manager\User\AccountController:
+        bind:
+            $accountValidator: "@aw.form.validator.account"

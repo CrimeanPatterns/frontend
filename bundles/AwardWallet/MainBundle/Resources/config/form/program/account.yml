@@ -1,0 +1,105 @@
+parameters:
+
+services:
+    _defaults:
+        public: true
+
+    # Types
+
+    aw.mobile.form.account:
+        public: true
+        autowire: true
+        class: AwardWallet\MobileBundle\Form\Type\AccountType
+        arguments:
+            - '@AwardWallet\MainBundle\Form\Account\Builder'
+            - "@aw.security.token_storage"
+            - "@aw.mobile.url_transformer"
+            - "@translator"
+            - "@aw.api.versioning"
+            - "@doctrine.orm.entity_manager"
+            - '@AwardWallet\MainBundle\Form\Transformer\AccountMobileFormTransformer'
+            - "@aw.mobile.form_helper.program"
+            - '@AwardWallet\MainBundle\Form\Helper\MobileExtensionLoader'
+            - '@AwardWallet\MainBundle\Service\BalanceWatch\Query'
+            - '@AwardWallet\MainBundle\Service\BalanceWatch\TransferOptions'
+            - '@AwardWallet\MainBundle\Globals\Localizer\LocalizeService'
+            - '@security.authorization_checker'
+            - '@AwardWallet\MainBundle\Form\Type\Helpers\CurrencyHelper'
+            - '@AwardWallet\MainBundle\Service\AccountFormHtmlProvider\MobileHtmlRenderer'
+        tags:
+            - {name: form.type }
+
+    aw.mobile.form.card_images_type:
+        public: true
+        class: AwardWallet\MainBundle\Form\Type\Mobile\Loyalty\CardImagesType
+        tags:
+            - { name: form.type }
+
+    aw.form.account:
+        public: true
+        class: AwardWallet\MainBundle\Form\Type\AccountType
+        autowire: true
+        tags:
+            - { name: form.type }
+
+    AwardWallet\MainBundle\Form\Type\Mobile\MailboxLinkingType:
+        public: true
+        autowire: true
+        tags:
+            - { name: form.type }
+
+    # Transformers
+
+    aw.form.transformer.generic.account:
+        autowire: true
+        public: true
+        class: AwardWallet\MainBundle\Form\Transformer\AccountFormTransformer
+    AwardWallet\MainBundle\Form\Transformer\AccountFormTransformer: '@aw.form.transformer.generic.account'
+    AwardWallet\MainBundle\Form\Transformer\AccountMobileFormTransformer:
+        autowire: true
+
+    # Handlers
+
+    aw.form.account.subscriber.generic:
+        public: true
+        class: AwardWallet\MainBundle\Form\Handler\Subscriber\Account\AccountGeneric
+        autowire: true
+        arguments:
+            $ipLimit: "%account_edits_per_hour_from_ip%"
+        tags:
+            - { name: monolog.logger, channel: security }
+
+    AwardWallet\MainBundle\Form\Type\RecaptchaType:
+        autowire: true
+        autoconfigure: true
+        arguments:
+            $recaptchaV3Key: '%recaptcha_v3_site_key%'
+            $recaptchaV3Secret: '%recaptcha_v3_secret%'
+            $recaptchaV2Key: '%recaptcha_site_key%'
+            $recaptchaV2Secret: '%recaptcha_secret%'
+        tags:
+            - { name: monolog.logger, channel: security }
+            - { name: form.type }
+
+    aw.form.account.handler.mobile:
+        public: true
+        parent: aw.form.generic_request_handler
+        calls:
+            - [setChannels, [['form.mobile', 'form.generic.account', 'form.mobile.account', 'form.generic']]]
+            - [addHandlerSubscriber, ["@aw.form.account.subscriber.generic"]]
+            - [addHandlerSubscriber, ["@aw.form.subscriber.mobile.partial_form"]]
+            - [addHandlerSubscriber, ["@aw.form.subscriber.mobile.request_data_transformer"]]
+            - [addHandlerSubscriber, ["@aw.form.card_image.subscriber.mobile"]]
+
+    aw.form.account.handler.desktop:
+        public: true
+        parent: aw.form.generic_request_handler
+        calls:
+            - [setChannels, [['form.desktop.account', 'form.generic.account']]]
+            - [addHandlerSubscriber, ["@aw.form.account.subscriber.generic"]]
+
+
+    AwardWallet\MainBundle\Form\Type\Mobile\SpentAnalysisType:
+        public: true
+        autowire: true
+        autoconfigure: true

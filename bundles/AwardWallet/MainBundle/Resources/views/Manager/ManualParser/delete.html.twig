@@ -1,0 +1,22 @@
+{% set title = "Delete message" %}
+{% extends '@AwardWalletMain/Manager/layout.html.twig' %}
+{% block content %}
+    {% if not deleted %}
+        <form name="delete" method="post">
+            <p>
+                Delete message <b>{{ id }}</b>?
+            </p>
+            <input type="hidden" name="backto" value="{{ backto }}">
+            <input type="submit">
+        </form>
+    {% else %}
+        {% if not error is empty %}
+            <h3 style="color: red;">{{ error }}</h3>
+        {% else %}
+            <h3>Ok</h3>
+        {% endif %}
+        {% if not backto is empty %}
+            <a href="{{ backto }}">Back</a>
+        {% endif %}
+    {% endif %}
+{% endblock %}

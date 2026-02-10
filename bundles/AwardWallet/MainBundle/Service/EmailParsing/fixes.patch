@@ -1,0 +1,88 @@
+diff --git a/Client/Api/EmailScannerApi.php b/Client/Api/EmailScannerApi.php
+index b6baaf5b45..e6c6879c8a 100644
+--- a/Client/Api/EmailScannerApi.php
++++ b/Client/Api/EmailScannerApi.php
+@@ -2458,7 +2458,7 @@ class EmailScannerApi
+      *
+      * @throws \AwardWallet\MainBundle\Service\EmailParsing\Client\ApiException on non-2xx response
+      * @throws \InvalidArgumentException
+-     * @return object[]
++     * @return \AwardWallet\MainBundle\Service\EmailParsing\Client\Model\Mailbox[]
+      */
+     public function listMailboxes($tags = null, $states = null, $types = null, $errorCodes = null)
+     {
+@@ -2481,11 +2481,11 @@ class EmailScannerApi
+      *
+      * @throws \AwardWallet\MainBundle\Service\EmailParsing\Client\ApiException on non-2xx response
+      * @throws \InvalidArgumentException
+-     * @return array of object[], HTTP status code, HTTP response headers (array of strings)
++     * @return array of \AwardWallet\MainBundle\Service\EmailParsing\Client\Model\Mailbox[], HTTP status code, HTTP response headers (array of strings)
+      */
+     public function listMailboxesWithHttpInfo($tags = null, $states = null, $types = null, $errorCodes = null)
+     {
+-        $returnType = 'object[]';
++        $returnType = '\AwardWallet\MainBundle\Service\EmailParsing\Client\Model\Mailbox[]';
+         $request = $this->listMailboxesRequest($tags, $states, $types, $errorCodes);
+ 
+         try {
+@@ -2586,7 +2586,7 @@ class EmailScannerApi
+      */
+     public function listMailboxesAsyncWithHttpInfo($tags = null, $states = null, $types = null, $errorCodes = null)
+     {
+-        $returnType = 'object[]';
++        $returnType = '\AwardWallet\MainBundle\Service\EmailParsing\Client\Model\Mailbox[]';
+         $request = $this->listMailboxesRequest($tags, $states, $types, $errorCodes);
+ 
+         return $this->client
+diff --git a/Client/ObjectSerializer.php b/Client/ObjectSerializer.php
+index 7cefffdb78..85138dd33d 100644
+--- a/Client/ObjectSerializer.php
++++ b/Client/ObjectSerializer.php
+@@ -299,6 +299,16 @@ class ObjectSerializer
+             $discriminator = $class::DISCRIMINATOR;
+             if (!empty($discriminator) && isset($data->{$discriminator}) && is_string($data->{$discriminator})) {
+                 $subclass = '\AwardWallet\MainBundle\Service\EmailParsing\Client\Model\\' . $data->{$discriminator};
++                if($data->{$discriminator} == "imap")
++                    $subclass = '\AwardWallet\MainBundle\Service\EmailParsing\Client\Model\ImapMailbox';
++                elseif($data->{$discriminator} == "google")
++                    $subclass = '\AwardWallet\MainBundle\Service\EmailParsing\Client\Model\GoogleMailbox';
++                elseif($data->{$discriminator} == "microsoft")
++                    $subclass = '\AwardWallet\MainBundle\Service\EmailParsing\Client\Model\MicrosoftMailbox';
++                elseif($data->{$discriminator} == "yahoo")
++                    $subclass = '\AwardWallet\MainBundle\Service\EmailParsing\Client\Model\YahooMailbox';
++                elseif($data->{$discriminator} == "aol")
++                    $subclass = '\AwardWallet\MainBundle\Service\EmailParsing\Client\Model\AolMailbox';
+                 if (is_subclass_of($subclass, $class)) {
+                     $class = $subclass;
+                 }
+diff --git a/Client/Model/ScrollMailboxesResponse.php b/Client/Model/ScrollMailboxesResponse.php
+index 67e2fa4bbb..073ee52ef7 100644
+--- a/Client/Model/ScrollMailboxesResponse.php
++++ b/Client/Model/ScrollMailboxesResponse.php
+@@ -57,7 +57,7 @@ class ScrollMailboxesResponse implements ModelInterface, ArrayAccess
+       * @var string[]
+       */
+     protected static $swaggerTypes = [
+-        'items' => 'object[]',
++        'items' => '\AwardWallet\MainBundle\Service\EmailParsing\Client\Model\Mailbox[]',
+         'nextPageToken' => 'string'
+     ];
+
+@@ -204,7 +204,7 @@ class ScrollMailboxesResponse implements ModelInterface, ArrayAccess
+     /**
+      * Gets items
+      *
+-     * @return object[]
++     * @return \AwardWallet\MainBundle\Service\EmailParsing\Client\Model\Mailbox[]
+      */
+     public function getItems()
+     {
+@@ -214,7 +214,7 @@ class ScrollMailboxesResponse implements ModelInterface, ArrayAccess
+     /**
+      * Sets items
+      *
+-     * @param object[] $items array of mailboxes
++     * @param \AwardWallet\MainBundle\Service\EmailParsing\Client\Model\Mailbox[] $items array of mailboxes
+      *
+      * @return $this
+      */

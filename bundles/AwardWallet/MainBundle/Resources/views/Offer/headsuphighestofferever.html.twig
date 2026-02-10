@@ -1,0 +1,32 @@
+{% extends popup is defined and popup ? "@AwardWalletMain/Offer/_offerPopup.html.twig" : "@AwardWalletMain/Offer/standard.html.twig" %}
+{% import '@AwardWalletMain/Offer/offerMacros.html.twig' as offerMacros %}
+{% import '@AwardWalletMain/TwigMacros/assets.html.twig' as assets %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    {{ encore_entry_link_tags('offer') }}
+    {{ encore_entry_link_tags('offers/headsuphighestofferever') }}
+    {% if popup is not defined %}
+        {{ assets.assets_form('css') }}
+    {% endif %}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        {{ offerMacros.jsOfferYes(_context, ApplyURL, Code, OfferUserID, ApplyURL) }}
+        {{ offerMacros.jsOfferNo(_context, Code, OfferUserID, defaultRedirectLocation) }}
+    </script>
+{% endblock %}
+
+{% block content %}
+    <div id="offer_wrap" class="offer-block">
+        <div class="heads-up">
+            <h3>Heads up! <br>Highest Offer Ever <br>& Last Chance <br>to Get These Points.</h3>
+            <p>The new offer for this <a href="#" onclick="offerYes(false, 'https://awardwallet.com/blog/hotel/'); return false;">popular rewards card</a> <br>is the highest it’s ever been. </p>
+            <p>This may be one of the last great opportunities <br>to earn these valuable points with this card, <br>so <a href="#" onclick="offerYes(false); return false;">read more here</a> to see if it’s right for you!</p>
+            <a href="#" class="btn-blue" onclick="offerYes(false); return false;">Learn More</a>
+        </div>
+        {{ offerMacros.offerButtons(_context) }}
+    </div>
+{% endblock %}

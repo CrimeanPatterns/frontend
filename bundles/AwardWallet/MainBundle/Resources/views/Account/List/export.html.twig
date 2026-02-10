@@ -1,0 +1,48 @@
+{% extends "@AwardWalletMain/Layout/common.html.twig" %}
+
+{% block title %}
+    {{ title|trans }}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script type="text/javascript">
+        {% if needUpgrade is defined %}
+        require(['jquery-boot', 'lib/dialog'], function($, dialog) {
+            var dialogConfirm = dialog.createNamed('need-upgrade', $('<div><p>{{ 'award.account.popup.need-upgrade.p1'|trans }}</p><br><p>{{ 'award.account.popup.need-upgrade.p2'|trans }}</p></div>'), {
+                title         : '{{ 'please-upgrade'|trans }}',
+                autoOpen      : true,
+                modal         : false,
+                closeOnEscape : false,
+                minWidth      : 500,
+                close         : function() {
+                    window.location = Routing.generate('aw_account_list');
+                },
+                buttons       : [
+                    {
+                        text    : '{{ 'button.ok'|trans }}',
+                        'class' : 'btn-blue',
+                        click   : function() {
+                            window.location = Routing.generate('aw_users_pay', {'BackTo' : Routing.generate('aw_account_list')});
+                        }
+                    },
+                    {
+                        text    : '{{ 'button.cancel'|trans }}',
+                        'class' : 'btn-silver',
+                        click   : function() {
+                            window.location = Routing.generate('aw_account_list');
+                        }
+                    }
+                ]
+            });
+
+        });
+        {% endif %}
+    </script>
+{% endblock %}
+
+{% block content %}
+    <div class="tabs-content fixed-width">
+        <p>{{ message }}</p>
+    </div>
+{% endblock %}

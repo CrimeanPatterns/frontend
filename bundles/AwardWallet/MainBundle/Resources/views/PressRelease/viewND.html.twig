@@ -1,0 +1,33 @@
+{% set MOBILE_NAV = true %}
+{% set MAIN_BODY_CLASSES = {
+    'manual-hidden': true,
+    'responsive': true
+}|merge(MAIN_BODY_CLASSES|default({})) %}
+{% extends app.user is not null ? "@AwardWalletMain/Layout/common.html.twig" : "@AwardWalletMain/Layout/not_logged.html.twig" %}
+
+{% block meta %}
+    {{ parent() }}
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0, viewport-fit=cover">
+{% endblock %}
+
+{% block mainContent %}
+    <div class="main-blk">
+        <h1>{{ 'media.page.header'|trans|desc('Press releases') }}</h1>
+
+        <div class="main-blk-content">
+            <div class="press-releases">
+
+                <div class="date-blk">
+                    <div class="date-blk-item">
+                        {{ pressRelease.date|patternDatetime('EEEE, LLLL d, y', app.request.locale) }}
+                    </div>
+                </div>
+
+                {% if not pressRelease.visible %}<b>[HIDDEN]</b> {% endif %}
+
+                {{ pressRelease.body|raw }}
+
+            </div>
+        </div>
+    </div>
+{% endblock %}

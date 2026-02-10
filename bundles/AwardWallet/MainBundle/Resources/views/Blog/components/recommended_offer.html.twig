@@ -1,0 +1,11 @@
+{% import '@AwardWalletMain/Blog/components/post.html.twig' as postComponent %}
+{% import '@AwardWalletMain/Blog/components/icons.html.twig' as icons %}
+
+<div class="{{ bem(pageName, 'category-title-block', ['recommended-offer']) }}">
+    <h2 class="{{ bem(pageName, 'section-title') }}">{{recommendedOffer.title}}</h2>
+</div>
+<div class="{{ bem(pageName, 'category-posts') }} {{ bem(pageName, 'recommended-posts') }}" data-recommended-posts="{{ recommendedOffer.posts|json_encode|e('html_attr')|raw }}">
+    {% for post in recommendedOffer.posts|slice(0, 1) %}
+        {{ postComponent.renderPost(post, 'large', postComponent.renderAdditionalBlock(post)) }}
+    {% endfor %}
+</div>

@@ -1,0 +1,12 @@
+<div class="retrieve-list" id="plans-import-popup">
+{% for user in users %}
+    <a class="show-calendar-link" data-agent="{{ user.AgentID }}" data-name="{{ user.Username }}">
+        <div class="icon">
+            <i class="icon-user"></i>
+        </div>
+        <div class="name">
+            {{ user.Username }}
+        </div>
+    </a>
+{% endfor %}
+</div>

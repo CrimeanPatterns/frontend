@@ -1,0 +1,382 @@
+services:
+    _defaults:
+        public: true
+
+    # Monolog
+    aw.extension.monolog.formatter.awardwallet:
+        public: true
+        class: AwardWallet\Common\Monolog\Formatter\HtmlFormatter
+        autowire: true
+    AwardWallet\Common\Monolog\Processor\AppProcessor:
+        public: true
+        arguments: ['frontend', '%kernel.debug%']
+        tags:
+            - { name: monolog.processor, method: processRecord }
+
+    AwardWallet\Common\Monolog\Processor\AdjustLogLevelForExceptions:
+        arguments:
+            -
+                Symfony\Component\HttpKernel\Exception\NotFoundHttpException: !php/const Monolog\Logger::INFO
+                Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException: !php/const Monolog\Logger::INFO
+        tags:
+            - { name: monolog.processor }
+
+#    aw.extension.monolog.processor.introspection:
+#        class: Monolog\Processor\IntrospectionProcessor
+#        tags:
+#            - { name: monolog.processor }
+
+#    aw.extension.monolog.processor.trace:
+#        class: AwardWallet\MainBundle\FrameworkExtension\Monolog\Processor\TraceProcessor
+#        tags:
+#            - { name: monolog.processor }
+    # End Monolog
+
+    # Form errors handler
+    aw.extension.form.error_handler:
+        public: true
+        class: AwardWallet\MainBundle\FrameworkExtension\FormErrorHandler
+        arguments:  ["@translator"]
+
+    # x-phonegap Listener
+    aw.listener.phonegap:
+        public: true
+        class: AwardWallet\MainBundle\FrameworkExtension\Listeners\PhonegapListener
+        tags:
+            - { name: kernel.event_listener, event: kernel.request, method: onKernelRequest, priority: 1000 }
+
+    aw.listener.mobile_device:
+        public: true
+        autowire: true
+        class: AwardWallet\MainBundle\FrameworkExtension\Listeners\MobileDeviceListener
+        arguments:
+            $logger: "@monolog.logger.stat"
+        tags:
+            - { name: kernel.event_listener, event: kernel.request, method: onKernelRequest, priority: 0 }
+            - { name: kernel.event_listener, event: kernel.response, method: onKernelResponse, priority: 0 }
+
+    aw.listener.beta_tester:
+        public: true
+        class: AwardWallet\MainBundle\FrameworkExtension\Listeners\BetaTesterListener
+        arguments:
+            - "@security.token_storage"
+            - "@translator"
+            - "@logger"
+            - "@aw.memcached"
+            - '@AwardWallet\MainBundle\Service\TransHelper'
+        tags:
+            - { name: kernel.event_listener, event: kernel.request, method: onKernelRequest, priority: 0 }
+            - { name: kernel.event_listener, event: kernel.response, method: onKernelResponse, priority: 0}
+
+    AwardWallet\MainBundle\FrameworkExtension\Listeners\BusinessAuthenticationListener:
+        public: true
+        autowire: true
+        tags:
+            - { name: kernel.event_listener, event: security.interactive_login, method: onInteractiveLogin, priority: 2000 }
+            - { name: kernel.event_listener, event: security.switch_user, method: onInteractiveLogin, priority: 2000 }
+
+    # handle CSRFException, and add new CSRF token to response
+    aw.listener.csrf:
+        public: true
+        class: AwardWallet\MainBundle\FrameworkExtension\Listeners\CSRFListener
+        arguments: ["@security.csrf.token_manager", "%requires_channel%", "@session"]
+        tags:
+            - { name: kernel.event_listener, event: kernel.response, method: onKernelResponse, priority: 100 }
+
+    aw.listener.awcache:
+        class: AwardWallet\MainBundle\FrameworkExtension\Listeners\AwHttpCacheListener
+        public: true
+        parent: sensio_framework_extra.cache.listener
+        arguments: [ "@logger" ]
+        tags:
+            - { name: kernel.event_subscriber }
+
+    aw.listener.api_version:
+        public: true
+        class: AwardWallet\MainBundle\FrameworkExtension\Listeners\ApiVersionListener
+        arguments: [ "@aw.api.versioning", "@translator", "@monolog.logger.stat" ]
+        tags:
+            - { name: kernel.event_listener, event: kernel.controller, method: onKernelController, priority: -1 }
+            - { name: kernel.event_listener, event: kernel.request, method: onKernelRequest, priority: 200 }
+
+    aw.listener.mobile_route:
+        public: true
+        class: AwardWallet\MainBundle\FrameworkExtension\Listeners\MobileRouteListener\MobileRouteListener
+        arguments:
+            - '@AwardWallet\MainBundle\Security\Voter\SiteVoter'
+            - "@twig"
+            - '@AwardWallet\MainBundle\Manager\SiteAdManager'
+            - '@AwardWallet\MainBundle\Service\LegacyUrlGenerator'
+            - "%kernel.cache_dir%"
+            - "%host%"
+            - "%business_host%"
+        tags:
+            - { name: kernel.event_listener, event: kernel.request, method: onKernelRequest, priority: 19 }
+
+    aw.listener.timezone:
+        public: true
+        class: AwardWallet\MainBundle\FrameworkExtension\Listeners\TimezoneListener
+        arguments:
+            - '@AwardWallet\MainBundle\Globals\Localizer\LocalizeService'
+        tags:
+            - { name: kernel.event_listener, event: kernel.request, method: onKernelRequest, priority: 11 }
+
+    AwardWallet\MainBundle\FrameworkExtension\Listeners\CustomHeadersListener:
+        public: true
+        autowire: true
+        arguments:
+            $cometServerUrl: '%comet_server_url%'
+            $requiresChannel: '%requires_channel%'
+            $cspReport: '%csp_report%'
+            $host: "%host%"
+            $businessHost: "%business_host%"
+            $cdnHost : "%cdn_host%"
+        tags:
+            - { name: kernel.event_listener, event: kernel.response, method: onKernelResponse, priority: 100 }
+            - { name: kernel.event_listener, event: kernel.request, method: onKernelRequest, priority: 100 }
+
+    AwardWallet\MainBundle\FrameworkExtension\Listeners\ContentLengthListener:
+      autowire: true
+      tags:
+        - { name: kernel.event_listener, event: kernel.response, method: onKernelResponse, priority: -10000 }
+    aw.listener.custom_headers: '@AwardWallet\MainBundle\FrameworkExtension\Listeners\CustomHeadersListener'
+#    aw.listener.json:
+#        class: AwardWallet\MainBundle\FrameworkExtension\Listeners\JsonListener
+#        arguments: [ @service_container ]
+#        tags:
+#            - { name: kernel.event_listener, event: kernel.controller, method: onKernelController, priority: -255 }
+
+    aw.listener.json_decode:
+        public: true
+        class: AwardWallet\MainBundle\FrameworkExtension\Listeners\JsonRequestTransformerListener
+        tags:
+            - { name: kernel.event_subscriber }
+
+    aw.listener.local_passwords:
+        public: true
+        class: AwardWallet\MainBundle\FrameworkExtension\Listeners\LocalPasswordsListener
+        arguments: ["@aw.manager.local_passwords_manager"]
+        tags:
+            - { name: kernel.event_listener, event: kernel.response, method: onKernelResponse }
+
+    # Twig services
+    aw.extension.twig.services:
+        public: true
+        class: AwardWallet\MainBundle\FrameworkExtension\Twig\TwigServices
+        arguments:  ["@service_container"]
+
+    aw.extension.twig.aw_extension:
+        public: true
+        autowire: true
+        class: AwardWallet\MainBundle\FrameworkExtension\Twig\AwTwigExtension
+        arguments:
+            - "@aw.extension.translation.entity"
+            - "@request_stack"
+            - "@twig.loader"
+            - "@doctrine.orm.default_entity_manager"
+            - '@AwardWallet\MainBundle\Globals\Localizer\LocalizeService'
+            - '@AwardWallet\MainBundle\Service\SecureLink'
+            - "@aw.htmleditor.transformer.html_purifier"
+            - '@AwardWallet\MainBundle\Service\BalanceFormatter'
+            - "%kernel.root_dir%/../bundles/AwardWallet/MainBundle/Resources/views"
+            - "%kernel.root_dir%/../web"
+        tags:
+            - { name: twig.extension }
+    AwardWallet\MainBundle\FrameworkExtension\Twig\AwTwigExtension: '@aw.extension.twig.aw_extension'
+
+    AwardWallet\MainBundle\FrameworkExtension\Twig\SiteExtension:
+        public: true
+        arguments:
+            - "@request_stack"
+            - "%google_tag_manager_id%"
+        tags: [twig.extension]
+
+    aw.extension.twig.meta_alternate:
+        public: true
+        class: AwardWallet\MainBundle\FrameworkExtension\Twig\MetaRelAlternateExtension
+        arguments:
+            - "@request_stack"
+            - "%requires_channel%"
+            - "%host%"
+            - "%kernel.root_dir%/../bundles/AwardWallet/MainBundle/Resources/config/urlRules.xml"
+            - "@aw.memcached"
+        tags:
+            - { name: twig.extension }
+
+    aw.twig.extension.replacement:
+        public: true
+        class: AwardWallet\MainBundle\FrameworkExtension\Twig\Replacement
+        arguments: ["@twig", "@aw.twig.extension.replacement.handler"]
+
+    aw.twig.extension.replacement.handler:
+        public: true
+        class: AwardWallet\MainBundle\FrameworkExtension\Twig\Replacement\ReplacementCollection
+        arguments: [!tagged twig.extension.replacement]
+
+    AwardWallet\MainBundle\FrameworkExtension\Twig\Replacement\User:
+        public: true
+        arguments: ["@aw.security.token_storage"]
+        tags: [twig.extension.replacement]
+
+    AwardWallet\MainBundle\FrameworkExtension\Twig\Replacement\Timeline:
+        public: true
+        autowire: true
+        tags: [twig.extension.replacement]
+
+    # Paginator
+    aw.extension.paginator:
+        public: true
+        class: AwardWallet\MainBundle\Globals\Paginator\Paginator
+        tags:
+            - { name: kernel.event_listener, event: kernel.request, method: onKernelRequest, priority: 0 }
+    AwardWallet\MainBundle\Globals\Paginator\Paginator: '@aw.extension.paginator'
+
+    aw.extension.paginator.processor:
+        public: true
+        class: AwardWallet\MainBundle\Globals\Paginator\Processor
+        arguments:  ["@router", "@translator"]
+
+    aw.extension.twig.pagination:
+        public: true
+        class: AwardWallet\MainBundle\Globals\Paginator\Twig\PaginationExtension
+        tags:
+            - { name: twig.extension }
+    aw.extension.twig.pagination_runtime:
+        public: true
+        class: AwardWallet\MainBundle\Globals\Paginator\Twig\PaginationRuntime
+        arguments:  ["@aw.extension.paginator.processor", "@twig"]
+        tags:
+            - { name: twig.runtime }
+
+    # JsTranslatorExtractor
+    aw.extension.translation.jsextractor:
+        public: true
+        class: AwardWallet\MainBundle\FrameworkExtension\JsTranslationExtractor
+        arguments: ["@jms_translation.doc_parser"]
+        tags:
+            - { name: jms_translation.file_visitor }
+
+    aw.extension.translation.angular_extractor:
+        public: true
+        class: AwardWallet\MainBundle\FrameworkExtension\AngularSymfonyTranslationExtractor
+        tags:
+            - { name: jms_translation.file_visitor }
+
+    aw.extension.translation.translatable_extractor:
+        public: true
+        class: AwardWallet\MainBundle\FrameworkExtension\Translator\TranslatableExtractor
+        arguments: ["@jms_translation.doc_parser", "@jms_translation.file_source_factory"]
+        tags:
+            - { name: jms_translation.file_visitor }
+
+    # Fragment Renderer
+    aw.extension.renderer.action:
+        public: true
+        class: AwardWallet\MainBundle\FrameworkExtension\ActionFragmentRenderer
+        arguments:  ["@service_container", "@controller_resolver", "@argument_resolver"]
+        tags:
+            - { name: kernel.fragment_renderer, alias: action }
+
+    aw.extension.translation.translator_hijacker:
+        autowire: true
+        public: true
+        class: AwardWallet\MainBundle\FrameworkExtension\Translator\TranslatorHijacker
+        arguments: [ "@translator" ]
+
+    AwardWallet\MainBundle\FrameworkExtension\Translator\TranslatorHijacker: '@aw.extension.translation.translator_hijacker'
+
+    translator_hijacker:
+        public: true
+        alias: aw.extension.translation.translator_hijacker
+
+    # Entity translator
+    aw.extension.translation.entity:
+        public: true
+        class: AwardWallet\MainBundle\FrameworkExtension\Translator\EntityTranslator
+        arguments:
+            - "@translator"
+            - "@doctrine.orm.default_entity_manager"
+            - "@property_accessor"
+
+    AwardWallet\MainBundle\FrameworkExtension\Translator\EntityTranslator: '@aw.extension.translation.entity'
+
+    aw.entity_listener_resolver:
+        public: true
+        class: AwardWallet\MainBundle\FrameworkExtension\EntityListenerResolver
+        arguments: ["@service_container"]
+
+    aw.entity_listener.account:
+        public: true
+        class: AwardWallet\MainBundle\Entity\Listener\AccountListener
+        autowire: true
+        tags:
+            - { name: doctrine.entity_listener }
+
+    aw.entity_listener.providercoupon:
+        public: true
+        class: AwardWallet\MainBundle\Entity\Listener\ProvidercouponListener
+        arguments:
+            - '@AwardWallet\MainBundle\Service\Counter'
+        tags:
+            -  { name: doctrine.entity_listener }
+
+    aw.entity_listener.abpassenger:
+        public: true
+        class: AwardWallet\MainBundle\Entity\Listener\AbPassengerListener
+        tags:
+            - { name: doctrine.entity_listener }
+
+    aw.entity_listener.cart:
+        public: true
+        class: AwardWallet\MainBundle\Entity\Listener\CartListener
+        tags:
+            - { name: doctrine.entity_listener }
+
+    aw.entity_listener.cartitem:
+        public: true
+        class: AwardWallet\MainBundle\Entity\Listener\CartItemListener
+        arguments: ["@aw.extension.translate_args"]
+        tags:
+            - { name: doctrine.entity_listener }
+
+    AwardWallet\MainBundle\Entity\Listener\UseragentListener:
+        public: true
+        autowire: true
+        tags:
+            - { name: doctrine.entity_listener }
+
+    aw.extension.translate_args:
+        public: true
+        class: AwardWallet\MainBundle\Entity\Listener\TranslateArgs
+        arguments: ["@translator", "@doctrine.orm.default_entity_manager", '@AwardWallet\MainBundle\Globals\Localizer\LocalizeService', '@AwardWallet\MainBundle\Service\Billing\ExpirationCalculator']
+
+    AwardWallet\MainBundle\FrameworkExtension\Listeners\Discount30Listener:
+        public: true
+        autowire: true
+        tags:
+            - { name: kernel.event_listener, event: security.interactive_login, method: onInteractiveLogin, priority: 1100 }
+
+    AwardWallet\MainBundle\FrameworkExtension\Listeners\ManagerThrottlerListener\ManagerLocker:
+        autowire: true
+        arguments:
+            $throttlerTier1: "@aw.security.antibruteforce.manager_tier1"
+            $throttlerTier2: "@aw.security.antibruteforce.manager_tier2"
+            $throttlerTier3: "@aw.security.antibruteforce.manager_tier3"
+            $throttlerTier4: "@aw.security.antibruteforce.manager_tier4"
+
+    AwardWallet\MainBundle\FrameworkExtension\Listeners\ManagerThrottlerListener\ManagerThrottlerListener:
+        autowire: true
+        arguments:
+            $throttlerTier1: "@aw.security.antibruteforce.manager_tier1"
+            $throttlerTier2: "@aw.security.antibruteforce.manager_tier2"
+            $throttlerTier3: "@aw.security.antibruteforce.manager_tier3"
+            $throttlerTier4: "@aw.security.antibruteforce.manager_tier4"
+            $logger: "@monolog.logger.security"
+            $isThrottlingEnabled: "%manager.throttle%"
+        tags:
+            - { name: kernel.event_listener, event: kernel.request, method: onKernelRequest, priority: -9999 }
+
+    AwardWallet\MainBundle\FrameworkExtension\Listeners\ClearLargeCookieListener:
+        autowire: true
+        tags:
+            - { name: kernel.event_listener, event: kernel.response, method: onKernelResponse, priority: 9999 }

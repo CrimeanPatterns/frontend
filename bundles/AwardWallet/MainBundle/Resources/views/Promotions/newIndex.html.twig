@@ -1,0 +1,395 @@
+{% set MOBILE_NAV = true %}
+{% set MAIN_BODY_CLASSES = {
+    'manual-hidden': true,
+    'responsive': true
+}|merge(MAIN_BODY_CLASSES|default({})) %}
+
+{% extends app.user is not null ? "@AwardWalletMain/Layout/hidden_left_menu.html.twig" : "@AwardWalletMain/Layout/not_logged.html.twig" %}
+
+{% block meta %}
+    {{ parent() }}
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0, viewport-fit=cover">
+{% endblock %}
+
+{% if form %}
+    {% form_theme form with ['@AwardWalletMain/FormTheme/fields.html.twig'] %}
+{% endif %}
+{% trans_default_domain "promotions" %}
+{% import _self as macro %}
+
+{% block body_left_widgets %}
+    {{ widget_render('left_top') }}
+{% endblock %}
+
+{% macro drawButton(caption, href, classes, size, buttonAttr) %}
+    {% if href|default(false) == false %}
+        <button {% if size|default(0) > 0 %}style="width:{{ size }}px;"{% endif %} class="btn-silver {{ classes|default('') }}" {{ buttonAttr|raw }}>
+            {{ caption|raw }}
+        </button>
+    {% else %}
+        <a {% if size|default(0) > 0 %}style="width:{{ size }}px;"{% endif %} class="btn-silver {{ classes|default('') }}" {{ buttonAttr|raw }} href="{{ href|raw }}" target="_blank">{{ caption|e }}</a>
+    {% endif %}
+{% endmacro %}
+
+{% block title %}{{ 'title'|trans|desc('Promotions') }}{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style type="text/css">
+        .main-table.accounts {
+            min-width: 700px;
+            max-width: 900px;
+            width: 50%;
+        }
+        .main-table td.discount-cell {
+            text-align: center!important;
+        }
+    </style>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        var promo, region;
+        require([
+            'require',
+            'lib/design',
+            'pages/promos/promotions'
+        ], function(require){
+            promo = require('pages/promos/promotions');
+            region =  $('#promotions_region_filter_regionid').val();
+        });
+        function changeRegion(obj){
+            var url = "{{ url('aw_promotions_index_region', {'regionID': 'mask'|raw}) }}";
+            var value = $(obj).val();
+            $('#promotions_region_filter_regionid').val(region);
+            if (value == 'all')
+                value = 'clear';
+            window.location.href = url.replace('mask', value);
+        }
+    </script>
+    <script type="text/javascript">
+        require([
+            'jquery-boot',
+            'angular-boot',
+            {#'pages/promos/skyScannerDeals', #}
+            'lib/design'
+        ], function ($, angular) {
+            {#
+            window.InitFlightsData = {{ flightDeals|json_encode|default('false')|raw }};
+            angular.module('skyScannerDealsApp').constant('InitData', InitFlightsData);
+            $(function () {
+                angular.bootstrap( $('div.content').get(), ['skyScannerDealsApp']);
+            });
+            #}
+        });
+    </script>
+{% endblock %}
+
+{% block content %}
+    {% set defaultButtonWidth = 180 %}
+
+    <div class="main-blk">
+        <h1>{{ 'title'|trans|desc('Promotions') }}</h1>
+        <div class="main-blk-content">
+
+{#          SkyScanner deals begin  #}
+            {#
+            {% if flightDeals.list %}
+                <div class="silver-blk big" data-ng-controller="flightDealsCtrl as main">
+                    <div class="title">{{ 'discounted-flight-deals'|trans|desc('Discounted Flight Deals') }}</div>
+                    <div class="content-blk">
+                        <div class="silver-blk__filter">
+                            <div>
+                                <label>{{ 'origin-airport'|trans|desc('Origin Airport:') }}</label>
+                                <input type="text" id="origin_airport"/>
+                            </div>
+{#                            <div>#}
+{#                                <label>Airline</label>#}
+{#                                <div class="styled-select">#}
+{#                                    <select>#}
+{#                                        <option></option>#}
+{#                                    </select>#}
+{#                                </div>#}
+{#                            </div>#}
+            {#
+                        </div>
+                        <div class="ajax-loader" style="text-align: left;" data-ng-show="main.state.isLoading"><div class="loading"></div></div>
+                        <div data-ng-show="!main.state.isLoading" ng-cloak>
+                            <table class="main-table promotion mobile-table-v2">
+                                <thead>
+                                <tr>
+                                    <th>{{ 'itineraries.trip.dep-name'|trans({}, 'trips') }}</th>
+                                    <th>{{ 'itineraries.trip.arr-name'|trans({}, 'trips') }}</th>
+                                    <th>{{ 'itineraries.trip.air.airline-name'|trans({}, 'trips') }}</th>
+                                    <th>{{ 'itineraries.trip.duration'|trans({}, 'trips') }}</th>
+                                    <th>{{ 'leave'|trans|desc('Leave') }}</th>
+                                    <th>{{ 'return'|trans|desc('Return') }}</th>
+                                    <th>{{ 'below-average'|trans|desc('Below Average') }}</th>
+                                    <th>{{ 'price'|trans|desc('Price') }}</th>
+                                    <th></th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr data-ng-show="!main.state.list.length">
+                                    <td colspan="9" style="text-align: center;">No deals found</td>
+                                </tr>
+                                <tr data-ng-repeat="(i, flight) in main.state.list track by i">
+                                    <td data-title="{{ 'itineraries.trip.dep-name'|trans({}, 'trips') }}">
+                                        <div>
+                                            <strong data-ng-bind="flight.fromCity + ', '"></strong>
+                                            <strong data-ng-show="flight.fromState"
+                                                    data-ng-bind="flight.fromState + ', '"></strong>
+                                            [[ flight.fromCountry ]]
+                                        </div>
+                                    </td>
+                                    <td data-title="{{ 'itineraries.trip.arr-name'|trans({}, 'trips') }}">
+                                        <div>
+                                            <strong data-ng-bind="flight.toCity + ', '"></strong>
+                                            <strong data-ng-show="flight.toState"
+                                                    data-ng-bind="flight.toState + ', '"></strong>
+                                            [[ flight.toCountry ]]
+                                        </div>
+                                    </td>
+                                    <td data-title="{{ 'itineraries.trip.air.airline-name'|trans({}, 'trips') }}" data-ng-bind="flight.airline"></td>
+                                    <td data-title="{{ 'itineraries.trip.duration'|trans({}, 'trips') }}" data-ng-bind="flight.duration"></td>
+                                    <td data-title="{{ 'leave'|trans|desc('Leave') }}" data-ng-bind="flight.leave"></td>
+                                    <td data-title="{{ 'return'|trans|desc('Return') }}" data-ng-bind="flight.return"></td>
+                                    <td data-title="{{ 'below-average'|trans|desc('Below Average') }}" class="discount-cell">
+                                        <div>
+                                            <strong data-ng-bind="flight.discount"></strong>%
+                                        </div>
+                                    </td>
+                                    <td data-title="{{ 'price'|trans|desc('Price') }}">
+                                        <div>
+                                            <strong data-ng-bind="flight.localPrice"></strong>
+                                            <span data-ng-show="!flight.usdIsLocal && flight.usdPrice">&nbsp(~<strong
+                                                    data-ng-bind="flight.usdPrice"></strong>)</span>
+                                        </div>
+                                    </td>
+                                    <td class="table-btn-actions"><a target="_blank" ng-href="[[ flight.link ]]" class="btn-blue">{{ 'book-now'|trans|desc('Book Now') }}</a></td>
+                                </tr>
+                                </tbody>
+                            </table>
+                            <a href="#" class="btn-silver square" ng-click="main.handlePrevPage($event)"
+                               data-ng-if="main.state.currentPage > 1"><i class="icon-double-arrow-left-silver"></i></a>
+                            <a href="#" class="btn-silver" ng-click="main.handleNextPage($event)"
+                               data-ng-if="main.state.currentPage == 1 && !main.state.isLastPage">{{ 'show-more-deals'|trans|desc('Show More Deals') }} <i
+                                        class="icon-double-arrow-right-silver"></i></a>
+                            <a href="#" class="btn-silver square" ng-click="main.handleNextPage($event)"
+                               data-ng-if="main.state.currentPage > 1 && !main.state.isLastPage"><i
+                                        class="icon-double-arrow-right-silver"></i></a>
+                        </div>
+                    </div>
+                </div>
+                {% if app.user is null %}
+                    <div class="gray-container">
+                        <p>{{ 'promotions.to-see-deals'|trans|desc('To see more amazing deals and promotions please') }}</p>
+                        <div class="gray-container__block">
+                            {% if is_granted('SITE_BUSINESS_AREA') %}
+                                <a href="{{ path('aw_register_business') }}" class="btn-rose">{{ 'buttons.register'|trans({}, 'messages') }}</a>
+                            {% else %}
+                                <a href="{{ path('aw_register', {'BackTo' : app.request.uri}) }}" class="btn-rose">{{ 'buttons.register'|trans({}, 'messages') }}</a>
+                            {% endif %}
+
+                            <div class="or">{{ 'or'|trans({}, 'messages')|desc('or') }}</div>
+                            <a href="{{ path('aw_login', {'BackTo' : app.request.uri}) }}" class="btn-silver">{{ 'login.button.login'|trans({}, 'messages') }}</a>
+                        </div>
+                        <div class="logo-skyscanner"></div>
+                    </div>
+                {% endif %}
+            {% endif %}
+            #}
+{#          SkyScanner deals end  #}
+
+            {% if form %}
+                <form id="filterRegion" class="filterRegion" method="get">
+                    {{ form_label(form.regionid) }}
+                    {{ form_widget(form.regionid, {'inline': true}) }}
+                </form>
+            {% endif %}
+
+            {% if app.user is not null %}
+                {% if promotions['my'].total == 0 and promotions['other'].total == 0 %}
+                    <p class="no-result">
+                        <i class="icon-warning-small"></i><span>{{ "promotion.no-records"|trans|desc("No records found that match your search criteria") }}</span>
+                    </p>
+                {% endif %}
+
+                {% for sideKey, sideValue in promotions %}
+                    {% if sideValue.total > 0 %}
+                        {% set open = (sideKey == 'my' and sideValue.total > 0) or (sideKey == 'other' and promotions['my'].total == 0) %}
+                        <div class="promotions{% if open %} active{% endif %}">
+                            <div class="title-note" id="{{ sideKey }}PromoHead">
+                                <h3>
+                                    {% if sideKey == 'my' %}
+                                        {{ 'promotions.my'|trans|desc('My Promotions') }}
+                                    {% elseif sideKey == 'other' %}
+                                        {{ 'promotions.all-other'|trans|desc('All Other Promotions') }}
+                                    {% endif %}
+                                </h3>
+                                <div class="action">
+                                    <div class="count">
+                                        {{ 'unread-count'|trans({
+                                            '%unreadCount%': sideValue.unread,
+                                            '%totalCount%': sideValue.total,
+                                        })|desc('<span class="bold" rel="unread">%unreadCount%</span> <span class="bold">unread</span> of <span class="bold" rel="total">%totalCount%</span>')|raw }}
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="list-of-providers" id="{{ sideKey }}PromoBody">
+                            {% for providerID, prividerDealsInfo in sideValue.deals %}
+                                <div data-provider-id="{{ providerID }}" class="promotions-blk{% if open %} active{% endif %}">
+                                    <div id="providerHead_{{ providerID }}" class="promotion-title">
+                                        <div class="title">{{ prividerDealsInfo.deals[0]['DisplayName']|raw }}</div>
+                                        <div class="action">
+                                            <div class="count">
+                                                {{ 'unread-count'|trans({
+                                                '%unreadCount%': prividerDealsInfo.unread,
+                                                '%totalCount%': prividerDealsInfo.total,
+                                                })|desc('<span class="bold" rel="unread">%unreadCount%</span> <span class="bold">unread</span> of <span class="bold" rel="total">%totalCount%</span>')|raw }}
+                                            </div>
+                                            {% set markCaptionProvider = 'promotion.mark-read-all' | trans %}
+                                            {% set statusMarkProvider = 0 %}
+                                            {% if prividerDealsInfo.unread == 0 %}
+                                                {% set statusMarkProvider = 1 %}
+                                                {% set markCaptionProvider = 'promotion.mark-unread-all' | trans %}
+                                            {% endif %}
+
+                                            {{ macro.drawButton(markCaptionProvider|trans, false, 'mark', defaultButtonWidth, 'id="markProvider_'~ providerID ~'" onclick="promo.markReadProvider('~ providerID ~', '~ statusMarkProvider ~'); event.stopPropagation();"') }}
+                                        </div>
+                                    </div>
+                                    <div id="providerBody_{{ providerID }}" class="promotion-list">
+                                        {% for deal in prividerDealsInfo.deals %}
+                                            <div data-deal-id="{{ deal.DealID }}" class="promotion-list-blk{% if deal.MarkRead == true %} read{% endif %}{% if deal.IsNew == 1 %} new{% endif %}{% if deal.MarkApplied == 1 %} applied{% endif %}{% if deal.MarkFollow == 1 %} follow{% endif %}" onclick="location.href='#{{ deal.DealID }}';">
+                                                <div id="dealHead_{{ deal.DealID }}" class="promotion-list-title">
+                                                    <div class="promotion-event">
+                                                        <i class="icon-follow"></i>
+                                                        <i class="icon-green-check"></i>
+                                                        <i class="icon-new"></i>
+                                                    </div>
+                                                    <div class="item">
+                                                        <div class="title">
+                                                            {{ deal.Title|raw }}
+                                                            {% if deal.Continents != '' %}
+                                                                <span class="silver">({{ deal.Continents }})</span>
+                                                            {% endif %}
+                                                        </div>
+                                                        <div class="action">
+                                                            {% set markCaption = 'promotion.mark-as-read' | trans %}
+                                                            {% if deal.MarkRead == 1 %}
+                                                                {% set markCaption = 'promotion.mark-as-unread' | trans %}
+                                                            {% endif %}
+                                                            {{ macro.drawButton(markCaption, false, 'mark', defaultButtonWidth, 'id="markSmall_'~ deal.DealID ~'" onclick="promo.markAsRead('~ deal.DealID ~', '~ deal.MarkRead ~'); event.stopPropagation();"') }}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div id="dealBody_{{ deal.DealID }}" class="promotion-list-description">
+                                                    <div class="item">
+                                                        {{ deal.Description|raw }}
+
+                                                        {% if accountsData[deal.ProviderID]|default(none) != none %}
+                                                            <table class="main-table t-left accounts mobile-table-v2">
+                                                                <thead>
+                                                                    <tr>
+                                                                        <th>{{ 'award.account.number'|trans({}, 'messages')|desc('Account Number') }}</th>
+                                                                        <th>{{ 'award.account.owner'|trans({}, 'messages')|desc('Owner') }}</th>
+                                                                        <th>{{ 'award.account.total'|trans({}, 'messages')|desc('Total') }}</th>
+                                                                    </tr>
+                                                                </thead>
+                                                                <tbody>
+                                                                {% for account in accountsData[deal.ProviderID] %}
+                                                                    <tr>
+                                                                        <td data-title="{{ 'award.account.number'|trans({}, 'messages')|desc('Account Number') }}">{{ account.AccountNumber }}</td>
+                                                                        <td data-title="{{ 'award.account.owner'|trans({}, 'messages')|desc('Owner') }}">{{ account.UserName }}</td>
+                                                                        <td data-title="{{ 'award.account.total'|trans({}, 'messages')|desc('Total') }}">{{ account.FormatedBalance }}</td>
+                                                                    </tr>
+                                                                {% endfor %}
+                                                                </tbody>
+                                                            </table>
+                                                        {% endif %}
+                                                        {% if deal.RelatedProviders != none and app.getUser.Userid == 7 %}
+                                                            <div class="relatedProviders"><b>Related providers:</b> {{ deal.RelatedProviders }}</div>
+                                                        {% endif %}
+
+                                                        {% set deepLinking = false %}
+                                                        {% if deal.AutologinProviderID != none and isDeepLinkingProviders[deal.AutologinProviderID]|default(0) == 1 %}
+                                                            {% set deepLinking = true %}
+                                                        {% endif %}
+                                                        <ul id="buttons_{{ deal.DealID }}" class="promotion-actions">
+                                                            {% set preload = "" %}
+                                                            {% if deal.Link != none and deal.RegistrationLink != none and deal.Count|default(0) %}
+                                                                {% set href = false %}
+                                                                {% if deepLinking == false or (deal.Count == 1 and deepLinking) %}
+                                                                    {% set href = deepLinking == false ? "/promos/redirect/" ~ deal.DealID ~ "?Goto=" ~ deal.Link|url_encode() : "/promos/redirect/" ~ deal.DealID ~ "?Goto=DeepLink&AccountID=" ~ deal.AccountID %}
+                                                                {% endif %}
+
+                                                                {% set buttonAttr = "onclick='promo.dealClicked(" ~ deal.DealID ~ ");'" %}
+                                                                {% if deepLinking and deal.Count|default(0) > 1 %}
+                                                                    {% set buttonAttr = "onclick='promo.popupDeepLinkDeal(\"" ~ deal.AutologinProviderID ~ "\",\"" ~ deal.DealID ~ "\", \"reg\");'" %}
+                                                                {% endif %}
+
+                                                                <li>
+                                                                    {{ macro.drawButton(deal.ButtonCaption|trans, href, '', defaultButtonWidth, 'id="register_'~ deal.DealID ~ '" ' ~ buttonAttr) }}
+                                                                </li>
+                                                            {% elseif deal.AutoLogin and deal.DealsLink != none and deal.Count|default(0) > 0  %}
+                                                                {% set href = false %}
+                                                                {% if deal.Count == 1 %}
+                                                                    {% set href = "/promos/redirect/" ~ deal.DealID ~ "?Goto=DeepDealsLink&AccountID=" ~ deal.AccountID|url_encode() %}
+                                                                {% endif %}
+
+                                                                {% set buttonAttr = "onclick='promo.dealClicked(" ~ deal.DealID ~ ");'" %}
+                                                                {% if deal.Count > 1 %}
+                                                                    {% set buttonAttr = "onclick='promo.popupDeepLinkDeal(\"" ~ deal.AutologinProviderID ~ "\",\"" ~ deal.DealID ~ "\", \"autologin\");'" %}
+                                                                {% endif %}
+
+                                                                <li>
+                                                                    {{ macro.drawButton('button.autologin'|trans({}, 'messages')|desc('Auto-login'), href, '', defaultButtonWidth, 'id="register_'~ deal.DealID ~ '" ' ~ buttonAttr) }}
+                                                                </li>
+                                                            {% endif %}
+
+                                                            {% if deal.DealsLink != none %}
+                                                                <li>
+                                                                    {{ macro.drawButton('promotion.view-details'|trans|desc('View Details'), '/promos/redirect/'~ deal.DealID ~'?Goto='~ deal.DealsLink|url_encode(true) ~'', '', defaultButtonWidth, 'onclick="promo.dealClicked('~ deal.DealID ~');"') }}
+                                                                </li>
+                                                            {% endif %}
+
+                                                            {% set markCaptionFollow = 'promotion.follow-up'|trans %}
+                                                            {% set classCaptionFollow = 'on' %}
+                                                            {% if deal.MarkFollow == 1 %}
+                                                                {% set markCaptionFollow = 'promotion.undo-follow-up'|trans|raw %}
+                                                                {% set classCaptionFollow = 'off' %}
+                                                            {% endif %}
+
+                                                            {% set markCaptionApply = 'promotion.mark-as-applied'|trans %}
+                                                            {% set classCaptionApply = 'on' %}
+                                                            {% if deal.MarkApplied == 1 %}
+                                                                {% set markCaptionApply = 'promotion.unmark-as-applied'|trans|raw %}
+                                                                {% set classCaptionApply = 'off' %}
+                                                            {% endif %}
+
+                                                            <li>
+                                                                {{ macro.drawButton('<i class="icon-follow"></i><span>'~ markCaptionFollow ~'</span>', false, classCaptionFollow, defaultButtonWidth, 'id="markFollow_'~ deal.DealID ~'" onclick="promo.markDeal('~ deal.DealID ~', '~ deal.MarkFollow ~', \'Follow\');"') }}
+                                                            </li>
+                                                            <li>
+                                                                {{ macro.drawButton('<i class="icon-green-check"></i><span>'~ markCaptionApply ~'</span>', false, classCaptionApply, defaultButtonWidth, 'id="markApply_'~ deal.DealID ~'" onclick="promo.markDeal('~ deal.DealID ~', '~ deal.MarkApplied ~', \'Apply\');"') }}
+                                                            </li>
+                                                        </ul>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                            {% endfor %}
+                            </div>
+                        </div>
+                    {% endif %}
+                {% endfor %}
+
+                {#<div class="logo-skyscanner"></div>#}
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}

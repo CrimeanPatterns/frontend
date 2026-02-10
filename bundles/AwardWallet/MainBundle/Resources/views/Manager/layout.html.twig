@@ -1,0 +1,10 @@
+{% if contentTitle is not defined %}
+    {% set contentTitle = title %}
+{% endif %}
+{{ render_action(controller('AwardWallet\\MainBundle\\Controller\\Manager\\LayoutController::headerAction', {'title': title, 'contentTitle': contentTitle})) }}
+{% block content %}
+{% if content is defined %}
+    {{ content | raw }}
+{% endif %}
+{% endblock %}
+{{ render_action(controller('AwardWallet\\MainBundle\\Controller\\Manager\\LayoutController::footerAction')) }}

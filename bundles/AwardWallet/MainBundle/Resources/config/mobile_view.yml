@@ -1,0 +1,35 @@
+services:
+    _defaults:
+        public: true
+        bind:
+            $host: '%requires_channel%://%host%'
+            $rootDir: '%kernel.root_dir%'
+
+    aw.mobile_view.booking_details:
+        public: true
+        class: AwardWallet\MobileBundle\View\Booking\Details
+        arguments:
+            - '@doctrine.orm.default_entity_manager'
+            - '@translator'
+            - '@AwardWallet\MainBundle\Globals\Localizer\LocalizeService'
+            - "@aw.mobile_view.booking_messages_loader"
+            - '@AwardWallet\MainBundle\Service\SocksMessaging\BookingMessaging'
+            - '%requires_channel%://%host%'
+            - '@aw.extension.twig.aw_extension'
+            - "@aw.api.versioning"
+            - '@AwardWallet\MainBundle\Service\ProviderTranslator'
+            - '@AwardWallet\MainBundle\FrameworkExtension\Error\SafeExecutorFactory'
+
+    aw.mobile_view.booking_messages_loader:
+        public: true
+        class: AwardWallet\MobileBundle\View\Booking\Messages\MessagesLoader
+        arguments:
+            - "@doctrine.orm.default_entity_manager"
+            - "@aw.mobile_view.booking_messages_formatter"
+
+    AwardWallet\MobileBundle\View\Booking\Messages\MessagesFormatter:
+        public: true
+        autowire: true
+
+    aw.mobile_view.booking_messages_formatter:
+        alias: AwardWallet\MobileBundle\View\Booking\Messages\MessagesFormatter

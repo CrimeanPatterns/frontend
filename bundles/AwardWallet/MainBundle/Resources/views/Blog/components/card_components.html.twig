@@ -1,0 +1,37 @@
+
+{% macro renderCard(card, variant = 'default', rootClassName = '') %}
+    {% import '@AwardWalletMain/Blog/components/icons.html.twig' as icons %}
+    
+    <div class="{{ rootClassName }} {{ bem('offered-card') }} {% if card.ratesFees is null %}{{ bem('offered-card', null, ['no-rates']) }}{% endif %}">
+        <div class="{{ bem('offered-card', 'image-block') }}">
+            <img src="{{ card.thumb }}" onerror="this.style.display='none'" alt="card image" class="{{ bem('offered-card', 'image-bg') }}" />
+            <img src="{{ card.thumb }}" alt="card image" class="{{ bem('offered-card', 'image') }}" />
+        </div>
+        
+        <h4 class="{{ bem('offered-card', 'title') }}">{{card.name}}</h4>
+        <p class="{{ bem('offered-card', 'description') }}">{{card.description|raw}}</p>
+        <a href="{{ card.applyLink }}" class="{{ bem('offered-card', 'link') }}">
+            {{ card.applyText|raw }}
+            <span class="{{ bem('offered-card', 'arrow-icon') }}">
+                {{ icons.arrowIcon() }}
+            </span>
+        </a>
+
+        {% if card.ratesFees is not null %}
+            <div class="{{ bem('offered-card', 'ratesContainer') }}">
+                {{card.ratesFees|raw}}
+            </div>
+        {% endif %}
+    </div>
+{% endmacro %}
+
+{% macro renderLastSlide(url = '#', text = 'See All Credit Card Offers', pageName) %}
+    <a href="{{ url }}" class="swiper-slide {{ bem(pageName, 'offered-card-last-slide') }}">
+        <div class="{{ bem(pageName, 'offered-card-last-slide-placeholder') }}">
+            <div></div>
+            <div></div>
+            <div></div>
+        </div>
+        <div class="{{ bem(pageName, 'offered-card-last-slide-title') }}">{{ text }}</div>
+    </a>
+{% endmacro %}

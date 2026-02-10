@@ -1,0 +1,36 @@
+<div id="betaWelcome" style="display: none;" title="{{ 'aw.new_interface'|trans|desc('New AwardWallet Interface') }}">
+    <div class="new-design">
+        <h3>{{ 'message.welcome_aboard'|trans|desc('Welcome aboard') }}</h3>
+        <p class="big">{{ 'message.new_interface'|trans|desc('You\'ve switched to the new AwardWallet interface') }}</p>
+        <p>{{ 'message.interface_new_look'|trans|desc('This is the new look and feel of AwardWallet going forward') }}</p>
+        <p class="small-text">{{ 'message.interface_switch_back'|trans|desc('For limited time you can switch back to the old interface <br>by following a link located in the <strong>"Edit website settings"</strong> of your profile.</p>') | raw }}
+    </div>
+</div>
+
+{% if not webpack|default(false) %}
+    <script>
+        require(['jquery-boot', 'lib/dialog'], function($, dialog){
+            var popup = $('#betaWelcome');
+
+            var d = dialog.createNamed('betaWelcome', popup, {
+                autoOpen: true,
+                modal: true,
+                minWidth: 590,
+                buttons: [
+                    {
+                        text: Translator.trans("button.ok"),
+                        "class": "btn-blue",
+                        click: function() {
+                            d.close();
+                        }
+                    }
+                ]
+            });
+            setTimeout(function(){
+                d.open();
+            }, 2000);
+        });
+    </script>
+{% else %}
+    {{ encore_entry_script_tags('beta-popup', null, '_default', {'defer': true}) }}
+{% endif %}

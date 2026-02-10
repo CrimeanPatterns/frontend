@@ -1,0 +1,34 @@
+<html>
+<head>
+    <title>Extension v3</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    {{ encore_entry_link_tags('page-extension-v3-mobile') }}
+</head>
+<body>
+<div id="container"></div>
+<div id="consoleOutput"></div>
+<input type="hidden" id="awVersion"/>
+</body>
+<script>
+    (function () {
+        return;
+        var originalLog = console.log;
+        var consoleOutput = document.getElementById('consoleOutput');
+
+        console.log = function () {
+            // Call the original console.log function
+            originalLog.apply(console, arguments);
+
+            // Create a new div element for each log message
+            var message = document.createElement('div');
+            var args = Array.from(arguments).map(arg => {
+                return typeof arg === 'object' ? JSON.stringify(arg, null, 2) : arg;
+            }).join(' ');
+
+            message.textContent = args;
+            consoleOutput.appendChild(message);
+        };
+    })();
+</script>
+{{ encore_entry_script_tags('page-extension-v3-mobile', null, '_default', {'defer': true}) }}
+</html>

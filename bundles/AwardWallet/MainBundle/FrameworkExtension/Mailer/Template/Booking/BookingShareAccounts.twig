@@ -1,0 +1,92 @@
+{% extends '@MailTemplate/Layout/booking.twig' %}
+{% trans_default_domain "email" %}
+
+{% block subject %}{% apply spaceless %}{% autoescape false %}
+    {{ 'abrequest.subject'|trans({
+        '%requestId%': request.AbRequestID
+    }, 'email', lang)|desc('Award Booking Request #%requestId%') }}
+{% endautoescape %}{% endapply %}{% endblock subject %}
+
+{% block content %}
+    {% import '@MailTemplate/CommonMacro.twig' as commonMacro %}
+
+    {{ commonMacro.hello(request.contactname, _context, {
+        'padding-left': '0'
+    }) }}
+
+    {{ commonMacro.paragraph(
+        'abrequest.share_accounts.requesting_access'|trans({
+            '%booker%': request.booker.bookerInfo.ServiceName
+        }, 'email', lang)|desc('%booker% is requesting access to your account to either make a booking or courtesy hold without your needing to send us your password or PIN number via unsecured email.'),
+        _context
+    ) }}
+
+    {{ commonMacro.paragraph(
+        'abrequest.share_accounts.requesting_access.notice'|trans({}, 'email', lang)|desc('As airlines have either eliminated or restricted courtesy holds, it is important that you provide this info swiftly to secure what we have proposed. Upon receipt of your requested account info, we will be able to show your full flight details, which are cancellable within 24 hours with no airline fees.'),
+        _context
+    ) }}
+
+    {% if programs|length > 0 %}
+        <table width="100%" cellpadding="0" border="0" cellspacing="0" style="border-top:2px solid #bec2cc;line-height:20px;border-bottom:1px dotted #8e9199; margin-top:20px;">
+            <tr>
+                <td style="padding:10px 0">
+                    {% for program in programs %}
+                        {% set isAccount = program is instanceof('\\AwardWallet\\MainBundle\\Entity\\AbAccountProgram') %}
+
+                        <table width="100%" cellpadding="0" border="0" cellspacing="0">
+                            <tr>
+                                <td  width="150" class="first-cell" valign="top" style="padding-right:15px; font-size:15px;color:#70798c;">{{ 'award_program'|trans({}, 'email', lang)|desc('Award Program') }}:</td>
+                                <td {# width="60%" #} valign="top" style="font-size:16px;color:#535457;">
+                                    {% if isAccount %}
+                                        {% set name = program.account.providerid.displayname %}
+                                    {% else %}
+                                        {% set name = program.provider ? program.provider.displayname : program.name %}
+                                    {% endif %}
+                                    {{ name|htmlencode
+                                            |preg_replace('/^[^\\(]+(?=\\(|$)/ims', '<b style="font-weight:bold;color:#3d424d;">${0}</b>')
+                                            |preg_replace('/\\([^\\)]+\\)/ims', '<span style="display: inline-block;">${0}</span>')|raw }}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td  width="150" class="first-cell" valign="top" style="padding-right:15px; padding-top:5px;font-size:15px;color:#70798c;">{{ 'owner'|trans({}, 'email', lang)|desc('Owner') }}:</td>
+                                <td {# width="60%" #} valign="top" style="padding-top:5px;font-size:16px;color:#535457;">
+                                    {% if isAccount %}
+                                        {{ program.account.getOwnerFullName }}
+                                    {% else %}
+                                        {{ program.owner }}
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td  width="150" valign="top" style="padding-right:15px; padding-top:5px;font-size:15px;color:#70798c;">{{ 'balance'|trans({}, 'email', lang)|desc('Balance') }}:</td>
+                                <td {# width="60%" #} valign="top" style="padding-top:5px;font-size:16px;color:#535457;">
+                                    {% if isAccount %}
+                                        {{ program.account|formatBalance(locale) }}
+                                    {% else %}
+                                        {{ program.balance|formatNumber(2, locale) }}
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        </table>
+                        {% if not loop.last %}
+                            <br>
+                        {% endif %}
+                    {% endfor %}
+                </td>
+            </tr>
+        </table>
+    {% endif %}
+
+    {{ commonMacro.paragraph(
+        'abrequest.share_accounts.link'|trans({
+            '%booker%': request.booker.bookerInfo.ServiceName
+        }, 'email', lang)|desc('If you agree to share your account details with %booker%, please follow this link:'),
+        _context, {},
+        {
+            'margin-top': '20px'
+        }
+    ) }}
+    {% set link = baseUrl ~ path('aw_booking_share_index', {'id': request.AbRequestID}) %}
+    {{ commonMacro.dottedLink(link, link, _context) }}
+
+{% endblock content %}

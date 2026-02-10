@@ -1,0 +1,24 @@
+{% extends '@MailTemplate/Layout/base.twig' %}
+{% trans_default_domain "email" %}
+
+{% block subject %}{% apply spaceless %}{% autoescape false %}
+    {{ 'user.email.change-subject'|trans({}, 'email', lang)|desc('AwardWallet Email Change') }}
+{% endautoescape %}{% endapply %}{% endblock subject %}
+
+{% block content %}
+    {% import '@MailTemplate/CommonMacro.twig' as commonMacro %}
+
+    {{ commonMacro.hello(user.firstname, _context) }}
+    {{ commonMacro.paragraph(
+        'user.email.change-content'|trans({
+            '%emailFrom%': emailFrom,
+            '%emailTo%' : emailTo,
+            '%link1_on%': '<a style="color:#4684c4;font-weight:bold;text-decoration:none;" href="mailto:'~emailFrom~'">',
+            '%link1_off%': '</a>',
+            '%link2_on%': '<a style="color:#4684c4;font-weight:bold;text-decoration:none;" href="mailto:'~emailTo~'">',
+            '%link2_off%': '</a>'
+        }, 'email', lang)|desc('This is just a courtesy notification that the email address on your AwardWallet account has just been changed from %link1_on%%emailFrom%%link1_off% to %link2_on%%emailTo%%link2_off%.'),
+        _context, {escape: false}
+    ) }}
+
+{% endblock content %}

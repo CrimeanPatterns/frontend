@@ -1,0 +1,25 @@
+{% set title = "Delete User(s)" %}
+{% extends '@AwardWalletMain/Manager/layout.html.twig' %}
+{% form_theme form with ['form_table_layout.html.twig'] %}
+
+{% block content %}
+    {% for message in app.flashes() %}
+        <div class="flash-notice">
+            {{ message }}
+        </div>
+    {% endfor %}
+
+    {% if backTo is defined and backTo is not null %}
+        <script>
+            setTimeout(
+                function() {
+                    window.location.href = "{{ backTo|raw }}";
+                },
+                5000
+            );
+        </script>
+    {% endif %}
+
+    {{ form(form) }}
+
+{% endblock %}

@@ -1,0 +1,37 @@
+{# Issue #11547 #}
+
+{% extends popup is defined and popup ? "@AwardWalletMain/Offer/_offerPopup.html.twig" : "@AwardWalletMain/Offer/standard.html.twig" %}
+{% import '@AwardWalletMain/Offer/offerMacros.html.twig' as offerMacros %}
+{% import '@AwardWalletMain/TwigMacros/assets.html.twig' as assets %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    {{ encore_entry_link_tags('offer') }}
+    {{ encore_entry_link_tags('offers/unredeemedonecardcredits') }}
+    {% if popup is not defined %}
+        {{ assets.assets_form('css') }}
+    {% endif %}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        {{ offerMacros.jsOfferYes(_context, ApplyURL, Code, OfferUserID, ApplyURL) }}
+        {{ offerMacros.jsOfferNo(_context, Code, OfferUserID, defaultRedirectLocation) }}
+    </script>
+{% endblock %}
+
+{% block content %}
+    <div id="offer_wrap" class="offer-block">
+        <div class="offer-block">
+            <div class="one-card-offer">
+                <h3>Hey there {{ OfferData.userName }}!</h3>
+                <p>Did you know you have <br><span class="red">{{ OfferData.onecardsCount }} unused AwardWallet OneCard</span> credit{{ (OfferData.onecardsCount > 1) or (OfferData.onecardsCount == 0) ? 's' : '' }} <br>in your profile? </p>
+                <p>It should take you under 5 minutes <br>to order your personal <br>AwardWallet OneCard{{ OfferData.onecardsCount > 1 ? 's' : '' }}!</p>
+                <a onclick="offerYes(false); return false;" href="#" class="btn-blue">Order AwardWallet OneCards</a>
+                <a onclick="offerYes(false); return false;" href="#" class="thumb {{ OfferData.onecardsCount > 1 ? 'more' : '' }}"></a>
+            </div>
+        </div>
+        {{ offerMacros.offerButtons(_context) }}
+    </div>
+{% endblock %}

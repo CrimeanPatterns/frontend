@@ -1,0 +1,51 @@
+<div class="user-short-information">
+    <div class="avatar"><a href="{{ url('aw_profile_personal') }}">
+            {% if avatar is defined and avatar %}
+                <img src="{{ avatar }}" alt="avatar">
+            {% else %}
+            <i class="icon-default-avatar"></i>
+            {% endif %}
+        </a></div>
+    <div class="info">
+		<ul class="dropdown-menu">
+			<li>
+				<a href="" class="name rel-this" data-target="user-menu" tabindex="649">{{ user.fullname | default(user.email) | add_down_arrow }}</a>
+				<ul class="dropdown-submenu" data-role="dropdown" data-id="user-menu">
+					{% if is_granted('NOT_SITE_BUSINESS_AREA') %}
+						<li><a href="{{ url('aw_profile_overview') }}">{{ 'menu.userinfo.profile' | trans({}, 'menu') | desc('My Profile') }}</a></li>
+						<li><a href="{{ url('aw_users_usecoupon') }}">{{ 'menu.userinfo.upgrade_coupon' | trans({}, 'menu') | desc('Upgrade Using a Coupon') }}</a></li>
+						<li><a href="{{ url('aw_users_pay') }}">
+								{% if subscription %}
+                                    {{ 'menu.userinfo.purchase.onecard' | trans({}, 'menu') | desc('Purchase OneCard credits') }}
+								{% elseif plus %}
+                                    {{ 'menu.userinfo.extend.membership' | trans({}, 'menu') | desc('Extend Membership') }}
+								{% else %}
+									{{ 'menu.userinfo.upgrade.membership' | trans({}, 'menu') | desc('Upgrade Membership') }}
+								{% endif %}
+							</a></li>
+					{% endif %}
+					<li><a href="{{ url('aw_one_card') }}">{{ 'menu.onecard.order.new' | trans({}, 'menu') | desc('Order OneCard') }}</a></li>
+					<li><a href="{{ url('aw_users_logout') }}">{{ 'menu.userinfo.logout' | trans({}, 'menu') | desc('Logout') }}</a></li>
+				</ul>
+			</li>
+			<li>
+                <a href="{{ path('aw_profile_regional') }}" class="flag-link">{% if region and not user.isBusiness %}<i class="icon-country-{{ region | lower }}"></i>{% endif %}</a>
+                <a class="language rel-this" data-target="select-language" data-region="{{ region|lower }}" data-language="{{ lang }}" data-locale="{{ localizerLocale() }}" href="" tabindex="650"><span>{{ ('language.' ~ lang) | trans({}, 'menu') }}<i class="icon-silver-arrow-down"></i></span></a>
+                <ul class="dropdown-submenu" data-role="dropdown" data-id="select-language">
+					{% for locale in langs %}
+					<li><a href="{{ path('aw_set_locale', {'_locale': locale}) }}"><span>{{ ('language.' ~ locale) | trans({}, 'menu') }}</span></a></li>
+					{% endfor %}
+				</ul>
+			</li>
+		</ul>
+   </div>
+</div>
+{% if not webpack|default(false) %}
+	<script>
+		require(['lib/customizer'], function (customizer) {
+			customizer.initDropdowns($('.user-short-information'));
+		});
+	</script>
+{% else %}
+	{{ encore_entry_script_tags('user-short-info', null, '_default', {'defer': true}) }}
+{% endif %}

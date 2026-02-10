@@ -1,0 +1,24 @@
+{% extends '@MailTemplate/Layout/base.twig' %}
+{% trans_default_domain "email" %}
+
+{% block subject %}{% apply spaceless %}{% autoescape false %}
+    {{ 'account.lufthansa-expiration.subject'|trans({'%date%' : date|patternDatetime('LL y', locale)}, 'email', lang)|desc('Lufthansa (Miles and More): No credit card charges in %date%. Expiration Warning') }}
+{% endautoescape %}{% endapply %}{% endblock subject %}
+
+{% block content %}
+    {% import '@MailTemplate/CommonMacro.twig' as commonMacro %}
+
+    {{ commonMacro.hello(user.firstname, _context) }}
+
+    {{ commonMacro.paragraph('account.lufthansa-expiration.message'|trans({
+        '%date%' : date|patternDatetime('LL y', locale),
+        '%login%': login,
+        '%bold_on%'  : '<b>',
+        '%bold_off%' : '</b>'
+    }, 'email', lang)|desc('
+        No charges were reported to your Miles and More account ending in %bold_on%%login%%bold_off% for the month of %date%. This could be because of a known bug in the reporting where charges during a calendar month are not reported properly or because you made no charges that month. M&M rules require you to make a charge every month. Missing even one month means your miles are at risk of expiring starting 36 months from when they were earned. If you believe you did make a charge during %date% you should contact M&M to have them examine your account.
+        <br><br>
+        You also may want to go to the M&M forum on Flyertalk for more information about this issue and options if you failed to make the required monthly charge of at least $1 or had credits to your account in excess of your charges.
+    '|raw), _context, {escape: false}) }}
+
+{% endblock content %}

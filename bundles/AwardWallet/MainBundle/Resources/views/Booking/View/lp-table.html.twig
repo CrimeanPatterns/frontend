@@ -1,0 +1,67 @@
+{% for account in request.accounts|sortByProperty('Account.Balance') %}
+    <tr class="miles-row" data-id="{{ account.getAccount().getAccountid() }}">
+        {% set accessLevel = agentsRep.getAccessLevel(account.account.userId, account.getAccount(), app.user, is_granted('SITE_BUSINESS_AREA')) %}
+        {% if is_granted('USER_BOOKING_REFERRAL') %}
+            <td class="miles-row-id"><input type="checkbox" name="forshare[]"
+                       value="{{ account.getAccount().getAccountid() }}" {% if accessLevel is not empty %} disabled="disabled"{% endif %}/>
+            {% if accessLevel is not empty %}<i class="old-icon-check"></i>{% endif %}
+            {% if account.getRequested() and accessLevel is empty %}<i class="old-icon-warning" title="{{ 'booking.share.icon-warning.title'|trans({}, 'booking')|desc('This account was requested for sharing') }}"></i>{% endif %}
+            </td>{% endif %}
+        <td>
+            {{ account.getAccount().getProviderid().getDisplayName() ~ (account.account.country ? ' - ' ~ account.account.country : '')}}
+        </td>
+        <td>{{ account.getAccount().getOwnerFullName() }}</td>
+        <td>{{ account.getAccount().getEliteLevel()|raw }}</td>
+        <td>{% if not account.account.providerid.canCheck %}
+                <i class="old-icon-warning" title="{#{{ 'booking.share.balance-warning'|trans({}, 'booking')|desc('This account can not check') }}#}"></i>
+            {% elseif account.account.errorCode > 1 %}
+                {% set accountError = statusResolver.getStatusByAccount(account.account, request.user, app.request.locale) %}
+                <i class="old-icon-expired js-account-balance-error" style="cursor: pointer" title="{#{{ 'booking.share.balance-error'|trans({}, 'booking')|desc('Error') }}#}"
+                   data-error="<b>{{ accountError.Title }}</b><br>{{ accountError.BeforeError }} <span style='color:red'>{{ accountError.Error }}</span>"></i>
+            {% endif %}
+            {{ account.account.balance is not null ? account.account.balance|formatNumber : '-' }}</td>
+        {% set updateDate = account.account.successCheckDate %}
+        <td>{{ updateDate is not null ? updateDate|formatTimeAgoTag(updateDate|leadTZ|formatDatetime('short', 'short')) : '' }}</td>
+        {% if is_granted('USER_BOOKING_REFERRAL') and is_granted('BUSINESS_ACCOUNTS') %}
+        <td>
+            {% if accessLevel is not empty and accessLevel in [3, 4, 6, 7]%}
+                {% set ua = request.booker.findUserAgent(account.account.userId.userId) %}
+                {% if account.account.savepassword == 1 and account.account.pass %}
+                    <a class="update" href="{{ url('aw_account_edit', {'accountId': account.account.accountid, 'autosubmit': true}) }}" target="_blank"{% if not authorizationChecker.isGranted('UPDATE', account.account) %} style="visibility: hidden;"{% endif %}>{{ 'account.update'|trans }}</a>
+                    <a class="js-reveal-password" href="#" data-account-id="{{ account.getAccount().accountid }}" data-url="{{ path('aw_booking_view_revealpassword', {id: request.AbRequestId, accountID: account.getAccount().accountid }) }}">{{ 'account.copy-password'|trans|desc('Copy Password') }}</a>
+                    <a href="{{ url('aw_account_redirect', {'ID': account.account.accountid}) }}" target="_blank">{{ 'button.autologin'|trans({}, 'messages') }}</a>
+                {% else %}
+                    {{ 'booking.share.local-password'|trans({}, 'booking')|desc('Password is missing') }}
+                {% endif %}
+            {% else %}
+                {{ 'booking.share.access-denied'|trans({}, 'booking')|desc('Access to password denied') }}
+            {% endif %}
+        </td>
+        {% endif %}
+    </tr>
+{% endfor %}
+
+{% for custom in request.customPrograms %}
+    <tr class="miles-row" data-id="{{ custom.AbCustomProgramID }}">
+        {% if is_granted('USER_BOOKING_REFERRAL') %}
+            <td class="miles-row-id"><input type="checkbox"{% if (custom.Provider is empty) %} disabled="disabled"{% endif %} />
+                {% if custom.getRequested() %}<i class="old-icon-warning" title="{{ 'booking.share.icon-warning.title'|trans({}, 'booking')|desc('This account was requested for sharing') }}"></i>{% endif %}
+            </td>
+        {% endif %}
+        <td>
+            {% if custom.Provider is empty %}
+                <span class="name">{{ custom.name }}</span>
+                {% if is_granted('USER_BOOKING_REFERRAL') %}<a class="btn delete clarify" style="margin: -3px 0" href="#">{{ 'booking.clarify'|trans({}, 'booking') }}</a>{% endif %}
+            {% else %}
+                <span class="name" data-id="{{ custom.Provider.ProviderID }}">{{ custom.Provider.DisplayName }}</span>
+            {% endif %}
+        </td>
+        <td>{{ custom.owner }}</td>
+        <td>{{ custom.elitestatus }}</td>
+        <td>{{ custom.balance is not null ? custom.balance|formatNumber : '-'}}</td>
+        <td></td>
+        {% if is_granted('USER_BOOKING_REFERRAL') %}
+        <td></td>
+        {% endif %}
+    </tr>
+{% endfor %}

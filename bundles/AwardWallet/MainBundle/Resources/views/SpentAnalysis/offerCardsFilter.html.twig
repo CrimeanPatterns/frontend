@@ -1,0 +1,75 @@
+<div id="cardUsed" class="analysis-cards">
+    <div class="analysis-cards__head" data-ng-click="toggleCardsChecked($event)">
+        <span data-ng-click="toggleCardsChecked($event)">{{ 'credit-card.make-recommendation'|trans }}</span>
+        <span ng-if="undefined !== allCardSelected && false === allCardSelected" class="analysis-cards-used-all">
+            <i class="icon-warning-small"></i>
+            Not all credit cards are being considered. <a class="blue-link" href="#" data-ng-click="markCard($event, 'all')">Click here</a> to turn them all on.
+        </span>
+    </div>
+    <div class="analysis-cards__content">
+        <div class="analysis-cards__block actions">
+            <ul class="dropdown-menu">
+                <li>
+                    <div class="btn-silver-w rel-this" data-ng-click="markCard($event)">
+                        <input id="cardUsedMark" type="checkbox" class="checkbox js-change-ignore">
+                        <label for="cardUsedMark" class="label minus"></label>
+                        <a href="#"><i class="icon-arrow-bottom-dark"></i></a>
+                    </div>
+                    <ul class="dropdown-submenu">
+                        <li>
+                            <a href="#" data-ng-click="markCard($event, 'all')">
+                                <span class="dropdown-submenu__icon"><i class="icon-checkbox"></i></span>
+                                <span>Select all</span>
+                            </a>
+                        </li>
+                        <li ng-if="isExistsCardType('personal')">
+                            <a href="#" data-ng-click="markCard($event, 'personal-card')">
+                                <span class="dropdown-submenu__icon"><i class="icon-personal-card"></i></span>
+                                <span>Select only personal cards</span>
+                            </a>
+                        </li>
+                        <li ng-if="isExistsCardType('business')">
+                            <a href="#" data-ng-click="markCard($event, 'business-card')">
+                                <span class="dropdown-submenu__icon"><i class="icon-business-card"></i></span>
+                                <span>Select only business cards</span>
+                            </a>
+                        </li>
+                        <li ng-if="isExistsCardType('have')">
+                            <a href="#" data-ng-click="markCard($event, 'have-card')">
+                                <span class="dropdown-submenu__icon"><i class="icon-have-card"></i></span>
+                                <span>Select only the cards that I have</span>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+        <div class="analysis-cards__block" data-ng-repeat="(row, item) in initData track by row">
+            <div class="analysis-cards__caption">
+                <input type="checkbox" class="checkbox js-groupProvider" id="groupProviderId[[item.providerId]]" data-ng-click="toggleGroupProvider($event)">
+                <label data-ng for="groupProviderId[[item.providerId]]" class="label js-cardId-label">
+                    <strong data-ng-bind="item.displayName"></strong>:
+                </label>
+            </div>
+            <div class="analysis-cards__details">
+                <div class="analysis-cards__details-block" data-ng-repeat="(cardRow, cardItem) in item.cardsList track by cardRow">
+                    <input type="checkbox" class="checkbox js-cardId" id="cardId[[cardItem.creditCardId]]"
+                           name="cardId[]" value="[[cardItem.creditCardId]]"
+                           data-ng-model="checkModel[cardItem.creditCardId]"
+                           data-ng-click="checkAction()"
+                    >
+
+                    <label data-ng for="cardId[[cardItem.creditCardId]]" class="label js-cardId-label">
+                        <strong>
+                            <span data-ng-bind="cardItem.creditCardName"></span>
+                            <i data-ng-class="{'icon-personal-card': !cardItem.isBusiness, 'icon-business-card': cardItem.isBusiness}" title="[[cardItem.isBusiness == true ? 'Business card' : 'Personal card']]" data-role="tooltip" data-tip></i>
+                            <i data-ng-class="{'icon-have-card': cardItem.existedCard}" ng-hide="cardItem.existedCard == false" title="I have this card" data-role="tooltip" data-tip></i>
+                            {#<i data-ng-class="{'icon-bonus-spend': cardItem.bonusSpend}" ng-hide="cardItem.bonusSpend == false" title="Bonus spend limit reached" data-role="tooltip" data-tip></i>#}
+                        </strong>
+                        <span class="silver" ng-hide="cardItem.description == null" data-ng-bind="cardItem.description"></span>
+                    </label>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

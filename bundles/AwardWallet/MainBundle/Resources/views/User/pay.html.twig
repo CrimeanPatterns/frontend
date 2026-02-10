@@ -1,0 +1,144 @@
+{% extends "@AwardWalletMain/Layout/hidden_left_menu.html.twig" %}
+{% form_theme form with ['@AwardWalletMain/FormTheme/fields.html.twig'] %}
+{% trans_default_domain "messages" %}
+
+{% block title %}
+    {% if giveAWPlus %}
+        {{ 'awplus.subscription.setup'|trans|desc('AwardWallet Plus subscription set up') }}
+    {% else %}
+        {{ 'user-pay.title.onecard'|trans|desc('AwardWallet OneCard credits') }}
+    {% endif %}
+{% endblock %}
+
+{% block header_metatags %}
+    {% include '@AwardWalletMain/Utility/scalableViewport.html.twig' %}
+{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        window.paymentOptions = {{ paymentOptions|json_encode|raw }};
+        require([
+            'pages/userPay/main',
+            'lib/design',
+            'lib/customizer'
+        ], function () {
+            $('form button[type="submit"]').on('click', function (e) {
+                $(this).attr('disabled', 'disabled')
+                        .addClass('loader')
+                        .delay(200)
+                        .queue(function(next) {
+                            $('form').submit();
+                            next();
+                        });
+            });
+        });
+    </script>
+{% endblock %}
+
+{% block content %}
+    <div class="main-blk shortened" data-ng-controller="{% if paymentOptions.ngController is defined %}{{ paymentOptions.ngController }}{% else %}userPayPageCtrl{% endif %} as ctrl">
+            <h1>
+                {% if giveAWPlus %}
+                    {{ 'awplus.subscription.setup'|trans|desc('AwardWallet Plus subscription set up') }}
+                {% else %}
+                    {{ 'user-pay.title.onecard'|trans|desc('AwardWallet OneCard credits') }}
+                {% endif %}
+            </h1>
+
+            <form method="post" class="main-form">
+                {{ form_widget(form._token) }}
+                {{ form_widget(form.awPlus) }}
+
+            {% if not giveAWPlus %}
+                <div class="info-title">
+                    <i class="icon-info-white"></i>
+                    <p>{{ 'user-pay.subscription.message'|trans({
+                            '%link_start%': '<a href="' ~ url('aw_profile_overview') ~ '">',
+                            '%link_end%': '</a>'
+                        })|desc('You already have an AwardWallet Plus subscription, if you wish to cancel it or change the payment method please do that from your %link_start%profile page.%link_end%') | raw }}</p>
+                </div>
+            {% endif %}
+
+                <div class="main-blk-content">
+                    <table class="main-table payment" data-ng-cloak>
+                        <thead>
+                        <tr>
+                            <th class="item">{{ 'user-pay.column.item.title'|trans|desc('Item') }}</th>
+                            <th class="quantity">{{ 'user-pay.column.quantity.title'|trans|desc('Quantity') }}</th>
+                            <th class="t-right">{{ 'user-pay.column.price.title'|trans|desc('Price') }}</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr data-ng-show="model.giveAWPlus">
+                            <td>{{ 'cart.item.type.awplus-subscription'|trans|desc('AwardWallet Plus yearly subscription') }}</td>
+                            <td>{{ 'cart.item.type.awplus-subscription.span.desc'|trans({
+                                '%startDate%': startDate|formatDatetime('long', 'none'),
+                                '%bold_on%': '<b>',
+                                '%bold_off%': '</b>',
+                            })|desc('12 months %bold_on%(starting from %startDate%)%bold_off%')|raw }}</td>
+                            <td class="t-right price">
+                                [[ model.price.awplus | currency ]]
+                                <i class="icon-close-dark remove-row"
+                                   data-role="tooltip"
+                                   title="{{ 'subscription.remove'|trans|desc('Remove subscription') }}"
+                                   ng-click="removeAwPlus()"></i>
+                            </td>
+                        </tr>
+
+                        {% if paymentOptions.ngController is defined and 'giftAWPlusCtrl' == paymentOptions.ngController %}
+                        <tr data-ng-cloak data-ng-if="model.giftAWPlus">
+                            <td>[[ model.gift.name ]]</td>
+                            <td><span ng-bind-html="model.gift.description|unsafe"></span></td>
+                            <td class="t-right price">[[ model.gift.price | currency ]]</td>
+                        </tr>
+                        {% endif %}
+
+                        <tr data-ng-cloak data-ng-if="model.discount">
+                            <td><strong class="red">{{ paymentOptions.discountName }}</strong></td>
+                            <td></td>
+                            <td class="t-right price"><strong class="red">-[[ model.discount | currency ]]</strong></td>
+                        </tr>
+
+                        {% if giveAWPlus %}
+                        <tr data-ng-cloak data-ng-if="model.giftBalanceWatchCredit">
+                            <td>{{ 'cart.item.type.balancewatch-credit'|trans }}</td>
+                            <td>{{ constant('AwardWallet\\MainBundle\\Service\\BalanceWatch\\Constants::GIFT_COUNT') }}</td>
+                            <td class="t-right price">[[ 0 | currency ]]</td>
+                        </tr>
+                        {% endif %}
+
+                        <tr {% if paymentOptions.hideOneCard is defined %}style="display: none"{% endif %}>
+                            <td>{{ 'one-card'|trans|desc('AwardWallet OneCard') }}</td>
+                            <td>
+                                {{ form_widget(form.onecard, {'small': true}) }}
+                            </td>
+                            <td class="t-right price">[[ model.user_pay.onecard * model.price.onecard | currency ]]</td>
+                        </tr>
+
+                        </tbody>
+                    </table>
+
+                    <table class="main-table total" data-ng-cloak>
+                        <tr class="totals">
+                            <td><strong class="red">{{ 'total'|trans|desc('Total') }}:</strong></td>
+                            <td class="total-price t-right"><span class="red">[[ model.total | currency ]]</span></td>
+                        </tr>
+                    </table>
+                </div>
+                {% if giveAWPlus %}
+                    <div class="information-container" data-ng-cloak data-ng-if="model.giveAWPlus">
+                        <i class="icon-info-small"></i>
+                        <p> {{ 'user-pay.info.no-recurring-credits'|trans|desc('No AwardWallet OneCard credits will be issued at the time of each recurring payment, but you can always buy them separately') }}</p>
+                </div>
+                {% endif %}
+                <div class="row-submit" data-ng-cloak>
+                    <button type="submit" class="btn-blue" ng-disabled="model.total == 0">{{ 'payment-proceed'|trans|desc('Proceed to payment options') }}</button>
+                </div>
+            </form>
+    </div>
+{% endblock %}

@@ -1,0 +1,381 @@
+{% set MOBILE_NAV = true %}
+{% set MAIN_BODY_CLASSES = {
+    'manual-hidden': true,
+    'responsive': true
+}|merge(MAIN_BODY_CLASSES|default({})) %}
+
+{% extends "@AwardWalletMain/Layout/booking.html.twig" %}
+{% form_theme form '@AwardWalletMain/Booking/fields.html.twig' %}
+{% import '@AwardWalletMain/TwigMacros/assets.html.twig' as assets %}
+{% import "@AwardWalletMain/TwigMacros/recaptcha.html.twig" as recaptcha %}
+{% import '@AwardWalletMain/Booking/macros.html.twig' as macros %}
+
+{% block title %}
+    {% if editMode|default(false) == false %}
+        {{ 'proffessional-award-booking-service'|trans({}, 'booking')|desc('Professional Award Booking Service Powered by Awardwallet') }}
+    {% else %}
+        {{ 'booking.request.edit.title'|trans({}, 'booking') }}
+    {% endif %}
+{% endblock %}
+
+{% block header_metatags %}
+    <meta name="description" content="{{ 'booking-service-can-own-save-spending'|trans({}, 'booking')|desc('With our award booking service, you can book your award tickets using your own miles and save on fees and taxes while at the same time spending as few miles as possible') }}">
+{% endblock %}
+
+{% block meta %}
+    {{ parent() }}
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0, viewport-fit=cover">
+{% endblock %}
+
+{% block mainContent %}
+    <div class="booking-form"{% if editMode|default(false) == true %} data-request="{{ request.AbRequestID }}"{% endif %}{% if is_granted('USER_BOOKING_PARTNER') %} data-booker="true"{% endif %} data-by-booker="{% if request.byBooker %}true{% else %}false{% endif %}">
+        {{ form_start(form) }}
+        <div id="booking-form-tabs">
+            <ul class="form-tabs">
+                <li><a href="#" data-id="tab1"><span class="number">1</span>{{ 'booking.request.add.form.tab.contact'|trans({}, 'booking') }}</a></li>
+                <li><a href="#" data-id="tab2"><span class="number">2</span>{{ 'booking.travelers'|trans({}, 'booking') }}</a></li>
+                <li><a href="#" data-id="tab3"><span class="number">3</span>{{ 'booking.request.add.form.tab.destinations'|trans({}, 'booking') }}</a></li>
+                <li><a href="#" data-id="tab4"><span class="number">4</span>{{ 'booking.request.add.form.tab.miles'|trans({}, 'booking') }}</a></li>
+            </ul>
+            {#{% if errors is defined and errors is not empty %}#}
+                {#{% for error in errors %}#}
+                    {#<div style="padding: 10px 20px; background-color: #e73e70; font-weight: bold; color: white;">{{ error.message }}</div>#}
+                {#{% endfor %}#}
+            {#{% endif %}#}
+            <div id="tab1" style="display: none;" class="tab" >
+                <div class="tab-inside">
+                    <div class="booking-banner">
+                        <h1 class="booking-banner__caption">Professional Award Booking Service That Is Powered by&nbsp;Industry Leaders</h1>
+                        <div class="booking-banner__text">Book your next award with AwardWallet</div>
+                    </div>
+                    {% if bookerInfo.getPricingDetails() %}
+                        <blockquote style="color: #3e3e3e; line-height: 1.4;">
+                            {{ bookerInfo.getPricingDetails()|raw }}
+                        </blockquote>
+                    {% endif %}
+                    {% if not is_granted('ROLE_USER') %}
+                        <fieldset>
+                            <legend><h3>{{ 'booking.contact.info'|trans({}, 'booking') }}</h3></legend>
+                            <div class="inner-block">
+                                {{ form_row(form.User.firstname) }}
+                                {{ form_row(form.User.lastname) }}
+                                {{ form_row(form.User.email) }}
+                                {{ form_row(form.User.phone1) }}
+                                {{ form_row(form.ContactEmail) }}
+                            </div>
+                        </fieldset>
+                    {% else %}
+                        <fieldset>
+                            <legend><h3>{{ 'booking.contact.info'|trans({}, 'booking') }}</h3></legend>
+                            <div class="inner-block">
+                                {% if form.offsetExists('User') %}
+                                    {{ form_row(form.User) }}
+                                {% endif %}
+                                {{ form_row(form.ContactName) }}
+                                {{ form_row(form.ContactPhone) }}
+                                {{ form_row(form.ContactEmail) }}
+
+                                {% if form.offsetExists('BusinessTravel') %}
+                                    {{ form_row(form.BusinessTravel) }}
+                                {% endif %}
+
+                                {% if form.offsetExists('SendMailUser') %}
+                                    {{ form_row(form.SendMailUser, {
+                                        'label': 'booking.request.add.form.send-mail-user'|trans({
+                                            '%booker_email%': bookerInfo.FromEmail,
+                                            '%booker_name%': bookerInfo.ServiceName,
+                                        }, 'booking')
+                                        |desc('Automatically send emails to this user from %booker_email% email address using the %booker_name% email template')
+                                        |raw
+                                    }) }}
+                                {% endif %}
+                            </div>
+                        </fieldset>
+                    {% endif %}
+
+                    {% if form.offsetExists('PriorSearchResults') %}
+                        <fieldset>
+                            <legend><h3>{{ 'booking.prior.searches'|trans({}, 'booking') }}</h3></legend>
+                            <div class="inner-block">
+                                {{ form_row(form.PriorSearchResults) }}
+                            </div>
+                        </fieldset>
+                    {% endif %}
+
+                    {% if not is_granted('ROLE_USER') %}
+                        <fieldset class="registerCredentials">
+                            <legend><h3>{{ 'booking.createlogin'|trans({}, 'booking') }}</h3></legend>
+                            <div class="inner-block">
+                                <div class="row">
+                                    <div class="prompt">
+                                        <i class="old-icon-information"></i>
+                                        <p>{{ 'booking.registertext'|trans({}, 'booking') }}. {{ 'booking.registertext.retain-notice' | trans | desc('Please retain this information as it is required to access your account on the ongoing basis.') }}</p>
+                                    </div>
+                                </div>
+                                {{ form_row(form.User.login) }}
+                                {{ form_row(form.User.pass) }}
+                                {{ form_row(form.RememberMe) }}
+                                {{ form_row(form.Terms) }}
+                            </div>
+                        </fieldset>
+                    {% endif %}
+                </div>
+            </div>
+            <div id="tab2" style="display: none;" class="tab">
+                <div class="tab-inside">
+                    <div class="row prefer{% if (form.offsetExists('CabinEconomy') and not form.CabinEconomy.vars.valid) or not form.CabinBusiness.vars.valid or not form.CabinFirst.vars.valid %} error{% endif %}">
+                        <div class="input">
+                            <label>
+                                {{ 'booking.request.add.form.cabin.label'|trans({}, 'booking') }}
+                            </label>
+                            {% if form.offsetExists('CabinEconomy') %}
+                                {{ form_widget(form.CabinEconomy) }}
+                                {{ form_label(form.CabinEconomy) }}
+                            {% endif %}
+                            {% if form.offsetExists('CabinPremiumEconomy') %}
+                                {{ form_widget(form.CabinPremiumEconomy) }}
+                                {{ form_label(form.CabinPremiumEconomy) }}
+                            {% endif %}
+                            {{ form_widget(form.CabinBusiness) }}
+                            {{ form_label(form.CabinBusiness) }}
+                            {{ form_widget(form.CabinFirst) }}
+                            {{ form_label(form.CabinFirst) }}
+                        </div>
+                        {% if not form.vars.valid %}
+                            <div class="message error">
+                                {% if form.offsetExists('CabinEconomy') %}
+                                    {{ form_errors(form.CabinEconomy) }}
+                                {% endif %}
+                                {{ form_errors(form.CabinBusiness) }}
+                                {{ form_errors(form.CabinFirst) }}
+                            </div>
+                        {% else %}
+                            <div class="message"></div>
+                        {% endif %}
+                    </div>
+                    <div class="block-row">{{ form_row(form.NumberPassengers) }}</div>
+                    <div id="passenger-list"
+                         data-prototype="{% apply spaceless %}{{ form_widget(form.Passengers.vars.prototype, {'header':'booking.request.add.form.traveler.title'|trans({'%number%': 1}, 'booking')})|e }}{% endapply %}">
+                        {% set a = form.Passengers.setRendered %}
+                        {% for idx, passenger in form.Passengers %}
+                            {{ form_widget(passenger,
+                            {'header':'booking.request.add.form.traveler.title'|trans({'%number%': idx + 1}, 'booking')}
+                            ) }}
+                        {% endfor %}
+                    </div>
+
+                </div>
+            </div>
+            <div id="tab3" style="display: none;" class="tab">
+                <div class="tab-inside">
+
+                    <div id="segment-list"
+                         data-prototype="{% apply spaceless %}{{ form_widget(form.Segments.vars.prototype, {'header':'booking.request.add.form.segment.title_single'|trans({}, 'booking')})|e }}{% endapply %}">
+                        {% set a = form.Segments.setRendered %}
+                        {% for idx, segment in form.Segments %}
+                            {{ form_widget(segment,
+                            {'header': 'booking.request.add.form.segment.title_single'|trans({}, 'booking')}
+                            ) }}
+                        {% endfor %}
+                    </div>
+
+                    <fieldset class="destination" style="display: none;">
+                        <legend>
+                            <h3>{{ 'booking.request.add.form.segment.title'|trans({'%number%': (form.Segments|length)+1}, 'booking') }}</h3>
+                        </legend>
+                        <div class="add-block">
+                            <a id="add-destination" href="#"><i class="old-icon-add-another-block"></i>
+                                {{ 'booking.request.add.form.segment.add'|trans({}, 'booking') }}
+                            </a>
+                        </div>
+                    </fieldset>
+
+                </div>
+            </div>
+            <div id="tab4" style="display: none;" class="tab">
+                <div class="tab-inside">
+                    {% if form.offsetExists('paymentCash') %}
+                        <fieldset class="silver-border">
+                            {{ form_widget(form.paymentCash) }}
+                            {{ form_label(form.paymentCash) }}
+                        </fieldset>
+                    {% endif %}
+                    <div id="requiredPayment" class="hidden" style="margin-top:20px !important;">
+                        {{ 'booking.payment.choice.error'|trans|desc('You need to choose a payment method, cash, miles of programs or fill out accounts.') }}
+                    </div>
+                    {% if is_granted('USER_BOOKING_PARTNER') and request.byBooker == true %}
+                        <div class="booker-item">
+                            <table class="main account-selector" id="booking-account-list" data-prototype="{{ form_widget(form.Accounts.vars.prototype)|e }}">
+                                <tbody>
+                                <tr class="heading">
+                                    <th colspan="5">{{ 'booking.request.add.form.miles.accounts'|trans({}, 'booking')|desc('Loyalty Accounts') }}</th>
+                                </tr>
+                                <tr class="sort col-heading">
+                                    <th></th>
+                                    <th>{{ 'account.owner'|trans }}</th>
+                                    <th>{{ 'account.program'|trans }}</th>
+                                    <th>{{ 'account.status'|trans|desc('Elite Status') }}</th>
+                                    <th>{{ 'account.balance'|trans }}</th>
+                                </tr>
+                                {% set a = form.Accounts.setRendered %}
+                                {% for child in form.Accounts %}
+                                    {{ form_widget(child) }}
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="add-block">
+                            <a id="add-account" href="#"><i class="old-icon-add-another-block"></i>{{ "booking.request.add.form.miles.add-custom"|trans({}, 'booking') }}</a>
+                        </div>
+                        <div style="text-align: center; padding: 20px;">
+                            {{ 'booking.request.add.form.miles.suggestion-add'|trans({'%link%': '/account/add.php'}, 'booking')|desc('Not seeing an account you wish to use for this request? You can always add new loyalty accounts <a target="_blank" href="%link%">here</a>')|raw }}
+                        </div>
+                    {% else %}
+                        <div class="row noInput" id="select_programs_message" style="display: none;">
+                            <div class="message">
+                                {{ 'booking.request.add.form.miles.errors.at-least-one'|trans({}, 'booking') }}
+                            </div>
+                        </div>
+                        {% if form.Accounts is defined %}
+                            <div{% if form.Accounts|length == 0 %} style="display: none"{% endif %}>
+                                {{ form_widget(form.Accounts, {'editMode' : editMode|default(false)}) }}
+                            </div>
+                        {% endif %}
+                        <fieldset id="booking-custom-programs">
+                            <legend id="custom-programs-header">
+                                <h3>
+                                    {{ 'booking.request.add.form.miles.custom-programs'|trans({}, 'booking') }}
+                                </h3>
+                            </legend>
+                            {{ form_widget(form.CustomPrograms) }}
+                            <div class="add-block">
+                                <a id="add-custom-button" href="#"><i
+                                            class="old-icon-add-another-block"></i>
+                                    {{ 'booking.request.add.form.miles.add-custom'|trans({}, 'booking') }}
+                                </a>
+                            </div>
+                        </fieldset>
+                    {% endif %}
+                    <fieldset>
+                        <legend><h3>
+                            {{ 'booking.notes'|trans({}, 'booking') }}
+                        </h3></legend>
+                        <div class="inner-block">
+                            {{ form_row(form.Notes) }}
+                        </div>
+                    </fieldset>
+                </div>
+            </div>
+
+        </div>
+        <div class="buttons">
+            <a class="previous btn light wide" href="#" style="display: none;" id="previousButton">
+                {{ 'form.button.previous'|trans }}
+            </a>
+            <a class="next btn spec wide" href="#" id="nextButton">
+                {{ 'form.button.next'|trans }}
+            </a>
+            <a class="next btn spec wide" href="#" id="submitButton" style="display: none;">
+                {{ 'form.button.submit'|trans }}
+            </a>
+
+            <a class="previous btn light wide" href="#" id="cancelButton" style="display: none;">
+                {{ 'form.button.cancel'|trans }}
+            </a>
+            <a class="next btn spec wide" href="#" id="saveButton" style="display: none;">
+                {{ 'form.button.save'|trans }}
+            </a>
+        </div>
+		<div class="clear"></div>
+        {% if not is_granted('ROLE_USER') %}
+            {{ recaptcha.render(captcha_provider, 'booking_add') }}
+            <input type="hidden" name="recaptcha"/>
+        {% endif %}
+        {{ form_end(form) }}
+		 {% if is_granted('USER_BOOKING_PARTNER') %}
+			<div class="create-link">
+				<div class="create-link-item">
+					<label for="public-link">{{ 'booking.public-link'|trans({}, 'booking')|desc("Public link to create new booking requests") }}:</label>
+					<input id="public-link" readonly="readonly" name="public-link" value="{{ publicLink }}" />
+				</div>
+			</div>
+		{% endif %}
+    </div>
+
+    <div id="termsPopup"></div>
+    <div id="restorePopup" style="display: none">
+        <p>
+            {{ 'booking.restoreform.content'|trans({}, 'booking')|raw }}
+        </p>
+    </div>
+    {% include "@AwardWalletMain/Profile/PersonalInfo/_passwordPolicyPopup.html.twig" %}
+{% endblock %}
+
+{% block footer %}
+
+    {{ parent() }}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        if (!window.console) {
+            console = {
+                log: function () {
+                }
+            }
+        }
+    </script>
+    <script type="text/javascript">
+        window.NDbooking = true;
+        require([
+            'lib/passwordComplexity',
+            'nouislider',
+            'jquery-boot', 'translator-boot',
+            // assets_form
+            'awardwalletmain/js/formInputs',
+            'lib/bookingCustomizer',
+            'awardwalletmain/js/form/validator',
+            'awardwalletmain/js/CollectionManager',
+            'select2',
+            'awardwalletmain/js/select2_colored',
+            // bookingJs
+            'awardwalletmain/js/booking/common',
+            'awardwalletmain/js/booking/autocomplete',
+            // formKeeperJs
+            'awardwalletmain/js/FormKeeper',
+            // page
+            'awardwalletmain/js/booking/Passengers',
+            'awardwalletmain/js/booking/Segments',
+            'awardwalletmain/js/booking/Miles',
+            'awardwalletmain/js/booking/Info',
+            'awardwalletmain/js/booking/AddForm',
+            'lib/customizer'
+        ], function (passwordComplexity, noUiSlider) {
+            window.noUiSlider = noUiSlider;
+            setTimeout(function () {
+                window.scrollTo(0,0);
+            }, 1);
+            $(function () {
+                AddForm.editMode = {% if editMode|default(false) == true %}true{% else %}false{% endif %};
+                AddForm.showErrors = {% if app.request.method == 'POST' %}true{% else %}false{% endif %};
+                AddForm.init({% if app.user is null %}passwordComplexity{% endif %});
+                InputStyle.init(null, {datepicker: false});
+            });
+            {% if is_granted('USER_BOOKING_PARTNER') == false and editMode|default(false) == false %}
+            {{ assets.saveForm('booking_request_new', '[name^="booking_request[Segments]"][name*="[RoundTrip]"], [name*="NumberPassengers"], [name*="Password"]') }}
+            {% endif %}
+        });
+    </script>
+    {% if request.booker.bookerinfo.ServiceName == 'Abroaders' and editMode|default(false) == false %}
+        {{ macros.abroadersTrackingScripts() }}
+    {% endif %}
+{% endblock %}
+
+{% block bodyClasses parent() ~ " fix-content" %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    {{ assets.assets_form('css') }}
+    {{ encore_entry_link_tags('booking') }}
+{% endblock %}

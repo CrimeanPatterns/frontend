@@ -1,0 +1,27 @@
+{# Issue #5857 #}
+
+{% extends "@AwardWalletMain/Offer/promotionCard.html.twig" %}
+{% import '@AwardWalletMain/TwigMacros/common.html.twig' as menuMacros %}
+
+{% block permanent %}
+    {{ parent() }}
+{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    {{ encore_entry_link_tags('offers/oldspg') }}
+    {#<link rel="stylesheet" type="text/css" href="{{ asset('/design/bundles/awardwalletmain/css/offer/oldspg.css') }}"/>#}
+{% endblock %}
+
+{% block popups %}
+    {{ menuMacros.DrawBeginBox('id = "offer" style="width: 1000px; position: absolute; z-index: 60; display: none"', 'Special offer') }}
+    <div id="offer_maindiv">
+    <div align="justify" style="margin-top: 16px"><strong>Dear {{ FirstName }}</strong>, we have a special suggestion
+        just for you. If you apply and get the following SPG Amex credit card under the conditions described below you
+        will receive <strong>25,000 SPG bonus points</strong>. We noticed that you stayed at
+        <strong>{{ Hotel }}</strong> on {{ Date }}, the 25,000 points that you will receive is enough to stay at this
+        hotel (or any other Category 3 hotel) for <strong>3 nights</strong> at the price of 7,000 points. Here is the
+        description of this credit card:
+    </div>
+    {{ parent() }}
+{% endblock %}

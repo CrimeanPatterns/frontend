@@ -1,0 +1,36 @@
+parameters:
+
+services:
+    _defaults:
+        public: true
+
+    aw.locale.listener:
+        public: true
+        class: AwardWallet\MainBundle\FrameworkExtension\Listeners\LocaleListener
+        arguments:
+            - "@service_container"
+            - "@security.token_storage"
+            - "@security.authorization_checker"
+            - "%kernel.default_locale%"
+            - "%locales%"
+            - "%public_locales_desktop%"
+            - "%public_locales_mobile%"
+            - "%requires_channel%"
+            - ".%host%"
+            - '@translator'
+            - "@aw.api.versioning"
+        tags:
+            - { name: kernel.event_subscriber }
+
+    AwardWallet\MainBundle\Globals\Localizer\LocalizeService:
+        public: true
+        autowire: true
+
+    aw.locale.twig.extension.localizer:
+        public: true
+        class: AwardWallet\MainBundle\Globals\Localizer\TwigExtension
+        arguments:
+            - '@AwardWallet\MainBundle\Globals\Localizer\LocalizeService'
+            - '@AwardWallet\MainBundle\Service\DateTimeInterval\Formatter'
+        tags:
+            - {name: twig.extension}

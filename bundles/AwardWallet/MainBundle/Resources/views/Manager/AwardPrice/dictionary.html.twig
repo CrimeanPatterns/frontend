@@ -1,0 +1,10 @@
+        <div id="{{ idBlock }}">
+            <br>
+            <label for="{{ name }}">{{ title }}:</label>
+            <select class="required" style="width: 200px;" id="{{ name }}" name="{{ name }}" {% if type == 3 %} onchange="showSelect('{{ point }}', {{ type }}, this)" {% endif %}>
+                <option value=''>...</option>
+                {% for row in data %}
+                    <option value='{{ row.ID }}' {% if inputValue.origRegion is defined and row.ID==inputValue.origRegion %} selected {% endif %}>{{ row.Name }}</option>
+                {% endfor %}
+            </select>
+        </div>

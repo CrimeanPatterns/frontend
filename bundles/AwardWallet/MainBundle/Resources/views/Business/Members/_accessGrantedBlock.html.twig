@@ -1,0 +1,186 @@
+{#<div class="clear-fix"></div>#}
+<div class="main-blk shortened">
+    <div class="main-blk-content">
+        <div class="title-note">
+            <h3>{{ 'access_level.granted.title'|trans({'%agent_fullname%': userAgent.agentid.fullName})|desc('Access granted to you by %agent_fullname%') }}:</h3>
+        </div>
+        <table class="main-table request-full-control">
+            <tbody>
+            <tr>
+                <td>{{ 'access_level.granted.level'|trans|desc("Access Level") }}:</td>
+                <td>
+                    {% if accessLevelFull > 0 %}
+                        <i class="icon-green-check"></i> {{ accessLevelLabel|trans }}
+                    {% elseif accessLevelFull == 0 %}
+                        <i class="icon-warning-small"></i> {{ accessLevelLabel|trans }}
+                    {% else %}
+                        <i class="icon-warning-small"></i> {{ 'access_level.granted.level_none'|trans|desc("None") }}
+                    {% endif %}
+                </td>
+            </tr>
+            <tr>
+                <td>{{ 'access_level.granted.account'|trans|desc("Shared Accounts") }}:</td>
+                <td>
+
+
+                    {% if accountFull %}
+                        <i class="icon-green-check"></i> {{ 'access_level.granted.account_all'|trans|desc("All accounts are shared") }}
+                    {% else %}
+                        <i class="icon-warning-small"></i> {{ 'access_level.granted.account_part'|trans({'%count%': accountTotal, '%total%': accountTotal, '%shared%': accountShared})|desc("%shared% of %total% account are shared|%shared% of %total% accounts are shared") }}
+                    {% endif %}
+                    {% if accountShared > 0 %}
+
+                        {% set route = 'business' in app.request.host ? 'aw_business_account_list' : 'aw_account_list' %}
+
+                        <a href="{{ url(route, {agentId: connection.useragentid}) }}" class="blue-link">{{ 'access_level.granted.account_view'|trans|desc("Click to view them") }}</a>
+                    {% endif %}
+                </td>
+            </tr>
+            <tr>
+                <td>{{ 'access_level.granted.trips'|trans|desc("Shared Trips") }}:</td>
+                <td>
+                    {% if tripLevel and sharedTimelinesCount > 0%}
+                        <i class="icon-green-check"></i> {{ 'timeline.access.full_control'|trans }}
+                    {% elseif sharedTimelinesCount > 0 %}
+                        <i class="icon-warning-small"></i> {{ 'timeline.access.read_only'|trans }}
+                    {% else %}
+                        <i class="icon-warning-small"></i> {{ 'timeline.access.denied'|trans|desc('No timeline access given') }}
+                    {% endif %}
+                </td>
+            </tr>
+            {#
+                            <tr>
+                                <td>{{ 'access_level.granted.type'|trans|desc("Connection Type") }}:</td>
+                                <td><i class="icon-green-check"></i> Full control (edit, delete, auto-login, view password, manage travel)</td>
+                            </tr>
+            #}
+            <tr>
+                <td>{{ 'access_level.granted.account_defaults'|trans|desc("Account defaults") }}:</td>
+                <td>
+                    {% if accountDefaults %}
+                        <i class="icon-green-check"></i> {{ 'access_level.granted.account_default_shared'|trans|desc("New accounts shared by default") }}
+                    {% else %}
+                        <i class="icon-warning-small"></i> {{ 'access_level.granted.account_default_not_shared'|trans|desc("New accounts not shared by default") }}
+                    {% endif %}
+                </td>
+            </tr>
+            <tr>
+                <td>{{ 'access_level.granted.trip_defaults'|trans|desc("Trip defaults") }}:</td>
+                <td>
+                    {% if tripDefaults %}
+                        <i class="icon-green-check"></i> {{ 'access_level.granted.trip_default_shared'|trans|desc("New family members trips shared by default") }}
+                    {% else %}
+                        <i class="icon-warning-small"></i> {{ 'access_level.granted.trip_default_not_shared'|trans|desc("New family members trips not shared by default") }}
+                    {% endif %}
+                </td>
+            </tr>
+            </tbody>
+        </table>
+
+        <table class="main-table share-accounts">
+            <thead>
+            <tr>
+                <th>{{ 'share'|trans() }}</th>
+                <th>{{ 'entire.timeline.of'|trans()|desc('The entire timeline of') }}</th>
+            </tr>
+            </thead>
+            <tbody>
+                {% for timeline in timelines %}
+                    <tr>
+                        <td class="check">
+                            {% if timeline.isGranted %}
+                                <i class="icon-green-check"></i>
+                            {% else %}
+                                <i class="icon-red-error"></i>
+                            {% endif %}
+                        </td>
+                        <td><strong>{{ timeline.name }}</strong></td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <div class="row-submit">
+        {% if not grantedFull %}
+            <button class="btn-blue js-full-request">{{ 'request_control.full'|trans|desc("Request full control of the personal account") }}</button>
+        {% endif %}
+        {% if not grantedRead %}
+            <button class="btn-blue js-readonly-request">{{ 'request_control.read_only'|trans|desc("Request read-only control of the personal account") }}</button>
+        {% endif %}
+    </div>
+</div>
+
+<script type="text/javascript">
+    require(['jquery-boot', 'lib/dialog', 'translator-boot', 'lib/design'], function ($, dialog) {
+        var getDialog = function (type) {
+            return dialog.fastCreate(
+                    Translator.trans('alerts.text.confirm'),
+                    $('#' + type + '-control-text').html(),
+                    true,
+                    false,
+                    [
+                        {
+                            id: 'cancel-form',
+                            text: Translator.trans('button.no'),
+                            click: function () {
+                                $(this).dialog('close');
+                            },
+                            'class': 'btn-silver'
+                        },
+                        {
+                            id: 'send-form',
+                            text: Translator.trans('button.yes'),
+                            click: function () {
+                                $('#send-form').addClass('loader').attr('disabled', true);
+                                $.ajax({
+                                    url: Routing.generate('aw_member_control_request', {userAgentId: $('#' + type + '-control-text').data('id'), type: type}),
+                                    type: 'POST',
+                                    success: function () {
+                                        window.location.reload();
+                                    }
+                                });
+                            },
+                            'class': 'btn-blue'
+                        }
+                    ],
+                    500
+            );
+        };
+
+        $(document).on('click', '.js-full-request', function (event) {
+            event.preventDefault();
+            getDialog('full').open();
+            return false;
+        });
+
+        $(document).on('click', '.js-readonly-request', function (event) {
+            event.preventDefault();
+            getDialog('readonly').open();
+            return false;
+        });
+
+    });
+</script>
+
+
+{% block popups %}
+    <div id="full-control-text" style="display: none" data-id="{{ userAgent.useragentid }}">
+        {{ 'request_control.confirm.full.1'|trans({'%fullname%': userAgent.agentid.fullName})|desc("You are about to request a full control over") }}
+        {{ 'request_control.confirm.2'|trans({'%fullname%': userAgent.agentid.fullName})|desc("%fullname%'s personal account.") }}
+        {{ 'request_control.confirm.3'|trans({'%email%': userAgent.agentid.email})|desc("An email will be sent to <a href='mailto:%email%'>%email%</a> with a request link,")|raw }}
+        {{ 'request_control.confirm.4'|trans({'%name%': userAgent.agentid.firstname})|desc("if %name% approves this request all of the accounts under %name%'s profile will be shared with you,") }}
+        {{ 'request_control.confirm.full.3'|trans|desc("giving you full control over the accounts and the default will be set to give you full control over any new accounts") }}
+        {{ 'request_control.confirm.6'|trans({'%name%': userAgent.agentid.firstname})|desc("that %name% adds to the profile.") }}
+        {{ 'request_control.confirm.7'|trans|desc("Do you wish to proceed?") }}
+    </div>
+
+    <div id="readonly-control-text" style="display: none" data-id="{{ userAgent.useragentid }}">
+        {{ 'request_control.confirm.read_only.1'|trans|desc("You are about to request &quot;Read Account Numbers and Point Balance&quot; control control over")|raw }}
+        {{ 'request_control.confirm.2'|trans({'%fullname%': userAgent.agentid.fullName})|desc("%fullname%'s personal account.") }}
+        {{ 'request_control.confirm.3'|trans({'%email%': userAgent.agentid.email})|desc("An email will be sent to <a href='mailto:%email%'>%email%</a> with a request link,")|raw }}
+        {{ 'request_control.confirm.4'|trans({'%name%': userAgent.agentid.firstname})|desc("if %name% approves this request all of the accounts under %name%'s profile will be shared with you,") }}
+        {{ 'request_control.confirm.read_only.5'|trans|desc("giving you &quot;Read Account Numbers and Point Balance&quot; control over the accounts and the default will be set to give you &quot;Read Account Numbers and Point Balance&quot; control over any new accounts")|raw }}
+        {{ 'request_control.confirm.6'|trans({'%name%': userAgent.agentid.firstname})|desc("that %name% adds to the profile.") }}
+        {{ 'request_control.confirm.7'|trans|desc("Do you wish to proceed?") }}
+    </div>
+{% endblock %}

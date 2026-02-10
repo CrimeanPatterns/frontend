@@ -1,0 +1,26 @@
+{% extends "@AwardWalletMain/Layout/accounts.html.twig" %}
+
+{% form_theme form '@AwardWalletMain/FormTheme/fields.html.twig' %}
+
+{% block content %}
+    <div class="add-account">
+        <div class="main-blk">
+            <h1>
+                {{ 'history-transaction.provider-header.add'|trans({'%providerName%': displayName})|desc('Add %providerName% transaction')|raw }}
+                <span class="silver">{{ 'history-transaction.account-header.add'|trans({'%accountNumber%': account.login, '%userName%': account.ownerFullName})|desc('for account %accountNumber% belonging to %userName%') }}</span>
+            </h1>
+            {{ form_start(form, {"attr": {"class":"main-form"}}) }}
+            {{ form_widget(form, {'noSubmit': true}) }}
+            <div class="row-submit t-right">
+                <div class="row-submit-item">
+                    <a href="{{ path('aw_account_history_view', {'accountId': account.accountid}) }}" class="btn btn-silver">{{ 'button.cancel'|trans|desc('Cancel') }}</a>
+                    <button type="submit" class="btn-blue">{{ 'form.button.save'|trans|desc('Save') }}</button>
+                </div>
+            </div>
+            {{ form_end(form) }}
+        </div>
+        <div class="faq">
+            <div class="faq-blk"></div>
+        </div>
+    </div>
+{% endblock %}

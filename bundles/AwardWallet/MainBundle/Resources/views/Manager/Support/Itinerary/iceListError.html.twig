@@ -1,0 +1,224 @@
+{% use '@AwardWalletMain/FormTheme/oldFields.html.twig' %}
+        <tr>
+            <th class="iced short bothBorder topBorder"><h4>Id</h4></th>
+            <th class="iced stDate rightBorder topBorder"><h4>Detection Date</h4></th>
+            <th class="iced account rightBorder topBorder"><h4>Account ID</h4></th>
+            <th class="iced short rightBorder topBorder"><h4>User ID</h4></th>
+            <th class="iced stType rightBorder topBorder"><h4>Error Type</h4></th>
+            <th class="iced stStatus rightBorder topBorder"><h4>Operating Status</h4></th>
+            <th class="iced rightBorder topBorder"><h4>Error Message</h4></th>
+            <th class="iced rightBorder topBorder"><h4>Comment</h4></th>
+            <th class="iced middle rightBorder topBorder"><h4>Log</h4></th>
+            <th class="iced middle2 rightBorder topBorder"><h4>All</h4></th>
+            <th class="iced commit rightBorder topBorder"><h4>Action</h4></th>
+        </tr>
+<script>
+    function setFilter() {
+        $.ajax({
+            url: "{{ path('aw_manager_itineraryCheckError_loadErrors') }}",
+            type: "POST",
+            data: {
+                providerId: {{ data.main.ProviderID }},
+                date: '{{ data.main.DetectionDate }}',
+                back: '{{ back }}',
+                limit: {{ inputValues.limit|e }},
+                accountId: $('input[name="accountId"]').val(),
+                UserId: $('input[name="UserId"]').val(),
+                detectionDate: $('input[name="detectionDate"]').val(),
+                errorType: $('select[name="errorType"]').val(),
+                status: $('select[name="status"]').val()
+            },
+            async: true,
+            success: function (data) {
+                $('table#Errors').empty();
+                $('table#Errors').html(data);
+            }
+        });
+    }
+</script>
+        <tr class='filters'>
+                <td class="iced short bothBorder"></td>
+                <td class="iced stDate rightBorder">
+                    {% set widget = 'single_text' %}
+                    {% set attr = { } %}
+                    {% set name = 'datePick' %}
+                    {% set value = inputValues.detectionDate %}
+                    {% set id = 'datePickId' %}
+                    {% set full_name = 'detectionDate' %}
+                    {% set required = false %}
+                    {% set pattern = '' %}
+                    {{ block('date_widget') }}
+                </td>
+                <td class="iced account rightBorder"><input type='text' name='accountId'
+                                                          value="{{ inputValues.accountId }}"></td>
+                <td class="iced short rightBorder"><input type='text' name='UserId'
+                                                          value="{{ inputValues.UserId }}"></td>
+                <td class="iced stType rightBorder">
+                    <select name='errorType'>
+                        <option value="">Select type</option>
+                        {% for errorType in errorTypes %}
+                            <option value="{{ errorType.ID }}" {% if errorType.ID == inputValues.errorType %} selected{% endif %}>{{ errorType.Description }}</option>
+                        {% endfor %}
+                    </select>
+                    <i class='icon-blue-info' rel='Info' id="Info"/>
+                    <div class='descriptionErrorType' style='display: none;'>
+                        <table>
+                            <tr>
+                                <td class='titleErrorType'>Info</td>
+                                <td class='descrErrorType' lab='Info'>
+                                    <b>No update</b> - дата резервации не обновилась при проверке аккаунта<br/>
+                                    <b>Parser notice</b> - ошибки парсинга резерваций<br/>
+                                    <b>Errors from retrieve by conf #</b> - ошибки парсинга через ретрив<br/>
+                                    <b>No future itineraries</b> - у прова нет резерваций в будущем<br/>
+                                    <b>Should be noItinerariesArr</b> - вернулся пустой список резерваций,
+                                    должно было вернуться noItineraries<br/>
+                                    <b>Outdated itineraries</b> - за последние сутки не было новых резерваций у прова
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </td>
+                <script>
+                    $("i#Info").hover(
+                        function(event){
+                            if (typeof($(this).attr('rel')) != 'undefined') {
+                                var label = $(this).attr('rel');
+                                var text = $('td[lab='+label+']').html();
+                                if ($('#helper').length == 0) {
+                                    $('body').append("<div id='helper'></div>");
+                                } else {
+                                    $('#helper').show();
+                                }
+                                var data = {
+                                    position:   'fixed',
+                                    left:       530,
+                                    top:        200,
+                                    border:     '2px solid #000',
+                                    background: '#e9e9e9',
+                                    color:      '#000',
+                                    padding:    '10px',
+                                    width:      600
+                                };
+                                $('#helper').css(data).html(text);
+                            }
+                        },
+                        function(){
+                            $('#helper').hide();
+                        }
+                    );
+
+                </script>
+                <td class="iced stStatus rightBorder">
+                    <select name='status'>
+                        <option value="">Select status</option>
+                        {% for status in statuses %}
+                            <option value="{{ status.ID }}" {% if status.ID == inputValues.status %} selected{% endif %}>{{ status.Description }}</option>
+                        {% endfor %}
+                    </select>
+                </td>
+                <td class="iced rightBorder"></td>
+                <td class="iced rightBorder"></td>
+                <td class="iced middle rightBorder"></td>
+                <td class="iced middle2 rightBorder"></td>
+                <td class="iced commit rightBorder nowrap">
+                    <button value='Search' onclick="setFilter();">Search</button>
+                    <button onclick="$('#fader').show(); $('tr.filters input').val(''); $('tr.filters select').val(''); setFilter(); return false;">
+                        Clear
+                    </button>
+                </td>
+        </tr>
+
+        {% for row in data.listError %}
+            <tr>
+                <td class="iced short bothBorder ids nowrap"
+                    title="{{ row.ItineraryCheckErrorID }}">{{ row.ItineraryCheckErrorID }}</td>
+                <td class="iced stDate rightBorder date nowrap"
+                    title="{{ row.DetectionDate }}">{{ row.DetectionDate }}</td>
+                <td class="iced account rightBorder account nowrap">
+                    {% if row.AccountID %}
+                        {% if row.SavePassword == 1 %}
+                            <a target="_blank" title="Request password for AccountID: {{ row.AccountID }}"
+                               href="/manager/passwordVault/requestPassword.php?ID={{ row.AccountID }}">{{ row.AccountID }}</a>&nbsp;
+                        {% else %}
+                            <span>{{ row.AccountID }}</span>&nbsp;
+                        {% endif %}
+                        <button class="gray" style="float: right;" title="Copy AccountID '{{ row.AccountID }}' to buffer"
+                                onclick="copy(this)">&nbsp;❒ Copy
+                        </button>
+                    {% endif %}
+                </td>
+                <td class="iced short rightBorder userId nowrap"
+                    title="Impersonate UserID: {{ row.UserId }}">
+                    {% if row.UserId %}
+                        <a target="_blank"
+                           href="/manager/impersonate?UserID={{ row.UserId }}&AutoSubmit&AwPlus=1">{{ row.UserId }}</a>
+                    {% endif %}
+                </td>
+                <td class="iced stType rightBorder errorType nowrap"
+                    title="{{ row.ErrorType }}">{{ row.ErrorType }}</td>
+                <td class="iced stStatus rightBorder" id="status{{ row.ItineraryCheckErrorID }}"
+                    title="{{ row.Status }}">{{ row.Status }}</td>
+
+                <td class="iced rightBorder Comment"
+                    title="{{ row.ErrorMessage }}">
+                    {{ row.ErrorMessage|nl2br }}
+                </td>
+
+                <td class="iced rightBorder Comment" id="comment{{ row.ItineraryCheckErrorID }}"
+                    title="{{ row.Comment }}">
+                    {{ row.Comment|nl2br }}
+                </td>
+
+                {% if row.file %}
+                    <td id="log{{ row.ItineraryCheckErrorID }}" class="iced middle rightBorder Log nowrap" title=""></td>
+                {% elseif row.RequestID %}
+                    <td class="iced middle rightBorder Log nowrap"
+                        title="Log">
+                        <a href='/manager/loyalty/logs?RequestID={{ row.RequestID }}&Partner=awardwallet&ConfNo='
+                           target='_blank'>Log by RequestID</a>
+                    </td>
+                {% elseif row.AccountID %}
+                    <td class="iced middle rightBorder Log nowrap"
+                        title="Latest Log">
+                        <a href='/manager/loyalty/logs?AccountID={{ row.AccountID }}&ShowLatest=1'
+                           target='_blank'>Latest</a>
+                    </td>
+                {% else %}
+                    <td class="iced middle rightBorder Log nowrap"
+                        title="No Log">No log
+                    </td>
+                {% endif %}
+                <td class="iced middle2 rightBorder Log nowrap"
+                    title="Latest All Logs">
+                    {% if row.AccountID %}
+                        <a href='/manager/loyalty/logs?AccountID={{ row.AccountID }}'
+                           target='_blank'>All Logs</a>
+                    {% else %}
+                    {% if row.ConfirmationNumber %}
+                        <a href='/manager/loyalty/logs?ConfNo={{ row.ConfirmationNumber }}&Partner={{ row.Partner }}'
+                           target='_blank'>All Logs</a>
+                    {% else %}
+                        No accounts
+                    {% endif %}
+                    {% endif %}
+                </td>
+                <td class="iced commit rightBorder" title="Save Comment">
+                    <input type="button" style="float: left;" value="Resolved"
+                           id="show-button{{ loop.index }}">
+                    {% if row.AccountID and row.SavePassword == 1 %}
+                        <a href="/manager/checkAccount.php?ID={{ row.AccountID }}" target="_blank" title="Check account">
+                            <img style="margin-top: 4px;width: 15px;" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAABmJLR0QA/wD/AP+gvaeTAAABJElEQVRIie3US0oDQRSF4Y+gI00c6A5MFuADZyKSTN2RSMRN+FhDQJwJIsE1qFmBEx8DjQNn7aAqdGJe1ZjMcqCpKup0/d2XOpeFZqBDXOEJX/hGB5doFD2s2Tev4Q7ZlKcdvUnKImQPH3H9ilNsoYKVOD+Oe1n07qcCMvzE8RrrE/wVtPog1VRAJtR8KeGjSn2Q+yKAXrlStCYvV70IoAjkJPovEv2FtRUBnXkByhHQnWTqRlN5VtTSn/VLHDfnBXiI41Hi+02jL8ZYNeTprfwDMlHtaGoZ/sNRWhZCmQyoyftQSwjROG3gxmB7mQogNK4e5E0I0TZWI3AHZ3Evwzt25eVKUlXoLdPa9a3BW9dMBfRUF+L/LOTkE484x0HRwxYa0i9RZm9iHyvG4AAAAABJRU5ErkJggg=="/>
+                        </a>
+                    {% endif %}
+                    <script>
+
+                        document.getElementById('show-button{{ loop.index }}').onclick = function () {
+                            showPrompt("Enter comments", function (value, all) {
+                                saveChanges('{{ row.ItineraryCheckErrorID }}', value, all);
+                            });
+                        };
+                    </script>
+                </td>
+            </tr>
+        {% endfor %}
+<script type="text/javascript">getLogs('{{ forLogs|raw }}');</script>

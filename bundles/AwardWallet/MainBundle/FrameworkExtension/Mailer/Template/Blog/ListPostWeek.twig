@@ -1,0 +1,203 @@
+{% extends '@MailTemplate/Layout/base.twig' %}
+{% trans_default_domain "email" %}
+
+{% block subject %}{% apply spaceless %}{% autoescape false %}
+    {% if constant('\AwardWallet\\MainBundle\\Service\\Blog\\EmailNotificationNewPost::PERIOD_WEEK') == period %}
+        {% if subject is defined and subject is not empty %}
+            {{ subject }}
+        {% else %}
+            {{ 'aw-weekly-blog-digest'|trans|desc('AwardWallet weekly blog digest 📓') }}
+        {% endif %}
+    {% else %}
+        {{ 'aw-daily-blog-digest'|trans|desc('AwardWallet daily blog digest 📒') }}
+    {% endif %}
+{% endautoescape %}{% endapply %}{% endblock subject %}
+
+{% block headStyle %}{% trim %}{% spaceless %}
+    {{ parent() }}
+    <style>
+        @media only screen and (min-width: 600px) {
+            .blog-group-cell {
+                padding: 26px 20px 23px !important;
+            }
+
+            .blog-couathors-avatars {
+                overflow: hidden;
+            }
+
+        {#
+                .blog-coauthors--1 {width:25px;min-width:25px !important;max-width:25px !important;}
+                .blog-coauthors--2 {width:56px;min-width:55px !important;max-width:60px !important;}
+                .blog-coauthors--3 {width:82px;min-width:82px !important;max-width:82px !important;}
+        #}
+            .blog-couathors-avatars img {
+                position: relative;
+                width: 25px;
+                height: 25px;
+                border-radius: 50%;
+            }
+
+            .blog-info {
+                display: flex !important;
+            }
+
+            .title-link,
+            a.title-link {
+                font-size: 18px !important;
+            }
+
+
+            .blog-post-thumb {
+                padding-left: 20px !important;
+                width: 90px !important;
+                max-width: 120px !important;
+            }
+
+            .post-thumb,
+            img.post-thumb {
+                max-height: none !important;
+                min-height: auto !important;
+                width: 90px !important;
+                height: auto !important;
+                max-width: 120px !important;
+                border-width: 0 !important;
+                border-radius: 4px;
+            }
+
+            .b-arr-right {
+                display: table-cell !important;
+            }
+
+            .blog-coauthors-names,
+            .blog-post-date {
+                display: inline-block !important;
+                padding-left: 10px;
+            }
+
+            .blog-post-date,
+            .blog-post-date span {
+                padding-top: 0 !important;
+            }
+
+            span.bold,
+            .bold {
+                font-weight: 600 !important;
+            }
+
+            .greeting-hi,
+            .greeting-hi b {
+                font-size: 42px !important;
+                line-height: 48px !important;
+            }
+
+            .blog-group-title {
+                font-size: 22px !important;
+            }
+
+            .blog-list-pre {
+                margin-top: 15px !important;
+                font-size: 20px !important;
+                line-height: 30px !important;
+            }
+        }
+
+        @media (prefers-color-scheme: light ) {
+            .blog-group-cell,
+            [data-ogsc] .blog-group-cell {
+                background: #f9f9fa !important;
+            }
+        }
+
+        @media (prefers-color-scheme: dark ) {
+            .blog-group-cell,
+            [data-ogsc] .blog-group-cell {
+                background: #1c1c1e !important;
+            }
+
+            .blog-group-title,
+            [data-ogsc] .blog-group-title,
+            .custom-message,
+            [data-ogsc] .custom-message {
+                color: #fff !important;
+            }
+
+            .blog-coauthors-names,
+            .blog-coauthors-names a,
+            .authors-name,
+            a.authors-name,
+            authors-name:visited,
+            .blog-post-date,
+            [data-ogsc] .blog-coauthors-names,
+            [data-ogsc] .blog-coauthors-names a,
+            [data-ogsc] .authors-name,
+            [data-ogsc] .authors-name:visited,
+            [data-ogsc] .blog-post-date {
+                color: #666b72 !important;
+            }
+        }
+    </style>
+{% endspaceless %}{% endtrim %}{% endblock headStyle %}
+
+{% block mailPreview %}
+    {% import '@MailTemplate/CommonMacro.twig' as commonMacro %}
+
+    {% if preview is defined and preview is not empty %}
+        {{ commonMacro.emailPreview(preview) }}
+    {% endif %}
+{% endblock mailPreview %}
+
+{% block content_row %}{% trim %}{% spaceless %}
+    {% import '@MailTemplate/CommonMacro.twig' as commonMacro %}
+    <tr>
+        <td style="line-height: 24px;font-size: 16px;border: solid 1px #a6aab3;background: #fff;padding: 10px 20px 0px; border-top: none; border-bottom: none;"
+            class="email-white">
+
+            {{ commonMacro.offerRemark(_context, '', {
+                'margin-top': '0',
+                'margin-bottom': '0',
+                'font-size': '14px',
+                'line-height' : '18px',
+            }) }}
+
+            <div class="email-silver" style="margin:0 0 15px;line-height:18px;color:rgb(97,103,115);font-size:14px;padding:15px 10px 10px;box-sizing:border-box;font-style:italic;font-weight:normal;background:rgb(249,249,250);">
+                {{ 'unsubscribe-weekly-digest'|trans({
+                    '%link_on%': '<a href="https://awardwallet.com/blog/link/BlogWeeklyDigestUnsubscribe" style="color:#4684c4;text-decoration:none;">',
+                    '%link_off%': '</a>',
+                    '%bold_on%': '<b>',
+                    '%bold_off%': '</b>',
+                }, 'email')|desc("To unsubscribe from these weekly digest emails, click %link_on%here%link_off% and set the %bold_on%New Blog Posts%bold_off% setting to %bold_on%Never%bold_off%.")|raw }}
+            </div>
+
+            {{ commonMacro.hello(user.firstname, _context, {
+                'font-family': 'Trebuchet MS, Arial, sans-serif',
+                'font-size': '22px',
+                'font-weight': '700',
+                'line-height': '30px',
+            }) }}
+
+            {% if customMessage is defined and customMessage is not empty %}
+                <div class="custom-message" style="margin: 15px 0;font-size: 16px;color: #222;">{{ customMessage|replace({'USRREFCODE': user.refCode})|raw }}</div>
+            {% endif %}
+
+            <div class="blog-list-pre" style="margin-top: 10px;font-size:14px;line-height:20px;">
+                Check out the latest insights and updates from the AwardWallet Blog from last {{ period }}:
+            </div>
+        </td>
+    </tr>
+    <tr>
+        <td style="line-height: 20px;border: solid 1px #a6aab3;background: #fff; border-top: none;font-family: Trebuchet MS, Arial, sans-serif;" class="email-white">
+            {{ htmlGroups|replace({'USRREFCODE': user.refCode})|raw }}
+        </td>
+    </tr>
+{% endspaceless %}{% endtrim %}{% endblock content_row %}
+
+{% block unsubscribe %}
+    {% import '@MailTemplate/CommonMacro.twig' as commonMacro %}
+
+    {% if unsubscribeUrl is defined and unsubscribeUrl is not empty %}
+        {% set link = unsubscribeUrl %}
+    {% else %}
+        {% set link = unsubscribeLink ~ '#newBlogPosts' %}
+    {% endif %}
+    {{ commonMacro.changeOrUnsubscribeLink(link, _context) }}
+{% endblock unsubscribe %}

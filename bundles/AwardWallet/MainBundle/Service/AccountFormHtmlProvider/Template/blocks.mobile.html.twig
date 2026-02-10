@@ -1,0 +1,86 @@
+{% block instructions %}
+    {% import '@Module/AccountFormHtmlProvider/Template/blocks.desktop.html.twig' as macro %}
+
+    {% set provider = account.providerid %}
+    {% set isPerksplus = provider.code == 'perksplus' %}
+    {% set isEdit = account.id is not empty %}
+    {% set userAgent = app.request.headers.get('user-agent') %}
+    {% set isMac = userAgent matches '/Macintosh|Mac OS|macOS/i' %}
+    {% set keys = isMac ? 'Cmd-A, Cmd-C, Cmd-V' : 'Ctrl-A, Ctrl-C, Ctrl-V' %}
+
+    <div>
+        {{ macro.warning_provider(account.providerid.code) }}
+    </div>
+
+    <div>
+        The best and simplest way to automate the tracking of your {{ provider.shortname }} account is to <a href="{{ url('aw_usermailbox_view') }}">link your mailbox to AwardWallet</a>, the one where {{ provider.shortname }} sends its monthly statements. However, you need to do that after you add your {{ provider.shortname }} account via this page.
+        <br><br>
+        If you are uncomfortable linking your mailbox to AwardWallet, the second-best option to track your {{ provider.shortname }} account is to set up auto-forwarding of your {{ provider.shortname }} statements to us.
+        Your email address on AwardWallet is <span class="userEmail">{{ account.user.login }}@email.AwardWallet.com</span>. You will need to add this address as a forwarding address to your email.
+        Please note that we auto-approve forwarding requests from Google (Gmail), so there is no need to contact our support for that.
+        Also, <a href='https://awardwallet.com/blog/how-to-track-delta-southwest-united-accounts-awardwallet/' target='_blank'>our blog post</a> goes into detail (with screenshots) on how to set this up.
+        When setting up a forwarding rule inside Gmail, we recommend using the <a href="{{ url('aw_gmail_forwarding') }}" target='_blank'>following guide</a>, which will also forward any travel reservations you book to your AwardWallet account. If you are not interested in AwardWallet tracking your travel plans, you can simply set up the following search query (with curly brackets):
+
+        <br><br>
+        <b>{from:delta.com from:united.com from:southwest.com from:aa.com}</b>
+        <br><br>
+
+        and set up forwarding of all emails from these domains to your AwardWallet address <span class="userEmail">{{ account.user.login }}@email.AwardWallet.com</span>.
+
+        <br><br>
+
+        {% if not isPerksplus %}
+            In either case, you need to make sure you opt-in to receive {{ provider.shortname }} statements by subscribing for html emails under
+            the <a href="{{ providerLinks['emailProfileLink'] }}" target='_blank'>{{ account.providerid.programname }} Statement</a> heading.
+            <br><br>
+        {% endif %}
+
+        <span id="update-manual"></span>
+
+        {% set loginPart = account.login is not empty
+            ? account.login
+            : '[Your' ~ (account.providerid.programname|replace({' ': ''})) ~ 'Login]' %}
+
+        If you have multiple {{ provider.shortname }} accounts you can specify your email as your AwardWallet login name dot your {{ provider.shortname }} account login, i.e.:
+        <span class="userEmail"><nobr>{{ account.user.login }}.{{ loginPart }}@email.awardwallet.com</nobr></span>
+
+        {% if not isPerksplus and not isEdit %}
+            <br><br>
+            If you don't want to wait for the statement to arrive you can test this functionality by simply copy-pasting ({{ keys }}) the entire account details page from the {{ account.providerid.programname }} website
+            into a new email message and send it to <span class="userEmail">{{ account.user.login }}@email.AwardWallet.com</span>.
+        {% endif %}
+    </div>
+{% endblock %}
+
+{% block statement_notice %}
+    {% set hasRecentUpdate = false %}
+
+    {% if account.emailparsedate %}
+        {% set diffInDays = date(date()).diff(account.emailparsedate).days %}
+        {% set hasRecentUpdate = diffInDays <= 30 %}
+    {% endif %}
+
+    <div>
+        {% set programName = account.providerid.programname %}
+
+        {% if account.emailparsedate %}
+            {% if hasRecentUpdate %}
+                Last time we received a valid statement for this {{ programName }} account
+                <span class='days'><nobr>{{ account.emailparsedate|formatTimeAgo(true, true) }}.</nobr></span>
+                <br>Your updates seem to be working.
+            {% else %}
+                Last time we received a valid statement for this {{ programName }} account
+                <span class='days'><nobr>{{ account.emailparsedate|formatTimeAgo(true, true) }}.</nobr></span>
+                It's been more than a month, probably your statements are not being automatically forwarded to {{ account.user.login }}@email.awardwallet.com
+            {% endif %}
+        {% else %}
+            At this point we have not received any valid {{ programName }} statements for this account into your personal mailbox.
+        {% endif %}
+    </div>
+{% endblock %}
+
+{% block warning_provider %}{% trim %}
+    {% import '@Module/AccountFormHtmlProvider/Template/blocks.desktop.html.twig' as macro %}
+
+    {{ macro.warning_provider(providerCode) }}
+{% endtrim %}{% endblock %}

@@ -1,0 +1,33 @@
+{#{% extends app.user is not null ? "@AwardWalletMain/Layout/common.html.twig" : "@AwardWalletMain/Layout/not_logged.html.twig" %}#}
+
+{#{% block content %}#}
+    <div class="main-blk">
+
+        <div class="main-blk-content">
+            <div class="search-content">
+                {% for kind in kinds %}
+                    <div class="prog-block">
+                        <div class="title-note"><h3>{{ kind.name }}</h3></div>
+                        <div class="search-blk">
+                            {% for provider in providers %}
+                                {% if provider.Kind == kind.id %}
+                                    <a href="{{ path('aw_loyalty_program_rating', {'loyaltyProgramName': provider.href}) }}" class="row-item">
+                                        <div class="row">
+                                            <div class="name">
+                                                {% set title = provider.DisplayName|replace({'(':'<span class="silver">(', ')':')</span>'}) %}
+                                                <h3 data-text="{{ title }}">{{ title|raw }}</h3>
+                                                {% if provider.Name %}
+                                                    <p>{{ provider.Name|raw }}</p>
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                    </a>
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+{#{% endblock %}#}

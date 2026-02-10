@@ -1,0 +1,11 @@
+parameters:
+
+services:
+    _defaults:
+        public: true
+
+    aw.widget_extension.twig.widget:
+        class: AwardWallet\WidgetBundle\FrameworkExtension\Twig\WidgetExtension
+        arguments: ["@aw.widget"]
+        tags:
+            - { name: twig.extension }

@@ -1,0 +1,45 @@
+POST https://test.api.amadeus.com/v2/shopping/flight-offers
+Authorization: Bearer {{access_token}}
+Content-Type: application/json
+
+{
+  "currencyCode": "USD",
+  "originDestinations": [
+    {
+      "id": "1",
+      "originLocationCode": "BNA",
+      "destinationLocationCode": "TPA",
+      "departureDateTimeRange": {
+        "date": "2024-10-12",
+        "time": "18:05:00"
+      }
+    }
+  ],
+  "travelers": [
+    {
+      "id": "1",
+      "travelerType": "ADULT"
+    },
+    {
+      "id": "2",
+      "travelerType": "ADULT"
+    }
+  ],
+  "sources": [
+    "GDS"
+  ],
+  "searchCriteria": {
+    "maxFlightOffers": 20,
+    "flightFilters": {
+      "cabinRestrictions": [
+        {
+          "cabin": "ECONOMY",
+          "coverage": "MOST_SEGMENTS",
+          "originDestinationIds": [
+            "1"
+          ]
+        }
+      ]
+    }
+  }
+}

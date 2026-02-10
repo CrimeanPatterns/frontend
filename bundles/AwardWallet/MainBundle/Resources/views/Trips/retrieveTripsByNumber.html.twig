@@ -1,0 +1,42 @@
+{% extends '@AwardWalletMain/Layout/trips.html.twig' %}
+{% import '@AwardWalletMain/TwigMacros/extension.html.twig' as assets %}
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        var CAN_CHECK_CONFIRMATION_YES_EXTENSION = {{ constant('CAN_CHECK_CONFIRMATION_YES_EXTENSION') }},
+            CAN_CHECK_CONFIRMATION_YES_EXTENSION_AND_SERVER = {{ constant('CAN_CHECK_CONFIRMATION_YES_EXTENSION_AND_SERVER') }},
+            PROVIDER_CODE = '{{ provider.code }}',
+            PROVIDER_ID = '{{ provider.id }}',
+            CAN_CHECK_VALUE = {{ provider.cancheckconfirmation }},
+            SELECTED_USER_ID = {{ selectedUserId ? selectedUserId : 'null' }},
+            FAMILY_MEMBER_ID = {{ familyMemberId ? familyMemberId : 'null' }},
+            CLIENT_ID = {{ clientId ? clientId : 'null'  }};
+            USE_EXTENSION_V3 = {{ useExtensionV3 | json_encode | raw }};
+            CHANNEL = {{ channel | json_encode | raw }};
+            CENTRIFUGE_CONFIG = {{ centrifugeConfig | json_encode | raw }};
+
+        require([
+            'pages/trips/retrieve'
+        ], function () {
+            {% if autoSubmit %}
+            $('#checkConfForm').submit();
+            {% endif %}
+
+            $('body').on('change', '#confirmation_type_Region,#mobile_new_account_Region', function() {
+                var regions  = {{ regions|json_encode|raw }},
+                    selected = $(this).val();
+                if (undefined !== regions[selected])
+                    $('.faq-blk .heading a[target="_blank"], .error-message-blk a[target="_blank"]', '#retrieve-form').attr('href', regions[selected]);
+            });
+            $('#confirmation_type_Region,#mobile_new_account_Region').trigger('change');
+        })
+    </script>
+{% endblock %}
+
+{% block content %}
+    <div id="retrieve-form">
+        {% include('@AwardWalletMain/Trips/_retrieveForm.html.twig') %}
+    </div>
+    {{ assets.load() }}
+{% endblock %}
+

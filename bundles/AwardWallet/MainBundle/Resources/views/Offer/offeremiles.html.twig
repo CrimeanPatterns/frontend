@@ -1,0 +1,239 @@
+{% extends popup is defined and popup ? "@AwardWalletMain/Offer/_offerPopup.html.twig" : "@AwardWalletMain/Offer/standard.html.twig" %}
+{% import '@AwardWalletMain/Offer/offerMacros.html.twig' as offerMacros %}
+{% import '@AwardWalletMain/TwigMacros/form.html.twig' as form %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    {{ encore_entry_link_tags('offer') }}
+    {{ encore_entry_link_tags('offers/e-miles') }}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        {{ offerMacros.jsOfferNo(_context, Code, OfferUserID, defaultRedirectLocation) }}
+        function sendOfferAgree() {
+            {% autoescape false %}
+            {% if (preview != 1) and (src != 1) %}
+                {% if vars.isLocalProd == false %}
+                    $.post("{{ url('aw_offer_agree', { 'offerUserId': OfferUserID, 'agreed': '1' } ) }}");
+                    _gaq = _gaq || [];
+                    _gaq.push(['_trackEvent', 'offer-offeremiles', 'Agreed']);
+                {% endif %}
+            {% endif %}
+            {% endautoescape %}
+        }
+        require(['pages/offeremiles'], function (offer) {
+            offer.submitCallback = sendOfferAgree;
+            offer.init();
+        });
+    </script>
+{% endblock %}
+
+{% block permanent %}
+    {{ parent() }}
+{% endblock %}
+
+{% block content %}
+    <div class="e-miles">
+    <div class="e-miles-item">
+    <div class="e-miles-info">
+        <div class="e-miles-logo"></div>
+        <h3>AwardWallet members are invited to EARN MORE TRAVEL POINTS with e-Miles.</h3>
+
+        <p>It only takes a few moments to get rewarded with travel points and gift cards through the e-Miles
+            program.</p>
+
+        <div class="block">
+            <h4>It’s easy to start, here’s what you do:</h4>
+            <ol class="blue-count">
+                <li>
+                    <p>Join the e-Miles program</p>
+                </li>
+                <li>
+                    <p>Interact with America's top brands and earn e-Miles miles</p>
+                </li>
+                <li>
+                    <p>Redeem your miles for travel points or gift cards</p>
+                </li>
+            </ol>
+        </div>
+        <h4>It's that simple!</h4>
+        <h4>Be sure to link your e-Miles account in AwardWallet to keep track of your miles.</h4>
+
+        <p>As an added bonus, activate your account within 30 days to receive 250 bonus miles!</p>
+    </div>
+    <form action="/" class="main-form">
+        <div class="title">
+            <i class="icon-silver-arrow-down"></i>
+
+            <h3>Enrollment Form</h3>
+        </div>
+        <div class="main-form-item">
+            <div class="row">
+                <div class="row-item">
+                    <label for="first-name">First name<span class="required">*</span></label>
+
+                    <div class="input">
+                        <div class="input-item">
+                            <input type="text" id="first-name" name="first-name" maxlength="30" value="{{ FirstName }}">
+                        </div>
+                    </div>
+                </div>
+                <div class="info">
+                    <div class="info-icon"></div>
+                    <div class="info-description"><p></p></div>
+                </div>
+                <div class="error-message">
+                    <div class="warning"><i class="icon-warning-small"></i></div>
+                    <div class="error-message-description">This field is required</div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="row-item">
+                    <label for="last-name">Last name<span class="required">*</span></label>
+
+                    <div class="input">
+                        <div class="input-item">
+                            <input type="text" id="last-name" name="last-name" maxlength="30" value="{{ LastName }}">
+                        </div>
+                    </div>
+                </div>
+                <div class="info">
+                    <div class="info-icon"></div>
+                    <div class="info-description"><p></p></div>
+                </div>
+                <div class="error-message">
+                    <div class="warning"><i class="icon-warning-small"></i></div>
+                    <div class="error-message-description">This field is required</div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="row-item">
+                    <label for="email">E-mail address<span class="required">*</span></label>
+
+                    <div class="input">
+                        <div class="input-item">
+                            <input type="text" id="email" name="email" value="{{ Email }}">
+                        </div>
+                    </div>
+                </div>
+                <div class="info">
+                    <div class="info-icon"></div>
+                    <div class="info-description"><p></p></div>
+                </div>
+                <div class="error-message">
+                    <div class="warning"><i class="icon-warning-small"></i></div>
+                    <div class="error-message-description">This field is required</div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="row-item">
+                    <label for="zip-postal">Zip/Postal Code<span class="required">*</span></label>
+
+                    <div class="input">
+                        <div class="input-item">
+                            <input type="text" id="zip-postal" name="zip-postal" value="{{ Zip }}">
+                        </div>
+                    </div>
+                </div>
+                <div class="info">
+                    <div class="info-icon"></div>
+                    <div class="info-description"><p></p></div>
+                </div>
+                <div class="error-message">
+                    <div class="warning"><i class="icon-warning-small"></i></div>
+                    <div class="error-message-description">This field is required</div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="row-item">
+                    <label for="email">Gender<span class="required">*</span></label>
+
+                    <div class="input">
+                        <div class="input-item">
+                            <select id="gender" name="gender" data-role="select2">
+                                <option value="M">Male</option>
+                                <option value="F">Female</option>
+                            </select>
+                            <script> $('#gender').prop('selectedIndex', -1); </script>
+                        </div>
+                    </div>
+                </div>
+                <div class="info">
+                    <div class="info-icon"></div>
+                    <div class="info-description"><p></p></div>
+                </div>
+                <div class="error-message">
+                    <div class="warning"><i class="icon-warning-small"></i></div>
+                    <div class="error-message-description">This field is required</div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="row-item">
+                    <label for="birthday">Birthday<span class="required">*</span></label>
+                    <div class="input">
+                        <div class="input-item">
+                            {{ form.datepicker_input('birthday', '', {'data-role': 'datepicker', 'data-legacy': 'true'}) }}
+                            {#<input type="text" data-role="datepicker" id="birthday" value="">#}
+                        </div>
+                    </div>
+                </div>
+                <div class="info">
+                    <div class="info-icon"></div>
+                    <div class="info-description"><p></p></div>
+                </div>
+                <div class="error-message">
+                    <div class="warning"><i class="icon-warning-small"></i></div>
+                    <div class="error-message-description">This field is required</div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="row-item">
+                    <label for="password">Password<span class="required">*</span></label>
+                    <div class="input">
+                        <div class="input-item">
+                            <input type="text" id="password" name="password" maxlength="20" value="{{ Password }}">
+                        </div>
+                    </div>
+                </div>
+                <div class="info">
+                    <div class="info-icon"></div>
+                    <div class="info-description"><p></p></div>
+                </div>
+                <div class="error-message">
+                    <div class="warning"><i class="icon-warning-small"></i></div>
+                    <div class="error-message-description">This field is required</div>
+                </div>
+            </div>
+            <div class="checkbox-row">
+                <input class="checkbox" type="checkbox" required="required" data-role="checkbox" id="terms">
+                <label for="terms" class="label">
+                    <span>
+                        I have read and I accept the Terms and Conditions set forth in the e-Miles
+                        <a target="_blank" href="http://www.e-miles.com/memberAgreement.do" rel="noopener noreferrer">Member Agreement</a>.
+                    </span>
+                    <span>
+                        After you Submit this enrollment form, a confirmation e-mail will be sent to the primary e-mail address provided.
+                    </span>
+                    <span>
+                        If you do not receive the e-mail within 24 hours, please contact Member Services at
+                        <a href="mailto:info@e-miles.com?subject=e-Miles Account Services">info@e-Miles.com</a>.
+                    </span>
+                </label>
+            </div>
+        </div>
+        <div class="row-submit">
+            <div class="row-submit-item">
+                <div class="submit">
+                    <button type="submit" class="btn-blue">Register for e-Miles and add this account to
+                        AwardWallet
+                    </button>
+                </div>
+            </div>
+        </div>
+    </form>
+    </div>
+        {{ offerMacros.offerButtons(_context) }}
+    </div>
+{% endblock %}

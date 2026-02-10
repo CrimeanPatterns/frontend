@@ -1,0 +1,38 @@
+{% extends '@MailTemplate/Layout/booking.twig' %}
+{% trans_default_domain "email" %}
+
+{% block subject %}{% apply spaceless %}{% autoescape false %}
+    {{ 'abrequest.subject'|trans({
+        '%requestId%': request.AbRequestID
+    }, 'email', lang)|desc('Award Booking Request #%requestId%') }}
+{% endautoescape %}{% endapply %}{% endblock subject %}
+
+{% block content %}
+    {% import '@MailTemplate/CommonMacro.twig' as commonMacro %}
+
+    {{ commonMacro.hello(request.contactname, _context, {
+        'padding-left': '0'
+    }) }}
+
+    {{ commonMacro.paragraph(
+        'abrequest.invoice.generated'|trans({
+            '%booker%': request.booker.bookerInfo.ServiceName
+        }, 'email', lang)|desc('%booker% has generated you an invoice please use this link to review and pay this invoice:'),
+    _context) }}
+
+    {% set query = {'id': request.AbRequestID} %}
+    {% if confirm %}
+        {% set query = query|merge({'conf': request.confirmationCode}) %}
+    {% endif %}
+    {% set view_link = baseUrl ~ path('aw_booking_view_index', query) ~ "#message_" ~ invoice.Message.AbMessageID %}
+    {{ commonMacro.dottedLink(view_link, view_link, _context) }}
+
+    {% set text = 'abrequest.invoice.thank_you'|trans({}, 'email', lang)|desc('Thank you very much we appreciate your business!') %}
+    {{ commonMacro.paragraph(
+        '<b>' ~ text ~ '</b>',
+        _context, {escape: false},
+        {
+            'margin-top': '20px'
+        }
+    ) }}
+{% endblock content %}

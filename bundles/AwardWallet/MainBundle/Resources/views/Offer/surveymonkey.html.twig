@@ -1,0 +1,26 @@
+{% extends "@AwardWalletMain/Offer/standard.html.twig" %}
+
+{% block javascripts %}
+    {{ parent() }}
+    {% if (preview != 1) and (src != 1) %}
+        <script type="text/javascript">
+            $.post("{{ url('aw_offer_agree', { 'offerUserId': OfferUserID, 'agreed': '2' })}}");
+        </script>
+    {% endif %}}
+{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    {{ encore_entry_link_tags('offer') }}
+    {{ encore_entry_link_tags('offers/survey') }}
+{% endblock %}
+
+{% block content %}
+    <div id="offer_wrap">
+        <iframe src="{{ URL }}" frameborder="1" scrolling="yes" class="surveyFrame"></iframe>
+        <div class="offer_toaccount" onclick="window.location = '/account/list.php?UserAgentID=All'">
+            Proceed to my account
+        </div>
+    </div>
+{% endblock %}
+

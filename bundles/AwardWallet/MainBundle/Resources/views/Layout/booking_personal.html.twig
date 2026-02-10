@@ -1,0 +1,13 @@
+{% set MAIN_BODY_CLASSES = {
+	'manual-hidden': true,
+	'hide-menu': request_repo.getPreviousRequestsCountByUser(app.user) == 0,
+	'responsive': false
+}|merge(MAIN_BODY_CLASSES|default({})) %}
+
+{% extends "@AwardWalletMain/Layout/default.html.twig" %}
+
+{% block body_left_widgets %}
+	{{ widget_render('left_top') }}
+	{{ widget_render('bookings') }}
+	{{ widget_render('left_bottom') }}
+{% endblock %}

@@ -1,0 +1,10 @@
+###
+POST {{scheme}}{{host}}/m/api/impersonate
+Content-Type: application/json
+Authorization: Basic {{basicAuthLogin}} {{basicAuthPassword}}
+X-Symfony-Env: {{symfonyEnv}}
+
+
+{
+  "loginOrEmail": "{{impersonate}}"
+}

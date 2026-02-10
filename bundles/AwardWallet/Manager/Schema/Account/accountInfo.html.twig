@@ -1,0 +1,152 @@
+{% import _self as m %}
+
+<div class="container-fluid">
+    <h1>Account #{{ account.id }}</h1>
+
+    <table class="table table-bordered table-striped table-hover">
+        {{ m.accountTableRow('AccountID', account.id) }}
+
+        {% if account.providerid %}
+            {{ m.accountTableRow('Provider', account.providerid.shortname, '<a target="_blank" href="/manager/list.php?ProviderID='~account.providerid.id~'&Schema=Provider">view</a>') }}
+        {% else %}
+            {{ m.accountTableRow('Provider') }}
+        {% endif %}
+
+        {{ m.accountTableRow('Program Name', account.programname) }}
+
+        {% if account.kind %}
+            {{ m.accountTableRow('Kind', kinds[account.kind]) }}
+        {% else %}
+            {{ m.accountTableRow('Kind') }}
+        {% endif %}
+
+        {% if account.user %}
+            {{ m.accountTableRow('User', account.user.fullName ~ ' (#'~account.user.id~')', '<a target="_blank" href="/manager/list.php?UserID='~account.user.id~'&Schema=UserAdmin">view</a> <a target="_blank" href="/manager/impersonate?UserID='~account.user.id~'">impersonate</a>') }}
+        {% else %}
+            {{ m.accountTableRow('User') }}
+        {% endif %}
+
+        {{ m.accountTableRow('Family Member', account.userAgent != null ? account.userAgent.fullName : '-') }}
+        {{ m.accountTableRow('State', states[account.state]|default(account.state)) }}
+        {{ m.accountTableRow('Disabled', account.disabled == 1 ? 'Yes' : 'No') }}
+        {{ m.accountTableRow('Disable Date', account.disableDate != null ? account.disableDate|date : '-') }}
+        {{ m.accountTableRow('Disable Reason', account.disableReason != null ? disableReasons[account.disableReason]|default(account.disableReason) : '-') }}
+        {{ m.accountTableRow('Error Code', account.errorcode != null ? errorCodes[account.errorcode]|default(account.errorcode) : '-') }}
+        {{ m.accountTableRow('Error Message', account.errormessage) }}
+        {{ m.accountTableRow('Error Count', account.errorcount|number_format) }}
+        {{ m.accountTableRow('Balance', account.balance != null ? account.balance|number_format : '-') }}
+        {{ m.accountTableRow('Total Balance', account.totalbalance != null ? account.totalbalance|number_format : '-') }}
+        {{ m.accountTableRow('Last Balance', account.lastbalance != null ? account.lastbalance|number_format : '-') }}
+        {{ m.accountTableRow('Goal', account.goal != null ? account.goal|number_format : '-') }}
+        {{ m.accountTableRow('Creation Date', account.creationdate|date) }}
+        {{ m.accountTableRow('Update Date', account.updatedate != null ? account.updatedate|date : '-') }}
+        {{ m.accountTableRow('Success Check Date', account.successcheckdate != null ? account.successcheckdate|date : '-') }}
+        {{ m.accountTableRow('Checked By', account.checkedby != null ? checkedBy[account.checkedby]|default(account.checkedby) : '-') }}
+        {{ m.accountTableRow('BalanceWatch Start Date', account.balanceWatchStartDate != null ? account.balanceWatchStartDate|date : '-') }}
+        {{ m.accountTableRow('Save Password', savePass[account.savepassword]) }}
+        {{ m.accountTableRow('Expiration Date', account.expirationdate != null ? account.expirationdate|date : '-') }}
+        {{ m.accountTableRow('Expiration Auto Set', expirationAutoSet[account.expirationautoset]|default(account.expirationautoset)) }}
+        {{ m.accountTableRow('Dont Track Expiration', account.donttrackexpiration == 1 ? 'Yes' : 'No') }}
+        {{ m.accountTableRow('Pass Change Date', account.passchangedate|date) }}
+        {{ m.accountTableRow('Last Change Balance Date', account.lastchangedate != null ? account.lastchangedate|date : '-') }}
+        {{ m.accountTableRow('Change Balance Count', account.changecount|number_format) }}
+        {{ m.accountTableRow('Last Activity', account.lastactivity != null ? account.lastactivity|date : '-') }}
+        {{ m.accountTableRow('Last Check It Date', account.lastcheckitdate != null ? account.lastcheckitdate|date : '-') }}
+        {{ m.accountTableRow('Last Check Past Its Date', account.lastCheckPastItsDate != null ? account.lastCheckPastItsDate|date : '-') }}
+        {{ m.accountTableRow('Last Check History Date', account.lastcheckhistorydate != null ? account.lastcheckhistorydate|date : '-') }}
+        {{ m.accountTableRow('Queue Date', account.queuedate != null ? account.queuedate|date : '-') }}
+        {{ m.accountTableRow('Next Check Priority', account.nextcheckpriority != null ? account.nextcheckpriority : '-') }}
+        {{ m.accountTableRow('Email Parse Date', account.emailparsedate != null ? account.emailparsedate|date : '-') }}
+        {{ m.accountTableRow('Background Check', account.backgroundCheck == 1 ? 'Yes' : 'No') }}
+        {{ m.accountTableRow('Disable Extension', account.disableExtension == 1 ? 'Yes' : 'No') }}
+        {{ m.accountTableRow('SubAccounts', account.subaccounts|number_format) }}
+        {{ m.accountTableRow('Itineraries', account.itineraries|number_format) }}
+        {{ m.accountTableRow('Currency', account.currency != null ? account.currency.code : '-') }}
+        {{ m.accountTableRow('PointValue', account.pointValue != null ? account.pointValue|number_format : '-') }}
+    </table>
+
+    <h2>Account Properties</h2>
+    {{ m.drawProperties(account.properties|filter(v => v.subaccountid == null), propsKinds, propsTypes) }}
+
+    {% if account.getSubAccountsEntities|length > 0 %}
+        <h2>SubAccounts</h2>
+
+        {% for subaccount in account.getSubAccountsEntities %}
+            <table class="table table-bordered table-striped table-hover">
+                <thead class="table-primary">
+                    <tr>
+                        <td colspan="3">SubAccount #{{ subaccount.id }}</td>
+                    </tr>
+                </thead>
+                {{ m.accountTableRow('Code', subaccount.code) }}
+                {{ m.accountTableRow('Display Name', subaccount.displayname) }}
+                {{ m.accountTableRow('Hidden', subaccount.isHidden == 1 ? 'Yes' : 'No') }}
+                {{ m.accountTableRow('Balance', subaccount.balance != null ? subaccount.balance|number_format : '-' ) }}
+                {{ m.accountTableRow('Last Balance', subaccount.lastbalance != null ? subaccount.lastbalance|number_format : '-' ) }}
+                {{ m.accountTableRow('Change Count', subaccount.changecount|number_format) }}
+                {{ m.accountTableRow('Expiration Date', subaccount.expirationdate != null ? subaccount.expirationdate|date : '-') }}
+                {{ m.accountTableRow('Expiration Auto Set', expirationAutoSet[subaccount.expirationautoset]|default(subaccount.expirationautoset)) }}
+                {{ m.accountTableRow('Last Change Balance Date', subaccount.lastchangedate != null ? subaccount.lastchangedate|date : '-') }}
+
+                {% if subaccount.creditcard != null %}
+                    {{ m.accountTableRow('CreditCardID', subaccount.creditcard.name, '<a target="_blank" href="/manager/list.php?CreditCardID='~subaccount.creditcard.id~'&Schema=CreditCard">view</a>') }}
+                {% else %}
+                    {{ m.accountTableRow('CreditCardID') }}
+                {% endif %}
+
+                <tr>
+                    <th scope="row" class="col-2">Properties</th>
+                    <td colspan="2">
+                        {{ m.drawProperties(subaccount.properties, propsKinds, propsTypes) }}
+                    </td>
+                </tr>
+            </table>
+        {% endfor %}
+    {% endif %}
+</div>
+
+{% macro accountTableRow(col1, col2, col3) %}
+    <tr>
+        <th scope="row" class="col-2">{{ col1 }}</th>
+        <td>{{ col2|default('-') }}</td>
+        <td>{{ col3|default('')|raw }}</td>
+    </tr>
+{% endmacro %}
+
+{% macro drawProperties(props, propsKinds, propsTypes) %}
+    <table class="table table-bordered table-striped table-hover">
+        <thead class="table-warning">
+        <tr>
+            <th scope="col">AccountPropertyID</th>
+            <th scope="col">ProviderPropertyID</th>
+            <th scope="col">Name</th>
+            <th scope="col">Code</th>
+            <th scope="col">Value</th>
+            <th scope="col">Required</th>
+            <th scope="col">Kind</th>
+            <th scope="col">Type</th>
+            <th scope="col">Visible</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for property in props %}
+            {% set pp = property.providerpropertyid %}
+            <tr>
+                <td>{{ property.accountpropertyid }}</td>
+                <td>{{ pp.providerpropertyid }}</td>
+                <td>{{ pp.name }}</td>
+                <td>{{ pp.code }}</td>
+                <td>{{ property.val }}</td>
+                <td>{{ pp.required == 1 ? 'Yes' : 'No' }}</td>
+                <td>{{ pp.kind != null ? propsKinds[pp.kind]|default(pp.kind) : '-' }}</td>
+                <td>{{ pp.type != null ? propsTypes[pp.type]|default(pp.type) : '-' }}</td>
+                <td>{{ pp.visible == 1 ? 'Yes' : 'No' }}</td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="9">No properties found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+{% endmacro %}

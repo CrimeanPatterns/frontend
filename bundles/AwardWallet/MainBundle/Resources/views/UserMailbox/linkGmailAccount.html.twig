@@ -1,0 +1,10 @@
+{% extends "@AwardWalletMain/Layout/common.html.twig" %}
+{% block body %}
+    <div style="display: none;">
+        {{ form_widget(form,{}) }}
+    </div>
+
+{% endblock %}
+{% block readyScripts %}
+    document.forms[0].submit();
+{% endblock %}

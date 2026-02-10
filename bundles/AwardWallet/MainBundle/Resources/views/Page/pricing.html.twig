@@ -1,0 +1,1474 @@
+{% import _self as macro %}
+
+{% extends "@AwardWalletMain/Layout/index.html.twig" %}
+
+{% set pageName = 'page-pricing' %}
+{% set pageAssetsPath = pageName ~ '/assets' %}
+
+{% block meta %}
+	{{ parent() }}
+	<meta
+		name="viewport"
+		content="width=device-width, initial-scale=1.0, minimum-scale=1, maximum-scale=5, viewport-fit=cover">
+{% endblock %}
+
+{% block stylesheets %}
+	{{ parent() }}
+
+	{{ encore_entry_link_tags('global-loader') }}
+	{{ encore_entry_link_tags('page-landing/popups') }}
+	{{ encore_entry_link_tags(pageName) }}
+{% endblock %}
+
+{% block body %}
+    {% include '@AwardWalletMain/Layout/global-loader.html.twig' %}
+
+	<header
+		class="{{ bem('simple-header', null, ['small', 'sticky']) }} {{ bem(pageName, 'header') }}">
+		<div
+			class="{{ bem('simple-header', 'wrapper') }}">
+			<div
+				class="{{ bem('logo') }}">
+				<a
+					href="{{ urlLocale('aw_home_locale') }}">
+					<picture
+						class="{{ bem('logo', 'light') }}">
+						<img
+							{{ image_src('logo/logo.svg') }} width="150"
+							height="12"
+							alt="logo">
+					</picture>
+					<picture
+						class="{{ bem('logo', 'dark') }}">
+						<img
+							{{ image_src('logo/logo--dark.svg') }} width="150"
+							height="12"
+							alt="logo">
+					</picture>
+				</a>
+			</div>
+			<div>
+				{% if is_granted('ROLE_USER') %}
+					{% set avatarSrc = userAvatar(app.user) %}
+
+					<a
+						href="{{ urlLocale('aw_home_locale') }}" class="{{ bem('simple-header', 'user-block') }}">
+						{% if avatarSrc %}
+							<img
+								src="{{ avatarSrc }}" class="{{ bem('simple-header', 'user-avatar') }}" alt="User avatar image">
+						{% else %}
+							<img
+								{{ image_src('simple-header/user-icon.svg') }} class="{{ bem('simple-header', 'user-avatar', ['fallback']) }} {{ bem('simple-header', 'user-block-fallback-img-light') }}" alt="User fallback image">
+							<img
+								{{ image_src('simple-header/user-icon--dark.svg') }} class="{{ bem('simple-header', 'user-avatar', ['fallback']) }} {{ bem('simple-header', 'user-block-fallback-img-dark') }}" alt="User fallback image">
+						{% endif %}
+						<span
+							class="{{ bem('simple-header', 'user-name') }}">
+							{{ app.user.firstname }}
+							{{ app.user.lastname }}
+						</span>
+					</a>
+				{% else %}
+					<a
+						href="{{ path('aw_users_pay', prePaymentQuery) }}" class="{{ bem('button') }} {{ bem(pageName, 'header-button', ['desktop']) }}">
+						{{ 'pricing.join.awardwallet'|trans|desc('Join AwardWallet')|raw }}
+						<picture
+							style="line-height: 0;">
+							<img
+								{{ image_src(pageAssetsPath ~ '/aw-plus-icon.svg') }} alt="AwardWallet Plus icon">
+						</picture>
+					</a>
+					<a
+						href='{{ path('aw_users_pay', prePaymentQuery) }}' class="{{ bem('button') }} {{ bem(pageName, 'header-button', ['mobile']) }}">
+						{{ 'upgrade-now'|trans|raw }}
+					</a>
+				{% endif %}
+			</div>
+		</div>
+	</header>
+	<main
+		class="{{ bem(pageName) }}">
+		<section
+			class="{{ bem(pageName, 'hero') }}">
+			<h1
+				class="{{ bem(pageName, 'hero-title') }}">
+				{{ 'pricing.title'|trans|desc('Simplify Your Travel, Supercharge Your Rewards')|raw }}
+			</h1>
+			<p
+				class="{{ bem(pageName, 'hero-description') }}">
+				{{ 'pricing.title.addition'|trans({
+              '%icon%': '<img class="'~ bem(pageName, 'hero-icon') ~'" ' ~ image_src(pageAssetsPath ~ '/aw-icon.svg') ~ ' alt="AwardWallet icon">',
+          })|desc('with %icon% AwardWallet Plus')|raw }}
+			</p>
+		</section>
+		<section
+			class="{{ bem(pageName, 'comparison') }}">
+			<div
+				class="{{ bem(pageName, 'comparison-wrapper') }}">
+				<div
+					class="{{ bem(pageName, 'comparison-mobile-header') }}">
+					<h2
+						class="{{ bem(pageName, 'comparison-mobile-title') }}">
+						{{ 'pricing.comparison.title'|trans|desc('Why Choose AwardWallet Plus?')|raw }}
+					</h2>
+					<div
+						class="{{ bem(pageName, 'comparison-mobile-tabs') }}">
+						<button
+							type="button"
+							disabled
+							class="{{ bem(pageName, 'comparison-mobile-tab', ['plus', 'active']) }}">
+							AwardWallet
+							<picture
+								style="line-height: 0;">
+								<img
+									{{ image_src(pageAssetsPath ~ '/aw-plus-icon.svg') }} alt="AwardWallet Plus icon"
+									class="{{ bem(pageName, 'comparison-mobile-plus-icon') }}">
+							</picture>
+						</button>
+						<button
+							type="button"
+							class="{{ bem(pageName, 'comparison-mobile-tab', ['free']) }}">
+							AwardWallet
+							<span>Free</span>
+						</button>
+					</div>
+					<div
+						class="{{ bem(pageName, 'comparison-mobile-upgrade') }}">
+						<div
+							class="{{ bem(pageName, 'comparison-mobile-price-block', ['aw-plus']) }}">
+							<div
+								class="{{ bem(pageName, 'comparison-mobile-price') }}">
+								<span
+									style="white-space: nowrap;">
+									$49.99
+									<span
+										class="{{ bem(pageName, 'comparison-mobile-price-currency') }}">
+										USD
+									</span>
+								</span>
+							</div>
+							<div
+								class="{{ bem(pageName, 'comparison-mobile-price-additional-info') }}">
+								{{ 'pricing.limited.offer.period'|trans|desc('Per year')|raw }}
+							</div>
+						</div>
+						<div
+							class="{{ bem(pageName, 'comparison-mobile-price', ['free']) }} {{ bem(pageName, 'comparison-mobile-price-block', ['free']) }}">Free</div>
+						<a
+							class="{{ bem('button', null, ['medium']) }} {{ bem('upgrade-offer', 'button') }}" href="{{ path('aw_users_pay', prePaymentQuery) }}">
+							{{ 'upgrade-now'|trans|raw }}
+						</a>
+					</div>
+				</div>
+				<table
+					class="{{ bem('comparison-versions-table') }}">
+					<thead
+						class="{{ bem('comparison-versions-table', 'header') }}">
+						<tr
+							class="{{ bem('comparison-versions-table', 'row') }}">
+							<th>
+								<h2
+									class="{{ bem('comparison-versions-table', 'title') }}">{{ 'pricing.comparison.title'|trans|raw }}</h2>
+							</th>
+							<th
+								class="{{ bem('comparison-versions-table', 'header-cell', ['fade-border', 'aw-free']) }}">
+								<p
+									class="{{ bem('comparison-versions-table', 'title', ['free']) }}">AwardWallet</p>
+								<p
+									class="{{ bem('comparison-versions-table', 'header-cell-description') }}">Free</p>
+							</th>
+							<th
+								class="{{ bem('upgrade-aw-block') }} {{ bem('comparison-versions-table', 'header-cell', ['aw-plus', 'fade-border']) }}">
+								<p
+									class="{{ bem('upgrade-aw-block', 'title') }}">
+									AwardWallet
+									<picture>
+										<img
+											{{ image_src('upgrade-aw-block/aw-plus-icon.svg') }} alt="AwardWallet PLus icon">
+									</picture>
+								</p>
+								<p>
+									<span
+										class="{{ bem('upgrade-aw-block', 'price') }}">
+										$49.99
+										<span
+											class="{{ bem('upgrade-aw-block', 'price-currency') }}">USD</span>
+									</span>
+									<span
+										class="{{ bem('upgrade-aw-block', 'additional-info') }}">{{ 'pricing.limited.offer.period'|trans|raw }}<span/>
+									</p>
+									<a
+										class="{{ bem('button', null, ['medium']) }} {{ bem('upgrade-aw-block', 'button') }}" href="{{ path('aw_users_pay', prePaymentQuery) }}">{{ 'upgrade-now'|trans|raw }}</a>
+								</p>
+							</th>
+						</tr>
+					</thead>
+					<tbody
+						class="{{ bem('comparison-versions-table', 'body') }}">
+						<tr
+							class="{{ bem('comparison-versions-table', 'row') }}">
+							<td
+								class="{{ bem('comparison-versions-table', 'cell', ['statement']) }}">
+								<picture
+									class="{{ bem('comparison-versions-table', 'icon') }}">
+									<img
+										{{ image_src('comparison-versions-table/assets/update.svg') }} alt="Update icon">
+								</picture>
+								{{ 'pricing.comparison.statement1'|trans|desc('Number of updates allowed per loyalty account in a 24-hour period')|raw }}
+							</td>
+							<td
+								class="{{ bem('comparison-versions-table', 'cell', ['free', 'left-border', 'desktop']) }}">
+								{{ 'pricing.daily.limited'|trans|desc('Limited to 2x daily')|raw }}
+							</td>
+							<td
+								class="{{ bem('comparison-versions-table', 'cell', ['plus', 'left-border', 'desktop']) }}">
+								<img
+									{{ image_src('comparison-versions-table/assets/accept.svg') }} alt="Accept icon"/>
+								{{ 'pricing.unlimited'|trans|desc('Unlimited')|raw }}
+							</td>
+							<td
+								class="{{ bem('comparison-versions-table', 'cell', ['mobile']) }}">
+								<div
+									class="{{ bem('comparison-versions-table', 'cell', ['free']) }}">
+									{{ 'pricing.daily.limited'|trans|desc('Limited to 2x daily')|raw }}
+								</div>
+								<div
+									class="{{ bem('comparison-versions-table', 'cell', ['plus']) }}">
+									<img
+										{{ image_src('comparison-versions-table/assets/accept.svg') }} alt="Accept"/>
+									{{ 'pricing.unlimited'|trans|desc('Unlimited')|raw }}
+								</div>
+							</td>
+						</tr>
+						<tr
+							class="{{ bem('comparison-versions-table', 'row') }}">
+							<td
+								class="{{ bem('comparison-versions-table', 'cell', ['statement']) }}">
+								<picture
+									class="{{ bem('comparison-versions-table', 'icon') }}">
+									<img
+										{{ image_src('comparison-versions-table/assets/flame.svg') }} alt="Flame icon">
+								</picture>
+								{{ 'pricing.comparison.statement2'|trans|desc('View point and mile expiration dates for each account')|raw }}
+							</td>
+							<td
+								class="{{ bem('comparison-versions-table', 'cell', ['free', 'left-border', 'desktop']) }}">
+								{{ 'pricing.up.to.expirations'|trans|desc('Up to 3 expirations')|raw }}
+							</td>
+							<td
+								class="{{ bem('comparison-versions-table', 'cell', ['plus', 'left-border', 'desktop']) }}">
+								<img
+									{{ image_src('comparison-versions-table/assets/accept.svg') }} alt="Accept icon"/>
+								{{ 'pricing.unlimited'|trans|raw }}
+							</td>
+							<td
+								class="{{ bem('comparison-versions-table', 'cell', ['mobile']) }}">
+								<div
+									class="{{ bem('comparison-versions-table', 'cell', ['free']) }}">
+									{{ 'pricing.up.to.expirations'|trans|desc('Up to 3 expirations')|raw }}
+								</div>
+								<div
+									class="{{ bem('comparison-versions-table', 'cell', ['plus']) }}">
+									<img
+										{{ image_src('comparison-versions-table/assets/accept.svg') }} alt="Accept icon"/>
+									{{ 'pricing.unlimited'|trans|raw }}
+								</div>
+							</td>
+						</tr>
+						<tr
+							class="{{ bem('comparison-versions-table', 'row') }}">
+							<td
+								class="{{ bem('comparison-versions-table', 'cell', ['statement']) }}">
+								<picture
+									class="{{ bem('comparison-versions-table', 'icon') }}">
+									<img
+										{{ image_src('comparison-versions-table/assets/star.svg') }} alt="Star icon">
+								</picture>
+								<span>
+									{{ 'pricing.comparison.statement3'|trans|desc('See progress towards elite status and other reward-account properties')|raw }}
+								</span>
+							</td>
+							<td
+								class="{{ bem('comparison-versions-table', 'cell', ['free-icon', 'left-border', 'desktop']) }}">
+								<img
+									class="{{ bem('comparison-versions-table', 'cell-img-light') }}" {{ image_src('comparison-versions-table/assets/cross.svg') }} alt="Cross icon"/>
+								<img
+									class="{{ bem('comparison-versions-table', 'cell-img-dark') }}" {{ image_src('comparison-versions-table/assets/cross--dark.svg') }} alt="Cross icon"/>
+							</td>
+							<td
+								class="{{ bem('comparison-versions-table', 'cell', ['plus', 'left-border', 'desktop']) }}">
+								<img
+									{{ image_src('comparison-versions-table/assets/check.svg') }} alt="Check icon"/>
+							</td>
+							<td
+								class="{{ bem('comparison-versions-table', 'cell', ['mobile']) }}">
+								<div
+									class="{{ bem('comparison-versions-table', 'cell', ['free']) }}">
+									<img
+										class="{{ bem('comparison-versions-table', 'cell-img-light') }}" {{ image_src('comparison-versions-table/assets/cross.svg') }} alt="Cross icon"/>
+									<img
+										class="{{ bem('comparison-versions-table', 'cell-img-dark') }}" {{ image_src('comparison-versions-table/assets/cross--dark.svg') }} alt="Cross icon"/>
+								</div>
+								<div
+									class="{{ bem('comparison-versions-table', 'cell', ['plus']) }}">
+									<img
+										{{ image_src('comparison-versions-table/assets/check.svg') }} alt="Check icon"/>
+								</div>
+							</td>
+						</tr>
+						<tr
+							class="{{ bem('comparison-versions-table', 'row') }}">
+							<td
+								class="{{ bem('comparison-versions-table', 'cell', ['statement']) }}">
+								<picture
+									class="{{ bem('comparison-versions-table', 'icon') }}">
+									<img
+										{{ image_src('comparison-versions-table/assets/chart.svg') }} alt="Chart icon">
+								</picture>
+								{{ 'pricing.comparison.statement4'|trans|desc('See how your account balance has changed over time')|raw }}
+							</td>
+							<td
+								class="{{ bem('comparison-versions-table', 'cell', ['free-icon', 'left-border', 'desktop']) }}">
+								<img
+									class="{{ bem('comparison-versions-table', 'cell-img-light') }}" {{ image_src('comparison-versions-table/assets/cross.svg') }} alt="Cross icon"/>
+								<img
+									class="{{ bem('comparison-versions-table', 'cell-img-dark') }}" {{ image_src('comparison-versions-table/assets/cross--dark.svg') }} alt="Cross icon"/>
+							</td>
+							<td
+								class="{{ bem('comparison-versions-table', 'cell', ['plus', 'left-border', 'desktop']) }}">
+								<img
+									{{ image_src('comparison-versions-table/assets/check.svg') }} alt="Check icon"/>
+							</td>
+							<td
+								class="{{ bem('comparison-versions-table', 'cell', ['mobile']) }}">
+								<div
+									class="{{ bem('comparison-versions-table', 'cell', ['free']) }}">
+									<img
+										class="{{ bem('comparison-versions-table', 'cell-img-light') }}" {{ image_src('comparison-versions-table/assets/cross.svg') }} alt="Cross icon"/>
+									<img
+										class="{{ bem('comparison-versions-table', 'cell-img-dark') }}" {{ image_src('comparison-versions-table/assets/cross--dark.svg') }} alt="Cross icon"/>
+								</div>
+								<div
+									class="{{ bem('comparison-versions-table', 'cell', ['plus']) }}">
+									<img
+										{{ image_src('comparison-versions-table/assets/check.svg') }} alt="Check icon"/>
+								</div>
+							</td>
+						</tr>
+						<tr
+							class="{{ bem('comparison-versions-table', 'row') }}">
+							<td
+								class="{{ bem('comparison-versions-table', 'cell', ['statement']) }}">
+								<picture
+									class="{{ bem('comparison-versions-table', 'icon') }}">
+									<img
+										{{ image_src('comparison-versions-table/assets/history.svg') }} alt="History icon">
+								</picture>
+								{{ 'pricing.comparison.statement5'|trans|desc('Display transaction history of points earned and redeemed')|raw }}
+							</td>
+							<td
+								class="{{ bem('comparison-versions-table', 'cell', ['free-icon', 'left-border', 'desktop']) }}">
+								<img
+									class="{{ bem('comparison-versions-table', 'cell-img-light') }}" {{ image_src('comparison-versions-table/assets/cross.svg') }} alt="Cross icon"/>
+								<img
+									class="{{ bem('comparison-versions-table', 'cell-img-dark') }}" {{ image_src('comparison-versions-table/assets/cross--dark.svg') }} alt="Cross icon"/>
+							</td>
+							<td
+								class="{{ bem('comparison-versions-table', 'cell', ['plus', 'left-border', 'desktop']) }}">
+								<img
+									{{ image_src('comparison-versions-table/assets/check.svg') }} alt="Check icon"/>
+							</td>
+							<td
+								class="{{ bem('comparison-versions-table', 'cell', ['mobile']) }}">
+								<div
+									class="{{ bem('comparison-versions-table', 'cell', ['free']) }}">
+									<img
+										class="{{ bem('comparison-versions-table', 'cell-img-light') }}" {{ image_src('comparison-versions-table/assets/cross.svg') }} alt="Cross icon"/>
+									<img
+										class="{{ bem('comparison-versions-table', 'cell-img-dark') }}" {{ image_src('comparison-versions-table/assets/cross--dark.svg') }} alt="Cross icon"/>
+								</div>
+								<div
+									class="{{ bem('comparison-versions-table', 'cell', ['plus']) }}">
+									<img
+										{{ image_src('comparison-versions-table/assets/check.svg') }} alt="Check icon"/>
+								</div>
+							</td>
+						</tr>
+						<tr
+							class="{{ bem('comparison-versions-table', 'row') }}">
+							<td
+								class="{{ bem('comparison-versions-table', 'cell', ['statement']) }}">
+								<picture
+									class="{{ bem('comparison-versions-table', 'icon') }}">
+									<img
+										{{ image_src('comparison-versions-table/assets/download.svg') }} alt="Download icon">
+								</picture>
+								{{ 'pricing.comparison.statement6'|trans|desc('Download your rewards data as Excel or PDF files')|raw }}
+							</td>
+							<td
+								class="{{ bem('comparison-versions-table', 'cell', ['free-icon', 'left-border', 'desktop']) }}">
+								<img
+									class="{{ bem('comparison-versions-table', 'cell-img-light') }}" {{ image_src('comparison-versions-table/assets/cross.svg') }} alt="Cross icon"/>
+								<img
+									class="{{ bem('comparison-versions-table', 'cell-img-dark') }}" {{ image_src('comparison-versions-table/assets/cross--dark.svg') }} alt="Cross icon"/>
+							</td>
+							<td
+								class="{{ bem('comparison-versions-table', 'cell', ['plus', 'left-border', 'desktop']) }}">
+								<img
+									{{ image_src('comparison-versions-table/assets/check.svg') }} alt="Check icon"/>
+							</td>
+							<td
+								class="{{ bem('comparison-versions-table', 'cell', ['mobile']) }}">
+								<div
+									class="{{ bem('comparison-versions-table', 'cell', ['free']) }}">
+									<img
+										class="{{ bem('comparison-versions-table', 'cell-img-light') }}" {{ image_src('comparison-versions-table/assets/cross.svg') }} alt="Cross icon"/>
+									<img
+										class="{{ bem('comparison-versions-table', 'cell-img-dark') }}" {{ image_src('comparison-versions-table/assets/cross--dark.svg') }} alt="Cross icon"/>
+								</div>
+								<div
+									class="{{ bem('comparison-versions-table', 'cell', ['plus']) }}">
+									<img
+										{{ image_src('comparison-versions-table/assets/check.svg') }} alt="Check icon"/>
+								</div>
+							</td>
+						</tr>
+						<tr
+							class="{{ bem('comparison-versions-table', 'row') }}">
+							<td
+								class="{{ bem('comparison-versions-table', 'cell', ['statement']) }}">
+								<picture
+									class="{{ bem('comparison-versions-table', 'icon') }}">
+									<img
+										{{ image_src('comparison-versions-table/assets/speedometer.svg') }} alt="Speedometer icon">
+								</picture>
+								{{ 'pricing.comparison.statement7'|trans|desc('Update multiple accounts with a single click (up to 5x faster)')|raw }}
+							</td>
+							<td
+								class="{{ bem('comparison-versions-table', 'cell', ['free-icon', 'left-border', 'desktop']) }}">
+								<img
+									class="{{ bem('comparison-versions-table', 'cell-img-light') }}" {{ image_src('comparison-versions-table/assets/cross.svg') }} alt="Cross icon"/>
+								<img
+									class="{{ bem('comparison-versions-table', 'cell-img-dark') }}" {{ image_src('comparison-versions-table/assets/cross--dark.svg') }} alt="Cross icon"/>
+							</td>
+							<td
+								class="{{ bem('comparison-versions-table', 'cell', ['plus', 'left-border', 'desktop']) }}">
+								<img
+									{{ image_src('comparison-versions-table/assets/check.svg') }} alt="Check icon"/>
+							</td>
+							<td
+								class="{{ bem('comparison-versions-table', 'cell', ['mobile']) }}">
+								<div
+									class="{{ bem('comparison-versions-table', 'cell', ['free']) }}">
+									<img
+										class="{{ bem('comparison-versions-table', 'cell-img-light') }}" {{ image_src('comparison-versions-table/assets/cross.svg') }} alt="Cross icon"/>
+									<img
+										class="{{ bem('comparison-versions-table', 'cell-img-dark') }}" {{ image_src('comparison-versions-table/assets/cross--dark.svg') }} alt="Cross icon"/>
+								</div>
+								<div
+									class="{{ bem('comparison-versions-table', 'cell', ['plus']) }}">
+									<img
+										{{ image_src('comparison-versions-table/assets/check.svg') }} alt="Check icon"/>
+								</div>
+							</td>
+						</tr>
+						<tr
+							class="{{ bem('comparison-versions-table', 'row') }}">
+							<td
+								class="{{ bem('comparison-versions-table', 'cell', ['statement']) }}">
+								<picture
+									class="{{ bem('comparison-versions-table', 'icon') }}">
+									<img
+										{{ image_src('comparison-versions-table/assets/mute.svg') }} alt="Mute icon">
+								</picture>
+								{{ 'pricing.comparison.statement8'|trans|desc('Enjoy an ad-free experience across your AwardWallet account')|raw }}
+							</td>
+							<td
+								class="{{ bem('comparison-versions-table', 'cell', ['free-icon', 'left-border', 'desktop']) }}">
+								<img
+									class="{{ bem('comparison-versions-table', 'cell-img-light') }}" {{ image_src('comparison-versions-table/assets/cross.svg') }} alt="Cross icon"/>
+								<img
+									class="{{ bem('comparison-versions-table', 'cell-img-dark') }}" {{ image_src('comparison-versions-table/assets/cross--dark.svg') }} alt="Cross icon"/>
+							</td>
+							<td
+								class="{{ bem('comparison-versions-table', 'cell', ['plus', 'left-border', 'desktop']) }}">
+								<img
+									{{ image_src('comparison-versions-table/assets/check.svg') }} alt="Check icon"/>
+							</td>
+							<td
+								class="{{ bem('comparison-versions-table', 'cell', ['mobile']) }}">
+								<div
+									class="{{ bem('comparison-versions-table', 'cell', ['free']) }}">
+									<img
+										class="{{ bem('comparison-versions-table', 'cell-img-light') }}" {{ image_src('comparison-versions-table/assets/cross.svg') }} alt="Cross icon"/>
+									<img
+										class="{{ bem('comparison-versions-table', 'cell-img-dark') }}" {{ image_src('comparison-versions-table/assets/cross--dark.svg') }} alt="Cross icon"/>
+								</div>
+								<div
+									class="{{ bem('comparison-versions-table', 'cell', ['plus']) }}">
+									<img
+										{{ image_src('comparison-versions-table/assets/check.svg') }} alt="Check icon"/>
+								</div>
+							</td>
+						</tr>
+						<tr
+							class="{{ bem('comparison-versions-table', 'row') }}">
+							<td
+								class="{{ bem('comparison-versions-table', 'cell', ['statement']) }}">
+								<picture
+									class="{{ bem('comparison-versions-table', 'icon') }}">
+									<img
+										{{ image_src('comparison-versions-table/assets/notification.svg') }} alt="Notification icon">
+								</picture>
+								{{ 'pricing.comparison.statement9'|trans|desc('Choose to receive only essential notifications, no promotional emails')|raw }}
+							</td>
+							<td
+								class="{{ bem('comparison-versions-table', 'cell', ['free-icon', 'left-border', 'desktop']) }}">
+								<img
+									class="{{ bem('comparison-versions-table', 'cell-img-light') }}" {{ image_src('comparison-versions-table/assets/cross.svg') }} alt="Cross icon"/>
+								<img
+									class="{{ bem('comparison-versions-table', 'cell-img-dark') }}" {{ image_src('comparison-versions-table/assets/cross--dark.svg') }} alt="Cross icon"/>
+							</td>
+							<td
+								class="{{ bem('comparison-versions-table', 'cell', ['plus', 'left-border', 'desktop']) }}">
+								<img
+									{{ image_src('comparison-versions-table/assets/check.svg') }} alt="Check icon"/>
+							</td>
+							<td
+								class="{{ bem('comparison-versions-table', 'cell', ['mobile']) }}">
+								<div
+									class="{{ bem('comparison-versions-table', 'cell', ['free']) }}">
+									<img
+										class="{{ bem('comparison-versions-table', 'cell-img-light') }}" {{ image_src('comparison-versions-table/assets/cross.svg') }} alt="Cross icon"/>
+									<img
+										class="{{ bem('comparison-versions-table', 'cell-img-dark') }}" {{ image_src('comparison-versions-table/assets/cross--dark.svg') }} alt="Cross icon"/>
+								</div>
+								<div
+									class="{{ bem('comparison-versions-table', 'cell', ['plus']) }}">
+									<img
+										{{ image_src('comparison-versions-table/assets/check.svg') }} alt="Check icon"/>
+								</div>
+							</td>
+						</tr>
+						<tr
+							class="{{ bem('comparison-versions-table', 'row') }}">
+							<td
+								class="{{ bem('comparison-versions-table', 'cell', ['statement']) }}">
+								<picture
+									class="{{ bem('comparison-versions-table', 'icon') }}">
+									<img
+										{{ image_src('comparison-versions-table/assets/plane.svg') }} alt="Plane icon">
+								</picture>
+								{{ 'pricing.comparison.statement10'|trans|desc('See your complete travel history')|raw }}
+							</td>
+							<td
+								class="{{ bem('comparison-versions-table', 'cell', ['free', 'left-border-faded', 'desktop']) }}">
+								{{ 'interval_short.years'|transchoice(1)|raw }}
+							</td>
+							<td
+								class="{{ bem('comparison-versions-table', 'cell', ['plus', 'left-border-faded', 'desktop']) }}">
+								<img
+									{{ image_src('comparison-versions-table/assets/accept.svg') }} alt="Accept icon"/>
+								{{ 'pricing.up.to.years'|trans|desc('Up to 10 years')|raw }}
+							</td>
+							<td
+								class="{{ bem('comparison-versions-table', 'cell', ['mobile']) }}">
+								<div
+									class="{{ bem('comparison-versions-table', 'cell', ['free']) }}">
+									{{ 'interval_short.years'|transchoice(1)|raw }}
+								</div>
+								<div
+									class="{{ bem('comparison-versions-table', 'cell', ['plus']) }}">
+									<img
+										{{ image_src('comparison-versions-table/assets/accept.svg') }} alt="Accept icon"/>
+									{{ 'pricing.up.to.years'|trans|desc('Up to 10 years')|raw }}
+								</div>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</section>
+		<section>
+			<h2
+				class="{{ bem(pageName, 'featured-title') }}">
+				{{ 'pricing.featured.title'|trans|desc('As featured on')|raw }}
+			</h2>
+			<div
+				class="swiper {{ bem(pageName, 'featured-company-container') }}">
+				<div
+					class="swiper-wrapper">
+					<picture
+						class="swiper-slide {{ bem(pageName, 'featured-company') }}">
+						<source
+							{{ image_srcset(pageAssetsPath ~ '/forbes-logo@{1,2}x.png') }}>
+						<img
+							{{ image_src(pageAssetsPath ~ '/forbes-logo@1x.png') }} alt="Forbes logo">
+					</picture>
+					<picture
+						class="swiper-slide {{ bem(pageName, 'featured-company') }} {{ bem(pageName, 'featured-company-img-light') }}">
+						<source
+							{{ image_srcset(pageAssetsPath ~ '/usa-today-logo@{1,2}x.png') }}>
+						<img
+							{{ image_src(pageAssetsPath ~ '/usa-today-logo@1x.png') }} alt="USA Today logo">
+					</picture>
+					<picture
+						class="swiper-slide {{ bem(pageName, 'featured-company') }} {{ bem(pageName, 'featured-company-img-dark') }}">
+						<source
+							{{ image_srcset(pageAssetsPath ~ '/usa-today-logo--dark@{1,2}x.png') }}>
+						<img
+							{{ image_src(pageAssetsPath ~ '/usa-today-logo--dark@1x.png') }} alt="USA Today logo">
+					</picture>
+					<picture
+						class="swiper-slide {{ bem(pageName, 'featured-company') }} {{ bem(pageName, 'featured-company-img-light') }}">
+						<source
+							{{ image_srcset(pageAssetsPath ~ '/one-mile-at-a-time-logo@{1,2}x.png') }}>
+						<img
+							{{ image_src(pageAssetsPath ~ '/one-mile-at-a-time-logo@1x.png') }} alt="One Points at Time logo">
+					</picture>
+					<picture
+						class="swiper-slide {{ bem(pageName, 'featured-company') }} {{ bem(pageName, 'featured-company-img-dark') }}">
+						<source
+							{{ image_srcset(pageAssetsPath ~ '/one-mile-at-a-time-logo--dark@{1,2}x.png') }}>
+						<img
+							{{ image_src(pageAssetsPath ~ '/one-mile-at-a-time-logo--dark@1x.png') }} alt="One Points at Time logo">
+					</picture>
+					<picture
+						class="swiper-slide {{ bem(pageName, 'featured-company') }}">
+						<source
+							{{ image_srcset(pageAssetsPath ~ '/lifehacker-logo@{1,2}x.png') }}>
+						<img
+							{{ image_src(pageAssetsPath ~ '/lifehacker-logo@1x.png') }} alt="Lifehacker logo">
+					</picture>
+					<picture
+						class="swiper-slide {{ bem(pageName, 'featured-company') }} {{ bem(pageName, 'featured-company-img-light') }}">
+						<source
+							{{ image_srcset(pageAssetsPath ~ '/los-angeles-times-logo@{1,2}x.png') }}>
+						<img
+							{{ image_src(pageAssetsPath ~ '/los-angeles-times-logo@1x.png') }} alt="Los Angeles Times logo">
+					</picture>
+					<picture
+						class="swiper-slide {{ bem(pageName, 'featured-company') }} {{ bem(pageName, 'featured-company-img-dark') }}">
+						<source
+							{{ image_srcset(pageAssetsPath ~ '/los-angeles-times-logo--dark@{1,2}x.png') }}>
+						<img
+							{{ image_src(pageAssetsPath ~ '/los-angeles-times-logo--dark@1x.png') }} alt="Los Angeles Times logo">
+					</picture>
+					<picture
+						class="swiper-slide {{ bem(pageName, 'featured-company') }}">
+						<source
+							{{ image_srcset(pageAssetsPath ~ '/nerdwallet-logo@{1,2}x.png') }}>
+						<img
+							{{ image_src(pageAssetsPath ~ '/nerdwallet-logo@1x.png') }} alt="Nerdwallet logo">
+					</picture>
+					<picture
+						class="swiper-slide {{ bem(pageName, 'featured-company') }}">
+						<source
+							{{ image_srcset(pageAssetsPath ~ '/frommers-logo@{1,2}x.png') }}>
+						<img
+							{{ image_src(pageAssetsPath ~ '/frommers-logo@1x.png') }} alt="Frommer's logo">
+					</picture>
+					<picture
+						class="swiper-slide {{ bem(pageName, 'featured-company') }}">
+						<source
+							{{ image_srcset(pageAssetsPath ~ '/c-net-logo@{1,2}x.png') }}>
+						<img
+							{{ image_src(pageAssetsPath ~ '/c-net-logo@1x.png') }} alt="CNET logo">
+					</picture>
+					<picture
+						class="swiper-slide {{ bem(pageName, 'featured-company') }} {{ bem(pageName, 'featured-company-img-light') }}">
+						<source
+							{{ image_srcset(pageAssetsPath ~ '/bankrate-logo@{1,2}x.png') }}>
+						<img
+							{{ image_src(pageAssetsPath ~ '/bankrate-logo@1x.png') }} alt="Bankrate logo">
+					</picture>
+					<picture
+						class="swiper-slide {{ bem(pageName, 'featured-company') }} {{ bem(pageName, 'featured-company-img-dark') }}">
+						<source
+							{{ image_srcset(pageAssetsPath ~ '/bankrate-logo--dark@{1,2}x.png') }}>
+						<img
+							{{ image_src(pageAssetsPath ~ '/bankrate-logo--dark@1x.png') }} alt="Bankrate logo">
+					</picture>
+					<picture
+						class="swiper-slide {{ bem(pageName, 'featured-company') }}">
+						<source
+							{{ image_srcset(pageAssetsPath ~ '/forbes-logo@{1,2}x.png') }}>
+						<img
+							{{ image_src(pageAssetsPath ~ '/forbes-logo@1x.png') }} alt="Forbes logo">
+					</picture>
+					<picture
+						class="swiper-slide {{ bem(pageName, 'featured-company') }} {{ bem(pageName, 'featured-company-img-light') }}">
+						<source
+							{{ image_srcset(pageAssetsPath ~ '/usa-today-logo@{1,2}x.png') }}>
+						<img
+							{{ image_src(pageAssetsPath ~ '/usa-today-logo@1x.png') }} alt="USA Today logo">
+					</picture>
+					<picture
+						class="swiper-slide {{ bem(pageName, 'featured-company') }} {{ bem(pageName, 'featured-company-img-dark') }}">
+						<source
+							{{ image_srcset(pageAssetsPath ~ '/usa-today-logo--dark@{1,2}x.png') }}>
+						<img
+							{{ image_src(pageAssetsPath ~ '/usa-today-logo--dark@1x.png') }} alt="USA Today logo">
+					</picture>
+					<picture
+						class="swiper-slide {{ bem(pageName, 'featured-company') }} {{ bem(pageName, 'featured-company-img-light') }}">
+						<source
+							{{ image_srcset(pageAssetsPath ~ '/one-mile-at-a-time-logo@{1,2}x.png') }}>
+						<img
+							{{ image_src(pageAssetsPath ~ '/one-mile-at-a-time-logo@1x.png') }} alt="One Points at Time logo">
+					</picture>
+					<picture
+						class="swiper-slide {{ bem(pageName, 'featured-company') }} {{ bem(pageName, 'featured-company-img-dark') }}">
+						<source
+							{{ image_srcset(pageAssetsPath ~ '/one-mile-at-a-time-logo--dark@{1,2}x.png') }}>
+						<img
+							{{ image_src(pageAssetsPath ~ '/one-mile-at-a-time-logo--dark@1x.png') }} alt="One Points at Time logo">
+					</picture>
+					<picture
+						class="swiper-slide {{ bem(pageName, 'featured-company') }}">
+						<source
+							{{ image_srcset(pageAssetsPath ~ '/lifehacker-logo@{1,2}x.png') }}>
+						<img
+							{{ image_src(pageAssetsPath ~ '/lifehacker-logo@1x.png') }} alt="Lifehacker logo">
+					</picture>
+					<picture
+						class="swiper-slide {{ bem(pageName, 'featured-company') }} {{ bem(pageName, 'featured-company-img-light') }}">
+						<source
+							{{ image_srcset(pageAssetsPath ~ '/los-angeles-times-logo@{1,2}x.png') }}>
+						<img
+							{{ image_src(pageAssetsPath ~ '/los-angeles-times-logo@1x.png') }} alt="Los Angeles Times logo">
+					</picture>
+					<picture
+						class="swiper-slide {{ bem(pageName, 'featured-company') }} {{ bem(pageName, 'featured-company-img-dark') }}">
+						<source
+							{{ image_srcset(pageAssetsPath ~ '/los-angeles-times-logo--dark@{1,2}x.png') }}>
+						<img
+							{{ image_src(pageAssetsPath ~ '/los-angeles-times-logo--dark@1x.png') }} alt="Los Angeles Times logo">
+					</picture>
+					<picture
+						class="swiper-slide {{ bem(pageName, 'featured-company') }}">
+						<source
+							{{ image_srcset(pageAssetsPath ~ '/nerdwallet-logo@{1,2}x.png') }}>
+						<img
+							{{ image_src(pageAssetsPath ~ '/nerdwallet-logo@1x.png') }} alt="Nerdwallet logo">
+					</picture>
+					<picture
+						class="swiper-slide {{ bem(pageName, 'featured-company') }}">
+						<source
+							{{ image_srcset(pageAssetsPath ~ '/frommers-logo@{1,2}x.png') }}>
+						<img
+							{{ image_src(pageAssetsPath ~ '/frommers-logo@1x.png') }} alt="Frommer's logo">
+					</picture>
+					<picture
+						class="swiper-slide {{ bem(pageName, 'featured-company') }}">
+						<source
+							{{ image_srcset(pageAssetsPath ~ '/c-net-logo@{1,2}x.png') }}>
+						<img
+							{{ image_src(pageAssetsPath ~ '/c-net-logo@1x.png') }} alt="CNET logo">
+					</picture>
+					<picture
+						class="swiper-slide {{ bem(pageName, 'featured-company') }} {{ bem(pageName, 'featured-company-img-light') }}">
+						<source
+							{{ image_srcset(pageAssetsPath ~ '/bankrate-logo@{1,2}x.png') }}>
+						<img
+							{{ image_src(pageAssetsPath ~ '/bankrate-logo@1x.png') }} alt="Bankrate logo">
+					</picture>
+					<picture
+						class="swiper-slide {{ bem(pageName, 'featured-company') }} {{ bem(pageName, 'featured-company-img-dark') }}">
+						<source
+							{{ image_srcset(pageAssetsPath ~ '/bankrate-logo--dark@{1,2}x.png') }}>
+						<img
+							{{ image_src(pageAssetsPath ~ '/bankrate-logo--dark@1x.png') }} alt="Bankrate logo">
+					</picture>
+				</div>
+			</div>
+		</section>
+		<section
+			class="{{ bem(pageName, 'expiration') }}">
+			<h2
+				class="{{ bem(pageName, 'expiration-title') }}">
+				{{ 'pricing.expiration.title'|trans|desc('Never Let Another Rewards Balance Expire!')|raw }}
+			</h2>
+			<div
+				class="{{ bem(pageName, 'expiration-content') }}">
+				<div
+					class="{{ bem(pageName, 'expiration-content-left') }}">
+					<div
+						class="{{ bem(pageName, 'expiration-icon') }}">
+						<img
+							{{ image_src(pageAssetsPath ~ '/notice.svg') }} class="{{ bem(pageName, 'expiration-icon-light') }}" alt="Notice icon"/>
+						<img
+							{{ image_src(pageAssetsPath ~ '/notice--dark.svg') }} class="{{ bem(pageName, 'expiration-icon-dark') }}" alt="Notice icon"/>
+					</div>
+					<p
+						class="{{ bem(pageName, 'expiration-content-description') }}">
+						{{ 'pricing.expiration.warning'|trans|desc('Expiring points and miles can rob you of thousands of dollars worth of rewards overnight.')|raw }}
+					</p>
+					<picture
+						class="{{ bem(pageName, 'expiration-preview-img') }} {{ bem(pageName, 'expiration-preview-img-light') }}">
+						<source
+							{{ image_srcset(pageAssetsPath ~ '/account-list-preview@{1,2}x.png') }}>
+						<img
+							{{ image_src(pageAssetsPath ~ '/account-list-preview@1x.png') }} alt="account list preview">
+					</picture>
+					<picture
+						class="{{ bem(pageName, 'expiration-preview-img') }} {{ bem(pageName, 'expiration-preview-img-dark') }}">
+						<source
+							{{ image_srcset(pageAssetsPath ~ '/account-list-preview--dark@{1,2}x.png') }}>
+						<img
+							{{ image_src(pageAssetsPath ~ '/account-list-preview--dark@1x.png') }} alt="account list preview">
+					</picture>
+					<p
+						class="{{ bem(pageName, 'expiration-message-container') }}">
+						<img
+							class="{{ bem(pageName, 'expiration-message-aw-logo') }}" {{ image_src(pageAssetsPath ~ '/aw-icon.svg') }} alt="AwardWallet icon">
+						<span>
+							{{ 'pricing.expiration.aw.plus.benefits'|trans|desc('AwardWallet Plus lets you rest easy by tracking every expiration date in one convenient place.')|raw }}
+						</span>
+					</p>
+				</div>
+				<div
+					class="{{ bem(pageName, 'expiration-content-right') }}">
+					<div
+						class="{{ bem(pageName, 'expiration-icon', ['bg-gray']) }}">
+						<img
+							{{ image_src(pageAssetsPath ~ '/bell.svg') }} class="{{ bem(pageName, 'expiration-icon-light') }}" alt="Bell icon"/>
+						<img
+							{{ image_src(pageAssetsPath ~ '/bell--dark.svg') }} class="{{ bem(pageName, 'expiration-icon-dark') }}" alt="Bell icon"/>
+					</div>
+					<p
+						class="{{ bem(pageName, 'expiration-content-description', ['no-margin']) }}">
+						{{ 'pricing.expiration.notifications'|trans|desc('If your points are ever at risk, AwardWallet sends warnings with clear instructions on how to protect your points.')|raw }}
+					</p>
+					<picture
+						class="{{ bem(pageName, 'expiration-preview-img', ['no-margin']) }} {{ bem(pageName, 'expiration-preview-img-light') }}">
+						<source
+							{{ image_srcset(pageAssetsPath ~ '/notification-preview@{1,2}x.png') }}>
+						<img
+							{{ image_src(pageAssetsPath ~ '/notification-preview@1x.png') }} alt="notification preview">
+					</picture>
+					<picture
+						class="{{ bem(pageName, 'expiration-preview-img', ['no-margin']) }} {{ bem(pageName, 'expiration-preview-img-dark') }}">
+						<source
+							{{ image_srcset(pageAssetsPath ~ '/notification-preview--dark@{1,2}x.png') }}>
+						<img
+							{{ image_src(pageAssetsPath ~ '/notification-preview--dark@1x.png') }} alt="notification preview">
+					</picture>
+				</div>
+			</div>
+			<a
+				href="{{ path('aw_users_pay', prePaymentQuery) }}" class="button {{ bem(pageName, 'join-button') }}">
+				{{ 'pricing.join.awardwallet'|trans|raw }}
+				<picture
+					style="line-height: 0;">
+					<img
+						{{ image_src(pageAssetsPath ~ '/aw-plus-icon.svg') }} alt="AwardWallet Plus icon">
+				</picture>
+			</a>
+		</section>
+		<section
+			class="{{ bem(pageName, 'platforms') }}">
+			<div
+				class="{{ bem(pageName, 'platforms-wrapper') }}">
+				<h2
+					class="{{ bem(pageName, 'platforms-title') }}">
+					{{ 'pricing.platforms.title'|trans|desc('Access Your Rewards and Travel on Every Device')|raw }}
+				</h2>
+				<div
+					class="{{ bem(pageName, 'platforms-icon-container') }}">
+					<img
+						{{ image_src(pageAssetsPath ~ '/apple-logo.svg') }} class="{{ bem(pageName, 'platforms-icon') }}" alt="Apple logo"/>
+					<img
+						{{ image_src(pageAssetsPath ~ '/google-play-logo.svg') }} class="{{ bem(pageName, 'platforms-icon') }}" alt="Google Play logo"/>
+				</div>
+				<p
+					class="{{ bem(pageName, 'platforms-description', ['margin']) }}">
+					{{ 'pricing.platforms.mobile'|trans|desc('Our iOS and Android apps put all of your points and itineraries at your fingertips and offer real-time alerts to take the stress out of travel')|raw }}
+				</p>
+				<div
+					class="{{ bem(pageName, 'platforms-divider') }}"></div>
+				<div
+					class="{{ bem(pageName, 'platforms-icon-container') }}">
+					<img
+						{{ image_src(pageAssetsPath ~ '/pc-icon.svg') }} class="{{ bem(pageName, 'platforms-icon--big') }}" alt="Personal computer icon"/>
+				</div>
+				<p
+					class="{{ bem(pageName, 'platforms-description') }}">
+					{{ 'pricing.platforms.web'|trans|desc('The powerful desktop version of AwardWallet makes it easy to manage rewards and travel plans for the whole family.')|raw }}
+				</p>
+			</div>
+		</section>
+		<section
+			class="{{ bem(pageName, 'reviews') }}">
+			<h2
+				class="{{ bem(pageName, 'reviews-title') }}">
+				{{ 'pricing.reviews.title'|trans|desc('Join 25,000+ Travelers')|raw }}
+			</h2>
+			<p
+				class="{{ bem(pageName, 'reviews-description') }}">
+				{{ 'pricing.reviews.subtitle'|trans|desc('Who Have Upgraded to AwardWallet')|raw }}
+				<img
+					{{ image_src(pageAssetsPath ~ '/aw-plus-icon.svg') }} alt="AwardWallet Plus icon">
+			</p>
+			<div
+				class="{{ bem(pageName, 'reviews-app-rating') }}">
+				<span
+					class="{{ bem(pageName, 'reviews-app-rating-average') }}">
+					4.8
+				</span>
+				2.7k
+				{{ 'pricing.reviews.ratings'|trans|desc('Ratings')|raw }}
+				<div
+					class="{{ bem('stars-rating') }}">
+					<img
+						class="{{ bem('stars-rating', 'star', ['active']) }}" {{ image_src('stars-rating/star.svg') }} alt="Star icon"/>
+					<img
+						class="{{ bem('stars-rating', 'star', ['active']) }}" {{ image_src('stars-rating/star.svg') }} alt="Star icon"/>
+					<img
+						class="{{ bem('stars-rating', 'star', ['active']) }}" {{ image_src('stars-rating/star.svg') }} alt="Star icon"/>
+					<img
+						class="{{ bem('stars-rating', 'star', ['active']) }}" {{ image_src('stars-rating/star.svg') }} alt="Star icon"/>
+					<img
+						class="{{ bem('stars-rating', 'star', ['active']) }}" {{ image_src('stars-rating/star.svg') }} alt="Star icon"/>
+				</div>
+			</div>
+			<div
+				class="swiper {{ bem(pageName, 'reviews-container') }}">
+				<div
+					class="swiper-wrapper {{ bem(pageName, 'reviews-wrapper') }}">
+					<div
+						class="swiper-slide {{ bem(pageName, 'review') }}">
+						<div
+							class="{{ bem('stars-rating') }}">
+							<img
+								class="{{ bem('stars-rating', 'star', ['active']) }}" {{ image_src('stars-rating/star.svg') }} alt="Star icon"/>
+							<img
+								class="{{ bem('stars-rating', 'star', ['active']) }}" {{ image_src('stars-rating/star.svg') }} alt="Star icon"/>
+							<img
+								class="{{ bem('stars-rating', 'star', ['active']) }}" {{ image_src('stars-rating/star.svg') }} alt="Star icon"/>
+							<img
+								class="{{ bem('stars-rating', 'star', ['active']) }}" {{ image_src('stars-rating/star.svg') }} alt="Star icon"/>
+							<img
+								class="{{ bem('stars-rating', 'star', ['active']) }}" {{ image_src('stars-rating/star.svg') }} alt="Star icon"/>
+						</div>
+						<p
+							class="{{ bem(pageName, 'review-text') }}">
+							Has saved me so many lost points and miles over the years. Easy to use, time saver, and great support. Highly recommended for anyone who possesses loyalty rewards of any substantial value.
+						</p>
+						<p
+							class="{{ bem(pageName, 'review-author') }}">
+							Ryan Bartholomew
+						</p>
+						<button
+							class="{{ bem(pageName, 'review-button') }}">
+							<img
+								{{ image_src(pageAssetsPath ~ '/add-icon.svg') }} alt="open icon"/>
+						</button>
+					</div>
+					<div
+						class="swiper-slide {{ bem(pageName, 'review') }}">
+						<div
+							class="{{ bem('stars-rating') }}">
+							<img
+								class="{{ bem('stars-rating', 'star', ['active']) }}" {{ image_src('stars-rating/star.svg') }} alt="Star icon"/>
+							<img
+								class="{{ bem('stars-rating', 'star', ['active']) }}" {{ image_src('stars-rating/star.svg') }} alt="Star icon"/>
+							<img
+								class="{{ bem('stars-rating', 'star', ['active']) }}" {{ image_src('stars-rating/star.svg') }} alt="Star icon"/>
+							<img
+								class="{{ bem('stars-rating', 'star', ['active']) }}" {{ image_src('stars-rating/star.svg') }} alt="Star icon"/>
+							<img
+								class="{{ bem('stars-rating', 'star', ['active']) }}" {{ image_src('stars-rating/star.svg') }} alt="Star icon"/>
+						</div>
+						<p
+							class="{{ bem(pageName, 'review-text') }}">
+							Very handy. Easiest way to keep track of rewards programs, including when points expire, how to get to the next status level. Couldn’t ask for anything more!
+						</p>
+						<p
+							class="{{ bem(pageName, 'review-author') }}">
+							Churchy2
+						</p>
+					</div>
+					<div
+						class="swiper-slide {{ bem(pageName, 'review') }}">
+						<div
+							class="{{ bem('stars-rating') }}">
+							<img
+								class="{{ bem('stars-rating', 'star', ['active']) }}" {{ image_src('stars-rating/star.svg') }} alt="Star icon"/>
+							<img
+								class="{{ bem('stars-rating', 'star', ['active']) }}" {{ image_src('stars-rating/star.svg') }} alt="Star icon"/>
+							<img
+								class="{{ bem('stars-rating', 'star', ['active']) }}" {{ image_src('stars-rating/star.svg') }} alt="Star icon"/>
+							<img
+								class="{{ bem('stars-rating', 'star', ['active']) }}" {{ image_src('stars-rating/star.svg') }} alt="Star icon"/>
+							<img
+								class="{{ bem('stars-rating', 'star', ['active']) }}" {{ image_src('stars-rating/star.svg') }} alt="Star icon"/>
+						</div>
+						<p
+							class="{{ bem(pageName, 'review-text') }}">
+							Amazing and complete way to keep track of all my award memberships. Very responsive customer service.
+						</p>
+						<p
+							class="{{ bem(pageName, 'review-author') }}">
+							Anand Daga
+						</p>
+					</div>
+					<div
+						class="swiper-slide {{ bem(pageName, 'review') }}">
+						<div
+							class="{{ bem('stars-rating') }}">
+							<img
+								class="{{ bem('stars-rating', 'star', ['active']) }}" {{ image_src('stars-rating/star.svg') }} alt="Star icon"/>
+							<img
+								class="{{ bem('stars-rating', 'star', ['active']) }}" {{ image_src('stars-rating/star.svg') }} alt="Star icon"/>
+							<img
+								class="{{ bem('stars-rating', 'star', ['active']) }}" {{ image_src('stars-rating/star.svg') }} alt="Star icon"/>
+							<img
+								class="{{ bem('stars-rating', 'star', ['active']) }}" {{ image_src('stars-rating/star.svg') }} alt="Star icon"/>
+							<img
+								class="{{ bem('stars-rating', 'star', ['active']) }}" {{ image_src('stars-rating/star.svg') }} alt="Star icon"/>
+						</div>
+						<p
+							class="{{ bem(pageName, 'review-text') }}">
+							Top Tool for Managing Your Rewards - Fantastic Support.’ AwardWallet is an awesome tool for keeping tabs on your rewards accounts! It has a bunch of really handy features and the support is top-notch. Paulina is super quick and effective in responding to customers, always ready to help with any questions or feedback you might have.
+						</p>
+						<p
+							class="{{ bem(pageName, 'review-author') }}">
+							PhilipCooper
+						</p>
+						<button
+							class="{{ bem(pageName, 'review-button') }}">
+							<img
+								{{ image_src(pageAssetsPath ~ '/add-icon.svg') }} alt="open icon"/>
+						</button>
+					</div>
+					<div
+						class="swiper-slide {{ bem(pageName, 'review') }}">
+						<div
+							class="{{ bem('stars-rating') }}">
+							<img
+								class="{{ bem('stars-rating', 'star', ['active']) }}" {{ image_src('stars-rating/star.svg') }} alt="Star icon"/>
+							<img
+								class="{{ bem('stars-rating', 'star', ['active']) }}" {{ image_src('stars-rating/star.svg') }} alt="Star icon"/>
+							<img
+								class="{{ bem('stars-rating', 'star', ['active']) }}" {{ image_src('stars-rating/star.svg') }} alt="Star icon"/>
+							<img
+								class="{{ bem('stars-rating', 'star', ['active']) }}" {{ image_src('stars-rating/star.svg') }} alt="Star icon"/>
+							<img
+								class="{{ bem('stars-rating', 'star', ['active']) }}" {{ image_src('stars-rating/star.svg') }} alt="Star icon"/>
+						</div>
+						<p
+							class="{{ bem(pageName, 'review-text') }}">
+							Great app. Great app to track all your reward programs.
+						</p>
+						<p
+							class="{{ bem(pageName, 'review-author') }}">
+							ManUtd67
+						</p>
+					</div>
+					<div
+						class="swiper-slide {{ bem(pageName, 'review') }}">
+						<div
+							class="{{ bem('stars-rating') }}">
+							<img
+								class="{{ bem('stars-rating', 'star', ['active']) }}" {{ image_src('stars-rating/star.svg') }} alt="Star icon"/>
+							<img
+								class="{{ bem('stars-rating', 'star', ['active']) }}" {{ image_src('stars-rating/star.svg') }} alt="Star icon"/>
+							<img
+								class="{{ bem('stars-rating', 'star', ['active']) }}" {{ image_src('stars-rating/star.svg') }} alt="Star icon"/>
+							<img
+								class="{{ bem('stars-rating', 'star', ['active']) }}" {{ image_src('stars-rating/star.svg') }} alt="Star icon"/>
+							<img
+								class="{{ bem('stars-rating', 'star', ['active']) }}" {{ image_src('stars-rating/star.svg') }} alt="Star icon"/>
+						</div>
+						<p
+							class="{{ bem(pageName, 'review-text') }}">
+							Get this App! Just found this great app and it has already saved me over 40K Starwood points that were going to expire in 23 days and I had no idea. I’ve now used them for a trip I had already planned. Saved me $$ in the first hour of use. Thanks.
+						</p>
+						<p
+							class="{{ bem(pageName, 'review-author') }}">
+							DKDollyfox
+						</p>
+						<button
+							class="{{ bem(pageName, 'review-button') }}">
+							<img
+								{{ image_src(pageAssetsPath ~ '/add-icon.svg') }} alt="open icon"/>
+						</button>
+					</div>
+					<div
+						class="swiper-slide {{ bem(pageName, 'review') }}">
+						<div
+							class="{{ bem('stars-rating') }}">
+							<img
+								class="{{ bem('stars-rating', 'star', ['active']) }}" {{ image_src('stars-rating/star.svg') }} alt="Star icon"/>
+							<img
+								class="{{ bem('stars-rating', 'star', ['active']) }}" {{ image_src('stars-rating/star.svg') }} alt="Star icon"/>
+							<img
+								class="{{ bem('stars-rating', 'star', ['active']) }}" {{ image_src('stars-rating/star.svg') }} alt="Star icon"/>
+							<img
+								class="{{ bem('stars-rating', 'star', ['active']) }}" {{ image_src('stars-rating/star.svg') }} alt="Star icon"/>
+							<img
+								class="{{ bem('stars-rating', 'star', ['active']) }}" {{ image_src('stars-rating/star.svg') }} alt="Star icon"/>
+						</div>
+						<p
+							class="{{ bem(pageName, 'review-text') }}">
+							Best way to track all your rewards - Excellent Customer Service. AwardWallet is the best way to track all your rewards accounts! Many super useful features and excellent customer service. Customers get quick and effective responses from Paulina, who is always helpful for all your queries and feedback.
+						</p>
+						<p
+							class="{{ bem(pageName, 'review-author') }}">
+							Kyriakos Ioannou
+						</p>
+						<button
+							class="{{ bem(pageName, 'review-button') }}">
+							<img
+								{{ image_src(pageAssetsPath ~ '/add-icon.svg') }} alt="open icon"/>
+						</button>
+					</div>
+				</div>
+			</div>
+			<p
+				class="{{ bem(pageName, 'reviews-description') }}">
+				{% set china_locale = app.request.locale in ['zh_TW', 'zh_CN'] %}
+				{% set miles = china_locale ? miles|slice(0, 4) : miles|slice(0, 3) %}
+				{{ 'pricing.reviews.trusted.by.users'|trans({
+							'%count_formatted%': miles|formatNumber
+					})|desc('Trusted by Users to Track Over %count_formatted% Billion points!')|raw }}
+			</p>
+			<div
+				id="fullReviewPopup"></div>
+		</section>
+		<section
+			class="{{ bem(pageName, 'questions') }}">
+			<h2
+				class="{{ bem(pageName, 'questions-title') }}">
+				{{ 'pricing.questions.title'|trans|desc('Frequently Asked Questions')|raw }}
+			</h2>
+			<div
+				class="{{ bem(pageName, 'questions-container') }}">
+				<div
+					class="{{ bem(pageName, 'questions-question') }}">
+					<h3
+						class="{{ bem(pageName, 'questions-question-title') }}">
+						{{ 'pricing.questions.question1'|trans|desc('What’s the difference between AwardWallet and AwardWallet Plus?')|raw }}
+					</h3>
+					<p
+						class="{{ bem(pageName, 'questions-question-answer') }}">
+						{{ 'pricing.questions.answer1'|trans|desc('AwardWallet Plus offers advanced features like unlimited loyalty-account updates, real-time Balance Watch alerts, tracking all reward expirations, and an ad-free experience. The free version has limited updates and features.')|raw }}
+					</p>
+				</div>
+				<div
+					class="{{ bem(pageName, 'questions-question') }}">
+					<h3
+						class="{{ bem(pageName, 'questions-question-title') }}">
+						{{ 'pricing.questions.question2'|trans|desc('What happens if I don’t upgrade to AwardWallet Plus?')|raw }}
+					</h3>
+					<p
+						class="{{ bem(pageName, 'questions-question-answer') }}">
+						{{ 'pricing.questions.answer2'|trans|desc('Without AwardWallet Plus, you’ll still have access to basic features like tracking rewards, but you’ll be limited in how often you can update accounts. Some information like rewards expiration dates, loyalty-account transaction history, and progress towards elite status will be hidden. The free version of AwardWallet is supported by ads on our blog and inside the AwardWallet app.')|raw }}
+					</p>
+				</div>
+				<div
+					class="{{ bem(pageName, 'questions-question') }}">
+					<h3
+						class="{{ bem(pageName, 'questions-question-title') }}">
+						{{ 'pricing.questions.question3'|trans|desc('How does AwardWallet Plus help protect my points and miles?')|raw }}
+					</h3>
+					<p
+						class="{{ bem(pageName, 'questions-question-answer') }}">
+						{{ 'pricing.questions.answer3'|trans|desc("AwardWallet Plus tracks all your reward expirations on a single page. As a subscriber, you'll receive alerts 90, 60, and 30 days before expiration, plus a daily notification for the last 7 days before your points expire.")|raw }}
+					</p>
+				</div>
+				<div
+					class="{{ bem(pageName, 'questions-question') }}">
+					<h3
+						class="{{ bem(pageName, 'questions-question-title') }}">
+						{{ 'pricing.questions.question4'|trans|desc('How often can I update my accounts with AwardWallet Plus?')|raw }}
+					</h3>
+					<p
+						class="{{ bem(pageName, 'questions-question-answer') }}">
+						{{ 'pricing.questions.answer4'|trans|desc("With AwardWallet Plus, you can update your loyalty accounts an unlimited number of times per day. The free version limits members to two updates for an account per 24 hours.")|raw }}
+					</p>
+				</div>
+			</div>
+			<a
+				href="{{ path('aw_users_pay', prePaymentQuery) }}" class="button {{ bem(pageName, 'join-button') }}">
+				{{ 'pricing.join.awardwallet'|trans|raw }}
+				<picture
+					style="line-height: 0;">
+					<img
+						{{ image_src(pageAssetsPath ~ '/aw-plus-icon.svg') }} alt="AwardWallet Plus icon">
+				</picture>
+			</a>
+		</section>
+		<section
+			class="{{ bem(pageName, 'posts') }}">
+			<h2
+				class="{{ bem(pageName, 'posts-title') }}">
+				{{ 'pricing.posts.title'|trans|desc('Learn more about AwardWallet Plus')|raw }}
+			</h2>
+			<div
+				class="{{ bem(pageName, 'posts-container') }}">
+				<a
+					href="https://awardwallet.com/blog/awardwallet-plus-perks/"
+					target="_blank"
+					class="{{ bem(pageName, 'posts-post') }}">
+					<picture
+						class="{{ bem(pageName, 'posts-preview') }}">
+						<source
+							{{ image_srcset(pageAssetsPath ~ '/post-preview1@{1,2}x.png') }}>
+						<img
+							{{ image_src(pageAssetsPath ~ '/post-preview1@1x.png') }} alt="post preview">
+					</picture>
+					<p
+						class="{{ bem(pageName, 'posts-post-title') }}">
+						{{ 'pricing.post1.title'|trans|desc('What Perks does AwardWallet Plus Provide?')|raw }}
+					</p>
+					<div
+						class="{{ bem(pageName, 'posts-post-meta') }}">
+						<picture
+							class="{{ bem(pageName, 'posts-post-author-avatar') }}">
+							<source
+								{{ image_srcset(pageAssetsPath ~ '/ian-snyder-avatar@{1,2}x.png') }}>
+							<img
+								{{ image_src(pageAssetsPath ~ '/ian-snyder-avatar@1x.png') }} alt="post's author avatar">
+						</picture>
+						{{ 'pricing.posts.by.author'|trans|desc('by')|raw }}
+						<strong>Ian Snyder</strong>
+						<span>
+							August 14, 2023
+						</span>
+					</div>
+				</a>
+				<a
+					href="https://awardwallet.com/blog/balance-watch/"
+					target="_blank"
+					class="{{ bem(pageName, 'posts-post') }}">
+					<picture
+						class="{{ bem(pageName, 'posts-preview') }}">
+						<source
+							{{ image_srcset(pageAssetsPath ~ '/post-preview2@{1,2}x.png') }}>
+						<img
+							{{ image_src(pageAssetsPath ~ '/post-preview2@1x.png') }} alt="post preview">
+					</picture>
+					<p
+						class="{{ bem(pageName, 'posts-post-title') }}">
+						{{ 'pricing.post2.title'|trans|desc('Get Alerts When Your Points Post with AwardWallet Balance Watch')|raw }}
+
+					</p>
+					<div
+						class="{{ bem(pageName, 'posts-post-meta') }}">
+						<picture
+							class="{{ bem(pageName, 'posts-post-author-avatar') }}">
+							<source
+								{{ image_srcset(pageAssetsPath ~ '/erik-paquet-avatar@{1,2}x.png') }}>
+							<img
+								{{ image_src(pageAssetsPath ~ '/erik-paquet-avatar@1x.png') }} alt="post's author avatar">
+						</picture>
+						{{ 'pricing.posts.by.author'|trans|raw }}
+						<strong>Erik Paquet</strong>
+						<span>
+							October 7, 2016
+						</span>
+					</div>
+				</a>
+			</div>
+		</section>
+		<div
+			class="{{ bem('popup-media-logos') }}" style="display: none;"
+			title="{{ 'aw.logos'|trans }}">
+			<h3
+				class="{{ bem('popup-media-logos', 'header') }}">{{ 'message.looking_for_logos.1'|trans }}</h3>
+			<h4
+				class="{{ bem('popup-media-logos', 'sub-header') }}">{{ 'message.looking_for_logos.2'|trans }}</h4>
+			<p
+				class="{{ bem('popup-media-logos', 'content') }}">
+				<a
+					href="{{ path('aw_media_logos') }}">{{ url('aw_media_logos') }}</a>
+			</p>
+		</div>
+	</main>
+	<footer
+		class="{{ bem('footer') }} {{ bem(pageName, 'footer') }}">
+		<div
+			class="{{ bem(pageName, 'footer-container') }}">
+			<div
+				class="{{ bem('footer', 'list') }}">
+				<div
+					class="{{ bem('footer', 'links') }}">
+					<div
+						class="{{ bem('footer', 'links-list') }}">
+						{{ macro.footer_link('menu.privacy-notice'|trans({}, 'menu'), url('aw_page_index_locale', {'page': 'privacy', '_locale': app.request.locale})) }}
+						{{ macro.footer_link('menu.terms-of-use'|trans({}, 'menu'), url('aw_page_index_locale', {'page': 'terms', '_locale': app.request.locale})) }}
+						{{ macro.footer_link('menu.about-us'|trans({}, 'menu'), url('aw_page_index_locale', {'page': 'about', '_locale': app.request.locale})) }}
+						{{ macro.footer_link('menu.media'|trans({}, 'menu'), url('aw_pressrelease_index_locale', {'_locale': app.request.locale})) }}
+						{{ macro.footer_link('menu.credit-card-offers'|trans({}, 'menu'), 'https://awardwallet.com/blog/credit-cards/') }}
+						{{ macro.footer_link('menu.promos'|trans({}, 'menu'), url('aw_promotions_index_locale', {'_locale': app.request.locale})) }}
+					</div>
+					<div
+						class="{{ bem('footer', 'links-list') }}">
+						{{ macro.footer_link('menu.supported'|trans({}, 'menu'), url('aw_supported_locale', {'_locale': app.request.locale})) }}
+						{{ macro.footer_link('menu.faqs'|trans({}, 'menu'), url('aw_faq_index_locale', {'_locale': app.request.locale})) }}
+						{{ macro.footer_link('APIs', url('aw_api_doc_locale', {'_locale': app.request.locale})) }}
+						{{ macro.footer_link('award-booking-service'|trans({}, 'menu'), url('aw_booking_add_index_locale', {'_locale': app.request.locale})) }}
+						{{ macro.footer_link('menu.contact-us'|trans({}, 'menu'), url('aw_contactus_index_locale', {'_locale': app.request.locale})) }}
+						{{ macro.footer_link('menu.aw-blog'|trans({}, 'menu')|desc('AwardWallet Blog'), 'https://awardwallet.com/blog/') }}
+					</div>
+				</div>
+				<div
+					class="{{ bem('footer', 'locales') }}">
+					<div
+						class="{{ bem('footer', 'links-list') }}">
+						{% for locale in locales|slice(0, 4) %}
+							{{ macro.footer_link(('language.' ~ locale)|trans({}, 'menu'), path('aw_set_locale', {'_locale': locale})) }}
+						{% endfor %}
+					</div>
+					<div
+						class="{{ bem('footer', 'links-list') }}">
+						{% for locale in locales|slice(4) %}
+							{{ macro.footer_link(('language.' ~ locale)|trans({}, 'menu'), path('aw_set_locale', {'_locale': locale})) }}
+						{% endfor %}
+					</div>
+				</div>
+				<div
+					class="{{ bem('footer', 'mobile-apps') }}">
+					{% if is_ios() %}
+						{{ macro.platform_appstore_button('button', ['type_platform', 'align_left']) }}
+					{% elseif is_android() %}
+						{{ macro.platform_google_play_button('button', ['type_platform', 'align_left']) }}
+					{% else %}
+						{{ macro.platform_appstore_button('button', ['type_platform', 'align_left']) }}
+						{{ macro.platform_google_play_button('button', ['type_platform', 'align_left']) }}
+					{% endif %}
+				</div>
+				<div
+					class="{{ bem('footer', 'mobile-apps-compact') }}">
+					{% if is_ios() %}
+						{{ macro.platform_appstore_button('button', ['type_platform', 'align_left', 'wide', 'arrow']) }}
+					{% elseif is_android() %}
+						{{ macro.platform_google_play_button('button', ['type_platform', 'align_left', 'wide', 'arrow']) }}
+					{% else %}
+						{{ macro.platform_appstore_button('button', ['type_platform', 'align_left', 'wide', 'arrow']) }}
+						{{ macro.platform_google_play_button('button', ['type_platform', 'align_left', 'wide', 'arrow']) }}
+					{% endif %}
+				</div>
+			</div>
+
+			<div
+				class="{{ bem('footer', 'border') }}"></div>
+
+			<div
+				class="{{ bem('footer', 'copyright-section') }}">
+				<div
+					class="{{ bem('footer', 'copyright') }}">
+					<div
+						class="{{ bem('logo', null, ['small']) }}">
+						<picture
+							class="{{ bem('logo', 'light') }}">
+							<img
+								{{ image_src('logo/logo.svg') }} width="178"
+								height="21"
+								alt="logo">
+						</picture>
+						<picture
+							class="{{ bem('logo', 'dark') }}">
+							<img
+								{{ image_src('logo/logo--dark.svg') }} width="178"
+								height="21"
+								alt="logo">
+						</picture>
+					</div>
+					<div>© 2004 -
+						{{ "now"|date('Y') }}
+						AwardWallet LLC.</div>
+				</div>
+				<div
+					class="{{ bem('footer', 'social-media') }}">
+					{{ macro.social_media('twitter', 'Twitter', 'https://twitter.com/AwardWallet') }}
+					{{ macro.social_media('facebook', 'Facebook', 'https://www.facebook.com/groups/awardtravel101/') }}
+					{{ macro.social_media('youtube', 'YouTube', 'https://www.youtube.com/channel/UCOBfnZ9yioR331pId7FyrNA') }}
+					{{ macro.social_media('instagram', 'Instagram', 'https://www.instagram.com/awardwallet/') }}
+					{{ macro.social_media('linkedin', 'LinkedIn', 'https://www.linkedin.com/company/awardwallet/about/') }}
+				</div>
+			</div>
+		</footer>
+	{% endblock %}
+
+	{% block javascripts %}
+		{{ parent() }}
+		{{ encore_entry_script_tags(pageName, null, '_default', {'defer': true}) }}
+	{% endblock %}
+
+	{% macro footer_link(text, href) %}
+		{% apply spaceless %}
+		<a
+			href="{{ href }}" target="_self"
+			class="{{ bem('footer', 'link') }}">{{ text }}</a>
+		{% endapply %}
+	{% endmacro %}
+
+	{% macro social_media(icon, label, href) %}
+		{% apply spaceless %}
+		<a
+			class="{{ bem('button-platform', null, ['size_small', 'social-network']) }}" aria-label="{{ label }}" target="_blank"
+			href="{{ href }}" rel="noopener noreferrer">
+			<b
+				class="{{ bem('icon-platform', null, [icon]) }}"></b>
+		</a>
+		{% endapply %}
+	{% endmacro %}
+
+	{% macro platform_appstore_link(block, modifiers) %}
+		{% apply spaceless %}
+		<a
+			class="{{ bem(block, null, modifiers) }}" href="http://itunes.apple.com/us/app/awardwallet/id388442727?mt=8"
+			aria-label="appstore"
+			target="_blank"
+			rel="noopener noreferrer">
+			<b
+				class="{{ bem('icon-platform', null, ['ios']) }}"></b>
+		</a>
+		{% endapply %}
+	{% endmacro %}
+
+	{% macro platform_google_play_link(block, modifiers) %}
+		{% apply spaceless %}
+		<a
+			class="{{ bem(block, null, modifiers) }}" href="https://play.google.com/store/apps/details?id=com.itlogy.awardwallet"
+			aria-label="google play"
+			target="_blank"
+			rel="noopener noreferrer">
+			<b
+				class="{{ bem('icon-platform', null, ['google-play']) }}"></b>
+		</a>
+		{% endapply %}
+	{% endmacro %}
+
+	{% macro platform_appstore_button(block, modifiers) %}
+		{% apply spaceless %}
+		<a
+			class="{{ bem(block, null, modifiers) }}" href="http://itunes.apple.com/us/app/awardwallet/id388442727?mt=8"
+			aria-label="appstore"
+			target="_blank"
+			rel="noopener noreferrer">
+			<img
+				{{ image_src('footer/app-store-button.svg') }} width="133"
+				height="36"
+				alt="App Store">
+		</a>
+		{% endapply %}
+	{% endmacro %}
+
+	{% macro platform_google_play_button(block, modifiers) %}
+		{% apply spaceless %}
+		<a
+			class="{{ bem(block, null, modifiers) }}" href="https://play.google.com/store/apps/details?id=com.itlogy.awardwallet"
+			aria-label="google play"
+			target="_blank"
+			rel="noopener noreferrer">
+			<img
+				{{ image_src('footer/google-play-button.svg') }} width="136"
+				height="34"
+				alt="Google Play">
+		</a>
+		{% endapply %}
+	{% endmacro %}

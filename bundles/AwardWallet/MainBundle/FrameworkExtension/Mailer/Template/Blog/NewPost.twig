@@ -1,0 +1,93 @@
+{% extends '@MailTemplate/Layout/base.twig' %}
+{% trans_default_domain "email" %}
+
+{% block subject %}{% apply spaceless %}{% autoescape false %}
+    {{ blogpost.title|html_entity_decode|striptags }}
+{% endautoescape %}{% endapply %}{% endblock subject %}
+
+{% block content_row %}
+    {% import '@MailTemplate/CommonMacro.twig' as commonMacro %}
+
+    {% set refcode = user.refcode|default('') %}
+    {% set prefix = '?' in blogpost.url ? '&' : '?' %}
+    {% set bodyUrl = blogpost.url ~ prefix ~ 'utm_source=aw&utm_medium=email&utm_campaign=new_post_notify&utm_content=body1&awid=aw&mid=email&cid=new_post_notify&rkbtyn=' ~ refcode %}
+    {% set readmoreUrl = blogpost.url ~ prefix ~ 'utm_source=aw&utm_medium=email&utm_campaign=new_post_notify&utm_content=readmore&awid=aw&mid=email&cid=new_post_notify&rkbtyn=' ~ refcode %}
+    <tr>
+        <td style="line-height: 24px;font-size: 16px;border: solid 1px #a6aab3;background: #fff;padding: 10px 20px 20px; border-top: none; border-bottom: none;" class="email-white">
+            {{ commonMacro.hello(user.firstname, _context) }}
+            {{ commonMacro.offerRemark(_context) }}
+            <table width="100%" cellpadding="0" border="0" cellspacing="0">
+                <tr>
+                    <td valign="middle" style="padding-top:10px; color:#535457; line-height: 24px; font-size: 16px;">
+                        {{ 'blog.new-post.published'|trans({
+                            '%link_on%'  : '<a href="'~ bodyUrl ~ '" style="color:#4684c4;line-height:20px;font-weight:bold;text-decoration:none;font-size:16px" target="_blank">',
+                            '%link_off%' : '</a>'
+                        }, 'email', lang)|raw }}
+                        "<b style="color:#3d424d" class="white-text">{{ blogpost.title|html_entity_decode|striptags }}</b>"
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+    <tr>
+        <td style="line-height: 24px;font-size: 16px;border: solid 1px #a6aab3;background: #fff; border-top: none;" class="email-white">
+
+            <table width="100%" cellpadding="0" border="0" cellspacing="0">
+                <tr>
+                    <td valign="middle">
+                        {% if blogpost.image is defined and blogpost.image is not empty %}
+                            <div style="padding-left: 10px; padding-right: 10px;">
+                                <a href="{{ bodyUrl }}">
+                                    <img src="{{ blogpost.image }}" border="0" style="vertical-align:top;max-height: auto !important;min-height: auto !important;height: auto !important;max-width: 100% !important;width: 100% !important;border-width: 0 !important;" alt="">
+                                </a>
+                            </div>
+                        {% endif %}
+
+                        <div>
+                            <table width="100%" cellpadding="0" border="0" cellspacing="0">
+                                <tr>
+                                    <td style="padding:20px;"><a href="{{ bodyUrl }}" style="font-size:25px;color:#3d424d; line-height:30px;font-family: Georgia, Times, Times New Roman, serif; text-decoration: none" class="white-text">{{ blogpost.title|html_entity_decode|striptags }}</a></td>
+                                </tr>
+                                {% if blogpost.announce is not empty %}
+                                    <tr>
+                                        <td style="padding:10px;">
+                                            <table width="100%" cellpadding="0" border="0" cellspacing="0">
+                                                <tr>
+                                                    <td style="padding:10px; font-size:16px;color:#3d424d; line-height:24px;font-family: Georgia, Times, Times New Roman, serif; background: #f9f9fa" class="email-silver">{{ blogpost.announce|html_entity_decode|striptags('<br><b><strong><i><em><u><p><ul><ol><li>') }}</td>
+                                                </tr>
+                                            </table>
+                                        </td>
+                                    </tr>
+                                {% endif %}
+                                <tr>
+                                    <td style="padding:15px 20px;">
+                                        <table width="100%" cellpadding="0" border="0" cellspacing="0">
+                                            <tr>
+                                                <td valign="middle" align="left" style="font-size:12px;color:#777f8c">{{ blogpost.date|patternDatetime('d LLLL, y', locale) }}</td>
+                                                <td valign="middle" align="right">
+                                                    <a href="{{ readmoreUrl }}" style="color:#4684c4;line-height:20px;font-weight:bold;text-decoration:none;font-size:16px">{{ 'blog.read-more'|trans({}, 'email', lang)|desc('Read More') }} <img src="{{ baseImagesPath }}/arrow-right-blue.png" style="margin-left:5px;vertical-align:middle" width="7" height="9" border="0" alt=""></a>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </td>
+                </tr>
+            </table>
+
+        </td>
+    </tr>
+{% endblock content_row %}
+
+{% block unsubscribe %}
+    {% import '@MailTemplate/CommonMacro.twig' as commonMacro %}
+
+    {% if unsubscribeUrl is defined and unsubscribeUrl is not empty %}
+        {% set link = unsubscribeUrl %}
+    {% else %}
+        {% set link = unsubscribeLink ~ '#newBlogPosts' %}
+    {% endif %}
+    {{ commonMacro.baseUnsubscribeLink(link, _context) }}
+{% endblock unsubscribe %}

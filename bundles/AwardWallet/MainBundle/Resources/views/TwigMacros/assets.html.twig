@@ -1,0 +1,30 @@
+{% macro assets_form(type) %}{% apply spaceless %}
+    {% if type|default('css') == 'css' %}
+        {{ encore_entry_link_tags('form') }}
+    {% else %}
+        <script language="JavaScript">
+            window.datePickerI18n = {{ services.StandartViewCreator.getDatepickerI18nFile(app.request.locale)|json_encode|raw }};
+            require([
+                'awardwalletmain/js/formInputs',
+                'awardwalletmain/js/form/validator',
+                'awardwalletmain/js/CollectionManager',
+                'select2',
+                'awardwalletmain/js/select2_colored'
+            ]);
+        </script>
+        <script src="{{ asset('assets/translations/validators/'~app.request.locale~'.js') }}"></script>
+    {% endif %}
+{% endapply %}{% endmacro %}
+
+{% macro saveForm(formId, exclude) %}{% apply spaceless %}
+    {% import _self as macro %}
+      $(document).ready(function(){
+          FormKeeper(
+              '{{ formId }}',
+              {% if app.request.method == 'GET' %}true{% else %}false{% endif %},
+              '{{ exclude|raw }}',
+              {% if app.request.get('recover') %}true{% else %}false{% endif %}
+          );
+      });
+{% endapply %}{% endmacro %}
+

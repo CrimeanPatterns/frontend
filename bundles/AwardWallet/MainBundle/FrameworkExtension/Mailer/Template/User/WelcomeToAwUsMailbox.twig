@@ -1,0 +1,74 @@
+{% extends '@MailTemplate/Layout/base.twig' %}
+{% trans_default_domain "email" %}
+
+{% block subject %}{% apply spaceless %}{% autoescape false %}
+    Supercharge Your AwardWallet Account in 1 Minute
+{% endautoescape %}{% endapply %}{% endblock subject %}
+
+{% block mailPreview %}
+    {% import '@MailTemplate/CommonMacro.twig' as commonMacro %}
+
+    {{ commonMacro.emailPreview('And Yes, it’s Totally Free') }}
+{% endblock mailPreview %}
+
+{% block restore_row %}{% endblock restore_row %}
+
+{% block content %}
+    {% import '@MailTemplate/CommonMacro.twig' as commonMacro %}
+
+    <div style="padding: 0 10px;">
+        {{ commonMacro.link(
+            'https://awardwallet.com/blog/connect-your-mailbox-to-awardwallet/?utm_source=aw&utm_medium=email_new-us&awid=aw&mid=email_new-us&rkbtyn=' ~ user.refcode,
+            'Supercharge Your AwardWallet Account in 1 Minute',
+            {
+                'color': '#186db6',
+                'font-size': '24px',
+                'line-height': '30px',
+                'text-decoration': 'none',
+                'font-weight': 'normal'
+            }
+        ) }}
+        {{ commonMacro.offerRemark(_context) }}
+        {% set paragraphStyles = {
+            'font-size': '14px',
+            'color': '#535457',
+            'line-height': '18px'
+        } %}
+
+        {{ commonMacro.paragraph(
+            'Hey ' ~ user.firstname ~ ',', _context, {}, paragraphStyles
+        ) }}
+        {{ commonMacro.paragraph(
+            'Today, I want to show you the single most important thing you can do to make AwardWallet more powerful and easier to use.', _context, {}, paragraphStyles
+        ) }}
+        {{ commonMacro.paragraph(
+            'It takes less than a minute to set up, and once you do it, AwardWallet can provide even more detailed and accurate information about your rewards and travel plans.', _context, {}, paragraphStyles
+        ) }}
+        {{ commonMacro.paragraph(
+            'Even better, this feature can save you a ton of work because you won\'t have to do anything to add your travel reservations or update your loyalty accounts.', _context, {}, paragraphStyles
+        ) }}
+        {{ commonMacro.paragraph(
+            'Click here to '
+            ~ commonMacro.link(
+                'https://awardwallet.com/mailboxes/?utm_source=aw&utm_medium=email_new-us&awid=aw&mid=email_new-us&rkbtyn=' ~ user.refcode,
+                'link your mailbox',
+                {'font-size': '14px', 'line-height': '18px'}
+            ) ~
+            ', or check out this quick tutorial on how to supercharge your AwardWallet account.',
+            _context,
+            {
+                'escape': false,
+            },
+            paragraphStyles
+        ) }}
+
+        {{ commonMacro.button(
+            'Learn more',
+            'https://awardwallet.com/blog/connect-your-mailbox-to-awardwallet/?utm_source=aw&utm_medium=email_new-us&awid=aw&mid=email_new-us&rkbtyn=' ~ user.refcode,
+            {
+                'padding': '0 20px',
+                'margin': '15px 0'
+            }
+        ) }}
+    </div>
+{% endblock content %}

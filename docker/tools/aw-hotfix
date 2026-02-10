@@ -1,0 +1,40 @@
+#!/usr/bin/env php
+<?php
+
+function printUsage()
+{
+    die(
+        "Usage: aw-hotfix [ commit | author ]\n" .
+        "By SHA1: aw-hotfix 8d68b7bf\n" .
+        "Last commit: aw-hotfix petya@awardwallet.com\n" .
+        "Last commit: aw-hotfix petya\n"
+    );
+}
+
+$needle = $argv[1] ?? null;
+
+if (!isset($needle)) {
+    printUsage();
+}
+
+$needle = escapeshellarg($needle);
+
+if ('commit' === trim(`git cat-file -t '{$needle}' 2>/dev/null` ?? '')) {
+    $commit = $needle;
+} else {
+    $commit = trim(`git log -i --author='{$needle}' -1 | head -n 1 | cut -d ' ' -f 2` ?? '');
+}
+
+if (!isset($commit) || ('' === $commit)) {
+    echo "No commit found\n";
+    printUsage();
+}
+
+$files = trim(`git diff-tree --no-commit-id --name-only -r '{$commit}' '{$commit}^' | tr '\n' ' '` ?? '');
+
+if (!isset($files) || ('' === $files)) {
+    echo "No files found\n";
+    printUsage();
+}
+
+echo "https://jenkins.awardwallet.com/job/Frontend/job/deploy-hotfix/parambuild/?pathlist=" . urlencode($files) . "\n";

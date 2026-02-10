@@ -1,0 +1,38 @@
+services:
+    _defaults:
+        public: true
+
+    # Types
+    aw.mobile.other_settings:
+        public: true
+        class: AwardWallet\MobileBundle\Form\Type\Profile\OtherSettingsType
+        arguments:
+            - "@translator"
+            - "@aw.form.transformer.generic.other_settings"
+            - '@AwardWallet\MainBundle\Form\Helper\MobileExtensionLoader'
+            - "@aw.api.versioning"
+        tags:
+            - { name: form.type}
+
+    # Transformers
+    aw.form.transformer.generic.other_settings:
+        public: true
+        class: AwardWallet\MainBundle\Form\Transformer\Profile\OtherSettingsTransformer
+
+    # Handlers
+    aw.form.other_settings.subscriber.generic:
+        public: true
+        class: AwardWallet\MainBundle\Form\Handler\Subscriber\Profile\OtherSettingsGeneric
+        arguments:
+            - "@doctrine.orm.default_entity_manager"
+            - "@aw.form.handler_helper"
+
+    aw.form.other_settings.handler.mobile:
+        public: true
+        parent: aw.form.generic_request_handler
+        calls:
+            - [setChannels, [["form.mobile", "form.generic.other_settings"]]]
+            - [addHandlerSubscriber, ["@aw.form.other_settings.subscriber.generic"]]
+            - [addHandlerSubscriber, ["@aw.form.subscriber.mobile.request_data_transformer"]]
+
+

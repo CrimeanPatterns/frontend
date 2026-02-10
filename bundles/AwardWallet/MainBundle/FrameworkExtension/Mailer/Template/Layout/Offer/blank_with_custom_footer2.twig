@@ -1,0 +1,11 @@
+{% extends '@MailTemplate/Layout/Offer/blank_with_unsubscribe.twig' %}
+
+{% block unsubscribe %}
+    Offer available to new FoundersCard Members only. Application is subject to approval and terms of Membership. <br/>Some benefits may not be available during the trial period. Cancel online anytime.<br/>
+    {{ parent() }}
+{% endblock unsubscribe %}
+
+{% block physical_address_row %}
+    <br/><span>{{ constant('EMAIL_PHYSICAL_ADDRESS_PLAIN') }}</span>
+{% endblock physical_address_row %}
+

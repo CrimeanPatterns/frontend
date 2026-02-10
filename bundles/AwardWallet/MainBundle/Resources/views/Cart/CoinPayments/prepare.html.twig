@@ -1,0 +1,84 @@
+{% extends "@AwardWalletMain/Layout/hidden_left_menu.html.twig" %}
+{% import "@AwardWalletMain/Cart/macros.html.twig" as macro %}
+
+{% block title %}
+    {% if cart.paymenttype == constant('\\AwardWallet\\MainBundle\\Entity\\Cart::PAYMENTTYPE_BITCOIN') %}
+        {{ 'cart.coin_payments.prepare.bitcoin'|trans|desc('Bitcoin payment') }}
+    {% elseif cart.paymenttype == constant('\\AwardWallet\\MainBundle\\Entity\\Cart::PAYMENTTYPE_ETHEREUM') %}
+        {{ 'cart.coin_payments.prepare.ethereum'|trans|desc('Ethereum payment') }}
+    {% endif %}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script type="text/javascript">
+        require(["jquery-boot"], function($){
+            var methods = {
+                poll: function(){
+                    $.ajax({
+                        url: Routing.generate('aw_cart_bitcoin_status', {id: {{ cart.cartid }} }),
+                        complete: function(response){
+                            if(response.responseText == 'complete') {
+                                window.location = Routing.generate('aw_cart_common_complete', {id: {{ cart.cartid }} } );
+                            } else {
+                                methods.listen();
+                            }
+                        }
+                    });
+                },
+                listen: function() {
+                    setTimeout(function(){
+                        methods.poll();
+                    }, 3000);
+                },
+                setTimer: function(seconds) {
+                    var date = new Date(null);
+                    date.setSeconds(startTimer);
+                    $('#timer').text(date.toISOString().substr(11, 8));
+                }
+            };
+
+            var startTimer = {{ result.timeout }};
+            methods.setTimer(startTimer);
+            var timerId = window.setInterval(function () {
+                startTimer--;
+                methods.setTimer(startTimer);
+                if(!startTimer) clearInterval(timerId);
+            }, 1000);
+
+            methods.listen();
+        });
+    </script>
+{% endblock %}
+
+{% block content %}
+    <div class="main-blk shortened">
+        <h1>{{ 'cart.order'|trans({'%number%': cart.cartid}) }}</h1>
+        <div class="main-blk-content">
+            {{ macro.drawCart(cart) }}
+            <div class="ethereum">
+                <div class="time"><p>Time remaining: <strong class="red" id="timer"></strong></p></div>
+                <div class="qr-code">
+                    <img src="{{ result.qrcode_url }}" alt="qr_code">
+                </div>
+                <div class="details">
+                    <div class="item">
+                        <div class="{{ currencyCode == 'ETH' ? 'ethereum-logo' : 'bitcoin-logo' }}"></div>
+                        <p class="code"><strong>{{ result.amount }}</strong> <span class="red">{{ currencyCode }}</span></p>
+                        <div class="sendto"><strong>{{ result.address }}</strong></div>
+                        <p class="silver">Send exactly {{ result.amount }} {{ currencyCode }}</p>
+                    </div>
+                    <div class="bottom">
+                        <p class="silver"><small>Your order will be completed when we receive your payment.</small></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <form action="" class="main-form">
+            <div class="row-submit">
+                <a href="{{ path('aw_account_list') }}" class="btn-blue">{{ 'button.ok'|trans }}</a>
+            </div>
+        </form>
+
+    </div>
+{% endblock %}

@@ -1,0 +1,39 @@
+{% extends '@AwardWalletMain/Layout/iframe.html.twig' %}
+{% use '@AwardWalletMain/Timeline/_sharedTimelineElements.html.twig' %}
+{% import '@AwardWalletMain/TwigMacros/common.html.twig' as common %}
+
+{% block meta %}
+    {{ parent() }}
+    <base href="{{ path('aw_timeline') }}">
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    {{ common.angularLinkConverter() }}
+    {{ encore_entry_script_tags('trans/' ~ app.request.locale) }}
+    {{ encore_entry_script_tags('timeline') }}
+{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    {{ encore_entry_link_tags('timeline') }}
+    {{ encore_entry_link_tags('trips') }}
+    {{ encore_entry_link_tags('scanner') }}
+{% endblock %}
+
+{% block title %}
+    {{ 'timeline.title.trips'|trans|desc('Trips') }}
+{% endblock %}
+
+{% block content %}
+    <div class="trip iframe" data-ng-controller="timeline" data-ng-cloak>
+
+        <div class="ajax-loader" data-ng-if="spinner">
+            <div class="loading"></div>
+        </div>
+
+        <div data-ng-if="!spinner">
+            {{ block('trip_list') }}
+        </div>
+    </div>
+{% endblock %}

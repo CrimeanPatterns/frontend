@@ -1,0 +1,17 @@
+{% extends '@SonataAdmin/CRUD/list.html.twig' %}
+
+{% block sonata_left_side %}
+{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        .content-wrapper {
+            margin-left: 0 !important;
+        }
+
+        .editable-input input {
+            width: 400px !important;
+        }
+    </style>
+{% endblock %}

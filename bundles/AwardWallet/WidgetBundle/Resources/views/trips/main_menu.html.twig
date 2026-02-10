@@ -1,0 +1,56 @@
+<div class="row">
+	<div class="heading">
+		<i class="icon-silver-arrow-down"></i>
+		<h3>{{ 'manage.travel'|trans|desc('MANAGE TRAVEL') }}</h3>
+	</div>
+	<ul class="default-list">
+		<li>
+			<a href="#" id="importCalendar">
+				{{ 'calendar.auto.import'|trans({},'trips')|desc('Travel Calendar Import') }}
+			</a>
+		</li>
+		<li>
+			<a href="#" onclick="document.location.href='{{ url("aw_travel_summary") }}'">
+				{{ 'trips.travel-summary-report'|trans({}, 'trips')|desc('Travel Summary Report') }}
+			</a>
+		</li>
+		<li>
+			<a id="list-visited-countries" href="#">
+				{{ 'list-visited-countries.short'|trans({},'trips')|desc('List of Visited Countries') }}
+			</a>
+		</li>
+	</ul>
+</div>
+
+{% if not webpack|default(false) %}
+	<script>
+		var importCalendarLinkElem = document.getElementById('importCalendar');
+		importCalendarLinkElem.addEventListener('click', function(e) {
+				e.preventDefault();
+				require(['pages/timeline/calendarImport'], function (clickHandler) { 
+						clickHandler(); 
+				});
+		});
+
+		require(['jquery-boot', 'routing'], function ($) {
+			function updateHref() {
+				$('a#list-visited-countries').attr(
+					'href',
+					Routing.generate('timeline_export_countries', {
+						agentId: $('ul.persons li.active [data-id]').data('id')
+					})
+				);
+			}
+
+			$(function() {
+				updateHref();
+
+				$(window).on('person.activate', function (event, id) {
+					updateHref();
+				});
+			});
+		});
+	</script>
+{% else %}
+    {{ encore_entry_script_tags('main-menu-trip', null, '_default', {'defer': true}) }}
+{% endif %}

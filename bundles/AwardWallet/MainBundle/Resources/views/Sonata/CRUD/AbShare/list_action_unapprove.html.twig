@@ -1,0 +1,6 @@
+{% if object.isapproved %}
+    <a class="btn btn-sm btn-default" href="{{ admin.generateObjectUrl('unapprove', object) }}">
+        <i class="fas fa-times-circle" aria-hidden="true"></i>
+        Unapprove
+    </a>
+{% endif %}

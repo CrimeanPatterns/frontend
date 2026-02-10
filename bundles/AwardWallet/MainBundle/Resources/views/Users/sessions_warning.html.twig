@@ -1,0 +1,8 @@
+<div class="active-sessions">
+    <i class="icon-warning-small"></i>
+    <span class="yellow bold">
+        {{ 'session.warning'|trans({'%count%': _sessions|length})
+        |desc("{1}Currently being used in %count% other location.|]1,Inf]Currently being used in %count% other locations.") }}
+    </span>
+    <a href="{{ path("aw_user_sessions") }}" class="read-more">{{ 'session.warning.details'|trans|desc("Details") }}<i class="icon-double-arrow-right-silver"></i></a>
+</div>
