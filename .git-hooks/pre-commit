@@ -1,0 +1,41 @@
+#!/bin/sh
+
+echo "[frontend] php-cs-fixer pre-commit hook started."
+
+if [ -f .git/MERGE_HEAD ]
+then
+    echo "[frontend] merge in progress, skipping php-cs-fixer."
+    exit 0
+fi
+
+# Check for docker compose command
+if command -v docker > /dev/null 2>&1 && docker compose version > /dev/null 2>&1; then
+    DOCKER_COMPOSE_CMD="docker compose"
+elif command -v docker-compose > /dev/null 2>&1; then
+    DOCKER_COMPOSE_CMD="docker-compose"
+else
+    echo "[frontend] Neither docker-compose nor docker compose is available."
+    exit 1
+fi
+
+exitCode=0
+FILES=$(git status --porcelain | awk '$0 ~ /^[MRA] / && ($2 ~ /\.php$/ || $4 ~ /\.php$/) {print $4 ? $4 : $2}' | grep -i '\.php$' | tr '\n' ' ')
+if [ -z "$FILES" ]
+then
+    echo "[frontend] php files were not found."
+else
+    echo "[frontend] php files were found: ${FILES}, running php-cs-fixer in dry-run mode."
+    $DOCKER_COMPOSE_CMD run -T --remove-orphans --rm cs-fixer-frontend fix --config=.php-cs-fixer.dist.php --using-cache=no --allow-risky=no --dry-run --quiet ${FILES}
+    exitCode=$?
+    if [ $exitCode -ne 0 ]
+    then
+        echo "[frontend] php-cs-fixer found some issues, fixing them..."
+        $DOCKER_COMPOSE_CMD run -T --remove-orphans --rm cs-fixer-frontend fix --config=.php-cs-fixer.dist.php --using-cache=no --allow-risky=no --verbose ${FILES}
+        echo "[frontend] php-cs-fixer finished, adding files to commit."
+        git add ${FILES}
+    fi
+
+fi
+
+echo "[frontend] php-cs-fixer pre commit hook finished."
+exit $exitCode

@@ -1,0 +1,35 @@
+# will not work until 13.03.2021, when github billing plan will change to free
+name: php-cs-fixer
+
+on: push
+
+env:
+  ACTIONS_ALLOW_USE_UNSECURE_NODE_VERSION: true
+
+jobs:
+  php-cs-fixer:
+    name: Check code style
+    runs-on:
+      - self-hosted
+      - Linux
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Cache php-cs-fixer cache
+        uses: actions/cache/restore@v3
+        id: restore-cache
+        with:
+          path: .php_cs.cache
+          # bump aw* key part only if you need to invalidate cache
+          key: php-cs-fixer-frontend-3.52.1-php7.4.33-aw6-${{ hashFiles('.php-cs-fixer.dist.php', 'composer.lock') }}
+      - name: Run php-cs-fixer
+        uses: docker://docker.awardwallet.com/service/php-cs-fixer-multiarch:3.52.1-7.4.33
+        with:
+          entrypoint: /entrypoint-opcache.sh
+          args: fix --config=.php-cs-fixer.dist.php --allow-risky=no --diff --ansi --dry-run --verbose bundles tests
+      - name: save cache
+        uses: actions/cache/save@v3
+        if: always()
+        with:
+          path: .php_cs.cache
+          key: ${{ steps.restore-cache.outputs.cache-primary-key }}

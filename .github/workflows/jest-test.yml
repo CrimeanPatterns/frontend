@@ -1,0 +1,57 @@
+name: jest tests
+
+on: push
+
+env:
+  ACTIONS_ALLOW_USE_UNSECURE_NODE_VERSION: true
+
+jobs:
+  tests:
+    name: tests
+    runs-on:
+      - self-hosted
+      - Linux
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          path: frontend
+      - name: Checkout lib
+        uses: actions/checkout@v3
+        with:
+          repository: AwardWallet/lib
+          token: ${{ secrets.GH_PAT }}
+          path: lib
+      - name: delete .dockerignore in lib
+        run: |
+          rm lib/.dockerignore
+      - name: Checkout engine
+        uses: actions/checkout@v3
+        with:
+          repository: AwardWallet/engine
+          token: ${{ secrets.GH_PAT }}
+          path: engine
+          sparse-checkout: |
+            ProxyList.php
+          sparse-checkout-cone-mode: false
+      - name: setup npm auth
+        run: | 
+          echo "@awardwallet:registry=https://npm.pkg.github.com" > ${{ runner.temp }}/.npmrc
+          echo "//npm.pkg.github.com/:_authToken=${{ secrets.NPM_GITHUB_ACCESS_TOKEN }}" >> ${{ runner.temp }}/.npmrc
+          echo "always-auth=true" >> ${{ runner.temp }}/.npmrc
+      - name: setup composer auth
+        run: | 
+          echo '{"github-oauth": {"github.com": "${{ secrets.GH_PAT }}"}}' > ${{ runner.temp }}/composer-auth.json
+      -
+        name: Build
+        uses: docker/build-push-action@v2
+        with:
+          context: frontend
+          build-contexts: |
+            lib=lib
+            engine=engine
+          file: frontend/docker/jest-tests.Dockerfile
+          push: false
+          secret-files: |
+            npmrc=${{ runner.temp }}/.npmrc
+            composer_auth=${{ runner.temp }}/composer-auth.json
