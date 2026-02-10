@@ -1,0 +1,23 @@
+<page-header>
+    <a ui-sref="index.accounts.list" class="back-link"><i class="icon-back"></i><h1>{{'menu.button.accounts'|trans:{}:'menu'}}</h1></a>
+</page-header>
+<div class="content">
+    <div class="content-item">
+        <div class="block-title small">
+            <i class="icon-arrow-down"></i>
+            <h3 ng-if="users.length>1">{{::'award.account.list.totals.multiple'|trans:{users:users.length}:'messages'|desc:'Multiple Users (%users%)'}}</h3>
+            <h3 ng-if="users.length==1">{{::users[0]}}</h3>
+        </div>
+        <div class="totals">
+            <div class="flex-row" ng-repeat="providerKind in providerKindsDisplay | filter: filterHidden" ng-if="totals[providerKind.KindID].accounts>0">
+                <div class="title">{{::providerKind.Name}} ({{::totals[providerKind.KindID].accounts}})</div>
+                <div class="info">
+                    <span class="bold" ng-if="!user.locale">{{::totals[providerKind.KindID].totals|number}}</span>
+                    <span class="bold" ng-if="user.locale">{{::totals[providerKind.KindID].totals|IntlNumber:user.locale}}</span>
+                    <span class="dimension" ng-if="providerKind.KindID==1">{{::'award.account.list.totals.miles'|transChoice:totals[providerKind.KindID].totals:{}:'messages'|desc:'mile|miles'}}</span>
+                    <span class="dimension" ng-if="providerKind.KindID>1">{{::'award.account.list.totals.points'|transChoice:totals[providerKind.KindID].totals:{}:'messages'|desc:'point|points'}}</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

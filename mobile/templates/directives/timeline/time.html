@@ -1,0 +1,7 @@
+<div class="time" ng-class="{'red':row.startDate.old}">
+    <div class="time-zone">{{row.startDate.fmt.tz}}</div>
+    <div class="time-item">
+        <p class="old-time" ng-if="row.startDate.old && row.startDate.fmt.t != row.startDate.old.fmt.t" ng-bind="[row.startDate.old.fmt.t, row.startDate.old.fmt.p].join(' ')"></p>
+        <p ng-bind="[row.startDate.fmt.t, row.startDate.fmt.p].join(' ')"></p>
+    </div>
+</div>

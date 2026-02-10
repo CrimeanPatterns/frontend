@@ -1,0 +1,9 @@
+<div ng-if="field.attr.key" class="row-captcha" captcha
+     key="field.attr.key"
+     vendor="field.attr.vendor"
+     url="field.attr.url"
+     lang="field.attr.lang"
+     size="'normal'"
+     on-create="recaptcha.onCreate(widgetId)"
+     on-success="recaptcha.setResponse(response)"
+     on-expire="recaptcha.cbExpiration()"></div>

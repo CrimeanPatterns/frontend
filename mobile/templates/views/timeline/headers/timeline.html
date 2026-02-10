@@ -1,0 +1,8 @@
+<a href="" ng-if="travelers.length > 1" ui-sref="index.timeline.travelers" class="back-link">
+    <i class="icon-back"></i>
+</a>
+<a href="" swipe-menu-toggle ng-if="travelers.length < 2" class="hide-menu"><i class="icon-menu"></i></a>
+<div class="title">
+    <h1>{{traveler.familyName || traveler.name}}</h1>
+    <span class="amount">{{traveler.futureSegments || 0}}</span>
+</div>

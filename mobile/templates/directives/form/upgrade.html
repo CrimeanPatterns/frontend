@@ -1,0 +1,18 @@
+<div class="default-row" ng-class="field.attrs.class">
+    <table>
+        <tr>
+            <td><h3>{{field.name}}</h3></td>
+            <td class="t-right" ng-if="field.text">
+                <strong>{{field.text}}</strong>
+            </td>
+        </tr>
+    </table>
+    <a href="" class="default-row" ng-if="field.formLink" ng-click="field.action()">
+        <table>
+            <tr>
+                <td><h3>{{'userinfo.upgrade'|trans:{}:'mobile'}}</h3></td>
+                <td class="readmore"><i class="icon-next-arrow"></i></td>
+            </tr>
+        </table>
+    </a>
+</div>

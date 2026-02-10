@@ -1,0 +1,19 @@
+<div ng-controller="RateController">
+    <div class="silver-popup rating" ng-if="rate.show">
+        <h3>{{rate.question}}</h3>
+        <ul class="actions">
+            <li>
+                <a href="" ng-click="rate.discard();" class="btn-silver-b">
+                    <i class="icon-clear-w"></i>
+                    <span>{{::'button.no'|trans:{}:'messages'}}</span>
+                </a>
+            </li>
+            <li>
+                <a href="" ng-click="rate.agree();" class="btn-silver-b">
+                    <i class="icon-check-w"></i>
+                    <span>{{::'button.yes'|trans:{}:'messages'}}</span>
+                </a>
+            </li>
+        </ul>
+    </div>
+</div>

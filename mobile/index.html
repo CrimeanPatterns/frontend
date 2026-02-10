@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0, viewport-fit=cover">
+    <meta http-equiv="Content-Security-Policy" content="%content-security-policy%">
+    <link rel="alternate" href="android-app://com.itlogy.awardwallet/%host_scheme%/%host_name%"/>
+    <meta name="apple-itunes-app" content="app-id=388442727">
+    <meta name="google-play-app" content="app-id=com.itlogy.awardwallet">
+    <meta name="keywords" content="Incentive reward center, Marriott reward, cheap airfare, reward incentive program, American Express rewards, trip reward, air miles reward program, frequent flyer miles, track award program balances, air mile reward, award software, award program, delta sky miles, reward program reward network">
+    <!--(if target mobile || mobileRelease)><base href="/m/" /><!(endif)-->
+
+    <!-- build:css resources/css/style.min.css -->
+    <!-- include: "type": "css", "files": "resources/css/*.css" -->
+    <!-- endbuild -->
+    <!--(if target release || cordovaRelease)>
+    <script>
+        var debugMode = false;
+    </script>
+    <!(endif)-->
+    <!-- build:js scripts/scripts.js -->
+    <!-- bower:js -->
+    <script src="scripts/vendor/bower_components/angular/angular.js"></script>
+    <script src="scripts/vendor/bower_components/angular-animate/angular-animate.js"></script>
+    <script src="scripts/vendor/bower_components/angular-cookies/angular-cookies.js"></script>
+    <script src="scripts/vendor/bower_components/angular-touch/angular-touch.js"></script>
+    <script src="scripts/vendor/bower_components/angular-sanitize/angular-sanitize.js"></script>
+    <script src="scripts/vendor/bower_components/hammerjs/hammer.js"></script>
+    <script src="scripts/vendor/bower_components/angular-recaptcha/release/angular-recaptcha.js"></script>
+    <script src="scripts/vendor/bower_components/date-time-diff/lib/date-time-diff.js"></script>
+    <!-- endbower -->
+    <script src="scripts/vendor/angular-ui-router.js"></script>
+    <script src="scripts/vendor/chart.min.js"></script>
+    <script src="scripts/vendor/chartjs-plugin-datalabels.min.js"></script>
+    <script src="scripts/vendor/ct-ui-router-extras.core.min.js"></script>
+    <script src="scripts/vendor/ct-ui-router-extras.sticky.min.js"></script>
+    <script src="scripts/vendor/sockjs.min.js"></script>
+    <script src="scripts/vendor/centrifuge.min.js"></script>
+    <script src="scripts/vendor/tracekit.js"></script>
+    <script src="scripts/vendor/react/react.js"></script>
+    <script src="scripts/vendor/react/react-infinite-scroll.js"></script>
+    <script src="scripts/vendor/react/react-timeago.js"></script>
+    <script src="scripts/vendor/react/react-spinner.js"></script>
+    <script src="scripts/vendor/i18n-dynamic.js"></script>
+    <script src="scripts/vendor/angular-resource.js"></script>
+    <script src="scripts/vendor/angular-fakestorage.js"></script>
+    <script src="scripts/vendor/angular.toParam.js"></script>
+    <script src="scripts/vendor/angular-symfony-translation.js"></script>
+    <script src="scripts/vendor/angular-cache.js"></script>
+    <script src="scripts/vendor/classnames.js"></script>
+    <script src="scripts/vendor/modal.js"></script>
+    <script src="scripts/vendor/ng-FitText.js"></script>
+    <script src="scripts/vendor/ng-q-timeout.js"></script>
+    <script src="scripts/vendor/ng-cordova.js"></script>
+    <script src="scripts/vendor/ng-Target.js"></script>
+    <script src="scripts/vendor/translator.js"></script>
+    <script src="scripts/vendor/jquery.min.js"></script>
+    <script src="scripts/vendor/lodash.min.js"></script>
+    <script src="scripts/vendor/passwordComplexity.js"></script>
+    <script src="scripts/vendor/ui-router-history.js"></script>
+    <script src="scripts/vendor/barcodes/barcode.js"></script>
+    <script src="scripts/vendor/barcodes/qrcode.js"></script>
+    <script src="scripts/vendor/barcodes/pdf417.min.js"></script>
+    <script src="scripts/functions.js"></script>
+    <script src="scripts/app.js"></script>
+    <script src="scripts/routes.js"></script>
+    <!-- include: "type": "js", "files": "resources/**/*.js" -->
+    <!-- include: "type": "js", "files": "scripts/controllers/**/*.js" -->
+    <!-- include: "type": "js", "files": "scripts/directives/**/*.js" -->
+    <!-- include: "type": "js", "files": "scripts/filters/**/*.js" -->
+    <!-- include: "type": "js", "files": "scripts/services/**/*.js" -->
+    <!-- endbuild -->
+    <!--(if target cordova || cordovaRelease)><script src="cordova.js"></script><!(endif)-->
+</head>
+<body ng-controller="RootController" ui-view>
+<div class="white-blk">
+    <div class="splash-screen">
+        <div class="item">
+            <div class="logo-new"></div>
+            <div class="splash-spinner-container">
+                <div class="loading"></div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+<script>
+    window._hmt = window._hmt || [];
+    _hmt.push(['_setAutoPageview', false]);
+    _hmt.push(['_setAccount', '253378fe4a0654dca9a6e3a4236e0538']);
+    var app = {
+        scheme: 'awardwallet://',
+        platform: null,
+        translations: {},
+        version: '3.34.0',
+        userId: null,
+        onNotificationAPN: function (event) {
+        },
+        onNotificationGCM: function () {
+        },
+        bootstrap: function () {
+            angular.element(document).ready(function () {
+                angular.bootstrap(document, ['AwardWalletMobile']);
+                var injector, $state;
+                if (document.querySelector('[ng-app]') === null) {
+                    injector = document.body;
+                }
+                else {
+                    injector = document.querySelector('[ng-app]');
+                }
+                $state = angular.element(injector).injector().get('$state');
+                window.handleOpenURL = function (url) {
+                    if (url && url.indexOf(app.scheme) > -1) {
+                        url = url.replace(app.scheme, '');
+                        url = JSON.parse(atob(url));
+                        if (app.window !== null) {
+                            app.window.close();
+                            app.window = null;
+                        }
+                        if ($state && $state.hasOwnProperty('go') && url.hasOwnProperty('state')) {
+                            $state.go(url.state.name, url.state.params, url.state.props);
+                        } else {
+                            document.location.hash = url.href;
+                        }
+                    }
+                };
+            });
+        },
+        bind: function () {
+            window.handleOpenURL = function (url) {
+                if (url && url.indexOf(app.scheme) > -1) {
+                    url = url.replace(app.scheme, '');
+                    url = JSON.parse(atob(url));
+                    document.location.hash = url.href;
+                }
+            };
+            if (isCordova) {
+                document.addEventListener('deviceready', this.onDeviceReady, false);
+            } else {
+                app.bootstrap();
+            }
+        },
+        onLoad: function () {
+
+        },
+        onDeviceReady: function () {
+            app.platform = device.platform.toLowerCase();
+            window.alert = function (message) {
+                return navigator.notification.alert(message);
+            };
+            document.documentElement.classList.add('phonegap');
+            document.body.classList.add(app.platform + parseInt(device.version));
+            app.bootstrap();
+        },
+        init: function () {
+            if (undefined !== document.referrer) {
+                setTimeout(() => $.ajax({url: BaseUrl + '/referer', type: 'post', data: {referer: document.referrer}}), 700);
+            }
+
+            TraceKit.report.subscribe(function yourLogger(errorReport) {
+                errorReport.location = document.location.href;
+                console.log(errorReport);
+                app.logger.log({data: errorReport, module: 'error'})
+            });
+
+            (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+                    new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+                j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+                'https://www.googletagmanager.com/gtm.js?id='+i+dl;
+                if (!platform.cordova) {
+                    j.onerror = function () {
+                        const hm = d.createElement(s);
+                        hm.async = 1;
+                        hm.src = '//hm.baidu.com/hm.js?253378fe4a0654dca9a6e3a4236e0538';
+                        f.parentNode.insertBefore(hm, f);
+                    };
+                }
+                f.parentNode.insertBefore(j,f);
+            })(window,document,'script','dataLayer', 'GTM-T286426');
+
+            this.bind();
+        },
+        logger: {
+            _data: null,
+            timeoutId: null,
+            log: function (request) {
+                if (typeof request === 'object') {
+                    if (
+                        request.hasOwnProperty('data') &&
+                        app.logger._data &&
+                        request.data.message === app.logger._data.message
+                    ) {
+                        clearTimeout(app.logger.timeoutId);
+                    }
+                    app.logger.timeoutId = setTimeout(function () {
+                        request['appVersion'] = app.version;
+                        $.post(BaseUrl + '/m/api/log', JSON.stringify(request));
+                    }, 500);
+                    app.logger._data = request.data;
+                }
+            }
+        },
+        window: null,
+        googleMapsEndpoints: []
+    };
+
+    app.init();
+</script>
+</html>

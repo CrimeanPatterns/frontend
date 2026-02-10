@@ -1,0 +1,39 @@
+<div class="content-item new">
+    <form autocomplete="off" class="search">
+        <input name="search" autocomplete="disabled" type="text" ng-model="view.query" ng-model-options="{ debounce: 350 }"
+               ng-change="view.search(view.query)" placeholder="{{'start-typing-name-program-to-find'|trans}}"
+               ng-target="focusSearch">
+        <button ng-if="!view.query || view.query.length < 1" type="submit"></button>
+        <a ng-if="view.query.length>0" ng-click="view.clear();focusSearch.focus();" href="" class="clear"><i
+                class="icon-clear-d"></i></a>
+    </form>
+    <div class="not-found" ng-if="view.query && list && list.length == 0">
+        <i class="icon-warning"></i>
+        <p ng-bind="view.noResultsError"></p>
+    </div>
+    <spinner loading="list === null"></spinner>
+    <div ng-repeat="row in list track by $index">
+        <div class="block-title" ng-if="row.kind === 'title'">
+            <i class="icon-arrow-down"></i>
+            <h3 ng-bind-html="row.program"/>
+        </div>
+        <div class="user-block left" ng-if="row.kind === 'title'">
+            <div class="item">
+                <div class="user-item"><h3 style="text-transform: capitalize !important;">{{'to'|trans}}:</h3></div>
+            </div>
+        </div>
+        <div class="account" ng-if="row.kind === 'row'">
+            <div class="flex">
+                <div class="title">
+                    <h3 ng-bind-html="row.program"/>
+                </div>
+                <div class="balance">
+                    <div class="balance-row" ng-bind-html="row.duration"></div>
+                    <div class="expire-row" ng-if="row.tip">
+                        <span ng-bind-html="row.tip"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

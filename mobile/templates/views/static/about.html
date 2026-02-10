@@ -1,0 +1,20 @@
+<page-header>
+    <a ng-if="!authorized" href="" swipe-menu-toggle class="hide-menu static-hide-menu"><i class="icon-menu"></i></a>
+    <a ng-if="authorized" ng-click="back()" href="" class="back"><i class="icon-back"></i></a>
+
+    <div class="title">
+        <h1>{{'about-awardwallet'|trans}}</h1>
+    </div>
+</page-header>
+
+<div class="content static-page">
+    <spinner spinner-key="spinner-1" loading="spinnerSpin"></spinner>
+    <div class="error-block" ng-if="error">
+        <div class="error-message"><i class="icon-warning"></i>
+
+            <div ng-bind="error"></div>
+        </div>
+    </div>
+    <static-content content="page">
+    </static-content>
+</div>

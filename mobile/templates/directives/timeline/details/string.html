@@ -1,0 +1,10 @@
+<div class="row" ng-class="{'error':field.old, 'full-width': field.val.length > 100}">
+    <div class="title">
+        <i class="icon-warning" ng-if="field.old"></i>
+        <span ng-bind="field.name"></span>
+    </div>
+    <div class="info">
+        <span ng-bind-html="field.val"></span>
+        <span class="strike" ng-if="field.old" ng-bind-html="field.old"></span>
+    </div>
+</div>

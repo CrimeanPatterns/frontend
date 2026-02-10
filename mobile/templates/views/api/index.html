@@ -1,0 +1,4 @@
+<div class="account-authorization">
+    <ng-include src=" 'templates/views/api/access.html' " ng-if="view.code"></ng-include>
+    <ng-include src=" 'templates/views/api/not-found.html' " ng-if="!view.code"></ng-include>
+</div>

@@ -1,0 +1,103 @@
+<div class="sidebar" swipe-menu>
+    <div class="menu">
+        <ul class="dashboard">
+            <li>
+                <a href="" ng-click="menu.open('index.accounts.list')" ng-class="{'active': menu.accounts.active()}">
+                    <div class="pictograph">
+                        <i class="icon-balances"></i>
+                    </div>
+                    <span>{{::'menu.button.accounts'|trans:{}:'menu'}}</span>
+
+                    <div class="amount" ng-class="{'red': menu.accounts.active()}" ng-bind="programsCount||0"></div>
+                </a>
+            </li>
+            <li>
+                <a href="" ng-click="menu.open('index.timeline.travelers')" ng-class="{'active': menu.timeline.active()}">
+                    <div class="pictograph">
+                        <i class="icon-travel-plans"></i>
+                    </div>
+                    <span>{{::'menu.button.trips'|trans:{}:'menu'}}</span>
+
+                    <div class="amount" ng-class="{'red': menu.timeline.active()}" ng-bind="timelineCount||0">
+                    </div>
+                </a>
+            </li>
+            <li>
+                <a href="" ng-click="menu.open('index.booking.list')" ng-class="{'active': menu.booking.active()}">
+                    <div class="pictograph">
+                        <i class="icon-booking"></i>
+                    </div>
+                    <span>{{::'menu.button.bookings'|trans:{}:'menu'}}</span>
+                    <div class="new-message" ng-if="menu.booking.hasUnread()"><i class="icon-new-message"></i></div>
+                    <div class="amount" ng-class="{'red': menu.booking.active()}" ng-bind="bookingCount||0"></div>
+                </a>
+            </li>
+            <li>
+                <a href="" ng-click="menu.open('unauth.merchants.lookup')" ng-class="{'active': menu.merchants.active()}">
+                    <div class="pictograph">
+                        <i class="icon-merchant"></i>
+                    </div>
+                    <span>{{::'merchant.lookup'|trans:{}:'mobile'}}</span>
+                </a>
+            </li>
+            <li>
+                <a href="" ng-click="menu.open('unauth.miles.transfer')" ng-class="{'active': menu.miles.active()}">
+                    <div class="pictograph">
+                        <i class="icon-transfer-times"></i>
+                    </div>
+                    <span>{{::'transfer_times'|trans}}</span>
+                </a>
+            </li>
+            <li ng-if="menu.spendAnalysis.isEnabled()">
+                <a href="" ng-click="menu.open('index.spend-analysis.overview')" ng-class="{'active': menu.spendAnalysis.active()}">
+                    <div class="pictograph">
+                        <i class="icon-spend-analysis"></i>
+                    </div>
+                    <span>{{::'spend-analysis'|trans:{}:'mobile-native'}}</span>
+                </a>
+            </li>
+            <li>
+                <a href="" ng-click="menu.open('index.profile')" ng-class="{'active': menu.profile.active()}">
+                    <div class="pictograph">
+                        <i class="icon-account"></i>
+                    </div>
+                    <span>{{::'menu.userinfo.profile'|trans:{}:'menu'}}</span>
+                </a>
+            </li>
+            <li>
+                <a href="" ng-click="menu.members.open()">
+                    <div class="pictograph">
+                        <i class="icon-members"></i>
+                    </div>
+                    <span>{{'connected.members'|trans:{}:'mobile'|desc:'Connected Members'}}</span>
+                </a>
+            </li>
+            <li>
+                <a href="" ng-click="footer.links.blog()">
+                    <div class="pictograph">
+                        <i class="icon-blog"></i>
+                    </div>
+                    <span>{{'menu.blog'|trans:{}:'menu'}}</span>
+                </a>
+            </li>
+            <li>
+                <a href="" ng-click="logout()">
+                    <div class="pictograph">
+                        <i class="icon-logout"></i>
+                    </div>
+                    <span>{{::'menu.button.logout'|trans:{}:'menu'}}</span>
+                </a>
+                <a href="" class="refresh active" ng-if="spinnerLogoutSpin">
+                    <i class="icon-refresh-s"></i>
+                    <div class="loading"></div>
+                </a>
+            </li>
+            <li ng-if="::!isCordova">
+                <a href="{{::desktopUrl}}">
+                    <span>{{::'switch.to.desktop'|trans:{}:'messages'}}</span>
+                </a>
+            </li>
+        </ul>
+    </div>
+    <ng-include src=" 'templates/views/footer.html' "></ng-include>
+</div>

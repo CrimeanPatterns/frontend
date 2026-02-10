@@ -1,0 +1,13 @@
+<page-content style="overflow: hidden;">
+    <div class="content-item" style="height:100%;">
+        <spinner loading="!content"></spinner>
+        <form>
+        <div ng-if="recaptcha.key" vc-recaptcha key="recaptcha.key"
+             required="false"
+             on-create="recaptcha.onCreate(widgetId)"
+             on-success="recaptcha.setResponse(response)"
+             on-expire="recaptcha.cbExpiration()" size="invisible"></div>
+        </form>
+        <iframe-directive html="content" ng-if="content"></iframe-directive>
+    </div>
+</page-content>

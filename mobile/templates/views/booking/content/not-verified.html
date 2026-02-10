@@ -1,0 +1,18 @@
+<div class="success-blk" ng-if="booking.email.submitted">
+    <div class="row">
+        <i class="icon-check-s"></i>
+        <span class="text">
+            <span>{{'request.email.re-sent'|trans:{}:'booking'|desc:'Email with verification link was re-sent.'}}</span>
+        </span>
+    </div>
+</div>
+<div class="warning-block" ng-class="{'transparent': booking.email.submitted == true}">
+    <div class="row">
+        <i ng-class="{'icon-warning-w': booking.email.submitted == false, 'icon-warning': booking.email.submitted == true}"></i>
+        <span class="text">
+            <span bind-translate-html="{{'request.not-complete'|trans:{}:'booking'|desc:'Your award booking request was successfully submitted but is <strong>not complete</strong>.'}}"></span>
+        </span>
+    </div>
+</div>
+<p class="black" bind-translate-html='{{"request.not-verified"|trans:{requestId:request.id}:"booking"|desc:"We just sent you an email with the following subject: \"<strong>Award Booking Request #%requestId%</strong>\", to ensure we can reach you via email going forward please confirm your email address by following a link in that email. Our team will use this messaging platform to discuss award options with you."}}'></p>
+<p class="black">{{'not-verified.popup.text2'|trans:{booker:request.bookerName}:'booking'}}</p>

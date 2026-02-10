@@ -1,0 +1,16 @@
+<div class="top-menu">
+    <div class="title">
+        <h1>{{::'pincode.setup.title'|trans:{}:'mobile'|desc:"PIN Code set up"}}</h1>
+    </div>
+</div>
+<div class="content">
+    <div class="pin-code">
+        <p>{{::'pincode.setup.text'|trans:{}:'mobile'|desc:"To improve the security of our mobile app we require you to add a pin to your account which will be used to unlock the AwardWallet application, please enter a new PIN code you wish to use."}}</p>
+
+        <div class="row-submit">
+            <button class="btn-white" ng-click="buttons.cancel()">{{::'cancel'|trans:{}:'messages'}}</button>
+            <button class="btn-blue" style="padding: 15px;" ng-click="buttons.setup()">{{::'pincode.setup.button'|trans:{}:'mobile'|desc:"Set up PIN code"}}
+            </button>
+        </div>
+    </div>
+</div>

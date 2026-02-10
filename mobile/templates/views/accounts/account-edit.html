@@ -1,0 +1,22 @@
+<page-header>
+    <a class="back-link" ui-sref="index.accounts.account-details({Id:view.accountId})"><i class="icon-back"></i><h1>{{'buttons.back'|trans:{}:'mobile'|desc:'Back'}}</h1></a>
+</page-header>
+<page-content class="edit-account">
+    <div class="content-item">
+
+        <div class="block-title account-name" ng-if="view.account">
+            <div class="prev"><i ng-class="providerIcons[view.account.Type || view.account.Kind]+'-d'"></i></div>
+            <div class="title">
+                <h3 header="view.account.DisplayName"></h3>
+                <p ng-bind="view.account.Login"></p>
+            </div>
+        </div>
+        <spinner spinner-key="spinner-1" loading="spinnerLoadingPage"></spinner>
+    </div>
+    <page-form name="accountEditForm" show-errors="!spinnerSubmitForm" form-errors="view.form.errors" fields="view.form.fields" class="main-form" on-submit="submit()"
+             ng-if="view.form.fields || view.form.errors" form-interface="view.form.interface" form-extension="view.form.extension">
+        <div class="row-submit">
+            <button class="btn-blue" ng-disabled="spinnerSubmitForm" ng-class="{'loading':spinnerSubmitForm}" type="submit">{{'buttons.save'|trans:{}:'mobile'|desc:'Save changes'}}</button>
+        </div>
+    </page-form>
+</page-content>

@@ -1,0 +1,26 @@
+<div class="map-container">
+    <div class="map">
+        <div class="gmap" sliding-menu-ignore="true">
+        </div>
+    </div>
+</div>
+<div class="row">
+    <label>{{'store-location.label'|trans:{}:'mobile'|desc:'Please enter the store address or just hit "Save" to store your current location if you are at the store right now.'}}</label>
+    <div class="input">
+        <input type="text" placeholder="{{field.placeholder}}" ng-model-options="{debounce: 300}" ng-model="field.value" ng-change="field.onChange(field.value)" ng-blur="field.blur()">
+        <div class="dropdown-block bottom increased" ng-if="field.places.length > 0">
+            <a ng-click="field.close()" class="close"><i class="icon-clear-d"></i></a>
+            <div class="content-row">
+                <ul class="autocomplete-list">
+                    <li ng-click="field.input(place)" ng-repeat="place in field.places" ng-bind-html="place.formatted_description"></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="info" ng-if="field.attr.notice" ng-bind="field.attr.notice"></div>
+    <div class="error-message" ng-if="(field.errors || field.isRequired()) && field.showError">
+        <i class="icon-warning"></i>
+        <p ng-if="field.isRequired() && !field.errors[field.errors.length-1]">{{'notblank'|trans:{}:'validators'}}</p>
+        <p ng-bind-html="field.errors[field.errors.length-1]"></p>
+    </div>
+</div>

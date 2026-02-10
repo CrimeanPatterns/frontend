@@ -1,0 +1,36 @@
+<div class="content">
+    <div class="pin-code">
+        <div class="row">
+            <div class="col">
+                <div class="top-row">
+                    <div class="title">{{popup.title}}</div>
+                    <div class="pin-code-number" ng-class="popup.pin !== '' ? 'active-'+popup.pin.length : ''">
+                        <div class="code"></div>
+                        <div class="code"></div>
+                        <div class="code"></div>
+                        <div class="code"></div>
+                    </div>
+                    <div class="pin-code-info">{{popup.error}}</div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                <div class="number-keyboard">
+                    <a href="" ng-click="popup.buttons.input(1)" class="button number">1</a>
+                    <a href="" ng-click="popup.buttons.input(2)" class="button number">2</a>
+                    <a href="" ng-click="popup.buttons.input(3)" class="button number">3</a>
+                    <a href="" ng-click="popup.buttons.input(4)" class="button number">4</a>
+                    <a href="" ng-click="popup.buttons.input(5)" class="button number">5</a>
+                    <a href="" ng-click="popup.buttons.input(6)" class="button number">6</a>
+                    <a href="" ng-click="popup.buttons.input(7)" class="button number">7</a>
+                    <a href="" ng-click="popup.buttons.input(8)" class="button number">8</a>
+                    <a href="" ng-click="popup.buttons.input(9)" class="button number">9</a>
+                    <a href="" ng-click="popup.buttons.cancel()" class="button">{{::buttons.cancel}}</a>
+                    <a href="" ng-click="popup.buttons.input(0)" class="button number">0</a>
+                    <a href="" ng-click="popup.buttons.input(-1)" class="button"><i class="icon-remove"></i></a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

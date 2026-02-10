@@ -1,0 +1,66 @@
+<div class="alternative-flights">
+    <p>{{'trip.alternative-flights.sub-title'|trans:{}:'mobile'}}</p>
+
+    <div class="flight-row" ng-repeat="flight in ::flights['main']">
+        <table>
+            <tr>
+                <td class="title">
+                    <h3 ng-repeat="(key, name) in flight['points'] track by key">{{::name}}</h3>
+                </td>
+                <td class="actions">
+                    <ul>
+                        <li>
+                            <a href="" ng-click="showAlternativeFlights(flight['points'], flight['dates'][0])"
+                               class="btn-light-silver wide"><i class="icon-minus"></i></a>
+                            <span>{{'trip.alternative-flights.buttons.previousDay'|trans:{}:'mobile'|desc:'- 1 Day'}}</span>
+                        </li>
+                        <li>
+                            <a href="" ng-click="showAlternativeFlights(flight['points'], flight['dates'][1])" class="btn-blue wide"><i class="icon-check-w"></i></a>
+                            <span ng-if="::isArray(flight['dates'][1]) && isObject(flight['dates'][1][0].fmt)">{{flight['dates'][1][0].fmt|fmt|date:"shortMonth"}} - {{flight['dates'][1][1].fmt|fmt|date:"shortMonth"}}</span>
+                            <span ng-if="::isArray(flight['dates'][1]) && !isObject(flight['dates'][1][0].fmt)">{{flight['dates'][1][0].fmt}} - {{flight['dates'][1][1].fmt}}</span>
+                            <span ng-if="::isObject(flight['dates'][1]) && isObject(flight['dates'][1].fmt)">{{'on.date'|trans:{date:''}:'mobile'|desc:'On %date%'}}{{flight['dates'][1].fmt|fmt|date:"shortMonth"}}</span>
+                            <span ng-if="::isObject(flight['dates'][1]) && !isObject(flight['dates'][1].fmt)">{{flight['dates'][1].fmt}}</span>
+                        </li>
+                        <li>
+                            <a href="" ng-click="showAlternativeFlights(flight['points'], flight['dates'][2])"
+                               class="btn-light-silver wide"><i class="icon-add"></i></a>
+                            <span>{{'trip.alternative-flights.buttons.nextDay'|trans:{}:'mobile'|desc:'+ 1 Day'}}</span>
+                        </li>
+                    </ul>
+                </td>
+            </tr>
+        </table>
+    </div>
+    <div class="sub-flight" ng-if="::flights['extra']">
+        <div class="flight-row" ng-repeat="flight in ::flights['extra']">
+            <table>
+                <tr>
+                    <td class="title">
+                        <h3 ng-repeat="(key, name) in flight['points'] track by key">{{::name}}</h3>
+                    </td>
+                    <td class="actions">
+                        <ul>
+                            <li>
+                                <a href="" ng-click="showAlternativeFlights(flight['points'], flight['dates'][0])"
+                                   class="btn-light-silver wide"><i class="icon-minus"></i></a>
+                                <span>{{'trip.alternative-flights.buttons.previousDay'|trans:{}:'mobile'|desc:'- 1 Day'}}</span>
+                            </li>
+                            <li>
+                                <a href="" ng-click="showAlternativeFlights(flight['points'], flight['dates'][1])" class="btn-blue wide"><i class="icon-check-w"></i></a>
+                                <span ng-if="::isArray(flight['dates'][1]) && isObject(flight['dates'][1][0].fmt)">{{flight['dates'][1][0].fmt|fmt|date:"shortMonth"}} - {{flight['dates'][1][1].fmt|fmt|date:"shortMonth"}}</span>
+                                <span ng-if="::isArray(flight['dates'][1]) && !isObject(flight['dates'][1][0].fmt)">{{flight['dates'][1][0].fmt}} - {{flight['dates'][1][1].fmt}}</span>
+                                <span ng-if="::isObject(flight['dates'][1]) && isObject(flight['dates'][1].fmt)">{{'on.date'|trans:{date:''}:'mobile'|desc:'On %date%'}}{{flight['dates'][1].fmt|fmt|date:"shortMonth"}}</span>
+                                <span ng-if="::isObject(flight['dates'][1]) && !isObject(flight['dates'][1].fmt)">{{flight['dates'][1].fmt}}</span>
+                            </li>
+                            <li>
+                                <a href="" ng-click="showAlternativeFlights(flight['points'], flight['dates'][2])"
+                                   class="btn-light-silver wide"><i class="icon-add"></i></a>
+                                <span>{{'trip.alternative-flights.buttons.nextDay'|trans:{}:'mobile'|desc:'+ 1 Day'}}</span>
+                            </li>
+                        </ul>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+</div>

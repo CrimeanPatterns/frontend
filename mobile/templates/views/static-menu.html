@@ -1,0 +1,58 @@
+<div class="sidebar" swipe-menu>
+    <div class="menu">
+        <ul class="side-menu">
+            <li>
+                <a href="" ui-sref="unauth.merchants.lookup" ui-sref-active="active">
+                    <i class="icon-merchant"></i>
+                    <span>{{::'merchant.lookup'|trans:{}:'mobile'}}</span>
+                </a>
+            </li>
+            <li>
+                <a href="" ui-sref="unauth.miles.transfer" ng-class="{ active: $state.includes('unauth.miles') }">
+                    <i class="icon-transfer-times"></i>
+                    <span>{{::'transfer_times'|trans}}</span>
+                </a>
+            </li>
+            <li ng-click="footer.links.blog()">
+                <a href="">
+                    <i class="icon-blog"></i>
+                    <span>Blog</span>
+                </a>
+            </li>
+            <li>
+                <a href="" ui-sref="unauth.about" ui-sref-active="active">
+                    <i class="icon-about"></i>
+                    <span>{{'about.us.link'|trans}}</span>
+                </a>
+            </li>
+            <li>
+                <a href="" ui-sref="unauth.privacy" ui-sref-active="active">
+                    <i class="icon-privacy"></i>
+                    <span>{{'privacy.notice.link'|trans}}</span>
+                </a>
+            </li>
+            <li>
+                <a href="" ui-sref="unauth.terms" ui-sref-active="active">
+                    <i class="icon-terms-of-use"></i>
+                    <span>{{'termsofuse.link'|trans}}</span>
+                </a>
+            </li>
+            <li ng-click="footer.links.contactUs()">
+                <a href="">
+                    <i class="icon-send-feedback"></i>
+                    <span>{{'menu.contact-us'|trans:{}:'menu'}}</span>
+                </a>
+            </li>
+            <li ng-if="::!isCordova">
+                <a href="{{::desktopUrl}}">
+                    <span>{{::'switch.to.desktop'|trans:{}:'messages'}}</span>
+                </a>
+            </li>
+        </ul>
+    </div>
+    <footer class="footer-site">
+        <div class="copyright">
+            <p bind-translate-html="{{'footer.menu.copyright'|trans:{year:footer.year}:'mobile'|desc:'&copy; %year% AwardWallet'}} v{{footer.version}}"></p>
+        </div>
+    </footer>
+</div>

@@ -1,0 +1,15 @@
+<div class="wrapper">
+    <page>
+        <global-error></global-error>
+        <page-header>
+            <ui-view name="header@list" ng-show="$state.includes('shared.timeline')">
+            </ui-view>
+            <ui-view name="header@details" ng-show="$state.includes('shared.segment')">
+            </ui-view>
+        </page-header>
+        <ui-view name="content@list" ng-show="$state.includes('shared.timeline')">
+        </ui-view>
+        <ui-view name="content@details" ng-show="$state.includes('shared.segment')">
+        </ui-view>
+    </page>
+</div>

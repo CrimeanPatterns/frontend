@@ -1,0 +1,8 @@
+<page-footer>
+    <div class="row-submit">
+        <button class="btn-white" ng-click="booking.edit(request.id)">{{'button.edit'|trans:{}:'messages'}}</button>
+        <button class="btn-blue" ng-class="{'loading': booking.email.spinnerLoading == true}"
+                ng-click="booking.email.resend(request.id)">{{'button.resend'|trans:{}:'messages'|desc:'Resend'}}
+        </button>
+    </div>
+</page-footer>

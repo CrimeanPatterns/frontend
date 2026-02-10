@@ -1,0 +1,23 @@
+<global-error></global-error>
+<div class="top-menu">
+    <a href="" ng-click="view.back()" class="back"><i class="icon-back"></i></a>
+
+    <div class="title">
+        <h1>{{'registration.title'|trans:{}:'mobile'|desc:'Registration'}}</h1>
+    </div>
+</div>
+<div class="content">
+    <spinner spinner-key="spinner-registration" loading="spinnerLoadingPage"></spinner>
+    <div ng-if="view.error" ng-bind="view.error"></div>
+    <page-form name="registration" show-errors="!spinnerSubmitForm" form-errors="view.form.errors" fields="view.form.fields"
+             class="main-form"
+             on-submit="submit()"
+             ng-if="view.form.fields || view.form.errors" form-interface="view.form.interface"
+             form-extension="view.form.extension" recaptcha="recaptcha">
+        <div class="row-submit">
+            <button class="btn-blue" ng-disabled="spinnerSubmitForm" ng-class="{'loading':spinnerSubmitForm}"
+                    type="submit">{{'buttons.register'|trans}}
+            </button>
+        </div>
+    </page-form>
+</div>

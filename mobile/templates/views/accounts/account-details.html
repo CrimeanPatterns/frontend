@@ -1,0 +1,70 @@
+<page-header>
+    <a ui-sref="index.accounts.list" class="back-link"><i class="icon-back"></i><h1>{{'menu.button.accounts'|trans:{}:'menu'}}</h1></a>
+    <a ng-if="account['Access']['update'] && !subAccount" style="cursor:pointer;" ng-click="view.showUpdatePopup();" class="refresh"><i class="icon-refresh"></i></a>
+</page-header>
+<page-content>
+    <div class="content-item">
+        <pull-to-refresh on-refresh="reload()"></pull-to-refresh>
+        <div class="block-title account-name">
+            <div class="prev"><i ng-class="providerIcons[account['Type'] || account['Kind']]"></i></div>
+            <div class="title">
+                <h3 header="subAccount['DisplayName'] || account['DisplayName']"></h3>
+
+                <p ng-bind="subAccount['Login'] || account['Login']"></p>
+            </div>
+        </div>
+        <details-list>
+            <div class="account-info">
+                <detail-field ng-repeat="field in (subAccount['Blocks'] || account['Blocks'])" type="field.Kind"
+                              field="field" parent="view" account="subAccount || account"></detail-field>
+            </div>
+        </details-list>
+    </div>
+</page-content>
+<page-footer>
+        <user-menu>
+            <user-menu-item ng-if="view.menu.showBarcode">
+                <a href="" ng-click="view.showBarcode(barcode.scanned);">
+                    <div class="prev"><i class="icon-show"></i></div>
+                    <span>{{'buttons.barcode'|trans:{}:'mobile'|desc:'Show #'}}</span>
+                </a>
+            </user-menu-item>
+            <user-menu-item ng-if="view.menu.scanBarcode">
+                <a href="" ng-click="barcode.scan();">
+                    <div class="prev"><i class="icon-show"></i></div>
+                    <span>{{'buttons.scan-barcode'|trans:{}:'mobile'|desc:'Scan #'}}</span>
+                </a>
+            </user-menu-item>
+            <user-menu-item ng-if="view.menu.history">
+                <a href="" ui-sref="index.accounts.account-history(view.stateParams)">
+                    <div class="prev"><i class="icon-history"></i></div>
+                    <span>{{'history'|trans:{}:'mobile'}}</span>
+                </a>
+            </user-menu-item>
+            <user-menu-item ng-if="view.menu.phones">
+                <a href="" ui-sref="index.accounts.account-phones({Id:accountId})">
+                    <div class="prev"><i class="icon-phone"></i></div>
+                    <span>{{'buttons.phone'|trans:{}:'mobile'|desc:'Phone #'}}</span>
+                </a>
+            </user-menu-item>
+            <user-menu-item ng-if="view.menu.delete">
+                <a href="" ng-click="view.showDeletePopup()">
+                    <div class="prev"><i class="icon-delete"></i></div>
+                    <span>{{'button.delete'|trans}}</span>
+                </a>
+            </user-menu-item>
+            <user-menu-item ng-if="view.menu.edit">
+                <a href="" ui-sref="index.accounts.account-edit({Id:accountId})">
+                    <div class="prev"><i class="icon-edit"></i></div>
+                    <span>{{'award.account.list.button.edit'|trans}}</span>
+                </a>
+            </user-menu-item>
+            <user-menu-item ng-if="view.menu.logIn.active">
+                <a href="" ng-click="view.autoLogin()">
+                    <div class="prev"><i ng-class="{'icon-site':view.menu.logIn.gotosite, 'icon-autologin':view.menu.logIn.autologin}"></i></div>
+                    <span ng-if="view.menu.logIn.autologin">{{'button.autologin'|trans}}</span>
+                    <span ng-if="view.menu.logIn.gotosite">{{'buttons.gotosite'|trans:{}:'mobile'|desc:'Go to site'}}</span>
+                </a>
+            </user-menu-item>
+        </user-menu>
+</page-footer>

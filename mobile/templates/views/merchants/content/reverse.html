@@ -1,0 +1,29 @@
+<page-content>
+    <div class="content-item" ng-if="view.upgrade">
+        <div class="upgrade">
+            <i class="icon-warning"></i>
+            <span>{{'award.account.popup.need-upgrade.p1'|trans:{}:'messages'}}</span>
+        </div>
+
+        <div class="row-submit static has-border">
+            <a class="btn-blue" href="" ng-click="view.openUpgrade()">{{'upgrade-now'|trans:{}:'messages'}}</a>
+        </div>
+
+        <spinner loading="view.loading"></spinner>
+
+        <!-- faq -->
+        <faq ng-if="view.faq" data="view.faq"></faq>
+        <!-- end -->
+
+        <div class="row-submit static last" ng-if="view.faq">
+            <a class="btn-blue" href="" ng-click="view.openUpgrade()">{{'upgrade-now'|trans:{}:'messages'}}</a>
+        </div>
+    </div>
+    <div class="content-item" ng-if="view.form">
+        <page-form name="merchantReverse" fields="view.form" class="main-form no-btn" on-submit="view.submit()"
+                   form-interface="view.formInterface" form-extension="view.formExtension">
+            <iframe-directive ng-if="view.offer" html="view.offer" class="iframe-offer"></iframe-directive>
+        </page-form>
+        <spinner loading="view.loading"></spinner>
+    </div>
+</page-content>

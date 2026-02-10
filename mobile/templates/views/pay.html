@@ -1,0 +1,30 @@
+<div class="top-menu">
+    <a href="" ng-click="back()" class="hide-menu"><i class="icon-back"></i></a>
+    <div class="title"><h1>{{::'service.aw-plus'|trans}}</h1></div>
+</div>
+<div class="content">
+    <form class="main-form">
+        <spinner spinner-key="spinner-1" loading="spinnerLoadingPage"></spinner>
+        <div class="error-block" ng-if="errorUpgrade">
+            <div class="error-message">
+                <i class="icon-warning"></i>
+                <div ng-bind-html="errorUpgrade"></div>
+            </div>
+        </div>
+        <div class="success-message" ng-if="alreadyUpgraded">
+            <i class="icon-green-check"></i>
+            <p>{{::'alerts.alreadyUpgraded'|trans:{}:'messages'|desc:'You have successfully purchased AwardWallet Plus.'}}</p>
+        </div>
+        <div class="main-form-item" ng-if="product">
+            <div class="main-form-content">
+                <p ng-bind-html="product.description"></p>
+            </div>
+        </div>
+        <div class="row-submit" ng-if="product && !alreadyUpgraded">
+            <button class="btn-blue pt-sans" ng-click="buy()" ng-class="{'loading':purchaseLoading}"
+                    ng-disabled="purchaseLoading">
+                {{::'pay.product.button.buy'|trans:{'price':product.price}:'mobile'}}
+            </button>
+        </div>
+    </form>
+</div>

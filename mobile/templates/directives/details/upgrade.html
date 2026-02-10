@@ -1,0 +1,12 @@
+<a href="" ng-if="::parent.isCordova" class="flex-row" ui-sref="index.pay({start:'start'})">
+    <div class="title"><h3 ng-bind="block['Name']"></h3></div>
+    <div class="info">
+        <strong ng-bind-html="block['Val']"></strong>
+    </div>
+</a>
+<div ng-if="::!parent.isCordova" class="flex-row">
+    <div class="title"><h3 ng-bind="block['Name']"></h3></div>
+    <div class="info">
+        <strong ng-bind-html="block['Val']"></strong>
+    </div>
+</div>

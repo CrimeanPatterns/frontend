@@ -1,0 +1,22 @@
+<div class="flex-row full-width" ng-controller="CardController as Card">
+    <div class="title"><h3 ng-bind="block.Name"></h3></div>
+    <div class="info">
+        <div class="card-picture big">
+            <div class="col" ng-repeat="(name, side) in Card.images">
+                <div class="card-block" ng-style="getCardStyle(side.localPath)" ng-click="processCard(name)">
+                    <spinner loading="side.state == Card.states.LOADING && !side.localPath"></spinner>
+                    <div class="card-photo" ng-if="!side.localPath && side.state != Card.states.LOADING">
+                        <p ng-bind="side.Label"></p>
+                        <i class="icon-photo"></i>
+                        <span>{{'take.picture'|trans:{}:'mobile'|desc:'Take picture'}}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<a href="" ui-sref="index.accounts.store-location.add({accountId:$state.params.Id, subId: $state.params.subId})" class="flex-row" ng-if="parent.isCordova && account.Access.edit && block['Val'] && visible(block['Visible'], account) && !hasBlock('storeLocations') && !hasBlock('barcode')">
+    <div class="title">
+        {{'store-location.provide'|trans:{}:'mobile'|desc:'Provide favorite store location'}}
+    </div>
+</a>

@@ -1,0 +1,8 @@
+<div ng-class="{'white-blk': true, 'home-screen': $state.is('unauth.login')}">
+    <div class="wrapper">
+        <ng-include src=" 'templates/views/static-menu.html' "></ng-include>
+        <page>
+            <ui-view></ui-view>
+        </page>
+    </div>
+</div>

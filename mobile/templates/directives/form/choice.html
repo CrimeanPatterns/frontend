@@ -1,0 +1,16 @@
+<div class="row" ng-class="{'errored':(field.errors.length>0 || field.isRequired()) && field.showError, disable:field.disabled}">
+    <label>{{field.label}}<span class="required" ng-if="field.required">*</span></label>
+
+    <div class="input">
+        <span class="select" ng-bind="(field.disabled && field.disabledChoice) ? field.disabledChoice.label : field.selectedOption['label']"></span>
+        <select class="{{field.attr.class}}" name="{{field.name}}" ng-required="field.required"
+                ng-model="field.selectedOption" ng-options="f as f.label for f in field.choices"
+                ng-disabled="field.disabled" ng-change="field.onChange()" ng-class="(field.attr.blockName || field.name) | lowercase"></select>
+    </div>
+    <div class="info" ng-if="field.attr.notice" ng-bind="field.attr.notice"></div>
+    <div class="error-message" ng-if="(field.errors || field.isRequired()) && field.showError">
+        <i class="icon-warning"></i>
+        <p ng-if="field.isRequired() && !field.errors[field.errors.length-1]">{{'notblank'|trans:{}:'validators'}}</p>
+        <p ng-bind-html="field.errors[field.errors.length-1]"></p>
+    </div>
+</div>

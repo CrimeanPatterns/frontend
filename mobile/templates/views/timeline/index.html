@@ -1,0 +1,7 @@
+<page-header>
+    <ui-view name="header@index"></ui-view>
+</page-header>
+<ui-view name="content@list" ng-show="$state.includes('index.timeline.list') || $state.includes('index.timeline.travelers')">
+</ui-view>
+<ui-view name="content@details" ng-show="$state.includes('index.timeline.segment')">
+</ui-view>

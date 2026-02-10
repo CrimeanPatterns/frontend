@@ -1,0 +1,23 @@
+<page-header>
+    <ui-view name="header@main"></ui-view>
+</page-header>
+<ui-view name="content@main" ng-show="$state.is('unauth.merchants.lookup')">
+</ui-view>
+<ui-view name="content@second" ng-show="$state.is('unauth.merchants.lookup.offer') || $state.is('unauth.merchants.reverse')">
+</ui-view>
+<page-footer ng-if="!$state.is('unauth.merchants.lookup.offer') && authorized">
+    <user-menu>
+        <user-menu-item>
+            <a href="" ui-sref=".lookup" ui-sref-active="active">
+                <div class="prev"><i class="icon-merchant"></i></div>
+                <span>{{'merchant.lookup-tool'|trans:{}:'mobile-native'}}</span>
+            </a>
+        </user-menu-item>
+        <user-menu-item>
+            <a href="" ui-sref=".reverse" ui-sref-active="active">
+                <div class="prev"><i class="icon-merchant-reverse"></i></div>
+                <span>{{'merchant.reverse-tool'|trans:{}:'mobile-native'}}</span>
+            </a>
+        </user-menu-item>
+    </user-menu>
+</page-footer>

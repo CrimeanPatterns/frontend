@@ -1,0 +1,19 @@
+<global-error></global-error>
+<div class="top-menu">
+    <a ng-click="back()" href="" class="back"><i class="icon-back"></i></a>
+
+    <div class="title">
+        <h1>Privacy Notice</h1>
+    </div>
+</div>
+<div class="content static-page">
+    <spinner spinner-key="spinner-1" loading="spinnerSpin"></spinner>
+    <div class="error-block" ng-if="error">
+        <div class="error-message"><i class="icon-warning"></i>
+
+            <div ng-bind="error"></div>
+        </div>
+    </div>
+    <static-content content="page">
+    </static-content>
+</div>

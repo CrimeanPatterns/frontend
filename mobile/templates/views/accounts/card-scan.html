@@ -1,0 +1,20 @@
+<page-header>
+    <a class="back-link" ng-click="back('index.accounts.add');" href=""><i class="icon-back"></i><h1>{{'buttons.back'|trans:{}:'mobile'|desc:'Back'}}</h1></a>
+</page-header>
+<page-content ng-class="{'edit-account':view.form.fields}">
+    <spinner spinner-key="spinner-1" loading="!view.form.fields"></spinner>
+    <div class="content-item" ng-if="view.form.fields">
+        <div class="title-row" ng-class="{'has-arrow': true}" ng-click="view.changeProgram()" ng-if="view.DisplayName">
+            <div class="prev"><i ng-class="providerIcons[view.Kind]"></i></div>
+            <h3 header="view.DisplayName"></h3>
+        </div>
+    </div>
+    <page-form name="accountAddForm" show-errors="!view.form.spinnerSubmit" form-errors="view.form.errors"
+               fields="view.form.fields" class="main-form" on-submit="view.form.submit()"
+               ng-if="view.form.fields || view.form.errors" form-interface="view.form.interface"
+               form-extension="view.form.extension">
+        <div class="row-submit">
+            <button class="btn-blue" ng-disabled="view.form.spinnerSubmit" ng-class="{'loading':view.form.spinnerSubmit}" type="submit">{{'account.buttons.add'|trans}}</button>
+        </div>
+    </page-form>
+</page-content>

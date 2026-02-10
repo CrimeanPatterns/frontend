@@ -1,0 +1,13 @@
+<div class="flex-row warning">
+    <div class="title">
+        <i class="icon-info"></i>
+
+        <h3 ng-bind-html="block['Val']['Title']"></h3>
+    </div>
+    <div class="information-block" ng-bind-html="block['Val']['Message']"></div>
+    <div ng-if="block['Val']['DateInfo']" class="update">
+        <i class="icon-datepicker"></i>
+
+        <p ng-bind-html="block['Val']['DateInfo']"></p>
+    </div>
+</div>

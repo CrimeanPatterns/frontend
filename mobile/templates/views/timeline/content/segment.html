@@ -1,0 +1,66 @@
+<page-content ng-class="{'phones':$state.is('index.timeline.segment.phones')}">
+    <div class="content-item">
+        <pull-to-refresh on-refresh="reload()"></pull-to-refresh>
+        <spinner spinner-key="spinner-1" loading="spinnerSpin"></spinner>
+        <ui-view></ui-view>
+    </div>
+</page-content>
+<page-footer ng-show="$state.includes('index.timeline.segment.details')">
+    <user-menu>
+        <user-menu-item class="menu-board-pass" ng-if="usermenu.access.boardingPass">
+            <a href="" ng-click="usermenu.showBoardingPass()">
+                <div class="prev"><i class="icon-board-pass"></i></div>
+                <span>{{'buttons.board-pass'|trans:{}:'mobile'|desc:'Boarding Pass'}}</span>
+            </a>
+        </user-menu-item>
+        <user-menu-item class="menu-status" ng-if="usermenu.access.flightstatus">
+            <a href="" ng-click="usermenu.showFlightStatus()">
+                <div class="prev"><i class="icon-flight-status"></i></div>
+                <span>{{'buttons.flight-status'|trans:{}:'mobile'|desc:'Flight Status'}}</span>
+            </a>
+        </user-menu-item>
+        <user-menu-item class="menu-account" ng-if="usermenu.access.accountNumber">
+            <a href="" ng-click="usermenu.showNumberPopup()">
+                <div class="prev"><i class="icon-accounts"></i></div>
+                <span>{{'buttons.account-number'|trans:{}:'mobile'|desc:'Account #'}}</span>
+            </a>
+        </user-menu-item>
+        <user-menu-item class="menu-phones" ng-if="usermenu.access.phones">
+            <a href="" ui-sref="index.timeline.segment.phones">
+                <div class="prev"><i class="icon-phone"></i></div>
+                <span>{{'buttons.phone'|trans:{}:'mobile'|desc:'Phone #'}}</span>
+            </a>
+        </user-menu-item>
+        <user-menu-item class="menu-flights" ng-if="usermenu.access.altflights">
+            <a href="" ui-sref="index.timeline.segment.flights">
+                <div class="prev"><i class="icon-alternative-flights"></i></div>
+                <span>{{'trip.alternative-flights.title'|trans:{}:'mobile'|desc:'Alternative Flights'}}</span>
+            </a>
+        </user-menu-item>
+        <user-menu-item class="menu-autologin" ng-if="usermenu.access.autologin.active">
+            <a href="" ng-click="usermenu.autologin()">
+                <div class="prev"><i ng-class="{'icon-site':usermenu.access.autologin.gotosite, 'icon-autologin':usermenu.access.autologin.autologin}"></i></div>
+                <span ng-if="usermenu.access.autologin.autologin">{{'button.autologin'|trans}}</span>
+                <span ng-if="usermenu.access.autologin.gotosite">{{'buttons.gotosite'|trans:{}:'mobile'}}</span>
+            </a>
+        </user-menu-item>
+        <user-menu-item class="menu-direction" ng-if="usermenu.access.direction">
+            <a ng-href="" ng-click="usermenu.getDirection()">
+                <div class="prev"><i class="icon-directions"></i></div>
+                <span>{{'buttons.getdirections'|trans:{}:'mobile'|desc:'Get Directions'}}</span>
+            </a>
+        </user-menu-item>
+        <user-menu-item class="menu-parking" ng-if="usermenu.access.parking">
+            <a href="" ng-click="usermenu.findParking()">
+                <div class="prev"><i class="icon-parking"></i></div>
+                <span>{{'buttons.findParking'|trans:{}:'mobile'|desc:'Find Parking'}}</span>
+            </a>
+        </user-menu-item>
+        <user-menu-item class="menu-confirm-changes" ng-if="usermenu.access.confirmChanges">
+            <a href="" ng-click="usermenu.confirmChanges()">
+                <div class="prev"><i class="icon-confirm-changes"></i></div>
+                <span>{{'trips.segment.confirm_change.btn'|trans:{}:'messages'}}</span>
+            </a>
+        </user-menu-item>
+    </user-menu>
+</page-footer>

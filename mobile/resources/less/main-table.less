@@ -1,0 +1,90 @@
+.main-table{
+	width: 100%;
+	.user-select(none);
+	table-layout: auto;
+	border: 0;
+	border-spacing: 0;
+	.red{
+		color: #cc3d5e;
+	}
+	.big{
+		font-size: 25px;
+	}
+	td{
+		border-bottom: 1px dotted #8e9199;
+		font-size: 15px;
+		color: #5c6373;
+		line-height: 1.2;
+		padding: 12px 10px;
+	}
+}
+
+.coupon-table{
+	td{
+		vertical-align: top;
+		&:first-child{
+			color: #8e9199;
+		}
+	}
+}
+
+.coupon-text{
+	color: #5c6373;
+	padding: 10px;
+	line-height: 1.2;
+	font-size: 15px;
+}
+
+.awTable{
+	border: 1px solid #b3b3b3;
+	margin-top: 15px;
+	table-layout: auto;
+	width: 100%;
+	border-collapse: collapse;
+	border-spacing: 0;
+	.user-select(none);
+	&:first-child{
+		margin-top: 0;
+	}
+	td {
+		background-color: white;
+		border-bottom: #b3b3b3 1px solid;
+		height: 30px;
+		font-size: 15px;
+		padding: 5px 12px;
+		text-align: left;
+		ul {margin: 0; padding: 0 12px;}
+	}
+	td.left {text-align: left;}
+	td.center {text-align: center;}
+	td.bothBorder {border-left: #b3b3b3 1px solid; border-right: #b3b3b3 1px solid;}
+	td.leftBorder {border-left: #b3b3b3 1px solid;}
+	td.rightBorder {border-right: #b3b3b3 1px solid;}
+	td.topBorder {border-top: #b3b3b3 1px solid;}
+	td.thickDownBorder {border-bottom-width: 3px;}
+	td.notice {color: #ff4500;}
+	td.select {background-color: #FFFDF5;}
+	tr.odd td {background-color: #f0f4f7;}
+	tr.odd td.select {background-color: #FFFBEC;}
+	tr.white td {background-color: white;}
+
+	tr.caption {
+		display: table-row !important;
+		td {
+			background: #e4e6eb;
+			border-top: #b3b3b3 1px solid;
+			border-bottom: #b3b3b3 1px solid;
+			font-size: 15px;
+			// font-weight: bolder;
+			height: 42px;
+			overflow: hidden;
+			padding: 0 5px;
+			.bold;
+			text-overflow: ellipsis;
+			vertical-align: middle;
+			white-space: nowrap;
+		}
+		td.bothBorder {border-left: #b3b3b3 1px solid;border-right: #b3b3b3 1px solid;}
+		td.rightBorder {border-right: #b3b3b3 1px solid;}
+	}
+}

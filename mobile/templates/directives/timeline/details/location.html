@@ -1,0 +1,13 @@
+<div class="row pd-big" ng-class="{'error':field.old, 'full-width': !field.val.code}">
+    <div class="action">
+        <div class="prev">
+            <i class="icon-location"></i>
+        </div>
+        <div class="action-item" ng-if="field.val.code" >
+            <div class="airport" ng-bind="field.val.code"></div>
+        </div>
+        <div class="action-item">
+            <div class="airportname" ng-bind-html="field.val.name"></div>
+        </div>
+    </div>
+</div>

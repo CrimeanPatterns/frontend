@@ -1,0 +1,282 @@
+@media screen and (min-width: 380px){
+	.wrapper .booking-request .action{
+		width: 140px;
+	}
+}
+@media screen and (min-width: 767px){
+	.wrapper{
+		.account{
+			.flex{
+				> div{
+					font-size: 17px;
+					h3{
+						font-size: 17px;
+					}
+					&.title{
+						width: 50%;
+						padding-right: 1%;
+					}
+					&.expiration-row{
+						display: block;
+						width: 18%;
+					}
+					&.status-row{
+						display: block;
+						width: 16%;
+					}
+					&.balance{
+						width: 14%;
+					}
+				}
+			}
+		}
+		.sub-account{
+			.flex{
+				> div{
+					font-size: 17px;
+					h3{
+						font-size: 17px;
+					}
+				}
+			}
+		}
+		.title-list{
+			display: block;
+		}
+	}
+	.ng-modal#ngmodal_pincodePopup{
+		.pin-code{
+			display: block;
+			width: 250px;
+			position: absolute;
+			top:50%;
+			left: 50%;
+			min-height: 1px;
+			height: auto;
+			.transform-translate(-50%,-50%);
+			.col,
+			.row{
+				display: block;
+				height: auto !important;
+			}
+			.top-row{
+				padding: 60px 0;
+			}
+		}
+	}
+	.wrapper{
+		.booker-info .block-title:not(:first-child),
+		.messages .block-title{
+			padding: 0;
+			border-top: 2px solid #bec2cc;
+			padding: 2px 0;
+			position: relative;
+			height: auto;
+			text-align: left;
+			border-bottom: 1px dotted #8e9199;
+			h3{
+				color: #fff;
+				margin: 0;
+				height: 40px;
+				padding: 0 15px;
+				width: 100%;
+				display: block;
+				max-width: 100%;
+				height: 40px;
+				position: relative;
+				background: #8e9199;
+				line-height: 40px;
+				&:after{
+					position: absolute;
+					bottom: -6px;
+					left: 20px;
+					z-index: 9;
+					content: "";
+					display: inline-block;
+					border-top: 6px solid #8e9199;
+					border-left: 6px solid transparent;
+					border-right: 6px solid transparent;
+				}
+			}
+			.icon-arrow-down{
+				display: none;
+			}
+			&:after{
+				position: absolute;
+				bottom: -7px;
+				left: 18px;
+				content: "";
+				z-index: 8;
+				display: inline-block;
+				border-top: 8px solid #fff;
+				border-left: 8px solid transparent;
+				border-right: 8px solid transparent;
+			}
+			&:before{
+				position: absolute;
+				bottom: -8px;
+				left: 18px;
+				content: "";
+				display: inline-block;
+				border-top: 8px solid #8e9199;
+				border-left:  8px solid transparent;
+				border-right:  8px solid transparent;
+			}
+		}
+	}
+	.wrapper .messages .block-title{
+		margin: 0 -5px;
+		width: auto;
+	}
+	.wrapper .booker-info{
+		.table-container{
+			display: block;
+		}
+		.row-container,
+		.user-block{
+			display: none;
+		}
+		.row:not(.full-size){
+			width: 100%;
+			height: auto;
+			padding: 0;
+			> div{
+				position: static;
+				top: auto;
+				display: inline-block;
+				padding: 7px 10px;
+				.transform-translate(0,0);
+				.regular;
+			}
+			div.title{
+				float: left;
+				width: 25%;
+				color: #8e9199;
+			}
+			div.info{
+				float: left;
+				width: 75%;
+				text-align: left;
+				span{
+					.regular;
+				}
+			}
+		}
+		.table-container{
+			width: 100%;
+			.block{
+				width: 100%;
+				.dotted-border-b();
+				height: auto;
+				padding: 0;
+				> div{
+					display: block;
+					padding: 7px 10px;
+					float: left;
+					.regular;
+					&.info{
+						.regular;
+					}
+					span,strong{
+						.regular() !important;
+					}
+					&.title{
+						color: #8e9199;
+					}
+					&:first-child{
+						width: 25% !important;
+					}
+					&:first-child:nth-last-child(1){
+						width: 100%;
+					}
+					&:first-child:nth-last-child(2),
+					&:first-child:nth-last-child(2) ~ div{
+						width: 75%;
+					}
+					&:first-child:nth-last-child(3),
+					&:first-child:nth-last-child(3) ~ div{
+						width: 37.5%;
+					}
+					&:first-child:nth-last-child(4),
+					&:first-child:nth-last-child(4) ~ div{
+						width: 25%;
+					}
+					&:first-child:nth-last-child(5),
+					&:first-child:nth-last-child(5) ~ div{
+						width: 18.75%;
+					}
+					&:first-child:nth-last-child(6),
+					&:first-child:nth-last-child(6) ~ div{
+						width: 12.5%;
+					}
+					&.hidden{
+						display: none;
+					}
+					&.visible{
+						display: block;
+					}
+				}
+				&:after{
+					.clearfix(both);
+				}
+			}
+		}
+	}
+	.white-blk{
+		.new-login-in{
+		 	.btn-blue{
+		 		margin-top: 25px;
+		 	}
+		 	.create{
+		 		margin-top: 30px;
+		 	}
+		 	.oauth{
+		 		margin: 30px 0;
+		 	}
+		 	.small-text{
+		 		margin: 50px 0;
+		 	}
+		}
+	}
+}
+@media screen and (min-width: 980px){
+	.wrapper{
+		.account,
+		.sub-account{
+			.flex{
+				> div{
+					&.title{
+						width: 33%;
+					}
+					p.email{
+						display: none !important;
+					}
+					&.account-row{
+						display: block;
+						width: 20%;
+					}
+				}
+			}
+		}
+		.sub-account{
+			.flex{
+				> div{
+					&.account-row{
+						width: 40%;
+					}
+					&.title{
+						// width: 75%;
+						width: 69%;
+					}
+				}
+			}
+		}
+		.title-list{
+			.flex{
+				> div.account-row{
+					display: block;
+				}
+			}
+		}
+	}
+}

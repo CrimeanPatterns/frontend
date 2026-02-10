@@ -1,0 +1,13 @@
+<page-header>
+    <a href="" swipe-menu-toggle class="hide-menu"><i class="icon-menu"></i></a>
+    <div class="title"><h1>{{'spend-analysis'|trans:{}:'mobile-native'}}</h1></div>
+    <a ng-if="!spinnerLoadingPage && form" href="" ui-sref="index.spend-analysis.settings({form: form})" class="text-btn">{{'settings'|trans}}</a>
+</page-header>
+<page-content>
+    <div class="content-item">
+
+        <spinner spinner-key="spinner" loading="spinnerLoadingPage"></spinner>
+        <spend-analysis-overview ng-if="!spinnerLoadingPage" form-data="formData" data="data"></spend-analysis-overview>
+
+    </div>
+</page-content>

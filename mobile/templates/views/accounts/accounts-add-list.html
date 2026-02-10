@@ -1,0 +1,69 @@
+<page-content>
+    <div class="content-item">
+        <pull-to-refresh on-refresh="reload()"></pull-to-refresh>
+        <div class="accounts" ng-controller="CardScanController as card" ng-if="isCordova && view.showScan">
+            <a href ng-click="card.scan();" class="scan-card">
+                <table>
+                    <tr>
+                        <td class="prev"><i class="icon-scan-card"></i></td>
+                        <td class="title"><h3>{{'scan.card'|trans:{}:'mobile'|desc:'Scan Card'}} <span class="silver">{{'scan.card.tip'|trans:{}:'mobile'|desc:'Add a new retail or loyalty card by scanning it'}}</span></h3></td>
+                        <td class="readmore"><i class="icon-next-arrow"></i></td>
+                    </tr>
+                </table>
+            </a>
+        </div>
+        <div class="title-row small" ng-if="isCordova && view.showScan">
+            <h3>{{'account.add.tip'|trans:{}:'mobile'|desc:'Alternatively browse the list of supported programs:'}}</h3>
+        </div>
+        <div class="no-accounts" ng-if="programsCount<1">
+            <p>{{'account.add.no-accounts'|trans:{}:'mobile'|desc:'Let\’s add your reward programs and tracking your miles and points'}}</p>
+        </div>
+        <form autocomplete="off" class="search">
+            <input autocomplete="disabled" type="text" ng-model="view.query" ng-model-options="{ debounce: 350 }" ng-change="view.search(view.query)" placeholder="{{'account.add.find-placeholder'|trans:{}:'mobile'|desc:'Find a program to add'}}" ng-target="focusSearch">
+            <button ng-if="!view.query || view.query.length < 1" type="submit">{{'account.add.find-placeholder'|trans:{}:'mobile'|desc:'Find a program to add'}}</button>
+            <a ng-if="view.query.length>0" ng-click="view.clear();focusSearch.focus();" href="" class="clear"><i class="icon-clear-d"></i></a>
+        </form>
+        <spinner spinner-key="spinner-1" loading="spinnerAddSpin"></spinner>
+        <div class="not-found" ng-if="view['error-search']">
+            <i class="icon-warning"></i>
+            <p ng-bind="view['error-search']"></p>
+        </div>
+        <div class="accounts" ng-if="!view.providers">
+            <a ng-click="view.open({kindId: 'popular'})" class="popular-programs">
+                <table>
+                    <tbody>
+                    <tr>
+                        <td class="prev"><i class="icon-star-d"></i></td>
+                        <td class="title"><h3>{{'account.add.popular'|trans:{}:'mobile'|desc:'Popular Programs'}}</h3></td>
+                        <td class="readmore"><i class="icon-next-arrow"></i></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </a>
+            <a ng-repeat="providerKind in providerKindsDisplay | filter: view.filterHidden" ng-click="view.open({kindId: providerKind.KindID})">
+                <table>
+                    <tbody>
+                    <tr>
+                        <td class="prev"><i ng-class="providerIcons[providerKind.KindID]+'-d'"></i></td>
+                        <td class="title"><h3>{{providerKind.Name}} <span ng-if="providerKind.Notice" class="silver">({{providerKind.Notice}})</span></h3></td>
+                        <td class="readmore"><i class="icon-next-arrow"></i></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </a>
+        </div>
+        <div class="accounts list" ng-if="view.providers">
+            <a ng-repeat="provider in view.providers" ng-click="view.open({providerId:provider.ProviderID})">
+                <table>
+                    <tbody>
+                    <tr>
+                        <td class="title"><h3 ng-bind-html="provider.DisplayName"></h3></td>
+                        <td class="status" ng-if="provider.Has">{{'track.program.added'|trans}}</td>
+                        <td class="readmore"><i class="icon-next-arrow"></i></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </a>
+        </div>
+    </div>
+</page-content>

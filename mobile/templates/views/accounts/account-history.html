@@ -1,0 +1,17 @@
+<page-header>
+    <a class="back-link" ui-sref="index.accounts.account-details(view.stateParams)"><i class="icon-back"></i><h1>{{'buttons.back'|trans:{}:'mobile'|desc:'Back'}}</h1></a>
+    <div class="title">
+        <h1>{{'history'|trans:{}:'mobile'}}</h1>
+    </div>
+</page-header>
+<page-content>
+    <div class="content-item">
+        <div class="block-title account-name no-icons">
+            <div class="title">
+                <h3>{{'history-transaction.provider-header'|trans:{providerName: view.providerName}:'messages'}}</h3>
+                <p>{{'history-transaction.account-header'|trans:{accountNumber: view.accountNumber, userName: view.userName}:'messages'}}</p>
+            </div>
+        </div>
+        <account-history-list account-id="view.accountId" sub-id="view.subId"></account-history-list>
+    </div>
+</page-content>

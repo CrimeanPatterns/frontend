@@ -1,0 +1,22 @@
+<div class="flex-row">
+    <div class="title"><h3 ng-bind="block['Name']"></h3></div>
+    <div class="info" ng-if="block['Val']['ExpirationDate'].fmt">
+        <div class="balance-info" ng-if="block['Val']['ExpirationDate'].ts">
+            <strong time-ago="block['Val']['ExpirationDate'].ts * 1000"></strong>
+            <span class="date">({{block['Val']['ExpirationDate'].fmt}})</span>
+        </div>
+        <div class="balance-info" ng-if="!block['Val']['ExpirationDate'].ts">
+            <span class="date" ng-bind-html="block['Val']['ExpirationDate'].fmt"></span>
+        </div>
+        <i ng-class="{'expired':'icon-red-error', 'soon':'icon-warning-b', 'far':'icon-green-check'}[block['Val']['ExpirationState']]"></i>
+    </div>
+    <div class="info" ng-if="!block['Val']['ExpirationDate'].fmt">
+        <div class="balance-info" ng-if="block['Val']['ExpirationDate'] * 1 == block['Val']['ExpirationDate']">
+            <strong time-ago="block['Val']['ExpirationDate']*1000"></strong>
+            <span class="date">({{block['Val']['ExpirationDate'] * 1000 | date :'mediumDate'}})</span>
+        </div>
+        <div class="balance-info" ng-if="block['Val']['ExpirationDate'] * 1 != block['Val']['ExpirationDate']">
+            <span class="date" ng-bind-html="block['Val']['ExpirationDate']"></span>
+        </div>
+    </div>
+</div>

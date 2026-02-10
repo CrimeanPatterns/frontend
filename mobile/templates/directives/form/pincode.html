@@ -1,0 +1,16 @@
+<a href="" class="default-row" ng-click="pincode.setup()">
+    <table>
+        <tr>
+            <td><h3>{{::pincode.translations.title}}</h3></td>
+            <td class="readmore"><i class="icon-next-arrow"></i></td>
+        </tr>
+    </table>
+</a>
+<a href="" class="default-row" ng-click="pincode.remove()" ng-if="pincode.get()">
+    <table>
+        <tr>
+            <td><h3>{{::'userinfo.pincode.turnoff'|trans:{}:'mobile'|desc:'Turn PIN code off'}}</h3></td>
+            <td class="readmore"><i class="icon-next-arrow"></i></td>
+        </tr>
+    </table>
+</a>

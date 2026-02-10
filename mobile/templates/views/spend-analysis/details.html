@@ -1,0 +1,12 @@
+<page-header>
+    <a class="back" ui-sref="index.spend-analysis.overview"><i class="icon-back"></i></a>
+    <div class="title"><h1>{{title}}</h1></div>
+</page-header>
+<page-content>
+    <div class="content-item">
+
+        <spinner spinner-key="spinner" loading="spinnerLoadingPage"></spinner>
+        <spend-analysis-details ng-if="!spinnerLoadingPage" data="rows"></spend-analysis-details>
+
+    </div>
+</page-content>

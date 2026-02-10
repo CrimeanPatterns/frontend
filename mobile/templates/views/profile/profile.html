@@ -1,0 +1,48 @@
+<page-header>
+    <a href="" swipe-menu-toggle class="hide-menu"><i class="icon-menu"></i></a>
+
+    <div class="title"><h1>{{'menu.userinfo.profile'|trans:{}:'menu'}}</h1></div>
+    <a href="" ng-click="logout()" class="logout"><i class="icon-logout"></i></a>
+</page-header>
+<page-content>
+    <div class="content-item">
+        <pull-to-refresh on-refresh="reload()"></pull-to-refresh>
+        <div class="account-blk">
+            <div class="prev">
+                <i class="icon-no-avatar" ng-if="user.AvatarSrc.length <= 0"></i>
+                <img ng-src="{{user.AvatarImage}}" alt="" ng-if="user.AvatarSrc.length > 0">
+            </div>
+            <div class="title">
+                <h3>{{user.FullName}}</h3>
+
+                <p class="email">{{user.UserEmail}}</p>
+            </div>
+        </div>
+        <div class="error-block upgrade" ng-if="errorUpgrade">
+            <div class="error-message">
+                <i class="icon-warning-b"></i>
+
+                <p ng-bind="errorUpgrade"></p>
+            </div>
+        </div>
+        <div class="success-message" ng-if="alreadyUpgraded">
+            <i class="icon-green-check"></i>
+
+            <p><span class="bold" ng-bind="alreadyUpgraded"></span></p>
+        </div>
+
+        <div class="profile" ng-if="user.overview">
+            <profile fields="user.overview"></profile>
+
+            <a href="" class="default-row" ng-if="isCordova" ng-controller="RateController" ng-click="rate.open(true)">
+                <table>
+                    <tr>
+                        <td><h3>{{::'userinfo.rateApp'|trans:{}:'mobile'|desc:'Rate this app'}}</h3></td>
+                        <td class="readmore"><i class="icon-next-arrow"></i></td>
+                    </tr>
+                </table>
+            </a>
+        </div>
+        <ng-include src=" 'templates/views/footer.html' "></ng-include>
+    </div>
+</page-content>

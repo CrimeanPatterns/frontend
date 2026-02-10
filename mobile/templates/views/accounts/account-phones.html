@@ -1,0 +1,33 @@
+<page-header>
+    <a class="back-link" href="" ng-click="back('index.accounts.account-details', {Id:accountId});"><i class="icon-back"></i><h1>{{::'buttons.back'|trans:{}:'mobile'|desc:'Back'}}</h1></a>
+</page-header>
+<page-content class="phones">
+    <div class="content-item">
+        <div class="block-title phone">
+            <div class="prev">
+                <i ng-class="::providerIcons[account['Kind']]+'-d'"></i>
+            </div>
+            <div class="title">
+                <h3 header="subAccount['DisplayName'] || account['DisplayName']"></h3>
+                <h3 class="silver">{{::'account.phones.title'|trans:{}:'mobile'|desc:'Phone Numbers'}}</h3>
+            </div>
+        </div>
+        <ul class="phone-list">
+            <li ng-repeat="row in ::account['Phones']">
+                <table>
+                    <tbody>
+                    <tr>
+                        <td>
+                            <h3>{{::row.name}}</h3>
+                            <p class="city">{{::row.region}}</p>
+                            <p class="phone">{{::row.phone}}</p>
+                        </td>
+                        <td class="call"><a href="" ng-click="view.call(row.phone)" class="btn-blue small"><i class="icon-phone-w"></i><span>{{::'account.phones.call'|trans:{}:'mobile'|desc:'Call'}}</span></a>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </li>
+        </ul>
+    </div>
+</page-content>

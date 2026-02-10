@@ -1,0 +1,34 @@
+<div class="row full-width pd-big">
+    <div class="action">
+        <div class="prev">
+            <i class="icon-time"></i>
+        </div>
+        <div class="action-item">
+            <div class="time-wrap">
+                <div class="item">
+                    <div class="details">
+                        <span class="big blue" time-ago="date" local-date="localDate"></span>
+                    </div>
+                </div>
+                <div class="item" ng-init="prefix = getPrefix(field.val)">
+                    <div class="for" ng-bind="prefix[0]"></div>
+                    <div class="details">
+                        <p>
+                            <span class="blue-block" ng-bind="field.val.date.fmt.d"></span>
+                        </p>
+                    </div>
+                </div>
+                <div class="item">
+                    <div class="for"><span class="silver">@</span></div>
+                    <div class="details">
+                        <p>
+                            <span class="time">{{field.val.date.fmt.t}} <span class="silver" ng-if="field.val.date.fmt.p" ng-bind="field.val.date.fmt.p"></span><span class="time-zone" ng-bind="field.val.date.fmt.tz"></span></span>
+                            <span ng-if="field.val.nights" ng-bind-html="getCheckInText(field.val, prefix[1])">
+                            </span>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

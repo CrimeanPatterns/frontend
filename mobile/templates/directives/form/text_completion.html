@@ -1,0 +1,21 @@
+<div class="row" ng-class="{'errored':(field.errors.length>0 || field.isRequired()) && field.showError, disable:field.disabled}">
+    <label>{{field.label}}<span class="required" ng-if="field.required">*</span></label>
+
+    <div class="input">
+        <input class="{{field.attr.class}}" ng-class="(field.attr.blockName || field.name) | lowercase" type="text" ng-value="field.value" name="{{field.name}}" ng-model="field.value" ng-blur="field.blur()" ng-model-options="{ debounce: 350 }" ng-required="field.required" ng-change="field.onChange()" ng-disabled="field.disabled" autocapitalize="off" autocorrect="off" autocomplete="off">
+        <div class="dropdown-block" ng-if="field.completions.length > 0">
+            <a ng-click="field.close()" class="close"><i class="icon-clear-d"></i></a>
+            <div class="content-row">
+                <ul class="autocomplete-list">
+                    <li ng-click="field.input(row)" ng-repeat="row in field.completions" ng-bind-html="row.label"></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="info" ng-if="field.attr.notice" ng-bind="field.attr.notice"></div>
+    <div class="error-message" ng-if="(field.errors || field.isRequired()) && field.showError">
+        <i class="icon-warning"></i>
+        <p ng-if="field.isRequired() && !field.errors[field.errors.length-1]">{{'notblank'|trans:{}:'validators'}}</p>
+        <p ng-bind-html="field.errors[field.errors.length-1]"></p>
+    </div>
+</div>

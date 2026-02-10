@@ -1,0 +1,12 @@
+<a href="" class="default-row" ui-sref="index.profile-edit({formLink:field.formLink, formTitle:field.formTitle, action:field.path})">
+    <table>
+        <tr>
+            <td>
+                <h3>{{field.name}}</h3>
+                <span class="info-text" ng-if="field.help" ng-bind-html="field.help"></span>
+            </td>
+            <td class="notification-status t-right"><i ng-class="{'icon-green-check-s':field.checked, 'icon-red-error-s':!field.checked}"></i></td>
+            <td class="readmore"><i class="icon-next-arrow"></i></td>
+        </tr>
+    </table>
+</a>

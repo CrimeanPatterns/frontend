@@ -1,0 +1,12 @@
+<div class="barcode">
+    <div class="barcode-item">
+        <h3 header="account['DisplayName']" header-iata-code="account['IATACode']"></h3>
+        <div class="barcode-content">
+                <p fittext="1" fittext-max="200px" class="code-number" ng-bind="account['Number']||account['Login']"></p>
+                <barcode ng-if="account['BarCode']" barcode-data="{{account['BarCode']}}"></barcode>
+        </div>
+    </div>
+    <div class="barcode-bottom">
+        <a ng-click="hideModal()" class="btn-blue">{{'close.btn'|trans}}</a>
+    </div>
+</div>

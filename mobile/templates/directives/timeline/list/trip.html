@@ -1,0 +1,15 @@
+<div class="timeline-blk" ng-class="{'disable':disabled}">
+    <a href="javascript:void(0)" ng-href="{{href}}" class="timeline-row" ng-class="{'error':row.changed}">
+        <table>
+            <td class="time-row" timeline-time>
+            </td>
+            <td class="prev">
+                <i class="icon-{{row.icon}}"></i>
+            </td>
+            <td class="description">
+                <timeline-chain type="row.listView.kind" ng-model="row.listView"></timeline-chain>
+            </td>
+            <td class="readmore" ng-if="href"><i class="icon-next-arrow"></i></td>
+        </table>
+    </a>
+</div>

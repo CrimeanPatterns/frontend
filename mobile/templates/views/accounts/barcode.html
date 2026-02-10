@@ -1,0 +1,27 @@
+<page-header>
+    <a class="back-link" ui-sref="index.accounts.account-details(barcode.params)"><i class="icon-back"></i><h1>{{'buttons.back'|trans:{}:'mobile'|desc:'Back'}}</h1></a>
+    <a href="" style="cursor:pointer;" ng-click="barcode.remove()" ng-if="barcode.access.remove" class="remove">{{'card-pictures.label.remove'|trans:{}:'messages'}}</a>
+</page-header>
+<page-content>
+    <div class="content-item">
+        <div class="barcode-container">
+            <h4 class="program-name" header="barcode.displayName"></h4>
+            <div class="barcode-content">
+                <div class="barcode-thumb" ng-if="barcode.data && barcode.type">
+                    <barcode barcode-data="barcode.data" barcode-type="barcode.type"></barcode>
+                </div>
+                <div class="barcode-text" ng-if="barcode.data && barcode.access.displayNumber" data-fittext data-fittext-min="15" data-fittext-max="inherit" ng-bind="barcode.data">
+                </div>
+                <a href="" ng-if="isCordova && barcode.access.edit && barcode.data && barcode.type" ui-sref="index.accounts.store-location.add({accountId:$state.params.Id, subId: $state.params.subId})" class="flex-row t-center">
+                    <div class="title">
+                        {{'store-location.provide'|trans:{}:'mobile'}}
+                    </div>
+                </a>
+            </div>
+            <div class="btn-container" ng-if="barcode.access.scan">
+                <a href="" ng-if="user.impersonate" ng-click="barcode.notification()" class="btn-white">Notify</a>
+                <a href="" ng-click="barcode.scan()" class="btn-white">{{'scan-barcode'|trans:{}:'mobile'|desc:'Scan New Barcode'}}</a>
+            </div>
+        </div>
+    </div>
+</page-content>

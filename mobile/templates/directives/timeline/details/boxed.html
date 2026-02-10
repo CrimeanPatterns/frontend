@@ -1,0 +1,7 @@
+<div class="row" ng-class="{'error':field.old}">
+    <div class="title">{{field.name}}</div>
+    <div class="info">
+        <span class="silver-block">{{field.val}}</span>
+        <span ng-if="field.old" class="silver-block strike" ng-bind-html="field.old">{{field.old}}</span>
+    </div>
+</div>

@@ -1,0 +1,12 @@
+<page-footer>
+    <div class="bottom-container">
+        <div class="chat-users" ng-if="users && users.length > 0">
+            <ul>
+                <li ng-repeat="(id, name) in users"><span class="online"></span><span class="name"
+                                                                                      ng-bind="name"></span></li>
+            </ul>
+        </div>
+        <booking-messages-form on-add="addMessage(message)"
+                               on-update="updateMessage(messageId, message)"></booking-messages-form>
+    </div>
+</page-footer>

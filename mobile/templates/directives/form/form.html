@@ -1,0 +1,16 @@
+<form method="post" autocomplete="off" novalidate>
+    <div class="error-block" ng-if="errors && errors.length > 0 && !success">
+        <div class="error-message">
+            <i class="icon-warning"></i>
+            <div ng-bind-html="errors[0]"></div>
+        </div>
+    </div>
+    <div class="success-message" ng-if="success && !error">
+        <i class="icon-green-check"></i>
+        <p ng-bind-html="success"></p>
+    </div>
+    <div class="main-form-item">
+        <page-form-field ng-repeat="field in fields" show-error="!success" type="field.type" field="field" form-init="$last"></page-form-field>
+    </div>
+    <div ng-if="fields" ng-transclude></div>
+</form>

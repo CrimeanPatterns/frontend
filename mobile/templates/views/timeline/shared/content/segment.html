@@ -1,0 +1,33 @@
+<page-content ng-class="{'phones':$state.is('shared.segment.phones')}">
+    <div class="content-item">
+        <ui-view></ui-view>
+    </div>
+</page-content>
+<page-footer ng-show="$state.includes('shared.segment.details')">
+        <user-menu>
+            <user-menu-item class="menu-status" ng-if="usermenu.access.flightstatus">
+                <a href="" ng-click="usermenu.showFlightStatus()">
+                    <div class="prev"><i class="icon-flight-status"></i></div>
+                    <span>{{'buttons.flight-status'|trans:{}:'mobile'|desc:'Flight Status'}}</span>
+                </a>
+            </user-menu-item>
+            <user-menu-item class="menu-phones" ng-if="usermenu.access.phones">
+                <a href="" ui-sref="shared.segment.phones">
+                    <div class="prev"><i class="icon-phone"></i></div>
+                    <span>{{'buttons.phone'|trans:{}:'mobile'|desc:'Phone #'}}</span>
+                </a>
+            </user-menu-item>
+            <user-menu-item class="menu-flights" ng-if="usermenu.access.altflights">
+                <a href="" ui-sref="shared.segment.flights">
+                    <div class="prev"><i class="icon-alternative-flights"></i></div>
+                    <span>{{'trip.alternative-flights.title'|trans:{}:'mobile'|desc:'Alternative Flights'}}</span>
+                </a>
+            </user-menu-item>
+            <user-menu-item class="menu-direction" ng-if="usermenu.access.direction">
+                <a ng-href="#" ng-click="usermenu.getDirection()">
+                    <div class="prev"><i class="icon-directions"></i></div>
+                    <span>{{'buttons.getdirections'|trans:{}:'mobile'|desc:'Get Directions'}}</span>
+                </a>
+            </user-menu-item>
+        </user-menu>
+</page-footer>

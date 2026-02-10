@@ -1,0 +1,28 @@
+<div class="block-title phone">
+    <div class="prev">
+        <i ng-if="::segment.icon" ng-class="::'icon-'+segment.icon+'-d'"></i>
+    </div>
+    <div class="title">
+        <!--h3 header="trip['Name']"></h3-->
+        <h3 class="silver">{{::'account.phones.title'|trans:{}:'mobile'|desc:'Phone Numbers'}}</h3>
+    </div>
+</div>
+<ul class="phone-list">
+    <li ng-repeat="row in ::phones">
+        <table>
+            <tbody>
+            <tr>
+                <td>
+                    <h3>{{::row.name}}</h3>
+
+                    <p class="city">{{::row.country}}</p>
+
+                    <p class="phone">{{::row.phone}}</p>
+                </td>
+                <td class="call"><a href="" ng-click="call(row.phone)" class="btn-blue small"><i class="icon-phone-w"></i><span>{{::'account.phones.call'|trans:{}:'mobile'|desc:'Call'}}</span></a>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </li>
+</ul>

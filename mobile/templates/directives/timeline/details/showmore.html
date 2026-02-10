@@ -1,0 +1,3 @@
+<div class="caption-container" ng-if="showMore"></div>
+<a href="" class="blue-link" ng-init="showMore = false;" ng-hide="showMore" ng-click="showMore = true;">{{'advert.more'|trans:{}:'menu'|desc:'Show more'}} <i class="icon-next-double-arrow-b"></i></a>
+<timeline-detail-field ng-repeat="f in field.val" ng-model="f" type="f.kind" ng-show="showMore"></timeline-detail-field>

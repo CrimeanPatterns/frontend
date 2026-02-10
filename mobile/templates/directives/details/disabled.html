@@ -1,0 +1,7 @@
+<div class="flex-row warning">
+    <div class="title">
+        <i class="icon-warning"></i>
+        <h3 ng-bind-html="::block['Val']['Title']"></h3>
+    </div>
+    <div class="warning-block" ng-bind-html="::block['Val']['Message'].replace('%url%', parent.links.edit)"></div>
+</div>

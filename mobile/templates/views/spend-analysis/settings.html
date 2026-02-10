@@ -1,0 +1,32 @@
+<page-header>
+    <a class="back" ui-sref="index.spend-analysis.overview"><i class="icon-back"></i></a>
+    <div class="title"><h1>{{'spend-analysis.settings'|trans:{}:'mobile-native'}}</h1></div>
+</page-header>
+<page-content>
+    <div class="content-item">
+
+        <page-form name="settings" form-errors="form.errors" fields="form.fields"
+                   class="main-form no-btn" on-submit="form.submit()"
+                   ng-if="(form.fields && form.fields.length > 0) || (form.errors && form.errors.length > 0)" form-interface="form.interface"
+                   form-extension="form.extension" auto-submit="true" auto-submit-delay="750">
+            <div class="analysis-information">
+                <h3>Information</h3>
+                <ul>
+                    <li>
+                        <span><i class="icon-card-personal"></i></span>
+                        <span>Personal card</span>
+                    </li>
+                    <li>
+                        <span><i class="icon-card-business"></i></span>
+                        <span>Business card</span>
+                    </li>
+                    <li>
+                        <span><i class="icon-card-have"></i></span>
+                        <span>I have this card</span>
+                    </li>
+                </ul>
+            </div>
+        </page-form>
+
+    </div>
+</page-content>

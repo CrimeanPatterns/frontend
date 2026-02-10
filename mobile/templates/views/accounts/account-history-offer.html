@@ -1,0 +1,9 @@
+<page-header>
+    <a class="back-link" ng-click="back('index.accounts.list')"><i class="icon-back"></i><h1>{{'buttons.back'|trans:{}:'mobile'|desc:'Back'}}</h1></a>
+</page-header>
+<page-content>
+    <div class="content-item" style="height:100%; overflow: hidden;">
+        <spinner loading="!content"></spinner>
+        <iframe-directive html="content" ng-if="content"></iframe-directive>
+    </div>
+</page-content>

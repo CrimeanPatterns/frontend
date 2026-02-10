@@ -1,0 +1,16 @@
+<div class="row full-width pd-big" ng-class="{'error':field.old}">
+    <div class="action">
+        <div class="prev" ng-if="field.icon">
+            <i class="icon-{{field.icon}}"></i>
+        </div>
+        <div class="action-item">
+            <p ng-bind="field.name"></p>
+        </div>
+        <div class="action-item">
+            <p>
+                <strong ng-bind="field.val">7</strong>
+                <span class="strike" ng-if="field.old" ng-bind="field.old"></span>
+            </p>
+        </div>
+    </div>
+</div>

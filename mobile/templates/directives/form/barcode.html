@@ -1,0 +1,14 @@
+<div class="row barcode-row" ng-controller="BarcodeScanController as barcode">
+    <div class="scan-barcode" ng-if="!field.value || !field.value.format"  ng-click="barcode.scan()">
+        <p>{{'barcode.not-detect'|trans:{}:'mobile'|desc:'No bar code detected, if you have a bar code please scan it now.'}}</p>
+        <div class="scan-barcode-btn">
+            <i class="icon-barcode"></i>
+            <span>{{'scan.barcode'|trans:{}:'mobile'|desc:'Scan Barcode'}}</span>
+        </div>
+    </div>
+    <div ng-if="field.value && field.value.format">
+        <barcode barcode-data="field.value.text" barcode-type="field.value.format" ng-click="barcode.show()"></barcode>
+        <div class="barcode-text" ng-if="['QR_CODE', 'DATA_MATRIX'].indexOf(field.value.format) == -1" ng-bind="field.value.text">
+        </div>
+    </div>
+</div>

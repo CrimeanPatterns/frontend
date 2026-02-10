@@ -1,0 +1,7 @@
+<div class="top-menu">
+    <a class="back-link" ui-sref="index.profile"><i class="icon-back"></i><h1 ng-if="!title">{{'buttons.back'|trans:{}:'mobile'}}</h1></a>
+    <div class="title" ng-if="title"><h1 ng-bind="title"></h1></div>
+</div>
+<div class="content static-page">
+    <div class="main-blk white" ng-bind-html="text"></div>
+</div>

@@ -1,0 +1,65 @@
+<header class="home-screen__head">
+    <a href="" ng-click="form.back();" class="back" ng-show="form.otcRequired">
+        <i class="icon-back-white"></i>
+        <span>{{::'buttons.back'|trans:{}:'mobile'}}</span>
+    </a>
+    <a href="" swipe-menu-toggle ng-hide="form.otcRequired" class="hide-menu"><i class="icon-menu-w"></i></a>
+    <a href="" class="home-screen__logo"></a>
+</header>
+<div class="new-login-in" ng-class="{'one-time-code':form.otcRequired, 'error': form.error}">
+    <form novalidate>
+        <div class="form-body">
+            <div class="error-message" ng-if="form.error">
+                <i class="icon-white-error-s"></i>
+                <span ng-bind="form.error"></span>
+            </div>
+            <div class="info-block" ng-if="form.message">
+                <p><i class="icon-info"></i><span ng-bind="form.message"></span></p>
+            </div>
+            <div class="row-wrap">
+                <div class="row-input" ng-show="!form.otcRequired">
+                    <input type="text" placeholder="{{::'login.login'|trans}}" name="login"
+                           ng-model="form.fields.login.value" ng-target="form.fields.login" autocapitalize="off"
+                           autocorrect="off">
+                </div>
+                <div class="row-input" ng-show="!form.otcRequired">
+                    <input type="password" placeholder="{{::'login.pass'|trans}}" name="password"
+                           ng-model="form.fields.password.value" ng-target="form.fields.password">
+                </div>
+                <div class="row-input" ng-show="form.otcRequired">
+                    <input type="tel" pattern="\d*" placeholder="{{form.label}}" name="_otc"
+                           ng-model="form.fields._otc.value" ng-target="form.fields._otc">
+                </div>
+            </div>
+            <div class="recaptcha-wrap">
+                <div ng-if="recaptcha.key" captcha
+                     key="recaptcha.key"
+                     url="recaptcha.url"
+                     vendor="recaptcha.vendor"
+                     size="'normal'"
+                     on-create="recaptcha.onCreate(widgetId)"
+                     on-success="recaptcha.setResponse(response)"
+                     on-expire="recaptcha.cbExpiration()"></div>
+            </div>
+            <div class="btn-wrap">
+                <button ng-disabled="!(form.fields.login.value && form.fields.password.value) || form.loading"
+                        ng-click="form.submit();" type="submit" class="btn-blue"
+                        ng-class="{'loading':form.loading}">
+                    {{::'login.link'|trans}}
+                </button>
+            </div>
+            
+            <div class="create">
+                <a ng-show="!form.otcRequired" class="silver-link dark-color" ui-sref="unauth.password-recovery" href="">{{::'login.bottom.forgot'|trans}}</a>
+                <oauth-buttons action="'login'"></oauth-buttons>
+            </div>
+        </div>
+
+        <div class="create">
+            <a href="" ng-show="!form.otcRequired" class="btn-blue transparent" ng-click="actions.registration()">{{::'login.button.register'|trans}}</a>
+            <oauth-agreement action="'login'"></oauth-agreement>
+            <!-- <a ng-if="::!isCordova" class="silver-link" href="{{::desktopUrl}}">{{::'switch.to.desktop'|trans:{}:'messages'|desc:'Switch
+                to the desktop version'}}</a> -->
+        </div>
+    </form>
+</div>

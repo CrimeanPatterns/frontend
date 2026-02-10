@@ -1,0 +1,16 @@
+<div class="row" ng-controller="CardController as Card">
+    <div class="input">
+        <div class="card-picture big">
+            <div class="col" ng-repeat="(name, side) in Card.images" ng-if="name !== 'context'">
+                <div class="card-block" ng-style="getCardStyle(side.localPath)" ng-click="processCard(name)">
+                    <spinner loading="side.state == Card.states.LOADING && !side.localPath"></spinner>
+                    <div class="card-photo" ng-if="!side.localPath && side.state != Card.states.LOADING">
+                        <p ng-bind="side.Label"></p>
+                        <i class="icon-photo"></i>
+                        <span>{{'take.picture'|trans:{}:'mobile'}}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

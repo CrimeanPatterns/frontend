@@ -1,0 +1,23 @@
+<page-header>
+    <a class="back-link" ng-click="back('index.accounts.account-details', view.stateParams)"><i class="icon-back"></i><h1>{{'buttons.back'|trans:{}:'mobile'|desc:'Back'}}</h1></a>
+    <a href="" ng-if="view.access.delete" ng-click="view.remove()" class="remove" ng-class="{'has-spinner': spinnerRemove}">{{'card-pictures.label.remove'|trans:{}:'messages'}}</a>
+</page-header>
+<page-content class="edit-account">
+    <div class="content-item">
+        <div class="block-title account-name" ng-if="view.DisplayName">
+            <div class="prev"><i ng-class="providerIcons[view.Kind]+'-d'"></i></div>
+            <div class="title">
+                <h3 header="view.DisplayName"></h3>
+                <p ng-bind="view.Login"></p>
+            </div>
+        </div>
+        <spinner spinner-key="spinner-1" loading="spinnerLoadingPage"></spinner>
+    </div>
+    <page-form name="accountEditForm" show-errors="!spinnerSubmitForm" form-errors="view.form.errors" fields="view.form.fields" class="main-form" on-submit="view.form.submit()"
+             ng-if="view.form.fields || view.form.errors" form-interface="view.form.interface" form-extension="view.form.extension">
+
+        <div class="row-submit">
+            <button class="btn-blue" ng-disabled="spinnerSubmitForm" ng-class="{'loading':spinnerSubmitForm}" type="submit" ng-bind="view.form.label"></button>
+        </div>
+    </page-form>
+</page-content>

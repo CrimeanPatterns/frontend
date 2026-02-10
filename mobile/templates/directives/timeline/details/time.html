@@ -1,0 +1,62 @@
+<div class="row full-width pd-big" ng-class="{'error':field.old}">
+    <div class="action" ng-if="diff >= 86400000">
+        <div class="prev">
+            <i class="icon-time"></i>
+        </div>
+        <div class="time-container">
+            <div class="time">
+                <div class="time-item">
+                    <span class="red-block" ng-bind="field.val.date.fmt.t"></span>
+                    <span class="silver" ng-if="field.val.date.fmt.p" ng-bind="field.val.date.fmt.p"></span>
+                </div>
+                <div class="time-item" ng-if="field.old.date && (isChanged(field.val.date.fmt.t, field.old.date.fmt.t) || isChanged(field.val.date.fmt.p, field.old.date.fmt.p))">
+                    <span class="silver-block strike" ng-bind="field.old.date.fmt.t"></span>
+                    <span class="silver" ng-if="field.old.date.fmt.p" ng-bind="field.old.date.fmt.p"></span>
+                </div>
+                <span class="time-zone" ng-if="field.val.date.fmt.tz" ng-bind="field.val.date.fmt.tz"></span>
+            </div>
+            <div class="date">
+                <div class="date-item">
+                    <p>
+                        <span class="date-timeago lowercase" time-ago="date" local-date="localDate"></span>
+                        <span class="date-silver lowercase">({{'on.date'|trans:{date: field.val.date.fmt.d}:'mobile'}})</span>
+                    </p>
+                </div>
+                <div class="date-item strike" ng-if="field.old.date && isChanged(field.val.date.fmt.d, field.old.date.fmt.d)">
+                    <p>
+                        <span class="date-timeago lowercase" time-ago="oldDate" local-date="localOldDate"></span>
+                        <span class="date-silver lowercase">({{'on.date'|trans:{date: field.old.date.fmt.d}:'mobile'}})</span>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="action" ng-if="diff < 86400000">
+        <div class="prev">
+            <i class="icon-time"></i>
+        </div>
+        <div class="timeago">
+            <span class="big blue" time-ago="date" local-date="localDate" short-format="true"></span>
+            <div class="time">
+                <span class="or">@</span>
+                <div class="time-item">
+                    <span class="red-block" ng-bind="field.val.date.fmt.t"></span>
+                    <span class="silver" ng-if="field.val.date.fmt.p" ng-bind="field.val.date.fmt.p"></span>
+                </div>
+                <div class="time-item" ng-if="field.old.date && (isChanged(field.val.date.fmt.t, field.old.date.fmt.t) || isChanged(field.val.date.fmt.p, field.old.date.fmt.p))">
+                    <span class="silver-block strike" ng-bind="field.old.date.fmt.t"></span>
+                    <span class="silver" ng-if="field.old.date.fmt.p" ng-bind="field.old.date.fmt.p"></span>
+                </div>
+                <span class="time-zone" ng-if="field.val.date.fmt.tz" ng-bind="field.val.date.fmt.tz"></span>
+            </div>
+        </div>
+        <div class="date">
+            <div class="date-item">
+                <p ng-bind="field.val.date.fmt.d"></p>
+            </div>
+            <div class="date-item" ng-if="field.old.date && isChanged(field.val.date.fmt.d, field.old.date.fmt.d)">
+                <p class="strike" ng-bind="field.old.date.fmt.d"></p>
+            </div>
+        </div>
+    </div>
+</div>

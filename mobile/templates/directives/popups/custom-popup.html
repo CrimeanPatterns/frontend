@@ -1,0 +1,17 @@
+<div id="overlay" ng-click="hideModal()"></div>
+<div class="popup">
+    <div class="popup-title">
+        <h3 header="config.title"></h3>
+    </div>
+    <div class="popup-content">
+        <p class="question" ng-bind="config.message"></p>
+    </div>
+    <div class="popup-footer">
+        <ul class="bottom-buttons">
+            <li ng-repeat="button in ::config.buttons">
+                <a ng-class="{'btn-silver': button.style === 'negative', 'btn-blue': button.style !== 'negative'}"
+                   ng-click="(button.onPress || noop)(); hideModal();" ng-bind="button.text"></a>
+            </li>
+        </ul>
+    </div>
+</div>

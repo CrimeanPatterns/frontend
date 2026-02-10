@@ -1,0 +1,11 @@
+<page-content>
+    <div class="content-item">
+        <pull-to-refresh on-refresh="reload()"></pull-to-refresh>
+        <div class="no-requests" ng-if="requests.sort.length < 1">
+            <i class="icon-warning"></i>
+            <p>{{'booking.no-requests'|trans:{}:'mobile'|desc:'Currently you have no booking requests added to your profile'}}</p>
+        </div>
+        <booking-list requests="requests" ng-if="requests.sort.length > 0"></booking-list>
+        <a href="" ng-click="booking.add($event)" class="add-booking-request"><i class="icon-add"></i><span>{{::'menu.booking.add'|trans:{}:'menu'}}</span></a>
+    </div>
+</page-content>

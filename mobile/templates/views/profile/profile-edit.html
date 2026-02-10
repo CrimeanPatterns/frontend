@@ -1,0 +1,18 @@
+<page-header>
+    <a ng-if="!form.showBackButton" href="" ng-click="back('index.profile');" class="hide-menu"><i class="icon-back"></i></a>
+    <div ng-if="!form.showBackButton" class="title"><h1 ng-bind="form.title"></h1></div>
+    <a ng-if="form.showBackButton" href="" ng-click="back('index.profile');" class="back-link"><i class="icon-back"></i><h1>{{'buttons.back'|trans:{}:'mobile'|desc:'Back'}}</h1></a>
+</page-header>
+<page-content>
+    <div class="content-item">
+        <spinner spinner-key="spinner-1" loading="spinnerLoadingPage"></spinner>
+    </div>
+    <page-form name="editForm" ng-class="{'silver':['/profile/changePassword', '/profile/changeEmail'].indexOf(form.link) > -1, 'no-btn': !form.buttons.submit.display}" show-errors="!spinnerSubmitForm" form-errors="form.errors" fields="form.fields"
+               class="main-form editProfile" on-submit="form.submit()"
+               ng-if="(form.fields && form.fields.length > 0) || (form.errors && form.errors.length > 0)" form-interface="form.interface"
+               form-extension="form.extension">
+        <div class="row-submit" ng-if="form.buttons.submit.display">
+            <button class="btn-blue" ng-disabled="spinnerSubmitForm" ng-class="{'loading':spinnerSubmitForm}" type="submit">{{form.buttons.submit.text}}</button>
+        </div>
+    </page-form>
+</page-content>

@@ -1,0 +1,4 @@
+<ui-view name="content@first" ng-show="$state.is('index.accounts.list') || $state.is('index.accounts.account-edit') || $state.is('index.accounts.agents-add')">
+</ui-view>
+<ui-view name="content@second" ng-show="!$state.is('index.accounts.list') && !$state.is('index.accounts.account-edit') && !$state.is('index.accounts.agents-add')">
+</ui-view>

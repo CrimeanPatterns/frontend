@@ -1,0 +1,29 @@
+<page-content>
+    <div class="content-item">
+        <pull-to-refresh on-refresh="reload()"></pull-to-refresh>
+        <div class="travelers">
+            <div class="block-title">
+                <i class="icon-arrow-down"></i>
+                <h3>{{'booking.travelers'|trans:{}:'booking'}} <div class="amount left-arrow">{{travelers.length||0}}</div></h3>
+                <div class="prev">
+                    <i class="icon-user-s"></i>
+                </div>
+            </div>
+            <a href="" ui-sref="index.timeline.list({Id: traveler.userAgentId})" ng-repeat="traveler in travelers"
+               class="traveler">
+                <table>
+                    <tr>
+                        <td class="count">
+                            <div class="amount">{{traveler.futureSegments}}</div>
+                        </td>
+                        <td class="name" ng-if="traveler.familyName"><span class="silver">{{traveler.name}}</span>{{traveler.familyName}}</td>
+                        <td class="name" ng-if="!traveler.familyName">{{traveler.name}}</td>
+                        <td class="readmore">
+                            <i class="icon-next-arrow"></i>
+                        </td>
+                    </tr>
+                </table>
+            </a>
+        </div>
+    </div>
+</page-content>

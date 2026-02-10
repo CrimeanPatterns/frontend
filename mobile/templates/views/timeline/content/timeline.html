@@ -1,0 +1,33 @@
+<page-content class="list">
+    <div class="content-item">
+        <pull-to-refresh on-refresh="reload()"></pull-to-refresh>
+        <div class="text-message" ng-if="view.itineraryForwardEmail">
+            {{::'forwarding-reservations'|trans|desc:'To add reservations, you can also forward them to:'}} <span class="userEmail">{{view.itineraryForwardEmail}}</span>
+        </div>
+        <div class="timeline" ng-if="view.showPastTravel || view.list.length > 0">
+            <div class="loading" ng-if="view.loading"></div>
+            <a href="" ng-click="view.pastTravel()" ng-if="view.showPastTravel && !view.loading" class="past-travel">
+                <i class="icon-double-arrow-up"></i>
+                <span>{{::'timeline.past.travel'|trans}}</span>
+            </a>
+            <div class="timeline-list" infinite-scroll="view.progressiveLoad" container=".content.list" scroll-threshold="200" time-threshold="0">
+                <timeline-row ng-repeat="item in view.list | limitTo:view.displayLimit" type="item.type"
+                              ng-model="item"></timeline-row>
+                <div class="no-found" ng-if="view.showPastTravel && view.list.length < 1">
+                    <div class="item">
+                        <i class="icon-warning"></i>
+
+                        <p>{{::'trips.no-trips.text'|trans:{}:'messages'}}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="no-trips" ng-if="!view.showPastTravel && view.list.length < 1">
+            <i class="icon-warning"></i>
+
+            <p>{{::'trips.list.no-trips.titile'|trans:{}:'mobile'}}</p>
+        </div>
+        <p ng-if="!view.showPastTravel && view.list.length < 1" bind-translate-html="{{'trips.list.no-trips.messages.one'|trans:view.urls:'mobile'|desc:'In this version of the mobile app the only way to add trips is to retrieve them automatically by <a href=%adding%>ADDING</a> or <a href=%updating%>UPDATING</a> which have travel reservations.'}}"></p>
+        <p ng-if="!view.showPastTravel && view.list.length < 1" bind-translate-html="{{'trips.list.no-trips.messages.two'|trans:view.urls:'mobile'|desc:'If you have an active reservation (hotel, air or rental car) – please <a href=%adding%>ADD</a> or <a href=%updating%>UPDATE THAT LOYALTY PROGRAM</a> and this reservation will automatically show up on this page.'}}"></p>
+    </div>
+</page-content>

@@ -1,0 +1,29 @@
+<global-error></global-error>
+<div class="top-menu">
+    <a href="" ng-click="back('unauth.login')" class="back"><i class="icon-back"></i></a>
+    <div class="title">
+        <h1>{{form.title}}</h1>
+    </div>
+</div>
+<div class="content">
+    <spinner spinner-key="spinner" loading="spinnerLoadingPage"></spinner>
+    <div ng-if="view.error" ng-bind="view.error"></div>
+    <page-form name="securityQuestions"
+               show-errors="!spinnerSubmitForm"
+               form-errors="form.errors"
+               fields="form.fields"
+               class="main-form"
+               on-submit="form.submit()"
+               form-interface="form.interface"
+               form-extension="form.extension"
+               ng-if="form.fields || form.errors">
+        <div class="row-submit">
+            <button class="btn-blue"
+                    ng-disabled="spinnerSubmitForm"
+                    ng-class="{'loading':spinnerSubmitForm}"
+                    type="submit">
+                {{'login.link'|trans}}
+            </button>
+        </div>
+    </page-form>
+</div>

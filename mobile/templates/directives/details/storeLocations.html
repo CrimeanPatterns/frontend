@@ -1,0 +1,13 @@
+<div class="block-title">
+    <h3>{{'store-location.title'|trans:{}:'mobile'|desc:'Favorite Store Locations'}}</h3>
+</div>
+<a href="" ui-sref="index.accounts.store-location.edit({accountId:parent.stateParams.Id, subId: parent.stateParams.SubId, locationId: location.LocationID})" class="flex-row" ng-class="{'disable': !location.Tracked}" ng-repeat="(index, location) in block.Val">
+    <div class="title">
+        <h3 ng-bind-html="location.LocationName"></h3>
+    </div>
+</a>
+<a href="" ui-sref="index.accounts.store-location.add({accountId:parent.stateParams.Id, subId: parent.stateParams.SubId})" class="add flex-row">
+    <div class="title">
+        {{'store-location.add-another'|trans:{}:'mobile'|desc:'Add another favorite store location'}}
+    </div>
+</a>

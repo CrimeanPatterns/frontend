@@ -1,0 +1,168 @@
+<page-header>
+    <a class="back-link" ui-sref="index.accounts.list"><i class="icon-back"></i><h1>{{'buttons.back'|trans:{}:'mobile'|desc:'Back'}}</h1></a>
+</page-header>
+<page-content class="accounts-update">
+    <rss-feed data="blog" ng-if="blog"></rss-feed>
+    <div class="silver-popup update-all" ng-if="!error">
+        <div class="updating-accounts" ng-if="!updating.complete">
+            <p>{{'account.update.progress'|trans:{'updated':updating.updated, 'accounts':updating.totalAccounts}:'mobile'}}</p>
+            <progress-bar state="updating.state" to="updating.progress" duration="5"></progress-bar>
+            <a class="btn-blue" ng-click="updating.stop()">{{::'account.update.stop'|trans:{}:'mobile'|desc:'Stop'}}</a>
+        </div>
+        <div class="updating-accounts" ng-if="updating.complete"><p>
+            <i class="icon-green-check-s"></i>
+            {{'account.update.complete'|trans:{'accounts':updating.updatedAccounts}:'mobile'}}</p>
+        </div>
+    </div>
+    <ng-include src=" 'templates/views/accounts/rate.html' " ng-if="isCordova && updating.complete && elements.error.length < 1 && elements.failed.length < 1"></ng-include>
+    <div class="content-item">
+        <div class="error-block" ng-if="error">
+            <div class="error-message"><i class="icon-warning"></i>
+                <div ng-bind="error"></div>
+            </div>
+        </div>
+        <div class="banner-aw-plus" ng-click="buy()" ng-if="user.Free && isCordova">
+            <h4>{{'banner.title'|trans:{}:'mobile'|desc:'Your accounts are being updated in sequence one at a time.'}}</h4>
+
+            <div class="title">
+                <strong>{{'banner.get-plus'|trans:{}:'mobile'|desc:'Get AwardWallet Plus now'}}</strong>
+
+                <p>{{'banner.message'|trans:{}:'mobile'|desc:'to have your accounts updating in parallel'}}</p>
+            </div>
+            <p class="big">{{'banner.up'|trans:{}:'mobile'|desc:'– up to 20X faster'}}</p>
+        </div>
+        <div class="block-title light" ng-if="elements.changed.length > 0">
+            <i class="icon-arrow-down"></i>
+
+            <h3>{{'account.update.changed'|trans:{}:'mobile'|desc:'Changed Accounts'}}</h3>
+        </div>
+        <div class="account-info" ng-if="elements.changed.length > 0">
+            <ul>
+                <li ng-repeat="element in elements.changed">
+                    <table>
+                        <tr>
+                            <td class="prev"><i class="icon-blue-update"></i></td>
+                            <td class="title"><span ng-bind-html="::accounts[element.id].DisplayName"></span> <span class="silver">{{::accounts[element.id].Login}}</span></td>
+                            <td class="info">
+                                <div class="balance">
+                                    <strong ng-bind="::(element.result.balance)"></strong>
+
+                                    <p ng-if="::(element.result.lastChangeRaw)"
+                                       ng-class="::({true:'green',false:'blue'}[element.result.lastChangeRaw>0])">
+                                        <span ng-bind="::(element.result.lastChange)"></span>
+                                        <i ng-class="::({true:'icon-green-up-s',false:'icon-blue-down-s'}[element.result.lastChangeRaw>0])"></i>
+                                    </p>
+                                </div>
+                            </td>
+                        </tr>
+                    </table>
+                    <table ng-if="element.result.trips > 0">
+                        <tr>
+                            <td class="prev"><i class="icon-reservation"></i></td>
+                            <td class="title">{{'award.account.list.update.found-trips'|trans}}</td>
+                            <td class="info">
+                                <div class="balance">
+                                    <strong ng-bind="element.result.trips"></strong>
+                                </div>
+                            </td>
+                        </tr>
+                    </table>
+                </li>
+            </ul>
+        </div>
+        <div class="block-title" ng-if="elements.unchanged.length > 0">
+            <i class="icon-arrow-down"></i>
+
+            <h3>{{'account.update.unchanged'|trans:{}:'mobile'|desc:'Unchanged Accounts'}}</h3>
+        </div>
+        <div class="account-info" ng-if="elements.unchanged.length > 0">
+            <ul>
+                <li ng-repeat="element in elements.unchanged">
+                    <table>
+                        <tr>
+                            <td class="prev"><i class="icon-green-check"></i></td>
+                            <td class="title"><span ng-bind-html="::accounts[element.id].DisplayName"></span> <span class="silver">{{::accounts[element.id].Login}}</span></td>
+                            <td class="info">
+                                <div class="balance">
+                                    <strong ng-bind-html="::element.result.balance"></strong>
+                                </div>
+                            </td>
+                        </tr>
+                    </table>
+                    <table ng-if="element.result.trips > 0">
+                        <tr>
+                            <td class="prev"><i class="icon-reservation"></i></td>
+                            <td class="title">{{'award.account.list.update.found-trips'|trans}}</td>
+                            <td class="info">
+                                <div class="balance">
+                                    <strong ng-bind="element.result.trips"></strong>
+                                </div>
+                            </td>
+                        </tr>
+                    </table>
+                </li>
+            </ul>
+        </div>
+        <div class="block-title" ng-if="elements.error.length > 0">
+            <i class="icon-arrow-down"></i>
+
+            <h3>{{'account.update.with-errors'|trans:{}:'mobile'|desc:'Accounts with Errors'}}</h3>
+        </div>
+        <div class="account-info" ng-if="elements.error.length > 0">
+            <ul>
+                <li ng-repeat="element in elements.error">
+                    <table>
+                        <tr>
+                            <td class="prev"><i class="icon-red-error"></i></td>
+                            <td class="title"><span ng-bind-html="::accounts[element.id].DisplayName"></span> <span class="silver">{{::accounts[element.id].Login}}</span></td>
+                            <td class="info">
+                                <div class="balance">
+                                    <strong ng-bind-html="::accounts[element.id].Balance"></strong>
+                                </div>
+                            </td>
+                        </tr>
+                    </table>
+                    <div class="error-row">
+                        <p ng-if="element.result.notice.Title" ng-bind-html="element.result.notice.Title"></p>
+                        <div ng-if="element.result.notice.Message" class="details" ng-bind-html="element.result.notice.Message"></div>
+                    </div>
+                </li>
+            </ul>
+        </div>
+        <div class="block-title" ng-if="elements.failed.length > 0 || elements.disabled.length > 0">
+            <i class="icon-arrow-down"></i>
+
+            <h3>{{'account.update.not-able-update'|trans:{}:'mobile'|desc:'Not Able to Update'}}</h3>
+        </div>
+        <div class="account-info" ng-if="elements.failed.length > 0|| elements.disabled.length > 0">
+            <ul>
+                <li ng-repeat="element in elements.disabled">
+                    <table>
+                        <tr>
+                            <td class="prev"><i class="icon-warning-b"></i></td>
+                            <td class="title"><span ng-bind-html="::accounts[element.id].DisplayName"></span> <span class="silver">{{::accounts[element.id].Login}}</span></td>
+                            <td class="info">
+                                <div class="balance">
+                                    <strong>{{::'disabled'|trans:{}:'messages'|desc:'Disabled'}}</strong>
+                                </div>
+                            </td>
+                        </tr>
+                    </table>
+                </li>
+                <li ng-repeat="element in elements.failed">
+                    <table>
+                        <tr>
+                            <td class="prev"><i class="icon-warning-b"></i></td>
+                            <td class="title"><span ng-bind-html="::accounts[element.id].DisplayName"></span> <span class="silver">{{::accounts[element.id].Login}}</span></td>
+                            <td class="info">
+                                <div class="balance">
+                                    <strong ng-bind-html="::accounts[element.id].Balance"></strong>
+                                </div>
+                            </td>
+                        </tr>
+                    </table>
+                </li>
+            </ul>
+        </div>
+    </div>
+</page-content>

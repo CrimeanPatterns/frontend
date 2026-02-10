@@ -1,0 +1,29 @@
+<div class="top-menu transparent">
+    <div class="title">
+        <h1>{{popup.title}}</h1>
+    </div>
+</div>
+<div class="content">
+    <div class="pin-code">
+        <div class="pin-code-number" ng-class="popup.pin !== '' ? 'active-'+popup.pin.length : ''">
+            <div class="code"></div>
+            <div class="code"></div>
+            <div class="code"></div>
+            <div class="code"></div>
+        </div>
+        <div class="number-keyboard">
+            <a href="" ng-click="popup.buttons.input(1)" class="button number">1</a>
+            <a href="" ng-click="popup.buttons.input(2)" class="button number">2</a>
+            <a href="" ng-click="popup.buttons.input(3)" class="button number">3</a>
+            <a href="" ng-click="popup.buttons.input(4)" class="button number">4</a>
+            <a href="" ng-click="popup.buttons.input(5)" class="button number">5</a>
+            <a href="" ng-click="popup.buttons.input(6)" class="button number">6</a>
+            <a href="" ng-click="popup.buttons.input(7)" class="button number">7</a>
+            <a href="" ng-click="popup.buttons.input(8)" class="button number">8</a>
+            <a href="" ng-click="popup.buttons.input(9)" class="button number">9</a>
+            <a href="" ng-click="popup.buttons.cancel()" class="button">{{::'cancel'|trans:{}:'messages'}}</a>
+            <a href="" ng-click="popup.buttons.input(0)" class="button number">0</a>
+            <a href="" ng-click="popup.buttons.input(-1)" class="button"><i class="icon-remove"></i></a>
+        </div>
+    </div>
+</div>

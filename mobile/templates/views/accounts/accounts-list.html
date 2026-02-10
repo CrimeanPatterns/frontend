@@ -1,0 +1,17 @@
+<page-header>
+    <a href="" swipe-menu-toggle class="hide-menu"><i class="icon-menu"></i></a>
+    <div class="title">
+        <h1>{{::'menu.button.accounts'|trans:{}:'menu'}}</h1>
+        <span class="amount" ng-bind="programsCount||0"></span>
+        <a href="" ui-sref="index.accounts.add" class="add" ng-if="programsCount>0"><i class="icon-add"></i></a>
+    </div>
+    <a href="" ui-sref="index.accounts-update" class="refresh-all" ng-if="programsCount>0"><i class="icon-refresh-all"></i></a>
+</page-header>
+<ng-include src=" 'templates/views/accounts/accounts-add-list.html' " ng-controller="AccountsAddController"
+            ng-if="programsCount<1"></ng-include>
+<page-content ng-if="programsCount>0">
+    <div class="content-item">
+        <pull-to-refresh on-refresh="reload()"></pull-to-refresh>
+        <accounts-list provider-icons="providerIcons" infinite="true" blog="blog" disclosure="user.advertiserDisclosureLink" locale="user.locale"></accounts-list>
+    </div>
+</page-content>

@@ -1,0 +1,29 @@
+<div class="default-row silver" ng-class="field.attrs.class">
+    <a href="" class="default-row" ui-sref="index.subscription({action:'info', platform: 'ios'})" ng-if="field.attrs.kind == 8 && isCordova">
+        <table>
+            <tr>
+                <td><h3>{{field.name}}</h3></td>
+                <td class="t-right" ng-if="field.text">
+                    <strong>{{field.text}}</strong>
+                </td>
+                <td class="readmore"><i class="icon-next-arrow"></i></td>
+            </tr>
+        </table>
+    </a>
+    <table ng-if="field.attrs.kind != 8 || (field.attrs.kind == 8 && !isCordova)">
+        <tr>
+            <td><h3>{{field.name}}</h3></td>
+            <td class="t-right" ng-if="field.text">
+                <strong>{{field.text}}</strong>
+            </td>
+        </tr>
+    </table>
+    <a href="" class="default-row" ng-if="field.formLink" ng-click="field.action()">
+        <table>
+            <tr>
+                <td><h3>{{'subscription.cancel'|trans:{}:'messages'}}</h3></td>
+                <td class="readmore"><i class="icon-next-arrow"></i></td>
+            </tr>
+        </table>
+    </a>
+</div>

@@ -1,0 +1,21 @@
+<div class="row full-width pd-big" ng-class="{'error':field.old}">
+    <div class="action">
+        <div class="prev" ng-if="field.icon">
+            <i class="icon-{{field.icon}}"></i>
+        </div>
+        <div class="action-item" ng-if="field.val.terminal">
+            <p>
+                <strong ng-bind="field.name.terminal"></strong>
+                <span class="blue-block" ng-bind="field.val.terminal"></span>
+                <span class="silver-block strike" ng-if="field.old.terminal" ng-bind="field.old.terminal"></span>
+            </p>
+        </div>
+        <div class="action-item" ng-if="field.val.gate">
+            <p>
+                <strong ng-bind="field.name.gate">Gate</strong>
+                <span class="blue-block" ng-bind="field.val.gate"></span>
+                <span class="silver-block strike" ng-if="field.old.gate" ng-bind="field.old.gate"></span>
+            </p>
+        </div>
+    </div>
+</div>

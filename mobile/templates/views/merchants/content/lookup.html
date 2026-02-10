@@ -1,0 +1,39 @@
+<page-content>
+    <div class="content-item">
+        <form autocomplete="off" class="search">
+            <input name="search" autocomplete="disabled" type="text" ng-model="view.query" ng-model-options="{ debounce: 350 }"
+                   ng-change="view.search(view.query)" placeholder="{{'merchant_lookup.name'|trans:{}:'messages'}}"
+                   ng-target="focusSearch">
+            <button ng-if="!view.query || view.query.length < 1" type="submit"></button>
+            <a ng-if="view.query.length>0" ng-click="view.clear();focusSearch.focus();" href="" class="clear"><i
+                    class="icon-clear-d"></i></a>
+        </form>
+        <spinner loading="view.loading"></spinner>
+        <div class="error-block" ng-if="view.error">
+            <div class="error-message"><i class="icon-warning"></i>
+                <div ng-bind="view.error"></div>
+            </div>
+        </div>
+        <div class="accounts list" ng-if="view.results">
+            <a ng-repeat="item in view.results" ui-sref=".offer({merchantName: item.nameToUrl})">
+                <table>
+                    <tbody>
+                    <tr>
+                        <td class="title">
+                            <div class="text">
+                                <span ng-bind-html="item.label" class="dark"></span>
+                                <span ng-if="item.category"> ({{item.category}})</span>
+                            </div>
+                        </td>
+                        <td class="readmore"><i class="icon-next-arrow"></i></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </a>
+        </div>
+        <div class="not-found" ng-if="view.query && view.results.length == 0">
+            <i class="icon-warning"></i>
+            <p>{{'merchant_lookup.noresult'|trans}}</p>
+        </div>
+    </div>
+</page-content>

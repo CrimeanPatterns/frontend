@@ -1,0 +1,14 @@
+<header class="header-site">
+    <a href="" swipe-menu-toggle class="hide-menu"><i class="icon-menu"></i></a>
+    <a href="" class="logo-new"></a>
+</header>
+<div class="error-message">
+    <i class="icon-white-error-s"></i>
+    <span ng-if="!view.error">{{'api.not-found'|trans:{}:'messages'|desc:'Invalid URL, please contact the app/website owner to fix the authorization page link.'}}</span>
+    <span ng-if="view.error" ng-bind-html="view.error"></span>
+</div>
+<div class="buttons">
+    <ul>
+        <li><a href="" ng-click="view.close()" class="btn-blue">{{'alerts.btn.ok'|trans:{}:'messages'|uppercase}}</a></li>
+    </ul>
+</div>

@@ -1,0 +1,12 @@
+<div ng-if="field.status == 'success'" class="success-block" ng-class="{'t-left':field.message.length > 60}">
+    <i ng-class="{'icon-green-check-s':field.status == 'success'}"></i>
+    <p>{{field.message}}</p>
+</div>
+<div ng-if="field.status == 'fail'" class="warning-block">
+    <a href="" class="row" ng-click="field.action()">
+        <i class="icon-warning-w"></i>
+							<span class="text" ng-bind-html="field.message">
+							</span>
+        <i class="icon-next-white"></i>
+    </a>
+</div>

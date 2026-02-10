@@ -1,0 +1,20 @@
+<div class="top-menu">
+    <a class="back-link" ng-click="close()"><i class="icon-back"></i><h1>{{'buttons.back'|trans:{}:'mobile'}}</h1></a>
+    <a href style="cursor:pointer;" ng-click="barcode.remove()" class="remove"><i class="icon-delete-big"></i></a>
+</div>
+<div class="content">
+    <div class="content-item">
+        <div class="barcode-container">
+            <div class="barcode-content">
+                <div class="barcode-thumb" ng-if="barcode.text && barcode.format">
+                    <barcode barcode-data="barcode.text" barcode-type="barcode.format"></barcode>
+                </div>
+                <div class="barcode-text" ng-if="['QR_CODE', 'DATA_MATRIX'].indexOf(barcode.format) == -1" data-fittext data-fittext-min="15" data-fittext-max="inherit" ng-bind="barcode.text">
+                </div>
+            </div>
+            <div class="btn-container">
+                <a href="" ng-click="barcode.scan()" class="btn-white">{{'scan-barcode'|trans:{}:'mobile'}}</a>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,8 @@
+<div class="flex-row barcode" ng-if="block['Val'] && visible(block['Visible'], account)">
+    <barcode barcode-data="block['BarCodeData']" barcode-type="block['BarCodeType']" ng-click="parent.showBarcode(block['Val']['Custom'])"></barcode>
+</div>
+<a href="" ui-sref="index.accounts.store-location.add({accountId:parent.stateParams.Id, subId: parent.stateParams.SubId})" class="flex-row" ng-if="parent.isCordova && account.Access.edit && block['Val'] && visible(block['Visible'], account) && !hasBlock('storeLocations')">
+    <div class="title">
+        {{'store-location.provide'|trans:{}:'mobile'|desc:'Provide favorite store location'}}
+    </div>
+</a>

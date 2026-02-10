@@ -1,0 +1,15 @@
+<div class="row-inside" ng-class="field.programCode">
+    <div ng-class="{'error-message-row': !field.value, 'success-message-row': field.value && field.value.length > 0}">
+        <i ng-class="{'icon-red-error': !field.value, 'icon-green-check': field.value && field.value.length > 0}"></i>
+        <input type="text" style="display:none;" ng-class="(field.attr.blockName || field.name) | lowercase" ng-required="field.required" name="{{field.name}}" ng-value="field.value" ng-model="field.value">
+        <p>{{field.statusText}}: <span class="bold">{{field.value && field.value.length > 0?field.authenticatedText:field.notAuthenticatedText}}</span></p>
+    </div>
+    <a href="" class="btn-blue" ng-click="openOauth();" ng-if="!field.value" ng-bind="field.buttonText"></a>
+    <button ng-if="field.value && field.value.length > 0" ng-click="revoke()" class="btn-blue revoke">{{field.revokeButtonText}}</button>
+    <div class="error-block" ng-if="field.isRequired()">
+        <div class="error-message">
+            <i class="icon-warning"></i>
+            <p>{{field.requiredText}}</p>
+        </div>
+    </div>
+</div>

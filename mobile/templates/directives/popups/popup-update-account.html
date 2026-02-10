@@ -1,0 +1,83 @@
+<div id="overlay"></div>
+<div class="silver-popup">
+    <div class="title">
+        <i class="icon-arrow-down"></i>
+        <h3 header="subAccount['DisplayName'] || account['DisplayName']"></h3>
+    </div>
+    <div class="info-blk" ng-if="complete && view.updating.state == 'unchanged'">
+        <table>
+            <tbody>
+            <tr>
+                <td class="prev" rowspan="2"><i class="icon-green-check"></i></td>
+                <td class="title" colspan="2"></td>
+            </tr>
+            <tr>
+                <td class="title" ng-if="!firstUpdate">{{'popups.update.unchanged.message'|trans:{}:'mobile'}}</td>
+                <td class="title" ng-if="firstUpdate">{{'popups.update.unchanged.current-balance'|trans:{}:'mobile'|desc:'Current account balance:'}}</td>
+                <td class="balance" ng-bind-html="view.updating.result.balance"></td>
+            </tr>
+            <tr ng-if="view.updating.result.trips > 0">
+                <td class="prev"><i class="icon-reservation"></i></td>
+                <td class="title">{{'award.account.list.update.found-trips'|trans}}</td>
+                <td class="balance" ng-bind="view.updating.result.trips"></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="info-blk error" ng-if="complete && view.updating.state == 'error'">
+        <i class="icon-red-error"></i>
+        <h4 ng-if="view.updating.result.notice.Title" ng-bind-html="view.updating.result.notice.Title"></h4>
+        <div class="error-blk" ng-bind-html="view.updating.result.notice.Message">
+        </div>
+    </div>
+    <div class="info-blk warning" ng-if="complete && view.updating.state == 'disabled'">
+        <i class="icon-warning-b"></i>
+        <h4 ng-bind-html="view.updating.result.notice.Title"></h4>
+        <div class="warning-block" ng-bind-html="view.updating.result.notice.Message.replace('%url%', editLink)"></div>
+    </div>
+    <div class="info-blk" ng-if="complete && view.updating.state == 'changed'">
+        <table>
+            <tbody>
+            <tr>
+                <td class="prev"><i  ng-class="{true:'icon-green-up',false:'icon-blue-down'}[view.updating.result.lastChangeRaw>0]"></i></td>
+                <td class="title" colspan="2"><h4>{{'popups.update.changed.title'|trans:{}:'mobile'|desc:'Account successfully updated:'}}</h4></td>
+            </tr>
+            <tr>
+                <td class="prev"></td>
+                <td class="title">{{'popups.update.changed.balance'|trans:{}:'mobile'|desc:'Original balance:'}}</td>
+                <td class="balance" ng-bind-html="view.updating.result.lastBalance"></td>
+            </tr>
+            <tr>
+                <td class="prev"></td>
+                <td class="title">{{'popups.update.changed.changedby'|trans:{}:'mobile'|desc:'Changed by:'}}</td>
+                <td class="balance"><span ng-class="{true:'green',false:'blue'}[view.updating.result.lastChangeRaw>0]" ng-bind="view.updating.result.lastChange"></span></td>
+            </tr>
+            <tr>
+                <td class="prev"></td>
+                <td class="title"><strong>{{'popups.update.changed.newbalance'|trans:{}:'mobile'|desc:'New balance:'}}</strong></td>
+                <td class="balance" ng-bind-html="view.updating.result.balance"></td>
+            </tr>
+            <tr ng-if="view.updating.result.trips > 0">
+                <td class="prev"><i class="icon-reservation"></i></td>
+                <td class="title">{{'award.account.list.update.found-trips'|trans}}</td>
+                <td class="balance" ng-bind="view.updating.result.trips"></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="info-blk error" ng-if="complete && view.updating.state == 'failed'">
+        <div class="error-blk" ng-bind-html="view.updating.result.failMessage"></div>
+    </div>
+    <div ng-if="complete && account.PwnedNotice" class="warning-block" style="margin: 10px -10px;">
+        <div class="row">
+            <i class="icon-warning-w"></i>
+            <span class="text" ng-bind-html="account.PwnedNotice"></span>
+        </div>
+    </div>
+    <div class="updating-accounts" ng-if="!complete">
+        <progress-bar state="view.state" to="0.9" duration="view.updating.duration"></progress-bar>
+        <div class="center"><a ng-click="stop()" class="btn-blue">{{'alerts.btn.cancel'|trans}}</a></div>
+    </div>
+    <div class="center" ng-if="complete"><a ng-click="end()" class="btn-blue">{{'close.btn'|trans}}</a></div>
+</div>
+<ng-include src=" 'templates/views/accounts/rate.html' " ng-if="isCordova && complete && (view.updating.state == 'changed' || view.updating.state == 'unchanged')"></ng-include>

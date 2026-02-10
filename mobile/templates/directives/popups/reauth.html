@@ -1,0 +1,32 @@
+<div id="overlay" ng-click="close()"></div>
+<div class="popup reauth">
+    <div class="popup-title">
+        <h3 header="'confirm-identity'|trans"></h3>
+    </div>
+    <div class="popup-content">
+        <form autocomplete="off" class="main-form">
+            <div class="error-block" ng-if="error">
+                <div class="error-message"><i class="icon-warning"></i>
+                    <div ng-bind="error"></div>
+                </div>
+            </div>
+
+            <div class="main-form-item">
+                <div class="row">
+                    <label class="ng-binding">{{label}}<span class="required">*</span></label>
+
+                    <div class="input">
+                        <input class="" type="{{type === 'password' ? 'password' : 'text'}}" name="input" ng-model="input" autocapitalize="off"
+                               autocorrect="off" value="" ng-value="input">
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="popup-footer">
+        <ul class="bottom-buttons">
+            <li ng-if="type === 'code'"><a class="btn-white" ng-click="resend()">{{'button.resend'|trans}}</a></li>
+            <li><a class="btn-blue" ng-click="submit()">{{'form.button.submit'|trans}}</a></li>
+        </ul>
+    </div>
+</div>

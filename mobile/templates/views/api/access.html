@@ -1,0 +1,19 @@
+<header class="header-site">
+    <a href="" swipe-menu-toggle class="hide-menu"><i class="icon-menu"></i></a>
+    <div class="logo">
+        <img src="resources/img/awardwallet.png" alt="">
+        <i class="icon-arrow-right-b" ng-if="view.toLogo"></i>
+        <img ng-src="{{view.toLogo}}" alt="" ng-if="view.toLogo">
+    </div>
+    <h1>{{'api.invite-title'|trans:{}:'messages'}}</h1>
+</header>
+<div class="details">
+    <p bind-translate-html="{{'api.invite-text'|trans:{partner:'<strong class=name>' + view.toName + '</strong>'}:'messages'}}"></p>
+    <p><i class="icon-green-check-s"></i><strong>{{view.accessLevelDescription}}</strong></p>
+</div>
+<div class="buttons">
+    <ul>
+        <li><a href="" ng-click="view.accept()" class="btn-blue" ng-class="{'loading':view.loading}">{{'user.connections.button.share-all'|trans:{}:'messages'}}</a></li>
+        <li><a href="" ng-click="view.deny()">{{'user.connections.button.deny'|trans:{}:'messages'}}</a></li>
+    </ul>
+</div>

@@ -1,0 +1,28 @@
+<div id="overlay" ng-click="close()"></div>
+<div class="popup">
+    <div class="popup-title">
+        <h3 header="data.displayName"></h3>
+        <p>{{'popups.questions.title'|trans:{}:'mobile'|desc:'asks you a security question'}}</p>
+    </div>
+    <div class="popup-content">
+        <form autocomplete="off" class="main-form">
+            <div class="main-form-item">
+                <div class="row">
+                    <label class="ng-binding">{{data.question}}<span class="required">*</span></label>
+
+                    <div class="input">
+                        <input class="" type="text" name="answer" ng-model="answer" autocapitalize="off"
+                               autocorrect="off" value="" ng-value="answer">
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="popup-footer">
+        <ul class="bottom-buttons">
+            <li><a class="btn-white" ng-click="close()">{{'alerts.btn.cancel'|trans}}</a></li>
+            <li><a class="btn-blue" ng-class="{'loading':spinnerSubmitForm}"
+                   ng-click="submit()">{{'button.ok'|trans}}</a></li>
+        </ul>
+    </div>
+</div>

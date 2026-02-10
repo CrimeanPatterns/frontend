@@ -1,0 +1,12 @@
+<div class="flex-row">
+    <div class="title"><h3 ng-bind="block['Name']"></h3></div>
+    <div class="info">
+        <div class="balance-info">
+            <strong ng-bind-html="block['Val']['Balance']"></strong>
+            <span ng-class="{'green':block['Val']['LastChangeRaw']>0, 'blue':block['Val']['LastChangeRaw']<0}"
+                  ng-if="block['Val']['LastChange']" ng-bind-html="block['Val']['LastChange']"></span>
+        </div>
+        <i ng-if="block['Val']['LastChange']"
+           ng-class="{'icon-green-up':block['Val']['LastChangeRaw']>0, 'icon-blue-down':block['Val']['LastChangeRaw']<0}"></i>
+    </div>
+</div>

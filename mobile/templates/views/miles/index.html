@@ -1,0 +1,25 @@
+<page-header>
+    <ui-view name="header@main"></ui-view>
+</page-header>
+<page-content>
+    <ui-view name="content@main" ng-show="$state.is('unauth.miles.transfer')">
+    </ui-view>
+    <ui-view name="content@second" ng-show="$state.is('unauth.miles.purchase')">
+    </ui-view>
+</page-content>
+<page-footer>
+    <user-menu>
+        <user-menu-item>
+            <a href="" ui-sref=".transfer" ui-sref-active="active" ng-click="navigate('^.transfer')">
+                <div class="prev"><i class="icon-transfer-times"></i></div>
+                <span>{{'transfer_times'|trans}}</span>
+            </a>
+        </user-menu-item>
+        <user-menu-item>
+            <a href="" ui-sref=".purchase" ui-sref-active="active" ng-click="navigate('^.purchase')">
+                <div class="prev"><i class="icon-purchase-times"></i></div>
+                <span>{{'purchase_times'|trans}}</span>
+            </a>
+        </user-menu-item>
+    </user-menu>
+</page-footer>

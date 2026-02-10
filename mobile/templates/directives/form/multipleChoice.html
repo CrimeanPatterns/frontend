@@ -1,0 +1,18 @@
+<div class="row check" ng-class="{'errored':(field.errors.length>0 || field.isRequired()) && field.showError, disable:field.disabled}">
+    <label>{{field.label}}<span class="required" ng-if="field.required">*</span></label>
+
+    <div class="input" ng-repeat="choice in field.choices">
+        <span class="checkbox" ng-click="toggleCheckbox(choice)" ng-class="{'checked': field.valueMap[choice.name]}">
+            <input type="checkbox" ng-checked="field.valueMap[choice.name]" ng-model="field.valueMap[choice.name]" name="{{field.name}}_{{choice.name}}" ng-change="field.onChange()">
+        </span>
+        <label ng-click="toggleCheckbox(choice)">
+            <span class="checkbox-label" ng-class="{'grayout': choice.inactive}" ng-bind-html="choice.label"></span>
+        </label>
+    </div>
+    <div class="info" ng-if="field.attr.notice" ng-bind="field.attr.notice"></div>
+    <div class="error-message" ng-if="(field.errors || field.isRequired()) && field.showError">
+        <i class="icon-warning"></i>
+        <p ng-if="field.isRequired() && !field.errors[field.errors.length-1]">{{'notblank'|trans:{}:'validators'}}</p>
+        <p ng-bind-html="field.errors[field.errors.length-1]"></p>
+    </div>
+</div>

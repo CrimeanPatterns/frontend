@@ -1,0 +1,14 @@
+<page-header>
+    <a class="back-link" ui-sref="^.edit"><i class="icon-back"></i><h1>{{'buttons.back'|trans:{}:'mobile'|desc:'Back'}}</h1></a>
+</page-header>
+<page-content>
+    <form action="" class="main-form">
+        <div class="no-requests">
+            <i class="icon-warning"></i>
+            <p>{{'favorite_locations.limit'|trans:{"num":20}:'mobile'|desc:"Currently we are only able to geographically monitor up to %num% store locations for you and you already have %num% store locations monitored, you need to disable tracking for one (or more) location in order to be able to add monitoring for this store."}}</p>
+        </div>
+        <div class="row-submit">
+            <a ui-sref="index.profile-edit({action:'location/list'})" class="btn-blue">{{'continue'|trans:{}:'messages'}}</a>
+        </div>
+    </form>
+</page-content>

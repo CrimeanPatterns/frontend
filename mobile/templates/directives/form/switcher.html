@@ -1,0 +1,30 @@
+<div class="row switch {{field.attr.class}}"
+     ng-class="{'errored':(field.errors.length>0 || field.isRequired()) && field.showError, disable:field.disabled}">
+    <div class="input">
+        <div class="label" ng-click="field.goTo()">
+            <span ng-bind-html="field.label"></span>
+            <span class="required" ng-if="field.required">*</span>
+            <span class="info-text" ng-if="field.attr.notice" ng-bind-html="field.attr.notice"></span>
+        </div>
+        <div class="switcher">
+            <div ng-if="field.attr.icons" class="icons-list">
+                <i ng-repeat="icon in field.attr.icons" ng-class="'icon-'+icon+'-d'"></i>
+            </div>
+            <label>
+                <input
+                        type="checkbox" ng-disabled="field.disabled"
+                        ng-checked="(field.disabled && field.attr.disabledValue != null) ? field.attr.disabledValue : field.value"
+                        ng-model="field.value" name="{{field.name}}" ng-required="field.required"
+                        ng-change="field.onChange()" ng-class="(field.attr.blockName || field.name) | lowercase">
+                <div class="ios-switcher">
+                    <div></div>
+                </div>
+            </label>
+        </div>
+    </div>
+    <div class="error-message" ng-if="(field.errors || field.isRequired()) && field.showError">
+        <i class="icon-warning"></i>
+        <p ng-if="field.isRequired() && !field.errors[field.errors.length-1]">{{'notblank'|trans:{}:'validators'}}</p>
+        <p ng-bind-html="field.errors[field.errors.length-1]"></p>
+    </div>
+</div>
