@@ -1,0 +1,309 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<wsdl:definitions xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
+	xmlns:tns="https://service.awardwallet.com/wsdl/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+	xmlns:xsd="http://www.w3.org/2001/XMLSchema" name="services"
+	xmlns:spec="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd"
+	targetNamespace="https://service.awardwallet.com/wsdl/">
+	<wsdl:types>
+		<xsd:schema targetNamespace="https://service.awardwallet.com/wsdl/">
+			<xsd:include schemaLocation="CommonTypes.xsd"/>
+		</xsd:schema>
+	</wsdl:types>
+
+	<wsdl:message name="CheckAccountRequest">
+		<wsdl:part name="body" element="tns:CheckAccountRequest"/>
+	</wsdl:message>
+
+	<wsdl:message name="CheckAccountResponse">
+		<wsdl:part element="tns:CheckAccountResponse" name="body"/>
+	</wsdl:message>
+	
+	<wsdl:message name="CheckAccountsRequest">
+		<wsdl:part name="body" element="tns:CheckAccountsRequest"/>
+	</wsdl:message>
+
+	<wsdl:message name="CheckAccountsResponse">
+		<wsdl:part element="tns:CheckAccountsResponse" name="body"/>
+	</wsdl:message>
+
+	<wsdl:message name="ListProvidersRequest">
+		<wsdl:part name="body" element="tns:ListProvidersRequest"/>
+	</wsdl:message>
+
+	<wsdl:message name="ListProvidersResponse">
+		<wsdl:part name="body" element="tns:ListProvidersResponse"/>
+	</wsdl:message>
+
+	<wsdl:message name="PrepareRedirectRequest">
+		<wsdl:part name="body" element="tns:PrepareRedirectRequest"/>
+	</wsdl:message>
+
+	<wsdl:message name="PrepareRedirectResponse">
+		<wsdl:part element="tns:PrepareRedirectResponse" name="body"/>
+	</wsdl:message>
+
+	<wsdl:message name="CheckAccountCallbackResponse">
+		<wsdl:part element="tns:CheckAccountCallbackResponse" name="body"/>
+	</wsdl:message>
+	
+	<wsdl:message name="Partner">
+		<wsdl:part element="tns:PartnerType" name="body"/>
+	</wsdl:message>
+	
+	<wsdl:message name="QueueInfo">
+		<wsdl:part element="tns:QueueInfo" name="body"/>
+	</wsdl:message>
+
+	<wsdl:message name="CheckConfirmationNumberRequest">
+		<wsdl:part element="tns:CheckConfirmationNumberRequest" name="body"/>
+	</wsdl:message>
+
+	<wsdl:message name="CheckConfirmationNumberResponse">
+		<wsdl:part element="tns:CheckConfirmationNumberResponse" name="body"/>
+	</wsdl:message>
+
+	<wsdl:message name="TransferMilesRequest">
+		<wsdl:part name="body" element="tns:TransferMilesRequest"/>
+	</wsdl:message>
+
+	<wsdl:message name="TransferMilesResponse">
+		<wsdl:part element="tns:TransferMilesResponse" name="body"/>
+	</wsdl:message>
+
+    <wsdl:message name="RegisterAccountRequest">
+        <wsdl:part element="tns:RegisterAccountRequest" name="body"/>
+    </wsdl:message>
+
+    <wsdl:message name="RegisterAccountResponse">
+        <wsdl:part element="tns:RegisterAccountResponse" name="body"/>
+    </wsdl:message>
+
+    <wsdl:message name="PurchaseMilesRequest">
+        <wsdl:part element="tns:PurchaseMilesRequest" name="body"/>
+    </wsdl:message>
+
+    <wsdl:message name="PurchaseMilesResponse">
+        <wsdl:part element="tns:PurchaseMilesResponse" name="body"/>
+    </wsdl:message>
+
+	<wsdl:message name="PurchaseRatesRequest">
+		<wsdl:part element="tns:PurchaseRatesRequest" name="body"/>
+	</wsdl:message>
+
+	<wsdl:message name="PurchaseRatesResponse">
+		<wsdl:part element="tns:PurchaseRatesResponse" name="body"/>
+	</wsdl:message>
+
+	<wsdl:portType name="AwardWalletService">
+		<wsdl:operation name="CheckAccount">
+			<wsdl:documentation>Check single accounts</wsdl:documentation>
+			<wsdl:input message="tns:CheckAccountRequest" />
+			<wsdl:output message="tns:CheckAccountResponse" />
+		</wsdl:operation>
+		<wsdl:operation name="CheckAccounts">
+			<wsdl:documentation>Check multiple accounts</wsdl:documentation>
+			<wsdl:input message="tns:CheckAccountsRequest" />
+			<wsdl:output message="tns:CheckAccountsResponse" />
+		</wsdl:operation>
+		<wsdl:operation name="ListProviders">
+			<wsdl:input message="tns:ListProvidersRequest"/>
+			<wsdl:output message="tns:ListProvidersResponse"/>
+		</wsdl:operation>
+		<wsdl:operation name="PrepareRedirect">
+			<wsdl:documentation>auto-login</wsdl:documentation>
+			<wsdl:input message="tns:PrepareRedirectRequest" />
+			<wsdl:output message="tns:PrepareRedirectResponse" />
+		</wsdl:operation>
+		<wsdl:operation name="CheckAccountCallback">
+			<wsdl:documentation>accepts results of asynchronous account check. this method is for reference only. it should not be called, it should be implemented on your side</wsdl:documentation>
+			<wsdl:input message="tns:CheckAccountResponse" />
+			<wsdl:output message="tns:CheckAccountCallbackResponse">
+				<wsdl:documentation>whether callback was accepted</wsdl:documentation>
+			</wsdl:output>
+		</wsdl:operation>
+		<wsdl:operation name="CheckAccountsCallback">
+			<wsdl:documentation>accepts results of asynchronous account check. this method is for reference only. it should not be called, it should be implemented on your side</wsdl:documentation>
+			<wsdl:input message="tns:CheckAccountsResponse" />
+			<wsdl:output message="tns:CheckAccountCallbackResponse">
+				<wsdl:documentation>whether callback was accepted</wsdl:documentation>
+			</wsdl:output>
+		</wsdl:operation>
+		<wsdl:operation name="GetQueueInfo">
+			<wsdl:documentation>get info about your queue</wsdl:documentation>
+			<wsdl:input message="tns:Partner" />
+			<wsdl:output message="tns:QueueInfo" />
+		</wsdl:operation>
+		<wsdl:operation name="CheckConfirmationNumber">
+			<wsdl:input message="tns:CheckConfirmationNumberRequest" />
+			<wsdl:output message="tns:CheckConfirmationNumberResponse" />
+		</wsdl:operation>
+		<wsdl:operation name="TransferMiles">
+			<wsdl:documentation>transfer rewards</wsdl:documentation>
+			<wsdl:input message="tns:TransferMilesRequest" />
+			<wsdl:output message="tns:TransferMilesResponse" />
+		</wsdl:operation>
+        <wsdl:operation name="RegisterAccount">
+            <wsdl:documentation>register account</wsdl:documentation>
+            <wsdl:input message="tns:RegisterAccountRequest" />
+            <wsdl:output message="tns:RegisterAccountResponse" />
+        </wsdl:operation>
+        <wsdl:operation name="PurchaseMiles">
+            <wsdl:documentation>purchase miles or points</wsdl:documentation>
+            <wsdl:input message="tns:PurchaseMilesRequest" />
+            <wsdl:output message="tns:PurchaseMilesResponse" />
+        </wsdl:operation>
+		<wsdl:operation name="PurchaseRates">
+			<wsdl:documentation>purchase rates</wsdl:documentation>
+			<wsdl:input message="tns:PurchaseRatesRequest" />
+			<wsdl:output message="tns:PurchaseRatesResponse" />
+		</wsdl:operation>
+	</wsdl:portType>
+
+	<wsdl:binding name="servicesSOAP" type="tns:AwardWalletService">
+		<soap:binding style="document"
+			transport="http://schemas.xmlsoap.org/soap/http" />
+		<spec:SecuritySpec spec:Namespace="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd" spec:Id="default-spec">
+			<spec:UsernameTokenSpec PasswordType="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-username-token-profile-1.0#PasswordText">
+		   </spec:UsernameTokenSpec>
+		</spec:SecuritySpec>
+		<wsdl:operation name="CheckAccount">
+			<soap:operation soapAction="CheckAccount" />
+			<wsdl:input>
+				<spec:SecuritySpecRef RefId="default-spec"/>
+				<soap:body use="literal" />
+			</wsdl:input>
+			<wsdl:output>
+				<spec:SecuritySpecRef RefId="default-spec"/>
+				<soap:body use="literal" />
+			</wsdl:output>
+		</wsdl:operation>
+		<wsdl:operation name="CheckAccounts">
+			<soap:operation soapAction="CheckAccounts" />
+			<wsdl:input>
+				<spec:SecuritySpecRef RefId="default-spec"/>
+				<soap:body use="literal" />
+			</wsdl:input>
+			<wsdl:output>
+				<spec:SecuritySpecRef RefId="default-spec"/>
+				<soap:body use="literal" />
+			</wsdl:output>
+		</wsdl:operation>
+		<wsdl:operation name="ListProviders">
+			<soap:operation soapAction="ListProviders" />
+			<wsdl:input>
+				<spec:SecuritySpecRef RefId="default-spec"/>
+				<soap:body use="literal" />
+			</wsdl:input>
+			<wsdl:output>
+				<soap:body use="literal" />
+			</wsdl:output>
+		</wsdl:operation>
+		<wsdl:operation name="PrepareRedirect">
+			<soap:operation soapAction="PrepareRedirect" />
+			<wsdl:input>
+				<spec:SecuritySpecRef RefId="default-spec"/>
+				<soap:body use="literal" />
+			</wsdl:input>
+			<wsdl:output>
+				<spec:SecuritySpecRef RefId="default-spec"/>
+				<soap:body use="literal" />
+			</wsdl:output>
+		</wsdl:operation>
+		<wsdl:operation name="CheckAccountCallback">
+			<soap:operation soapAction="CheckAccountCallback" />
+			<wsdl:input>
+				<spec:SecuritySpecRef RefId="default-spec"/>
+				<soap:body use="literal" />
+			</wsdl:input>
+			<wsdl:output>
+				<spec:SecuritySpecRef RefId="default-spec"/>
+				<soap:body use="literal" />
+			</wsdl:output>
+		</wsdl:operation>
+		<wsdl:operation name="CheckAccountsCallback">
+			<soap:operation soapAction="CheckAccountsCallback" />
+			<wsdl:input>
+				<spec:SecuritySpecRef RefId="default-spec"/>
+				<soap:body use="literal" />
+			</wsdl:input>
+			<wsdl:output>
+				<spec:SecuritySpecRef RefId="default-spec"/>
+				<soap:body use="literal" />
+			</wsdl:output>
+		</wsdl:operation>
+		<wsdl:operation name="GetQueueInfo">
+			<soap:operation soapAction="GetQueueInfo" />
+			<wsdl:input>
+				<spec:SecuritySpecRef RefId="default-spec"/>
+				<soap:body use="literal" />
+			</wsdl:input>
+			<wsdl:output>
+				<spec:SecuritySpecRef RefId="default-spec"/>
+				<soap:body use="literal" />
+			</wsdl:output>
+		</wsdl:operation>
+		<wsdl:operation name="CheckConfirmationNumber">
+			<soap:operation soapAction="CheckConfirmationNumber" />
+			<wsdl:input>
+				<spec:SecuritySpecRef RefId="default-spec"/>
+				<soap:body use="literal" />
+			</wsdl:input>
+			<wsdl:output>
+				<spec:SecuritySpecRef RefId="default-spec"/>
+				<soap:body use="literal" />
+			</wsdl:output>
+		</wsdl:operation>
+		<wsdl:operation name="TransferMiles">
+			<soap:operation soapAction="TransferMiles" />
+			<wsdl:input>
+				<spec:SecuritySpecRef RefId="default-spec"/>
+				<soap:body use="literal" />
+			</wsdl:input>
+			<wsdl:output>
+				<spec:SecuritySpecRef RefId="default-spec"/>
+				<soap:body use="literal" />
+			</wsdl:output>
+		</wsdl:operation>
+        <wsdl:operation name="RegisterAccount">
+            <soap:operation soapAction="RegisterAccount" />
+            <wsdl:input>
+                <spec:SecuritySpecRef RefId="default-spec"/>
+                <soap:body use="literal" />
+            </wsdl:input>
+            <wsdl:output>
+                <spec:SecuritySpecRef RefId="default-spec"/>
+                <soap:body use="literal" />
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="PurchaseMiles">
+            <soap:operation soapAction="PurchaseMiles" />
+            <wsdl:input>
+                <spec:SecuritySpecRef RefId="default-spec"/>
+                <soap:body use="literal" />
+            </wsdl:input>
+            <wsdl:output>
+                <spec:SecuritySpecRef RefId="default-spec"/>
+                <soap:body use="literal" />
+            </wsdl:output>
+        </wsdl:operation>
+		<wsdl:operation name="PurchaseRates">
+			<soap:operation soapAction="PurchaseRates" />
+			<wsdl:input>
+				<spec:SecuritySpecRef RefId="default-spec"/>
+				<soap:body use="literal" />
+			</wsdl:input>
+			<wsdl:output>
+				<spec:SecuritySpecRef RefId="default-spec"/>
+				<soap:body use="literal" />
+			</wsdl:output>
+		</wsdl:operation>
+	</wsdl:binding>
+
+	<wsdl:service name="AwardWalletService">
+		<wsdl:documentation>General awardwallet interface</wsdl:documentation>
+		<wsdl:port binding="tns:servicesSOAP" name="servicesSOAP">
+			<soap:address location="https://service.awardwallet.com/wsdl/v4/" />
+		</wsdl:port>
+	</wsdl:service>
+
+</wsdl:definitions>

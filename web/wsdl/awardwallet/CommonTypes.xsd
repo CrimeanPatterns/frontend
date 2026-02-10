@@ -1,0 +1,1745 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema targetNamespace="https://service.awardwallet.com/wsdl/" xmlns:tns="https://service.awardwallet.com/wsdl/"
+			xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsdd="http://www.w3.org/2001/XMLSchema">
+
+	<xsd:complexType name="CheckAccountResponse">
+		<xsd:annotation>
+			<xsd:documentation>result of account checking</xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element name="APIVersion" type="xsd:int">
+				<xsd:annotation>
+					<xsd:documentation>API Version</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="AccountID" type="xsd:string" nillable="true">
+				<xsd:annotation>
+					<xsd:documentation>This field contains value from CheckAccountRequest.AccountID, if you supplied any. Probably this is unique account id within your system</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="Provider" type="xsd:string">
+				<xsd:annotation>
+					<xsd:documentation>Provider code, like "marriott"</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="Login" type="xsd:string">
+				<xsd:annotation>
+					<xsd:documentation>User login for provider site</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="Login2" type="xsd:string">
+				<xsd:annotation>
+					<xsd:documentation>Second part of login. Should be empty in most cases</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="Login3" type="xsd:string">
+				<xsd:annotation>
+					<xsd:documentation>Third part of login. Should be empty in most cases</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="ErrorCode" type="xsd:int">
+				<xsd:annotation>
+					<xsd:documentation>
+						0 -   SOAP_SUCCESS, call successful
+						102 - SOAP_INVALID_PROVIDER, invalid provider code
+						103 - SOAP_BAD_LOGIN, login is empty, or contains invalid symbols
+						104 - SOAP_BAD_PASSWORD, password is empty, or contains invalid symbols
+						105 - SOAP_HTTPS_REQUIRED, use HTTPS protocol for request
+						106 - SOAP_BAD_LOGIN2, login2 is empty, or contains invalid	symbols
+						107 - SOAP_ACCOUNT_NOT_FOUND, you are trying to retrieve cached account
+								state with CheckNow = false, however this account does not exist
+								in our database
+						108 - SOAP_TIMEOUT, account	checking timed out. Check back later for result
+						109 - SOAP_BAD_TIMEOUT,	invalid value for timeout field. Should be 0 to 60
+						110 - SOAP_FAILURE, general error
+						111 - SOAP_BAD_PRIORITY, invalid value for Priority field, should be 1..9
+						112 - SOAP_BAD_CALLBACKURL, Callback URL is invalid
+						113 - SOAP_BAD_RETRIES, Invalid value for Retries field. Retries should be in the range from 0 to 4
+						116 - SOAP_BAD_COUPON, invalid value for coupon operation
+						117 - SOAP_USERID_REQUIRED, UserID required for statistics
+						118 - SOAP_BAD_ANSWERS, invalid value for Answers field
+						119 - SOAP_BAD_BROWSERSTATE, invalid value for BrowserState field
+						120 - SOAP_BAD_LOGIN3, login3 is empty, or contains invalid	symbols
+					</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="ErrorMessage" type="xsd:string"/>
+			<xsd:element name="ErrorReason" type="xsd:string">
+				<xsd:annotation>
+					<xsd:documentation>Technical error reason. Something like 'AwardWallet sign-in attempt is blocked by provider' or 'We could not recognize captcha'. Do not show this message to the end user.</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+            <xsd:element name="DebugInfo" type="xsd:string"/>
+			<xsd:element name="State" type="xsd:int">
+				<xsd:annotation>
+					<xsd:documentation>
+						0 – ACCOUNT_UNCHECKED, you are requesting result (CheckNow = false), but account was not checked yet. Repeat your request later.
+						1 - ACCOUNT_CHECKED, success
+						2 -	ACCOUNT_INVALID_PASSWORD, provider did not accept usernameand password combination.
+						3 - ACCOUNT_LOCKOUT, Provider has locked out this account due to multiple invalid login attempts.
+						4 -	ACCOUNT_PROVIDER_ERROR, provider site returns some error, or requires some user action
+						5 -	ACCOUNT_PROVIDER_DISABLED, this	provider is disabled on awardwallet
+						6 - ACCOUNT_ENGINE_ERROR, awardwallet failed to parse provider site
+						9 - ACCOUNT_WARNING, account was succesfully checked, but there is warning message
+								returned in Message.
+						10 - ACCOUNT_QUESTION, user need to answer security question, see Question field in response
+						11 - ACCOUNT_TIMEOUT, account checking was too slow, timed out.
+					</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="Message" type="xsd:string">
+				<xsd:annotation>
+					<xsd:documentation>
+						Human readable error message
+					</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="Question" type="xsd:string" nillable="true">
+				<xsd:annotation>
+					<xsd:documentation>
+						Security question
+					</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="Balance" type="xsd:decimal" nillable="true">
+				<xsd:annotation>
+					<xsd:documentation>
+						Account balance.
+						There is one special value, null, that means “Not available”,
+						this value returned when we are successfully logged in into user account, but can’t find balance,
+						for example there is only subaccounts.
+					</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="Properties"
+				type="tns:PropertyType" maxOccurs="unbounded" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>
+						Array of properties
+					</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="EliteLevel" type="xsd:int" nillable="true">
+				<xsd:annotation>
+					<xsd:documentation>Elite Level</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="NoItineraries" type="xsd:boolean" nillable="true">
+				<xsd:annotation>
+					<xsd:documentation>No Itineraries found for this account</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="NeverExpires" type="xsd:boolean">
+				<xsd:annotation>
+					<xsd:documentation>Balance never expires</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="SubAccounts"
+				type="tns:SubAccountType" maxOccurs="unbounded" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>
+						Array of subaccounts
+					</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="CheckDate"
+				type="xsd:dateTime">
+				<xsd:annotation>
+					<xsd:documentation>
+						Date and time when account was
+						checked
+					</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="RequestDate"
+				type="xsd:dateTime">
+				<xsd:annotation>
+					<xsd:documentation>
+						Date and time when account check was
+						requested
+					</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="Mode"
+				type="xsd:string">
+				<xsd:annotation>
+					<xsd:documentation>Fake or Real mode</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="BrowserState" type="xsd:string">
+				<xsd:annotation>
+					<xsd:documentation>Browser state, cookies, and other info. Used for subsequent CheckAccount requests</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="Itineraries" type="xsd:string" maxOccurs="unbounded" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>User itineraries, in OpenTravel XML</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="History"
+				type="tns:HistoryRowType" maxOccurs="unbounded" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Account history</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="HistoryVersion" type="xsd:int" nillable="true">
+				<xsd:annotation>
+					<xsd:documentation>History cache version. Store this value on your side for subsequent requests to CheckAccount,
+						to populate the CheckAccountRequest.HistoryVersion field. Could be Null if there is no history.</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="HistoryCacheValid" type="xsd:boolean" nillable="true">
+				<xsd:annotation>
+					<xsd:documentation>When true - History field contains partial response, concatenate it with cache on your side, to get the full history.
+					When false - you should discard the cache on your side, History field will contain full response.
+					When null - you have not filled HistoryVersion and HistoryLastDate fields in your request</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="Files"
+				type="tns:FileType" maxOccurs="unbounded" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Account files</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="FilesVersion" type="xsd:int" nillable="true">
+				<xsd:annotation>
+					<xsd:documentation>Files cache version. Store this value on your side for subsequent requests to CheckAccount,
+						to populate the CheckAccountRequest.FilesVersion field. Could be Null if there is no files.</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="FilesCacheValid" type="xsd:boolean" nillable="true">
+				<xsd:annotation>
+					<xsd:documentation>When true - Files field contains partial response, concatenate it with cache on your side, to get the full files.
+					When false - you should discard the cache on your side, Files field will contain full response.
+					When null - you have not filled FilesVersion and FilesLastDate fields in your request</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="InvalidAnswers" type="tns:AnswerType" maxOccurs="unbounded" minOccurs="0">
+				<xsd:annotation>
+					<xsdd:documentation>We have tried this answers, provider did not accept it. You should mark it as invalid on your side, or ask user again</xsdd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="Options" type="xsd:string" nillable="true" default="" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Request options, reserved field, leave empty, provider group check</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+		</xsd:sequence>
+	</xsd:complexType>
+	
+	<xsd:complexType name="ProviderInfoType">
+		<xsd:annotation>
+			<xsd:documentation>Provider info</xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element name="Kind" type="xsd:integer">
+				<xsd:annotation>
+					<xsd:documentation>Type of provider
+						1 - Airlines
+						2 - Hotels
+						3 - Car rental
+						4 - Train
+						5 - Other
+						6 - Credit cards
+						7 - Shopping
+						8 - Dining
+						9 - Survey
+						</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="Code" type="xsd:string">
+				<xsd:annotation>
+					<xsd:documentation>Unique provider code
+						letters and digits,
+						without spaces
+						f.x. "marriott"
+						</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="DisplayName" type="xsd:string">
+				<xsd:annotation>
+					<xsd:documentation>provider and program name, f.x. "United
+						(Mileage Plus)"</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="ProviderName" type="xsd:string">
+				<xsd:annotation>
+					<xsd:documentation>provider name, f.x. "United Airlines"
+					</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="ProgramName" type="xsd:string">
+				<xsd:annotation>
+					<xsd:documentation>program name, f.x. "Mileage Plus"
+					</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="Login" type="tns:InputType">
+				<xsd:annotation>
+					<xsd:documentation>Login field description</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="Login2" type="tns:InputType" nillable="true">
+				<xsd:annotation>
+					<xsd:documentation>Login2 field description</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="Login3" type="tns:InputType" nillable="true">
+				<xsd:annotation>
+					<xsd:documentation>Login3 field description</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="Password" type="tns:InputType">
+				<xsd:annotation>
+					<xsd:documentation>Password field description</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="Properties" type="tns:PropertyInfoType"
+				minOccurs="0" maxOccurs="unbounded">
+					<xsd:annotation>
+				<xsd:documentation>Array of provider properties
+				</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="AutoLogin" type="xsd:boolean">
+				<xsd:annotation>
+					<xsd:documentation>Autologin is supported</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="DeepLinking" type="xsd:boolean">
+				<xsd:annotation>
+					<xsd:documentation>Deep Linking (autologin to specified URL) is supported</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="CanCheckConfirmation" type="xsd:boolean">
+				<xsd:annotation>
+					<xsd:documentation>retrieve itinerary by confirmation number is supported</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="CanCheckItinerary" type="xsd:boolean">
+				<xsd:annotation>
+					<xsd:documentation>itineraries is supported</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="CanCheckExpiration" type="xsd:int">
+				<xsd:annotation>
+					<xsd:documentation>Expiration date retrieval is supported. 0 - No, 1 - Yes, 2 - Balance never expires</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="ConfirmationNumberFields" type="tns:InputType" minOccurs="0" maxOccurs="unbounded">
+				<xsd:annotation>
+					<xsd:documentation>fields required to retrieve itineraries by confirmation number</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="HistoryColumns" type="tns:PropertyInfoType"
+				minOccurs="0" maxOccurs="unbounded">
+					<xsd:annotation>
+				<xsd:documentation>Columns in account history. Empty, if provider does not support history parsing</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="EliteLevelsCount" type="xsd:int" nillable="true">
+				<xsd:annotation>
+					<xsd:documentation>The number of elite status of provider</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="CanParseHistory" type="xsd:boolean">
+				<xsd:annotation>
+					<xsd:documentation>Account history retrieval is supported.</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="CanParseFiles" type="xsd:boolean">
+				<xsd:annotation>
+					<xsd:documentation>Account files retrieval is supported.</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+            <xsd:element name="CanTransferRewards" type="xsd:boolean">
+                <xsd:annotation>
+                    <xsd:documentation>Transferring reward poitns is supported.</xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="TransferRewardsPartners" type="tns:TransferPartnerType" minOccurs="0" maxOccurs="unbounded">
+                <xsd:annotation>
+                    <xsd:documentation>Enabled rewards transfer options.</xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="CanRegisterAccount" type="xsd:boolean">
+                <xsd:annotation>
+                    <xsd:documentation>Account registration is supported.</xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="CanBuyMiles" type="xsd:boolean">
+                <xsd:annotation>
+                    <xsd:documentation>Purchasing reward points is supported.</xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="RegisterAccountFields" type="tns:InputType" minOccurs="0" maxOccurs="unbounded">
+                <xsd:annotation>
+                    <xsd:documentation>fields required to register new account</xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="PurchaseMilesFields" type="tns:InputType" minOccurs="0" maxOccurs="unbounded">
+                <xsd:annotation>
+                    <xsd:documentation>fields required to purchase miles or points</xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+		</xsd:sequence>
+	</xsd:complexType>
+
+    <xsd:complexType name="TransferPartnerType">
+        <xsd:annotation>
+            <xsd:documentation>Rewards transfer between providers.</xsd:documentation>
+        </xsd:annotation>
+        <xsd:sequence>
+            <xsd:element name="SourceProvider" type="xsd:string">
+                <xsd:annotation>
+                    <xsd:documentation>Source provider code.</xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="TargetProvider" type="xsd:string">
+                <xsd:annotation>
+                    <xsd:documentation>Target provider code.</xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="Rate" type="xsd:string">
+                <xsd:annotation>
+                    <xsd:documentation>Transfer rate "source:target".</xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="Duration" type="xsd:string">
+                <xsd:annotation>
+                    <xsd:documentation>Estimated duration of transfer.</xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="Comment" type="xsd:string">
+                <xsd:annotation>
+                    <xsd:documentation>Commentary.</xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+        </xsd:sequence>
+    </xsd:complexType>
+
+	<xsd:complexType name="HistoryFieldType">
+		<xsd:annotation>
+			<xsd:documentation>Single history property</xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element name="Code" type="xsd:string">
+				<xsd:annotation>
+					<xsd:documentation>There are 3 predefined field codes: PostingDate, Description, Miles.
+						Otherwise this field will be Info</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="Name" type="xsd:string">
+				<xsd:annotation>
+					<xsd:documentation>Human-readable field	name, like "Posting Date"</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="Value" type="xsd:string">
+				<xsd:annotation>
+					<xsd:documentation>Field value, like "1/1/2011"</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+		</xsd:sequence>
+	</xsd:complexType>
+
+	<xsd:complexType name="HistoryRowType">
+		<xsd:annotation>
+			<xsd:documentation>Account history row</xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element name="Fields" type="tns:HistoryFieldType" minOccurs="0" maxOccurs="unbounded">
+				<xsd:annotation>
+					<xsd:documentation>Fields</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+		</xsd:sequence>
+	</xsd:complexType>
+
+	<xsd:complexType name="FileType">
+		<xsd:annotation>
+			<xsd:documentation>Account file, like monthly statements in pdf</xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element name="Date" type="xsd:date">
+				<xsd:annotation>
+					<xsd:documentation>file date</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="Name" type="xsd:string">
+				<xsd:annotation>
+					<xsd:documentation>file name</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="Extension" type="xsd:string">
+				<xsd:annotation>
+					<xsd:documentation>file extension, typically 'pdf'</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="Kind" type="xsd:string">
+				<xsd:annotation>
+					<xsd:documentation>file kind, the only kind for now is 'statement'</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="AccountNumber" type="xsd:string"/>
+			<xsd:element name="AccountName" type="xsd:string"/>
+			<xsd:element name="AccountType" type="xsd:string"/>
+			<xsd:element name="Contents" type="xsd:string">
+				<xsd:annotation>
+					<xsd:documentation>file contents in base 64 encoding</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+		</xsd:sequence>
+	</xsd:complexType>
+
+	<xsd:complexType name="InputType">
+		<xsd:annotation>
+			<xsd:documentation>Input info</xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element name="Code" type="xsd:string">
+				<xsd:annotation>
+					<xsd:documentation>Field code, f.x. "Email"</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="Title" type="xsd:string">
+				<xsd:annotation>
+					<xsd:documentation>Field title, f.x. "E-mail"</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="Options" type="tns:PropertyInfoType"
+				minOccurs="0" maxOccurs="unbounded">
+				<xsd:annotation>
+					<xsd:documentation>Allowed options</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="Required" type="xsd:boolean">
+				<xsd:annotation>
+					<xsd:documentation>No empty values allowed</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="DefaultValue" type="xsd:string" nillable="true"/>
+		</xsd:sequence>
+	</xsd:complexType>
+
+	<xsd:complexType name="PropertyType">
+		<xsd:annotation>
+			<xsd:documentation>Single account property</xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element name="Code" type="xsd:string">
+				<xsd:annotation>
+					<xsd:documentation>Unique (within provider)
+						property code
+						English
+						letters and digits, without spaces
+						f.x. "AccountNumber"
+					</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="Name" type="xsd:string">
+				<xsd:annotation>
+					<xsd:documentation>Human-readable property
+						name,
+						like "Account
+						Number"</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="Kind" type="xsd:int">
+				<xsd:annotation>
+					<xsd:documentation>
+						Type of property:
+						0 - Basic property
+						1 - Account number
+						2 - Expiration
+						3 - Status
+						4 - Lifetime points
+						5 - Member since
+						6 - Expiring balance
+						7 - Points / miles earned year-to-date (YTD).
+						8 - Segments earned year-to-date (YTD).
+						9 - Next elite level
+						10 - Points / miles needed until next level
+						11 - Flights / Nights needed until next level.
+						12 - Name, as listed on the account
+						13 - Last Account Activity
+						14 - Points / miles needed for Next Reward
+						15 - Status Expiration Date
+						16 - Points / miles needed to retain elite level
+						17 - Segments / Flights needed to retain elite level
+					"</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="Value" type="xsd:string">
+				<xsd:annotation>
+					<xsd:documentation>Property value, like
+						"32434324"
+					</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+		</xsd:sequence>
+	</xsd:complexType>
+
+	<xsd:complexType name="PropertyInfoType">
+		<xsd:annotation>
+			<xsd:documentation>Single account property info</xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element name="Code" type="xsd:string">
+				<xsd:annotation>
+					<xsd:documentation>Unique (within provider)
+						property code
+						English
+						letters and digits, without spaces
+						f.x. "AccountNumber"
+					</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="Name" type="xsd:string">
+				<xsd:annotation>
+					<xsd:documentation>Human-readable property
+						name,
+						like "Account
+						Number"</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="Kind" type="xsd:int">
+				<xsd:annotation>
+					<xsd:documentation>
+						Type of property:
+						0 - PROPERTY_KIND_OTHER, Basic property
+						1 - PROPERTY_KIND_NUMBER, Account number
+						2 - PROPERTY_KIND_EXPIRATION, Expiration
+						3 - PROPERTY_KIND_STATUS, Status
+						4 - PROPERTY_KIND_LIFETIME, Lifetime points
+						5 - PROPERTY_KIND_MEMBER_SINCE, Member since
+						6 - PROPERTY_KIND_EXPIRING_BALANCE, Expiring Balance
+					"</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+		</xsd:sequence>
+	</xsd:complexType>
+	
+	<xsd:complexType name="AnswerType">
+		<xsd:annotation>
+			<xsd:documentation>Security question answer</xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element name="Question" type="xsd:string">
+				<xsd:annotation>
+					<xsd:documentation>Unique (within one account) security question</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="Answer" type="xsd:string">
+				<xsd:annotation>
+					<xsd:documentation>Answer to this security question</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+		</xsd:sequence>
+	</xsd:complexType>
+
+	<xsd:complexType name="SubAccountType">
+		<xsd:annotation>
+			<xsd:documentation>Single subaccount or deal (for daily deals sites) info</xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element name="Balance" type="xsd:decimal" nillable="true">
+				<xsd:annotation>
+					<xsd:documentation>
+						Subaccount balance. There is one special value, null, that means “Not available”
+					</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="DisplayName" type="xsd:string">
+				<xsd:annotation>
+					<xsd:documentation>
+						Subaccount display name
+					</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="Code" type="xsd:string">
+				<xsd:annotation>
+					<xsd:documentation>
+						Subaccount code
+					</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="Properties" type="tns:PropertyType" maxOccurs="unbounded" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>
+						Subaccount properties
+					</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="Coupons" type="tns:CouponType" maxOccurs="unbounded" minOccurs="0" nillable="true">
+				<xsd:annotation>
+					<xsd:documentation>
+						Coupons inside this deal
+					</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="Locations" type="tns:LocationType" maxOccurs="unbounded" minOccurs="0" nillable="true">
+				<xsd:annotation>
+					<xsd:documentation>
+						Locations of deals
+					</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="Pictures" type="tns:PictureType" maxOccurs="unbounded" minOccurs="0" nillable="true">
+				<xsd:annotation>
+					<xsd:documentation>
+						Pictures of deals
+					</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="NeverExpires" type="xsd:boolean">
+				<xsd:annotation>
+					<xsd:documentation>
+						Balance never Expires
+					</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+		</xsd:sequence>
+	</xsd:complexType>
+
+	<xsd:complexType name="CouponType">
+		<xsd:annotation>
+			<xsd:documentation>Coupon information</xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element name="Id" type="xsd:string">
+				<xsd:annotation>
+					<xsd:documentation>Unique (within account) id of coupon</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="File" type="xsd:string" nillable="true">
+				<xsd:annotation>
+					<xsd:documentation>Link to coupon pdf/image. You can use this in PrepareRedirect method to download coupon</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="Caption" type="xsd:string">
+				<xsd:annotation>
+					<xsd:documentation>Title of coupon</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="Used" type="xsd:boolean">
+				<xsd:annotation>
+					<xsd:documentation>is coupon used</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="ExpiresAt" type="xsd:date" nillable="true">
+				<xsd:annotation>
+					<xsd:documentation>expiration date</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="PurchasedAt" type="xsd:date" nillable="true">
+				<xsd:annotation>
+					<xsd:documentation>purchase date</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="Status" type="xsd:string" nillable="true">
+				<xsd:annotation>
+					<xsd:documentation>status of coupon, something like 'Processed'</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+		</xsd:sequence>
+	</xsd:complexType>
+	
+	<xsd:complexType name="LocationType">
+		<xsd:annotation>
+			<xsd:documentation>Location information</xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element name="Url" type="xsd:string">
+				<xsd:annotation>
+					<xsd:documentation>Link to map</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+		</xsd:sequence>
+	</xsd:complexType>
+	
+	<xsd:complexType name="PictureType">
+		<xsd:annotation>
+			<xsd:documentation>Picture information</xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element name="Url" type="xsd:string">
+				<xsd:annotation>
+					<xsd:documentation>Link to picture</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+		</xsd:sequence>
+	</xsd:complexType>
+
+	<xsd:complexType name="MarkUsedCouponType">
+		<xsd:annotation>
+			<xsd:documentation>Coupon mark used/unused request</xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element name="Used" type="xsd:boolean">
+				<xsd:annotation>
+					<xsd:documentation>if true - mark coupon as used</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="Id" type="xsd:string">
+				<xsd:annotation>
+					<xsd:documentation>Id of coupon</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+		</xsd:sequence>
+	</xsd:complexType>
+	
+	<xsd:complexType name="CheckAccountRequest">
+		<xsd:sequence>
+			<xsd:element name="APIVersion" type="xsd:int">
+				<xsd:annotation>
+					<xsd:documentation>Requested API Version</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="Provider" type="xsd:string">
+				<xsd:annotation>
+					<xsd:documentation>Provider code, like "marriott"</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="Login" type="xsd:string">
+				<xsd:annotation>
+					<xsd:documentation>User login for provider site</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="Login2" type="xsd:string">
+				<xsd:annotation>
+					<xsd:documentation>Second part of login. Should be empty in most cases</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="Login3" type="xsd:string">
+				<xsd:annotation>
+					<xsd:documentation>Third part of login. Should be empty in most cases</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="Password" type="xsd:string">
+				<xsd:annotation>
+					<xsd:documentation>User password for provider site</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="CheckNow" type="xsd:boolean">
+				<xsd:annotation>
+					<xsd:documentation>Check account now, or return value from cache. We will keep cache for one hour after last account check.</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="Timeout" type="xsd:int">
+				<xsd:annotation>
+					<xsd:documentation>When checknow is true, this value sets
+					timeout in
+					seconds for checking operation
+					0 - 60</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="Priority" type="xsd:int">
+				<xsd:annotation>
+					<xsd:documentation>Request priority 1..9, 5 - normal, 1 - very low, 9 - very high</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="CallbackURL" type="xsd:string">
+				<xsd:annotation>
+					<xsd:documentation>Callback receiver</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="Retries" type="xsd:int" nillable="true">
+				<xsd:annotation>
+					<xsd:documentation>Request retries, in case of error, 0..4, default 4</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="ParseItineraries" type="xsd:boolean" nillable="true" default="false">
+				<xsd:annotation>
+					<xsd:documentation>Parse and return user itineraries</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="UserID" type="xsd:string" nillable="true">
+				<xsd:annotation>
+					<xsd:documentation>User ID, for statistics. Required for most partners</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="AccountID" type="xsd:string" nillable="true">
+				<xsd:annotation>
+					<xsd:documentation>You will receive this field unmodified in callback response. Probably this is unique account id within your system</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="MarkUsedCoupons" type="tns:MarkUsedCouponType"
+				minOccurs="0" maxOccurs="unbounded" nillable="true">
+				<xsd:annotation>
+					<xsd:documentation>List of coupons to mark used/unused</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="Answers" type="tns:AnswerType" minOccurs="0" maxOccurs="unbounded">
+				<xsd:annotation>
+					<xsd:documentation>Answers to possible security questions</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="BrowserState" type="xsd:string" nillable="true">
+				<xsd:annotation>
+					<xsd:documentation>Browser state from previous request. Used for programs with security questions</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="ParseHistory" type="xsd:boolean" nillable="true" default="false">
+				<xsd:annotation>
+					<xsd:documentation>Parse and return account history</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="HistoryVersion" type="xsd:int" nillable="true">
+				<xsd:annotation>
+					<xsd:documentation>History version you have on your side. Null means no history cache.</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="HistoryLastDate" type="xsd:date" nillable="true">
+				<xsd:annotation>
+					<xsd:documentation>Up to what date do you have history cache on your end.
+						Null means no cache. We will return partial history, starting from (including) this date.</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="ParseFiles" type="xsd:boolean" nillable="true" default="false">
+				<xsd:annotation>
+					<xsd:documentation>Parse and return account files</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="FilesVersion" type="xsd:int" nillable="true">
+				<xsd:annotation>
+					<xsd:documentation>Files version you have on your side. Null means no files cache.</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="FilesLastDate" type="xsd:date" nillable="true">
+				<xsd:annotation>
+					<xsd:documentation>Up to what date do you have files cache on your end.
+						Null means no cache. We will return partial files, starting from (including) this date.</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="Options" type="xsd:string" nillable="true" default="">
+				<xsd:annotation>
+					<xsd:documentation>Request options, reserved field, leave empty, provider group check</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+		</xsd:sequence>
+	</xsd:complexType>
+	
+	<xsd:element name="CheckAccountResponse" type="tns:CheckAccountResponse" />
+
+	<xsd:element name="ListProvidersRequest">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element name="APIVersion" type="xsd:int">
+					<xsd:annotation>
+						<xsd:documentation>Requested API Version</xsd:documentation>
+					</xsd:annotation>
+				</xsd:element>
+                <xsd:element name="Type" type="xsd:int">
+                    <xsd:annotation>
+                        <xsd:documentation>
+                            List providers for:
+                            1 - Checking accounts and itineraries
+                            2 - Registration, rewards purchase and transfer
+                        </xsd:documentation>
+                    </xsd:annotation>
+                </xsd:element>
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+
+	<xsd:element name="ListProvidersResponse">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element name="APIVersion" type="xsd:int">
+					<xsd:annotation>
+						<xsd:documentation>API Version</xsd:documentation>
+					</xsd:annotation>
+				</xsd:element>
+				<xsd:element name="ErrorCode" type="xsd:int"/>
+				<xsd:element name="ErrorMessage" type="xsd:string"/>
+				<xsd:element name="Providers" type="tns:ProviderInfoType"
+					minOccurs="0" maxOccurs="unbounded"/>
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+
+	<xsd:element name="CheckAccountRequest" type="tns:CheckAccountRequest" />
+	
+	<xsd:element name="CheckAccountsRequest">	
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element name="Requests" type="tns:CheckAccountRequest" minOccurs="1" maxOccurs="unbounded" />
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>	
+	
+	<xsd:element name="CheckAccountsResponse">	
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element name="Responses" type="tns:CheckAccountResponse" minOccurs="1" maxOccurs="unbounded" />
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>	
+
+	<xsd:element name="PrepareRedirectRequest">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element name="APIVersion" type="xsd:int">
+					<xsd:annotation>
+						<xsd:documentation>Requested API Version</xsd:documentation>
+					</xsd:annotation>
+				</xsd:element>
+				<xsd:element name="Provider" type="xsd:string">
+					<xsd:annotation>
+						<xsd:documentation>Provider code, like "marriott"</xsd:documentation>
+					</xsd:annotation>
+				</xsd:element>
+				<xsd:element name="Login" type="xsd:string">
+					<xsd:annotation>
+						<xsd:documentation>User login for provider site</xsd:documentation>
+					</xsd:annotation>
+				</xsd:element>
+				<xsd:element name="Login2" type="xsd:string">
+					<xsd:annotation>
+						<xsd:documentation>Second part of login. Should be empty in most cases</xsd:documentation>
+					</xsd:annotation>
+				</xsd:element>
+				<xsd:element name="Login3" type="xsd:string">
+					<xsd:annotation>
+						<xsd:documentation>Third part of login. Should be empty in most cases</xsd:documentation>
+					</xsd:annotation>
+				</xsd:element>
+				<xsd:element name="Password" type="xsd:string">
+					<xsd:annotation>
+						<xsd:documentation>User password for provider site</xsd:documentation>
+					</xsd:annotation>
+				</xsd:element>
+				<xsd:element name="TargetURL" type="xsd:string" nillable="true">
+					<xsd:annotation>
+						<xsd:documentation>Destination URL, will be loaded after successfull login. Some providers do not support this feature</xsd:documentation>
+					</xsd:annotation>
+				</xsd:element>
+				<xsd:element name="UserID" type="xsd:string" nillable="true">
+					<xsd:annotation>
+						<xsd:documentation>User ID, for statistics</xsd:documentation>
+					</xsd:annotation>
+				</xsd:element>
+				<xsd:element name="TargetType" type="xsd:string" nillable="true">
+					<xsd:annotation>
+						<xsd:documentation>Use 'Coupon' where redirecting to coupon download. Otherwise you can skip this parameter</xsd:documentation>
+					</xsd:annotation>
+				</xsd:element>
+				<xsd:element name="AllowHTTPS" type="xsd:boolean" nillable="false">
+					<xsd:annotation>
+						<xsd:documentation>Set true if your site supports HTTPS to reduce browser warnings about insecure redirects</xsd:documentation>
+					</xsd:annotation>
+				</xsd:element>
+				<xsd:element name="StartURL" type="xsd:string" nillable="true">
+					<xsd:annotation>
+						<xsd:documentation>Starting URL on provider site. Useful for referral links</xsd:documentation>
+					</xsd:annotation>
+				</xsd:element>
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+
+	<xsd:element name="PrepareRedirectResponse">
+		<xsd:complexType>
+			<xsd:annotation>
+				<xsd:documentation>result of PrepareRedirect call</xsd:documentation>
+			</xsd:annotation>
+			<xsd:sequence>
+				<xsd:element name="APIVersion" type="xsd:int">
+					<xsd:annotation>
+						<xsd:documentation>API Version</xsd:documentation>
+					</xsd:annotation>
+				</xsd:element>
+				<xsd:element name="ErrorCode" type="xsd:int">
+					<xsd:annotation>
+						<xsd:documentation>
+							0 -   SOAP_SUCCESS, call successful
+							102 - SOAP_INVALID_PROVIDER, invalid provider code
+							103 - SOAP_BAD_LOGIN, login is empty, or contains invalid symbols
+							104 - SOAP_BAD_PASSWORD, password is empty, or contains invalid symbols
+							105 - SOAP_HTTPS_REQUIRED, use HTTPS protocol for request
+							106 - SOAP_BAD_LOGIN2, login2 is empty, or contains invalid	symbols
+							108 - SOAP_TIMEOUT, account	checking timed out. Check back later for result
+							110 - SOAP_FAILURE, general error
+							120 - SOAP_BAD_LOGIN3, login3 is empty, or contains invalid	symbols
+						</xsd:documentation>
+					</xsd:annotation>
+				</xsd:element>
+				<xsd:element name="ErrorMessage" type="xsd:string"/>
+				<xsd:element name="Response" type="xsd:string">
+					<xsd:annotation>
+						<xsd:documentation>use this html to render iframe</xsd:documentation>
+					</xsd:annotation>
+				</xsd:element>
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+
+	<xsd:element name="CheckAccountCallbackResponse">
+		<xsd:complexType>
+			<xsd:annotation>
+				<xsd:documentation>result of CheckAccountCallback call</xsd:documentation>
+			</xsd:annotation>
+			<xsd:sequence>
+				<xsd:element name="Success" type="xsd:boolean">
+					<xsd:annotation>
+						<xsd:documentation>Result was accepted</xsd:documentation>
+					</xsd:annotation>
+				</xsd:element>
+				<xsd:element name="ErrorMessage" type="xsd:string" nillable="true"/>
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+	
+	<xsd:element name="PartnerType">
+		<xsd:complexType>
+			<xsd:annotation>
+				<xsd:documentation>information about the partner</xsd:documentation>
+			</xsd:annotation>
+			<xsd:sequence>
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+	
+	<xsd:element name="QueueInfo">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element name="APIVersion" type="xsd:int">
+					<xsd:annotation>
+						<xsd:documentation>API Version</xsd:documentation>
+					</xsd:annotation>
+				</xsd:element>
+				<xsd:element name="QueueSize" type="xsd:int" nillable="false">
+					<xsd:annotation>
+						<xsd:documentation>How many accounts waiting check</xsd:documentation>
+					</xsd:annotation>
+				</xsd:element>
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+
+	<xsd:complexType name="InputValueType">
+		<xsd:sequence>
+			<xsd:element name="Code" type="xsd:string" nillable="false"/>
+			<xsd:element name="Value" type="xsd:string"/>
+		</xsd:sequence>
+	</xsd:complexType>
+
+	<xsd:element name="CheckConfirmationNumberRequest" type="tns:CheckConfirmationNumberRequest" />
+
+	<xsd:complexType name="CheckConfirmationNumberRequest">
+		<xsd:annotation>
+			<xsd:documentation>result of confirmation number checking</xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element name="APIVersion" type="xsd:int">
+				<xsd:annotation>
+					<xsd:documentation>Requested API Version</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="Provider" type="xsd:string">
+				<xsd:annotation>
+					<xsd:documentation>Provider code, like "marriott"</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="Values" type="tns:InputValueType" minOccurs="1" maxOccurs="unbounded">
+				<xsd:annotation>
+					<xsd:documentation>values required to get itinerary. Usually Confirmation Number and LastName.
+					see ProviderInfoType.ConfirmationNumberFields</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="UserID" type="xsd:string" nillable="true">
+				<xsd:annotation>
+					<xsd:documentation>User ID, for statistics.</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="CheckNow" type="xsd:boolean">
+				<xsd:annotation>
+					<xsd:documentation>Check account now, or return value from cache</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="Timeout" type="xsd:int">
+				<xsd:annotation>
+					<xsd:documentation>When checknow is true, this value sets
+					timeout in
+					seconds for checking operation
+					0 - 60</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="Priority" type="xsd:int">
+				<xsd:annotation>
+					<xsd:documentation>Request priority 1..9, 5 - normal, 1 - very low, 9 - very high</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="Retries" type="xsd:int" nillable="true">
+				<xsd:annotation>
+					<xsd:documentation>Request retries, in case of error, 0..4, default 4</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+		</xsd:sequence>
+	</xsd:complexType>
+
+	<xsd:element name="CheckConfirmationNumberResponse" type="tns:CheckConfirmationNumberResponse" />
+
+	<xsd:complexType name="CheckConfirmationNumberResponse">
+		<xsd:annotation>
+			<xsd:documentation>result of confirmation number checking</xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element name="APIVersion" type="xsd:int">
+				<xsd:annotation>
+					<xsd:documentation>API Version</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="ErrorCode" type="xsd:int">
+				<xsd:annotation>
+					<xsd:documentation>
+						0 -   SOAP_SUCCESS, call successful
+						102 - SOAP_INVALID_PROVIDER, invalid provider code
+					</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="ErrorMessage" type="xsd:string"/>
+			<xsd:element name="State" type="xsd:int">
+				<xsd:annotation>
+					<xsd:documentation>
+						1 - CONFNO_CHECKED, success
+						100 - CONFNO_INVALID_PARAMS, provider did not accept this params combination
+					</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="Message" type="xsd:string">
+				<xsd:annotation>
+					<xsd:documentation>
+						Human readable error message
+					</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="CheckDate" type="xsd:dateTime">
+				<xsd:annotation>
+					<xsd:documentation>
+						Date and time when account was checked
+					</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="RequestDate"	type="xsd:dateTime">
+				<xsd:annotation>
+					<xsd:documentation>
+						Date and time when account check was requested
+					</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="Itineraries" type="xsd:string" maxOccurs="unbounded" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>User itineraries, in OpenTravel XML</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+		</xsd:sequence>
+	</xsd:complexType>
+
+    <xsd:element name="TransferMilesRequest">
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:element name="APIVersion" type="xsd:int">
+                    <xsd:annotation>
+                        <xsd:documentation>Requested API Version</xsd:documentation>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element name="SourceProvider" type="xsd:string">
+                    <xsd:annotation>
+                        <xsd:documentation>Provider code, like "spg"</xsd:documentation>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element name="SourceLogin" type="xsd:string">
+                    <xsd:annotation>
+                        <xsd:documentation>User login for provider site</xsd:documentation>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element name="SourceLogin2" type="xsd:string">
+                    <xsd:annotation>
+                        <xsd:documentation>Second part of login. Should be empty in most cases</xsd:documentation>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element name="SourceLogin3" type="xsd:string">
+                    <xsd:annotation>
+                        <xsd:documentation>Third part of login. Should be empty in most cases</xsd:documentation>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element name="SourcePassword" type="xsd:string">
+                    <xsd:annotation>
+                        <xsd:documentation>User password for provider site</xsd:documentation>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element name="TargetProvider" type="xsd:string">
+                    <xsd:annotation>
+                        <xsd:documentation>Provider code, like "delta"</xsd:documentation>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element name="TargetAccountNumber" type="xsd:string">
+                    <xsd:annotation>
+                        <xsd:documentation>Account number of target provider</xsd:documentation>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element name="NumberOfMiles" type="xsd:int">
+                    <xsd:annotation>
+                        <xsd:documentation>Number of miles to transfer</xsd:documentation>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element name="ExecuteNow" type="xsd:boolean">
+                    <xsd:annotation>
+                        <xsd:documentation>Transfer rewards now or retrieve result from cache</xsd:documentation>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element name="Timeout" type="xsd:int">
+                    <xsd:annotation>
+                        <xsd:documentation>When ExecuteNow is true, this value sets
+                            timeout in
+                            seconds for executing operation
+                            0 - 60</xsd:documentation>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element name="RequestID" type="xsd:string" nillable="true">
+                    <xsd:annotation>
+                        <xsd:documentation>Unique ID of request provided by caller. Use it to retrieve cached results. Up to 20 characters</xsd:documentation>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element name="Answers" type="tns:AnswerType" minOccurs="0" maxOccurs="unbounded">
+                    <xsd:annotation>
+                        <xsd:documentation>Answers to possible security questions</xsd:documentation>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element name="BrowserState" type="xsd:string" nillable="true">
+                    <xsd:annotation>
+                        <xsd:documentation>Browser state from previous request. Used for programs with security questions</xsd:documentation>
+                    </xsd:annotation>
+                </xsd:element>
+            </xsd:sequence>
+        </xsd:complexType>
+    </xsd:element>
+
+    <xsd:element name="TransferMilesResponse">
+        <xsd:complexType>
+            <xsd:annotation>
+                <xsd:documentation>result of PrepareRedirect call</xsd:documentation>
+            </xsd:annotation>
+            <xsd:sequence>
+                <xsd:element name="APIVersion" type="xsd:int">
+                    <xsd:annotation>
+                        <xsd:documentation>API Version</xsd:documentation>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element name="ErrorCode" type="xsd:int">
+                    <xsd:annotation>
+                        <xsd:documentation>
+                            0 -   SOAP_SUCCESS, call successful
+                            102 - SOAP_INVALID_PROVIDER, invalid provider code
+                            103 - SOAP_BAD_LOGIN, login is empty, or contains invalid symbols
+                            104 - SOAP_BAD_PASSWORD, password is empty, or contains invalid symbols
+                            105 - SOAP_HTTPS_REQUIRED, use HTTPS protocol for request
+                            106 - SOAP_BAD_LOGIN2, login2 is empty, or contains invalid	symbols
+                            108 - SOAP_TIMEOUT, account	checking timed out. Check back later for result
+                            110 - SOAP_FAILURE, general error
+                            120 - SOAP_BAD_LOGIN3, login3 is empty, or contains invalid	symbols
+                        </xsd:documentation>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element name="ErrorMessage" type="xsd:string"/>
+                <xsd:element name="State" type="xsd:int">
+                    <xsd:annotation>
+                        <xsd:documentation>
+                            1 - ACCOUNT_CHECKED, request was successful
+                            2 -	ACCOUNT_INVALID_PASSWORD, provider did not accept usernameand password combination.
+                            3 - ACCOUNT_LOCKOUT, Provider has locked out this account due to multiple invalid login attempts.
+                            4 -	ACCOUNT_PROVIDER_ERROR, provider site returns some error, or requires some user action
+                            5 -	ACCOUNT_PROVIDER_DISABLED, this	provider is disabled on awardwallet
+                            6 - ACCOUNT_ENGINE_ERROR, failed to execute operation
+                            10 - ACCOUNT_QUESTION, user need to answer security question, see Question field in response
+                            11 - ACCOUNT_TIMEOUT, account checking was too slow, timed out.
+                        </xsd:documentation>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element name="Message" type="xsd:string">
+                    <xsd:annotation>
+                        <xsd:documentation>
+                            Human readable message
+                        </xsd:documentation>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element name="RequestID" type="xsd:string" nillable="true">
+                    <xsd:annotation>
+                        <xsd:documentation>Unique ID of request provided by caller. Use it to retrieve cached results</xsd:documentation>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element name="ExecuteDate"
+                             type="xsd:dateTime">
+                    <xsd:annotation>
+                        <xsd:documentation>
+                            Date and time when transfer was executed
+                        </xsd:documentation>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element name="RequestDate"
+                             type="xsd:dateTime">
+                    <xsd:annotation>
+                        <xsd:documentation>
+                            Date and time of request
+                        </xsd:documentation>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element name="Question" type="xsd:string" nillable="true">
+                    <xsd:annotation>
+                        <xsd:documentation>
+                            Security question
+                        </xsd:documentation>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element name="BrowserState" type="xsd:string">
+                    <xsd:annotation>
+                        <xsd:documentation>Browser state, cookies, and other info. Used for subsequent requests</xsd:documentation>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element name="InvalidAnswers" type="tns:AnswerType" maxOccurs="unbounded" minOccurs="0">
+                    <xsd:annotation>
+                        <xsdd:documentation>We have tried this answers, provider did not accept it. You should mark it as invalid on your side, or ask user again</xsdd:documentation>
+                    </xsd:annotation>
+                </xsd:element>
+            </xsd:sequence>
+        </xsd:complexType>
+    </xsd:element>
+
+    <xsd:element name="PurchaseMilesRequest">
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:element name="APIVersion" type="xsd:int">
+                    <xsd:annotation>
+                        <xsd:documentation>Requested API Version</xsd:documentation>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element name="Provider" type="xsd:string">
+                    <xsd:annotation>
+                        <xsd:documentation>Provider code, like "spg"</xsd:documentation>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element name="Values" type="tns:InputValueType" minOccurs="1" maxOccurs="unbounded">
+                    <xsd:annotation>
+                        <xsd:documentation>values required to purchase miles or points. see ProviderInfoType.PurchaseMilesFields</xsd:documentation>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element name="NumberOfMiles" type="xsd:int">
+                    <xsd:annotation>
+                        <xsd:documentation>Number of miles or points to purchase</xsd:documentation>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element name="CreditCard" type="xsd:string">
+                    <xsd:annotation>
+                        <xsd:documentation>Last 4 digits of credit card number to purchase miles with</xsd:documentation>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element name="ExecuteNow" type="xsd:boolean">
+                    <xsd:annotation>
+                        <xsd:documentation>Execute operation now or retrieve result from cache</xsd:documentation>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element name="Timeout" type="xsd:int">
+                    <xsd:annotation>
+                        <xsd:documentation>When ExecuteNow is true, this value sets
+                            timeout in
+                            seconds for executing operation
+                            0 - 60</xsd:documentation>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element name="RequestID" type="xsd:string" nillable="true">
+                    <xsd:annotation>
+                        <xsd:documentation>Unique ID of request provided by caller. Use it to retrieve cached results. Up to 20 characters</xsd:documentation>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element name="Answers" type="tns:AnswerType" minOccurs="0" maxOccurs="unbounded">
+                    <xsd:annotation>
+                        <xsd:documentation>Answers to possible security questions</xsd:documentation>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element name="BrowserState" type="xsd:string" nillable="true">
+                    <xsd:annotation>
+                        <xsd:documentation>Browser state from previous request. Used for programs with security questions</xsd:documentation>
+                    </xsd:annotation>
+                </xsd:element>
+            </xsd:sequence>
+        </xsd:complexType>
+    </xsd:element>
+
+    <xsd:element name="PurchaseMilesResponse">
+        <xsd:complexType>
+            <xsd:annotation>
+                <xsd:documentation>result of purchasing miles or points</xsd:documentation>
+            </xsd:annotation>
+            <xsd:sequence>
+                <xsd:element name="APIVersion" type="xsd:int">
+                    <xsd:annotation>
+                        <xsd:documentation>API Version</xsd:documentation>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element name="ErrorCode" type="xsd:int">
+                    <xsd:annotation>
+                        <xsd:documentation>
+                            0 -   SOAP_SUCCESS, call successful
+                            102 - SOAP_INVALID_PROVIDER, invalid provider code
+                            103 - SOAP_BAD_LOGIN, login is empty, or contains invalid symbols
+                            104 - SOAP_BAD_PASSWORD, password is empty, or contains invalid symbols
+                            105 - SOAP_HTTPS_REQUIRED, use HTTPS protocol for request
+                            106 - SOAP_BAD_LOGIN2, login2 is empty, or contains invalid	symbols
+                            108 - SOAP_TIMEOUT, account	checking timed out. Check back later for result
+                            110 - SOAP_FAILURE, general error
+                            120 - SOAP_BAD_LOGIN3, login3 is empty, or contains invalid	symbols
+                        </xsd:documentation>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element name="ErrorMessage" type="xsd:string"/>
+                <xsd:element name="State" type="xsd:int">
+                    <xsd:annotation>
+                        <xsd:documentation>
+                            1 - ACCOUNT_CHECKED, request was successful
+                            2 -	ACCOUNT_INVALID_PASSWORD, provider did not accept usernameand password combination.
+                            3 - ACCOUNT_LOCKOUT, Provider has locked out this account due to multiple invalid login attempts.
+                            4 -	ACCOUNT_PROVIDER_ERROR, provider site returns some error, or requires some user action
+                            5 -	ACCOUNT_PROVIDER_DISABLED, this	provider is disabled on awardwallet
+                            6 - ACCOUNT_ENGINE_ERROR, awardwallet failed to parse provider site
+                            10 - ACCOUNT_QUESTION, user need to answer security question, see Question field in response
+                            11 - ACCOUNT_TIMEOUT, account checking was too slow, timed out.
+                        </xsd:documentation>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element name="Message" type="xsd:string">
+                    <xsd:annotation>
+                        <xsd:documentation>
+                        </xsd:documentation>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element name="RequestID" type="xsd:string" nillable="true">
+                    <xsd:annotation>
+                        <xsd:documentation>Unique ID of request provided by caller. Use it to retrieve cached results</xsd:documentation>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element name="ExecuteDate"
+                             type="xsd:dateTime">
+                    <xsd:annotation>
+                        <xsd:documentation>
+                            Date and time when purchase was executed
+                        </xsd:documentation>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element name="RequestDate"
+                             type="xsd:dateTime">
+                    <xsd:annotation>
+                        <xsd:documentation>
+                            Date and time of request
+                        </xsd:documentation>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element name="Question" type="xsd:string" nillable="true">
+                    <xsd:annotation>
+                        <xsd:documentation>
+                            Security question
+                        </xsd:documentation>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element name="BrowserState" type="xsd:string">
+                    <xsd:annotation>
+                        <xsd:documentation>Browser state, cookies, and other info. Used for subsequent requests</xsd:documentation>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element name="InvalidAnswers" type="tns:AnswerType" maxOccurs="unbounded" minOccurs="0">
+                    <xsd:annotation>
+                        <xsdd:documentation>We have tried this answers, provider did not accept it. You should mark it as invalid on your side, or ask user again</xsdd:documentation>
+                    </xsd:annotation>
+                </xsd:element>
+            </xsd:sequence>
+        </xsd:complexType>
+    </xsd:element>
+
+    <xsd:element name="RegisterAccountRequest">
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:element name="APIVersion" type="xsd:int">
+                    <xsd:annotation>
+                        <xsd:documentation>Requested API Version</xsd:documentation>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element name="Provider" type="xsd:string">
+                    <xsd:annotation>
+                        <xsd:documentation>Provider code, like "spg"</xsd:documentation>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element name="Values" type="tns:InputValueType" minOccurs="1" maxOccurs="unbounded">
+                    <xsd:annotation>
+                        <xsd:documentation>values required to register an account. see ProviderInfoType.RegisterAccountFields</xsd:documentation>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element name="ExecuteNow" type="xsd:boolean">
+                    <xsd:annotation>
+                        <xsd:documentation>Execute operation now or retrieve result from cache</xsd:documentation>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element name="Timeout" type="xsd:int">
+                    <xsd:annotation>
+                        <xsd:documentation>When ExecuteNow is true, this value sets
+                            timeout in
+                            seconds for executing operation
+                            0 - 60</xsd:documentation>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element name="RequestID" type="xsd:string" nillable="true">
+                    <xsd:annotation>
+                        <xsd:documentation>Unique ID of request provided by caller. Use it to retrieve cached results. Up to 20 characters</xsd:documentation>
+                    </xsd:annotation>
+                </xsd:element>
+            </xsd:sequence>
+        </xsd:complexType>
+    </xsd:element>
+
+    <xsd:element name="RegisterAccountResponse">
+        <xsd:complexType>
+            <xsd:annotation>
+                <xsd:documentation>result of registering new account</xsd:documentation>
+            </xsd:annotation>
+            <xsd:sequence>
+                <xsd:element name="APIVersion" type="xsd:int">
+                    <xsd:annotation>
+                        <xsd:documentation>API Version</xsd:documentation>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element name="ErrorCode" type="xsd:int">
+                    <xsd:annotation>
+                        <xsd:documentation>
+                            0 -   SOAP_SUCCESS, call successful
+                            102 - SOAP_INVALID_PROVIDER, invalid provider code
+                            103 - SOAP_BAD_LOGIN, login is empty, or contains invalid symbols
+                            104 - SOAP_BAD_PASSWORD, password is empty, or contains invalid symbols
+                            105 - SOAP_HTTPS_REQUIRED, use HTTPS protocol for request
+                            106 - SOAP_BAD_LOGIN2, login2 is empty, or contains invalid	symbols
+                            108 - SOAP_TIMEOUT, account	checking timed out. Check back later for result
+                            110 - SOAP_FAILURE, general error
+                            120 - SOAP_BAD_LOGIN3, login3 is empty, or contains invalid	symbols
+                        </xsd:documentation>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element name="ErrorMessage" type="xsd:string"/>
+                <xsd:element name="State" type="xsd:int">
+                    <xsd:annotation>
+                        <xsd:documentation>
+                            1 - ACCOUNT_CHECKED, request was successful
+                            2 -	ACCOUNT_INVALID_PASSWORD, provider did not accept usernameand password combination.
+                            3 - ACCOUNT_LOCKOUT, Provider has locked out this account due to multiple invalid login attempts.
+                            4 -	ACCOUNT_PROVIDER_ERROR, provider site returns some error, or requires some user action
+                            5 -	ACCOUNT_PROVIDER_DISABLED, this	provider is disabled on awardwallet
+                            6 - ACCOUNT_ENGINE_ERROR, awardwallet failed to parse provider site
+                            10 - ACCOUNT_QUESTION, user need to answer security question, see Question field in response
+                            11 - ACCOUNT_TIMEOUT, account checking was too slow, timed out.
+                        </xsd:documentation>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element name="Message" type="xsd:string">
+                    <xsd:annotation>
+                        <xsd:documentation>
+                        </xsd:documentation>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element name="RequestID" type="xsd:string" nillable="true">
+                    <xsd:annotation>
+                        <xsd:documentation>Unique ID of request provided by caller. Use it to retrieve cached results</xsd:documentation>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element name="ExecuteDate"
+                             type="xsd:dateTime">
+                    <xsd:annotation>
+                        <xsd:documentation>
+                            Date and time when operation was executed
+                        </xsd:documentation>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element name="RequestDate"
+                             type="xsd:dateTime">
+                    <xsd:annotation>
+                        <xsd:documentation>
+                            Date and time of request
+                        </xsd:documentation>
+                    </xsd:annotation>
+                </xsd:element>
+            </xsd:sequence>
+        </xsd:complexType>
+    </xsd:element>
+
+	<xsd:complexType name="PurchaseRateType">
+		<xsd:annotation>
+			<xsd:documentation>Single purchase bucket rate</xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element name="Quantity" type="xsd:int">
+				<xsd:annotation>
+					<xsd:documentation>Number of points in a bucket</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="Rate" type="xsd:float">
+				<xsd:annotation>
+					<xsd:documentation>Price of the bucket</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="Currency" type="xsd:string">
+				<xsd:annotation>
+					<xsd:documentation>Currency code</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+		</xsd:sequence>
+	</xsd:complexType>
+
+	<xsd:complexType name="ProviderPurchaseRatesType">
+		<xsd:annotation>
+			<xsd:documentation>Purchase rates for single provider</xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element name="Provider" type="xsd:string">
+				<xsd:annotation>
+					<xsd:documentation>Provider</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="Rates" type="tns:PurchaseRateType" minOccurs="0" maxOccurs="unbounded">
+				<xsd:annotation>
+					<xsd:documentation>buckets</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+		</xsd:sequence>
+	</xsd:complexType>
+
+	<xsd:element name="PurchaseRatesRequest">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element name="APIVersion" type="xsd:int">
+					<xsd:annotation>
+						<xsd:documentation>Requested API Version</xsd:documentation>
+					</xsd:annotation>
+				</xsd:element>
+				<xsd:element name="Provider" type="xsd:string">
+					<xsd:annotation>
+						<xsd:documentation>
+							Provider code. If omitted, purchase rates for all available providers will be returned
+						</xsd:documentation>
+					</xsd:annotation>
+				</xsd:element>
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+
+	<xsd:element name="PurchaseRatesResponse">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element name="APIVersion" type="xsd:int">
+					<xsd:annotation>
+						<xsd:documentation>API Version</xsd:documentation>
+					</xsd:annotation>
+				</xsd:element>
+				<xsd:element name="ProviderRate" type="tns:ProviderPurchaseRatesType" minOccurs="0" maxOccurs="unbounded"/>
+				<xsd:element name="ErrorCode" type="xsd:int"/>
+				<xsd:element name="ErrorMessage" type="xsd:string"/>
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+
+</xsd:schema>

@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<wsdl:definitions xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
+	xmlns:tns="https://service.awardwallet.com/wsdl/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+	xmlns:xsd="http://www.w3.org/2001/XMLSchema" name="services"
+	xmlns:spec="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd"
+	targetNamespace="https://service.awardwallet.com/wsdl/">
+
+	<wsdl:types>
+		<xsd:schema targetNamespace="https://service.awardwallet.com/wsdl/">
+
+			<xsd:complexType name="GetAccountLogsRequest">
+				<xsd:sequence>
+					<xsd:element name="Partner" type="xsd:string">
+						<xsd:annotation>
+							<xsd:documentation>Partner code, like "awardwallet"</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
+					<xsd:element name="Provider" type="xsd:string">
+						<xsd:annotation>
+							<xsd:documentation>Provider code, like "marriott"</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
+					<xsd:element name="Login" type="xsd:string">
+						<xsd:annotation>
+							<xsd:documentation>User login for provider site</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
+					<xsd:element name="Login2" type="xsd:string">
+						<xsd:annotation>
+							<xsd:documentation>Second part of login. Should be empty in most cases</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
+					<xsd:element name="Login3" type="xsd:string">
+						<xsd:annotation>
+							<xsd:documentation>Third part of login. Should be empty in most cases</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
+					<xsd:element name="AccountID" type="xsd:string">
+						<xsd:annotation>
+							<xsd:documentation>AccountID from CheckAccountRequest</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
+				</xsd:sequence>
+			</xsd:complexType>
+			<xsd:element name="GetAccountLogsRequest" type="tns:GetAccountLogsRequest" />
+
+			<xsd:complexType name="GetAccountLogsResponse">
+				<xsd:sequence>
+					<xsd:element name="Logs" type="tns:AccountLogType" minOccurs="0" maxOccurs="unbounded"/>
+				</xsd:sequence>
+			</xsd:complexType>
+			<xsd:element name="GetAccountLogsResponse" type="tns:GetAccountLogsResponse" />
+
+			<xsd:complexType name="AccountLogType">
+				<xsd:sequence>
+					<xsd:element name="LogDate" type="xsd:dateTime"/>
+					<xsd:element name="Login" type="xsd:string" minOccurs="1" maxOccurs="unbounded"/>
+					<xsd:element name="Zip" type="xsd:string" minOccurs="1" maxOccurs="unbounded"/>
+				</xsd:sequence>
+			</xsd:complexType>
+
+			<xsd:complexType name="RequestAccountPasswordRequest">
+				<xsd:sequence>
+					<xsd:element name="Partner" type="xsd:string">
+						<xsd:annotation>
+							<xsd:documentation>Partner code, like "awardwallet"</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
+					<xsd:element name="Provider" type="xsd:string">
+						<xsd:annotation>
+							<xsd:documentation>Provider code, like "marriott"</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
+					<xsd:element name="Login" type="xsd:string">
+						<xsd:annotation>
+							<xsd:documentation>User login for provider site</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
+					<xsd:element name="Note" type="xsd:string">
+					</xsd:element>
+					<xsd:element name="Delete" type="xsd:boolean">
+					</xsd:element>
+				</xsd:sequence>
+			</xsd:complexType>
+			<xsd:element name="RequestAccountPasswordRequest" type="tns:RequestAccountPasswordRequest" />
+
+			<xsd:complexType name="RequestAccountPasswordResponse">
+				<xsd:sequence>
+					<xsd:element name="Exists" type="xsd:boolean"/>
+				</xsd:sequence>
+			</xsd:complexType>
+			<xsd:element name="RequestAccountPasswordResponse" type="tns:RequestAccountPasswordResponse" />
+
+		</xsd:schema>
+	</wsdl:types>
+
+	<wsdl:message name="GetAccountLogsRequest">
+		<wsdl:part name="body" element="tns:GetAccountLogsRequest"/>
+	</wsdl:message>
+
+	<wsdl:message name="GetAccountLogsResponse">
+		<wsdl:part name="body" element="tns:GetAccountLogsResponse"/>
+	</wsdl:message>
+
+	<wsdl:message name="RequestAccountPasswordRequest">
+		<wsdl:part name="body" element="tns:RequestAccountPasswordRequest"/>
+	</wsdl:message>
+
+	<wsdl:message name="RequestAccountPasswordResponse">
+		<wsdl:part name="body" element="tns:RequestAccountPasswordResponse"/>
+	</wsdl:message>
+
+	<wsdl:portType name="AwardWalletDebugService">
+		<wsdl:operation name="GetAccountLogs">
+			<wsdl:documentation>Get logs of last account checks</wsdl:documentation>
+			<wsdl:input message="tns:GetAccountLogsRequest" />
+			<wsdl:output message="tns:GetAccountLogsResponse" />
+		</wsdl:operation>
+		<wsdl:operation name="RequestAccountPassword">
+			<wsdl:documentation>Get logs of last account checks</wsdl:documentation>
+			<wsdl:input message="tns:RequestAccountPasswordRequest" />
+			<wsdl:output message="tns:RequestAccountPasswordResponse" />
+		</wsdl:operation>
+	</wsdl:portType>
+
+	<wsdl:binding name="servicesSOAP" type="tns:AwardWalletDebugService">
+		<soap:binding style="document"
+			transport="http://schemas.xmlsoap.org/soap/http" />
+		<spec:SecuritySpec spec:Namespace="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd" spec:Id="default-spec">
+			<spec:UsernameTokenSpec PasswordType="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-username-token-profile-1.0#PasswordText">
+		   </spec:UsernameTokenSpec>
+		</spec:SecuritySpec>
+		<wsdl:operation name="GetAccountLogs">
+			<soap:operation soapAction="GetAccountLogs" />
+			<wsdl:input>
+				<spec:SecuritySpecRef RefId="default-spec"/>
+				<soap:body use="literal" />
+			</wsdl:input>
+			<wsdl:output>
+				<spec:SecuritySpecRef RefId="default-spec"/>
+				<soap:body use="literal" />
+			</wsdl:output>
+		</wsdl:operation>
+		<wsdl:operation name="RequestAccountPassword">
+			<soap:operation soapAction="RequestAccountPassword" />
+			<wsdl:input>
+				<spec:SecuritySpecRef RefId="default-spec"/>
+				<soap:body use="literal" />
+			</wsdl:input>
+			<wsdl:output>
+				<spec:SecuritySpecRef RefId="default-spec"/>
+				<soap:body use="literal" />
+			</wsdl:output>
+		</wsdl:operation>
+	</wsdl:binding>
+
+	<wsdl:service name="AwardWalletDebugService">
+		<wsdl:documentation>AwardWallet debug interface</wsdl:documentation>
+		<wsdl:port binding="tns:servicesSOAP" name="servicesSOAP">
+			<soap:address location="https://service.awardwallet.com/wsdl/debug.php" />
+		</wsdl:port>
+	</wsdl:service>
+
+</wsdl:definitions>
