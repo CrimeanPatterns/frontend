@@ -1,0 +1,36 @@
+version: '2.4'
+
+services:
+  clickhouse:
+    image: clickhouse/clickhouse-server:24.10
+  nginx:
+      image: nginx:1.14
+  php:
+      volumes:
+          - ~/docker-home:/home/user
+          - ~/.composer:/home/user/.composer
+          - ~/.npmrc:/home/user/.npmrc:ro
+  mail:
+      image: docker.awardwallet.com/mail-forwarder
+
+  mysql:
+      volumes:
+          - ./docker/dev/mysql-tests.cnf:/etc/mysql/conf.d/mysql.cnf
+      ports:
+        - 3306:3306
+  selenium:
+    image: selenium/standalone-firefox:4.0.0-20211102
+    environment:
+      - SE_VNC_PASSWORD=secret
+    ports:
+      - "5900:5900"
+  playwright:
+    volumes:
+      - playwright-node-modules:/app/node_modules
+
+networks:
+  awardwallet:
+      external: false
+
+volumes:
+  playwright-node-modules:

@@ -1,0 +1,23 @@
+# place these lines into /etc/exports:
+# replace 501 here with your mac user id, check it with "id -u" command
+#
+# /www/awardwallet -alldirs -mapall=501:20 localhost
+# nfs.server.mount.require_resv_port = 0
+#
+# then attach this file to .env:
+# COMPOSE_FILE=docker-compose.yml:docker-compose-nfs.yml
+#
+version: '2.4'
+
+services:
+  php:
+    volumes:
+      - "sources:/www/awardwallet"
+
+volumes:
+  sources:
+    driver: local
+    driver_opts:
+      type: nfs
+      o: addr=host.docker.internal       # IP of nfs server.  This is also where you put any options '-o' in standard option format
+      device: ":/www/awardwallet"  # location on nfs server of file/dir you want to mount

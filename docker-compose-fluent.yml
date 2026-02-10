@@ -1,0 +1,23 @@
+version: '2.4'
+
+services:
+  nginx:
+    links:
+      - fluent:fluent
+  fluent:
+      build: docker/prod/fluentbit
+      environment:
+          - UPSTREAM_HOST=host.docker.internal
+          - UPSTREAM_PORT=24224
+          - STAT_HOST=host.docker.internal
+          - STAT_PORT=24225
+#      volumes:
+#        - ./docker/dev/fluent-bit.conf:/fluent-bit/etc/fluent-bit.conf
+#        - ./docker/prod/fluentbit/awardwallet_parsers.conf:/fluent-bit/etc/awardwallet_parsers.conf
+#        - ./docker/prod/fluentbit/override_timestamp.lua:/fluent-bit/etc/override_timestamp.lua
+#      ports:
+#        - '24224:24224'
+#        - '5140:5140'
+#        - '5141:5141'
+#  fluentd:
+#      image: docker.awardwallert.com/service/fluentd-master

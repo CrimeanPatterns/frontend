@@ -1,0 +1,60 @@
+version: '3.5'
+
+services:
+  nginx:
+      image: nginx:1.14
+      ports:
+          - "${NGINX_PORT}:80"
+      volumes:
+          - ./web:/www/awardwallet/web
+          - ./docker/dev/nginx/nginx.conf:/etc/nginx/conf.d/default.conf.template
+          - ./docker/dev/nginx/entrypoint.sh:/root/nginx-dev-entrypoint.sh
+          - ./docker/dev/nginx/fastcgi-symfony.conf:/etc/nginx/fastcgi-symfony.conf
+          - ../shared/images/uploaded:/www/awardwallet/web/images/uploaded
+      command: ["/root/nginx-dev-entrypoint.sh"]
+      environment:
+          - SYMFONY_ENV
+      links:
+          - php:php
+      networks:
+          - awardwallet
+
+  php:
+      image: docker.awardwallet.com/php/frontend-ubuntu20.04-php7.4-debug-multiarch
+      volumes:
+          - ./:/www/awardwallet
+          - ./docker/30-awardwallet-php.ini:/etc/php/7.4/cli/conf.d/30-awardwallet-php.ini
+          - ./docker/30-awardwallet-php.ini:/etc/php/7.4/fpm/conf.d/30-awardwallet-php.ini
+          - ./docker/dev/php/php_fpm_global.conf:/etc/php/7.4/fpm/global.conf
+          - ./docker/dev/php/php_fpm_pool.conf:/etc/php/7.4/fpm/pool.d/www.conf
+          - ../shared/php-sessions:/var/lib/php/sessions
+          - ../shared/images/uploaded:/www/awardwallet/web/images/uploaded
+          - ../shared/s3buckets:/tmp/s3buckets
+          - ./docker/home:/home/user
+          - ./docker/.bashrc:/home/user/.bashrc
+          - ./docker/.my.cnf:/home/user/.my.cnf
+          - ./docker/.profile:/home/user/.profile
+          - ~/.ssh:/home/user/.ssh
+          - ~/.gitconfig:/home/user/.gitconfig
+          - ../shared/composer-cache:/home/user/.composer
+          - ../shared/certs:/certs
+          - ./docker/supervisor-staging.conf:/etc/supervisor/conf.d/frontend-staging.conf
+          - ~/.npmrc:/home/user/.npmrc:ro
+      environment:
+          - LOCAL_USER_ID
+          - GOSU=off
+          - SYMFONY_ENV
+          - SYMFONY_DEBUG
+      cap_add:
+          - SYS_PTRACE
+      command: /usr/bin/supervisord -n -c /etc/supervisor/supervisord.conf
+      working_dir: /www/awardwallet
+      networks:
+          awardwallet:
+              aliases:
+                - php.awardwallet.docker
+
+networks:
+  awardwallet:
+    name: "$NETWORK_NAME"
+

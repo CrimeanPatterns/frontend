@@ -1,0 +1,31 @@
+version: '2.4'
+
+services:
+#  host-proxy:
+#    image: nginx
+#    volumes:
+#      - ./docker/dev/nginx/host-proxy.conf:/etc/nginx/nginx.conf
+  nginx:
+    volumes:
+      - ./docker/dev/nginx/fastcgi-symfony-mac.conf:/etc/nginx/fastcgi-symfony.conf
+  php:
+    entrypoint: /bin/cat
+  mysql:
+    ports:
+      - "33063:3306"
+    labels:
+      com.symfony.server.service-ignore: true
+    volumes:
+    - "./data:/app/data"
+  rabbitmq:
+    ports:
+      - "5672:5672"
+  mail:
+    ports:
+      - '25:25'
+      - '147:143'
+  memcached:
+    ports:
+      - '11211:11211'
+      - '11211:11211/udp'
+

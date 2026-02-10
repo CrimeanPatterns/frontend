@@ -1,0 +1,47 @@
+variables:
+  GIT_SUBMODULE_STRATEGY: none
+
+before_script:
+  - pwd
+
+cache:
+  key: "$CI_COMMIT_REF_SLUG"
+  paths:
+    - vendor/
+
+tests:
+  stage: test
+  script:
+    - git submodule init
+    - git submodule foreach 'git fetch origin && git checkout master'
+    - rm -Rf app/cache/*
+    - rm -f tests/acceptance/*Guy.php
+    - rm -f tests/functional/*Guy.php
+    - rm -f tests/functional-symfony/*Guy.php
+    - rm -f tests/unit/*Guy.php
+    - mkdir -p tests/_log
+    - rm -Rf tests/_log/*
+    - rm -f app/config/parameters.yml
+    - echo LOCAL_USER_ID=`id -u $USER` >.env
+    - echo COMPOSE_FILE=docker-compose.yml:docker-compose-tests.yml >>.env
+    - echo COMPOSE_PROJECT_NAME=$CI_PROJECT_NAME-$CI_JOB_ID >>.env
+    - mkdir -p ~/.composer
+    - mkdir -p ~/.docker-home
+    - if [[ ! -f ~/.gitconfig ]] ; then echo 'There is no ~/.gitconfig'; fi
+    - if [[ ! -f ~/.ssh/config ]] ; then echo 'There is no ~/.ssh/config'; fi
+    - docker-compose pull
+    - docker-compose up -d
+    - docker-compose exec --user user -T php sudo chown user:user /home/user
+    - docker-compose exec -T php /usr/local/bin/gosu user /www/awardwallet/docker/runTests1.php
+
+stages:
+  - test
+  - cleanup
+
+cleanup:
+  stage: cleanup
+  when: always
+  script:
+  - docker-compose down -v
+  - git diff
+

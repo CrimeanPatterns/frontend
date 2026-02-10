@@ -1,0 +1,54 @@
+bootstrap: _bootstrap.php
+paths:
+    tests: tests
+    log: tests/_log
+    data: tests/_data
+    helpers: tests/_helpers
+settings:
+    suite_class: \PHPUnit_Framework_TestSuite
+    colors: true
+    memory_limit: 3000M
+    log: true
+    backup_globals: false
+groups:
+    paracept_*: tests/_data/paracept/group_*
+modules:
+    config:
+        Symfony:
+            app_path: 'app'
+            var_path: 'app'
+            environment: 'codeception'
+        CustomDb:
+            # parameters below are not used anymore. CustomDb will read parameters from app/config/parameters.yml
+            dsn: 'blah'
+            user: 'blah'
+            password: 'blah'
+            cleanup: false
+        WebHelper:
+            url: 'http://awardwallet.docker'
+            host: selenium
+            browser: firefox
+            keepBrowserOnError: true
+            capabilities:
+               unexpectedAlertBehaviour: 'accept'
+        Mail:
+            server: 'mail'
+            port: 143
+            ssl: false
+            user: 'vagrant'
+            password: 'vagrant'
+
+        PhpBrowser:
+            url: 'http://awardwallet.docker'
+            curl:
+              CURLOPT_TIMEOUT: 180 # timeout in seconds
+        REST:
+            url: ''
+        TestHelper:
+            xDebugKey: 'PHPSTORM'
+error_level: "E_ALL & ~E_STRICT"
+extensions:
+    enabled:
+        - Codeception\Extension\MemoryLeak
+        - Codeception\Extension\GoogleApiMockSaver
+        - Codeception\Extension\RunFailed

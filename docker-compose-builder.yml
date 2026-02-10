@@ -1,0 +1,37 @@
+version: '2'
+
+services:
+  nginx:
+    image: nginx:1.14
+    ports:
+      - "8081:80"
+    volumes:
+      - ./web:/www/awardwallet/web
+      - ./docker/prod/builder/nginx.conf:/etc/nginx/conf.d/default.conf
+    links:
+      - php:php
+    restart: always
+    networks:
+      default:
+      awardwallet:
+        aliases:
+          - awardwallet.docker
+  php:
+    image: 718278292471.dkr.ecr.us-east-1.amazonaws.com/frontend/fpm:builder
+    ipc: host
+    user: '113'
+    volumes:
+      - /var/lib/jenkins/workspace/deploy-engine:/www/awardwallet/engine
+  fluent:
+    restart: always
+    image: 718278292471.dkr.ecr.us-east-1.amazonaws.com/frontend/fluentbit
+    environment:
+      - DETECT_AWS_IP=1
+  mail:
+    restart: always
+    image: 718278292471.dkr.ecr.us-east-1.amazonaws.com/postfix:2.05
+
+networks:
+  awardwallet:
+    external: true
+

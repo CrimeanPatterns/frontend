@@ -1,0 +1,41 @@
+# brew install mutagen-io/mutagen/mutagen-beta
+# increase docker disk size (in docker for mac preferences)
+# add docker-compose-mutagen.yml to .env
+# run in console: echo LOCAL_GROUP_ID=`id -g $USER` >.env
+# remove folder docker/dev/home
+# mutagen compose up -d
+# you could monitor sync status with "mutagen sync list"
+
+version: '2.4'
+
+services:
+  php:
+    volumes:
+    - code:/www/awardwallet
+
+volumes:
+  code: {}
+
+x-mutagen:
+  sync:
+    defaults:
+      ignore:
+        vcs: true
+      watch:
+        pollingInterval: 300
+    code:
+      alpha: "."
+      beta: "volume://code"
+      mode: "two-way-resolved"
+      ignore:
+        paths:
+          - ".DS_Store"
+          - "/.idea"
+          - "/app/logs/"
+          - "/app/cache/"
+      configurationBeta:
+        permissions:
+          defaultOwner: "id:$LOCAL_USER_ID"
+          defaultGroup: "id:$LOCAL_GROUP_ID"
+          defaultFileMode: 644
+          defaultDirectoryMode: 755

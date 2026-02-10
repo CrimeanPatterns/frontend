@@ -1,0 +1,45 @@
+version: '3.5'
+
+services:
+  mail:
+      image: docker.awardwallet.com/mail-forwarder
+      networks:
+          - awardwallet
+      restart: always
+  mysql:
+      image: mysql:8.0.32
+      environment:
+          - MYSQL_ALLOW_EMPTY_PASSWORD=1
+          - MYSQL_USER=awardwallet
+          - MYSQL_PASSWORD=awardwallet
+          - MYSQL_DATABASE=awardwallet
+      volumes:
+          - ./docker/mysql.cnf:/etc/mysql/conf.d/mysql.cnf
+          - "$DATABASE_PATH:/var/lib/mysql"
+      networks:
+          awardwallet:
+              aliases:
+                  - vendor.mysql.awardwallet.com
+      restart: always
+  rabbitmq:
+      image: docker.awardwallet.com/service/rabbitmq
+      environment:
+          - VIRTUAL_PORT=15672
+      networks:
+          - awardwallet
+      restart: always
+  memcached:
+      image: memcached
+      entrypoint: ["memcached", "-m", "64"]
+      networks:
+          - awardwallet
+      restart: always
+
+volumes:
+  composer-cache: {}
+
+networks:
+  awardwallet:
+    name: "$NETWORK_NAME"
+
+
