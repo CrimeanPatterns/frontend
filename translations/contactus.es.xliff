@@ -1,0 +1,444 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:jms="urn:jms:translation" version="1.2">
+  <file source-language="en" target-language="es" datatype="plaintext" original="not.available">
+    <header>
+      <tool tool-id="JMSTranslationBundle" tool-name="JMSTranslationBundle" tool-version="1.1.0-DEV" />
+      <note>The source node in most cases contains the sample message as written by the developer. If it looks like a dot-delimitted string such as "form.label.firstname", then the developer has not provided a default message.</note>
+    </header>
+    <body>
+      <trans-unit id="5eff6a733e22bf5dd1900d8b6b7c1b1b6a9bbc0d" resname="aa-note">
+        <source xml:space="preserve">
+                Unfortunately, %bold_on%American Airlines%bold_off% won't let us automatically track your AAdvantage miles for you (business or personal accounts).
+                If you want to voice your opinion to American Airlines, we invite you to fill out this petition: %petition_link_on%%petition_link%%petition_link_off%
+                or send an email to %email_link_on%%email%%email_link_off%.
+                %br%%br%
+                If you wish to track any account on AwardWallet manually, you can do so by adding a custom account via this form:
+                %form_link_on%%form_link%%form_link_off%
+            </source>
+        <target xml:space="preserve" state="new">
+                Lamentablemente, %bold_on%American Airlines%bold_off% no nos permite realizar un seguimiento automático de tus millas AAdvantage (cuentas personales o de empresa). Si deseas hacer llegar su opinión a American Airlines, te sugerimos que rellenes esta petición: %petition_link_on%%petition_link%%petition_link_off% o envíes un correo electrónico a %email_link_on%%email%%email_link_off%. %br%%br% Si deseas realizar un seguimiento manual de cualquier cuenta en AwardWallet, puedes hacerlo añadiendo la cuenta a través de este formulario: %form_link_on%%form_link%%form_link_off%
+            </target>
+
+        <jms:reference-file>Service/ProgramStatus/DesktopContactUsDescriptor.php</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="0a0b7425e48f96390b6bba165d8f09902fedec7f" resname="aa-note.mobile">
+        <source xml:space="preserve">
+                %row_start%Unfortunately, %bold_on%American Airlines%bold_off% won't let us automatically track your AAdvantage miles for you (business or personal accounts).
+                If you want to voice your opinion to American Airlines, we invite you to fill out this petition:%row_end% %petition_link_on%%petition_link%%petition_link_off%
+                %row_start%or send an email to%row_end%
+                %email_link_on%%email%%email_link_off%
+                %row_margin_start%If you wish to track any account on AwardWallet manually, you can do so by adding a custom account via this form:%row_margin_end%
+                %form%
+            </source>
+        <target xml:space="preserve" state="new">
+                %row_start%Lamentablemente, %bold_on%American Airlines%bold_off% no nos permite realizar un seguimiento automático de tus millas AAdvantage (cuentas personales o de empresa). Si deseas hacer llegar su opinión a American Airlines, te sugerimos que rellenes esta petición:%row_end% %petition_link_on%%petition_link%%petition_link_off% %row_start%o envíes un correo electrónico a%row_end% %email_link_on%%email%%email_link_off%. %row_margin_start%Si deseas realizar un seguimiento manual de cualquier cuenta en AwardWallet, puedes hacerlo añadiendo la cuenta a través de este formulario:%row_margin_end% %form%
+            </target>
+
+        <jms:reference-file>Service/ProgramStatus/MobileAddAccountDescriptor.php</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="8fb0f60fa9b92a30e93f20e218f8dac506a6bc41" resname="about-site.text">
+        <source>%site_name% is the number one resource on the web for tracking awards and travel plans</source>
+        <target state="new">%site_name% es la mejor opción en línea para controlar recompensas y planes de viaje</target>
+
+        <jms:reference-file>views/ContactUs/index.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="4d5b696f6c9ab788a1cf1c3c57de41930b04905d" resname="contactus.booking-notice">
+        <source><![CDATA[Please note that all of the booking requests are done by another team and not by AwardWallet support.
+                    Therefore we are not able to answer any booking related questions.
+                    If you need to update your request or ask a question please navigate to your award ticket booking requests queue: <br />
+                    <a href="%bookingRequestsLink%">%bookingRequestsLink%</a> <br />
+                    and ask your questions by posting a reply to the specific booking request that you have.]]></source>
+        <target><![CDATA[Recuerda que es otro equipo es quien realiza todas las solicitudes de reserva y no el servicio de asistencia de AwardWallet. Por lo tanto, no podemos responder a ninguna pregunta relacionada con reservas. Si necesitas actualizar tu solicitud o hacer alguna pregunta, ve a nuestra cola de solicitud de reservas: <br /> <a href="%bookingRequestsLink%">%bookingRequestsLink%</a> <br /> y deja tus preguntas publicando una respuesta a una solicitud de reserva específica que ya tengas abierta.]]></target>
+
+        <jms:reference-file>views/ContactUs/index.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="8a24e644bcf7d1c19ddb60f970944e0a7068a375" resname="contactus.booking-notice.title">
+        <source>Booking Requests</source>
+        <target state="new">Solicitudes de reserva</target>
+
+        <jms:reference-file>views/ContactUs/index.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="053e5ee7f91ead6ede34c8392ec7b0156154069c" resname="contactus.captcha.lable">
+        <source>Security Number</source>
+        <target>Número de seguridad</target>
+
+        <note>https://www.dropbox.com/s/61unt9yv8a6f4fx/security_number.png?dl=0</note>
+        <jms:reference-file>Form/Type/ContactUsUnauthType.php</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="fc0173ab5d37cce8951380c2aeb8cbda5163153a" resname="contactus.contact-method-info">
+        <source><![CDATA[Please note that in order to contact you we will use the info that is specified in <a href="%url%">your profile</a>. If that info is incorrect please change it before contacting us.]]></source>
+        <target state="new"><![CDATA[Recuerda que para ponernos en contacto contigo utilizaremos la información indicada en <a href="%url%">tu perfil</a>. Si esa información no es correcta, debes cambiarla antes de ponerte en contacto con nosotros.]]></target>
+
+        <jms:reference-file>views/ContactUs/index.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="883b79d846a24cbb33bf12e423fb591d9ff56fa1" resname="contactus.detect-booking.0-requests">
+        <source><![CDATA[Is your inquiry related to an award booking request?
+                        If so, please note that %bookerName% service is separate from AwardWallet support.
+                        In order to submit a new booking request please submit <a href="%addRequestLink%">this form</a> and one of the %bookerName% agents will be in contact with you shortly!]]></source>
+        <target state="new"><![CDATA[¿Tu pregunta está relacionada con una solicitud de reserva con millas? Si es así, recuerda que el servicio de %bookerName% es independiente del servicio de asistencia de AwardWallet. Para enviar una nueva solicitud de reserva, debes enviar <a href="%addRequestLink%">este formulario</a> y uno de los agentes de %bookerName% se pondrá en contacto contigo lo antes posible!]]></target>
+
+        <jms:reference-file>views/ContactUs/index.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="478e96a2a9227523d7a3ba33cf7edc16beaf9a9c" resname="contactus.detect-booking.more-than-zero-requests">
+        <source xml:space="preserve">Is your inquiry related to an award booking request?
+                        If so, please note that %bookerName% service is separate from AwardWallet support,
+                        and you need to submit your booking related questions via your booking request by clicking the Respond button on the request page.</source>
+        <target xml:space="preserve" state="new">¿Tu pregunta está relacionada con una solicitud de reserva con millas? Si es así, recuerda que el servicio de %bookerName% es independiente del servicio de asistencia de AwardWallet y debes enviar tus preguntas relacionadas con reservas a través de tu solicitud de reserva, haciendo clic en el botón Responder en la página de la solicitud.</target>
+
+        <jms:reference-file>views/ContactUs/index.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="94ae0f2c2ab49a9e77cb14364bcc4dcfd964aaaf" resname="contactus.detect-booking.title">
+        <source>Booking Requests</source>
+        <target state="new">Solicitudes de reserva</target>
+
+        <jms:reference-file>views/ContactUs/index.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="209bd7f36c9166b1e374aeaa82be688ef5c11bd6" resname="contactus.edit-my-message.button">
+        <source>Edit my message</source>
+        <target>Editar mi mensaje</target>
+
+        <jms:reference-file>pages/contactUs/controllers.js</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="1564fea29a98f29c6bab6f132584aa5d17861901" resname="contactus.email">
+        <source>Email</source>
+        <target state="new">E-mail</target>
+
+        <jms:reference-file>Form/Type/ContactUsUnauthType.php</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="b193376bca2bd2a844210ebcbf63328ac9434e0f" resname="contactus.fill-the-form">
+        <source>Please fill out the form to contact us</source>
+        <target>Debes rellenar el formulario para ponerte en contacto con nosotros</target>
+
+        <jms:reference-file>views/ContactUs/index.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="df3c130b9dc232b6021b365dfe46798c8c94bba0" resname="contactus.full-name">
+        <source>Full Name</source>
+        <target state="new">Nombre completo</target>
+
+        <jms:reference-file>Form/Type/ContactUsUnauthType.php</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="40c01bae2f3d0974746f76de169981ff6c1094ae" resname="contactus.look-at-status-page.tip">
+        <source><![CDATA[If you are contacting us in regards to a loyalty program please see this status page first: <a href="%url%" target="_blank">%url2%</a>]]></source>
+        <target><![CDATA[Si te pones en contacto con nosotros con relación a un programa de fidelización, primero debes consultar esta página de estado: <a href="%url%" target="_blank">%url2%</a>]]></target>
+
+        <note>https://www.dropbox.com/s/wcimp0m3umx636l/can%27t%20be%20added.png?dl=0
+Status page:
+https://awardwallet.com/status/</note>
+        <jms:reference-file>views/ContactUs/index.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="3e2fce86b15ce8b31574b301eda25ea0a432040d" resname="contactus.message-sent.notification">
+        <source>Thank you, your message has been sent!</source>
+        <target>¡Gracias, tu mensaje se ha enviado!</target>
+
+        <jms:reference-file>views/ContactUs/index.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="4168712636b410b5016cbaf5e162017477817379" resname="contactus.message.label">
+        <source>Message</source>
+        <target>Mensaje</target>
+
+        <jms:reference-file>Form/Type/ContactUsAuthType.php</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="473d8fed1bc268b5b3af5e522c9c2a9829c70a2d" resname="contactus.more-faq">
+        <source>More FAQ's</source>
+        <target>Más preguntas frecuentes</target>
+
+        <jms:reference-file>views/ContactUs/index.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="3afb0e509775bb9be7ea91bfcb3ee77c9cf76cff" resname="contactus.only-english-support">
+        <source><![CDATA[At the moment we are only able to provide <span class="red bold">support in English language</span>. If you need to contact us please ask your questions in English.]]></source>
+        <target state="new"><![CDATA[En estos momentos solo ofrecemos asistencia en <span class="red bold">inglés</span>. Si necesitas ponerte en contacto con nosotros, debes hacer tus preguntas en inglés.]]></target>
+
+        <jms:reference-file>views/ContactUs/index.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="7f7eb110793c44cb3f1e33fa95e252b5045ef730" resname="contactus.phone">
+        <source>Phone</source>
+        <target state="new">Teléfono</target>
+
+        <jms:reference-file>Form/Type/ContactUsUnauthType.php</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="7ef7653e7c180fb1ffee973ab8a54932c1ab70e3" resname="contactus.program-comment.text">
+        <source>This program has the following comment:</source>
+        <target>Este programa tiene el siguiente comentario:</target>
+
+        <note>_</note>
+        <jms:reference-file>views/ContactUs/programSearchResult.html.twig</jms:reference-file>
+        <jms:reference-file>views/ContactUs/programSearchResult.mobile.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="84fde9ac340e7dc408a64c9603a677c67f6bffc6" resname="contactus.request-type.empty-value">
+        <source>Please select</source>
+        <target>Selecciona</target>
+
+        <note>https://www.dropbox.com/s/jr5tkjqfmjka52q/Request%20type.png?dl=0</note>
+        <jms:reference-file>Form/Type/ContactUsAuthType.php</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="0b864cd0bea95faf9b03a435ff13995a2d2f03ac" resname="contactus.request-type.label">
+        <source>Request Type</source>
+        <target>Tipo de solicitud</target>
+
+        <note>https://www.dropbox.com/s/jr5tkjqfmjka52q/Request%20type.png?dl=0</note>
+        <jms:reference-file>Form/Type/ContactUsAuthType.php</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="3958be19260e6f92f8c4371a9f5d33e8ad5658fe" resname="contactus.send-anyways.button">
+        <source>Send Anyway</source>
+        <target>Enviar de todos modos</target>
+
+        <note>This is a button:
+https://www.dropbox.com/s/wcimp0m3umx636l/can%27t%20be%20added.png?dl=0</note>
+        <jms:reference-file>pages/contactUs/controllers.js</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="16130dc5c32467403518c7c201e21e4e66cb7724" resname="contactus.send-to-support-anyways.button">
+        <source>Send to AwardWallet support anyway</source>
+        <target>Enviar al servicio de asistencia de AwardWallet de todos modos</target>
+
+        <jms:reference-file>pages/contactUs/controllers.js</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="0a5ccc222d1a92bcacd7a4cf4e615ffb06de72d2" resname="contactus.send.button">
+        <source>Send</source>
+        <target state="new">Enviar</target>
+
+        <jms:reference-file>views/ContactUs/index.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="51da5d0f5eb978390fdc9ba894d66b59e26ffdbc" resname="contactus.title">
+        <source>Contact Us</source>
+        <target state="new">Contacto</target>
+
+        <jms:reference-file>views/ContactUs/index.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="39646f72a07bfaeb14f66797a81a33ae60c0e863" resname="contactus.valid-contact-info-request">
+        <source>Please submit valid contact information here, otherwise we will be unable to contact you.</source>
+        <target state="new">Por favor introduce datos válidos. De lo contrario, no podremos ponernos en contacto contigo.</target>
+
+        <jms:reference-file>views/ContactUs/index.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="f702bccbed606bd21a6245258e7487bfb8e59934" resname="contactus.view-ready-answers.text">
+        <source>Before submitting this message we wanted to inform you about what we already know:</source>
+        <target state="new">Antes de enviar este mensaje, queremos informarte de lo que ya sabemos:</target>
+
+        <jms:reference-file>pages/contactUs/controllers.js</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="12ab93d6ee06d45d7ea9f188f1cfbd2cd23ca41d" resname="contactus.view-the-faq.text">
+        <source><![CDATA[Before submitting this form please, briefly review the <a href="%url%">list of FAQs</a> that we have. For example:]]></source>
+        <target state="new"><![CDATA[Antes de enviar este formulario, revisa la <a href="%url%">lista de preguntas frecuentes</a> que tenemos. Por ejemplo:]]></target>
+
+        <jms:reference-file>views/ContactUs/index.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="37bdcb4fbbe3e8d71c8e10532462d83d502de2a3" resname="delete-account-note">
+        <source>If you wish to delete your AwardWallet account, please note that AwardWallet support is not able to do that for you, but you can do it yourself via %link_on%this page%link_off%</source>
+        <target state="new">Si deseas eliminar tu cuenta de AwardWallet, recuerda que el servicio de asistencia de AwardWallet no puede hacerlo, aunque tú sí que puedes a través de %link_on%this page%link_off%</target>
+
+        <jms:reference-file>views/ContactUs/otherSearchResult.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="4bc87f62459a1f2501d3e91a0bcec244da058083" resname="delta-note">
+        <source xml:space="preserve">
+                Unfortunately, %bold_on%Delta Air Lines%bold_off% forced us to stop supporting their loyalty programs by accessing their
+                website; however, - we can update your Delta account from the email statement that they send you.
+                %br%
+                Please %edit_link_on%click here%edit_link_off% to read the instructions on how to do that.
+                %br%
+                %br%
+                There is a petition going on at change.org:
+                %br%
+                %br%
+                %petition_link_on%%petition_link%%petition_link_off%
+                %br%
+                %br%
+                If you care about this problem, please sign this petition.
+                %br%
+                %br%
+                Finally, please voice your opinion by tweeting it to %twitter_link_on%%twitter_link%%twitter_link_off%
+            </source>
+        <target xml:space="preserve" state="new">
+                Lamentablemente, %bold_on%Delta Air Lines%bold_off% nos obligó a dejar de usar sus programas de fidelidad a través de su sitio web; pero podemos actualizar tu cuenta de Delta desde el correo que recibes de ellos. %br% Por favor, %edit_link_on%haz clic aquí%edit_link_off% para leer las instrucciones y saber cómo hacerlo. %br% %br% Hay una petición en marcha en change.org: %br% %br% %petition_link_on%%petition_link%%petition_link_off% %br% %br% Si te preocupa esto, firma esta petición. %br% %br% Por último, da tu opinión tuiteando a %twitter_link_on%%twitter_link%%twitter_link_off%
+            </target>
+
+        <jms:reference-file>Service/ProgramStatus/DesktopContactUsDescriptor.php</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="61521c0a4bdf9c2b1eaec1b1e3b08d636458e957" resname="delta-note.mobile">
+        <source xml:space="preserve">
+                %row_start%Unfortunately, %bold_on%Delta Air Lines%bold_off% forced us to stop supporting their loyalty programs by accessing their
+                website; however, - we can update your Delta account from the email statement that they send you.%row_end%
+                %row_start%Please %edit_link_on%click here%edit_link_off% to read the instructions on how to do that.%row_end%
+                %row_start%There is a petition going on at change.org:%row_end%
+                %petition_link_on%%petition_link%%petition_link_off%
+                %row_start%If you care about this problem, please sign this petition.%row_end%
+                %row_start%Finally, please voice your opinion by tweeting it to:%row_end%
+                %twitter_link_on%%twitter_link%%twitter_link_off%
+            </source>
+        <target xml:space="preserve" state="new">
+                %row_start%Lamentablemente, %bold_on%Delta Air Lines%bold_off% nos obligó a dejar de usar sus programas de fidelidad a través de su página web; sin embargo, - podemos actualizar tu cuenta de Delta desde el extracto de correo electrónico que te envían.%row_end% %row_start%Por favor, %edit_link_on%haz clic aquí%edit_link_off% para leer las instrucciones sobre cómo hacerlo. %row_end% %row_start%Hay una petición en marcha en change.org:%row_end% %petition_link_on%%petition_link%%petition_link_off% %row_start%Si te preocupa este problema, firma esta petición.%row_end% %row_start%Por último, expresa tu opinión tuiteándola a:%row_end% %row_start% %twitter_link_on%%twitter_link%%twitter_link_off%
+            </target>
+
+        <jms:reference-file>Service/ProgramStatus/MobileAddAccountDescriptor.php</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="5f5d37620d46d551565727b61a374c78e897d471" resname="mark-program-broken">
+        <source xml:space="preserve">
+                You can mark this program as broken on our %status_link_on%status page%status_link_off% by clicking %bold_on%+1%bold_off% next to it. When it is fixed you will get an email.
+            </source>
+        <target xml:space="preserve" state="new">
+                Puede marcar este programa como roto en nuestra %status_link_on%página de estado%status_link_off% haciendo clic en %bold_on%+1%bold_off% junto a él. Cuando esté arreglado recibirás un correo electrónico.
+            </target>
+
+        <jms:reference-file>Service/ProgramStatus/DesktopContactUsDescriptor.php</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="f09caa802cc5b8b00bc13159d1862a976048037e" resname="mark-program-broken.mobile">
+        <source xml:space="preserve">
+                You can mark this program as broken by clicking %bold_on%+1 above%bold_off%. When it is fixed you will get an email.
+            </source>
+        <target xml:space="preserve" state="new">
+                Puedes marcar este programa como roto haciendo clic en %bold_on%+1 encima de%bold_off%. Cuando esté arreglado recibirás un correo electrónico.
+            </target>
+
+        <jms:reference-file>Service/ProgramStatus/MobileAddAccountDescriptor.php</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="b85176238fb8dbb47a1ea6e112383e82a23fad8c" resname="mileageplus-and-rapidrewards-note">
+        <source xml:space="preserve">
+                Unfortunately, %bold_on%%providerName%%bold_off% forced us to stop supporting their loyalty programs by accessing their
+                website; however, - we can update your %providerShortName% account from the email statement that they send you.
+                %br%
+                Please %edit_link_on%click here%edit_link_off% to read the instructions on how to do that.
+                %br%
+                %br%
+                Please voice your opinion by tweeting it to %twitter_link_on%%twitter_link%%twitter_link_off%
+            </source>
+        <target xml:space="preserve" state="new">
+                Desgraciadamente, %bold_on%%providerName%%bold_off% nos ha obligado a dejar de apoyar sus programas de fidelización accediendo a su página web; sin embargo, - podemos actualizar tu cuenta de %providerShortName% desde el extracto de correo electrónico que te envían. %br% Por favor, %edit_link_on%haga clic aquí%edit_link_off% para leer las instrucciones sobre cómo hacerlo. %br% %br% Por favor, exprese su opinión tuiteándola a:%twitter_link_on%%twitter_link%%twitter_link_off%
+            </target>
+
+        <jms:reference-file>Service/ProgramStatus/DesktopContactUsDescriptor.php</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="0d8a8d8c4e479fd5afac96ec1cd1e2ba98306fdd" resname="mileageplus-and-rapidrewards-note.mobile">
+        <source xml:space="preserve">
+                %row_start%Unfortunately, %bold_on%%providerName%%bold_off% forced us to stop supporting their loyalty programs by accessing their
+                website; however, - we can update your %providerShortName% account from the email statement that they send you.%row_end%
+                %row_start%Please %edit_link_on%click here%edit_link_off% to read the instructions on how to do that.%row_end%
+                %row_start%Please voice your opinion by tweeting it to:%row_end%
+                %twitter_link_on%%twitter_link%%twitter_link_off%
+            </source>
+        <target xml:space="preserve" state="new">
+                %row_start%Desgraciadamente, %bold_on%%providerName%%bold_off% nos ha obligado a dejar de apoyar sus programas de fidelización accediendo a su página web; sin embargo, - podemos actualizar tu cuenta de %providerShortName% desde el extracto de correo electrónico que te envían. %row_end% %row_start%Por favor, %edit_link_on%haga clic aquí%edit_link_off% para leer las instrucciones sobre cómo hacerlo.%row_end% %row_start%Por favor, exprese su opinión tuiteándola a:%row_end% %twitter_link_on%%twitter_link%%twitter_link_off%
+            </target>
+
+        <jms:reference-file>Service/ProgramStatus/MobileAddAccountDescriptor.php</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="a42a923eab8a999267ec52594317b9bccb634763" resname="program-adding-not-feasible">
+        <source xml:space="preserve">
+                We have already looked into adding %bold_on%%program%%bold_off% but determined that it is %bold2_on%not feasible%bold2_off%.
+                Most common problem for not being able to add support for a program is that it simply doesn't show any type of reward balance on their website.
+                If you know that this is not the case, i.e. you can both login to the site and actually see your point balance then please let us know.
+            </source>
+        <target xml:space="preserve" state="new">
+                Ya hemos estudiado la posibilidad de añadir %bold_on%%program%%bold_off% pero hemos determinado que es %bold2_on%inviable%bold2_off%. El problema más común para no ser capaz de añadir el apoyo a un programa es que simplemente no muestra ningún tipo de saldo de recompensa en su página web. Si sabes que no es así, es decir, puedes tanto iniciar sesión en el sitio y realmente ver tu saldo de puntos, entonces por favor cuéntanoslo saber.
+            </target>
+
+        <jms:reference-file>Service/ProgramStatus/DesktopContactUsDescriptor.php</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="e7caaa7fa97a4a1310075f5bbc6d15d2d79579d7" resname="program-adding-not-feasible.mobile">
+        <source xml:space="preserve">
+                %row_start%We have already looked into adding %bold_on%%program%%bold_off% but determined that it is %bold2_on%not feasible%bold2_off%.%row_end%
+                %row_start%Most common problem for not being able to add support for a program is that it simply doesn't show any type of reward balance on their website.%row_end%
+                %row_start%If you know that this is not the case, i.e. you can both login to the site and actually see your point balance then please let us know.%row_end%
+            </source>
+        <target xml:space="preserve" state="new">
+                %row_start%Ya hemos estudiado la posibilidad de añadir %bold_on%%program%%bold_off% pero hemos determinado que no es %bold2_on%factible%bold2_off%.%row_end% %row_start%El problema más común para no poder añadir soporte para un programa es que simplemente no muestra ningún tipo de saldo de recompensa en su página web. %row_end% %row_start%Si sabes que este no es así, es decir, puedes tanto iniciar sesión en el sitio y realmente ver tu saldo de puntos entonces por favor cuéntanoslo saber.%row_end%
+            </target>
+
+        <jms:reference-file>Service/ProgramStatus/MobileAddAccountDescriptor.php</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="f05fafddbcb80a3eaba0d961d198a27e4af3b636" resname="program-already-considering-to-adding">
+        <source xml:space="preserve">
+                We are %bold_on%already considering%bold_off% to add %bold2_on%%program%%bold2_off% program.
+                We add support for new programs based on demand, so please click %bold3_on%+1%bold3_off%
+                next to it on our %status_link_on%status page%status_link_off% this way you will also get
+                an automated email when this program is implemented.
+                %bold2_on%%votes%%bold2_off% other AwardWallet users requested this program.
+            </source>
+        <target xml:space="preserve" state="new">
+                Estamos %bold_on%ya considerando%bold_off% añadir %bold2_on%%program%%bold2_off% programa. Añadimos soporte para nuevos programas en función de la demanda, así que por favor haga clic %bold3_on%+1%bold3_off% junto a él en nuestra %status_link_on%página de estado%status_link_off% de esta manera usted también recibirá un correo electrónico automático cuando este programa se implementa. %bold2_on%%votes%%bold2_off% otros usuarios de AwardWallet solicitaron este programa.
+            </target>
+
+        <jms:reference-file>Service/ProgramStatus/DesktopContactUsDescriptor.php</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="02be3056bd3b349bd4616520fd8ca10b4689bdcb" resname="program-already-considering-to-adding.mobile">
+        <source xml:space="preserve">%row_start%We are %bold_on%already considering%bold_off% to add %bold2_on%%program%%bold2_off% program.%row_end%
+                %row_start%We add support for new programs based on demand, so please click %bold_on%+1
+                above%bold_off% this way you will also get
+                an automated email when this program is implemented.%row_end%</source>
+        <target xml:space="preserve">%row_start%Estamos %bold_on%ya considerando%bold_off% añadir %bold2_on%%program%%bold2_off% programa.%row_end% %row_start%Añadimos soporte para nuevos programas en función de la demanda, así que por favor haga clic en %bold_on%+1 arriba%bold_off% de esta manera también recibirá un correo electrónico automatizado cuando se implemente este programa.%row_end%</target>
+
+        <jms:reference-file>Service/ProgramStatus/MobileAddAccountDescriptor.php</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="89719adb2a6ad81a0dab3d4a320fb7d27361a1a9" resname="program-already-marked-broken">
+        <source xml:space="preserve">
+                %bold_on%%program%%bold_off% is %bold2_on%already marked as broken%bold2_off% in our system and we are looking to get it fixed.
+                There is no need to contact us about this program.
+                If you want to get notified when it is fixed please click %bold3_on%+1%bold3_off% on our %status_link_on%status page%status_link_off%.
+            </source>
+        <target xml:space="preserve" state="new">
+                %bold_on%%program%%bold_off% está %bold2_on%ya marcado como roto%bold2_off% en nuestro sistema y estamos intentando arreglarlo. No hay necesidad de ponerse en contacto con nosotros acerca de este programa. Si quieres que te avisemos cuando esté arreglado, haz clic en %bold3_on%+1%bold3_off% en nuestra %status_link_on%página de estado%status_link_off%.
+            </target>
+
+        <jms:reference-file>Service/ProgramStatus/DesktopContactUsDescriptor.php</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="687191ff1ae44a5aa75017e272c8c6ea1cecb528" resname="program-already-marked-broken.mobile">
+        <source xml:space="preserve">
+                %row_start%%bold_on%%program%%bold_off% is %bold2_on%already marked as broken%bold2_off% in our system and we are looking to get it fixed.%row_end%
+                %row_start%There is no need to contact us about this program.%row_end%
+                %row_start%If you want to get notified when it is fixed please click %bold2_on%+1 above%bold2_off%.%row_end%
+            </source>
+        <target xml:space="preserve">
+                %row_start%%bold_on%%program%%bold_off% ya está %bold2_on%marcado como roto%bold2_off% en nuestro sistema y estamos intentando arreglarlo.%row_end% %row_start%No es necesario que te pongas en contacto con nosotros acerca de este programa.%row_end% %row_start%Si quieres que te avisemos cuando esté arreglado haz clic en %bold2_on%+1 arriba%bold2_off%.%row_end%
+            </target>
+
+        <jms:reference-file>Service/ProgramStatus/MobileAddAccountDescriptor.php</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="084c511915aa09ce3c5c6cf7922e825718796676" resname="program-broken-suspicion">
+        <source xml:space="preserve">
+                According to our records the success rate on %bold_on%%program%%bold_off% is %bold_on%%successRate%%bold_off% (in the last 24 hours %successRate% of accounts successfully updated).
+            </source>
+        <target xml:space="preserve" state="new">
+                Según nuestros registros, la tasa de éxito de %bold_on%%program%%bold_off% es %bold_on%%successRate%%bold_off% (en las últimas 24 horas %successRate% de cuentas actualizadas con éxito).
+            </target>
+
+        <jms:reference-file>Service/ProgramStatus/DesktopContactUsDescriptor.php</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="95155d0a3b0668f9b3a6ff5155977da4a9f395c9" resname="program-broken-suspicion.mobile">
+        <source xml:space="preserve">
+                According to our records the success rate on %bold_on%%program%%bold_off% is %bold2_on%%successRate%%bold2_off% (in the last 24 hours %successRate% of accounts successfully updated).
+            </source>
+        <target xml:space="preserve" state="new">
+                Según nuestros registros, la tasa de éxito de %bold_on%%program%%bold_off% es %bold2_on%%successRate%%bold2_off% (en las últimas 24 horas %successRate% de cuentas actualizadas con éxito).
+            </target>
+
+        <jms:reference-file>Service/ProgramStatus/MobileAddAccountDescriptor.php</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="fe072c6f927f381734797ad43a0cc3eaf76bd0b5" resname="program-not-broken">
+        <source xml:space="preserve">
+                According to our records %bold_on%%program%%bold_off% is %bold2_on%not broken%bold2_off%.
+            </source>
+        <target xml:space="preserve" state="new">
+                Según nuestros registros, %bold_on%%program%%bold_off% %bold2_on%no está roto%bold2_off%.
+            </target>
+
+        <jms:reference-file>Service/ProgramStatus/DesktopContactUsDescriptor.php</jms:reference-file>
+        <jms:reference-file>Service/ProgramStatus/MobileAddAccountDescriptor.php</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="74839138d87c528007a04a7c030508511b881fe8" resname="program-success-rate">
+        <source xml:space="preserve">
+                The success rate on this program is %bold_on%%successRate%%bold_off% (in the last 24 hours %successRate% of accounts successfully updated).
+            </source>
+        <target xml:space="preserve" state="new">
+                El índice de éxito de este programa es de %bold_on%%successRate%%bold_off% (en las últimas 24 horas %successRate% de las cuentas se han actualizado con éxito).
+            </target>
+
+        <jms:reference-file>Service/ProgramStatus/DesktopContactUsDescriptor.php</jms:reference-file>
+        <jms:reference-file>Service/ProgramStatus/MobileAddAccountDescriptor.php</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="54faec366d11efdac0f9d2da560e273f92288c2a" resname="requests">
+        <source>%span_on%%count_formatted%%span_off% %span2_on%request%span2_off%|%span_on%%count_formatted%%span_off% %span2_on%requests%span2_off%</source>
+        <target state="new">%span_on%%count_formatted%%span_off% %span2_on%petición%span2_off%|%span_on%%count_formatted%%span_off% %span2_on%peticiones%span2_off%</target>
+
+        <jms:reference-file>views/ContactUs/programSearchResult.mobile.html.twig</jms:reference-file>
+      </trans-unit>
+    </body>
+  </file>
+</xliff>

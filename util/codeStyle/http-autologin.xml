@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+<ruleset name="HttpAutologin" namespace="AwardWallet\CS">
+    <autoload>../../app/autoload.php</autoload>
+    <rule ref="Internal.LineEndings.Mixed">
+     <severity>0</severity>
+    </rule>
+    <include-pattern>*/functions.php</include-pattern>
+    <description>Force https autologin</description>
+    <file>../../web/engine</file>
+    <exclude-pattern type="relative">Email/*</exclude-pattern>
+</ruleset>

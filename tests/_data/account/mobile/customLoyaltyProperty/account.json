@@ -1,0 +1,31 @@
+{
+    "BarCodeParsed": {
+        "BarCodeType": "EAN_13",
+        "BarCodeData": "012345678912"
+    },
+    "BarCodeCustom": {
+        "BarCodeData": "SomeValue",
+        "BarCodeType": "SomeType"
+    },
+    "Blocks": [
+        {
+            "Kind": "barcode",
+            "Val": {
+                "Linked": true,
+                "BarCodeData": "BarCodeParsed.BarCodeData",
+                "BarCodeType": "BarCodeParsed.BarCodeType"
+            },
+            "Visible": "!BarCodeCustom.BarCodeData"
+        },
+        {
+            "Kind": "barcode",
+            "Val": {
+                "Linked": true,
+                "Custom": true,
+                "BarCodeData": "BarCodeCustom.BarCodeData",
+                "BarCodeType": "BarCodeCustom.BarCodeType"
+            },
+            "Visible": "BarCodeCustom.BarCodeData"
+        }
+    ]
+}

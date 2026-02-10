@@ -1,0 +1,444 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:jms="urn:jms:translation" version="1.2">
+  <file source-language="en" target-language="zh" datatype="plaintext" original="not.available">
+    <header>
+      <tool tool-id="JMSTranslationBundle" tool-name="JMSTranslationBundle" tool-version="1.1.0-DEV" />
+      <note>The source node in most cases contains the sample message as written by the developer. If it looks like a dot-delimitted string such as "form.label.firstname", then the developer has not provided a default message.</note>
+    </header>
+    <body>
+      <trans-unit approved="yes" id="5eff6a733e22bf5dd1900d8b6b7c1b1b6a9bbc0d" resname="aa-note">
+        <source xml:space="preserve">
+                Unfortunately, %bold_on%American Airlines%bold_off% won't let us automatically track your AAdvantage miles for you (business or personal accounts).
+                If you want to voice your opinion to American Airlines, we invite you to fill out this petition: %petition_link_on%%petition_link%%petition_link_off%
+                or send an email to %email_link_on%%email%%email_link_off%.
+                %br%%br%
+                If you wish to track any account on AwardWallet manually, you can do so by adding a custom account via this form:
+                %form_link_on%%form_link%%form_link_off%
+            </source>
+        <target xml:space="preserve" state="new">
+                很遺憾，%bold_on%American Airlines%bold_off% 不讓我們為您自動追蹤您的 AAdvantage 哩程數（企業或個人帳戶）。若您想讓 American Airlines 瞭解您的需求，敬請填寫以下連署書：%petition_link_on%%petition_link%%petition_link_off% 或發送電子郵件至 %email_link_on%%email%%email_link_off%. %br%%br%。如果您想要手動在 AwardWallet 上追蹤任何帳戶，請透過以下表格添加客製帳戶：%form_link_on%%form_link%%form_link_off%
+            </target>
+
+        <jms:reference-file>Service/ProgramStatus/DesktopContactUsDescriptor.php</jms:reference-file>
+      </trans-unit>
+      <trans-unit approved="yes" id="0a0b7425e48f96390b6bba165d8f09902fedec7f" resname="aa-note.mobile">
+        <source xml:space="preserve">
+                %row_start%Unfortunately, %bold_on%American Airlines%bold_off% won't let us automatically track your AAdvantage miles for you (business or personal accounts).
+                If you want to voice your opinion to American Airlines, we invite you to fill out this petition:%row_end% %petition_link_on%%petition_link%%petition_link_off%
+                %row_start%or send an email to%row_end%
+                %email_link_on%%email%%email_link_off%
+                %row_margin_start%If you wish to track any account on AwardWallet manually, you can do so by adding a custom account via this form:%row_margin_end%
+                %form%
+            </source>
+        <target xml:space="preserve" state="new">
+                %row_start%很遺憾，%bold_on%American Airlines%bold_off% 不讓我們為您自動追蹤您的 AAdvantage 哩程數（企業或個人帳戶）。若您想讓 American Airlines 瞭解您的需求，敬請填寫以下連署書：%row_end% %petition_link_on%%petition_link%%petition_link_off% %row_start% 或發送電子郵件至 %row_end% %email_link_on%%email%%email_link_off% %row_margin_start%。如果您想要手動在 AwardWallet 上追蹤任何帳戶，請透過以下表格添加客製帳戶：%row_margin_end% %form%
+            </target>
+
+        <jms:reference-file>Service/ProgramStatus/MobileAddAccountDescriptor.php</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="8fb0f60fa9b92a30e93f20e218f8dac506a6bc41" resname="about-site.text">
+        <source>%site_name% is the number one resource on the web for tracking awards and travel plans</source>
+        <target state="new">%site_name% 是網路上最強大的獎勵積分和旅行計劃追蹤資源</target>
+
+        <jms:reference-file>views/ContactUs/index.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit approved="yes" id="4d5b696f6c9ab788a1cf1c3c57de41930b04905d" resname="contactus.booking-notice">
+        <source><![CDATA[Please note that all of the booking requests are done by another team and not by AwardWallet support.
+                    Therefore we are not able to answer any booking related questions.
+                    If you need to update your request or ask a question please navigate to your award ticket booking requests queue: <br />
+                    <a href="%bookingRequestsLink%">%bookingRequestsLink%</a> <br />
+                    and ask your questions by posting a reply to the specific booking request that you have.]]></source>
+        <target><![CDATA[請注意，所有的訂位請求均是由另一團隊完成，並非由 AwardWallet 支援完成。 因此，我們無法回答任何與訂位內容相關的問題。 如果您需要更新您的請求或發問，請前往您的獎勵訂位要求等候：<br /> <a href="%bookingRequestsLink%">%bookingRequestsLink%</a> <br /> ，透過在該則訂位請求中張貼回覆以提問。]]></target>
+
+        <jms:reference-file>views/ContactUs/index.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit approved="yes" id="8a24e644bcf7d1c19ddb60f970944e0a7068a375" resname="contactus.booking-notice.title">
+        <source>Booking Requests</source>
+        <target state="new">訂位請求</target>
+
+        <jms:reference-file>views/ContactUs/index.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="053e5ee7f91ead6ede34c8392ec7b0156154069c" resname="contactus.captcha.lable">
+        <source>Security Number</source>
+        <target>安全號碼</target>
+
+        <note>https://www.dropbox.com/s/61unt9yv8a6f4fx/security_number.png?dl=0</note>
+        <jms:reference-file>Form/Type/ContactUsUnauthType.php</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="fc0173ab5d37cce8951380c2aeb8cbda5163153a" resname="contactus.contact-method-info">
+        <source><![CDATA[Please note that in order to contact you we will use the info that is specified in <a href="%url%">your profile</a>. If that info is incorrect please change it before contacting us.]]></source>
+        <target state="new"><![CDATA[請注意，我們將使用<a href="%url%">您的檔案</a>中所留下的資料與您聯繫。如果這些資料不正確，請在我們與您聯繫前加以修正。]]></target>
+
+        <jms:reference-file>views/ContactUs/index.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit approved="yes" id="883b79d846a24cbb33bf12e423fb591d9ff56fa1" resname="contactus.detect-booking.0-requests">
+        <source><![CDATA[Is your inquiry related to an award booking request?
+                        If so, please note that %bookerName% service is separate from AwardWallet support.
+                        In order to submit a new booking request please submit <a href="%addRequestLink%">this form</a> and one of the %bookerName% agents will be in contact with you shortly!]]></source>
+        <target state="new"><![CDATA[您的詢問是否與訂票請求有關？ 如果是的話，請注意， %bookerName% 服務與 AwardWallet 支援是分開的。 若要提交新的訂位請求，請提交 <a href="%addRequestLink%">此表格</a>， %bookerName% 的服務人員將儘快與您聯繫！]]></target>
+
+        <jms:reference-file>views/ContactUs/index.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="478e96a2a9227523d7a3ba33cf7edc16beaf9a9c" resname="contactus.detect-booking.more-than-zero-requests">
+        <source xml:space="preserve">Is your inquiry related to an award booking request?
+                        If so, please note that %bookerName% service is separate from AwardWallet support,
+                        and you need to submit your booking related questions via your booking request by clicking the Respond button on the request page.</source>
+        <target xml:space="preserve" state="new">您的詢問是否與訂票請求有關？ 如果是的話，請注意， %bookerName% 服務與 AwardWallet 支援是分開的， 您必須按下申請頁面上的「回覆」按鈕來提交相關問題。</target>
+
+        <jms:reference-file>views/ContactUs/index.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit approved="yes" id="94ae0f2c2ab49a9e77cb14364bcc4dcfd964aaaf" resname="contactus.detect-booking.title">
+        <source>Booking Requests</source>
+        <target state="new">訂位請求</target>
+
+        <jms:reference-file>views/ContactUs/index.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="209bd7f36c9166b1e374aeaa82be688ef5c11bd6" resname="contactus.edit-my-message.button">
+        <source>Edit my message</source>
+        <target>編輯我的留言</target>
+
+        <jms:reference-file>pages/contactUs/controllers.js</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="1564fea29a98f29c6bab6f132584aa5d17861901" resname="contactus.email">
+        <source>Email</source>
+        <target state="new">電子郵件</target>
+
+        <jms:reference-file>Form/Type/ContactUsUnauthType.php</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="b193376bca2bd2a844210ebcbf63328ac9434e0f" resname="contactus.fill-the-form">
+        <source>Please fill out the form to contact us</source>
+        <target>請填寫以下表格與我們聯繫</target>
+
+        <jms:reference-file>views/ContactUs/index.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="df3c130b9dc232b6021b365dfe46798c8c94bba0" resname="contactus.full-name">
+        <source>Full Name</source>
+        <target state="new">全名</target>
+
+        <jms:reference-file>Form/Type/ContactUsUnauthType.php</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="40c01bae2f3d0974746f76de169981ff6c1094ae" resname="contactus.look-at-status-page.tip">
+        <source><![CDATA[If you are contacting us in regards to a loyalty program please see this status page first: <a href="%url%" target="_blank">%url2%</a>]]></source>
+        <target><![CDATA[如果您因有關忠誠計劃的問題而聯繫我們，請先查看此狀態頁面: <a href="%url%" target="_blank">%url2%</a>]]></target>
+
+        <note>https://www.dropbox.com/s/wcimp0m3umx636l/can%27t%20be%20added.png?dl=0
+Status page:
+https://awardwallet.com/status/</note>
+        <jms:reference-file>views/ContactUs/index.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit approved="yes" id="3e2fce86b15ce8b31574b301eda25ea0a432040d" resname="contactus.message-sent.notification">
+        <source>Thank you, your message has been sent!</source>
+        <target>感謝您，您的留言已送出！</target>
+
+        <jms:reference-file>views/ContactUs/index.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="4168712636b410b5016cbaf5e162017477817379" resname="contactus.message.label">
+        <source>Message</source>
+        <target>留言</target>
+
+        <jms:reference-file>Form/Type/ContactUsAuthType.php</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="473d8fed1bc268b5b3af5e522c9c2a9829c70a2d" resname="contactus.more-faq">
+        <source>More FAQ's</source>
+        <target>更多常見問題</target>
+
+        <jms:reference-file>views/ContactUs/index.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit approved="yes" id="3afb0e509775bb9be7ea91bfcb3ee77c9cf76cff" resname="contactus.only-english-support">
+        <source><![CDATA[At the moment we are only able to provide <span class="red bold">support in English language</span>. If you need to contact us please ask your questions in English.]]></source>
+        <target state="new"><![CDATA[目前我們僅提供<span class="red bold">英文協助</span>。與我們聯繫時請使用英文提出問題。]]></target>
+
+        <jms:reference-file>views/ContactUs/index.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="7f7eb110793c44cb3f1e33fa95e252b5045ef730" resname="contactus.phone">
+        <source>Phone</source>
+        <target state="new">電話</target>
+
+        <jms:reference-file>Form/Type/ContactUsUnauthType.php</jms:reference-file>
+      </trans-unit>
+      <trans-unit approved="yes" id="7ef7653e7c180fb1ffee973ab8a54932c1ab70e3" resname="contactus.program-comment.text">
+        <source>This program has the following comment:</source>
+        <target>針對該計劃的評論如下：</target>
+
+        <note>_</note>
+        <jms:reference-file>views/ContactUs/programSearchResult.html.twig</jms:reference-file>
+        <jms:reference-file>views/ContactUs/programSearchResult.mobile.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="84fde9ac340e7dc408a64c9603a677c67f6bffc6" resname="contactus.request-type.empty-value">
+        <source>Please select</source>
+        <target>請選擇</target>
+
+        <note>https://www.dropbox.com/s/jr5tkjqfmjka52q/Request%20type.png?dl=0</note>
+        <jms:reference-file>Form/Type/ContactUsAuthType.php</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="0b864cd0bea95faf9b03a435ff13995a2d2f03ac" resname="contactus.request-type.label">
+        <source>Request Type</source>
+        <target>留言主題</target>
+
+        <note>https://www.dropbox.com/s/jr5tkjqfmjka52q/Request%20type.png?dl=0</note>
+        <jms:reference-file>Form/Type/ContactUsAuthType.php</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="3958be19260e6f92f8c4371a9f5d33e8ad5658fe" resname="contactus.send-anyways.button">
+        <source>Send Anyway</source>
+        <target>仍然發送</target>
+
+        <note>This is a button:
+https://www.dropbox.com/s/wcimp0m3umx636l/can%27t%20be%20added.png?dl=0</note>
+        <jms:reference-file>pages/contactUs/controllers.js</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="16130dc5c32467403518c7c201e21e4e66cb7724" resname="contactus.send-to-support-anyways.button">
+        <source>Send to AwardWallet support anyway</source>
+        <target>仍然發送給 AwardWallet 支援</target>
+
+        <jms:reference-file>pages/contactUs/controllers.js</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="0a5ccc222d1a92bcacd7a4cf4e615ffb06de72d2" resname="contactus.send.button">
+        <source>Send</source>
+        <target state="new">發送</target>
+
+        <jms:reference-file>views/ContactUs/index.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="51da5d0f5eb978390fdc9ba894d66b59e26ffdbc" resname="contactus.title">
+        <source>Contact Us</source>
+        <target state="new">聯繫我們</target>
+
+        <jms:reference-file>views/ContactUs/index.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit approved="yes" id="39646f72a07bfaeb14f66797a81a33ae60c0e863" resname="contactus.valid-contact-info-request">
+        <source>Please submit valid contact information here, otherwise we will be unable to contact you.</source>
+        <target state="new">請在這裡遞交有效聯繫方式，否則我們將無法與您取得聯繫。</target>
+
+        <jms:reference-file>views/ContactUs/index.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit approved="yes" id="f702bccbed606bd21a6245258e7487bfb8e59934" resname="contactus.view-ready-answers.text">
+        <source>Before submitting this message we wanted to inform you about what we already know:</source>
+        <target state="new">在遞交此訊息前，我們想通知您我們所了解的：</target>
+
+        <jms:reference-file>pages/contactUs/controllers.js</jms:reference-file>
+      </trans-unit>
+      <trans-unit approved="yes" id="12ab93d6ee06d45d7ea9f188f1cfbd2cd23ca41d" resname="contactus.view-the-faq.text">
+        <source><![CDATA[Before submitting this form please, briefly review the <a href="%url%">list of FAQs</a> that we have. For example:]]></source>
+        <target state="new"><![CDATA[在遞交本表格前，請簡要地查看我們的<a href="%url%">常見問題列表</a>。例如：]]></target>
+
+        <jms:reference-file>views/ContactUs/index.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit approved="yes" id="37bdcb4fbbe3e8d71c8e10532462d83d502de2a3" resname="delete-account-note">
+        <source>If you wish to delete your AwardWallet account, please note that AwardWallet support is not able to do that for you, but you can do it yourself via %link_on%this page%link_off%</source>
+        <target state="new">如果您想要刪除您的 AwardWallet 帳戶，請注意， AwardWallet 支援無法為您進行這項動作，但您可以親自透過 %link_on%此頁面%link_off% 進行</target>
+
+        <jms:reference-file>views/ContactUs/otherSearchResult.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit approved="yes" id="4bc87f62459a1f2501d3e91a0bcec244da058083" resname="delta-note">
+        <source xml:space="preserve">
+                Unfortunately, %bold_on%Delta Air Lines%bold_off% forced us to stop supporting their loyalty programs by accessing their
+                website; however, - we can update your Delta account from the email statement that they send you.
+                %br%
+                Please %edit_link_on%click here%edit_link_off% to read the instructions on how to do that.
+                %br%
+                %br%
+                There is a petition going on at change.org:
+                %br%
+                %br%
+                %petition_link_on%%petition_link%%petition_link_off%
+                %br%
+                %br%
+                If you care about this problem, please sign this petition.
+                %br%
+                %br%
+                Finally, please voice your opinion by tweeting it to %twitter_link_on%%twitter_link%%twitter_link_off%
+            </source>
+        <target xml:space="preserve" state="new">
+                很遺憾，%bold_on%Delta Air Lines%bold_off% 強制我們停止透過存取他們的網站支援他們的忠誠計劃；然而， - 我們可以透過他們發送給您的電子郵件結算單更新您的 Delta 帳戶。 %br%請%edit_link_on%按這裡%edit_link_off%以閱讀如何進行的說明。%br% %br% 我們已於 change.org 發起一項連署：%br% %br% %petition_link_on%%petition_link%%petition_link_off% %br% %br%。若您關心這個問題，敬請參與連署。 %br% %br%最後，請透過推特表達意見：%twitter_link_on%%twitter_link%%twitter_link_off%
+            </target>
+
+        <jms:reference-file>Service/ProgramStatus/DesktopContactUsDescriptor.php</jms:reference-file>
+      </trans-unit>
+      <trans-unit approved="yes" id="61521c0a4bdf9c2b1eaec1b1e3b08d636458e957" resname="delta-note.mobile">
+        <source xml:space="preserve">
+                %row_start%Unfortunately, %bold_on%Delta Air Lines%bold_off% forced us to stop supporting their loyalty programs by accessing their
+                website; however, - we can update your Delta account from the email statement that they send you.%row_end%
+                %row_start%Please %edit_link_on%click here%edit_link_off% to read the instructions on how to do that.%row_end%
+                %row_start%There is a petition going on at change.org:%row_end%
+                %petition_link_on%%petition_link%%petition_link_off%
+                %row_start%If you care about this problem, please sign this petition.%row_end%
+                %row_start%Finally, please voice your opinion by tweeting it to:%row_end%
+                %twitter_link_on%%twitter_link%%twitter_link_off%
+            </source>
+        <target xml:space="preserve" state="new">
+                %row_start%很遺憾，%bold_on%Delta Air Lines%bold_off% 強制我們停止透過存取他們的網站支援他們的忠誠計畫；然而， - 我們可以透過他們發送給您的電子郵件結算單更新您的 Delta 帳戶。%row_end% %row_start%請%edit_link_on%按這裡%edit_link_off%以閱讀如何進行的說明。%row_end% %row_start%我們已於 change.org 上發起一項連署：%row_end% %petition_link_on%%petition_link%%petition_link_off% %row_start%。若您關心這個問題，敬請參與連署。%row_end% %row_start%最後，請透過推特表達意見：%row_end% %twitter_link_on%%twitter_link%%twitter_link_off%
+            </target>
+
+        <jms:reference-file>Service/ProgramStatus/MobileAddAccountDescriptor.php</jms:reference-file>
+      </trans-unit>
+      <trans-unit approved="yes" id="5f5d37620d46d551565727b61a374c78e897d471" resname="mark-program-broken">
+        <source xml:space="preserve">
+                You can mark this program as broken on our %status_link_on%status page%status_link_off% by clicking %bold_on%+1%bold_off% next to it. When it is fixed you will get an email.
+            </source>
+        <target xml:space="preserve" state="new">
+                您可以從我們的%status_link_on%狀態頁面%status_link_off%， 在它旁邊按下 %bold_on%+1%bold_off% 以將該計劃標記為損壞。該計劃修復後您將收到一封電子郵件。
+            </target>
+
+        <jms:reference-file>Service/ProgramStatus/DesktopContactUsDescriptor.php</jms:reference-file>
+      </trans-unit>
+      <trans-unit approved="yes" id="f09caa802cc5b8b00bc13159d1862a976048037e" resname="mark-program-broken.mobile">
+        <source xml:space="preserve">
+                You can mark this program as broken by clicking %bold_on%+1 above%bold_off%. When it is fixed you will get an email.
+            </source>
+        <target xml:space="preserve" state="new">
+                您可以%bold_on%在上面按 +1%bold_off% 以將該計劃標記為損壞。該計劃修復後您將收到一封電子郵件。
+            </target>
+
+        <jms:reference-file>Service/ProgramStatus/MobileAddAccountDescriptor.php</jms:reference-file>
+      </trans-unit>
+      <trans-unit approved="yes" id="b85176238fb8dbb47a1ea6e112383e82a23fad8c" resname="mileageplus-and-rapidrewards-note">
+        <source xml:space="preserve">
+                Unfortunately, %bold_on%%providerName%%bold_off% forced us to stop supporting their loyalty programs by accessing their
+                website; however, - we can update your %providerShortName% account from the email statement that they send you.
+                %br%
+                Please %edit_link_on%click here%edit_link_off% to read the instructions on how to do that.
+                %br%
+                %br%
+                Please voice your opinion by tweeting it to %twitter_link_on%%twitter_link%%twitter_link_off%
+            </source>
+        <target xml:space="preserve" state="new">
+                很遺憾，%bold_on%%providerName%%bold_off% 強制我們停止透過存取他們的網站支援他們的忠誠計劃；然而- 我們可以透過他們發送給您的電子郵件結算單更新您的 %providerShortName% 帳戶。%br%請%edit_link_on%按這裡%edit_link_off%以閱讀如何進行的說明。%br% %br%請透過推特表達意見：%twitter_link_on%%twitter_link%%twitter_link_off%
+            </target>
+
+        <jms:reference-file>Service/ProgramStatus/DesktopContactUsDescriptor.php</jms:reference-file>
+      </trans-unit>
+      <trans-unit approved="yes" id="0d8a8d8c4e479fd5afac96ec1cd1e2ba98306fdd" resname="mileageplus-and-rapidrewards-note.mobile">
+        <source xml:space="preserve">
+                %row_start%Unfortunately, %bold_on%%providerName%%bold_off% forced us to stop supporting their loyalty programs by accessing their
+                website; however, - we can update your %providerShortName% account from the email statement that they send you.%row_end%
+                %row_start%Please %edit_link_on%click here%edit_link_off% to read the instructions on how to do that.%row_end%
+                %row_start%Please voice your opinion by tweeting it to:%row_end%
+                %twitter_link_on%%twitter_link%%twitter_link_off%
+            </source>
+        <target xml:space="preserve" state="new">
+                %row_start%很遺憾，%bold_on%%providerName%%bold_off% 強制我們停止透過存取他們的網站支援他們的忠誠計劃；然而- 我們可以透過他們發送給您的電子郵件結算單更新您的 %providerShortName% 帳戶。%row_end% %row_start%請%edit_link_on%按這裡%edit_link_off%以閱讀如何進行的說明。%row_end% %row_start%請透過推特表達意見：%row_end% %twitter_link_on%%twitter_link%%twitter_link_off%
+            </target>
+
+        <jms:reference-file>Service/ProgramStatus/MobileAddAccountDescriptor.php</jms:reference-file>
+      </trans-unit>
+      <trans-unit approved="yes" id="a42a923eab8a999267ec52594317b9bccb634763" resname="program-adding-not-feasible">
+        <source xml:space="preserve">
+                We have already looked into adding %bold_on%%program%%bold_off% but determined that it is %bold2_on%not feasible%bold2_off%.
+                Most common problem for not being able to add support for a program is that it simply doesn't show any type of reward balance on their website.
+                If you know that this is not the case, i.e. you can both login to the site and actually see your point balance then please let us know.
+            </source>
+        <target xml:space="preserve" state="new">
+                我們曾經嘗試添加 %bold_on%%program%%bold_off%，不過卻%bold2_on%無法達成%bold2_off%。無法支援一項計劃最常見的原因是其網站上未顯示任何類型的獎勵餘額。 如果您知道原因並非如此，亦即您既可以登錄該網站，又可以實際看到您的積分餘額，那麼請聯繫我們。
+            </target>
+
+        <jms:reference-file>Service/ProgramStatus/DesktopContactUsDescriptor.php</jms:reference-file>
+      </trans-unit>
+      <trans-unit approved="yes" id="e7caaa7fa97a4a1310075f5bbc6d15d2d79579d7" resname="program-adding-not-feasible.mobile">
+        <source xml:space="preserve">
+                %row_start%We have already looked into adding %bold_on%%program%%bold_off% but determined that it is %bold2_on%not feasible%bold2_off%.%row_end%
+                %row_start%Most common problem for not being able to add support for a program is that it simply doesn't show any type of reward balance on their website.%row_end%
+                %row_start%If you know that this is not the case, i.e. you can both login to the site and actually see your point balance then please let us know.%row_end%
+            </source>
+        <target xml:space="preserve" state="new">
+                %row_start%我們曾經嘗試添加 %bold_on%%program%%bold_off% 不過卻%bold2_on%無法達成%bold2_off%。%row_end% %row_start%無法支援一項計劃最常見的原因是其網站上未顯示任何類型的獎勵餘額。 %row_end% %row_start%如果您知道原因並非如此，亦即您既可以登錄該網站，又可以實際看到您的積分餘額，那麼請聯繫我們。%row_end%
+            </target>
+
+        <jms:reference-file>Service/ProgramStatus/MobileAddAccountDescriptor.php</jms:reference-file>
+      </trans-unit>
+      <trans-unit approved="yes" id="f05fafddbcb80a3eaba0d961d198a27e4af3b636" resname="program-already-considering-to-adding">
+        <source xml:space="preserve">
+                We are %bold_on%already considering%bold_off% to add %bold2_on%%program%%bold2_off% program.
+                We add support for new programs based on demand, so please click %bold3_on%+1%bold3_off%
+                next to it on our %status_link_on%status page%status_link_off% this way you will also get
+                an automated email when this program is implemented.
+                %bold2_on%%votes%%bold2_off% other AwardWallet users requested this program.
+            </source>
+        <target xml:space="preserve" state="new">
+                我們%bold_on%已經在考慮%bold_off%添加 %bold2_on%%program%%bold2_off% 計劃。我們根據使用者需求支援新計劃，因此，請上我們的%status_link_on%狀態頁面%status_link_off%並在該計劃旁邊按下 %bold3_on%+1%bold3_off%，這麼一來，您就會在我們開始支援該計劃後，自動收到一封電子郵件。另有 %bold2_on%%votes%%bold2_off% 位 AwardWallet 使用者也要求這項計劃。
+            </target>
+
+        <jms:reference-file>Service/ProgramStatus/DesktopContactUsDescriptor.php</jms:reference-file>
+      </trans-unit>
+      <trans-unit approved="yes" id="02be3056bd3b349bd4616520fd8ca10b4689bdcb" resname="program-already-considering-to-adding.mobile">
+        <source xml:space="preserve">%row_start%We are %bold_on%already considering%bold_off% to add %bold2_on%%program%%bold2_off% program.%row_end%
+                %row_start%We add support for new programs based on demand, so please click %bold_on%+1
+                above%bold_off% this way you will also get
+                an automated email when this program is implemented.%row_end%</source>
+        <target xml:space="preserve">%row_start%我們%bold_on%已經在考慮%bold_off%添加%bold2_on%%program%%bold2_off% 計劃。%row_end% %row_start%我們根據使用者需求支援新計劃，因此請%bold_on% 在上面按 +1%bold_off%，這麼一來，您就會在我們開始支援該計劃後，自動收到一封電子郵件。%row_end%</target>
+
+        <jms:reference-file>Service/ProgramStatus/MobileAddAccountDescriptor.php</jms:reference-file>
+      </trans-unit>
+      <trans-unit approved="yes" id="89719adb2a6ad81a0dab3d4a320fb7d27361a1a9" resname="program-already-marked-broken">
+        <source xml:space="preserve">
+                %bold_on%%program%%bold_off% is %bold2_on%already marked as broken%bold2_off% in our system and we are looking to get it fixed.
+                There is no need to contact us about this program.
+                If you want to get notified when it is fixed please click %bold3_on%+1%bold3_off% on our %status_link_on%status page%status_link_off%.
+            </source>
+        <target xml:space="preserve" state="new">
+                %bold_on%%program%%bold_off% 已在我們的系統中 %bold2_on%標示為損壞%bold2_off%，並且我們正嘗試修復。因此您無需為了這個計劃與我們聯繫。若您想在該計劃修復後收到通知，請在我們的%status_link_on%狀態頁面%status_link_off%按 %bold3_on%+1%bold3_off%。 
+            </target>
+
+        <jms:reference-file>Service/ProgramStatus/DesktopContactUsDescriptor.php</jms:reference-file>
+      </trans-unit>
+      <trans-unit approved="yes" id="687191ff1ae44a5aa75017e272c8c6ea1cecb528" resname="program-already-marked-broken.mobile">
+        <source xml:space="preserve">
+                %row_start%%bold_on%%program%%bold_off% is %bold2_on%already marked as broken%bold2_off% in our system and we are looking to get it fixed.%row_end%
+                %row_start%There is no need to contact us about this program.%row_end%
+                %row_start%If you want to get notified when it is fixed please click %bold2_on%+1 above%bold2_off%.%row_end%
+            </source>
+        <target xml:space="preserve">
+                %row_start%%bold_on%%program%%bold_off% 已在我們的系統中%bold2_on%標示為損壞%bold2_off%，並且我們正嘗試修復。%row_end% %row_start%因此您無需為了這個計劃與我們聯繫。%row_end% %row_start%若您想在修復後收到通知，請%bold2_on%在上面按 +1%bold2_off%。%row_end%
+            </target>
+
+        <jms:reference-file>Service/ProgramStatus/MobileAddAccountDescriptor.php</jms:reference-file>
+      </trans-unit>
+      <trans-unit approved="yes" id="084c511915aa09ce3c5c6cf7922e825718796676" resname="program-broken-suspicion">
+        <source xml:space="preserve">
+                According to our records the success rate on %bold_on%%program%%bold_off% is %bold_on%%successRate%%bold_off% (in the last 24 hours %successRate% of accounts successfully updated).
+            </source>
+        <target xml:space="preserve" state="new">
+                根據我們的記錄，%bold_on%%program%%bold_off% 的成功率是 %bold_on%%successRate%%bold_off% （在過去 24 小時中 %successRate%  的帳戶成功更新）。
+            </target>
+
+        <jms:reference-file>Service/ProgramStatus/DesktopContactUsDescriptor.php</jms:reference-file>
+      </trans-unit>
+      <trans-unit approved="yes" id="95155d0a3b0668f9b3a6ff5155977da4a9f395c9" resname="program-broken-suspicion.mobile">
+        <source xml:space="preserve">
+                According to our records the success rate on %bold_on%%program%%bold_off% is %bold2_on%%successRate%%bold2_off% (in the last 24 hours %successRate% of accounts successfully updated).
+            </source>
+        <target xml:space="preserve" state="new">
+                根據我們的記錄，%bold_on%%program%%bold_off% 的成功率為 %bold2_on%%successRate%%bold2_off% （在過去 24 小時中 %successRate%  的帳戶成功更新）。
+            </target>
+
+        <jms:reference-file>Service/ProgramStatus/MobileAddAccountDescriptor.php</jms:reference-file>
+      </trans-unit>
+      <trans-unit approved="yes" id="fe072c6f927f381734797ad43a0cc3eaf76bd0b5" resname="program-not-broken">
+        <source xml:space="preserve">
+                According to our records %bold_on%%program%%bold_off% is %bold2_on%not broken%bold2_off%.
+            </source>
+        <target xml:space="preserve" state="new">
+                根據我們的紀錄，%bold_on%%program%%bold_off%  %bold2_on%並未損壞%bold2_off%。
+            </target>
+
+        <jms:reference-file>Service/ProgramStatus/DesktopContactUsDescriptor.php</jms:reference-file>
+        <jms:reference-file>Service/ProgramStatus/MobileAddAccountDescriptor.php</jms:reference-file>
+      </trans-unit>
+      <trans-unit approved="yes" id="74839138d87c528007a04a7c030508511b881fe8" resname="program-success-rate">
+        <source xml:space="preserve">
+                The success rate on this program is %bold_on%%successRate%%bold_off% (in the last 24 hours %successRate% of accounts successfully updated).
+            </source>
+        <target xml:space="preserve" state="new">
+                該計劃的成功率是 %bold_on%%successRate%%bold_off% (在過去 24 小時中 %successRate%  的帳戶成功更新）。
+            </target>
+
+        <jms:reference-file>Service/ProgramStatus/DesktopContactUsDescriptor.php</jms:reference-file>
+        <jms:reference-file>Service/ProgramStatus/MobileAddAccountDescriptor.php</jms:reference-file>
+      </trans-unit>
+      <trans-unit approved="yes" id="54faec366d11efdac0f9d2da560e273f92288c2a" resname="requests">
+        <source>%span_on%%count_formatted%%span_off% %span2_on%request%span2_off%|%span_on%%count_formatted%%span_off% %span2_on%requests%span2_off%</source>
+        <target state="new">%span_on%%count_formatted%%span_off% %span2_on% 則請求%span2_off%</target>
+
+        <jms:reference-file>views/ContactUs/programSearchResult.mobile.html.twig</jms:reference-file>
+      </trans-unit>
+    </body>
+  </file>
+</xliff>

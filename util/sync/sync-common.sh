@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+loyaltyTables='Provider ProviderPhone ProviderProperty ProviderCountry Alliance ProviderInputOption EliteLevel TextEliteLevel Currency Airline AirlineFareClass Country AirlineTicketPrefix'
+wsdlTables='Provider ProviderPhone ProviderProperty ProviderCountry Alliance ProviderInputOption EliteLevel TextEliteLevel Currency Airline AirlineFareClass RewardsTransfer MilePrice Country AirlineTicketPrefix'
+emailTables='Provider ProviderPhone ProviderProperty ProviderCountry Alliance ProviderInputOption EliteLevel TextEliteLevel Currency Airline AirlineFareClass Country AirlineTicketPrefix ProviderSignal SignalAttribute'

@@ -1,0 +1,538 @@
+{
+    "Kind": "coupon",
+    "DisplayName": "Vouchers \/ Gift Cards (Tracked Manually)",
+    "formData": {
+        "children": [
+            {
+                "value": {
+                    "Front": {
+                        "Label": "Front"
+                    },
+                    "Back": {
+                        "Label": "Back"
+                    }
+                },
+                "attr": [],
+                "name": "cardImages",
+                "full_name": "mobile_providercoupon[cardImages]",
+                "disabled": false,
+                "label": null,
+                "required": false,
+                "mapped": true,
+                "submitData": true,
+                "type": "card_images",
+                "Val": {
+                    "Front": {
+                        "Label": "Front"
+                    },
+                    "Back": {
+                        "Label": "Back"
+                    }
+                }
+            },
+            {
+                "value": [],
+                "attr": {
+                    "title": "No bar code detected, if you have a bar code please scan it now.",
+                    "hint": "Scan Barcode",
+                    "type": "barcode"
+                },
+                "name": "barcode",
+                "full_name": "mobile_providercoupon[barcode]",
+                "disabled": false,
+                "label": null,
+                "required": true,
+                "mapped": true,
+                "submitData": true,
+                "type": "barcode"
+            },
+            {
+                "value": null,
+                "attr": [],
+                "name": "accountheader",
+                "full_name": "mobile_providercoupon[accountheader]",
+                "disabled": false,
+                "label": null,
+                "required": false,
+                "mapped": false,
+                "submitData": false,
+                "type": "accountHeader",
+                "providerKind": "coupon",
+                "providerCode": null,
+                "providerName": "Company name",
+                "hint": "Not tracked by AwardWallet",
+                "group": null
+            },
+            {
+                "value": {
+                    "_type": "same-relative",
+                    "_args": [
+                        "my_owner_id"
+                    ],
+                    "_locator": "parent.parent[?(@.name='owner')]"
+                },
+                "attr": {
+                    "class": "js-useragent-select",
+                    "notice": "Please choose whose loyalty program this is.<br>You can <a href=\"#\" class=\"js-add-new-person\">add a new person<\/a> if necessary."
+                },
+                "name": "owner",
+                "full_name": "mobile_providercoupon[owner]",
+                "disabled": false,
+                "label": "Account Owner",
+                "required": false,
+                "placeholder": null,
+                "mapped": true,
+                "submitData": false,
+                "type": "choice",
+                "multiple": false,
+                "choices": [
+                    {
+                        "value": {
+                            "_type": "same-relative",
+                            "_args": [
+                                "my_owner_id"
+                            ],
+                            "_locator": "$.formData.children[?(@.name='owner')].choices[?(@.label='Ragnar Petrovich')]"
+                        },
+                        "label": "Ragnar Petrovich",
+                        "selected": true,
+                        "attr": {
+                            "data-email": {
+                                "_type": "ignore",
+                                "_locator": "$.formData.children[?(@.name='owner')].choices[?(@.label='Ragnar Petrovich')].attr"
+                            },
+                            "data-shareable": "shareable"
+                        }
+                    }
+                ]
+            },
+            {
+                "value": "Company name",
+                "attr": [],
+                "name": "programname",
+                "full_name": "mobile_providercoupon[programname]",
+                "disabled": false,
+                "label": "Company",
+                "required": true,
+                "mapped": true,
+                "submitData": false,
+                "type": "text_completion",
+                "completionLink": "\/providers\/completion\/1",
+                "attachedAccounts": [],
+                "providerKind": null,
+                "completionList": null
+            },
+            {
+                "value": "",
+                "attr": [],
+                "name": "account",
+                "full_name": "mobile_providercoupon[account]",
+                "disabled": false,
+                "label": "Attach to Account",
+                "required": false,
+                "placeholder": "coupon.standalone",
+                "mapped": true,
+                "submitData": false,
+                "type": "choice",
+                "multiple": false,
+                "choices": [
+                    {
+                        "value": "",
+                        "label": "Standalone",
+                        "selected": true,
+                        "attr": []
+                    }
+                ]
+            },
+            {
+                "value": "1",
+                "attr": [],
+                "name": "kind",
+                "full_name": "mobile_providercoupon[kind]",
+                "disabled": false,
+                "label": "Category",
+                "required": true,
+                "placeholder": "please-select",
+                "mapped": true,
+                "submitData": false,
+                "type": "choice",
+                "multiple": false,
+                "choices": [
+                    {
+                        "value": "",
+                        "label": "Please select",
+                        "attr": []
+                    },
+                    {
+                        "value": "6",
+                        "label": "Credit Cards",
+                        "attr": []
+                    },
+                    {
+                        "value": "1",
+                        "label": "Airlines",
+                        "selected": true,
+                        "attr": []
+                    },
+                    {
+                        "value": "2",
+                        "label": "Hotels",
+                        "attr": []
+                    },
+                    {
+                        "value": "3",
+                        "label": "Rentals",
+                        "attr": []
+                    },
+                    {
+                        "value": "4",
+                        "label": "Trains",
+                        "attr": []
+                    },
+                    {
+                        "value": "10",
+                        "label": "Cruises",
+                        "attr": []
+                    },
+                    {
+                        "value": "7",
+                        "label": "Shopping",
+                        "attr": []
+                    },
+                    {
+                        "value": "8",
+                        "label": "Dining",
+                        "attr": []
+                    },
+                    {
+                        "value": "9",
+                        "label": "Surveys",
+                        "attr": []
+                    },
+                    {
+                        "value": "12",
+                        "label": "Parking",
+                        "attr": []
+                    },
+                    {
+                        "value": "5",
+                        "label": "Other",
+                        "attr": []
+                    }
+                ]
+            },
+            {
+                "value": "Companion Ticket",
+                "attr": {
+                    "submitOnFocus": true
+                },
+                "name": "typeName",
+                "full_name": "mobile_providercoupon[typeName]",
+                "disabled": false,
+                "label": "Type",
+                "required": true,
+                "mapped": true,
+                "submitData": false,
+                "type": "text_completion",
+                "completionLink": "\/coupon\/types",
+                "attachedAccounts": [],
+                "providerKind": null,
+                "completionList": null
+            },
+            {
+                "value": [
+                    {
+                        "icon": "add-balance",
+                        "label": "Add Cert \/ Card \/ Voucher #",
+                        "toggledLabel": "Remove Cert \/ Card \/ Voucher #",
+                        "fields": [
+                            "cardnumber",
+                            "cardnumberseparator"
+                        ],
+                        "toggled": true
+                    },
+                    {
+                        "icon": "add-password",
+                        "label": "Add PIN \/ Redemption Code",
+                        "toggledLabel": "Remove PIN \/ Redemption Code",
+                        "fields": [
+                            "pin",
+                            "pinseparator"
+                        ],
+                        "toggled": true
+                    },
+                    {
+                        "icon": "add-voucher-value",
+                        "label": "Add value",
+                        "toggledLabel": "Remove value",
+                        "fields": [
+                            "currencyandbalance",
+                            "expirationdate",
+                            "trackexpiration",
+                            "currencyandbalanceseparator"
+                        ],
+                        "toggled": true
+                    },
+                    {
+                        "icon": "add-comment",
+                        "label": "Add comment",
+                        "toggledLabel": "Remove comment",
+                        "fields": [
+                            "description",
+                            "commentseparator"
+                        ],
+                        "toggled": true
+                    }
+                ],
+                "attr": [],
+                "name": "fieldtoggler",
+                "full_name": "mobile_providercoupon[fieldtoggler]",
+                "disabled": false,
+                "label": null,
+                "required": false,
+                "mapped": false,
+                "submitData": false,
+                "type": "field_toggler"
+            },
+            {
+                "value": "Cert number",
+                "attr": [],
+                "name": "cardnumber",
+                "full_name": "mobile_providercoupon[cardnumber]",
+                "disabled": false,
+                "label": "Cert \/ Card \/ Voucher #",
+                "required": false,
+                "mapped": true,
+                "submitData": false,
+                "type": "text"
+            },
+            {
+                "value": "",
+                "attr": {
+                    "visible": true
+                },
+                "name": "cardnumberseparator",
+                "full_name": "mobile_providercoupon[cardnumberseparator]",
+                "disabled": false,
+                "label": null,
+                "required": false,
+                "submitData": false,
+                "mapped": false,
+                "type": "separator"
+            },
+            {
+                "value": "Pin code",
+                "attr": [],
+                "name": "pin",
+                "full_name": "mobile_providercoupon[pin]",
+                "disabled": false,
+                "label": "PIN \/ Redemption Code",
+                "required": false,
+                "mapped": true,
+                "submitData": false,
+                "type": "text"
+            },
+            {
+                "value": "",
+                "attr": {
+                    "visible": true
+                },
+                "name": "pinseparator",
+                "full_name": "mobile_providercoupon[pinseparator]",
+                "disabled": false,
+                "label": null,
+                "required": false,
+                "submitData": false,
+                "mapped": false,
+                "type": "separator"
+            },
+            {
+                "value": [],
+                "attr": [],
+                "name": "currencyandbalance",
+                "full_name": "mobile_providercoupon[currencyandbalance]",
+                "disabled": false,
+                "label": null,
+                "required": false,
+                "mapped": true,
+                "submitData": false,
+                "type": "currency_and_balance",
+                "children": [
+                    {
+                        "value": "45",
+                        "attr": [],
+                        "name": "currency",
+                        "full_name": "mobile_providercoupon[currencyandbalance][currency]",
+                        "disabled": false,
+                        "label": "Currency",
+                        "required": false,
+                        "placeholder": "",
+                        "mapped": true,
+                        "submitData": false,
+                        "type": "choice",
+                        "multiple": false,
+                        "choices": {
+                            "_type": "list-prefix",
+                            "_args": [
+                                [
+                                    {
+                                        "value": "1",
+                                        "label": "Miles",
+                                        "attr": {
+                                            "name": "Miles"
+                                        }
+                                    },
+                                    {
+                                        "value": "2",
+                                        "label": "Points",
+                                        "attr": {
+                                            "name": "Points"
+                                        }
+                                    },
+                                    {
+                                        "value": "3",
+                                        "label": "USD",
+                                        "attr": {
+                                            "name": "US Dollars"
+                                        }
+                                    }
+                                ],
+                                0
+                            ],
+                            "_locator": "$.formData.children[?(@.name='currencyandbalance')].children[?(@.name='currency')]"
+                        }
+                    },
+                    {
+                        "value": "100500",
+                        "attr": [],
+                        "name": "balance",
+                        "full_name": "mobile_providercoupon[currencyandbalance][balance]",
+                        "disabled": false,
+                        "label": "Value",
+                        "required": false,
+                        "mapped": true,
+                        "submitData": false,
+                        "type": "text"
+                    }
+                ]
+            },
+            {
+                "value": true,
+                "attr": {
+                    "notice": "Disable this option if you don't want AwardWallet to try to track the expiration of this program and you know these Brazilian reais don't expire",
+                    "class": "simple"
+                },
+                "name": "trackexpiration",
+                "full_name": "mobile_providercoupon[trackexpiration]",
+                "disabled": false,
+                "label": "<span class=\"exp-track\"><img src=\"assets\/exp-track.png\"\/><\/span> Brazilian reais expire",
+                "required": false,
+                "mapped": true,
+                "submitData": true,
+                "type": "switcher"
+            },
+            {
+                "value": "2024-11-14",
+                "attr": [],
+                "name": "expirationdate",
+                "full_name": "mobile_providercoupon[expirationdate]",
+                "disabled": false,
+                "label": "Expiration",
+                "required": false,
+                "mapped": true,
+                "submitData": false,
+                "type": "date"
+            },
+            {
+                "value": "",
+                "attr": {
+                    "visible": true
+                },
+                "name": "currencyandbalanceseparator",
+                "full_name": "mobile_providercoupon[currencyandbalanceseparator]",
+                "disabled": false,
+                "label": null,
+                "required": false,
+                "submitData": false,
+                "mapped": false,
+                "type": "separator"
+            },
+            {
+                "value": "note here",
+                "attr": [],
+                "name": "description",
+                "full_name": "mobile_providercoupon[description]",
+                "disabled": false,
+                "label": "Comment",
+                "required": false,
+                "mapped": true,
+                "submitData": false,
+                "type": "textarea"
+            },
+            {
+                "value": "",
+                "attr": {
+                    "visible": true
+                },
+                "name": "commentseparator",
+                "full_name": "mobile_providercoupon[commentseparator]",
+                "disabled": false,
+                "label": null,
+                "required": false,
+                "submitData": false,
+                "mapped": false,
+                "type": "separator"
+            },
+            {
+                "value": [],
+                "attr": [],
+                "name": "useragents",
+                "full_name": "mobile_providercoupon[useragents]",
+                "disabled": false,
+                "label": null,
+                "required": true,
+                "mapped": true,
+                "submitData": false,
+                "type": "hidden"
+            },
+            {
+                "value": {
+                    "_type": "ignore",
+                    "_locator": "parent.parent[?(@.name='_token')]"
+                },
+                "attr": [],
+                "name": "_token",
+                "full_name": "_token",
+                "disabled": false,
+                "label": null,
+                "required": false,
+                "submitData": false,
+                "mapped": true,
+                "type": "hidden"
+            }
+        ],
+        "jsFormInterface": {
+            "_type": "regex",
+            "_args": [
+                "#AbstractFormExtension#i"
+            ]
+        },
+        "jsProviderExtension": [
+            {
+                "_type": "regex",
+                "_args": [
+                    "#AbstractFormExtension.*form.showField\\('kind'#ims"
+                ]
+            },
+            {
+                "_type": "regex",
+                "_args": [
+                    "#AbstractFormExtension.*disableField\\('expirationdate'#ims"
+                ]
+            }
+        ]
+    },
+    "context": {
+        "providerId": "custom"
+    }
+}

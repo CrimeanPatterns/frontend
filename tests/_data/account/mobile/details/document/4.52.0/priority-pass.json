@@ -1,0 +1,159 @@
+{
+    "TableName": "Coupon",
+    "ID": {
+        "_type": "same",
+        "_args": [
+            "couponId"
+        ]
+    },
+    "Login": "comment",
+    "Balance": "",
+    "TotalBalance": 0,
+    "ProviderCode": null,
+    "LoginURL": null,
+    "Description": "comment",
+    "ExpirationDate": {
+        "ts": 1711972800,
+        "fmt": "Apr 1, 2024"
+    },
+    "ProviderID": null,
+    "UserName": "Ragnar Petrovich",
+    "UserID": {
+        "_type": "same",
+        "_args": [
+            "userId"
+        ]
+    },
+    "DisplayName": "Passport",
+    "LastBalance": null,
+    "Kind": 11,
+    "SavePassword": null,
+    "IATACode": null,
+    "ShareUserAgentID": null,
+    "UserAgentID": null,
+    "Question": null,
+    "BackgroundColor": "4684c4",
+    "FontColor": "ffffff",
+    "AccentColor": null,
+    "Border_LM": false,
+    "Border_DM": false,
+    "_": true,
+    "FID": {
+        "_type": "same",
+        "_args": [
+            "FID"
+        ]
+    },
+    "Access": {
+        "edit": true,
+        "delete": true,
+        "update": false,
+        "autologin": false
+    },
+    "ExpirationState": "far",
+    "isCustom": true,
+    "Blocks": [
+        {
+            "Kind": "barcode",
+            "Val": {
+                "Linked": true,
+                "Custom": true,
+                "BarCodeData": "BarCodeCustom.BarCodeData",
+                "BarCodeType": "BarCodeCustom.BarCodeType"
+            },
+            "Visible": "BarCodeCustom.BarCodeData"
+        },
+        {
+            "Kind": "string",
+            "Name": "Priority Pass Number",
+            "Val": "100500"
+        },
+        {
+            "Kind": "string",
+            "Name": "Pass Type",
+            "Val": "Select"
+        },
+        {
+            "Kind": "expirationDate",
+            "Name": "Expiration",
+            "Val": {
+                "ExpirationDate": {
+                    "ts": 1711972800,
+                    "fmt": "Apr 1, 2024"
+                },
+                "ExpirationState": "far",
+                "ExpirationDetails": null
+            },
+            "Icon": "hours"
+        },
+        {
+            "Kind": "priority_pass_credit_card",
+            "Val": {
+                "image": {
+                    "_type": "regex",
+                    "_args": [
+                        "#http:\/\/awardwallet\\.docker\/images\/uploaded\/creditcard\/medium\/000000\/file-{creditCardId}-123\\.jpg#ims",
+                        [
+                            "creditCardId"
+                        ]
+                    ]
+                },
+                "name": "Test Card Fullname"
+            }
+        },
+        {
+            "Kind": "card_images",
+            "Name": "Pictures of the card",
+            "Val": {
+                "Front": {
+                    "Label": "Front"
+                },
+                "Back": {
+                    "Label": "Back"
+                }
+            }
+        },
+        {
+            "Kind": "set_location_link"
+        },
+        {
+            "Kind": "string",
+            "Name": "Note",
+            "Val": "comment"
+        }
+    ],
+    "PreviewBlocks": [
+        {
+            "Kind": "string",
+            "Name": "Priority Pass Number",
+            "Val": "100500"
+        },
+        {
+            "Kind": "string",
+            "Name": "Pass Type",
+            "Val": "Select"
+        },
+        {
+            "Kind": "expirationDate",
+            "Name": "Expiration",
+            "Val": {
+                "ExpirationDate": {
+                    "ts": 1711972800,
+                    "fmt": "Apr 1, 2024"
+                },
+                "ExpirationState": "far",
+                "ExpirationDetails": null
+            },
+            "Icon": "hours"
+        }
+    ],
+    "ExpirationDatePush": "Apr 1, 2024",
+    "Type": "priority-pass",
+    "ScanBarcode": true,
+    "BarcodeType": "qrcode",
+    "VaccineCardAccount": false,
+    "ShowPictures": false,
+    "Documents": [],
+    "ParentAccount": null,
+    "UpdateDurationWithoutPlans": null
+}

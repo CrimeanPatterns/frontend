@@ -1,0 +1,205 @@
+{
+    "Kind": 1,
+    "DisplayName": "Test Provider (Test)",
+    "formData": {
+        "children": [
+            {
+                "value": {
+                    "Front": {
+                        "Label": "Front"
+                    },
+                    "Back": {
+                        "Label": "Back"
+                    }
+                },
+                "attr": [],
+                "name": "cardImages",
+                "full_name": "mobile_account[cardImages]",
+                "disabled": false,
+                "label": null,
+                "required": false,
+                "mapped": true,
+                "submitData": true,
+                "type": "card_images",
+                "Val": {
+                    "Front": {
+                        "Label": "Front"
+                    },
+                    "Back": {
+                        "Label": "Back"
+                    }
+                }
+            },
+            {
+                "value": [],
+                "attr": {
+                    "title": "No bar code detected, if you have a bar code please scan it now.",
+                    "hint": "Scan Barcode",
+                    "type": "barcode"
+                },
+                "name": "barcode",
+                "full_name": "mobile_account[barcode]",
+                "disabled": false,
+                "label": null,
+                "required": true,
+                "mapped": true,
+                "submitData": true,
+                "type": "barcode"
+            },
+            {
+                "value": null,
+                "attr": [],
+                "name": "accountheader",
+                "full_name": "mobile_account[accountheader]",
+                "disabled": false,
+                "label": null,
+                "required": false,
+                "mapped": false,
+                "submitData": false,
+                "type": "accountHeader",
+                "providerKind": 1,
+                "providerCode": "testprovider",
+                "providerName": "Test Provider (Test)",
+                "hint": null,
+                "group": null
+            },
+            {
+                "value": {
+                    "_type": "same-relative",
+                    "_args": [
+                        "my_owner_id"
+                    ],
+                    "_locator": "parent.parent[?(@.name='owner')]"
+                },
+                "attr": {
+                    "class": "js-useragent-select",
+                    "notice": "Please choose whose loyalty program this is.<br>You can <a href=\"#\" class=\"js-add-new-person\">add a new person<\/a> if necessary."
+                },
+                "name": "owner",
+                "full_name": "mobile_account[owner]",
+                "disabled": false,
+                "label": "Account Owner",
+                "required": false,
+                "placeholder": null,
+                "mapped": true,
+                "submitData": false,
+                "type": "choice",
+                "multiple": false,
+                "choices": [
+                    {
+                        "value": {
+                            "_type": "same-relative",
+                            "_args": [
+                                "my_owner_id"
+                            ],
+                            "_locator": "$.formData.children[?(@.name='owner')].choices[?(@.label='Ragnar Petrovich')]"
+                        },
+                        "label": "Ragnar Petrovich",
+                        "selected": true,
+                        "attr": {
+                            "data-email": {
+                                "_type": "ignore",
+                                "_locator": "$.formData.children[?(@.name='owner')].choices[?(@.label='Ragnar Petrovich')].attr"
+                            },
+                            "data-shareable": "shareable"
+                        }
+                    }
+                ]
+            },
+            {
+                "value": "",
+                "attr": {
+                    "notice": "Type of test",
+                    "autocapitalize": "off"
+                },
+                "name": "login",
+                "full_name": "mobile_account[login]",
+                "disabled": false,
+                "label": "Login ",
+                "required": true,
+                "placeholder": null,
+                "mapped": true,
+                "submitData": false,
+                "type": "choice",
+                "multiple": false,
+                "choices": {
+                    "_type": "expr",
+                    "_args": [
+                        "is_array(value) && (count(value) > 10)"
+                    ],
+                    "_locator": "parent.parent[?(@.name='login')]"
+                }
+            },
+            {
+                "value": "",
+                "attr": [],
+                "name": "login2",
+                "full_name": "mobile_account[login2]",
+                "disabled": false,
+                "label": "Login2",
+                "required": false,
+                "mapped": true,
+                "submitData": false,
+                "type": "text"
+            },
+            {
+                "value": [],
+                "attr": [],
+                "name": "useragents",
+                "full_name": "mobile_account[useragents]",
+                "disabled": false,
+                "label": null,
+                "required": true,
+                "mapped": true,
+                "submitData": false,
+                "type": "hidden"
+            },
+            {
+                "value": false,
+                "attr": {
+                    "class": "smallest shading"
+                },
+                "name": "notrelated",
+                "full_name": "mobile_account[notrelated]",
+                "disabled": false,
+                "label": "I understand that AwardWallet and its services are not affiliated with or related in any manner to Test Provider or any of the loyalty programs they offer, such as Test Provider (Test). I also hereby give AwardWallet permission to use my information, including information such as my loyalty account balance information, travel reservations, historical account transactions, as part of the AwardWallet service.",
+                "required": true,
+                "mapped": true,
+                "submitData": false,
+                "type": "checkbox"
+            },
+            {
+                "value": {
+                    "_type": "ignore",
+                    "_locator": "parent.parent[?(@.name='_token')]"
+                },
+                "attr": [],
+                "name": "_token",
+                "full_name": "_token",
+                "disabled": false,
+                "label": null,
+                "required": false,
+                "submitData": false,
+                "mapped": true,
+                "type": "hidden"
+            }
+        ],
+        "jsFormInterface": {
+            "_type": "regex",
+            "_args": [
+                "#AbstractFormExtension#i"
+            ]
+        },
+        "jsProviderExtension": [
+            {
+                "_type": "regex",
+                "_args": [
+                    "#AbstractFormExtension#i"
+                ]
+            }
+        ]
+    },
+    "context": {
+        "providerId": 636
+    }
+}

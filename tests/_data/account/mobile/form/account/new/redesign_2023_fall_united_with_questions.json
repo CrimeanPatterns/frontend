@@ -1,0 +1,578 @@
+{
+    "Kind": 1,
+    "DisplayName": "United Airlines (Mileage Plus)",
+    "formData": {
+        "children": [
+            {
+                "value": {
+                    "_type": "regex",
+                    "_args": [
+                        "#Unfortunately United Airlines forced us to stop#i"
+                    ],
+                    "_locator": "parent.parent[?(@.name='message0')]"
+                },
+                "attr": {
+                    "disableLabel": true
+                },
+                "name": "message0",
+                "full_name": "mobile_account[message0]",
+                "disabled": false,
+                "label": null,
+                "required": false,
+                "submitData": false,
+                "mapped": false,
+                "type": "html"
+            },
+            {
+                "value": {
+                    "_type": "regex",
+                    "_args": [
+                        "#The best and simplest way to automate#i"
+                    ],
+                    "_locator": "parent.parent[?(@.name='message1')]"
+                },
+                "attr": {
+                    "disableLabel": true
+                },
+                "name": "message1",
+                "full_name": "mobile_account[message1]",
+                "disabled": false,
+                "label": null,
+                "required": false,
+                "submitData": false,
+                "mapped": false,
+                "type": "html"
+            },
+            {
+                "value": {
+                    "Front": {
+                        "Label": "Front"
+                    },
+                    "Back": {
+                        "Label": "Back"
+                    }
+                },
+                "attr": [],
+                "name": "cardImages",
+                "full_name": "mobile_account[cardImages]",
+                "disabled": false,
+                "label": null,
+                "required": false,
+                "mapped": true,
+                "submitData": true,
+                "type": "card_images",
+                "Val": {
+                    "Front": {
+                        "Label": "Front"
+                    },
+                    "Back": {
+                        "Label": "Back"
+                    }
+                }
+            },
+            {
+                "value": [],
+                "attr": {
+                    "title": "No bar code detected, if you have a bar code please scan it now.",
+                    "hint": "Scan Barcode",
+                    "type": "barcode"
+                },
+                "name": "barcode",
+                "full_name": "mobile_account[barcode]",
+                "disabled": false,
+                "label": null,
+                "required": true,
+                "mapped": true,
+                "submitData": true,
+                "type": "barcode"
+            },
+            {
+                "value": null,
+                "attr": [],
+                "name": "accountheader",
+                "full_name": "mobile_account[accountheader]",
+                "disabled": false,
+                "label": null,
+                "required": false,
+                "mapped": false,
+                "submitData": false,
+                "type": "accountHeader",
+                "providerKind": 1,
+                "providerCode": "mileageplus",
+                "providerName": "United Airlines (Mileage Plus)",
+                "hint": null,
+                "group": null
+            },
+            {
+                "value": {
+                    "_type": "same-relative",
+                    "_args": [
+                        "my_owner_id"
+                    ],
+                    "_locator": "parent.parent[?(@.name='owner')]"
+                },
+                "attr": {
+                    "class": "js-useragent-select",
+                    "notice": "Please choose whose loyalty program this is.<br>You can <a href=\"#\" class=\"js-add-new-person\">add a new person<\/a> if necessary."
+                },
+                "name": "owner",
+                "full_name": "mobile_account[owner]",
+                "disabled": false,
+                "label": "Account Owner",
+                "required": false,
+                "placeholder": null,
+                "mapped": true,
+                "submitData": false,
+                "type": "choice",
+                "multiple": false,
+                "choices": [
+                    {
+                        "value": {
+                            "_type": "same-relative",
+                            "_args": [
+                                "my_owner_id"
+                            ],
+                            "_locator": "$.formData.children[?(@.name='owner')].choices[?(@.label='Ragnar Petrovich')]"
+                        },
+                        "label": "Ragnar Petrovich",
+                        "selected": true,
+                        "attr": {
+                            "data-email": {
+                                "_type": "ignore",
+                                "_locator": "$.formData.children[?(@.name='owner')].choices[?(@.label='Ragnar Petrovich')].attr"
+                            },
+                            "data-shareable": "shareable"
+                        }
+                    }
+                ]
+            },
+            {
+                "value": "",
+                "attr": {
+                    "autocapitalize": "off"
+                },
+                "name": "login",
+                "full_name": "mobile_account[login]",
+                "disabled": false,
+                "label": "Mileage Plus #",
+                "required": true,
+                "mapped": true,
+                "submitData": false,
+                "type": "text"
+            },
+            {
+                "value": "",
+                "attr": {
+                    "notice": "PIN or Password"
+                },
+                "name": "pass",
+                "full_name": "mobile_account[pass]",
+                "disabled": false,
+                "label": "Password",
+                "required": false,
+                "mapped": true,
+                "submitData": false,
+                "type": "passwordEdit"
+            },
+            {
+                "value": true,
+                "attr": {
+                    "notice": "You may optionally choose to store your award program passwords locally on this device, if you do so and switch devices you will need to re-enter the passwords again",
+                    "class": "simple"
+                },
+                "name": "savepassword",
+                "full_name": "mobile_account[savepassword]",
+                "disabled": false,
+                "label": "<div class=\"icon-aw\"><img src=\"assets\/aw.png\"\/><\/div> Save encrypted password with AwardWallet",
+                "required": true,
+                "mapped": true,
+                "submitData": false,
+                "type": "switcher"
+            },
+            {
+                "value": 0,
+                "attr": [],
+                "name": "balance",
+                "full_name": "mobile_account[balance]",
+                "disabled": false,
+                "label": "Balance",
+                "required": false,
+                "mapped": true,
+                "submitData": false,
+                "type": "text"
+            },
+            {
+                "value": "",
+                "attr": [],
+                "name": "Status",
+                "full_name": "mobile_account[Status]",
+                "disabled": false,
+                "label": "Elite Status",
+                "required": true,
+                "placeholder": null,
+                "submitData": false,
+                "mapped": true,
+                "type": "choice",
+                "multiple": false,
+                "choices": {
+                    "_type": "expr",
+                    "_args": [
+                        "is_array(value) && (count(value) > 3)"
+                    ],
+                    "_locator": "parent.parent[?(@.name='Status')]"
+                }
+            },
+            {
+                "value": "",
+                "attr": {
+                    "notice": "Optionally you can specify when these points are going to expire. AwardWallet will not retrieve and update this information for you automatically."
+                },
+                "name": "expirationdate",
+                "full_name": "mobile_account[expirationdate]",
+                "disabled": false,
+                "label": "Expiration",
+                "required": false,
+                "mapped": true,
+                "submitData": false,
+                "type": "date"
+            },
+            {
+                "value": {
+                    "_type": "expr",
+                    "_args": [
+                        "strlen(value) > 100 && str_contains(value, 'Select question')"
+                    ],
+                    "_locator": "parent.parent[?(@.name='_questions')]"
+                },
+                "attr": {
+                    "disableLabel": true
+                },
+                "name": "_questions",
+                "full_name": "mobile_account[_questions]",
+                "disabled": false,
+                "label": null,
+                "required": false,
+                "mapped": true,
+                "submitData": true,
+                "type": "hidden"
+            },
+            {
+                "value": "[]",
+                "attr": {
+                    "disableLabel": true
+                },
+                "name": "_stored",
+                "full_name": "mobile_account[_stored]",
+                "disabled": false,
+                "label": null,
+                "required": false,
+                "mapped": true,
+                "submitData": true,
+                "type": "hidden"
+            },
+            {
+                "value": "",
+                "attr": {
+                    "class": "js-group-answers-q",
+                    "data-index": 1
+                },
+                "name": "unitedquest1",
+                "full_name": "mobile_account[unitedquest1]",
+                "disabled": false,
+                "label": "Question 1 of 5",
+                "required": false,
+                "placeholder": "Select question",
+                "mapped": true,
+                "submitData": true,
+                "type": "choice",
+                "multiple": false,
+                "choices": {
+                    "_type": "expr",
+                    "_args": [
+                        "count(value) > 5"
+                    ],
+                    "_locator": "$.formData.children[?(@.name='unitedquest1')]"
+                }
+            },
+            {
+                "value": "",
+                "attr": {
+                    "disableLabel": true,
+                    "class": "js-group-answers-a",
+                    "data-index": 1
+                },
+                "name": "unitedanswer1",
+                "full_name": "mobile_account[unitedanswer1]",
+                "disabled": false,
+                "label": null,
+                "required": false,
+                "placeholder": "Select your answer",
+                "mapped": true,
+                "submitData": true,
+                "type": "choice",
+                "multiple": false,
+                "choices": {
+                    "_type": "expr",
+                    "_args": [
+                        "count(value) > 5"
+                    ],
+                    "_locator": "$.formData.children[?(@.name='unitedanswer1')]"
+                }
+            },
+            {
+                "value": "",
+                "attr": {
+                    "class": "js-group-answers-q",
+                    "data-index": 2
+                },
+                "name": "unitedquest2",
+                "full_name": "mobile_account[unitedquest2]",
+                "disabled": false,
+                "label": "Question 2 of 5",
+                "required": false,
+                "placeholder": "Select question",
+                "mapped": true,
+                "submitData": true,
+                "type": "choice",
+                "multiple": false,
+                "choices": {
+                    "_type": "expr",
+                    "_args": [
+                        "count(value) > 5"
+                    ],
+                    "_locator": "$.formData.children[?(@.name='unitedquest2')]"
+                }
+            },
+            {
+                "value": "",
+                "attr": {
+                    "disableLabel": true,
+                    "class": "js-group-answers-a",
+                    "data-index": 2
+                },
+                "name": "unitedanswer2",
+                "full_name": "mobile_account[unitedanswer2]",
+                "disabled": false,
+                "label": null,
+                "required": false,
+                "placeholder": "Select your answer",
+                "mapped": true,
+                "submitData": true,
+                "type": "choice",
+                "multiple": false,
+                "choices": {
+                    "_type": "expr",
+                    "_args": [
+                        "count(value) > 5"
+                    ],
+                    "_locator": "$.formData.children[?(@.name='unitedanswer2')]"
+                }
+            },
+            {
+                "value": "",
+                "attr": {
+                    "class": "js-group-answers-q",
+                    "data-index": 3
+                },
+                "name": "unitedquest3",
+                "full_name": "mobile_account[unitedquest3]",
+                "disabled": false,
+                "label": "Question 3 of 5",
+                "required": false,
+                "placeholder": "Select question",
+                "mapped": true,
+                "submitData": true,
+                "type": "choice",
+                "multiple": false,
+                "choices": {
+                    "_type": "expr",
+                    "_args": [
+                        "count(value) > 5"
+                    ],
+                    "_locator": "$.formData.children[?(@.name='unitedquest3')]"
+                }
+            },
+            {
+                "value": "",
+                "attr": {
+                    "disableLabel": true,
+                    "class": "js-group-answers-a",
+                    "data-index": 3
+                },
+                "name": "unitedanswer3",
+                "full_name": "mobile_account[unitedanswer3]",
+                "disabled": false,
+                "label": null,
+                "required": false,
+                "placeholder": "Select your answer",
+                "mapped": true,
+                "submitData": true,
+                "type": "choice",
+                "multiple": false,
+                "choices": {
+                    "_type": "expr",
+                    "_args": [
+                        "count(value) > 5"
+                    ],
+                    "_locator": "$.formData.children[?(@.name='unitedanswer3')]"
+                }
+            },
+            {
+                "value": "",
+                "attr": {
+                    "class": "js-group-answers-q",
+                    "data-index": 4
+                },
+                "name": "unitedquest4",
+                "full_name": "mobile_account[unitedquest4]",
+                "disabled": false,
+                "label": "Question 4 of 5",
+                "required": false,
+                "placeholder": "Select question",
+                "mapped": true,
+                "submitData": true,
+                "type": "choice",
+                "multiple": false,
+                "choices": {
+                    "_type": "expr",
+                    "_args": [
+                        "count(value) > 5"
+                    ],
+                    "_locator": "$.formData.children[?(@.name='unitedquest4')]"
+                }
+            },
+            {
+                "value": "",
+                "attr": {
+                    "disableLabel": true,
+                    "class": "js-group-answers-a",
+                    "data-index": 4
+                },
+                "name": "unitedanswer4",
+                "full_name": "mobile_account[unitedanswer4]",
+                "disabled": false,
+                "label": null,
+                "required": false,
+                "placeholder": "Select your answer",
+                "mapped": true,
+                "submitData": true,
+                "type": "choice",
+                "multiple": false,
+                "choices": {
+                    "_type": "expr",
+                    "_args": [
+                        "count(value) > 5"
+                    ],
+                    "_locator": "$.formData.children[?(@.name='unitedanswer4')]"
+                }
+            },
+            {
+                "value": "",
+                "attr": {
+                    "class": "js-group-answers-q",
+                    "data-index": 5
+                },
+                "name": "unitedquest5",
+                "full_name": "mobile_account[unitedquest5]",
+                "disabled": false,
+                "label": "Question 5 of 5",
+                "required": false,
+                "placeholder": "Select question",
+                "mapped": true,
+                "submitData": true,
+                "type": "choice",
+                "multiple": false,
+                "choices": {
+                    "_type": "expr",
+                    "_args": [
+                        "count(value) > 5"
+                    ],
+                    "_locator": "$.formData.children[?(@.name='unitedquest5')]"
+                }
+            },
+            {
+                "value": "",
+                "attr": {
+                    "disableLabel": true,
+                    "class": "js-group-answers-a",
+                    "data-index": 5
+                },
+                "name": "unitedanswer5",
+                "full_name": "mobile_account[unitedanswer5]",
+                "disabled": false,
+                "label": null,
+                "required": false,
+                "placeholder": "Select your answer",
+                "mapped": true,
+                "submitData": true,
+                "type": "choice",
+                "multiple": false,
+                "choices": {
+                    "_type": "expr",
+                    "_args": [
+                        "count(value) > 5"
+                    ],
+                    "_locator": "$.formData.children[?(@.name='unitedanswer5')]"
+                }
+            },
+            {
+                "value": [],
+                "attr": [],
+                "name": "useragents",
+                "full_name": "mobile_account[useragents]",
+                "disabled": false,
+                "label": null,
+                "required": true,
+                "mapped": true,
+                "submitData": false,
+                "type": "hidden"
+            },
+            {
+                "value": false,
+                "attr": {
+                    "class": "smallest shading"
+                },
+                "name": "notrelated",
+                "full_name": "mobile_account[notrelated]",
+                "disabled": false,
+                "label": "I understand that AwardWallet and its services are not affiliated with or related in any manner to United Airlines or any of the loyalty programs they offer, such as United Airlines (Mileage Plus). I also hereby give AwardWallet permission to use my information, including information such as my loyalty account balance information, travel reservations, historical account transactions, as part of the AwardWallet service.",
+                "required": true,
+                "mapped": true,
+                "submitData": false,
+                "type": "checkbox"
+            },
+            {
+                "value": {
+                    "_type": "ignore",
+                    "_locator": "parent.parent[?(@.name='_token')]"
+                },
+                "attr": [],
+                "name": "_token",
+                "full_name": "_token",
+                "disabled": false,
+                "label": null,
+                "required": false,
+                "submitData": false,
+                "mapped": true,
+                "type": "hidden"
+            }
+        ],
+        "jsFormInterface": {
+            "_type": "regex",
+            "_args": [
+                "\/AbstractFormExtension\/i"
+            ]
+        },
+        "jsProviderExtension": [
+            {
+                "_type": "regex",
+                "_args": [
+                    "#united#i"
+                ]
+            }
+        ]
+    },
+    "context": {
+        "providerId": 26
+    }
+}

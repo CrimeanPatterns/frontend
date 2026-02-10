@@ -1,0 +1,45 @@
+# Codeception Test Suite Configuration
+
+# suite for functional (integration) tests.
+# emulate web requests and make application process them.
+# (tip: better to use with frameworks).
+
+# RUN `build` COMMAND AFTER ADDING/REMOVING MODULES.
+
+class_name: TestSymfonyGuy
+modules:
+    enabled:
+        - Filesystem
+        - REST
+        - Symfony
+        # these should come early, will mock services in container
+        - Cache
+        - GoogleApiMock
+        # end
+        - CustomDb
+        - Asserts
+        - TestHelper
+        - SymfonyTestHelper
+        - Aw
+        - CreditCards
+        - MileValue
+        - Security
+        - Mail
+        - Push
+        - AwsS3
+        - DbBuilder
+        - StripeIntent
+        - PayPal
+        - JsonNormalizer
+    config:
+        REST:
+            depends: Symfony
+        Symfony:
+            environment: 'codeception'
+            debug: false
+        Mail:
+            source: swift
+extensions:
+    enabled:
+        - Codeception\Extension\AwErrorHandler
+        - Codeception\Extension\SymfonyTestHelperExtension

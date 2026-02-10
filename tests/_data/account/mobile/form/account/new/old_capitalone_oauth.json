@@ -1,0 +1,277 @@
+{
+    "Kind": 6,
+    "DisplayName": "Capital One",
+    "formData": {
+        "children": [
+            {
+                "value": "",
+                "attr": [],
+                "name": "login2",
+                "full_name": "mobile_account[login2]",
+                "disabled": false,
+                "label": "Region",
+                "required": false,
+                "placeholder": null,
+                "mapped": true,
+                "submitData": false,
+                "type": "choice",
+                "multiple": false,
+                "choices": [
+                    {
+                        "value": "",
+                        "label": "Select region",
+                        "selected": true,
+                        "attr": []
+                    },
+                    {
+                        "value": "US",
+                        "label": "United States",
+                        "attr": []
+                    },
+                    {
+                        "value": "CA",
+                        "label": "Canada",
+                        "attr": []
+                    }
+                ]
+            },
+            {
+                "value": "",
+                "attr": {
+                    "blockName": "authInfo"
+                },
+                "name": "topDesc",
+                "full_name": "mobile_account[topDesc]",
+                "disabled": false,
+                "label": "We have a direct API integration with Capital One,\n\t\t\t\t\t\tpowered by Capital One, which is the most secure and efficient way to pull account information.\n\t\t\t\t\t\tSo we are not actually pulling your account information from Capital One website.",
+                "required": false,
+                "mapped": false,
+                "submitData": false,
+                "type": "group_desc"
+            },
+            {
+                "value": {
+                    "miles": null,
+                    "transactions": null
+                },
+                "attr": {
+                    "disableLabel": true,
+                    "blockName": "authinfo",
+                    "requiredText": "Please authenticate this account via Capital One before saving this form."
+                },
+                "name": "authinfo",
+                "full_name": "mobile_account[authinfo]",
+                "disabled": false,
+                "label": null,
+                "required": false,
+                "mapped": true,
+                "submitData": false,
+                "type": "capitalcards_oauth_mobile",
+                "programCode": "capitalcards",
+                "authenticatedText": "Authenticated",
+                "notAuthenticatedText": "Not authenticated",
+                "requiredText": "Please authenticate this account via Capital One before saving this form.",
+                "statusText": "Account Status",
+                "miles_callbackUrl": {
+                    "_type": "regex",
+                    "_args": [
+                        "#\/auth\/capitalcards\/authorize#"
+                    ],
+                    "_locator": "parent.parent[?(@.name='authinfo')]"
+                },
+                "miles_title": "CAPITAL ONE MILES",
+                "miles_desc": "(Provides access to your Capital One Miles reward balance)",
+                "miles_buttonText": "Connect with Capital One",
+                "miles_revokeButtonText": "Revoke Capital One miles access for AwardWallet",
+                "transactions_callbackUrl": {
+                    "_type": "regex",
+                    "_args": [
+                        "#\/auth\/capitalcards\/authorize#"
+                    ],
+                    "_locator": "parent.parent[?(@.name='authinfo')]"
+                },
+                "transactions_title": "CAPITAL ONE TRANSACTIONS",
+                "transactions_desc": "(Provides access to your Capital One credit card transactions)",
+                "transactions_buttonText": "Connect with Capital One",
+                "transactions_revokeButtonText": "Revoke Capital One transactions access for AwardWallet",
+                "transactions_confirm": "Would you like us to analyze your credit card transactions so that you can optimize your spending for maximum earnings?",
+                "transactions_confirm_title": "Credit Card Transactions"
+            },
+            {
+                "value": "",
+                "attr": {
+                    "blockName": "authInfo"
+                },
+                "name": "middleDesc",
+                "full_name": "mobile_account[middleDesc]",
+                "disabled": false,
+                "label": "Providing account credentials is optional for Capital One\n\t\t\t\t \t\tas we have API integration with them and only needed for the auto-login feature.",
+                "required": false,
+                "mapped": false,
+                "submitData": false,
+                "type": "group_desc"
+            },
+            {
+                "value": {
+                    "_type": "same-relative",
+                    "_args": [
+                        "my_owner_id"
+                    ],
+                    "_locator": "parent.parent[?(@.name='owner')]"
+                },
+                "attr": {
+                    "class": "js-useragent-select",
+                    "notice": "Please choose whose loyalty program this is.<br>You can <a href=\"#\" class=\"js-add-new-person\">add a new person<\/a> if necessary."
+                },
+                "name": "owner",
+                "full_name": "mobile_account[owner]",
+                "disabled": false,
+                "label": "Account Owner",
+                "required": false,
+                "placeholder": null,
+                "mapped": true,
+                "submitData": false,
+                "type": "choice",
+                "multiple": false,
+                "choices": [
+                    {
+                        "value": {
+                            "_type": "same-relative",
+                            "_args": [
+                                "my_owner_id"
+                            ],
+                            "_locator": "$.formData.children[?(@.name='owner')].choices[?(@.label='Ragnar Petrovich')]"
+                        },
+                        "label": "Ragnar Petrovich",
+                        "selected": true,
+                        "attr": {
+                            "data-email": {
+                                "_type": "ignore",
+                                "_locator": "$.formData.children[?(@.name='owner')].choices[?(@.label='Ragnar Petrovich')].attr"
+                            },
+                            "data-shareable": "shareable"
+                        }
+                    }
+                ]
+            },
+            {
+                "value": "",
+                "attr": {
+                    "autocapitalize": "off"
+                },
+                "name": "login",
+                "full_name": "mobile_account[login]",
+                "disabled": false,
+                "label": "User name",
+                "required": false,
+                "mapped": true,
+                "submitData": false,
+                "type": "text"
+            },
+            {
+                "value": "",
+                "attr": [],
+                "name": "pass",
+                "full_name": "mobile_account[pass]",
+                "disabled": false,
+                "label": "Password",
+                "required": false,
+                "mapped": true,
+                "submitData": false,
+                "type": "passwordEdit"
+            },
+            {
+                "value": "1",
+                "attr": {
+                    "notice": "You may optionally choose to store your award program passwords locally on this device, if you do so and switch devices you will need to re-enter the passwords again"
+                },
+                "name": "savepassword",
+                "full_name": "mobile_account[savepassword]",
+                "disabled": false,
+                "label": "Save Password",
+                "required": true,
+                "placeholder": null,
+                "mapped": true,
+                "submitData": false,
+                "type": "choice",
+                "multiple": false,
+                "alerts": {
+                    "2": "You are choosing to not store your reward password in our encrypted and secure database. AwardWallet will no longer be able to automatically monitor this reward program. Also if you clear your cookies or simply use another device to update your balances this password would have to be re-entered.",
+                    "1": "You are about to delete your reward password from this device and securely store it in an encrypted AwardWallet database. AwardWallet will now be able to monitor this reward program for changes and expirations."
+                },
+                "choices": [
+                    {
+                        "value": "1",
+                        "label": "With AwardWallet.com",
+                        "selected": true,
+                        "attr": []
+                    },
+                    {
+                        "value": "2",
+                        "label": "Locally on this device",
+                        "attr": []
+                    }
+                ]
+            },
+            {
+                "value": [],
+                "attr": [],
+                "name": "useragents",
+                "full_name": "mobile_account[useragents]",
+                "disabled": false,
+                "label": null,
+                "required": true,
+                "mapped": true,
+                "submitData": false,
+                "type": "hidden"
+            },
+            {
+                "value": false,
+                "attr": {
+                    "class": "smallest shading"
+                },
+                "name": "notrelated",
+                "full_name": "mobile_account[notrelated]",
+                "disabled": false,
+                "label": "I understand that AwardWallet's services are not offered by Capital One. By continuing, I instruct Capital One to share the information about my Capital One rewards account(s) (including balance, currency, and available redemption opportunities) with AwardWallet.",
+                "required": true,
+                "mapped": true,
+                "submitData": false,
+                "type": "checkbox"
+            },
+            {
+                "value": {
+                    "_type": "ignore",
+                    "_locator": "parent.parent[?(@.name='_token')]"
+                },
+                "attr": [],
+                "name": "_token",
+                "full_name": "_token",
+                "disabled": false,
+                "label": null,
+                "required": false,
+                "submitData": false,
+                "mapped": true,
+                "type": "hidden"
+            }
+        ],
+        "jsFormInterface": {
+            "_type": "regex",
+            "_args": [
+                "#AbstractFormExtension#i"
+            ]
+        },
+        "jsProviderExtension": [
+            {
+                "_type": "regex",
+                "_args": [
+                    "#AbstractFormExtension#i"
+                ]
+            }
+        ]
+    },
+    "logo": "capitalcards",
+    "context": {
+        "providerId": 104
+    }
+}

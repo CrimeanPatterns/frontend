@@ -1,0 +1,509 @@
+{
+    "Kind": 6,
+    "DisplayName": "Chase (Ultimate Rewards)",
+    "formData": {
+        "children": [
+            {
+                "value": null,
+                "attr": [],
+                "name": "accountheader",
+                "full_name": "mobile_account[accountheader]",
+                "disabled": false,
+                "label": null,
+                "required": false,
+                "mapped": false,
+                "submitData": false,
+                "type": "accountHeader",
+                "providerKind": 6,
+                "providerCode": "chase",
+                "providerName": "Chase (Ultimate Rewards)",
+                "hint": null,
+                "group": null
+            },
+            {
+                "value": {
+                    "_type": "same-relative",
+                    "_args": [
+                        "my_owner_id"
+                    ],
+                    "_locator": "parent.parent[?(@.name='owner')]"
+                },
+                "attr": {
+                    "class": "js-useragent-select",
+                    "notice": "Please choose whose loyalty program this is.<br>You can <a href=\"#\" class=\"js-add-new-person\">add a new person<\/a> if necessary."
+                },
+                "name": "owner",
+                "full_name": "mobile_account[owner]",
+                "disabled": false,
+                "label": "Account Owner",
+                "required": false,
+                "placeholder": null,
+                "mapped": true,
+                "submitData": false,
+                "type": "choice",
+                "multiple": false,
+                "choices": [
+                    {
+                        "value": {
+                            "_type": "same-relative",
+                            "_args": [
+                                "my_owner_id"
+                            ],
+                            "_locator": "$.formData.children[?(@.name='owner')].choices[?(@.label='Ragnar Petrovich')]"
+                        },
+                        "label": "Ragnar Petrovich",
+                        "selected": true,
+                        "attr": {
+                            "data-email": {
+                                "_type": "ignore",
+                                "_locator": "$.formData.children[?(@.name='owner')].choices[?(@.label='Ragnar Petrovich')].attr"
+                            },
+                            "data-shareable": "shareable"
+                        }
+                    }
+                ]
+            },
+            {
+                "value": "someuserid",
+                "attr": {
+                    "autocapitalize": "off"
+                },
+                "name": "login",
+                "full_name": "mobile_account[login]",
+                "disabled": false,
+                "label": "User ID",
+                "required": true,
+                "mapped": true,
+                "submitData": false,
+                "type": "text"
+            },
+            {
+                "value": true,
+                "attr": {
+                    "notice": "Disable this option if you don't want AwardWallet to try to track the expiration of this program and you know these points don't expire",
+                    "class": "simple"
+                },
+                "name": "trackexpiration",
+                "full_name": "mobile_account[trackexpiration]",
+                "disabled": false,
+                "label": "<span class=\"exp-track\"><img src=\"assets\/exp-track.png\"\/><\/span> Points expire",
+                "required": false,
+                "mapped": true,
+                "submitData": true,
+                "type": "switcher"
+            },
+            {
+                "value": "",
+                "attr": {
+                    "notice": "Optionally you can specify when these points are going to expire. AwardWallet will not retrieve and update this information for you automatically.",
+                    "readonly": "readonly"
+                },
+                "name": "expirationdate",
+                "full_name": "mobile_account[expirationdate]",
+                "disabled": false,
+                "label": "Expiration",
+                "required": false,
+                "mapped": true,
+                "submitData": false,
+                "type": "date"
+            },
+            {
+                "value": "",
+                "attr": [],
+                "name": "pass",
+                "full_name": "mobile_account[pass]",
+                "disabled": false,
+                "label": "Password",
+                "required": true,
+                "mapped": true,
+                "submitData": false,
+                "type": "passwordEdit"
+            },
+            {
+                "value": "We checked against a published database of hacked passwords and we see that this password appears in that database <strong>100,500<\/strong> times. We recommend that you change this password ASAP in order to keep your account secure. Please note that this check was done locally, without sending your password to any third-party service.",
+                "attr": [],
+                "name": "noticepwned",
+                "full_name": "mobile_account[noticepwned]",
+                "disabled": false,
+                "label": null,
+                "required": false,
+                "mapped": false,
+                "submitData": false,
+                "type": "notice"
+            },
+            {
+                "value": true,
+                "attr": {
+                    "notice": "You may optionally choose to store your award program passwords locally on this device, if you do so and switch devices you will need to re-enter the passwords again",
+                    "class": "simple"
+                },
+                "name": "savepassword",
+                "full_name": "mobile_account[savepassword]",
+                "disabled": false,
+                "label": "<div class=\"icon-aw\"><img src=\"assets\/aw.png\"\/><\/div> Save encrypted password with AwardWallet",
+                "required": true,
+                "mapped": true,
+                "submitData": false,
+                "type": "switcher"
+            },
+            {
+                "value": "",
+                "attr": {
+                    "notice": "Number of points you wish to have"
+                },
+                "name": "goal",
+                "full_name": "mobile_account[goal]",
+                "disabled": false,
+                "label": "Goal",
+                "required": false,
+                "mapped": true,
+                "submitData": false,
+                "type": "text"
+            },
+            {
+                "value": "",
+                "attr": {
+                    "notice": "optional, up to 10,000 characters"
+                },
+                "name": "comment",
+                "full_name": "mobile_account[comment]",
+                "disabled": false,
+                "label": "Comment",
+                "required": false,
+                "mapped": true,
+                "submitData": false,
+                "type": "textarea"
+            },
+            {
+                "value": false,
+                "attr": {
+                    "passwordAccess": {
+                        "route": {
+                            "_type": "regex",
+                            "_args": [
+                                "\/autologin-enable\/i"
+                            ],
+                            "_locator": "$.formData.children[?(@.name='disableclientpasswordaccess')].attr.passwordAccess"
+                        },
+                        "trigger_value": true
+                    }
+                },
+                "name": "disableclientpasswordaccess",
+                "full_name": "mobile_account[disableclientpasswordaccess]",
+                "disabled": false,
+                "label": "Disable auto-login for this account",
+                "required": false,
+                "mapped": true,
+                "submitData": true,
+                "type": "checkbox"
+            },
+            {
+                "value": false,
+                "attr": {
+                    "notice": "If you have this checkbox checked we will not be attempting to retrieve account information from the provider's website."
+                },
+                "name": "disabled",
+                "full_name": "mobile_account[disabled]",
+                "disabled": false,
+                "label": "Disabled. Don't update this account",
+                "required": false,
+                "mapped": true,
+                "submitData": false,
+                "type": "checkbox"
+            },
+            {
+                "value": false,
+                "attr": {
+                    "notice": {
+                        "_type": "regex",
+                        "_args": [
+                            "\/if enabled\/i"
+                        ],
+                        "_locator": "$.formData.children[?(@.name='BalanceWatch')].attr"
+                    }
+                },
+                "name": "BalanceWatch",
+                "full_name": "mobile_account[BalanceWatch]",
+                "disabled": false,
+                "label": "Enable “Balance Watch”",
+                "required": false,
+                "mapped": true,
+                "submitData": false,
+                "type": "checkbox"
+            },
+            {
+                "value": "0",
+                "attr": [],
+                "name": "PointsSource",
+                "full_name": "mobile_account[PointsSource]",
+                "disabled": false,
+                "label": "Source of points",
+                "required": true,
+                "placeholder": null,
+                "mapped": true,
+                "submitData": false,
+                "type": "choice",
+                "multiple": false,
+                "choices": [
+                    {
+                        "value": "0",
+                        "label": "Please select",
+                        "selected": true,
+                        "attr": []
+                    },
+                    {
+                        "value": "1",
+                        "label": "Transfer",
+                        "attr": []
+                    },
+                    {
+                        "value": "2",
+                        "label": "Purchase",
+                        "attr": []
+                    },
+                    {
+                        "value": "3",
+                        "label": "Other (Bonus, etc.)",
+                        "attr": []
+                    }
+                ]
+            },
+            {
+                "value": "points",
+                "attr": [],
+                "name": "TransferProviderCurrency",
+                "full_name": "mobile_account[TransferProviderCurrency]",
+                "disabled": false,
+                "label": null,
+                "required": false,
+                "mapped": true,
+                "submitData": true,
+                "type": "hidden"
+            },
+            {
+                "value": "",
+                "attr": [],
+                "name": "TransferFromProvider",
+                "full_name": "mobile_account[TransferFromProvider]",
+                "disabled": false,
+                "label": "Transfer from",
+                "required": true,
+                "mapped": true,
+                "submitData": false,
+                "type": "text_completion",
+                "completionLink": "\/providers\/completion?requestFields=currency",
+                "attachedAccounts": [],
+                "providerKind": null,
+                "completionList": null
+            },
+            {
+                "value": "",
+                "attr": {
+                    "notice": "If you choose an Expected number of points, we will only trigger the alert for this account if we see your balance increase by at least this number of points."
+                },
+                "name": "ExpectedPoints",
+                "full_name": "mobile_account[ExpectedPoints]",
+                "disabled": false,
+                "label": "Expected number of points",
+                "required": false,
+                "mapped": true,
+                "submitData": false,
+                "type": "text"
+            },
+            {
+                "value": "",
+                "attr": [],
+                "name": "TransferRequestDate",
+                "full_name": "mobile_account[TransferRequestDate]",
+                "disabled": false,
+                "label": "Transfer requested",
+                "required": true,
+                "placeholder": null,
+                "mapped": true,
+                "submitData": false,
+                "type": "choice",
+                "multiple": false,
+                "choices": {
+                    "_type": "expr",
+                    "_args": [
+                        "is_array(value) && (count(value) > 5)"
+                    ],
+                    "_locator": "parent.parent[?(@.name='TransferRequestDate')]"
+                }
+            },
+            {
+                "value": "false",
+                "attr": [],
+                "name": "IsBusiness",
+                "full_name": "mobile_account[IsBusiness]",
+                "disabled": false,
+                "label": null,
+                "required": false,
+                "submitData": false,
+                "mapped": false,
+                "type": "hidden"
+            },
+            {
+                "value": "false",
+                "attr": [],
+                "name": "IsBalanceWatchDisabled",
+                "full_name": "mobile_account[IsBalanceWatchDisabled]",
+                "disabled": false,
+                "label": null,
+                "required": false,
+                "mapped": true,
+                "submitData": true,
+                "type": "hidden"
+            },
+            {
+                "value": "false",
+                "attr": [],
+                "name": "IsBalanceWatchAwPlus",
+                "full_name": "mobile_account[IsBalanceWatchAwPlus]",
+                "disabled": false,
+                "label": null,
+                "required": false,
+                "mapped": true,
+                "submitData": true,
+                "type": "hidden"
+            },
+            {
+                "value": {
+                    "_type": "ignore",
+                    "_locator": "parent.parent[?(@.name='URL_PayAwPlus')]"
+                },
+                "attr": [],
+                "name": "URL_PayAwPlus",
+                "full_name": "mobile_account[URL_PayAwPlus]",
+                "disabled": false,
+                "label": null,
+                "required": false,
+                "mapped": true,
+                "submitData": true,
+                "type": "hidden"
+            },
+            {
+                "value": "0",
+                "attr": [],
+                "name": "IsBalanceWatchCredits",
+                "full_name": "mobile_account[IsBalanceWatchCredits]",
+                "disabled": false,
+                "label": null,
+                "required": false,
+                "mapped": true,
+                "submitData": true,
+                "type": "hidden"
+            },
+            {
+                "value": {
+                    "_type": "regex",
+                    "_args": [
+                        "#\/user\/pay\/balancewatch-credit#i"
+                    ],
+                    "_locator": "parent.parent[?(@.name='URL_PayCredit')]"
+                },
+                "attr": [],
+                "name": "URL_PayCredit",
+                "full_name": "mobile_account[URL_PayCredit]",
+                "disabled": false,
+                "label": null,
+                "required": false,
+                "mapped": true,
+                "submitData": true,
+                "type": "hidden"
+            },
+            {
+                "value": "6",
+                "attr": [],
+                "name": "IsBalanceWatchAccountError",
+                "full_name": "mobile_account[IsBalanceWatchAccountError]",
+                "disabled": false,
+                "label": null,
+                "required": false,
+                "mapped": true,
+                "submitData": true,
+                "type": "hidden"
+            },
+            {
+                "value": "false",
+                "attr": [],
+                "name": "IsBalanceWatchAccountCanCheck",
+                "full_name": "mobile_account[IsBalanceWatchAccountCanCheck]",
+                "disabled": false,
+                "label": null,
+                "required": false,
+                "mapped": true,
+                "submitData": true,
+                "type": "hidden"
+            },
+            {
+                "value": "false",
+                "attr": [],
+                "name": "IsBalanceWatchLocalPasswordExclude",
+                "full_name": "mobile_account[IsBalanceWatchLocalPasswordExclude]",
+                "disabled": false,
+                "label": null,
+                "required": false,
+                "submitData": false,
+                "mapped": false,
+                "type": "hidden"
+            },
+            {
+                "value": [],
+                "attr": [],
+                "name": "useragents",
+                "full_name": "mobile_account[useragents]",
+                "disabled": false,
+                "label": null,
+                "required": true,
+                "mapped": true,
+                "submitData": false,
+                "type": "hidden"
+            },
+            {
+                "value": true,
+                "attr": {
+                    "class": "smallest shading"
+                },
+                "name": "notrelated",
+                "full_name": "mobile_account[notrelated]",
+                "disabled": false,
+                "label": "I understand that AwardWallet and its services are not affiliated with or related in any manner to JPMorgan Chase or any of the loyalty programs they offer, such as Chase (Ultimate Rewards). I also hereby give AwardWallet permission to use my information, including information such as my loyalty account balance information, travel reservations, historical account transactions, as part of the AwardWallet service.",
+                "required": true,
+                "mapped": true,
+                "submitData": false,
+                "type": "checkbox"
+            },
+            {
+                "value": {
+                    "_type": "ignore",
+                    "_locator": "parent.parent[?(@.name='_token')]"
+                },
+                "attr": [],
+                "name": "_token",
+                "full_name": "_token",
+                "disabled": false,
+                "label": null,
+                "required": false,
+                "submitData": false,
+                "mapped": true,
+                "type": "hidden"
+            }
+        ],
+        "jsFormInterface": {
+            "_type": "regex",
+            "_args": [
+                "\/AbstractFormExtension\/i"
+            ]
+        },
+        "jsProviderExtension": [
+            {
+                "_type": "regex",
+                "_args": [
+                    "#AbstractFormExtension.*balanceWatchFields#ims"
+                ]
+            }
+        ]
+    },
+    "Login": "someuserid"
+}

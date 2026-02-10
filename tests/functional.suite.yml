@@ -1,0 +1,24 @@
+# Codeception Test Suite Configuration
+
+# suite for functional (integration) tests.
+# emulate web requests and make application process them.
+# (tip: better to use with frameworks).
+
+# RUN `build` COMMAND AFTER ADDING/REMOVING MODULES.
+
+actor: TestGuy
+modules:
+    enabled:
+        - REST:
+              depends: PhpBrowser
+        - Mail
+    config:
+        Mail:
+            source: imap
+        PhpBrowser:
+            headers:
+                x-symfony-env: acceptance
+extensions:
+    enabled:
+        - Codeception\Extension\AwErrorHandler
+

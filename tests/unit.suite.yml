@@ -1,0 +1,44 @@
+# Codeception Test Suite Configuration
+
+# suite for unit (internal) tests.
+# RUN `build` COMMAND AFTER ADDING/REMOVING MODULES.
+
+class_name: CodeGuy
+modules:
+    enabled:
+        - Symfony:
+            environment: 'codeception'
+        # these should come early, will mock services in container
+        - GoogleApiMock
+        - Cache
+        # end
+        - CustomDb:
+            cleanup: true
+        - CodeHelper
+        - Asserts
+        - Mail
+        - Aw
+        - CreditCards
+        - Clickhouse
+        - MileValue
+        - SymfonyTestHelper
+        - Doctrine2Extras
+        - SymfonyExtras
+        - Cli
+        - AwsS3
+        - DbBuilder
+        - StripeIntent
+        - SymfonyLogger
+        - JsonNormalizer
+    config:
+        Symfony:
+            environment: 'codeception'
+            debug: true
+            cache_router: true
+
+        Mail:
+            source: swift
+extensions:
+    enabled:
+        - Codeception\Extension\AwErrorHandler
+        - Codeception\Extension\SymfonyTestHelperExtension

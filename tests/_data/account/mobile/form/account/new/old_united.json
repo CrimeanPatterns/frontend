@@ -1,0 +1,288 @@
+{
+    "Kind": 1,
+    "DisplayName": "United Airlines (Mileage Plus)",
+    "formData": {
+        "children": [
+            {
+                "value": {
+                    "_type": "regex",
+                    "_args": [
+                        "#Unfortunately United Airlines forced us to stop#i"
+                    ],
+                    "_locator": "parent.parent[?(@.name='message0')]"
+                },
+                "attr": {
+                    "disableLabel": true
+                },
+                "name": "message0",
+                "full_name": "mobile_account[message0]",
+                "disabled": false,
+                "label": null,
+                "required": false,
+                "submitData": false,
+                "mapped": false,
+                "type": "html"
+            },
+            {
+                "value": {
+                    "_type": "regex",
+                    "_args": [
+                        "#The best and simplest way to automate#i"
+                    ],
+                    "_locator": "parent.parent[?(@.name='message1')]"
+                },
+                "attr": {
+                    "disableLabel": true
+                },
+                "name": "message1",
+                "full_name": "mobile_account[message1]",
+                "disabled": false,
+                "label": null,
+                "required": false,
+                "submitData": false,
+                "mapped": false,
+                "type": "html"
+            },
+            {
+                "value": {
+                    "Front": {
+                        "Label": "Front"
+                    },
+                    "Back": {
+                        "Label": "Back"
+                    }
+                },
+                "attr": [],
+                "name": "cardImages",
+                "full_name": "mobile_account[cardImages]",
+                "disabled": false,
+                "label": null,
+                "required": false,
+                "mapped": true,
+                "submitData": true,
+                "type": "card_images",
+                "Val": {
+                    "Front": {
+                        "Label": "Front"
+                    },
+                    "Back": {
+                        "Label": "Back"
+                    }
+                }
+            },
+            {
+                "value": [],
+                "attr": {
+                    "title": "No bar code detected, if you have a bar code please scan it now.",
+                    "hint": "Scan Barcode",
+                    "type": "barcode"
+                },
+                "name": "barcode",
+                "full_name": "mobile_account[barcode]",
+                "disabled": false,
+                "label": null,
+                "required": true,
+                "mapped": true,
+                "submitData": true,
+                "type": "barcode"
+            },
+            {
+                "value": {
+                    "_type": "same-relative",
+                    "_args": [
+                        "my_owner_id"
+                    ],
+                    "_locator": "parent.parent[?(@.name='owner')]"
+                },
+                "attr": {
+                    "class": "js-useragent-select",
+                    "notice": "Please choose whose loyalty program this is.<br>You can <a href=\"#\" class=\"js-add-new-person\">add a new person<\/a> if necessary."
+                },
+                "name": "owner",
+                "full_name": "mobile_account[owner]",
+                "disabled": false,
+                "label": "Account Owner",
+                "required": false,
+                "placeholder": null,
+                "mapped": true,
+                "submitData": false,
+                "type": "choice",
+                "multiple": false,
+                "choices": [
+                    {
+                        "value": {
+                            "_type": "same-relative",
+                            "_args": [
+                                "my_owner_id"
+                            ],
+                            "_locator": "$.formData.children[?(@.name='owner')].choices[?(@.label='Ragnar Petrovich')]"
+                        },
+                        "label": "Ragnar Petrovich",
+                        "selected": true,
+                        "attr": {
+                            "data-email": {
+                                "_type": "ignore",
+                                "_locator": "$.formData.children[?(@.name='owner')].choices[?(@.label='Ragnar Petrovich')].attr"
+                            },
+                            "data-shareable": "shareable"
+                        }
+                    }
+                ]
+            },
+            {
+                "value": "",
+                "attr": {
+                    "autocapitalize": "off"
+                },
+                "name": "login",
+                "full_name": "mobile_account[login]",
+                "disabled": false,
+                "label": "Mileage Plus #",
+                "required": true,
+                "mapped": true,
+                "submitData": false,
+                "type": "text"
+            },
+            {
+                "value": "",
+                "attr": {
+                    "notice": "PIN or Password"
+                },
+                "name": "pass",
+                "full_name": "mobile_account[pass]",
+                "disabled": false,
+                "label": "Password",
+                "required": false,
+                "mapped": true,
+                "submitData": false,
+                "type": "passwordEdit"
+            },
+            {
+                "value": "1",
+                "attr": {
+                    "notice": "You may optionally choose to store your award program passwords locally on this device, if you do so and switch devices you will need to re-enter the passwords again"
+                },
+                "name": "savepassword",
+                "full_name": "mobile_account[savepassword]",
+                "disabled": false,
+                "label": "Save Password",
+                "required": true,
+                "placeholder": null,
+                "mapped": true,
+                "submitData": false,
+                "type": "choice",
+                "multiple": false,
+                "alerts": {
+                    "2": "You are choosing to not store your reward password in our encrypted and secure database. AwardWallet will no longer be able to automatically monitor this reward program. Also if you clear your cookies or simply use another device to update your balances this password would have to be re-entered.",
+                    "1": "You are about to delete your reward password from this device and securely store it in an encrypted AwardWallet database. AwardWallet will now be able to monitor this reward program for changes and expirations."
+                },
+                "choices": [
+                    {
+                        "value": "1",
+                        "label": "With AwardWallet.com",
+                        "selected": true,
+                        "attr": []
+                    },
+                    {
+                        "value": "2",
+                        "label": "Locally on this device",
+                        "attr": []
+                    }
+                ]
+            },
+            {
+                "value": 0,
+                "attr": [],
+                "name": "balance",
+                "full_name": "mobile_account[balance]",
+                "disabled": false,
+                "label": "Balance",
+                "required": false,
+                "mapped": true,
+                "submitData": false,
+                "type": "text"
+            },
+            {
+                "value": "",
+                "attr": [],
+                "name": "Status",
+                "full_name": "mobile_account[Status]",
+                "disabled": false,
+                "label": "Elite Status",
+                "required": true,
+                "placeholder": null,
+                "submitData": false,
+                "mapped": true,
+                "type": "choice",
+                "multiple": false,
+                "choices": {
+                    "_type": "expr",
+                    "_args": [
+                        "is_array(value) && (count(value) > 3)"
+                    ],
+                    "_locator": "parent.parent[?(@.name='Status')]"
+                }
+            },
+            {
+                "value": "",
+                "attr": {
+                    "notice": "Optionally you can specify when these points are going to expire. AwardWallet will not retrieve and update this information for you automatically."
+                },
+                "name": "expirationdate",
+                "full_name": "mobile_account[expirationdate]",
+                "disabled": false,
+                "label": "Expiration",
+                "required": false,
+                "mapped": true,
+                "submitData": false,
+                "type": "date"
+            },
+            {
+                "value": false,
+                "attr": {
+                    "class": "smallest shading"
+                },
+                "name": "notrelated",
+                "full_name": "mobile_account[notrelated]",
+                "disabled": false,
+                "label": "I understand that AwardWallet and its services are not affiliated with or related in any manner to United Airlines or any of the loyalty programs they offer, such as United Airlines (Mileage Plus). I also hereby give AwardWallet permission to use my information, including information such as my loyalty account balance information, travel reservations, historical account transactions, as part of the AwardWallet service.",
+                "required": true,
+                "mapped": true,
+                "submitData": false,
+                "type": "checkbox"
+            },
+            {
+                "value": {
+                    "_type": "ignore",
+                    "_locator": "parent.parent[?(@.name='_token')]"
+                },
+                "attr": [],
+                "name": "_token",
+                "full_name": "_token",
+                "disabled": false,
+                "label": null,
+                "required": false,
+                "submitData": false,
+                "mapped": true,
+                "type": "hidden"
+            }
+        ],
+        "jsFormInterface": {
+            "_type": "regex",
+            "_args": [
+                "\/AbstractFormExtension\/i"
+            ]
+        },
+        "jsProviderExtension": [
+            {
+                "_type": "regex",
+                "_args": [
+                    "\/AbstractFormExtension\/i"
+                ]
+            }
+        ]
+    },
+    "context": {
+        "providerId": 26
+    }
+}

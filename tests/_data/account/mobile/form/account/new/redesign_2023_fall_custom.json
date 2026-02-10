@@ -1,0 +1,637 @@
+{
+    "Kind": "custom",
+    "DisplayName": "Custom Account (Tracked Manually)",
+    "formData": {
+        "children": [
+            {
+                "value": {
+                    "Front": {
+                        "Label": "Front"
+                    },
+                    "Back": {
+                        "Label": "Back"
+                    }
+                },
+                "attr": [],
+                "name": "cardImages",
+                "full_name": "mobile_account[cardImages]",
+                "disabled": false,
+                "label": null,
+                "required": false,
+                "mapped": true,
+                "submitData": true,
+                "type": "card_images",
+                "Val": {
+                    "Front": {
+                        "Label": "Front"
+                    },
+                    "Back": {
+                        "Label": "Back"
+                    }
+                }
+            },
+            {
+                "value": [],
+                "attr": {
+                    "title": "No bar code detected, if you have a bar code please scan it now.",
+                    "hint": "Scan Barcode",
+                    "type": "barcode"
+                },
+                "name": "barcode",
+                "full_name": "mobile_account[barcode]",
+                "disabled": false,
+                "label": null,
+                "required": true,
+                "mapped": true,
+                "submitData": true,
+                "type": "barcode"
+            },
+            {
+                "value": null,
+                "attr": [],
+                "name": "accountheader",
+                "full_name": "mobile_account[accountheader]",
+                "disabled": false,
+                "label": null,
+                "required": false,
+                "mapped": false,
+                "submitData": false,
+                "type": "accountHeader",
+                "providerKind": "custom",
+                "providerCode": null,
+                "providerName": "Custom Account",
+                "hint": "Not tracked by AwardWallet",
+                "group": null
+            },
+            {
+                "value": {
+                    "_type": "same-relative",
+                    "_args": [
+                        "my_owner_id"
+                    ],
+                    "_locator": "parent.parent[?(@.name='owner')]"
+                },
+                "attr": {
+                    "class": "js-useragent-select",
+                    "notice": "Please choose whose loyalty program this is.<br>You can <a href=\"#\" class=\"js-add-new-person\">add a new person<\/a> if necessary."
+                },
+                "name": "owner",
+                "full_name": "mobile_account[owner]",
+                "disabled": false,
+                "label": "Account Owner",
+                "required": false,
+                "placeholder": null,
+                "mapped": true,
+                "submitData": false,
+                "type": "choice",
+                "multiple": false,
+                "choices": [
+                    {
+                        "value": {
+                            "_type": "same-relative",
+                            "_args": [
+                                "my_owner_id"
+                            ],
+                            "_locator": "$.formData.children[?(@.name='owner')].choices[?(@.label='Ragnar Petrovich')]"
+                        },
+                        "label": "Ragnar Petrovich",
+                        "selected": true,
+                        "attr": {
+                            "data-email": {
+                                "_type": "ignore",
+                                "_locator": "$.formData.children[?(@.name='owner')].choices[?(@.label='Ragnar Petrovich')].attr"
+                            },
+                            "data-shareable": "shareable"
+                        }
+                    }
+                ]
+            },
+            {
+                "value": "",
+                "attr": [],
+                "name": "kind",
+                "full_name": "mobile_account[kind]",
+                "disabled": false,
+                "label": "Type",
+                "required": true,
+                "placeholder": "please-select",
+                "mapped": true,
+                "submitData": false,
+                "type": "choice",
+                "multiple": false,
+                "choices": [
+                    {
+                        "value": "",
+                        "label": "Please select",
+                        "selected": true,
+                        "attr": []
+                    },
+                    {
+                        "value": "6",
+                        "label": "Credit Cards",
+                        "attr": []
+                    },
+                    {
+                        "value": "1",
+                        "label": "Airlines",
+                        "attr": []
+                    },
+                    {
+                        "value": "2",
+                        "label": "Hotels",
+                        "attr": []
+                    },
+                    {
+                        "value": "3",
+                        "label": "Rentals",
+                        "attr": []
+                    },
+                    {
+                        "value": "4",
+                        "label": "Trains",
+                        "attr": []
+                    },
+                    {
+                        "value": "10",
+                        "label": "Cruises",
+                        "attr": []
+                    },
+                    {
+                        "value": "7",
+                        "label": "Shopping",
+                        "attr": []
+                    },
+                    {
+                        "value": "8",
+                        "label": "Dining",
+                        "attr": []
+                    },
+                    {
+                        "value": "9",
+                        "label": "Surveys",
+                        "attr": []
+                    },
+                    {
+                        "value": "12",
+                        "label": "Parking",
+                        "attr": []
+                    },
+                    {
+                        "value": "5",
+                        "label": "Other",
+                        "attr": []
+                    }
+                ]
+            },
+            {
+                "value": "",
+                "attr": [],
+                "name": "programname",
+                "full_name": "mobile_account[programname]",
+                "disabled": false,
+                "label": "Program Name",
+                "required": true,
+                "mapped": true,
+                "submitData": false,
+                "type": "text_completion",
+                "completionLink": "\/providers\/completion",
+                "attachedAccounts": [],
+                "providerKind": null,
+                "completionList": null
+            },
+            {
+                "value": "",
+                "attr": [],
+                "name": "login",
+                "full_name": "mobile_account[login]",
+                "disabled": false,
+                "label": "Account",
+                "required": true,
+                "mapped": true,
+                "submitData": false,
+                "type": "text"
+            },
+            {
+                "value": [
+                    {
+                        "icon": "add-login",
+                        "label": "Add another login field",
+                        "toggledLabel": "Remove another login field",
+                        "fields": [
+                            "login2",
+                            "login2separator"
+                        ],
+                        "toggled": false
+                    },
+                    {
+                        "icon": "add-password",
+                        "label": "Add password",
+                        "toggledLabel": "Remove password",
+                        "fields": [
+                            "pass",
+                            "savepassword",
+                            "passseparator"
+                        ],
+                        "toggled": false
+                    },
+                    {
+                        "icon": "add-balance",
+                        "label": "Add account balance",
+                        "toggledLabel": "Remove account balance",
+                        "fields": [
+                            "currencyandbalance",
+                            "expirationdate",
+                            "trackexpiration",
+                            "balanceseparator"
+                        ],
+                        "toggled": false
+                    },
+                    {
+                        "icon": "add-elite",
+                        "label": "Add elite level",
+                        "toggledLabel": "Remove elite level",
+                        "fields": [
+                            "customEliteLevel",
+                            "customelitelevelseparator"
+                        ],
+                        "toggled": false
+                    },
+                    {
+                        "icon": "add-goal",
+                        "label": "Add goal",
+                        "toggledLabel": "Remove goal",
+                        "fields": [
+                            "goal",
+                            "goalseparator"
+                        ],
+                        "toggled": false
+                    },
+                    {
+                        "icon": "add-url",
+                        "label": "Add URL",
+                        "toggledLabel": "Remove URL",
+                        "fields": [
+                            "loginurl",
+                            "loginurlseparator"
+                        ],
+                        "toggled": false
+                    },
+                    {
+                        "icon": "add-comment",
+                        "label": "Add comment",
+                        "toggledLabel": "Remove comment",
+                        "fields": [
+                            "comment",
+                            "commentseparator"
+                        ],
+                        "toggled": false
+                    }
+                ],
+                "attr": [],
+                "name": "fieldtoggler",
+                "full_name": "mobile_account[fieldtoggler]",
+                "disabled": false,
+                "label": null,
+                "required": false,
+                "mapped": false,
+                "submitData": false,
+                "type": "field_toggler"
+            },
+            {
+                "value": "",
+                "attr": {
+                    "notice": "Typically your last name, when applicable"
+                },
+                "name": "login2",
+                "full_name": "mobile_account[login2]",
+                "disabled": false,
+                "label": "Second Login",
+                "required": false,
+                "mapped": true,
+                "submitData": false,
+                "type": "text"
+            },
+            {
+                "value": "",
+                "attr": {
+                    "visible": false
+                },
+                "name": "login2separator",
+                "full_name": "mobile_account[login2separator]",
+                "disabled": false,
+                "label": null,
+                "required": false,
+                "submitData": false,
+                "mapped": false,
+                "type": "separator"
+            },
+            {
+                "value": [],
+                "attr": [],
+                "name": "currencyandbalance",
+                "full_name": "mobile_account[currencyandbalance]",
+                "disabled": false,
+                "label": null,
+                "required": false,
+                "mapped": true,
+                "submitData": false,
+                "type": "currency_and_balance",
+                "children": [
+                    {
+                        "value": "",
+                        "attr": [],
+                        "name": "currency",
+                        "full_name": "mobile_account[currencyandbalance][currency]",
+                        "disabled": false,
+                        "label": "Currency",
+                        "required": false,
+                        "placeholder": "",
+                        "mapped": true,
+                        "submitData": false,
+                        "type": "choice",
+                        "multiple": false,
+                        "choices": {
+                            "_type": "list-prefix",
+                            "_args": [
+                                [
+                                    {
+                                        "value": "1",
+                                        "label": "Miles",
+                                        "attr": {
+                                            "name": "Miles"
+                                        }
+                                    },
+                                    {
+                                        "value": "2",
+                                        "label": "Points",
+                                        "attr": {
+                                            "name": "Points"
+                                        }
+                                    },
+                                    {
+                                        "value": "3",
+                                        "label": "USD",
+                                        "attr": {
+                                            "name": "US Dollars"
+                                        }
+                                    }
+                                ],
+                                0
+                            ],
+                            "_locator": "$.formData.children[?(@.name='currencyandbalance')].children[?(@.name='currency')]"
+                        }
+                    },
+                    {
+                        "value": 0,
+                        "attr": [],
+                        "name": "balance",
+                        "full_name": "mobile_account[currencyandbalance][balance]",
+                        "disabled": false,
+                        "label": "Balance",
+                        "required": false,
+                        "mapped": true,
+                        "submitData": false,
+                        "type": "text"
+                    }
+                ]
+            },
+            {
+                "value": false,
+                "attr": {
+                    "notice": "Disable this option if you don't want AwardWallet to try to track the expiration of this program and you know these points don't expire",
+                    "class": "simple"
+                },
+                "name": "trackexpiration",
+                "full_name": "mobile_account[trackexpiration]",
+                "disabled": false,
+                "label": "<span class=\"exp-track\"><img src=\"assets\/exp-track.png\"\/><\/span> Points expire",
+                "required": false,
+                "mapped": true,
+                "submitData": true,
+                "type": "switcher"
+            },
+            {
+                "value": "",
+                "attr": {
+                    "notice": "Optionally you can specify when these points are going to expire. AwardWallet will not retrieve and update this information for you automatically.",
+                    "readonly": "readonly"
+                },
+                "name": "expirationdate",
+                "full_name": "mobile_account[expirationdate]",
+                "disabled": true,
+                "label": "Expiration",
+                "required": false,
+                "mapped": true,
+                "submitData": false,
+                "type": "date"
+            },
+            {
+                "value": "",
+                "attr": {
+                    "visible": false
+                },
+                "name": "balanceseparator",
+                "full_name": "mobile_account[balanceseparator]",
+                "disabled": false,
+                "label": null,
+                "required": false,
+                "submitData": false,
+                "mapped": false,
+                "type": "separator"
+            },
+            {
+                "value": "",
+                "attr": [],
+                "name": "customEliteLevel",
+                "full_name": "mobile_account[customEliteLevel]",
+                "disabled": false,
+                "label": "Elite Level",
+                "required": false,
+                "mapped": true,
+                "submitData": false,
+                "type": "text"
+            },
+            {
+                "value": "",
+                "attr": {
+                    "visible": false
+                },
+                "name": "customelitelevelseparator",
+                "full_name": "mobile_account[customelitelevelseparator]",
+                "disabled": false,
+                "label": null,
+                "required": false,
+                "submitData": false,
+                "mapped": false,
+                "type": "separator"
+            },
+            {
+                "value": "",
+                "attr": [],
+                "name": "pass",
+                "full_name": "mobile_account[pass]",
+                "disabled": false,
+                "label": "Password",
+                "required": false,
+                "mapped": true,
+                "submitData": false,
+                "type": "passwordMask"
+            },
+            {
+                "value": true,
+                "attr": {
+                    "notice": "You may optionally choose to store your award program passwords locally on this device, if you do so and switch devices you will need to re-enter the passwords again",
+                    "class": "simple"
+                },
+                "name": "savepassword",
+                "full_name": "mobile_account[savepassword]",
+                "disabled": false,
+                "label": "<div class=\"icon-aw\"><img src=\"assets\/aw.png\"\/><\/div> Save encrypted password with AwardWallet",
+                "required": false,
+                "mapped": true,
+                "submitData": false,
+                "type": "switcher"
+            },
+            {
+                "value": "",
+                "attr": {
+                    "visible": false
+                },
+                "name": "passseparator",
+                "full_name": "mobile_account[passseparator]",
+                "disabled": false,
+                "label": null,
+                "required": false,
+                "submitData": false,
+                "mapped": false,
+                "type": "separator"
+            },
+            {
+                "value": "",
+                "attr": [],
+                "name": "loginurl",
+                "full_name": "mobile_account[loginurl]",
+                "disabled": false,
+                "label": "URL",
+                "required": false,
+                "mapped": true,
+                "submitData": false,
+                "type": "text"
+            },
+            {
+                "value": "",
+                "attr": {
+                    "visible": false
+                },
+                "name": "loginurlseparator",
+                "full_name": "mobile_account[loginurlseparator]",
+                "disabled": false,
+                "label": null,
+                "required": false,
+                "submitData": false,
+                "mapped": false,
+                "type": "separator"
+            },
+            {
+                "value": "",
+                "attr": {
+                    "notice": "Number of points you wish to have"
+                },
+                "name": "goal",
+                "full_name": "mobile_account[goal]",
+                "disabled": false,
+                "label": "Goal",
+                "required": false,
+                "mapped": true,
+                "submitData": false,
+                "type": "text"
+            },
+            {
+                "value": "",
+                "attr": {
+                    "visible": false
+                },
+                "name": "goalseparator",
+                "full_name": "mobile_account[goalseparator]",
+                "disabled": false,
+                "label": null,
+                "required": false,
+                "submitData": false,
+                "mapped": false,
+                "type": "separator"
+            },
+            {
+                "value": "",
+                "attr": {
+                    "notice": "optional, up to 10,000 characters"
+                },
+                "name": "comment",
+                "full_name": "mobile_account[comment]",
+                "disabled": false,
+                "label": "Comment",
+                "required": false,
+                "mapped": true,
+                "submitData": false,
+                "type": "textarea"
+            },
+            {
+                "value": "",
+                "attr": {
+                    "visible": false
+                },
+                "name": "commentseparator",
+                "full_name": "mobile_account[commentseparator]",
+                "disabled": false,
+                "label": null,
+                "required": false,
+                "submitData": false,
+                "mapped": false,
+                "type": "separator"
+            },
+            {
+                "value": [],
+                "attr": [],
+                "name": "useragents",
+                "full_name": "mobile_account[useragents]",
+                "disabled": false,
+                "label": null,
+                "required": true,
+                "mapped": true,
+                "submitData": false,
+                "type": "hidden"
+            },
+            {
+                "value": {
+                    "_type": "ignore",
+                    "_locator": "parent.parent[?(@.name='_token')]"
+                },
+                "attr": [],
+                "name": "_token",
+                "full_name": "_token",
+                "disabled": false,
+                "label": null,
+                "required": false,
+                "submitData": false,
+                "mapped": true,
+                "type": "hidden"
+            }
+        ],
+        "jsFormInterface": {
+            "_type": "regex",
+            "_args": [
+                "#AbstractFormExtension#i"
+            ]
+        },
+        "jsProviderExtension": [
+            {
+                "_type": "regex",
+                "_args": [
+                    "#AbstractFormExtension#i"
+                ]
+            }
+        ]
+    },
+    "context": {
+        "providerId": "custom"
+    }
+}

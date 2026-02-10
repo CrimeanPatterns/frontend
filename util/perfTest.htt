@@ -1,0 +1,36 @@
+INCLUDE awauth.htb
+# auth.htb example:
+#SET AUTH_KEY=xxx
+#SET HOST=awardwallet.com
+#SET THREADS=20
+#SET REQUESTS=1000
+
+CLIENT $THREADS
+_ONLY_PRINTABLE on
+
+_LOOP $REQUESTS
+
+_REQ $HOST 80
+__POST /testUser.php HTTP/1.1
+__Host: $HOST
+__Content-Type: application/x-www-form-urlencoded
+__Content-Length: AUTO
+__
+_-AuthKey=$AUTH_KEY
+_FLUSH
+_EXPECT . "302 Found"
+_MATCH headers "Set-Cookie: PHPSESSID=(.*);" SESSION
+_WAIT
+_CLOSE
+
+_REQ $HOST SSL:443
+__GET /account/list.php?UserAgentID=All HTTP/1.1
+__Host: $HOST
+__Cookie: PHPSESSID=$SESSION
+__
+_EXPECT . "Welcome back"
+_WAIT
+_CLOSE
+
+_END LOOP
+END

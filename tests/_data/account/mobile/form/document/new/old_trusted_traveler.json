@@ -1,0 +1,188 @@
+{
+    "Kind": "traveler-number",
+    "DisplayName": "Known Traveler Number",
+    "formData": {
+        "children": [
+            {
+                "value": {
+                    "Front": {
+                        "Label": "Front"
+                    },
+                    "Back": {
+                        "Label": "Back"
+                    }
+                },
+                "attr": [],
+                "name": "cardImages",
+                "full_name": "mobile_document_form[cardImages]",
+                "disabled": false,
+                "label": null,
+                "required": false,
+                "mapped": true,
+                "submitData": true,
+                "type": "card_images",
+                "Val": {
+                    "Front": {
+                        "Label": "Front"
+                    },
+                    "Back": {
+                        "Label": "Back"
+                    }
+                }
+            },
+            {
+                "value": {
+                    "_type": "same-relative",
+                    "_args": [
+                        "my_owner_id"
+                    ],
+                    "_locator": "parent.parent[?(@.name='owner')]"
+                },
+                "attr": {
+                    "class": "js-useragent-select",
+                    "notice": "Please choose whose document this is.<br>You can <a href='#' class='js-add-new-person'>add a new person<\/a> if necessary."
+                },
+                "name": "owner",
+                "full_name": "mobile_document_form[owner]",
+                "disabled": false,
+                "label": "Document Owner",
+                "required": false,
+                "placeholder": null,
+                "mapped": true,
+                "submitData": false,
+                "type": "choice",
+                "multiple": false,
+                "choices": [
+                    {
+                        "value": {
+                            "_type": "same-relative",
+                            "_args": [
+                                "my_owner_id"
+                            ],
+                            "_locator": "$.formData.children[?(@.name='owner')].choices[?(@.label='Ragnar Petrovich')]"
+                        },
+                        "label": "Ragnar Petrovich",
+                        "selected": true,
+                        "attr": {
+                            "data-email": {
+                                "_type": "ignore",
+                                "_locator": "$.formData.children[?(@.name='owner')].choices[?(@.label='Ragnar Petrovich')].attr"
+                            },
+                            "data-shareable": "shareable"
+                        }
+                    }
+                ]
+            },
+            {
+                "value": "",
+                "attr": [],
+                "name": "travelerNumber",
+                "full_name": "mobile_document_form[travelerNumber]",
+                "disabled": false,
+                "label": "Trusted Traveler Number",
+                "required": true,
+                "mapped": true,
+                "submitData": false,
+                "type": "text"
+            },
+            {
+                "value": "",
+                "attr": [],
+                "name": "expirationDate",
+                "full_name": "mobile_document_form[expirationDate]",
+                "disabled": false,
+                "label": "Expiration",
+                "required": false,
+                "mapped": true,
+                "submitData": false,
+                "type": "date"
+            },
+            {
+                "value": "1",
+                "attr": [],
+                "name": "isNewRecord",
+                "full_name": "mobile_document_form[isNewRecord]",
+                "disabled": false,
+                "label": null,
+                "required": false,
+                "submitData": false,
+                "mapped": false,
+                "type": "hidden"
+            },
+            {
+                "value": "",
+                "attr": [],
+                "name": "description",
+                "full_name": "mobile_document_form[description]",
+                "disabled": false,
+                "label": "Comment",
+                "required": false,
+                "mapped": true,
+                "submitData": false,
+                "type": "textarea"
+            },
+            {
+                "value": {
+                    "_type": "regex",
+                    "_args": [
+                        "#Ragnar Petrovich#i"
+                    ],
+                    "_locator": "parent.parent[?(@.name='ownersList')]"
+                },
+                "attr": [],
+                "name": "ownersList",
+                "full_name": "mobile_document_form[ownersList]",
+                "disabled": false,
+                "label": null,
+                "required": false,
+                "submitData": false,
+                "mapped": false,
+                "type": "hidden"
+            },
+            {
+                "value": [],
+                "attr": [],
+                "name": "useragents",
+                "full_name": "mobile_document_form[useragents]",
+                "disabled": false,
+                "label": null,
+                "required": true,
+                "mapped": true,
+                "submitData": false,
+                "type": "hidden"
+            },
+            {
+                "value": {
+                    "_type": "ignore",
+                    "_locator": "parent.parent[?(@.name='_token')]"
+                },
+                "attr": [],
+                "name": "_token",
+                "full_name": "_token",
+                "disabled": false,
+                "label": null,
+                "required": false,
+                "submitData": false,
+                "mapped": true,
+                "type": "hidden"
+            }
+        ],
+        "jsFormInterface": {
+            "_type": "regex",
+            "_args": [
+                "#AbstractFormExtension#i"
+            ]
+        },
+        "jsProviderExtension": [
+            {
+                "_type": "regex",
+                "_args": [
+                    "#AbstractFormExtension#i"
+                ]
+            }
+        ]
+    },
+    "context": {
+        "providerId": "traveler-number"
+    }
+}

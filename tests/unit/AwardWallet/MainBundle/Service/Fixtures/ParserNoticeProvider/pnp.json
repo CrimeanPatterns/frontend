@@ -1,0 +1,101 @@
+{
+  "took": 60,
+  "timed_out": false,
+  "_shards": {
+    "total": 30,
+    "successful": 30,
+    "failed": 0
+  },
+  "hits": {
+    "total": 463,
+    "max_score": null,
+    "hits": [
+      {
+        "_index": "logstash-2018.12.24",
+        "_type": "fluentd",
+        "_id": "AWffF7jqCPXbHvdZnXID",
+        "_score": null,
+        "_source": {
+          "level": "NOTICE",
+          "facility": "php",
+          "message": "flight-0-1: missing airline name",
+          "context": {
+            "component": "parser",
+            "class": "TAccountCheckerLufthansa"
+          },
+          "channel": "app",
+          "extra": {
+            "userData": "{\"accountId\":3280555,\"priority\":2,\"checkIts\":true}",
+            "partner": "awardwallet",
+            "provider": "testprovider",
+            "worker_executor": "CheckAccount",
+            "requestId": "5c2088764372ac18200ea0c5",
+            "worker": "CheckWorker",
+            "worker_owner": "awardwallet",
+            "WorkerPID": 3543,
+            "app": "loyalty",
+            "pid": 3543
+          },
+          "RequestID": "eeb45cb2",
+          "host": "192.168.2.100",
+          "timestamp": "2018-12-24T07:22:11.504Z",
+          "@timestamp": "2018-12-24T07:22:11.504000000+00:00"
+        },
+        "fields": {
+          "@timestamp": [
+            1545636131504
+          ],
+          "timestamp": [
+            1545636131504
+          ]
+        },
+        "sort": [
+          1545636131504
+        ]
+      },
+      {
+        "_index": "logstash-2018.12.24",
+        "_type": "fluentd",
+        "_id": "AWffFdRCCPXbHvdZnUYZ",
+        "_score": null,
+        "_source": {
+          "level": "NOTICE",
+          "facility": "php",
+          "message": "flight-0-0: missing airline name",
+          "context": {
+            "component": "parser",
+            "class": "TAccountCheckerSingaporeair"
+          },
+          "channel": "app",
+          "extra": {
+            "userData": "{\"accountId\":2600130,\"priority\":2,\"checkIts\":true}",
+            "partner": "awardwallet",
+            "provider": "testprovider",
+            "worker_executor": "CheckAccount",
+            "requestId": "5c2087f24372ac18135cd97b",
+            "worker": "CheckWorker",
+            "worker_owner": "awardwallet",
+            "WorkerPID": 3380,
+            "app": "loyalty",
+            "pid": 3380
+          },
+          "RequestID": "a58985dd",
+          "host": "192.168.2.100",
+          "timestamp": "2018-12-24T07:20:07.307Z",
+          "@timestamp": "2018-12-24T07:20:07.307000000+00:00"
+        },
+        "fields": {
+          "@timestamp": [
+            1545636007307
+          ],
+          "timestamp": [
+            1545636007307
+          ]
+        },
+        "sort": [
+          1545636007307
+        ]
+      }
+    ]
+  }
+}

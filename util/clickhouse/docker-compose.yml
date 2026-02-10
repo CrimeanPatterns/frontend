@@ -1,0 +1,36 @@
+version: '3.5'
+
+services:
+  clickhouse:
+    image: yandex/clickhouse-server:20.10.3
+    volumes:
+      - /btrfs/clickhouse-data:/var/lib/clickhouse
+      - "./aw_config.xml:/etc/clickhouse-server/config.d/aw_config.xml"
+    networks:
+      - staging
+      - devdesktop
+    ports:
+      - '9009:9009'
+      - '9004:9004'
+      - '9000:9000'
+      - '8123:8123'
+    ulimits:
+      nofile: 262144
+    restart: always
+
+  # required for importing csv
+  clickhouse-client:
+    image: yandex/clickhouse-client:20.10.3
+    volumes:
+      - /btrfs/clickhouse-csv:/csv
+      - ./:/app
+    entrypoint: bash
+    networks:
+      - staging
+
+
+networks:
+  staging:
+    external: true
+  devdesktop:
+    external: true

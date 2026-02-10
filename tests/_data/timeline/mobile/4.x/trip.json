@@ -1,0 +1,1066 @@
+[
+    {
+        "name": "Ragnar Petrovich",
+        "items": [
+            {
+                "endDate": {
+                    "ts": 1673875500,
+                    "fmt": {
+                        "tz": "PST",
+                        "p": "AM",
+                        "t": "5:25",
+                        "d": "Jan 16, 2023"
+                    },
+                    "fmtParts": {
+                        "y": 2023,
+                        "m": 0,
+                        "d": 16,
+                        "h": 5,
+                        "i": 25
+                    },
+                    "localYMD": "2023-01-16T00:00:01",
+                    "offset": -28800
+                },
+                "deleted": false,
+                "createPlan": true,
+                "aiWarning": false,
+                "type": "date",
+                "id": "DAY.1673828400",
+                "startDate": {
+                    "ts": 1673828400,
+                    "fmt": {
+                        "tz": "UTC",
+                        "p": "AM",
+                        "t": "12:20",
+                        "d": "Monday, January 16, 2023"
+                    },
+                    "fmtParts": {
+                        "y": 2023,
+                        "m": 0,
+                        "d": 16,
+                        "h": 0,
+                        "i": 20
+                    },
+                    "localYMD": "2023-01-16T00:00:01",
+                    "offset": 0
+                },
+                "breakAfter": true
+            },
+            {
+                "endDate": {
+                    "ts": 1673875500,
+                    "fmt": {
+                        "tz": "PST",
+                        "p": "AM",
+                        "t": "5:25",
+                        "d": "Jan 16, 2023"
+                    },
+                    "fmtParts": {
+                        "y": 2023,
+                        "m": 0,
+                        "d": 16,
+                        "h": 5,
+                        "i": 25
+                    },
+                    "localYMD": "2023-01-16T00:00:01",
+                    "offset": -28800
+                },
+                "blocks": [
+                    {
+                        "kind": "flightProgress",
+                        "name": null,
+                        "icon": null,
+                        "val": null,
+                        "old": null,
+                        "bold": null,
+                        "background": null,
+                        "link": null,
+                        "arrival": "LAX",
+                        "depart": "JFK",
+                        "startDate": 1673828400,
+                        "endDate": 1673875500
+                    },
+                    {
+                        "kind": "confno",
+                        "name": "Confirmation #",
+                        "icon": null,
+                        "val": "AABB33",
+                        "old": null,
+                        "bold": null,
+                        "background": null,
+                        "link": null,
+                        "hint": {
+                            "_type": "expr",
+                            "_args": [
+                                "value == '('~context['airlines']['oper']['name']~')'"
+                            ]
+                        }
+                    },
+                    {
+                        "kind": "title",
+                        "name": {
+                            "_type": "expr",
+                            "_args": [
+                                "value == context['airlines']['oper']['name']~' ('~context['airlines']['oper']['code']~')'"
+                            ]
+                        },
+                        "icon": "fly",
+                        "val": "1201",
+                        "old": null,
+                        "bold": null,
+                        "background": null,
+                        "link": null
+                    },
+                    {
+                        "kind": "string",
+                        "name": "Ticketed As",
+                        "icon": null,
+                        "val": {
+                            "_type": "expr",
+                            "_args": [
+                                "value == context['airlines']['mark']['name']~' ('~context['airlines']['mark']['code']~') 1200'"
+                            ]
+                        },
+                        "old": null,
+                        "bold": null,
+                        "background": null,
+                        "link": null
+                    },
+                    {
+                        "kind": "boxed",
+                        "name": {
+                            "_type": "expr",
+                            "_args": [
+                                "value == context['airlines']['mark']['code']~' Confirmation #'"
+                            ]
+                        },
+                        "icon": null,
+                        "val": "AABB22",
+                        "old": null,
+                        "bold": null,
+                        "background": null,
+                        "link": null
+                    },
+                    {
+                        "kind": "ai_reservation",
+                        "name": null,
+                        "icon": null,
+                        "val": null,
+                        "old": null,
+                        "bold": null,
+                        "background": null,
+                        "link": null
+                    },
+                    {
+                        "kind": "group",
+                        "name": "Origin",
+                        "icon": null,
+                        "val": null,
+                        "old": null,
+                        "bold": null,
+                        "background": null,
+                        "link": null
+                    },
+                    {
+                        "kind": "location",
+                        "name": null,
+                        "icon": null,
+                        "val": {
+                            "segmentId": {
+                                "_type": "same",
+                                "_args": [
+                                    "TS_ID.0"
+                                ]
+                            },
+                            "stage": "dep",
+                            "lounges": {
+                                "_type": "is-int"
+                            },
+                            "code": "JFK",
+                            "name": "New York John F. Kennedy International Airport"
+                        },
+                        "old": null,
+                        "bold": null,
+                        "background": null,
+                        "link": null
+                    },
+                    {
+                        "kind": "terminalAndGate",
+                        "name": {
+                            "terminal": "Terminal",
+                            "gate": "Gate"
+                        },
+                        "icon": "departure-terminal",
+                        "val": {
+                            "terminal": "2B"
+                        },
+                        "old": {
+                            "terminal": "1A"
+                        },
+                        "bold": null,
+                        "background": null,
+                        "link": null
+                    },
+                    {
+                        "kind": "time",
+                        "name": null,
+                        "icon": null,
+                        "val": {
+                            "date": {
+                                "ts": 1673828400,
+                                "old": null,
+                                "fmt": {
+                                    "tz": "UTC",
+                                    "p": "AM",
+                                    "t": "12:20",
+                                    "d": "Jan 16, 2023"
+                                },
+                                "fmtParts": {
+                                    "y": 2023,
+                                    "m": 0,
+                                    "d": 16,
+                                    "h": 0,
+                                    "i": 20
+                                },
+                                "localYMD": "2023-01-16T00:00:01",
+                                "offset": 0
+                            }
+                        },
+                        "old": {
+                            "date": {
+                                "ts": 1673827200,
+                                "fmt": {
+                                    "tz": "UTC",
+                                    "p": "AM",
+                                    "t": "12:00",
+                                    "d": "Jan 16, 2023"
+                                },
+                                "fmtParts": {
+                                    "y": 2023,
+                                    "m": 0,
+                                    "d": 16,
+                                    "h": 0,
+                                    "i": 0
+                                },
+                                "localYMD": "2023-01-16T00:00:01",
+                                "offset": 0
+                            }
+                        },
+                        "bold": null,
+                        "background": null,
+                        "link": null
+                    },
+                    {
+                        "kind": "important",
+                        "name": "Seats:",
+                        "icon": "seats",
+                        "val": "22B",
+                        "old": "11A",
+                        "bold": null,
+                        "background": null,
+                        "link": null
+                    },
+                    {
+                        "kind": "group",
+                        "name": "Destination",
+                        "icon": null,
+                        "val": null,
+                        "old": null,
+                        "bold": null,
+                        "background": null,
+                        "link": null
+                    },
+                    {
+                        "kind": "location",
+                        "name": null,
+                        "icon": null,
+                        "val": {
+                            "segmentId": {
+                                "_type": "same",
+                                "_args": [
+                                    "TS_ID.0"
+                                ]
+                            },
+                            "stage": "arr",
+                            "lounges": {
+                                "_type": "is-int"
+                            },
+                            "code": "LAX",
+                            "name": "Los Angeles, CA"
+                        },
+                        "old": null,
+                        "bold": null,
+                        "background": null,
+                        "link": null
+                    },
+                    {
+                        "kind": "terminalAndGate",
+                        "name": {
+                            "terminal": "Terminal",
+                            "gate": "Gate"
+                        },
+                        "icon": "arrival-terminal",
+                        "val": {
+                            "terminal": "4D"
+                        },
+                        "old": {
+                            "terminal": "3C"
+                        },
+                        "bold": null,
+                        "background": null,
+                        "link": null
+                    },
+                    {
+                        "kind": "time",
+                        "name": null,
+                        "icon": null,
+                        "val": {
+                            "date": {
+                                "ts": 1673875500,
+                                "fmt": {
+                                    "tz": "PST",
+                                    "p": "AM",
+                                    "t": "5:25",
+                                    "d": "Jan 16, 2023"
+                                },
+                                "fmtParts": {
+                                    "y": 2023,
+                                    "m": 0,
+                                    "d": 16,
+                                    "h": 5,
+                                    "i": 25
+                                },
+                                "localYMD": "2023-01-16T00:00:01",
+                                "offset": -28800
+                            }
+                        },
+                        "old": {
+                            "date": {
+                                "ts": 1673845200,
+                                "old": null,
+                                "fmt": {
+                                    "tz": "UTC",
+                                    "p": "AM",
+                                    "t": "5:00",
+                                    "d": "Jan 16, 2023"
+                                },
+                                "fmtParts": {
+                                    "y": 2023,
+                                    "m": 0,
+                                    "d": 16,
+                                    "h": 5,
+                                    "i": 0
+                                },
+                                "localYMD": "2023-01-16T00:00:01",
+                                "offset": 0
+                            }
+                        },
+                        "bold": null,
+                        "background": null,
+                        "link": null
+                    },
+                    {
+                        "kind": "boxed",
+                        "name": "Duration",
+                        "icon": null,
+                        "val": "13h 5m",
+                        "old": null,
+                        "bold": null,
+                        "background": null,
+                        "link": null
+                    },
+                    {
+                        "kind": "string",
+                        "name": "Account #",
+                        "icon": null,
+                        "val": "ABCDEFGH123",
+                        "old": null,
+                        "bold": null,
+                        "background": null,
+                        "link": null
+                    },
+                    {
+                        "kind": "string",
+                        "name": "Passengers",
+                        "icon": null,
+                        "val": "John Gates, Olivia Gates",
+                        "old": "John Smith, Olivia Smith",
+                        "bold": null,
+                        "background": null,
+                        "link": null
+                    },
+                    {
+                        "kind": "string",
+                        "name": "Cabin",
+                        "icon": null,
+                        "val": "Business",
+                        "old": "Economy",
+                        "bold": null,
+                        "background": null,
+                        "link": null
+                    },
+                    {
+                        "kind": "string",
+                        "name": "Booking class",
+                        "icon": null,
+                        "val": "Q",
+                        "old": "T",
+                        "bold": null,
+                        "background": null,
+                        "link": null
+                    },
+                    {
+                        "kind": "string",
+                        "name": "Earned Awards",
+                        "icon": null,
+                        "val": "200 burgers",
+                        "old": null,
+                        "bold": null,
+                        "background": null,
+                        "link": null
+                    },
+                    {
+                        "kind": "string",
+                        "name": "Travelled Miles",
+                        "icon": null,
+                        "val": "200",
+                        "old": null,
+                        "bold": null,
+                        "background": null,
+                        "link": null
+                    },
+                    {
+                        "kind": "string",
+                        "name": "Aircraft",
+                        "icon": null,
+                        "val": "Su-33",
+                        "old": "Su-27",
+                        "bold": null,
+                        "background": null,
+                        "link": null
+                    },
+                    {
+                        "kind": "string",
+                        "name": "Meal",
+                        "icon": null,
+                        "val": "vodka",
+                        "old": null,
+                        "bold": null,
+                        "background": null,
+                        "link": null
+                    },
+                    {
+                        "kind": "string",
+                        "name": "Smoking",
+                        "icon": null,
+                        "val": "No",
+                        "old": null,
+                        "bold": null,
+                        "background": null,
+                        "link": null
+                    },
+                    {
+                        "kind": "string",
+                        "name": "Stops",
+                        "icon": null,
+                        "val": "1",
+                        "old": null,
+                        "bold": null,
+                        "background": null,
+                        "link": null
+                    },
+                    {
+                        "kind": "string",
+                        "name": "Base Fare",
+                        "icon": null,
+                        "val": "$1,200",
+                        "old": "$1,005",
+                        "bold": null,
+                        "background": "gray",
+                        "link": null
+                    },
+                    {
+                        "kind": "string",
+                        "name": "Some Fee 1",
+                        "icon": null,
+                        "val": "$28.90",
+                        "old": null,
+                        "bold": null,
+                        "background": "gray",
+                        "link": null
+                    },
+                    {
+                        "kind": "string",
+                        "name": "Some Fee 2",
+                        "icon": null,
+                        "val": "$120.90",
+                        "old": null,
+                        "bold": null,
+                        "background": "gray",
+                        "link": null
+                    },
+                    {
+                        "kind": "string",
+                        "name": "Discount",
+                        "icon": null,
+                        "val": "$20",
+                        "old": null,
+                        "bold": null,
+                        "background": "gray",
+                        "link": null
+                    },
+                    {
+                        "kind": "string",
+                        "name": "Total Charge",
+                        "icon": null,
+                        "val": "$1,500",
+                        "old": "$1,200",
+                        "bold": true,
+                        "background": null,
+                        "link": null
+                    },
+                    {
+                        "kind": "notes_and_files",
+                        "name": "Notes",
+                        "icon": null,
+                        "val": {
+                            "notes": "",
+                            "files": []
+                        },
+                        "old": null,
+                        "bold": null,
+                        "background": null,
+                        "link": null
+                    },
+                    {
+                        "desc": "This trip segment was automatically added by retrieving it from:",
+                        "kind": "group",
+                        "name": "Sources",
+                        "icon": null,
+                        "val": null,
+                        "old": null,
+                        "bold": null,
+                        "background": null,
+                        "link": null
+                    },
+                    {
+                        "kind": "source",
+                        "name": null,
+                        "icon": null,
+                        "val": {
+                            "type": "email",
+                            "from": "forwarded"
+                        },
+                        "old": null,
+                        "bold": null,
+                        "background": null,
+                        "link": null
+                    },
+                    {
+                        "kind": "offer",
+                        "name": null,
+                        "icon": null,
+                        "val": "Need a place to stay?",
+                        "old": null,
+                        "bold": null,
+                        "background": null,
+                        "link": {
+                            "href": {
+                                "_type": "regex",
+                                "_args": [
+                                    "#https:\/\/awardwallet.com\/blog\/link\/booking\\?aid=1473858&iata=LAX&iata_orr=3&checkin_monthday=16&checkin_year_month=2023-01&checkout_monthday=17&checkout_year_month=2023-01&label=dskTimeline_.+#ims"
+                                ]
+                            },
+                            "title": "Check out these amazing hotel deals in Los Angeles, CA for Jan 16, 2023, for 1 night"
+                        }
+                    }
+                ],
+                "icon": "fly",
+                "listView": {
+                    "kind": "tripChain",
+                    "dep": "JFK",
+                    "arr": "LAX",
+                    "arrDate": {
+                        "tz": "PST",
+                        "p": "AM",
+                        "t": "5:25",
+                        "d": "1\/16\/23"
+                    },
+                    "duration": "13h 5m"
+                },
+                "menu": {
+                    "alternativeFlights": {
+                        "main": [
+                            {
+                                "points": [
+                                    "JFK",
+                                    "LAX"
+                                ],
+                                "dates": [
+                                    {
+                                        "ts": 1673742000,
+                                        "fmt": "1\/15\/23"
+                                    },
+                                    {
+                                        "ts": 1673828400,
+                                        "fmt": "1\/16\/23"
+                                    },
+                                    {
+                                        "ts": 1673914800,
+                                        "fmt": "1\/17\/23"
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    "_keep": 1,
+                    "direction": {
+                        "address": "New York John F. Kennedy International Airport"
+                    },
+                    "phones": [
+                        {
+                            "title": "Airline",
+                            "icon": "fly",
+                            "phonesLists": [
+                                {
+                                    "groups": [
+                                        {
+                                            "name": "0"
+                                        },
+                                        {
+                                            "name": "1",
+                                            "order": [
+                                                "-rank"
+                                            ]
+                                        }
+                                    ],
+                                    "phones": [
+                                        {
+                                            "phone": "+444 555 000",
+                                            "group": "0",
+                                            "name": null
+                                        },
+                                        {
+                                            "phone": "+1 111 222 330",
+                                            "name": "Member 0 prov",
+                                            "country": null,
+                                            "region": null,
+                                            "countryCode": null,
+                                            "group": "1",
+                                            "rank": 0
+                                        },
+                                        {
+                                            "phone": "+1 111 222 331",
+                                            "name": "Elite 1 prov",
+                                            "country": null,
+                                            "region": null,
+                                            "countryCode": null,
+                                            "group": "1",
+                                            "rank": 1
+                                        },
+                                        {
+                                            "phone": "+1 111 222 332",
+                                            "name": "Elite 2 prov",
+                                            "country": null,
+                                            "region": null,
+                                            "countryCode": null,
+                                            "group": "1",
+                                            "rank": 2
+                                        },
+                                        {
+                                            "phone": "+1 111 222 3388",
+                                            "name": null,
+                                            "country": null,
+                                            "region": null,
+                                            "countryCode": null,
+                                            "group": "1",
+                                            "rank": -1
+                                        },
+                                        {
+                                            "phone": "+1 111 222 3399",
+                                            "name": null,
+                                            "country": null,
+                                            "region": null,
+                                            "countryCode": null,
+                                            "group": "1",
+                                            "rank": -1
+                                        }
+                                    ],
+                                    "ownerCountry": null,
+                                    "icon": "fly",
+                                    "title": {
+                                        "_type": "expr",
+                                        "_args": [
+                                            "value == context['providers']['provider']['code']"
+                                        ]
+                                    }
+                                },
+                                {
+                                    "groups": [
+                                        {
+                                            "name": "0"
+                                        },
+                                        {
+                                            "name": "1",
+                                            "order": [
+                                                "-rank"
+                                            ]
+                                        }
+                                    ],
+                                    "phones": [
+                                        {
+                                            "phone": "+444 555 000",
+                                            "group": "0",
+                                            "name": null
+                                        },
+                                        {
+                                            "phone": "+199 299 39910",
+                                            "name": "Member 0 issu",
+                                            "country": null,
+                                            "region": null,
+                                            "countryCode": null,
+                                            "group": "1",
+                                            "rank": 0
+                                        },
+                                        {
+                                            "phone": "+199 299 39911",
+                                            "name": "Elite 1 issu",
+                                            "country": null,
+                                            "region": null,
+                                            "countryCode": null,
+                                            "group": "1",
+                                            "rank": 1
+                                        },
+                                        {
+                                            "phone": "+199 299 39912",
+                                            "name": "Elite 2 issu",
+                                            "country": null,
+                                            "region": null,
+                                            "countryCode": null,
+                                            "group": "1",
+                                            "rank": 2
+                                        },
+                                        {
+                                            "phone": "+199 299 39913",
+                                            "name": "Elite 3 issu",
+                                            "country": null,
+                                            "region": null,
+                                            "countryCode": null,
+                                            "group": "1",
+                                            "rank": 3
+                                        },
+                                        {
+                                            "phone": "+199 299 399188",
+                                            "name": null,
+                                            "country": null,
+                                            "region": null,
+                                            "countryCode": null,
+                                            "group": "1",
+                                            "rank": -1
+                                        }
+                                    ],
+                                    "ownerCountry": null,
+                                    "icon": "fly",
+                                    "title": {
+                                        "_type": "expr",
+                                        "_args": [
+                                            "value == context['airlines']['issu']['name']"
+                                        ]
+                                    }
+                                },
+                                {
+                                    "groups": [
+                                        {
+                                            "name": "0"
+                                        },
+                                        {
+                                            "name": "1",
+                                            "order": [
+                                                "-rank"
+                                            ]
+                                        }
+                                    ],
+                                    "phones": [
+                                        {
+                                            "phone": "+444 555 001",
+                                            "group": "0",
+                                            "name": null
+                                        },
+                                        {
+                                            "phone": "+199 299 39930",
+                                            "name": "Member 0 mark",
+                                            "country": null,
+                                            "region": null,
+                                            "countryCode": null,
+                                            "group": "1",
+                                            "rank": 0
+                                        },
+                                        {
+                                            "phone": "+199 299 39931",
+                                            "name": "Elite 1 mark",
+                                            "country": null,
+                                            "region": null,
+                                            "countryCode": null,
+                                            "group": "1",
+                                            "rank": 1
+                                        },
+                                        {
+                                            "phone": "+199 299 39932",
+                                            "name": "Elite 2 mark",
+                                            "country": null,
+                                            "region": null,
+                                            "countryCode": null,
+                                            "group": "1",
+                                            "rank": 2
+                                        },
+                                        {
+                                            "phone": "+199 299 39933",
+                                            "name": "Elite 3 mark",
+                                            "country": null,
+                                            "region": null,
+                                            "countryCode": null,
+                                            "group": "1",
+                                            "rank": 3
+                                        },
+                                        {
+                                            "phone": "+199 299 399388",
+                                            "name": null,
+                                            "country": null,
+                                            "region": null,
+                                            "countryCode": null,
+                                            "group": "1",
+                                            "rank": -1
+                                        }
+                                    ],
+                                    "ownerCountry": null,
+                                    "icon": "fly",
+                                    "title": {
+                                        "_type": "expr",
+                                        "_args": [
+                                            "value == context['airlines']['mark']['name']"
+                                        ]
+                                    }
+                                },
+                                {
+                                    "groups": [
+                                        {
+                                            "name": "0"
+                                        },
+                                        {
+                                            "name": "1",
+                                            "order": [
+                                                "-rank"
+                                            ]
+                                        }
+                                    ],
+                                    "phones": [
+                                        {
+                                            "phone": "+444 555 001",
+                                            "group": "0",
+                                            "name": null
+                                        },
+                                        {
+                                            "phone": "+199 299 39920",
+                                            "name": "Member 0 oper",
+                                            "country": null,
+                                            "region": null,
+                                            "countryCode": null,
+                                            "group": "1",
+                                            "rank": 0
+                                        },
+                                        {
+                                            "phone": "+199 299 39921",
+                                            "name": "Elite 1 oper",
+                                            "country": null,
+                                            "region": null,
+                                            "countryCode": null,
+                                            "group": "1",
+                                            "rank": 1
+                                        },
+                                        {
+                                            "phone": "+199 299 39922",
+                                            "name": "Elite 2 oper",
+                                            "country": null,
+                                            "region": null,
+                                            "countryCode": null,
+                                            "group": "1",
+                                            "rank": 2
+                                        },
+                                        {
+                                            "phone": "+199 299 39923",
+                                            "name": "Elite 3 oper",
+                                            "country": null,
+                                            "region": null,
+                                            "countryCode": null,
+                                            "group": "1",
+                                            "rank": 3
+                                        },
+                                        {
+                                            "phone": "+199 299 399288",
+                                            "name": null,
+                                            "country": null,
+                                            "region": null,
+                                            "countryCode": null,
+                                            "group": "1",
+                                            "rank": -1
+                                        }
+                                    ],
+                                    "ownerCountry": null,
+                                    "icon": "fly",
+                                    "title": {
+                                        "_type": "expr",
+                                        "_args": [
+                                            "value == context['airlines']['oper']['name']"
+                                        ]
+                                    }
+                                }
+                            ]
+                        },
+                        {
+                            "title": "Travel Agency",
+                            "icon": "agency",
+                            "phonesLists": [
+                                {
+                                    "groups": [
+                                        {
+                                            "name": "0",
+                                            "order": [
+                                                "-rank"
+                                            ]
+                                        }
+                                    ],
+                                    "phones": [
+                                        {
+                                            "phone": "+1 000 111 220",
+                                            "name": "Member 0 t_ag",
+                                            "country": null,
+                                            "region": null,
+                                            "countryCode": null,
+                                            "group": "0",
+                                            "rank": 0
+                                        },
+                                        {
+                                            "phone": "+1 000 111 221",
+                                            "name": "Elite 1 t_ag",
+                                            "country": null,
+                                            "region": null,
+                                            "countryCode": null,
+                                            "group": "0",
+                                            "rank": 1
+                                        },
+                                        {
+                                            "phone": "+1 000 111 222",
+                                            "name": "Elite 2 t_ag",
+                                            "country": null,
+                                            "region": null,
+                                            "countryCode": null,
+                                            "group": "0",
+                                            "rank": 2
+                                        },
+                                        {
+                                            "phone": "+1 000 111 223",
+                                            "name": "Elite 3 t_ag",
+                                            "country": null,
+                                            "region": null,
+                                            "countryCode": null,
+                                            "group": "0",
+                                            "rank": 3
+                                        },
+                                        {
+                                            "phone": "+1 000 111 2288",
+                                            "name": null,
+                                            "country": null,
+                                            "region": null,
+                                            "countryCode": null,
+                                            "group": "0",
+                                            "rank": -1
+                                        }
+                                    ],
+                                    "ownerCountry": null,
+                                    "icon": "agency",
+                                    "title": {
+                                        "_type": "expr",
+                                        "_args": [
+                                            "value == context['providers']['travel_agency']['code']"
+                                        ]
+                                    }
+                                }
+                            ]
+                        }
+                    ],
+                    "allowConfirmChanges": true,
+                    "shareCode": {
+                        "_type": "same",
+                        "_args": [
+                            "SHARE_CODE.0"
+                        ]
+                    }
+                },
+                "deleted": false,
+                "createPlan": true,
+                "aiWarning": true,
+                "type": "trip",
+                "id": {
+                    "_type": "same",
+                    "_args": [
+                        "TS_ID.0"
+                    ]
+                },
+                "futureCountId": {
+                    "_type": "same",
+                    "_args": [
+                        "COUNT_ID.0"
+                    ]
+                },
+                "changed": true,
+                "startDate": {
+                    "ts": 1673828400,
+                    "old": {
+                        "ts": 1673827200,
+                        "fmt": {
+                            "tz": "UTC",
+                            "p": "AM",
+                            "t": "12:00",
+                            "d": "Jan 16, 2023"
+                        },
+                        "fmtParts": {
+                            "y": 2023,
+                            "m": 0,
+                            "d": 16,
+                            "h": 0,
+                            "i": 0
+                        },
+                        "localYMD": "2023-01-16T00:00:01",
+                        "offset": 0
+                    },
+                    "fmt": {
+                        "tz": "UTC",
+                        "p": "AM",
+                        "t": "12:20",
+                        "d": "Jan 16, 2023"
+                    },
+                    "fmtParts": {
+                        "y": 2023,
+                        "m": 0,
+                        "d": 16,
+                        "h": 0,
+                        "i": 20
+                    },
+                    "localYMD": "2023-01-16T00:00:01",
+                    "offset": 0
+                },
+                "breakAfter": true
+            }
+        ],
+        "userAgentId": "my",
+        "itineraryForwardEmail": {
+            "_type": "regex",
+            "_args": [
+                "#test[^@]+@email.AwardWallet.com#ims"
+            ]
+        },
+        "needMore": false,
+        "canChange": true,
+        "canConnectMailbox": true
+    }
+]

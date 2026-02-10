@@ -1,0 +1,1961 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:jms="urn:jms:translation" version="1.2">
+  <file source-language="en" target-language="zh" datatype="plaintext" original="not.available">
+    <header>
+      <tool tool-id="JMSTranslationBundle" tool-name="JMSTranslationBundle" tool-version="1.1.0-DEV" />
+      <note>The source node in most cases contains the sample message as written by the developer. If it looks like a dot-delimitted string such as "form.label.firstname", then the developer has not provided a default message.</note>
+    </header>
+    <body>
+      <trans-unit id="2660271e516692450274ebfd4eac90e556582673" resname="account-age">
+        <source>Account Age</source>
+        <target>帳戶年資</target>
+
+        <note>Summary of a booking request for Booker:
+https://www.dropbox.com/s/q2edpejt2w3djge/Booker_Data.png?dl=0</note>
+        <jms:reference-file>Booking/View/index.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="f6ac85e864d73fbdf18dc2a25921067144113c93" resname="booker.message.post.invoice-paid">
+        <source>%user_name% submitted a payment in the amount of %amount% for the award ticket booking invoice #%invoiceId%</source>
+        <target>%user_name% 已支付獎勵訂票發票 #%invoiceId% 之款項 %amount%</target>
+
+        <jms:reference-file>Booking/Message/message.html.twig</jms:reference-file>
+        <jms:reference-file>Booking/Messages/MessagesFormatter.php</jms:reference-file>
+        <jms:reference-file>Booking/Messages/service.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="88e29e5d357442c8a5df4fea711ffc9bd2727389" resname="booker.message.post.status-request.other">
+        <source>%user_name% has changed the status to "%request_status%"</source>
+        <target>%user_name% 已將狀態更改為「%request_status%」</target>
+
+        <jms:reference-file>Booking/Message/message.html.twig</jms:reference-file>
+        <jms:reference-file>Booking/Messages/MessagesFormatter.php</jms:reference-file>
+        <jms:reference-file>Booking/Messages/service.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="b3c3423500ec23b2cb8cff85fcdc55940840dfa4" resname="booker.message.post.status-request.pending">
+        <source>%user_name% has re-opened this request</source>
+        <target>%user_name% 已重新開啟這項請求</target>
+
+        <jms:reference-file>Booking/Message/message.html.twig</jms:reference-file>
+        <jms:reference-file>Booking/Messages/MessagesFormatter.php</jms:reference-file>
+        <jms:reference-file>Booking/Messages/service.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="ede4a88294b113c365eff4947951bf47b0e8fa2c" resname="booker.message.post.update-request">
+        <source>%user_name% has updated this award ticket booking request</source>
+        <target>%user_name% 已更新獎勵訂票請求</target>
+
+        <jms:reference-file>Booking/Message/message.html.twig</jms:reference-file>
+        <jms:reference-file>Booking/Messages/MessagesFormatter.php</jms:reference-file>
+        <jms:reference-file>Booking/Messages/service.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="b6abe53ec3f52b2c562ed5424242230634d4a21d" resname="booker.message.post.write-check">
+        <source><![CDATA[%user_name% has identified that a check written to <b>%booker_name%</b> in the amount of <b>%check_amount%</b> is being sent to:<br> <address>%booker_address%</address>]]></source>
+        <target><![CDATA[%user_name% 已經確認要寄一張金額為 <b>%check_amount%</b>的支票給<b>%booker_name%</b>，將寄到：<br> <address>%booker_address%</address>]]></target>
+
+        <jms:reference-file>Booking/Message/message.html.twig</jms:reference-file>
+        <jms:reference-file>Booking/Messages/MessagesFormatter.php</jms:reference-file>
+        <jms:reference-file>Booking/Messages/service.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="639b86b03d2db87aae12d7769fe06cae5e6993fd" resname="bookindg.payment.dialog.header">
+        <source>Please write a check to %booker% and send it to</source>
+        <target>請開一張支票給 %booker% 並將其寄到</target>
+
+        <jms:reference-file>Booking/View/index.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit approved="yes" id="98556de7f5e55c1596f984131e3609f976fb3a9a" resname="booking-service-can-own-save-spending">
+        <source>With our award booking service, you can book your award tickets using your own miles and save on fees and taxes while at the same time spending as few miles as possible</source>
+        <target state="new">使用我們的獎勵預訂服務，您可以使用您自己的哩程、花費最少的哩程數進行獎勵訂票，並且節省費用和稅款</target>
+
+        <jms:reference-file>Booking/Add/index.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="4fb45973788d0f3ebf3c276506a876f6358404ab" resname="booking.actions">
+        <source>Actions</source>
+        <target>動作</target>
+
+        <jms:reference-file>Booking/Message/shareRequestMessage.html.twig</jms:reference-file>
+        <jms:reference-file>Booking/Message/shareResponseMessage.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="3d6d8419e2e0291b41394ab38eb71da8d1abc48d" resname="booking.add-request">
+        <source>New booking request</source>
+        <target>新訂票請求</target>
+
+        <jms:reference-file>Booking/List/requests.html.twig</jms:reference-file>
+        <jms:reference-file>Booking/View/index.html.twig</jms:reference-file>
+        <jms:reference-file>booking/headers/new-request.html</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="381ea03a65da7d3dd09e0230316516a6b54cb48a" resname="booking.balance">
+        <source>Balance</source>
+        <target>餘額</target>
+
+        <note>NadiaSpas</note>
+        <jms:reference-file>Block/Message/ShareAccountsResponse.php</jms:reference-file>
+        <jms:reference-file>Booking/Message/shareRequestMessage.html.twig</jms:reference-file>
+        <jms:reference-file>Booking/Message/shareResponseMessage.html.twig</jms:reference-file>
+        <jms:reference-file>Booking/Messages/shareAccounts.html.twig</jms:reference-file>
+        <jms:reference-file>Booking/Share/index.html.twig</jms:reference-file>
+        <jms:reference-file>Booking/View/index.html.twig</jms:reference-file>
+        <jms:reference-file>views/Share/shareAll.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="cbbbe74d47c22c14be0f673148a2928d40dbffbb" resname="booking.birthday">
+        <source>Birthday</source>
+        <target>出生日期</target>
+
+        <jms:reference-file>Booking/View/index.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="541f12433e584178d4af043100d7b1dc35e9adc3" resname="booking.business.class">
+        <source>Business Class</source>
+        <target state="new">商務艙</target>
+
+        <jms:reference-file>Booking/View/index.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="6055f35023c30af49b36698fd55c1a8e8924df5c" resname="booking.cancel.request">
+        <source>Cancel this request</source>
+        <target>取消請求</target>
+
+        <jms:reference-file>Booking/View/index.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit approved="yes" id="5243195947d6f932c868c8a8f711169209ea3293" resname="booking.check-other-airports">
+        <source>Also check other airports in the metro area, if available</source>
+        <target>在可能的狀況下，同時查看該都會區的其他機場</target>
+
+        <note>In this case “metro area” means “metropolitan area” i.e. “a major city together with its suburbs and nearby cities, towns, and environs”</note>
+        <jms:reference-file>Booking/View/index.html.twig</jms:reference-file>
+        <jms:reference-file>Form/Type/AbSegmentType.php</jms:reference-file>
+        <jms:reference-file>Template/Booking/NewBookingRequest.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="71c3fa04a6da61f2218b11fced4c410ff2718f0e" resname="booking.citizenship">
+        <source>Citizenship</source>
+        <target>公民身份</target>
+
+        <jms:reference-file>Booking/View/index.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="2f589ebbe6260f0f4c2c0cd569478bff7f9a9b4b" resname="booking.clarify">
+        <source>Clarify</source>
+        <target>闡明</target>
+
+        <jms:reference-file>Booking/View/index.html.twig</jms:reference-file>
+        <jms:reference-file>Booking/View/lp-table.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="eaa1253e2069d6c93fd447c441a28b34b892240c" resname="booking.class">
+        <source>Class</source>
+        <target>艙等</target>
+
+        <jms:reference-file>Booking/View/index.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="e9531e908f8da7837e6175ad53d1eeb393cd9036" resname="booking.contact">
+        <source>Name</source>
+        <target>姓名</target>
+
+        <jms:reference-file>Booking/Add/ajaxLogin.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="67fcfa5be51239119964365c6323f9fbc58ecdd8" resname="booking.contact.info">
+        <source>Contact Info</source>
+        <target>聯絡資料</target>
+
+        <jms:reference-file>Booking/Add/index.html.twig</jms:reference-file>
+        <jms:reference-file>Booking/View/index.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="2f69681678c055acdbf98ca91b075baa84de8e71" resname="booking.contactemail">
+        <source>Email</source>
+        <target>電子郵件</target>
+
+        <jms:reference-file>Booking/Add/ajaxLogin.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="5be2b28ffd58c961e4e4cc64b94faea1fa0b9797" resname="booking.createlogin">
+        <source>Create Login</source>
+        <target>建立登錄名稱</target>
+
+        <jms:reference-file>Booking/Add/index.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="63a4f5704279bc1b8d1e2e31afba86068814d678" resname="booking.date.ideal">
+        <source>ideal: %date%</source>
+        <target>理想日期： %date%</target>
+
+        <jms:reference-file>Booking/View/index.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="076a306887eb33ae9f0d48f19bbda994eb842b8f" resname="booking.date.ideal-label">
+        <source>Ideal</source>
+        <target state="new">理想日期</target>
+
+      </trans-unit>
+      <trans-unit id="c3f3f3aa2a8258dc7cefdf0984cef4ccb6605b4e" resname="booking.delete-message">
+        <source>Delete Message</source>
+        <target state="new">刪除留言</target>
+
+        <jms:reference-file>js/booking/messages.js</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="245b4658c02bd18774d3dffe4d578e0c231d780d" resname="booking.dep_date.flex">
+        <source>Do you have flexibility on your date to leave?</source>
+        <target state="new">您的出發日期是否有些彈性？</target>
+
+        <jms:reference-file>Form/Type/AbSegmentType.php</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="0badcf4e391f7d6f21d0fb4bfca946c37c428842" resname="booking.destination">
+        <source>Destination</source>
+        <target>目的地</target>
+
+        <jms:reference-file>Booking/View/index.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="42d341f7e9f70da87962483aded253100ffb8d4e" resname="booking.display.name">
+        <source>Program Name</source>
+        <target>計劃名稱</target>
+
+        <jms:reference-file>Block/Message/ShareAccountsResponse.php</jms:reference-file>
+        <jms:reference-file>Booking/Message/shareRequestMessage.html.twig</jms:reference-file>
+        <jms:reference-file>Booking/Message/shareResponseMessage.html.twig</jms:reference-file>
+        <jms:reference-file>Booking/Messages/shareAccounts.html.twig</jms:reference-file>
+        <jms:reference-file>Booking/Share/index.html.twig</jms:reference-file>
+        <jms:reference-file>Booking/View/index.html.twig</jms:reference-file>
+        <jms:reference-file>views/Share/shareAll.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="ae28b8b52f070f9812db87061e14ccb9e80869c3" resname="booking.economy.class">
+        <source>Economy Class</source>
+        <target state="new">經濟艙</target>
+
+        <jms:reference-file>Booking/View/index.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="33400aad6afbcf798b29be18ba9ab9b094cfaace" resname="booking.edit.request">
+        <source>Edit</source>
+        <target>編輯</target>
+
+        <jms:reference-file>Booking/View/index.html.twig</jms:reference-file>
+        <jms:reference-file>js/booking/view.js</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="495ade0abcdbe946d529022d3fed573925657c36" resname="booking.elite.status">
+        <source>Elite Status</source>
+        <target>菁英等級</target>
+
+        <jms:reference-file>Booking/View/index.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="400fec9292755502dce02cd7cb9102de272fdcc7" resname="booking.email.additional">
+        <source>Additional Email(s)</source>
+        <target state="new">額外的電子郵件信箱</target>
+
+        <jms:reference-file>Form/Type/AbRequestType.php</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="5852ac582f8592483069ae05c1f452c17cd87593" resname="booking.email.notice">
+        <source>If there are multiple people involved in making your travel decisions and arrangements (such as a spouse or administrative assistant), please include their emails here to be copied on all communication. Multiple emails should be separated with a comma.</source>
+        <target>若有多人參與旅行決定或行程規劃過程（例如配偶或行政助理），請在此處列出他們的電子郵件地址，以將他們加入成為副件收件人。請以逗號分隔不同的電子郵件地址。</target>
+
+        <jms:reference-file>Form/Type/AbRequestType.php</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="938ce5c12f01509a01efe94c5e55f0d7fbb2aa38" resname="booking.emails">
+        <source>Email(s)</source>
+        <target state="new">電子郵件</target>
+
+        <jms:reference-file>Form/Type/AbRequestType.php</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="a8aa0713248e4ba8d2673c9ea0bcae2fafd7286b" resname="booking.filters.no-match">
+        <source>There are no records to display that match current filters</source>
+        <target>沒有符合目前搜尋條件的記錄</target>
+
+        <jms:reference-file>Booking/List/queue.html.twig</jms:reference-file>
+        <jms:reference-file>views/SpentAnalysis/bestCards-popup.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="a77c83e81c32f0dcb92693273e5aca63b0319d0b" resname="booking.first.class">
+        <source>First Class</source>
+        <target>頭等艙</target>
+
+        <note>https://www.dropbox.com/s/vovkc871dn0x35m/1step.png?dl=0</note>
+        <jms:reference-file>Booking/View/index.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="8351b2a3dd36e82794f8068ae5ecc30c36ebe52d" resname="booking.forms.invoice.discount">
+        <source>Discount Percent</source>
+        <target>折扣百分比</target>
+
+        <jms:reference-file>Form/Type/AbInvoiceItemType.php</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="8c4c8503326c19045915edd2b3f00809524c2f1f" resname="booking.forms.invoice.miles.holder">
+        <source>Account holder</source>
+        <target>帳戶持有人</target>
+
+        <jms:reference-file>Form/Type/AbInvoiceMilesType.php</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="9c4b9784053244ff02b23e3e2f7d6f5dfd58751e" resname="booking.forms.invoice.miles.miles">
+        <source>Number of miles or points</source>
+        <target>哩程數或積分數</target>
+
+        <jms:reference-file>Form/Type/AbInvoiceMilesType.php</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="3ceeb8cf7cf590e306d94a970bd9abeb5a75edd3" resname="booking.forms.invoice.miles.program">
+        <source>Program name</source>
+        <target>計劃名稱</target>
+
+        <jms:reference-file>Form/Type/AbInvoiceMilesType.php</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="658d3b0cdc2c98322ea3c2939131993fcf685150" resname="booking.forms.seat_assignments.phone">
+        <source>Phone Number</source>
+        <target>電話號碼</target>
+
+        <jms:reference-file>Block/Message/SeatAssignments.php</jms:reference-file>
+        <jms:reference-file>Booking/Message/seatAssignmentsMessage.html.twig</jms:reference-file>
+        <jms:reference-file>Booking/Messages/seatAssignments.html.twig</jms:reference-file>
+        <jms:reference-file>Form/Type/AbPhoneNumberType.php</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="cce04295fb87e8e14a8e06526b7b0c44a3a00554" resname="booking.forms.seat_assignments.provider">
+        <source>Airline</source>
+        <target>航空公司</target>
+
+        <jms:reference-file>Block/Message/SeatAssignments.php</jms:reference-file>
+        <jms:reference-file>Booking/Message/seatAssignmentsMessage.html.twig</jms:reference-file>
+        <jms:reference-file>Booking/Messages/seatAssignments.html.twig</jms:reference-file>
+        <jms:reference-file>Form/Type/AbPhoneNumberType.php</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="81748a60f29655d398bd45a8f68bec1d476de3cb" resname="booking.fullname">
+        <source>Full Name</source>
+        <target>全名</target>
+
+        <jms:reference-file>Form/Type/AbRequestType.php</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="c71f483ac7b4b8c907b361652ec219e370d4bec8" resname="booking.go.post">
+        <source>Go to the booking request to post this message</source>
+        <target>前往訂票請求以張貼這則留言</target>
+
+        <note>_</note>
+        <jms:reference-file>pages/contactUs/controllers.js</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="07876ab8ea91b6b09fa709ca34dcfc9bf2477302" resname="booking.internalcomm">
+        <source>Internal Messages</source>
+        <target state="new">內部訊息</target>
+
+        <jms:reference-file>Booking/View/index.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="01cc6fcdec439c05a4657c12ba16095667f5911a" resname="booking.links.back_to_past_requests">
+        <source>Back to past requests</source>
+        <target state="new">返回之前的請求</target>
+
+        <jms:reference-file>Booking/View/index.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="0daf0d31634a93cd3eebed9252d282c158927e3d" resname="booking.links.back_to_queue">
+        <source>Back to the booking queue</source>
+        <target>返回訂票序列</target>
+
+        <jms:reference-file>Booking/View/index.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="cb5ad1d79a51bcc9fd2c31814dded9826d381e1d" resname="booking.links.back_to_requests">
+        <source>Back to requests</source>
+        <target>返回請求</target>
+
+        <jms:reference-file>Booking/View/index.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="42e8a669aff7e74ace4b26c87f147c5811a5d8bd" resname="booking.links.new_request">
+        <source>New booking request</source>
+        <target>新訂票請求</target>
+
+        <jms:reference-file>pages/contactUs/controllers.js</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="f725a0ef7ded43a1f1614fb8ae0af52d89e0572a" resname="booking.message">
+        <source>Message</source>
+        <target state="new">留言</target>
+
+        <jms:reference-file>Booking/View/index.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="1a449ce283e459228cd95e70b05c6702bf9d9108" resname="booking.messages.internal">
+        <source>Internal</source>
+        <target>內部</target>
+
+        <jms:reference-file>Booking/List/queue.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="76703cf8eebb835c309ccb12e70897b8611a58eb" resname="booking.miles">
+        <source>Miles</source>
+        <target>哩程</target>
+
+        <jms:reference-file>Booking/View/index.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="c8f24345409889e572051dd79c94921852f585d2" resname="booking.name">
+        <source>Name</source>
+        <target>姓名</target>
+
+        <jms:reference-file>Booking/View/index.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="7502ed25272b32f0a937404bd077a9c0617718b2" resname="booking.no-priorsearch.text">
+        <source>The client has not tried booking this award request on his / her own prior to contacting us.</source>
+        <target state="new">在與我們聯繫之前，該客戶沒有嘗試過自行預訂。</target>
+
+        <jms:reference-file>Booking/View/index.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="ed2bb390ffafbd3591e05bfaf09015baaebd7af5" resname="booking.notes">
+        <source>Additional Notes</source>
+        <target>備註</target>
+
+        <jms:reference-file>Booking/Add/index.html.twig</jms:reference-file>
+        <jms:reference-file>Booking/View/index.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="b14dc086f9739535a0902914f790fa60cbac2414" resname="booking.owner">
+        <source>Owner</source>
+        <target>所有者</target>
+
+        <jms:reference-file>Block/Message/ShareAccountsResponse.php</jms:reference-file>
+        <jms:reference-file>Booking/Message/shareRequestMessage.html.twig</jms:reference-file>
+        <jms:reference-file>Booking/Message/shareResponseMessage.html.twig</jms:reference-file>
+        <jms:reference-file>Booking/Messages/shareAccounts.html.twig</jms:reference-file>
+        <jms:reference-file>Booking/Share/index.html.twig</jms:reference-file>
+        <jms:reference-file>Booking/View/index.html.twig</jms:reference-file>
+        <jms:reference-file>views/Share/shareAll.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="3a627a2907f5e4050568f1f4187300eb6ee1ec3c" resname="booking.page.title.queue">
+        <source>Queue</source>
+        <target>序列</target>
+
+        <note>this is a list of booking requests</note>
+        <jms:reference-file>Booking/List/queue.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="bd9b0273b76d0d8b6004f3f6f411a3db2f54fad5" resname="booking.passenger.gender">
+        <source>Gender</source>
+        <target>性別</target>
+
+        <jms:reference-file>Booking/View/index.html.twig</jms:reference-file>
+        <jms:reference-file>Form/Type/AbPassengerType.php</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="4c7d9dfd5712e7e1ebc11011e5c1291dcd9c3bc3" resname="booking.passenger.gender.female">
+        <source>Female</source>
+        <target state="new">女性</target>
+
+        <jms:reference-file>Booking/View/index.html.twig</jms:reference-file>
+        <jms:reference-file>Form/Type/AbPassengerType.php</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="618e971aa3927a27fd73216f2bf623cdd90881a6" resname="booking.passenger.gender.male">
+        <source>Male</source>
+        <target state="new">男性</target>
+
+        <jms:reference-file>Booking/View/index.html.twig</jms:reference-file>
+        <jms:reference-file>Form/Type/AbPassengerType.php</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="5d23b472ba4ec01dc61b73096f532ee033cdb099" resname="booking.paying_money_instead_miles.client">
+        <source>The client is OK with paying money instead of miles for the tickets.</source>
+        <target state="new">客戶同意以金錢而非哩程數支付訂票。</target>
+
+        <jms:reference-file>Booking/View/index.html.twig</jms:reference-file>
+        <jms:reference-file>Template/Booking/NewBookingRequest.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="05a412ba8445db2a5d78ee28449a41f4979d5d42" resname="booking.paying_money_instead_miles.iam">
+        <source>I am OK with paying money instead of miles for the tickets.</source>
+        <target state="new">我同意以金錢而非哩程數支付訂票。</target>
+
+        <jms:reference-file>Booking/View/index.html.twig</jms:reference-file>
+        <jms:reference-file>Form/Type/AbRequestType.php</jms:reference-file>
+        <jms:reference-file>Template/Booking/NewBookingRequest.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="6379bc4339455269b2b561885f9c2faa53e6cb4e" resname="booking.payment.cc-disabled">
+        <source>Unfortunately %booker% is not yet set up to accept credit card payments, please contact them to enable this option</source>
+        <target state="new">很抱歉，%booker% 尚未接受信用卡付款，請聯繫他們啟用該選項</target>
+
+        <jms:reference-file>Booking/View/index.html.twig</jms:reference-file>
+        <jms:reference-file>Controller/Booking/PaymentController.php</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="6d693a4833a0f12e85e32e8ef265bf090b8bfac2" resname="booking.payment.dialog.check">
+        <source>Pay by sending a check</source>
+        <target state="new">寄支票付款</target>
+
+        <jms:reference-file>Booking/View/index.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="b3fd6180c7b4cba63dd3e15ee305eccbaed884ca" resname="booking.payment.dialog.footer">
+        <source>Please click "Continue" to let us know you are sending a check.</source>
+        <target state="new">請按「繼續」，讓我們知道您要寄支票。</target>
+
+        <jms:reference-file>Booking/View/index.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="3073136ac8296678e9acc0385bfdf381eff4b4c3" resname="booking.payment.dialog.paypal">
+        <source>Pay by a Credit Card, 2.9% fee will apply</source>
+        <target>信用卡付款需額外收取 2.9% 的費用</target>
+
+        <jms:reference-file>Booking/View/index.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="8424963b73d81b561c4d240320d275f6a3664365" resname="booking.payment.dialog.paypal-without-fee">
+        <source>Pay by a Credit Card</source>
+        <target state="new">用信用卡支付</target>
+
+        <jms:reference-file>Booking/View/index.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="d313894329d10cf5572553acb377bfbc071e82c0" resname="booking.phone">
+        <source>Phone</source>
+        <target>電話</target>
+
+        <jms:reference-file>Booking/Add/ajaxLogin.html.twig</jms:reference-file>
+        <jms:reference-file>Booking/View/index.html.twig</jms:reference-file>
+        <jms:reference-file>Form/Type/AbRequestType.php</jms:reference-file>
+        <jms:reference-file>Form/Type/UserType.php</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="bdd400609331d5436c1d5bddac0bd73ff1713f5b" resname="booking.premium_economy.class">
+        <source>Premium Economy Class</source>
+        <target state="new">豪華經濟艙</target>
+
+        <jms:reference-file>Booking/View/index.html.twig</jms:reference-file>
+        <jms:reference-file>Form/Type/AbRequestType.php</jms:reference-file>
+        <jms:reference-file>Template/Booking/NewBookingRequest.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="6b370055f41c4bf339f56fc307dbe7d3d61639eb" resname="booking.prior.searches">
+        <source>Prior Searches</source>
+        <target>之前的搜尋</target>
+
+        <jms:reference-file>Booking/Add/index.html.twig</jms:reference-file>
+        <jms:reference-file>Booking/View/index.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="0cbac5b0121c8ceb580ac2fc7ff32a576f5451bf" resname="booking.public-link">
+        <source>Public link to create new booking requests</source>
+        <target state="new">建立新訂票請求的公開連結</target>
+
+        <jms:reference-file>Booking/Add/index.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="5abd276bb01e13fcf7ba998be1b854aaf72fc8dd" resname="booking.reason.after-pitch">
+        <source>Booked On Own AFTER Pitch</source>
+        <target>Booked On Own AFTER Pitch</target>
+
+        <note>You can leave this without translation</note>
+      </trans-unit>
+      <trans-unit id="a7c621ac8bd7c560a71a64b6efc6f35874a43a98" resname="booking.reason.missed-call">
+        <source>Missed Phone Appointment</source>
+        <target state="new">錯過的電話服務</target>
+
+      </trans-unit>
+      <trans-unit id="f6d35a090b71c8ab0f7389351b879a56929c900c" resname="booking.reason.nobook.bad-cost">
+        <source>No book- Bad Cost</source>
+        <target state="new">未預訂 - 錯誤費用</target>
+
+      </trans-unit>
+      <trans-unit id="648549af9fdbec3dec331c890a45038d679ad9f1" resname="booking.reason.nobook.bad-route">
+        <source>No Book- Bad routing</source>
+        <target state="new">未預訂 - 錯誤行程安排</target>
+
+      </trans-unit>
+      <trans-unit id="2164b4076f9ae792af0021bcb108aa6d992db3c9" resname="booking.reason.nobook.bad-routecost">
+        <source>No Book- Bad route/cost</source>
+        <target state="new">未預訂 - 錯誤行程安排 / 費用</target>
+
+      </trans-unit>
+      <trans-unit id="ca72282df5d54b44f69cbafc68f464e7d5922a83" resname="booking.reason.nobook.good-routecost">
+        <source>No book- Good routing/cost</source>
+        <target state="new">未預訂 - 正確行程安排 / 費用</target>
+
+      </trans-unit>
+      <trans-unit id="d690abacf6473624f2c1e4dc058d5709dc538e34" resname="booking.reason.rejected">
+        <source>Rejected</source>
+        <target>被拒絕</target>
+
+      </trans-unit>
+      <trans-unit id="be258871e74bf82b44fe854b16b0c195dc5653ff" resname="booking.reason.revealed">
+        <source>Flight Details Revealed</source>
+        <target state="new">顯示航班資訊</target>
+
+      </trans-unit>
+      <trans-unit id="40661bfe4c7df2bf4c647d5f5ba91aba2c8734e9" resname="booking.reasons.cancel">
+        <source>Cancel</source>
+        <target>取消</target>
+
+      </trans-unit>
+      <trans-unit id="0c03c068358caa5074de564cc558ae46d9a634f0" resname="booking.reasons.didnt-like">
+        <source>Didn't like</source>
+        <target>不喜歡</target>
+
+        <note>Booker can choose ‘Didn't like’ as a reason to cancel user’s booking request.</note>
+      </trans-unit>
+      <trans-unit id="aa8a87e4d1dceac079887d97fa82464928286ba1" resname="booking.reasons.not-response">
+        <source>No Response</source>
+        <target>無回應</target>
+
+      </trans-unit>
+      <trans-unit id="17b3bfb1192dcfe85ed489588584f806428fed3e" resname="booking.registertext">
+        <source><![CDATA[For your account security and privacy, please create a new login username and password, or <a href='#' id="show_login_popup">click to login</a>]]></source>
+        <target><![CDATA[為了您的帳戶安全和隱私，請建立一個新的登錄用戶名和密碼，或<a href='#' id="show_login_popup">按此登錄</a>]]></target>
+
+        <jms:reference-file>Booking/Add/index.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="02472a00a895e89624345df1ffcfd41a943a52c6" resname="booking.remember_me">
+        <source>Keep me logged in</source>
+        <target>保持登入狀態</target>
+
+        <jms:reference-file>Form/Type/AbRequestType.php</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="7679836ee534cb485f56df547011e810e738c7ff" resname="booking.repost.request">
+        <source>Re-open this request</source>
+        <target>重新開啟這項請求</target>
+
+        <jms:reference-file>Booking/View/index.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="0ed158a5d45fd87f7b8ca513dc9bb5a2eedaaf30" resname="booking.request">
+        <source>Booking Request</source>
+        <target>訂票請求</target>
+
+        <jms:reference-file>Booking/Share/index.html.twig</jms:reference-file>
+        <jms:reference-file>Booking/View/index.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="28567512fede98d725d350cd2e2fb4caecebcbcf" resname="booking.request.add.form.cabin.business">
+        <source>Business Class</source>
+        <target>商務艙</target>
+
+        <jms:reference-file>Form/Type/AbRequestType.php</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="09ce64ad23be3527408e758fb97b569464d994c1" resname="booking.request.add.form.cabin.economy">
+        <source>Economy Class</source>
+        <target>經濟艙</target>
+
+        <jms:reference-file>Form/Type/AbRequestType.php</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="f9306572e0870a6f065d5cd53c044143af8a34e7" resname="booking.request.add.form.cabin.first">
+        <source>First Class</source>
+        <target>頭等艙</target>
+
+        <jms:reference-file>Form/Type/AbRequestType.php</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="6ad722a37b9d2916b1ebda10a65ed5bc09f24752" resname="booking.request.add.form.cabin.label">
+        <source>Preferred cabin of service</source>
+        <target>喜好的客艙</target>
+
+        <jms:reference-file>Booking/Add/index.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="778e6e87ababbb7a317040a61fb885d1f60caf24" resname="booking.request.add.form.contact-search">
+        <source>Contact Search</source>
+        <target>搜尋聯絡人</target>
+
+        <jms:reference-file>Form/Type/AbRequestType.php</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="cfcac4a5f02e4d56cfdef21fd2f2265b6bea0682" resname="booking.request.add.form.contact.errors.not-exist">
+        <source>Specified contact person was not found</source>
+        <target>找不到指定的聯絡人</target>
+
+        <note>https://www.dropbox.com/s/ti7ss2s8vttp1uw/cont_person.png?dl=0</note>
+        <jms:reference-file>Form/Type/AwPlusGiftType.php</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="aa4db112f59fe8ca9e0807ac0320a7377f4ce58a" resname="booking.request.add.form.miles.accounts">
+        <source>Loyalty Accounts</source>
+        <target state="new">忠誠帳戶</target>
+
+        <jms:reference-file>Booking/Add/index.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="475a99e517d663ba155586e312e46ff950eeb991" resname="booking.request.add.form.miles.add-custom">
+        <source>Add another program</source>
+        <target>添加另一個計劃</target>
+
+        <jms:reference-file>Booking/Add/index.html.twig</jms:reference-file>
+        <jms:reference-file>common/js/mobile_translations.js</jms:reference-file>
+        <jms:reference-file>views/MileValue/index.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="f4892e786acfbd4d9c546f85a302b6ee75475d1d" resname="booking.request.add.form.miles.custom-programs">
+        <source>Airline and credit card accounts</source>
+        <target>航空公司和信用卡帳戶</target>
+
+        <jms:reference-file>Booking/Add/index.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="2d9b740b89c752ee8072f16f5a6dca4575adf6cd" resname="booking.request.add.form.miles.errors.at-least-one">
+        <source>You must add at least one loyalty account balance in order to submit this request</source>
+        <target>您至少必須添加一個忠誠帳戶餘額才能提交請求</target>
+
+        <jms:reference-file>Booking/Add/index.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="aaf3eacd6f1095f0bb5ae4d17d8213f2582d879c" resname="booking.request.add.form.miles.errors.duplication">
+        <source>This account is already added to this request</source>
+        <target>帳戶已經被添加到該項請求</target>
+
+      </trans-unit>
+      <trans-unit id="00db8a5838261d308c5d54f40b37e867f2cf6ca3" resname="booking.request.add.form.miles.errors.not-exist">
+        <source>Specified account was not found</source>
+        <target>找不到指定的帳戶</target>
+
+      </trans-unit>
+      <trans-unit id="704039a22083b9814836d74ca860d76fdd00aa8b" resname="booking.request.add.form.miles.existing-programs">
+        <source>Select your loyalty programs</source>
+        <target>選擇您的忠誠計劃</target>
+
+        <jms:reference-file>views/Booking/fields.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="684a4e3373a285b93738b7b342d4787c016ce05a" resname="booking.request.add.form.miles.suggestion-add">
+        <source><![CDATA[Not seeing an account you wish to use for this request? You can always add new loyalty accounts <a target="_blank" href="%link%">here</a>]]></source>
+        <target state="new"><![CDATA[看不到您想用來請求的帳戶？您可以隨時從<a target="_blank" href="%link%">這裡</a>添加新的忠誠帳戶]]></target>
+
+        <jms:reference-file>Booking/Add/index.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="a96325fa7782ba58f38b0a093e56a9a2beb556aa" resname="booking.request.add.form.passengers">
+        <source>Number of passengers</source>
+        <target>乘客人數</target>
+
+        <jms:reference-file>Form/Type/AbRequestType.php</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="25b59e6738a75f1e7bd9aa53c88a51de6d028adf" resname="booking.request.add.form.passengers.cabin">
+        <source>You must select at least one option</source>
+        <target state="new">您至少必須選擇一個選項</target>
+
+        <jms:reference-file>js/booking/Passengers.js</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="dc6d9ed0fed88a78f4f26fe75c4d773abd3bab58" resname="booking.request.add.form.passengers.can-edit">
+        <source><![CDATA[If necessary, you can <a target="_blank" href="%link%">update this user's details</a>]]></source>
+        <target><![CDATA[如有必要，您可以<a target="_blank" href="%link%">更新該用戶的詳細資訊</a>]]></target>
+
+        <jms:reference-file>js/booking/Passengers.js</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="d973730da8f0bc1fcd83705c7c8338870ee12191" resname="booking.request.add.form.passengers.can-not-edit">
+        <source>If necessary, ask the user to update the name in his/her profile</source>
+        <target>如有必要，要求用戶更新他/她的個人檔案中的姓名</target>
+
+        <jms:reference-file>js/booking/Passengers.js</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="e54821e2cb97f99867ca18c17579d0a1ba8801e2" resname="booking.request.add.form.passengers.errors.duplication">
+        <source>The specified traveler has already added a passenger to this booking request</source>
+        <target>指定的旅客已經在此訂票請求中增加了乘客</target>
+
+      </trans-unit>
+      <trans-unit id="9f33f8175afad2101dd769b054b12c85555ce34a" resname="booking.request.add.form.passengers.errors.not-exists">
+        <source>Specified passenger was not found</source>
+        <target>找不到指定的乘客</target>
+
+      </trans-unit>
+      <trans-unit id="5a06779f54fe7974cbe83b394698c466c0b8261f" resname="booking.request.add.form.passengers.found">
+        <source>A traveler with the same name is already added in the list of Members. Please disregard, if this is a different person</source>
+        <target state="new">已有一位同名同姓的旅客被加入會員名單中。如果這不是同一個人，請忽略</target>
+
+        <jms:reference-file>js/booking/Passengers.js</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="0d2c8f58c00cf81659255e1c86831cf385afcde9" resname="booking.request.add.form.prior.question">
+        <source>Have you or any other third party tried to book this award request prior to contacting us?</source>
+        <target>在與我們聯繫之前，您或任何其他第三方是否曾嘗試提出這項獎勵訂票請求？</target>
+
+      </trans-unit>
+      <trans-unit id="534e613134e1fcf4acf1eb9f44ac412591598a57" resname="booking.request.add.form.prior.title">
+        <source>What were your award search results, so that we can determine if we can improve upon it?</source>
+        <target>請告知我們獎勵搜尋結果，我們也許可以加以改進。</target>
+
+      </trans-unit>
+      <trans-unit id="8cea86e66a96c46b85442edce9d98915db97c24d" resname="booking.request.add.form.segment.add">
+        <source>Add another destination</source>
+        <target>添加另一個目的地</target>
+
+        <jms:reference-file>Booking/Add/index.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="7458ebdc5e076db78788ff17f9150a2a15258795" resname="booking.request.add.form.segment.date.arr">
+        <source>Ideal date to return</source>
+        <target>理想的回程日期</target>
+
+        <jms:reference-file>Form/Type/AbSegmentType.php</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="059fc0be07122a5027515fb002685663376e9079" resname="booking.request.add.form.segment.date.dep">
+        <source>Ideal date to leave</source>
+        <target>理想的出發日期</target>
+
+        <jms:reference-file>Form/Type/AbSegmentType.php</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="83a1e74877b27e2aa4ad3d56922c5d9207ee240c" resname="booking.request.add.form.segment.date.earliest">
+        <source>Earliest</source>
+        <target>最早</target>
+
+        <note>this is the earliest possible day of a trip</note>
+        <jms:reference-file>Form/Type/AbSegmentType.php</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="1cf483c47fe89a6a7853d5e06c774daf160576f9" resname="booking.request.add.form.segment.date.info">
+        <source>Please fill out your earliest and latest date flexibility, to maximize award availability.</source>
+        <target>請填寫可以彈性調整的最早和最晚日期，以找出最多獎勵訂票可能性。</target>
+
+        <jms:reference-file>views/Booking/fields.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="224bd599e9deae609a109f96160754ad34e75225" resname="booking.request.add.form.segment.date.latest">
+        <source>Latest</source>
+        <target>最晚</target>
+
+        <note>this is the latest possible day of a trip</note>
+        <jms:reference-file>Form/Type/AbSegmentType.php</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="853066e3a5d5828ee92fb2aecc59ca97a285d7dc" resname="booking.request.add.form.segment.delete">
+        <source>Delete Destination</source>
+        <target>刪除目的地</target>
+
+        <jms:reference-file>views/Booking/fields.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="cf484d6ad87917c40c73a21e44f5d65b1efb8f2a" resname="booking.request.add.form.segment.from">
+        <source>From (Home Airport)</source>
+        <target>從（出發地）</target>
+
+        <jms:reference-file>Form/Type/AbSegmentType.php</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="a3d486c2747db8556467f59461c6d5f653194007" resname="booking.request.add.form.segment.multiple">
+        <source>Multiple destinations</source>
+        <target state="new">多個目的地</target>
+
+        <jms:reference-file>Form/Type/AbSegmentType.php</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="7a24abf2b496c759361a532122440001e1ff1f5d" resname="booking.request.add.form.segment.one">
+        <source>One way</source>
+        <target state="new">單程</target>
+
+        <jms:reference-file>Form/Type/AbSegmentType.php</jms:reference-file>
+        <jms:reference-file>Service/MileValue/MileValueHandler.php</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="2dcb928a5fa6b35c621bab948c04547ad370c244" resname="booking.request.add.form.segment.round">
+        <source>Round trip</source>
+        <target state="new">來回</target>
+
+        <jms:reference-file>Form/Type/AbSegmentType.php</jms:reference-file>
+        <jms:reference-file>Service/MileValue/MileValueHandler.php</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="35061f54a61e1270a23f2b86ad703a650e29a042" resname="booking.request.add.form.segment.round-trip-days">
+        <source>Number of days</source>
+        <target state="new">天數</target>
+
+        <jms:reference-file>Booking/View/index.html.twig</jms:reference-file>
+        <jms:reference-file>Form/Type/AbSegmentType.php</jms:reference-file>
+        <jms:reference-file>Template/Booking/NewBookingRequest.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="588a384b0e6d213abed96193ebcb43991963bbe5" resname="booking.request.add.form.segment.round-trip-days.info">
+        <source>How many days do you want to be on your trip, excluding flight days?</source>
+        <target state="new">除了飛航時間外，您希望的旅程天數？</target>
+
+        <jms:reference-file>views/Booking/fields.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="9ee51a654ee67c78d9cac4a2fd66592e9dd5909e" resname="booking.request.add.form.segment.title">
+        <source>Destination #%number%</source>
+        <target>目的地 #%number%</target>
+
+        <jms:reference-file>Booking/Add/index.html.twig</jms:reference-file>
+        <jms:reference-file>js/booking/Segments.js</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="90ecac6e0e5f2d55450e8670617752debcccb5d6" resname="booking.request.add.form.segment.title_single">
+        <source>Trip Details</source>
+        <target>旅程詳情</target>
+
+        <jms:reference-file>Booking/Add/index.html.twig</jms:reference-file>
+        <jms:reference-file>js/booking/Segments.js</jms:reference-file>
+        <jms:reference-file>js/booking/view.js</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="2cd65ac58cf290e9c1774685ae8eeef8fab8f80d" resname="booking.request.add.form.segment.to">
+        <source>To (Destination)</source>
+        <target>前往（目的地）</target>
+
+        <jms:reference-file>Form/Type/AbSegmentType.php</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="512de5ef3736a99f6d1da02b3c0dc3f716b41f47" resname="booking.request.add.form.send-mail-user">
+        <source>Automatically send emails to this user from %booker_email% email address using the %booker_name% email template</source>
+        <target state="new">從電子郵件地址 %booker_email% 使用 %booker_name% 電子郵件範本自動發送電子郵件給該用戶</target>
+
+        <jms:reference-file>Booking/Add/index.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="a534e7b4d7f6ff0802611a89f9532d32385cb20f" resname="booking.request.add.form.tab.contact">
+        <source>Contact</source>
+        <target>聯絡人</target>
+
+        <jms:reference-file>Booking/Add/index.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="515876229bfee6f5712cebe268baef3b19831c7c" resname="booking.request.add.form.tab.destinations">
+        <source>Destinations</source>
+        <target>目的地</target>
+
+        <jms:reference-file>Booking/Add/index.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="3ba224eea600ee162d65522bbb68132a5a84b151" resname="booking.request.add.form.tab.miles">
+        <source>Miles</source>
+        <target>哩程</target>
+
+        <jms:reference-file>Booking/Add/index.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="62c9c338ccf03a1cf665c36d31dd2324ba64958c" resname="booking.request.add.form.travel_type">
+        <source>This request is for</source>
+        <target state="new">這項請求針對</target>
+
+        <jms:reference-file>Booking/View/index.html.twig</jms:reference-file>
+        <jms:reference-file>Form/Type/AbRequestType.php</jms:reference-file>
+        <jms:reference-file>Template/Booking/NewBookingRequest.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="9eb4da784937499b5dc693b06f43ae7f1d47ac0a" resname="booking.request.add.form.travel_type.business">
+        <source>Business Travel</source>
+        <target state="new">企業旅行</target>
+
+        <jms:reference-file>Booking/View/index.html.twig</jms:reference-file>
+        <jms:reference-file>Form/Type/AbRequestType.php</jms:reference-file>
+        <jms:reference-file>Template/Booking/NewBookingRequest.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="c8d2425d5ce11ce5a98951158a422f28ca02b118" resname="booking.request.add.form.travel_type.personal">
+        <source>Personal Travel</source>
+        <target state="new">個人旅行</target>
+
+        <jms:reference-file>Booking/View/index.html.twig</jms:reference-file>
+        <jms:reference-file>Form/Type/AbRequestType.php</jms:reference-file>
+        <jms:reference-file>Template/Booking/NewBookingRequest.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="2937e7f61c3462c24d800fb90d4e7003168e0a91" resname="booking.request.add.form.traveler.birthday">
+        <source>Birthday</source>
+        <target>出生日期</target>
+
+        <jms:reference-file>Form/Type/AbPassengerType.php</jms:reference-file>
+        <jms:reference-file>Template/Booking/NewBookingRequest.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="dea4db60492dac75beeb6e6fcad64363c29d5744" resname="booking.request.add.form.traveler.birthday-help">
+        <source>Birthdays are required by the airlines to make reservations or courtesy holds</source>
+        <target>航空公司需要出生日期來訂票或保留</target>
+
+        <jms:reference-file>Form/Type/AbPassengerType.php</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="2be0e4cf8f57457dd6b94884995d0c56f650250a" resname="booking.request.add.form.traveler.citizenship">
+        <source>Traveler Citizenship</source>
+        <target state="new">旅客公民身份</target>
+
+        <jms:reference-file>Form/Type/AbPassengerType.php</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="f306f078f1a3a50cd3306ee6cc7f162b618662ba" resname="booking.request.add.form.traveler.fname">
+        <source>First Name</source>
+        <target>名</target>
+
+        <jms:reference-file>Form/Type/AbPassengerType.php</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="3acfb74aacb0912447cdcae7b7e2c1cfc670973f" resname="booking.request.add.form.traveler.help">
+        <source>Exactly as it appears on your passport</source>
+        <target>必須與護照一致</target>
+
+        <jms:reference-file>Form/Type/AbPassengerType.php</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="c105ba5fcb131421b0b8f286ba4bdb98bc28d4af" resname="booking.request.add.form.traveler.lname">
+        <source>Last Name</source>
+        <target>姓</target>
+
+        <jms:reference-file>Form/Type/AbPassengerType.php</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="2e3f0e449f4e190541192589f27982ed69c89c7d" resname="booking.request.add.form.traveler.mname">
+        <source>Middle Name</source>
+        <target>中間名</target>
+
+        <jms:reference-file>Form/Type/AbPassengerType.php</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="9e4918518ecc662a2c6881e27dee9989af1c465b" resname="booking.request.add.form.traveler.nationality-help">
+        <source>Enter passenger citizenship</source>
+        <target>輸入乘客國籍</target>
+
+        <jms:reference-file>Form/Type/AbPassengerType.php</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="f0be3100af4c3c72a042e469d6974638cca88044" resname="booking.request.add.form.traveler.new">
+        <source>New passenger</source>
+        <target>新乘客</target>
+
+        <jms:reference-file>Form/Type/AbPassengerType.php</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="76df960900c96504670d1f5129065e1800356e8f" resname="booking.request.add.form.traveler.newmember">
+        <source>Add a new passenger, that doesn't yet exist as a Member of %booker%.</source>
+        <target>添加一名尚非 %booker% 會員的新乘客。</target>
+
+      </trans-unit>
+      <trans-unit id="ef0d3dc2ed9593b70ed00c2cb991e1c32f5e61e3" resname="booking.request.add.form.traveler.pattern">
+        <source>Passenger</source>
+        <target>乘客</target>
+
+        <jms:reference-file>Form/Type/AbPassengerType.php</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="c82f553f2662398cffb9471e617ebda501d24234" resname="booking.request.add.form.traveler.search">
+        <source>Traveler Search</source>
+        <target>旅客搜尋</target>
+
+        <jms:reference-file>Form/Type/AbPassengerType.php</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="c868146d79c765095d90710ac2f9158ddadf6f98" resname="booking.request.add.form.traveler.search.nomatches">
+        <source>No matches</source>
+        <target state="new">無符合內容</target>
+
+        <jms:reference-file>js/booking/AddForm.js</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="960d0fe965f7965210dadaf94079bd6c630abc61" resname="booking.request.add.form.traveler.search.searching">
+        <source>Searching...</source>
+        <target state="new">正在搜尋...</target>
+
+        <jms:reference-file>js/booking/AddForm.js</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="e02b347fb1e9d0da3a067b579b032ad7edf16d7a" resname="booking.request.add.form.traveler.search.toolong">
+        <source>Search input too long</source>
+        <target state="new">輸入的搜尋內容太長</target>
+
+        <jms:reference-file>js/booking/AddForm.js</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="58e98a57e6d76c0c325a48c0b4c8a4f90b1cf188" resname="booking.request.add.form.traveler.select">
+        <source>Select a passenger</source>
+        <target>選擇一位乘客</target>
+
+        <jms:reference-file>Form/Type/AbPassengerType.php</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="c9827f74b357d40542cf26d19488edbb91f2ba40" resname="booking.request.add.form.traveler.title">
+        <source>Passenger #%number%</source>
+        <target>乘客 #%number%</target>
+
+        <jms:reference-file>Booking/Add/index.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="cf8d2720b8c9145040e6840c203746831d72eb92" resname="booking.request.add.form.traveler.us_citizen">
+        <source>US Citizen?</source>
+        <target>美國公民？</target>
+
+        <jms:reference-file>Form/Type/AbPassengerType.php</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="ad888707875cf112cd8833f18c2bceb8713b6ae3" resname="booking.request.another.sharing">
+        <source>Request another account for sharing</source>
+        <target>要求另一個帳戶共享</target>
+
+        <jms:reference-file>Booking/View/index.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="b1e4ec61a26ebc21d4a84c03061c3c3900bd44f2" resname="booking.request.antoby.sharing">
+        <source>Request accounts to be shared</source>
+        <target>要求共享帳戶</target>
+
+        <jms:reference-file>Booking/View/index.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="1c9e97a566f77f7aa027e4eb82aa8ea95d0fc7b6" resname="booking.request.edit.select-provider">
+        <source>Select provider</source>
+        <target>選擇提供商</target>
+
+        <jms:reference-file>Booking/View/index.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="141956fa9171cace2441f7f29ccfc15a434fb4d1" resname="booking.request.edit.title">
+        <source>Edit Award Ticket Booking Request</source>
+        <target>編輯獎勵訂票請求</target>
+
+        <jms:reference-file>Booking/Add/index.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="843d20dfe1b8ddacad17ed32b3ba4e346ffedab6" resname="booking.request.full-sharing">
+        <source>Gain full control of the personal account</source>
+        <target state="new">獲得個人帳戶完整控制權</target>
+
+        <jms:reference-file>Booking/View/index.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="1c565273f0383dd75210fd0da1c1db32240947e2" resname="booking.request.messages.form.color">
+        <source>Color</source>
+        <target>顏色</target>
+
+        <jms:reference-file>Form/Type/AbMessageType.php</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="256e11e490ec8fbd6b25c56ce647094490f3cea4" resname="booking.request.messages.form.internal">
+        <source>Internal Only</source>
+        <target>內部專用</target>
+
+        <jms:reference-file>Form/Type/AbMessageType.php</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="7cb899fa4af7c06d939ffd8315883e7688f0a2a4" resname="booking.request.messages.form.select_color">
+        <source>Select Color</source>
+        <target>選擇顏色</target>
+
+        <jms:reference-file>Form/Type/AbMessageType.php</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="d4d4f949f0e9ecf4f458fe9633760c968dd10e5c" resname="booking.request.properties">
+        <source>Booking request properties</source>
+        <target>訂票請求屬性</target>
+
+        <jms:reference-file>Booking/View/propertiesForm.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="da004d1b79be27b973dc9782015dd0203b20bbf6" resname="booking.request.properties.form.assigned_to">
+        <source>Assigned to</source>
+        <target>分派給</target>
+
+        <jms:reference-file>Form/Type/AbRequestPropertiesType.php</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="bd6373549cc27e4a8d2270ae10fc2793e9ad90a2" resname="booking.request.properties.form.cancel_reason">
+        <source>Cancel Reason</source>
+        <target>取消原因</target>
+
+        <jms:reference-file>Form/Type/AbRequestPropertiesType.php</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="b8ecce355da183343be62b4c11396345068b8432" resname="booking.request.properties.form.change_status_to">
+        <source>Change Status To</source>
+        <target>將狀態更改為</target>
+
+        <jms:reference-file>Form/Type/AbRequestPropertiesType.php</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="1b6b4e6e4751720616423f3bb5f1f2aae56528ac" resname="booking.request.properties.form.inbound_airline">
+        <source>Inbound Airline</source>
+        <target state="new">返程航空公司</target>
+
+        <jms:reference-file>Form/Type/AbRequestPropertiesType.php</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="eeaafb796f3bfd832dc88728f1e203a3964dfcd0" resname="booking.request.properties.form.mark_as_unread">
+        <source>Mark this request as "Unread"</source>
+        <target>將該請求標記為「未讀」</target>
+
+        <jms:reference-file>Form/Type/AbRequestPropertiesType.php</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="07ddcb5bb7ac180119cdefab68a78772902e1cce" resname="booking.request.properties.form.outbound_airline">
+        <source>Outbound Airline</source>
+        <target state="new">去程航空公司</target>
+
+        <jms:reference-file>Form/Type/AbRequestPropertiesType.php</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="6060b7ebc02546a5e525b9f764865b5b19ef5ee2" resname="booking.request.properties.form.please-select">
+        <source>Please select</source>
+        <target state="new">請選擇</target>
+
+        <jms:reference-file>Form/Type/AbRequestPropertiesType.php</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="dc3b6e2f50c0093285c71bfb739109cc8c0cdc31" resname="booking.request.properties.form.until_date">
+        <source>Until</source>
+        <target>直到</target>
+
+        <jms:reference-file>Form/Type/AbRequestPropertiesType.php</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="121f4d0c1f0058a241767fa56d9f1761aeccbc60" resname="booking.request.segment.min-max">
+        <source>MIN: %min%, MAX: %max%</source>
+        <target state="new">至少：%min%，最多：%max%</target>
+
+        <jms:reference-file>Booking/View/index.html.twig</jms:reference-file>
+        <jms:reference-file>Template/Booking/NewBookingRequest.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="ae5eecbbc30ba34845c9b1259512d1bac2a473e5" resname="booking.restoreform.botton">
+        <source>Saved data</source>
+        <target>儲存的資料</target>
+
+        <jms:reference-file>awardwalletmain/js/FormKeeper.js</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="e9a5a7cab0b74ce20cbc71235786632a769e4cf2" resname="booking.restoreform.button.dont">
+        <source>Don't recover</source>
+        <target>不要還原</target>
+
+        <jms:reference-file>awardwalletmain/js/FormKeeper.js</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="3839bbffc977c0d32cc09281b4e997958f347b45" resname="booking.restoreform.content">
+        <source><![CDATA[We noticed you have not finished submitting your booking request.<br /><strong>Would you like us to recover your data so that you can finish it up?</strong>]]></source>
+        <target><![CDATA[我們注意到您尚未提交訂票請求。<br /><strong>您希望我們還原您的資料，以便您繼續完成嗎？</strong>]]></target>
+
+        <note>https://www.dropbox.com/s/gwga59yya59cqir/recover%20popup.png?dl=0</note>
+        <jms:reference-file>Booking/Add/index.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="d5b0dddd7180bef0bbc29dc2de0a26ca4c86a095" resname="booking.return_date.flex">
+        <source>Do you have flexibility on your date to return?</source>
+        <target state="new">您的回程日期是否有些彈性？</target>
+
+        <jms:reference-file>Form/Type/AbSegmentType.php</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="619717392001e8596888bae27075302e14a0a667" resname="booking.round_trip_days.flex">
+        <source>Do you have flexibility on the number of days of your trip, excluding flight days?</source>
+        <target state="new">除了飛航時間外，您的旅程天數是否有些彈性？</target>
+
+        <jms:reference-file>Form/Type/AbSegmentType.php</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="03371da5f1763149fb0e9771dab9088a3e9b4d8e" resname="booking.seat-assignments.message">
+        <source>As seat preferences are a very personal issue, to ensure you get the seat assignments that best meet your needs, please contact the airlines directly:</source>
+        <target state="new">由於座位的喜好是很個人的選擇，為確保您獲得最符合您需求的座位安排，請您直接聯繫航空公司：</target>
+
+        <jms:reference-file>Booking/Message/seatAssignmentsMessage.html.twig</jms:reference-file>
+        <jms:reference-file>Booking/Messages/MessagesFormatter.php</jms:reference-file>
+        <jms:reference-file>Booking/Messages/seatAssignments.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="7ee2da7b97df5b4e94fb37601decaef095ad11a2" resname="booking.share.access-denied">
+        <source>Access to password is denied</source>
+        <target state="new">密碼存取被拒</target>
+
+        <jms:reference-file>Booking/View/lp-table.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="a6638ceb7c22065506d2e3ec23772cf15e39a3bf" resname="booking.share.account-manage-required">
+        <source>Please, request full access from the account owner</source>
+        <target>請向該帳戶的所有者取得完整訪問權限</target>
+
+        <jms:reference-file>Booking/Share/lp-share-table.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="64c9ec8da73f967b6f9bb5692d1dda15c3ab4122" resname="booking.share.balance-error.popup-booker-text">
+        <source>You may need to inform the user that he or she needs to update this account username or password in order for you to be able to auto-login to this account. The user would need to do that from the following URL</source>
+        <target state="new">您可能需要通知該用戶，他或她需要更新該帳戶的用戶名稱或密碼，以便您能夠自動登錄到該帳戶。該用戶需要從以下網址完成該操作</target>
+
+        <jms:reference-file>js/booking/view.js</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="40b0662b1b6ac312ab63ca2197c2201c687ca416" resname="booking.share.balance-error.popup-text">
+        <source>Last time we tried updating this account it got the following error</source>
+        <target state="new">上次我們嘗試更新該帳戶卻出現以下錯誤</target>
+
+        <jms:reference-file>js/booking/view.js</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="51a7a3a33826f2e5e3df56fa1a00effd83826668" resname="booking.share.balance-error.popup-title">
+        <source>Account Error</source>
+        <target state="new">帳戶錯誤</target>
+
+        <jms:reference-file>js/booking/view.js</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="408744e1fc226d1c1377a94d3d16d645a3ae96c8" resname="booking.share.balance-error.popup-user-text">
+        <source>You can try updating this account credentials via this page in order to fix this problem</source>
+        <target state="new">您可以嘗試通過此頁面更新該帳戶的憑證，以解決這個問題</target>
+
+        <jms:reference-file>js/booking/view.js</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="e72a82617ca8ead4a1843f86579a7a39dc3936d9" resname="booking.share.booker-share-requested">
+        <source>The following accounts have been requested to be shared with %booker%</source>
+        <target state="new">以下帳戶已被請求與 %booker% 共享</target>
+
+        <jms:reference-file>Booking/Message/shareRequestMessage.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="6bbef5373c50e04d3445d9517ce7f73587581062" resname="booking.share.booker-share-shared">
+        <source>%name% has securely shared the following accounts with you</source>
+        <target state="new">%name% 已經安全地與您共享了下列帳戶</target>
+
+        <jms:reference-file>Booking/Message/shareResponseMessage.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="03ac9bd5eb5f5a6f55adaa9d65e785c5ee7902fd" resname="booking.share.continue">
+        <source>Continue</source>
+        <target state="new">繼續</target>
+
+        <jms:reference-file>Booking/Share/lp-share-table.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="652ef18378537d651b16fedb147c8a4042fa84ce" resname="booking.share.done">
+        <source><![CDATA[<strong>You are all done.</strong> Accounts listed above (with passwords) have been shared with %booker%. If you want to undo this, follow this <a href="%link%">link</a>]]></source>
+        <target state="new"><![CDATA[<strong>您已全部完成。</strong> 上面列出的帳戶（帶密碼）已經與 %booker% 共享。如果您想撤消此操作，請按這個<a href="%link%">連結</a>]]></target>
+
+        <jms:reference-file>Booking/Share/index.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="b275ff2feb2ea3ab9c52410d6d4005bcbe802d32" resname="booking.share.icon-warning.title">
+        <source>This account was requested for sharing</source>
+        <target state="new">該帳戶被請求共享</target>
+
+        <jms:reference-file>Booking/Share/lp-share-table.html.twig</jms:reference-file>
+        <jms:reference-file>Booking/View/lp-table.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="0d271fea9dd8f90c153f6bd86c9f677914349072" resname="booking.share.local-password">
+        <source>Password is missing</source>
+        <target state="new">密碼丟失</target>
+
+        <jms:reference-file>Booking/View/lp-table.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="4252d9e2d87db0dca23d2a147fe1e31230df44ab" resname="booking.share.not_done">
+        <source><![CDATA[<strong>You are not done yet, </strong>you have the following accounts to share]]></source>
+        <target state="new"><![CDATA[<strong>您尚未完成， </strong>您有以下帳戶可共享]]></target>
+
+        <jms:reference-file>Booking/Share/index.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="0820fc3bf17d87c0d190cd289f06c0f6f0dff790" resname="booking.share.resend-share-request">
+        <source>Resend this account sharing request</source>
+        <target state="new">再次發送共享請求</target>
+
+        <jms:reference-file>Booking/Message/shareRequestMessage.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="876c8d8288a8d04eb4818cf39edfbdb6db6a2168" resname="booking.share.select_account">
+        <source>Select Account</source>
+        <target>選擇帳戶</target>
+
+        <jms:reference-file>Booking/Share/lp-share-table.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="3cab94b83b29bf53e590cbd641929853489a3666" resname="booking.share.user-share-requested">
+        <source>You are being asked to share the following accounts</source>
+        <target state="new">您被請求共享以下帳戶</target>
+
+        <jms:reference-file>Booking/Message/shareRequestMessage.html.twig</jms:reference-file>
+        <jms:reference-file>Booking/Message/shareResponseMessage.html.twig</jms:reference-file>
+        <jms:reference-file>Booking/Messages/MessagesFormatter.php</jms:reference-file>
+        <jms:reference-file>Booking/Messages/shareAccounts.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="9827098863c49afe7ebd026e78af6d7417585db7" resname="booking.share.user-share-shared">
+        <source>You have successfully shared the following accounts with %booker%</source>
+        <target state="new">您已經成功地與 %booker% 共享了以下帳戶</target>
+
+        <jms:reference-file>Booking/Message/shareResponseMessage.html.twig</jms:reference-file>
+        <jms:reference-file>Booking/Messages/MessagesFormatter.php</jms:reference-file>
+        <jms:reference-file>Booking/Messages/shareAccounts.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="9ee2b586ac2aa79b2fb23a054144080dda0696e3" resname="booking.share.view">
+        <source>View</source>
+        <target state="new">查看</target>
+
+        <jms:reference-file>Booking/Message/shareRequestMessage.html.twig</jms:reference-file>
+        <jms:reference-file>Booking/Message/shareResponseMessage.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="fd3640c039181aef2dbfd24f671e33c75594140e" resname="booking.statuses.booked">
+        <source>Booked</source>
+        <target>已預訂</target>
+
+      </trans-unit>
+      <trans-unit id="a3ca01e9f69f4b1d3b343cb89c303cc2e869e32a" resname="booking.statuses.canceled">
+        <source>Canceled</source>
+        <target>已取消</target>
+
+      </trans-unit>
+      <trans-unit id="d1d86966eadf071ea33dc50c65bc3951ea26ede0" resname="booking.statuses.future">
+        <source>Future</source>
+        <target>未來</target>
+
+      </trans-unit>
+      <trans-unit id="805648aa6ab21244e645a86c3bf6c9afb23246f2" resname="booking.statuses.not-verified">
+        <source>Email Not Verified</source>
+        <target state="new">電子郵件尚未驗證</target>
+
+      </trans-unit>
+      <trans-unit id="e19292cfb5d63cb3bda389b56935c8d2f0990c16" resname="booking.statuses.opened">
+        <source>Opened</source>
+        <target>已開啟</target>
+
+      </trans-unit>
+      <trans-unit id="33f956b9b844afb204d08d65b926e6b555bff015" resname="booking.statuses.opened-booked">
+        <source>Opened-Booked</source>
+        <target>已開啟－已預訂</target>
+
+      </trans-unit>
+      <trans-unit id="85048032b4539fdf97caeba2f2f14bb152db2f92" resname="booking.statuses.paid">
+        <source>Paid</source>
+        <target>已付款</target>
+
+      </trans-unit>
+      <trans-unit id="c8189cb7ad955bd664841849dd9659dad065d2ed" resname="booking.table.active_title">
+        <source>Active requests</source>
+        <target state="new">有效請求</target>
+
+        <jms:reference-file>Booking/List/requests.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="31e02893878f7179552f94ae2c6def6b75489a1e" resname="booking.table.filters.clear">
+        <source>Reset filters</source>
+        <target>重置搜尋條件</target>
+
+        <jms:reference-file>Booking/List/queue.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="817e798d4cc08476797b34ac6f7e30a96331d490" resname="booking.table.headers.airline">
+        <source>Airline</source>
+        <target state="new">航空公司</target>
+
+        <jms:reference-file>Booking/List/queue.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="c37c6aab4e29b6b1d2bbc524301cbcedef7234ca" resname="booking.table.headers.assigned-to">
+        <source>Assigned To</source>
+        <target>分派給</target>
+
+        <jms:reference-file>Booking/List/queue.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="54434c049335aa726401747b42b15f1dccf28d6a" resname="booking.table.headers.create-date">
+        <source>Create Date</source>
+        <target>建立日期</target>
+
+        <jms:reference-file>Booking/View/index.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="492fcb079f73426daa4a6f22d58c106b174f10db" resname="booking.table.headers.departure">
+        <source>Departure</source>
+        <target>出發</target>
+
+        <jms:reference-file>Booking/List/requests.html.twig</jms:reference-file>
+        <jms:reference-file>Booking/View/index.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="e50d5b9f8697cf93530738ab480ea7cb7af6d7df" resname="booking.table.headers.fees">
+        <source>Fees</source>
+        <target>費用</target>
+
+        <jms:reference-file>Booking/List/queue.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="fd359cf59f156dc6d415a1aa428fe72bc54c1fcf" resname="booking.table.headers.id">
+        <source>ID</source>
+        <target>ID</target>
+
+        <jms:reference-file>Booking/List/queue.html.twig</jms:reference-file>
+        <jms:reference-file>Booking/List/requests.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="f35e990728472ced07cbcb6917e59007ec25e722" resname="booking.table.headers.internal-status">
+        <source>Internal Status</source>
+        <target>內部狀態</target>
+
+        <jms:reference-file>Booking/List/queue.html.twig</jms:reference-file>
+        <jms:reference-file>Form/Type/AbRequestPropertiesType.php</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="4f730ad0df709d9e8a72a89102f91704c0167336" resname="booking.table.headers.last-update">
+        <source>Last Update</source>
+        <target>上次更新</target>
+
+        <jms:reference-file>Booking/List/queue.html.twig</jms:reference-file>
+        <jms:reference-file>Booking/List/requests.html.twig</jms:reference-file>
+        <jms:reference-file>Booking/View/index.html.twig</jms:reference-file>
+        <jms:reference-file>common/js/mobile_translations.js</jms:reference-file>
+        <jms:reference-file>directives/booking/booking-list.js</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="ae4ce4c5572b082156f8c7285487e6c39d065498" resname="booking.table.headers.name">
+        <source>Name</source>
+        <target>姓名</target>
+
+        <jms:reference-file>Booking/List/queue.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="e8d4d9a11af8a8da28cd076bc1c6296543c55ecd" resname="booking.table.headers.status">
+        <source>Status</source>
+        <target>狀態</target>
+
+        <jms:reference-file>Booking/List/queue.html.twig</jms:reference-file>
+        <jms:reference-file>Booking/List/requests.html.twig</jms:reference-file>
+        <jms:reference-file>Booking/View/index.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="b3a9a05ceed18361c3f6f6327c9133a22c9608fb" resname="booking.table.headers.until-date">
+        <source>Future Until</source>
+        <target state="new">未來直到</target>
+
+        <jms:reference-file>Booking/List/queue.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="141adbc8cc7d7e3a2544dc68a390f897513cda14" resname="booking.table.mytitle">
+        <source>My Booking requests</source>
+        <target>我的訂票請求</target>
+
+        <jms:reference-file>Booking/List/requests.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="857d9a724c0454bfb1573a6a76ce4be43e79e13b" resname="booking.table.not-assigned">
+        <source>Not assigned</source>
+        <target>未分派</target>
+
+        <jms:reference-file>Booking/List/queue.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="9df3b68d23b64b622a78bd7d2448c9609337b052" resname="booking.table.past_title">
+        <source>Past requests</source>
+        <target state="new">以前的請求</target>
+
+        <jms:reference-file>Booking/List/requests.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="1f56f3079494b333fb22f724f9ad4028cd4db58b" resname="booking.table.title">
+        <source>Booking requests</source>
+        <target>訂票請求</target>
+
+        <jms:reference-file>Booking/List/queue.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="45a86bca43efd7a5dea7f1e9d5dbc51376f78f2d" resname="booking.table.tooltip.mark-as">
+        <source>Mark as read/unread</source>
+        <target state="new">標記為已讀/未讀</target>
+
+        <jms:reference-file>Booking/List/queue.html.twig</jms:reference-file>
+        <jms:reference-file>Booking/List/requests.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="2f477a7c1e50d801899014c415a56e6c9e633b91" resname="booking.table.tooltip.reply">
+        <source>Reply</source>
+        <target state="new">答覆</target>
+
+        <jms:reference-file>Booking/List/queue.html.twig</jms:reference-file>
+        <jms:reference-file>Booking/List/requests.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit approved="yes" id="29ae71b1b87fb2136fd52488f7983a2eac112fe2" resname="booking.terms">
+        <source><![CDATA[I agree to the <a href="/page/terms" target="_blank">Terms of use</a> and <a href="/page/privacy" target="_blank">Privacy Notice</a> (our lawyers require this, but there is no sharing of your email or account information with any third parties, and there are no financial obligations)]]></source>
+        <target><![CDATA[我同意<a href="/page/terms" target="_blank">使用條款</a> 和<a href="/page/privacy" target="_blank">隱私權通告</a>（這點為我公司律師的要求，但我們不會與任何第三方分享您的電子郵件或帳戶資訊，且不牽涉任何財務義務）]]></target>
+
+        <jms:reference-file>Form/Type/AbRequestType.php</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="a79db5ae18fc1e3517aee44d8af66a4cae46e9b0" resname="booking.travelers">
+        <source>Travelers</source>
+        <target>旅客</target>
+
+        <jms:reference-file>Booking/Add/index.html.twig</jms:reference-file>
+        <jms:reference-file>Booking/View/index.html.twig</jms:reference-file>
+        <jms:reference-file>timeline/content/travelers.html</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="e6a558e2b408f4a46860cb47b6ed1ab09efdbcf3" resname="booking.userscomm">
+        <source>Messages</source>
+        <target state="new">訊息</target>
+
+        <jms:reference-file>Booking/View/index.html.twig</jms:reference-file>
+        <jms:reference-file>common/js/mobile_translations.js</jms:reference-file>
+        <jms:reference-file>directives/booking/booking-messages.js</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="eaab1059075da22060aab9ee1414b942d43e7f1b" resname="booking.yes-delete">
+        <source>Yes, Delete</source>
+        <target state="new">是，刪除</target>
+
+        <jms:reference-file>js/booking/messages.js</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="4fd0653c4f2aef3b19a3c145bbdc5f4740715a09" resname="cancel">
+        <source>Cancel</source>
+        <target state="new">取消</target>
+
+        <jms:reference-file>Booking/View/index.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="e9ba924596d0f3c2609891d655900dc8ab0a6bee" resname="cancel.popup.text1">
+        <source>Are you sure you wish to cancel this booking request?</source>
+        <target state="new">您是否確定要取消這項訂票請求？</target>
+
+        <jms:reference-file>Booking/View/index.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="af3e4df62c1cf4bf24777578802ae582c4b25797" resname="cancel.popup.text2">
+        <source>This will tell %booker% to stop working on this booking request.</source>
+        <target state="new">這將會通知 %booker% 停止處理這項訂票請求。</target>
+
+        <jms:reference-file>Booking/View/index.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="64ddf88e2d81ad14008bc4129ab0c7fff8558a7e" resname="cancel_request.popup.title">
+        <source>Booking request cancelation</source>
+        <target state="new">取消訂票請求</target>
+
+        <jms:reference-file>js/booking/view.js</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="688d88692ac33c63ca310987ba11a3da9fe6a0b2" resname="create.invoice.btn">
+        <source>Create invoice</source>
+        <target>建立發票</target>
+
+        <jms:reference-file>Booking/View/index.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="57685faefd8514c0825a61cb1e6eb2dc479ba96d" resname="create.invoice.miles.title">
+        <source>Miles Needed (Per Person)</source>
+        <target state="new">需要的哩程數（每人）</target>
+
+        <jms:reference-file>Booking/Message/invoiceForm.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="d117b4b02d73877b54fc3ab3627355917d063642" resname="create.invoice.title">
+        <source>Invoice</source>
+        <target>發票</target>
+
+        <jms:reference-file>Booking/View/index.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="f311439cbf8ebf3ee6ac021a8cdb555accf65ac4" resname="create.seat-assignments.btn">
+        <source>Seat Assignments</source>
+        <target state="new">座位選擇</target>
+
+        <jms:reference-file>Booking/View/index.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="48abf7bf078ad9675913553017b19e9eb6852445" resname="create.seat_assignments.add-another">
+        <source>Add another phone</source>
+        <target state="new">添加電話號碼</target>
+
+        <jms:reference-file>Booking/Message/seatAssignmentsForm.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="8ef868e824dc5f3eaae3a3b9fc07e7160471b3dd" resname="create.seat_assignments.title">
+        <source>Airline phone numbers for seat assignments</source>
+        <target state="new">航班座位安排電話號碼</target>
+
+        <jms:reference-file>Booking/Message/seatAssignmentsForm.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="9485989ff514b5106b7738850fd73c23e8c1e3f7" resname="delete">
+        <source>Delete</source>
+        <target state="new">刪除</target>
+
+        <jms:reference-file>Booking/View/index.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="64a8057fd534f6d8c470fa8f83ba652c08d071bb" resname="delete-message">
+        <source>Delete this message</source>
+        <target state="new">刪除留言</target>
+
+        <jms:reference-file>common/js/mobile_translations.js</jms:reference-file>
+        <jms:reference-file>directives/booking/booking-messages.js</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="42ff677aba10736d1018a647d9bde8a90e8b5b39" resname="edit-message">
+        <source>Edit this message</source>
+        <target state="new">編輯這則留言</target>
+
+        <jms:reference-file>common/js/mobile_translations.js</jms:reference-file>
+        <jms:reference-file>directives/booking/booking-messages.js</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="c038c3d63b3595d7a930d32e4944200ebe782a6e" resname="invoice.add-line-item">
+        <source>Add line item</source>
+        <target state="new">添加分項</target>
+
+        <jms:reference-file>Booking/Message/invoiceForm.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="2f81f8b428a7e364d7acf248ba5b4c37297b37ab" resname="invoice.form.add-program">
+        <source>Add program</source>
+        <target state="new">添加計劃</target>
+
+        <jms:reference-file>Booking/Message/invoiceForm.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="9e7586b48add1f1969037bfbeac807778a423f3f" resname="invoice.form.total-label">
+        <source>Total</source>
+        <target state="new">總計</target>
+
+        <jms:reference-file>Booking/Message/invoiceForm.html.twig</jms:reference-file>
+        <jms:reference-file>Booking/Messages/MessagesFormatter.php</jms:reference-file>
+        <jms:reference-file>Booking/Messages/invoice.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="08d07f1a7d76358393afe24b988c1f7e23bab900" resname="invoice.invoice">
+        <source>Invoice</source>
+        <target state="new">發票</target>
+
+        <jms:reference-file>Booking/Message/invoiceMessage.html.twig</jms:reference-file>
+        <jms:reference-file>Booking/Messages/MessagesFormatter.php</jms:reference-file>
+        <jms:reference-file>Booking/Messages/invoice.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="07056c20b9971543b9a0603f5331807105c057c9" resname="invoice.item.additional-fee">
+        <source>Additional Traveler Fee</source>
+        <target state="new">額外的旅行費用</target>
+
+        <jms:reference-file>Controller/Booking/MessageController.php</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="19b63baa8ebcfccabc7accfed1c4ce724e2c77b5" resname="invoice.item.airline-fees">
+        <source>Airline-imposed taxes/fees</source>
+        <target state="new">航空公司規定稅費</target>
+
+        <jms:reference-file>Controller/Booking/MessageController.php</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="34bc3d79fa2d122a39400ba767ff181c3b8b4a54" resname="invoice.item.award-booking-magic">
+        <source>"Magic Award" Booking</source>
+        <target>「美極獎勵」預訂</target>
+
+        <note>Please do not translate "Magic Award"</note>
+        <jms:reference-file>Controller/Booking/MessageController.php</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="7f7311cccc57fa6038308486f9bd601626005ae4" resname="invoice.item.award-booking-standard">
+        <source>"Standard Award" Booking</source>
+        <target>「標準獎勵」預訂</target>
+
+        <note>Please do not translate "Standard Award"</note>
+        <jms:reference-file>Controller/Booking/MessageController.php</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="18b35b639180fbf845ed6855a89a8363422bc0ea" resname="invoice.item.award-monitoring">
+        <source>Award Monitoring Service</source>
+        <target state="new">獎勵監控服務</target>
+
+        <jms:reference-file>Controller/Booking/MessageController.php</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="c4b258bf5a8f19c9c576527b85fd404837e1044d" resname="invoice.item.award_magic_initial_deposit">
+        <source>Initial Award Search Deposit</source>
+        <target state="new">初始獎勵搜尋定金</target>
+
+      </trans-unit>
+      <trans-unit id="399b3be3ced243d2466d5ab8d267be3552ac6e8c" resname="invoice.item.booking-fee">
+        <source>Close-in Booking fee</source>
+        <target state="new">臨近日期收費</target>
+
+        <jms:reference-file>Controller/Booking/MessageController.php</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="da27403bb9701e9fd5d3ae61728b11a43d5e0cbf" resname="invoice.item.deposit">
+        <source>Award Booking Deposit</source>
+        <target state="new">獎勵預訂定金</target>
+
+        <jms:reference-file>Controller/Booking/MessageController.php</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="29ce374fb6f8d4f64d81269e5f2beab98cb33778" resname="invoice.item.refund-deposit">
+        <source>Refund of Initial Deposit</source>
+        <target state="new">初始定金退還</target>
+
+        <jms:reference-file>Controller/Booking/MessageController.php</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="f98b683bbed08b7ae91cff94b91ac784841ea60e" resname="invoice.item.service-fee">
+        <source>Award Booking Service Fee</source>
+        <target state="new">獎勵預訂服務費</target>
+
+        <jms:reference-file>Controller/Booking/MessageController.php</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="59e1d9e2f11da78937791f8b3444317fadf51f20" resname="invoice.item.taxes">
+        <source>Airline Taxes</source>
+        <target state="new">航空公司稅金</target>
+
+        <jms:reference-file>Controller/Booking/MessageController.php</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="ea740df16d8447247c7130bde8f3480b095696f6" resname="invoice.item.ticket-cancellation">
+        <source>Ticket Cancellation</source>
+        <target state="new">機票取消</target>
+
+        <jms:reference-file>Controller/Booking/MessageController.php</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="6f95f2bffcdf478fe64a139825a0b74f63a595fe" resname="invoice.item.upgrade-fee">
+        <source>Upgrade Fee</source>
+        <target state="new">升等費</target>
+
+        <jms:reference-file>Controller/Booking/MessageController.php</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="ad13257f97755843e99673dcb5541afaf13f5353" resname="invoice.line-items">
+        <source>Invoice line items</source>
+        <target state="new">發票分項</target>
+
+        <jms:reference-file>Booking/Message/invoiceForm.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="451c505481876bfe2514c76f4b16bee2243e6171" resname="invoice.mark-as-not-paid">
+        <source>MARK AS NOT PAID</source>
+        <target state="new">標記為未付款</target>
+
+        <jms:reference-file>Booking/Message/invoiceMessage.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="5d4af52db2d27860d3376ca8d70e2789c9d8951e" resname="invoice.mark-as-paid">
+        <source>MARK AS PAID</source>
+        <target state="new">標記為已付款</target>
+
+        <jms:reference-file>Booking/Message/invoiceMessage.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="ea32d55a5afcc7d100554201ddbdb970c7fc1bf7" resname="invoice.message.bill-to">
+        <source>Bill To</source>
+        <target>付款方</target>
+
+        <jms:reference-file>Booking/Message/invoiceMessage.html.twig</jms:reference-file>
+        <jms:reference-file>Booking/Messages/MessagesFormatter.php</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="b699d38791d1ecb147d95065f5d405407fb25172" resname="invoice.message.date">
+        <source>Date</source>
+        <target state="new">日期</target>
+
+        <jms:reference-file>Booking/Message/invoiceMessage.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="2ed02d5d37c738af5c1d05557dc44c540477130e" resname="invoice.message.description">
+        <source>Description</source>
+        <target state="new">說明</target>
+
+        <jms:reference-file>Booking/Message/invoiceMessage.html.twig</jms:reference-file>
+        <jms:reference-file>Form/Type/AbInvoiceItemType.php</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="9c0f2739659927886c5c501323cfa6835be6c35d" resname="invoice.message.discount">
+        <source>discount</source>
+        <target state="new">折扣</target>
+
+        <jms:reference-file>Booking/Message/invoiceMessage.html.twig</jms:reference-file>
+        <jms:reference-file>Booking/Messages/MessagesFormatter.php</jms:reference-file>
+        <jms:reference-file>Booking/Messages/invoice.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="74a7b0c837c8eb709495ff3922121847c91807b7" resname="invoice.message.due-on-receipt">
+        <source>Due on receipt</source>
+        <target state="new">見票付款</target>
+
+        <jms:reference-file>Booking/Message/invoiceMessage.html.twig</jms:reference-file>
+        <jms:reference-file>Booking/Messages/MessagesFormatter.php</jms:reference-file>
+        <jms:reference-file>Booking/Messages/invoice.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="3cadab473468f84a35f3da3079013b34cc6d113d" resname="invoice.message.footer">
+        <source>We appreciated the opportunity to be your personal mileage bloodhound! Hope your travels are festive and meaningful.</source>
+        <target state="new">我們珍視作為您的個人哩程偵探的機會！衷心希望您的旅行充滿歡樂與意義。</target>
+
+        <jms:reference-file>Booking/Message/invoiceMessage.html.twig</jms:reference-file>
+        <jms:reference-file>Booking/Messages/MessagesFormatter.php</jms:reference-file>
+        <jms:reference-file>Booking/Messages/invoice.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="a5e212680914525b9fedca4968c38196ca33e84f" resname="invoice.message.intro">
+        <source><![CDATA[Dear %contactname%, <br><br>Your invoice is attached. Please remit payment at your earliest convenience.<br>Thank you for your business, we appreciate it very much.]]></source>
+        <target state="new"><![CDATA[敬愛的 %contactname%，<br><br>附檔為您的發票。請在您方便時儘早付款。<br>感謝您的惠顧，不勝感激。]]></target>
+
+        <jms:reference-file>Booking/Message/invoiceMessage.html.twig</jms:reference-file>
+        <jms:reference-file>Booking/Messages/MessagesFormatter.php</jms:reference-file>
+        <jms:reference-file>Booking/Messages/invoice.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="eb2bb174446ce6c5d3a1f741b8c4a0c854cc41aa" resname="invoice.message.invoice-date">
+        <source>Invoice Date</source>
+        <target state="new">發票日期</target>
+
+        <jms:reference-file>Booking/Message/invoiceMessage.html.twig</jms:reference-file>
+        <jms:reference-file>Booking/Messages/MessagesFormatter.php</jms:reference-file>
+        <jms:reference-file>Booking/Messages/invoice.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="bc7e7a5dbc8e2eb309da6106fd1acdea70ac09c8" resname="invoice.message.payment-button">
+        <source>PROCEED TO MAKING THE PAYMENT NOW</source>
+        <target state="new">現在付款</target>
+
+        <jms:reference-file>Booking/Message/invoiceMessage.html.twig</jms:reference-file>
+        <jms:reference-file>Booking/Messages/MessagesFormatter.php</jms:reference-file>
+        <jms:reference-file>Booking/Messages/invoice.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="b59de80c1c19f7ad2b41e8e2773b808812fee83a" resname="invoice.message.program-miles">
+        <source>%program% miles belonging to %owner%</source>
+        <target state="new">%program% 哩程屬於 %owner%</target>
+
+        <jms:reference-file>Booking/Message/invoiceMessage.html.twig</jms:reference-file>
+        <jms:reference-file>Booking/Messages/MessagesFormatter.php</jms:reference-file>
+        <jms:reference-file>Booking/Messages/invoice.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="426f2d807ff9f6a49da934f200b5ed8c28dae07e" resname="invoice.message.rate">
+        <source>Rate</source>
+        <target state="new">費率</target>
+
+        <jms:reference-file>Block/Message/Invoice.php</jms:reference-file>
+        <jms:reference-file>Booking/Message/invoiceMessage.html.twig</jms:reference-file>
+        <jms:reference-file>Booking/Messages/invoice.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="5522c684ec8900a741c85daa13aab77aaecbb5c4" resname="invoice.message.terms">
+        <source>Terms</source>
+        <target state="new">條款</target>
+
+        <jms:reference-file>Booking/Message/invoiceMessage.html.twig</jms:reference-file>
+        <jms:reference-file>Booking/Messages/MessagesFormatter.php</jms:reference-file>
+        <jms:reference-file>Booking/Messages/invoice.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="5efb9ba0399b8141f21e1684fabf767daa9c5bfc" resname="invoice_already_paid">
+        <source>You have already paid this invoice so this action is not required.</source>
+        <target state="new">您已經支付該發票款項，因此不需要動作。</target>
+
+        <jms:reference-file>Controller/Booking/PaymentController.php</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="46080d943e08fc526c3435926ca4b1b70bc053d2" resname="invoice_already_paid_by_check">
+        <source>You have already indicated that a check has been sent so this action is not required.</source>
+        <target state="new">您已經同意寄出支票，因此不需要動作。</target>
+
+        <jms:reference-file>MainBundle/Manager/BookingRequestManager.php</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="50c7347af48b3c1da845b002014237dd1962cd78" resname="invoice_paid_by_cc">
+        <source>%name% paid %total% for this request via credit card</source>
+        <target state="new">%name% 以信用卡付了該項請求 %total%</target>
+
+        <jms:reference-file>MainBundle/Manager/BookingRequestManager.php</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="dc36556efe73f44ac70c1ec2c3cb14f2e5fcdfea" resname="invoice_paid_by_check">
+        <source>%name% paid %total% for this request via check</source>
+        <target state="new">%name% 以支票付了該項請求 %total%</target>
+
+        <jms:reference-file>MainBundle/Manager/BookingRequestManager.php</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="ec212ba2ac372bcd764fcb2ff43956732d27f91c" resname="jump.to.last.internal.message">
+        <source>Jump to the last internal message</source>
+        <target>跳至最新的內部訊息</target>
+
+        <jms:reference-file>Booking/View/index.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="9638dc4ebdc36005be9ae8c89b875afaf18ae2bd" resname="jump.to.last.message">
+        <source>Jump to the last message</source>
+        <target>跳至最新的訊息</target>
+
+        <jms:reference-file>Booking/View/index.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="88b51a00f7b39250ee157733ebabb15f830144d0" resname="jump.to.last.user.message">
+        <source>Jump to the last user message</source>
+        <target>跳至最新的用戶訊息</target>
+
+        <jms:reference-file>Booking/View/index.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="c0127df1a9e432c887db0b4c59ce941b847420b7" resname="mark-as-unread">
+        <source>Mark as unread</source>
+        <target state="new">標記為未讀</target>
+
+        <jms:reference-file>Booking/View/index.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="fab2f5139735f701497d47e63fda5a1b536d8516" resname="ndr">
+        <source>This email is marked as NDR, it means we sent 3 emails to this recipient and they all returned to us as non-deliverable.</source>
+        <target state="new">收到該電子郵件信箱的未送達報告，這表示我們已經發送了 3 封電子郵件，但是都因無法投遞而被退回。</target>
+
+        <jms:reference-file>Booking/View/index.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="6fc7c87701491a0e2b7ad14616d857651fb06e3a" resname="new.message">
+        <source>new message</source>
+        <target state="new">新訊息</target>
+
+        <jms:reference-file>common/js/mobile_translations.js</jms:reference-file>
+        <jms:reference-file>directives/booking/booking-list.js</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="fd1286353570c5703799ba76999323b7c7447b06" resname="no">
+        <source>No</source>
+        <target>否</target>
+
+        <jms:reference-file>Form/Type/AbPassengerType.php</jms:reference-file>
+        <jms:reference-file>Form/Type/AbSegmentType.php</jms:reference-file>
+        <jms:reference-file>js/booking/messages.js</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="0acc711e18469f0f421e214121e1899dd065c04c" resname="not-verified.popup.resend">
+        <source>Send Another Confirmation Email</source>
+        <target state="new">再次發送確認郵件</target>
+
+        <jms:reference-file>js/booking/view.js</jms:reference-file>
+      </trans-unit>
+      <trans-unit approved="yes" id="f444bc2e2d45a148b612f9fc44c8f0f1b82ed9f0" resname="not-verified.popup.text1">
+        <source xml:space="preserve">We just sent you an email to verify the contact information we have on file. Please check your inbox (or spam/junk filter if needed) and click on the link to verify your email address. No work will begin until you have completed this step.
+
+</source>
+        <target xml:space="preserve">我們剛剛發送了一封確認您的聯絡資訊的電子郵件給您。請查看您的收件箱（若沒收到，請一併檢查垃圾郵件箱）並按下連結以確認您的電子郵件地址。在您完成這個步驟前，不會開始任何其他作業。
+
+</target>
+
+        <jms:reference-file>Booking/View/index.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="8444dda39fa3f230503fabc6c6bc58998d8ad9ab" resname="not-verified.popup.text2">
+        <source>The %booker% team is looking forward to working with you!</source>
+        <target state="new">%booker% 團隊期待與您合作！</target>
+
+        <jms:reference-file>Booking/View/index.html.twig</jms:reference-file>
+        <jms:reference-file>booking-native/content/not-verified.html</jms:reference-file>
+        <jms:reference-file>booking/content/not-verified.html</jms:reference-file>
+        <jms:reference-file>common/js/mobile_translations.js</jms:reference-file>
+      </trans-unit>
+      <trans-unit approved="yes" id="517cb7796ee63d2376fa1a336590cfa38cafb864" resname="not-verified.popup.title">
+        <source>Almost Done...</source>
+        <target>快完成了...</target>
+
+        <jms:reference-file>js/booking/view.js</jms:reference-file>
+      </trans-unit>
+      <trans-unit approved="yes" id="fc9262a923e1fa6ed9cdf34e83e0e65efb88e5dd" resname="number-times">
+        <source>%count% time|%count% times</source>
+        <target state="new">%count% 次|%count% 次</target>
+
+        <jms:reference-file>Controller/Booking/ViewController.php</jms:reference-file>
+      </trans-unit>
+      <trans-unit approved="yes" id="c3bfd4520b695ca71a800d882e6bc50436e6307c" resname="of-tracked-accounts">
+        <source># of Tracked Accounts</source>
+        <target>追蹤帳戶數量</target>
+
+        <note>Summary of a booking request for Booker:
+https://www.dropbox.com/s/q2edpejt2w3djge/Booker_Data.png?dl=0</note>
+        <jms:reference-file>Booking/View/index.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit approved="yes" id="2f42254b0537fd13911aea740534459f12451146" resname="paid-awplus">
+        <source>Paid for AW Plus</source>
+        <target>已支付 AW Plus</target>
+
+        <note>Summary of a booking request for Booker:
+https://www.dropbox.com/s/q2edpejt2w3djge/Booker_Data.png?dl=0</note>
+        <jms:reference-file>Booking/View/index.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit approved="yes" id="f7b593b304045d68b0e615fe786050a0537901b0" resname="past-booking-requests">
+        <source>Past Booking Requests</source>
+        <target>過去的訂位請求</target>
+
+        <note>Summary of a booking request for Booker:
+https://www.dropbox.com/s/q2edpejt2w3djge/Booker_Data.png?dl=0</note>
+        <jms:reference-file>Booking/View/index.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="8936e33a4c1a239cb923feea2bcd8332683624af" resname="payment.dialog.title">
+        <source>How would you like to pay this invoice?</source>
+        <target>您想如何付款？</target>
+
+        <jms:reference-file>js/booking/view.js</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="376f84148846daf1e8e900866c302c6d0c41fbdd" resname="prior.search.title">
+        <source>The client tried booking this award itinerary prior to contacting %booker% with the following results</source>
+        <target state="new">在與 %booker% 聯繫之前，該客戶曾嘗試預訂該獎勵行程，卻出現以下結果</target>
+
+        <jms:reference-file>Booking/View/index.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit approved="yes" id="4a628aeb0da8bd42c3c64d16d11f5716f8fb0674" resname="proffessional-award-booking-service">
+        <source>Professional Award Booking Service Powered by Awardwallet</source>
+        <target state="new">Awardwallet 支援的專業獎勵預訂服務</target>
+
+        <jms:reference-file>Booking/Add/index.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="5ea7744e0c59180ceee9ad07c33eb107442b6f48" resname="request.email.re-sent">
+        <source>Email with verification link was re-sent.</source>
+        <target state="new">已重新寄出有驗證連結的電子郵件。</target>
+
+        <jms:reference-file>booking-native/content/not-verified.html</jms:reference-file>
+        <jms:reference-file>booking/content/not-verified.html</jms:reference-file>
+        <jms:reference-file>common/js/mobile_translations.js</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="a8ca0d287f7d469d6858facd45fcf813b25ddb11" resname="request.no">
+        <source>Booking request #%id%</source>
+        <target state="new">訂票請求 #%id%</target>
+
+        <jms:reference-file>Event/PushNotification/BookingMobileListener.php</jms:reference-file>
+        <jms:reference-file>Service/WebPush/WebPushListener.php</jms:reference-file>
+        <jms:reference-file>common/js/mobile_translations.js</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="8ea8a0d2f811094540bfddc854a4f18dba6c8237" resname="request.not-complete">
+        <source><![CDATA[Your award booking request was successfully submitted but is <strong>not complete</strong>.]]></source>
+        <target state="new"><![CDATA[您已成功提交訂票請求，但尚<strong>未完成</strong>。]]></target>
+
+        <jms:reference-file>booking-native/content/not-verified.html</jms:reference-file>
+        <jms:reference-file>booking/content/not-verified.html</jms:reference-file>
+        <jms:reference-file>common/js/mobile_translations.js</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="cb7ad2c59775d681cdc61684b01e573aa941058c" resname="request.not-verified">
+        <source><![CDATA[We just sent you an email with the following subject: "<strong>Award Booking Request #%requestId%</strong>", to ensure we can reach you via email going forward please confirm your email address by following a link in that email. Our team will use this messaging platform to discuss award options with you.]]></source>
+        <target state="new"><![CDATA[我們剛剛寄給您一封標題為「<strong>獎勵訂票請求 #%requestId%</strong>」的郵件，以確認我們可以透過電子郵件與您聯繫，請按下該郵件中的連結確認電子郵件。我們的團隊利用本訊息平台與您討論獎勵訂票相關事項。]]></target>
+
+        <jms:reference-file>booking-native/content/not-verified.html</jms:reference-file>
+        <jms:reference-file>booking/content/not-verified.html</jms:reference-file>
+        <jms:reference-file>common/js/mobile_translations.js</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="bc27624bb53c928e95bdb9fb1f03c581c902d2f1" resname="reveal-password.dialog.copy.title">
+        <source>Copy Password</source>
+        <target>複製密碼</target>
+
+        <jms:reference-file>js/booking/view.js</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="eac79ddaed57f2f8d1cd9ef0d696a75b2c7f4ac7" resname="reveal-password.dialog.error.title">
+        <source>Can't Reveal Password</source>
+        <target>無法顯示密碼</target>
+
+        <jms:reference-file>js/booking/view.js</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="f59f500752fa77f48c81b21f71a90b642628e3af" resname="send.btn">
+        <source>Send</source>
+        <target>發送</target>
+
+        <jms:reference-file>Booking/Message/invoiceForm.html.twig</jms:reference-file>
+        <jms:reference-file>Booking/Message/seatAssignmentsForm.html.twig</jms:reference-file>
+        <jms:reference-file>common/js/mobile_translations.js</jms:reference-file>
+        <jms:reference-file>directives/booking/booking-messages.js</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="ea2ae328110b483b7e0b16518aebd12feeefdbb9" resname="text.message.delete.question">
+        <source>Are you sure you wish to delete this message?</source>
+        <target state="new">您是否確定要刪除這則留言？</target>
+
+        <jms:reference-file>Booking/View/index.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="89a6014f0c48f9b6663a732f8ff2ee59731e9a7a" resname="textarea.placeholder">
+        <source>Text Message</source>
+        <target state="new">文字訊息</target>
+
+        <jms:reference-file>common/js/mobile_translations.js</jms:reference-file>
+        <jms:reference-file>directives/booking/booking-messages.js</jms:reference-file>
+      </trans-unit>
+      <trans-unit approved="yes" id="fbf8e596868ce5d9214a655ebf69de45993ecc55" resname="times-logged-in">
+        <source>Times Logged In</source>
+        <target>登入次數</target>
+
+        <note>Summary of a booking request for Booker:
+https://www.dropbox.com/s/q2edpejt2w3djge/Booker_Data.png?dl=0</note>
+        <jms:reference-file>Booking/View/index.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="95ba2c2fea0553b6c31f69105815d2cb467bfa97" resname="view.request.updated">
+        <source>This booking request has been updated.</source>
+        <target state="new">該訂票請求已更新。</target>
+
+        <jms:reference-file>Booking/View/index.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="fb360f9c09ac8c5edb2f18be5de4e80ea4c430d0" resname="yes">
+        <source>Yes</source>
+        <target>是</target>
+
+        <jms:reference-file>Form/Type/AbPassengerType.php</jms:reference-file>
+        <jms:reference-file>Form/Type/AbSegmentType.php</jms:reference-file>
+      </trans-unit>
+    </body>
+  </file>
+</xliff>

@@ -1,0 +1,10 @@
+version: '3.5'
+
+services:
+  clickhouse-client:
+    image: yandex/clickhouse-client
+    volumes:
+      - /tmp/clickhouse-csv:/csv
+      - ./:/app
+    entrypoint: bash
+

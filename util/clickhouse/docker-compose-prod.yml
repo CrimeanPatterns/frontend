@@ -1,0 +1,15 @@
+version: '3.5'
+
+services:
+  clickhouse:
+    image: yandex/clickhouse-server:20.10.3
+    ports:
+      - '9009:9009'
+      - '9004:9004'
+      - '9000:9000'
+      - '8123:8123'
+    ulimits:
+      nofile: 262144
+    restart: always
+    volumes:
+      - "./aw_config.xml:/etc/clickhouse-server/config.d/aw_config.xml"
