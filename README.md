@@ -1,5 +1,15 @@
 Назначение
 ==========
+
+***YOU MUST UNPACK***
+- ***web/assets/common/vendors/vendors.zip***
+- ***vendors/vendors.zip***
+- ***vendors/vendors2.zip***
+- ***node_modules/node_modules.zip***
+- ***node_modules/node_modules2.zip***
+- ***node_modules/node_modules3.zip***
+- ***app/config/config.zip***
+
 Сайт awardwallet.com 
 
 Установка Docker
