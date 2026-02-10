@@ -1,0 +1,4 @@
+var C = {
+	ACCOUNT_CHECKED: 1,
+	ACCOUNT_WARNING: 2
+};

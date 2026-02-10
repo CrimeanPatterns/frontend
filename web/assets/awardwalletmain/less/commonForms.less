@@ -1,0 +1,1138 @@
+// Basic definitions
+@import "const";
+@import "lib";
+@import "icon-pos";
+
+@tab-height: 87px;
+@number-height: 25px;
+.input-box() {
+  .blk(auto, 30px, top);
+  .radius(1px);
+  .border(#d0d0d0);
+  font-size: 13px;
+  color: #000;
+  outline: none;
+  text-shadow: 0 1px #fff;
+  padding: 7px 10px;
+  // box-shadow: inset 2px 2px 5px #f1f1f1, inset -2px -2px 5px #f1f1f1;
+  box-shadow: inset 0 0 6px #ddd;
+}
+
+div#content {
+  min-height: 650px;
+}
+
+.booking-form {
+  * {
+    .attr(border);
+    margin: 0;
+    padding: 0;
+  }
+  .noUi-target{
+    margin: 40px 0 0 155px;
+    @media (max-width:1260px){
+      margin-left: 60px;
+    }
+  }
+  .slider-info{
+    width: 750px;
+    overflow: hidden;
+    margin-left: 155px;
+    height:15px;
+    span{
+      font-size: 13px;
+      color: #585858;
+      float: right;
+      &:first-child{
+        float: left;
+      }
+    }
+    &:after{
+      content:"";
+      display:block;
+      width:100%;
+      clear:both;
+      height: 0;
+    }
+    @media (max-width:1320px){
+      width: 550px;
+    }
+    @media (max-width:1260px){
+      margin-left: 60px;
+    }
+  }
+  .CustomProgram_Owner {
+    height: 30px;
+  }
+  .message {
+    .blk(none, auto);
+  }
+  .datepicker-container {
+    position: relative;
+    width: 122px;
+  }
+  .sort {
+    .attr(rel);
+    margin-top: 40px;
+  }
+  .info-block {
+    padding: 20px 0 35px 10px;
+    p {
+      .text(13px, #585858);
+      text-shadow: 0 1px #fff;
+    }
+  }
+  .row .info-block {
+    padding: 0;
+    // margin: 10px 0 19px 155px;
+    margin: 0 0 0 155px;
+  }
+  .row label {
+    font-size: 13px;
+    color: #585858;
+  }
+  .inner-block a {
+    .text(13px, #186db6);
+    &:hover {
+      .text-attr(noline);
+    }
+  }
+  select, input.select2 {
+    .attr(30px, rel, left);
+    z-index: 5;
+    .opacity(0);
+    margin-left: 1px;
+    // padding-right: 32px;
+    background: #fff;
+    width: 200px;
+    .text(1.1em, #000);
+    padding-right: 10px;
+    option{
+      padding-left: 5px !important;
+    }
+    &.disabled {
+      .opacity(0.5);
+    }
+    // &:hover{
+    //   cursor: pointer;
+    // }
+  }
+  @import '../../awardwalletnewdesign/less/helpers/variables';
+  @import '../../awardwalletnewdesign/less/helpers/mixins';
+
+  input[type='checkbox'],
+  input[type='radio'] {
+    .size(1px,1px);
+    .opacity(0);
+    position: absolute;
+  }
+
+   input[type='checkbox'] {
+    & + span{
+        display: inline-block;
+        position: relative;
+        padding-left: 20px;
+        min-height: 13px;
+        .user-select(none);
+        &:before{
+          position: absolute;
+          content: "";
+          .size(13px,13px);
+          top:0;
+          .at2x('../../awardwalletnewdesign/img/sprite.png?v=10', 800px,600px);
+          left: 0;
+          background-position: 0 -19px;
+        }
+      }
+    // Checkbox checked
+    &:checked + span,
+    &.checked + span{
+      &:before{
+        background-position: -23px -19px;
+      }
+    }
+   
+   // Checkbox disabled
+    &:disabled + span,
+    &.disabled + span{
+     &:before{
+        background-position: -237px -100px;
+      }
+    }
+    // Checkbox disabled checked
+    &:disabled:checked + span,
+    &.disabled.checked + span{
+     &:before{
+        background-position: -257px -100px;
+      }
+    }
+  }
+
+  input[type='radio'] {
+    & + span{
+        display: inline-block;
+        position: relative;
+        padding-left: 20px;
+        min-height: 13px;
+        .user-select(none);
+        &:before{
+          position: absolute;
+          content: "";
+          .size(16px,16px);
+          top:0;
+          .at2x('../../awardwalletnewdesign/img/sprite.png?v=10', 800px,600px);
+          left: 0;
+          background-position: -160px -99px;
+        }
+      }
+    // Checkbox checked
+    &:checked + span,
+    &.checked + span{
+      &:before{
+        background-position: -179px -99px;
+      }
+    }
+   
+   // Checkbox disabled
+    &:disabled + span,
+    &.disabled + span{
+     &:before{
+        background-position: -198px -99px;
+      }
+    }
+    // Checkbox disabled checked
+    &:disabled:checked + span,
+    &.disabled.checked + span{
+     &:before{
+        background-position: -217px -99px;
+      }
+    }
+  }
+
+  .separator{
+    background: #d0d0d0;
+    height: 1px;
+    margin: 20px -10px;
+  }
+  @label-size: 155px;
+  .row {
+    //.size(555px,auto,rel);
+    .attr(rel);
+    border: 1px solid transparent;
+    padding: 15px;
+    font-size: 13px;
+    *padding: 15px 0 15px 15px;
+    > p{
+      color: #585858;
+      line-height: 1.2;
+    }
+    & > .input {
+      padding-left: @label-size;
+      &.no-label {
+        padding-left: 0;
+        > div > .radio {
+          margin-top: 5px;
+        }
+      }
+      .attr(rel);
+      input[type='text'], div.htmleditor, textarea, input[type='password'], input[type='date'], input[type='email'],input[type='number'],
+      select,
+      .radio, .datepicker-container, input.select2,
+      dl {
+        & + label {
+          .text(13px, #585858, right);
+          .size(@label-size, auto);
+          .set-pos(absolute, left, 0, 0);
+          padding-top: 8px;
+          padding-right: 8px;
+          text-shadow: 0 1px #fff;
+          // background-color: #fff;
+        }
+      }
+      .radio {
+        .blk(auto);
+        //clear:left;
+        // &>*{
+        //   margin-top:10px;
+        // }
+        // position: relative;
+        // margin-top: 20px;
+        input[type='radio'] {
+          & + span {
+            // .blk(auto,left);
+            // clear: left;
+            & + label {
+              // .blk(auto,left);
+              padding: 8px 15px 10px 5px;
+              display: inline-block;
+              *display: inline;
+              position: relative;
+              vertical-align: top;
+              font-size: 13px;
+            }
+          }
+        }
+        span {
+          margin: 8px 0 0 0;
+          color: #585858;
+        }
+        // &+input[type='text'], 
+        & + textarea, & + input[type='password'], & + input[type='date'], & + input[type='email'], & + .datepicker-container {
+          .attr(left);
+          & ~ .info {
+            clear: left;
+          }
+        }
+      }
+      .info {
+        margin: 0;
+        display: block;
+      }
+    }
+    &.focused,
+    &.datePickerFocus {
+      // &.hover,
+      // &:hover  {
+      .radius(2px);
+      padding: 15px;
+      .border(#e4e4e4) !important;
+      .gradient(#FCFCFD, #f5f6f6);
+      & input[type='text'], & textarea, & input[type='password'], & input[type='date'], & input[type='email'], & input[type='number'] {
+        // box-shadow: inset 1px 1px 2px #f1f1f1, inset -1px -1px 2px #f1f1f1;
+        border: 1px solid #aeaeae !important;
+        box-shadow: inset 0px 0px 2px #bbb !important;
+        background-color: #ffffff;
+        // padding-top: 5px;
+      }
+    }
+    &.hover{
+      .radius(2px);
+      padding: 15px;
+      .border(#e4e4e4) !important;
+      .gradient(#FCFCFD, #f5f6f6);
+      &.not-hover{
+        background: transparent;
+        border: 1px solid transparent !important;
+      }
+    }
+    &.error {
+      .gradient(#e73e70, #ec1951);
+      .border(#c81748) !important;
+      .radius(0px) !important;
+      color: #fff;
+      text-shadow: 0 1px #c81748 !important;
+      margin-top: 1px !important;
+      label, a, span:not(.select-text) {
+        color: #fff !important;
+        text-shadow: 0 1px #c81748 !important;
+      }
+      & input[type='text'], & textarea, & input[type='password'], & input[type='date'], & input[type='email'], & input[type='number'] {
+        .border(#c81748) !important;
+        background-color: #fff;
+        // padding-top: 5px;
+        box-shadow: inset 0px 0px 6px #ec1951 !important;
+      }
+      & input[type='text']:focus, & textarea:focus, & input[type='password']:focus, & input[type='date'], & input[type='email']:focus, & input[type='number']:focus{
+        box-shadow: inset 0px 0px 3px #ec1951 !important;
+        background-color: #fff;
+        // padding-top: 5px;
+      }
+      .info,
+      .message {
+        color: #fff !important;
+        font-size: 13px;
+        display: block;
+        text-shadow: 0 1px #c81748 !important;
+        margin: 0;
+        padding: 3px 0 0 0;
+      }
+      .message {
+        margin: 0 0 0 155px;
+        background: url(../images/booking/error-input-message.png) 0 6px no-repeat;
+        padding: 5px 0 0 22px !important;
+        display: block;
+      }
+      .info {
+        color: rgba(255, 255, 255, 0.8) !important;
+        font-size: 12px;
+        text-shadow: none !important;
+      }
+      > .input.no-label + .message {
+        margin: 0;
+      }
+    }
+    &.warning{
+       & input[type='text'], & textarea, & input[type='password'], & input[type='date'], & input[type='email'], & input[type='number'] {
+        .border(#e0aa5a) !important;
+        background-color: #fff;
+        // padding-top: 5px;
+        // box-shadow: inset 0px 0px 6px #ec1951 !important;
+      }
+      & input[type='text']:focus, & textarea:focus, & input[type='password']:focus, & input[type='date'], & input[type='email']:focus, & input[type='number']:focus{
+        // box-shadow: inset 0px 0px 3px #ec1951 !important;
+        background-color: #fff;
+        // padding-top: 5px;
+      }
+      .message{
+        display: block;
+        border:1px solid #e0aa5a;
+        .gradient(#fff064,#f9c704);
+        margin-top:5px;
+        margin-left: 155px;
+        display: block !important;
+        font-size: 13px;
+        color: #b37d0c;
+        padding: 10px 15px 10px 40px;
+        position: relative;
+        &:before{
+          position: absolute;
+          content: "";
+          width: 24px;
+          height: 21px;
+          background: url(../images/icon-sprite.png) -51px -219px no-repeat;
+          left: 9px;
+          top:8px;
+        }
+      }
+    }
+    &.noInput .message {
+      margin-left: 0px;
+    }
+  }
+  .row[data-key='ContactEmail'] > .input .info,
+  .row[data-key='ContactEmail'] > .input input[type=email] {
+    max-width: 400px;
+    width: 100%;
+  }
+  fieldset {
+    .border(none);
+    // min-width: 940px;
+    .blk(100%, border);
+    .margin(40px, top);
+    @label-size: 155px;
+  }
+    .row {
+      & > .input {
+        padding-left: @label-size;
+        input[type='text'], textarea, div.htmleditor, input[type='password'], input[type='date'], input[type='email'], input[type='number'],
+        select,
+        .radio, .datepicker-container,
+        dl {
+          & + label {
+            .size(@label-size, auto);
+          }
+        }
+        input[type='text'], textarea, input[type='password'], input[type='email'], input[type='number'] {
+          width: 200px;
+        }
+      }
+
+      &.has-slider{
+        & > .input{
+          padding-left: @label-size * 2;
+          input[type='text'], textarea, div.htmleditor, input[type='password'], input[type='date'], input[type='email'], input[type='number'],
+          select,
+          .radio, .datepicker-container,
+          dl {
+            & + label {
+              .size(@label-size * 2, auto);
+              text-align: left;
+              line-height: 1.2;
+            }
+          }
+        }
+      }
+    }
+    &.personal .row {
+      //.size(388px,auto);
+      //.border(transparent);
+      input[type='text'], textarea, input[type='password'], input[type='date'], input[type='email'] {
+        //.size(225px,auto);
+      }
+    }
+    .radio label {
+      //width: 40px !important;
+      //text-align: left !important;
+      //padding-left: 5px !important;
+      //position: initial;
+    }
+    .citizenship {
+      //width: 180px !important;
+    }
+    .row  {
+      input[type='text'], textarea, input[type='password'],
+      input[type='date'],
+      input[type='email'],
+      input[type='number'],
+      dl {
+        .input-box;
+        &:focus {
+          .border(#aeaeae);
+          // box-shadow: inset 1px 1px 2px #f1f1f1, inset -1px -1px 2px #f1f1f1;
+          box-shadow: inset 0px 0px 2px #bbb;
+          background-color: #fff;
+          // padding-top: 5px;
+        }
+      }
+      dl {
+        height: auto;
+      }
+      textarea {
+        min-height: 105px !important;
+        *min-height: 105px !important;
+        width: 100% !important;
+        padding: 10px;
+      }
+
+    }
+    .info {
+      .text(12px, #b2b2b2);
+      padding-top: 3px;
+      margin-left: 155px;
+      //.attr(left);
+      *padding-left: 10px;
+      //clear:left;
+    }
+    .inner-block {
+      min-height: 100px;
+      .border(#d0d0d0);
+      .border(none, top);
+      padding: 15px 10px;
+      &.table {
+        padding: 0;
+
+      }
+      .add-block {
+        .border(1px dashed #b2b2b2, top);
+        margin-top: 20px;
+      }
+
+    }
+    .del-block {
+      .blk(100%, 40px, #fff);
+      .text(12px, center, 40px, #000);
+      .border(#d0d0d0);
+      .border(none, top);
+      &:hover {
+        cursor: pointer;
+      }
+    }
+    .add-block {
+      .border(1px solid #d0d0d0);
+      .border(none, top);
+      .text(inherit, center);
+      padding: 10px;
+      a {
+        .text(13px, #3a3a3a, upper, noline);
+        text-shadow: 0 1px #fff;
+        .border(1px dashed #b2b2b2);
+        height: 50px;
+        display: block;
+        width: 100%;
+        text-align: center;
+        line-height: 50px;
+      }
+    }
+  legend {
+    .blk(100%, 50px);
+    .text(inherit, 50px);
+    .border(#d0d0d0);
+    padding-left: 20px;
+    //.margin(-1px,left);
+    .gradient(#FBFBFC, #f0f1f2);
+    h3 {
+      .text(21px, #4c4c4c, regular);
+      text-shadow: 0 1px #fff;
+    }
+  }
+  .date {
+    width: 95px;
+    *margin-right: 200px;
+  }
+  a {
+    &.next,
+    &.previous {
+      // .blk(120px, 35px);
+      margin-top: 80px;
+      // .text(13px, 35px, noline, center);
+    }
+    &.next {
+      .attr(right);
+      // .border(#125da3);
+      // text-shadow: 0 1px #125da3;
+      // .text(inherit, #fff);
+      // .gradient(#3082C2, #186db6);
+      // &:hover {
+      //   .gradient(#3990d3, #1976c6);
+      // }
+    }
+    &.previous {
+      .attr(left);
+      // .border(#aeaeae);
+      // box-shadow: inset 0 1px #fff;
+      // text-shadow: 0 1px #fff;
+      // .text(inherit, #3a3a3a);
+      // .gradient(#F8F8F9, #e9ebec);
+      // &:hover {
+      //   .gradient(#fafaf9, #f0efee);
+      // }
+    }
+  }
+  .date {
+    width: 125px !important;
+    padding-left: 15px;
+    // background: url(../images/calendar.png) right 2px center no-repeat;
+  }
+  .small-input {
+    width: 75px !important;
+    padding-left: 15px;
+  }
+  .destination {
+    .way .input {
+      .blk(run, auto);
+    }
+    .latest label {
+      width: 90px !important;
+    }
+
+  }
+  .destination-sort {
+    //margin-left: 127px;
+    li {
+      list-style: none;
+      padding-top: 5px;
+    }
+    label {
+      //float: none !important;
+      //margin-left: 25px;
+      //*margin-top: -15px !important;
+      width: auto;
+      //text-align: left !important;
+    }
+  }
+  .inner-block table {
+    .size(100%, auto);
+    .box(content);
+    border-collapse: collapse;
+    &.rows {
+      .border(#d0d0d0);
+      .row {
+        .size(100%, 100%);
+        padding: 0;
+        .border(none) !important;
+        @label-size: 100px;
+        & > .input {
+          padding-top: 8px;
+          padding-right: 8px;
+          padding-left: @label-size;
+          & > label {
+            .size(@label-size, auto);
+            padding-top: 14px;
+          }
+        }
+        .info {
+          margin-left: 0;
+        }
+      }
+      td {
+        .attr(1px, top);
+        padding: 0;
+        .border(none);
+        input[type='text'], textarea, input[type='password'], input[type='date'], input[type='email'] {
+          width: 100% !important;
+          background-color: #fff;
+          // padding-top: 5px;
+        }
+        &:first-child {
+          min-width: 460px;
+        }
+      }
+      tr {
+        &.hover {
+          .gradient(#FCFCFD, #f5f6f6);
+        }
+      }
+      .required {
+        //.attr(85px);
+      }
+
+    }
+    &.list {
+      .border(none);
+      tr {
+        .box(content);
+        & > * {
+          .border(#ccc, left, bottom);
+          padding-left: 10px;
+          .attr(middle);
+          .text(13px, #585858, left);
+          text-shadow: 0 1px #fff;
+          &:first-child {
+            .border(none, left);
+            .size(50px, auto, nofloat);
+            padding-left: 18px;
+            *padding-left: 10px;
+            *padding-top: 10px;
+            .text(inherit, center);
+          }
+          &:nth-child(2) {
+            .size(470px, auto);
+          }
+        }
+        td {
+          .attr(35px);
+        }
+        th {
+          .attr(25px);
+          .text-attr(regular);
+          .gradient(#FAFAFB, #f0f1f2);
+        }
+        &.select-all > * {
+          .border(none);
+          padding-left: 18px;
+          *padding-left: 10px;
+          &:nth-child(2) {
+            padding-left: 0;
+          }
+        }
+      }
+    }
+
+  }
+  ul.form-tabs,
+  .row,
+  .input {
+    &:after {
+      content: ".";
+      .blk(auto);
+      height: 0;
+      clear: both;
+      visibility: hidden;
+    }
+  }
+  .block-row {
+
+    .input {
+      padding-left: 160px;
+      label {
+        width: 160px !important;
+      }
+    }
+    select {
+      width: auto !important;
+    }
+  }
+  .prefer {
+    margin-top: 40px;
+    &.error {
+      margin-top: 40px !important;
+    }
+    label {
+      font-size: 13px;
+      color: #585858;
+      text-align: right;
+    }
+    .input {
+      padding-left: 0;
+    }
+    span {
+      vertical-align: middle;
+      margin: -4px 0 0 10px !important;;
+    }
+  }
+  .inline {
+    .input {
+      display: inline-block;
+    }
+  }
+}
+
+.js-properties-form {
+  .datepicker-container {
+    width: 192px;
+    input {
+      position: relative;
+      z-index: 10;
+    }
+  }
+  .date {
+    width: 195px !important;
+  }
+}
+
+.booker-block.js-properties-form{
+  .datepicker-container{
+    width: 297px;
+  }
+}
+
+#booking_request_Segments_0_RoundTripDaysFlex + label{
+  padding-top: 0;
+}
+
+@select-drop: 20px;
+  span.select-text {
+    .input-box;
+    .blk(100%, 30px, abs, crop, left);
+    .text(13px, #000);
+    line-height: 30px;
+    background: #fff;
+    text-shadow:none !important;
+    &:before, &:after {
+      .blk(run, @select-drop, '', 100%);
+      .set-pos(absolute, right, 0, 0);
+      .gradient(#f7f7f7, #eaeaea);
+      box-shadow: inset 0 1px #fff;
+    }
+    &:active {
+      &:before {
+        box-shadow: inset 0 1px #fff;
+        .gradient(#eaeaea, #f7f7f7);
+        cursor: pointer;
+      }
+    }
+    &:before {
+      .border(#d0d0d0, left);
+    }
+    &:after {
+      .icon-image;
+      #icon-pos > .select-drop;
+      right: @select-drop / 2 - 2px;
+      top: 50%;
+      margin-top: -6px;
+      box-shadow: none;
+    }
+    //margin-top: 7px;
+    padding: 0 0 0 5px;
+  }
+blockquote {
+    padding: 20px !important;
+    margin: 40px 0 10px 0 !important;
+    .border(#d0d0d0);
+    .gradient(#FBFBFB, #f6f7f7);
+    p {
+      .text(13px, #3e3e3e);
+    }
+    ul {
+      margin-top: 20px;
+    }
+    li {
+      list-style: none;
+      .text(13px, #3e3e3e);
+      padding-left: 20px !important;
+      &:before {
+        .blk(run, auto, '', left);
+        .icon-image();
+        #icon-pos > .check-gray();
+        margin-left: -20px;
+      }
+    }
+    strong {
+      font-weight: bold;
+    }
+  }
+.form-tabs {
+  list-style: none;
+  .attr(rel);
+  padding: 0;
+  margin: 0 20px;
+  // min-width: 960px;
+  // *min-width: 980px;
+  li {
+    .size(25%, 87px, left, crop);
+    list-style: none;
+    // &:nth-child(2),
+    // &:nth-child(3),
+    // &:nth-child(4) {
+    //   a {
+    //     .border(none, left);
+    //     *border: 1px solid #d0d0d0;
+    //   }
+    // }
+    &:first-child{
+      a{
+        border-left: 1px solid #d0d0d0 !important;
+      }
+    }
+  }
+  a {
+    .blk(auto, rel, 87px);
+    min-width: 60px;
+    .border(#d0d0d0);
+    border-left:none;
+    .text(13px, #666666, noline, upper, center);
+    .gradient(#FBFBFB, #f6f7f7);
+    span.number {
+      .blk(25px, 25px);
+      margin: 16px auto;
+      .text(13px, 25px, #fff, center);
+      .radius(2px);
+      .border(#818383);
+      .border(#818383, bottom);
+      .gradient(#999A9A, #818383);
+    }
+    &.active {
+      .text(inherit, #2d81cd);
+      .attr(87px, crop, bg, #fff);
+      .border(none, bottom);
+      span.number {
+        .attr(bg, #000);
+        .border(#4684c4);
+        // .gradient(#E73D6F, #ec1a51);
+        background: #4684c4;
+      }
+    }
+    &:hover {
+      background: #fff;
+    }
+  }
+}
+
+.tab {
+  //.blk(none,auto);
+  .border(#d0d0d0, top);
+  //  &.active {
+  //.blk(auto);
+  // min-width: 960px;
+  margin-top: -1px;
+  //  }
+}
+
+.row.custom_row:hover,
+.row.custom_row.hover {
+  background: transparent !important;
+  border: 1px solid transparent !important;
+}
+
+.tab-inside {
+  // min-width: 960px;
+  margin: 0 auto;
+  margin: 0 20px;
+  table {
+    td {
+      &:nth-child(1) {
+        width: 5%;
+      }
+      &:nth-child(2) {
+        width: 40%;
+      }
+      &:nth-child(3) {
+        width: 25%;
+      }
+      &:nth-child(4) {
+        width: 15%;
+      }
+      &:nth-child(5) {
+        width: 15%;
+      }
+    }
+  }
+  table.account-selector {
+    th, td {
+      &:nth-child(1) {
+        width: 5%;
+      }
+      &:nth-child(2) {
+        width: 19%;
+      }
+      &:nth-child(3) {
+        width: 41%;
+      }
+      &:nth-child(4) {
+        width: 20%;
+      }
+      &:nth-child(5) {
+        width: 15%;
+      }
+    }
+  }
+}
+
+#request-invoice-form {
+  fieldset {
+    margin-top: 0;
+  }
+  div.half-size {
+    width: 50%;
+    float: left;
+    padding: 10px;
+    min-width: 400px;
+  }
+}
+
+#add-miles-block {
+  border: 1px solid #d0d0d0;
+  border-top:none;
+  padding:10px;
+  a {
+    font-size: 13px;
+    color: #3a3a3a;
+    text-transform: uppercase;
+    text-decoration: none;
+    text-shadow: 0 1px #fff;
+    border: 1px dashed #b2b2b2;
+    height: 50px;
+    display: block;
+    width: 100%;
+    text-align: center;
+    line-height: 50px;
+  }
+}
+.delete-miles-btn {
+  width: 30px;
+  height: 30px;
+  padding-top: 5px;
+}
+
+
+.sort label {
+  .text(13px, #585858, 30px);
+  .blk(run, auto, 30px, top);
+  padding: 0 15px;
+  text-shadow: 0 1px #fff;
+}
+
+.ui-datepicker-trigger {
+  border: none;
+  outline: none;
+  position: absolute;
+  top: 5px;
+  left:auto !important;
+  // background: none;
+  right: 2px;
+}
+
+@-moz-document url-prefix() {
+  .ui-datepicker-trigger {
+    top: 4px;
+    right: 0;
+  }
+}
+
+.ui-datepicker-trigger:hover {
+  cursor: pointer;
+}
+
+// new icons
+
+.old-icon-information {
+  #icon-pos > .information1();
+  .attr(middle); 
+  margin: 0 7px 0 0 !important;
+}
+
+.old-icon-delete-destination {
+  #icon-pos > .trash;
+  .attr(middle);
+  margin: 0 12px 0 0;
+}
+
+.old-icon-add-another-block {
+  #icon-pos > .plus-gray-thin;
+  .attr(middle);
+  margin: -3px 12px 0 0;
+}
+
+.old-icon-show-miles {
+  .size(6px, 6px);
+  background-position: -42px -13px;
+  margin-left: 5px;
+}
+
+.old-icon-hide-miles {
+  .size(6px, 6px);
+  background-position: -42px -20px;
+  margin-left: 5px;
+}
+
+.old-icon-book-prev {
+  .size(8px, 11px);
+  .attr(middle);
+  background-position: -279px -207px;
+  margin: -3px 5px 0 0;
+}
+
+.old-icon-book-next {
+  .size(8px, 11px);
+  .attr(middle);
+  margin: -3px 5px 0 0;
+  background-position: -279px -226px;
+}
+
+.old-icon-book-add {
+  .size(11px, 11px);
+  .attr(middle);
+  margin: -3px 5px 0 0;
+  background-position: -279px -188px;
+}
+
+.clearfix {
+  height: auto !important;
+}
+
+.hidden {
+  display: none !important;
+}
+#select_programs_message{
+  margin-top: 20px !important;
+}
+.bread-crumbs {
+  padding: 0px 10px;
+  margin-bottom: 20px;
+}
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+body.fix-content div#leftBar {
+  padding: 0px 0px 32px 10px;
+}
+body.fix-content div#content {
+  min-height: 600px;
+  padding-left: 301px;
+}
+body.fix-content div#content {
+  padding-left: 0;
+}
+
+input.ui-autocomplete-loading {
+  background: url("../images/preload.gif") no-repeat 99% 50%;
+}
+.prompt{
+  position:relative;
+  margin-left:120px;
+  padding-left:30px !important;
+  color:#585858;
+  .old-icon-information,
+  > span{
+    position:absolute;
+    left:0;
+    top:0;
+  }
+}
+.trip-details{
+  margin:10px 0 30px 160px;
+  ul{
+    font-size: 0;
+    li{
+      display: inline-block;
+      vertical-align: top;
+      text-align: center;
+      margin-right: 50px;
+      list-style: none;
+      label{
+        font-size: 13px;
+        color: #585858;
+        display: inline-block;
+      }
+      .prev{
+        height: 35px;
+      }
+    }
+  }
+}
+input[disabled] {
+    background-color: #f9f9f9 !important;
+    background: #f9f9f9 !important;
+}

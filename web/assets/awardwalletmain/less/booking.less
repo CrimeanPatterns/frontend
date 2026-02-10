@@ -1,0 +1,153 @@
+// Basic definitions
+
+@import "const";
+@import "lib";
+
+.booking{
+  display: block;
+  padding: 0 20px;
+  .greeting{
+    display:table;
+    width:100%;
+    &>span{
+      display: table-cell;
+    vertical-align: middle;
+    }
+  }
+  .book-logo{
+    display: block;
+    float: right;
+    .gradient1(#f5f6f6,#eaebec,#fff);
+    .border(#d0d0d0);
+    padding: 20px 40px;
+  }
+  .invoice{
+    display: block;
+    margin-top: 20px;
+  }
+}
+.invoice{
+  padding:0 20px;
+  .border(#d0d0d0,left,right);
+  .border(#d0d0d0,top);
+  .radius(4px,top);
+  &>h3{
+    display: block;
+    .border(#d0d0d0,bottom);
+    .radius(4px,top);
+    .gradient1(#f5f6f6,#eaebec,#fff);
+    margin: 0 -20px 30px;
+    padding: 15px 30px;
+    font-size: 150%;
+  }
+  @addr-size:250px;
+  .address{
+    display: block;
+    float: left;
+    width: @addr-size;
+  }
+  .receipt{
+    display: block;
+    margin-left: @addr-size;
+  }
+  hr{
+    .clearfix();
+    width: 100%;
+    margin:30px 0;
+  }
+  .list{
+    display: block;
+  }
+}
+table{
+  border-spacing:0;
+  //border-collapse:collapse;
+  width: 100%;
+  th{
+    padding:0;
+    margin:0;
+    vertical-align:top;
+    .border(#aeaeae);
+    //background: transparent;
+    position:relative;
+    overflow:hidden;
+    //display: block;
+    z-index:1;
+    .gradient1(#f5f6f6,#eaebec,#fff);
+    &:before{
+      .size(100%,100%);
+      content:"";
+      .pos(0,0,-1);
+    }
+  }
+  td{
+  }
+}
+.receipt{
+  table{
+    border-spacing:0;
+    border-collapse:collapse;
+    width: 100%;
+    th{
+        height: 20px;
+        .min-width(100px);
+      &:first-child>*{
+        text-align: right;
+      }
+    }
+    td{
+      .border(#d0d0d0,top,bottom);
+      height:20px;
+      vertical-align: top;
+      &:nth-child(2){
+        width: 100%;
+      }
+      &:nth-child(3){
+        .border(#d0d0d0,left,right);
+      }
+    }
+  }
+}
+.list{
+  &:after{
+    .clearfix();
+  }
+  .disclaim{
+    display: block;
+    width:150px;
+  }
+  &>.disclaim{
+    float: right;
+  }
+  .table{
+    .tbody{
+      .td{
+        .border(#d0d0d0,left,right);
+        .border(#d0d0d0,bottom);
+      }
+    }
+    tfoot{
+      tr{
+        //height: 40px;
+      }
+    }
+  }
+}
+.table{
+  display:table;
+}
+.tfoot{
+  display: table-footer-group;
+}
+.tbody{
+  display: table-row-group;
+}
+.tr{
+  display: table-row;
+}
+.td{
+  display: table-cell;
+}
+.th{
+  display: table-cell;
+}

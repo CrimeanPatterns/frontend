@@ -1,0 +1,123 @@
+.top-buttons > .btn-toolbar {
+  position: relative;
+  display: block;
+}
+.top-buttons .btn-group:first-child {
+  margin-left: 0;
+}
+.top-buttons .btn-group:last-child {
+  position: absolute;
+  top: 0;
+  right: 20px;
+  margin-right: 0;
+}
+.top-buttons .btn:after {
+  width: 1px;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  background: #fff;
+  -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=70)";
+  filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=70);
+  -moz-opacity: 0.7;
+  -khtml-opacity: 0.7;
+  opacity: 0.7;
+  content: "";
+}
+.top-buttons .btn.red:after {
+  -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=20)";
+  filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=20);
+  -moz-opacity: 0.2;
+  -khtml-opacity: 0.2;
+  opacity: 0.2;
+}
+.badge {
+  border-bottom: 1px solid #ffffff;
+  -webkit-border-radius: 8px;
+  -moz-border-radius: 8px;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px black inset;
+  background-color: #6b6b6b;
+  color: #fff;
+  text-shadow: 1px 1px 0 #000;
+  padding: 1px 5px;
+  margin-left: 3px;
+}
+.balance-tabs {
+  display: table;
+  width: 100%;
+  margin-bottom: 15px;
+  background: #f8f8f8;
+  background: -moz-linear-gradient(top, #f8f8f8 0%, #f2f2f2 100%);
+  background: -ms-linear-gradient(top, #f8f8f8 0%, #f2f2f2 100%);
+  background: -o-linear-gradient(top, #f8f8f8 0%, #f2f2f2 100%);
+  background: -webkit-linear-gradient(top, #f8f8f8 0%, #f2f2f2 100%);
+  background: linear-gradient(to bottom, #f8f8f8 0%, #f2f2f2 100%);
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #f8f8f8), color-stop(100%, #f2f2f2));
+}
+.balance-tabs li {
+  list-style: none;
+  display: table-cell;
+  border-right: 1px solid #dddddd;
+  position: relative;
+  vertical-align: middle;
+  width: 255px;
+  height: 51px;
+  overflow-y: hidden;
+  text-align: center;
+  border-bottom: 1px solid #d0d0d0;
+}
+.balance-tabs li,
+.balance-tabs li a {
+  color: #666666;
+}
+.balance-tabs li:last-of-type {
+  width: auto;
+  padding: 0;
+  border-right: none;
+}
+.balance-tabs li:last-of-type > * {
+  white-space: nowrap;
+}
+.balance-tabs li:not(:last-of-type):hover {
+  background-color: #ffffff;
+  height: 50px;
+}
+.balance-tabs li:not(:last-of-type) > * {
+  text-transform: uppercase;
+}
+.balance-tabs li > a {
+  padding: 0 20px;
+  display: block;
+  height: 100%;
+  overflow-y: hidden;
+  text-align: center;
+}
+.balance-tabs li > a > * {
+  display: table;
+  width: 100%;
+  height: 100%;
+}
+.balance-tabs li > a > * > * {
+  display: table-cell;
+  vertical-align: middle;
+  height: 100%;
+}
+.balance-tabs li.active {
+  background-color: #ffffff;
+  height: 52px;
+  padding-top: 0;
+  border-bottom: none;
+  border-right-color: #d0d0d0;
+}
+.balance-tabs li.active > a,
+.balance-tabs li.active > a * {
+  -webkit-font-smoothing: antialiased;
+  color: #2d81cd;
+  background: transparent;
+}
+.balance-toolbar {
+  display: block;
+  margin-top: 20px;
+}

@@ -1,0 +1,184 @@
+// Basic definitions
+
+@import "const";
+@import "lib";
+
+*{
+  margin: 0;
+  padding: 0;
+  outline: none;
+}
+a img{
+  border: none;
+}
+html{
+  .size(auto,100%);
+}
+body{
+  .size(auto,100%);
+}
+//* размещаем фон и расширяем видимую область с фоном на весь экран */
+.wrap{
+  .blk(auto,100%,rel,#eee);
+}
+//* размещаем футер и прижмем его к низу экрана добавляем маржин снизу чтобы не ужодил за экран */
+.footer{
+  .blk(100%,@foot-size);
+  .set-pos(absolute,bottom,0,0);
+  background: #666;
+}
+.wrap{
+  .attr(border);
+  padding-bottom: @foot-size;
+}
+.wrap,.footer{
+  .min-width(@doc-width);
+}
+//*
+//   внутри размещаем отцентрированный блок фиксированной ширины, если ширина не задана расширяется на весь экран
+//   для страницы по центру
+// */
+
+.centered{
+  .blk(auto,100%,center,top,rel);
+}
+
+//* добавим блок для навигации и логотипа он висит всегда вверху  и уменьшаем размер враппера */
+
+.topband{
+  .blk(100%,@right-top);
+  .set-pos(absolute,left,0,0,9999);
+}
+.wrap{
+  padding-top: @right-top;
+}
+
+//* создаем место для контента неизменной высоты */
+
+.content{
+  .blk(100%,100%,border,abs);
+}
+//* создаем при помощи таблицы левую колонку и основное поле */
+.content{
+  &>table{
+    .attr(collapse,nospace,rel);
+    .size(100%,100%);
+    .border(none);
+    &>tr,&>tbody>tr{
+      vertical-align: top;
+      min-height: 1px;
+      &>td{
+        min-height:1px;
+        height: 100%;
+        &>div{
+          .blk(auto,100%,rel);
+          &>div{
+            .blk(100%,100%,abs,border);
+          }
+        }
+      }
+    }
+  }
+}
+//* задаем размер левой колонки */
+.left-column{
+  .size(@left-width,auto);
+}
+// задаем рисунок границ
+
+.left{
+  @top-dif:@left-top  - @right-top;
+  &:before{
+    .blk(100%,0,"");
+    .pos(@top-dif - 1,0);
+    .border(#808080,1px,top);
+  }
+  &:after{
+    .blk(0,@top-dif,"");
+    .rpos(0,0);
+    .border(#808080,1px,left);
+  }
+  .user-box{
+    .blk(100%,left,#0e0,200px);
+    .set-pos(relative,left,0,@top-dif);
+  }
+  .action-box{
+    .blk(100%,left,rel,100%,border);
+    margin-top: -200px;
+    padding-top:200px + @top-dif;
+    &>*{
+      .attr(#ee0,100%,rel,crop);
+
+    }
+    .scroller{
+      &::-webkit-scrollbar {
+        width: 0;
+      }
+      .scroller__bar {
+        position: absolute;
+        z-index: 1;
+        display: none;
+        width: 8px;
+        min-height: 50px;
+        border-radius: 3px;
+        background: #987;
+        opacity: .6;
+        -webkit-transition: width .2s linear;
+        transition: width .2s linear;
+        pointer-events: auto;
+        &:hover {
+          opacity: .8;
+        }
+      }
+      &.baron{
+        .scroller__bar {
+          display:none;
+        }
+        &:hover .scroller__bar{
+          display: block;
+        }
+      }
+     }
+    .scroller__bar-wrapper {
+      position: absolute;
+      z-index: 1;
+      top: 10px;
+      bottom: 10px;
+      right: 5px;
+      width: 8px;
+      border-radius: 5px;
+      background: #ddf;
+      background: rgba(0, 0, 255, .1);
+      pointer-events: none;
+    }
+
+  }
+}
+.main{
+  .border(#808080,1px,top);
+}
+// задаем статическую и сколлинговую части
+.left{
+}
+.main{
+  table{
+    background: #fff;
+    col{
+      .border(gray);
+    }
+    td{
+      .size(50px,40px);
+      .border(#000);
+    }
+    .c5{
+      .attr(#e00);
+    }
+    .c3{
+      .attr(#808);
+    }
+    .c2{
+      .attr(#00e);
+      visibility: collapse;
+    }
+  }
+}

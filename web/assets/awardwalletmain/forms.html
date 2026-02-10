@@ -1,0 +1,251 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Booking form</title>
+
+    <link rel="stylesheet" href="css/base.css">
+    <link rel="stylesheet" href="css/icons.css">
+    <link rel="stylesheet" href="css/buttons.css">
+    <link rel="stylesheet" href="css/commonForms.css">
+    <script src="js/selectivizr-min.js"></script>
+</head>
+<body>
+
+<form>
+    <ul class="form-tabs">
+        <li class="active" style="width:25%"><a href="#tab1"><span class="number">1</span>Travelers</a></li>
+        <li style="width:25%"><a href="#tab2">Destinations<span class="number">2</span></a></li>
+        <li style="width:25%"><a href="#tab3">Miles<span class="number">3</span></a></li>
+        <li style="width:25%"><a href="#tab4">Contact<span class="number">4</span></a></li>
+    </ul>
+    <div class="tab-inner active" id="tab1">
+        <blockquote>
+            <p>Thank you for your interest in our booking service! First of all we wanted to make sure you understand what we do, so please read this carefully:</p>
+            <ul>
+                <li>The cost of this service is <strong>$150</strong> per person if BookYourAward can meet our mutually agreed upon award parameters.</li>
+                <li>The booking service is only intended for <strong>international Business</strong> and <strong>First Class</strong> itineraries.</li>
+            </ul>
+        </blockquote>
+        <div class="row">
+            <div class="input">
+                <select name="numbers-of-passemgers" id="numbers-of-passengers" class="numbers-of-passengers">
+                    <option value="0">1</option>
+                    <option value="1">2</option>
+                    <option value="2">3</option>
+                    <option value="3">4</option>
+                    <option value="4">5</option>
+                </select>
+                <label>Number of passengers:</label>
+            </div>
+        </div>
+        <fieldset>
+            <legend>
+                <h3>Passenger #1</h3>
+            </legend>
+            <div class="row">
+                <div class="input">
+                    <select name="numbers-of-passemgers2" id="numbers-of-passengers2" class="numbers-of-passengers2">
+                        <option value="0">Alexi Vereschaga</option>
+                        <option value="1">Den</option>
+                        <option value="2">John</option>
+                    </select>
+                    <label>Passenger:</label>
+                    <div class="help"></div>
+                </div>
+                <div class="message"></div>
+            </div>
+            <div class="row focused">
+                <div class="input">
+                    <input type="text">
+                    <label>First Name:</label>
+                    <div class="help">Exactly as it appears on your passport</div>
+                </div>
+                <div class="message"></div>
+            </div>
+            <div class="row">
+                <div class="input">
+                    <input type="text">
+                    <label>Middle Name:</label>
+                    <div class="help">Exactly as it appears on your passport</div>
+                </div>
+                <div class="message"></div>
+            </div>
+            <div class="row required">
+                <div class="input">
+                    <input type="text">
+                    <label>Last Name:</label>
+                    <div class="help">Exactly as it appears on your passport</div>
+                </div>
+                <div class="message"></div>
+            </div>
+            <div class="row">
+                <div class="input">
+                    <input type="text" class="date">
+                    <label>Birthday:</label>
+                    <div class="help">Exactly as it appears on your passport</div>
+                </div>
+                <div class="message"></div>
+            </div>
+            <div class="row required">
+                <div class="input">
+                    <div class="radio">
+                        <input type="radio" class="styled-radio" id="yes" data-label="Yes" name="citizen"  checked>
+                        <input type="radio" class="styled-radio" id="no" data-label="No" name="citizen">
+                    </div>
+                    <input type="text" class="citizenship">
+                    <label>US Citizen?</label>
+                    <div class="help enter-citizenship">Enter passenger Citizenship</div>
+                </div>
+                <div class="message"></div>
+            </div>
+        </fieldset>
+        <div class="add-part">
+            <a href="#"><i class="icon-plus-gray"></i>Add another program</a>
+        </div>
+        <fieldset>
+            <legend><h3></h3></legend>
+        </fieldset>
+        <div class="delete-part"><a href="#"><i class="icon-trash"></i>Delete Destination</a></div>
+        <fieldset>
+            <legend><h3></h3></legend>
+            <table>
+                <tr>
+                    <td>
+                        <div class="row required">
+                            <div class="input">
+                                <label>Program Name:</label>
+                                <input type="text">
+                                <div class="help"></div>
+                            </div>
+                            <div class="message"></div>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="row">
+                            <div class="input">
+                                <label>Owner:</label>
+                                <select name="owner" id="owner" class="owner">
+                                    <option value="0">Alexi Vereschaga</option>
+                                    <option value="1">Den</option>
+                                    <option value="2">John</option>
+                                </select>
+                                <div class="help"></div>
+                            </div>
+                            <div class="message"></div>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="row">
+                            <div class="input">
+                                <label>Elite Status:</label>
+                                <input type="text">
+                                <div class="help"></div>
+                            </div>
+                            <div class="message"></div>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="row">
+                            <div class="input">
+                                <label>Balanse:</label>
+                                <input type="text">
+                                <div class="help">Numeric value only</div>
+                            </div>
+                            <div class="message"></div>
+                        </div>
+                    </td>
+                </tr>
+            </table>
+            <div class="delete-part"><a href="#"><i class="icon-trash"></i>Delete Destination</a></div>
+            <div class="add-part">
+                <a href="#"><i class="icon-add-another-destination"></i>Add another program</a>
+            </div>
+        </fieldset>
+        <fieldset>
+            <legend><h3></h3></legend>
+            <table class="miles-table">
+                <thead>
+                <tr>
+                    <td></td>
+                    <td>Programs name <i class="icon-show-miles"></i><!--<i class="icon-hide-miles"></i>--></td>
+                    <td>Account holder</td>
+                    <td>Elite Status</td>
+                    <td>Balance</td>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td><input type="checkbox" class="styled-radio" value="check_miles1" id="check_miles1" name="check_miles" ></td>
+                    <td>Marriott Rewards</td>
+                    <td>Alexi Vereschaga</td>
+                    <td>Memver</td>
+                    <td>18,277</td>
+                </tr>
+                <tr>
+                    <td><input type="checkbox" class="styled-radio" value="check_miles2" id="check_miles2" name="check_miles" ></td>
+                    <td>Marriott Rewards</td>
+                    <td>Alexi Vereschaga</td>
+                    <td>Memver</td>
+                    <td>18,277</td>
+                </tr>
+                <tr>
+                    <td><input type="checkbox" class="styled-radio" value="check_miles3" id="check_miles3" name="check_miles" ></td>
+                    <td>Marriott Rewards</td>
+                    <td>Alexi Vereschaga</td>
+                    <td>Memver</td>
+                    <td>18,277</td>
+                </tr>
+                <tr>
+                    <td><input type="checkbox" class="styled-radio" value="check_miles4" id="check_miles4" name="check_miles" ></td>
+                    <td>Marriott Rewards</td>
+                    <td>Alexi Vereschaga</td>
+                    <td>Memver</td>
+                    <td>18,277</td>
+                </tr>
+                <tr class="select-all">
+                    <td><input type="checkbox" class="styled-radio" value="check_miles5" id="check_miles5" name="check_miles" ></td>
+                    <td colspan="4">
+                        Select All
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+
+        </fieldset>
+        <fieldset><legend><h3></h3></legend>
+        </fieldset>
+    </div>
+    <div class="tab-inner" id="tab2"></div>
+    <div class="tab-inner" id="tab3"></div>
+    <div class="tab-inner" id="tab4"></div>
+</form>
+
+<link rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css">
+<script src="http://code.jquery.com/jquery-1.9.1.js"></script>
+<script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
+<script src="js/radio.js"></script>
+<script>
+  $(function() {
+    $( ".date" ).datepicker();
+  });
+</script>
+<script>
+ $().ready(function(){
+  $('input.styled-radio').prettyCheckable();
+  });
+</script>
+<script>
+        $('#booking-form-tabs a').click(function() {
+        var click_id=$(this).attr('id');
+        if (click_id != $('#booking-form-tabs a.active').attr('id') ) {
+            $('#booking-form-tabs a').removeClass('active');
+            $(this).addClass('active');
+            $('#booking-form-tabs div').removeClass('active');
+            $('#con_' + click_id).addClass('active');
+        }
+    });
+</script>
+<script src="js/select.js"></script>
+</body>
+</html>

@@ -1,0 +1,377 @@
+.airline-content *{
+    box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    margin: 0;
+    font-family: "Helvetica Neue";
+    padding: 0;
+}
+.airline-content{
+    width: 800px;
+    margin:0 0;
+}
+.airline-title{
+    height: 85px;
+    width: 800px;
+    position: relative;
+    border: 1px solid #d0d0d0;
+}
+.airline-title:after{
+    position: absolute;
+    width: 798px;
+    height: 1px;
+    background: #e5e5e5;
+    bottom: -2px;
+    left: 1px;
+    content: "";
+}
+.airline-title-top{
+    height: 50px;
+    padding-left: 20px;
+    line-height: 50px;
+    background: #FBFBFC;
+    background: -webkit-gradient(linear, 0 0, 0 bottom, from(#FBFBFC), to(#f0f1f2));
+    background: -webkit-linear-gradient(#FBFBFC, #f0f1f2);
+    background: -moz-linear-gradient(#FBFBFC, #f0f1f2);
+    background: -ms-linear-gradient(#FBFBFC, #f0f1f2);
+    background: -o-linear-gradient(#FBFBFC, #f0f1f2);
+    background: linear-gradient(#FBFBFC, #f0f1f2);
+}
+.airline-title-top h3{
+    width: inherit;
+    color: #4c4c4c;
+    font-size: 21px;    
+    text-shadow:0 1px #fff;
+    font-weight: normal;
+}
+.airline-title-press-release-date{
+    height: 35px;
+    border-top: 1px solid #d0d0d0;
+    width: inherit;
+    z-index: 1;
+    line-height: 35px;
+    position: relative;
+    padding-left: 20px;
+}
+.airline-title-press-release-date:before{
+    position: absolute;
+    width: 0;
+    height: 0;
+    border-top: 8px solid #d0d0d0;
+    border-right: 8px solid transparent;
+    border-left: 8px solid transparent;
+    content: "";
+    left: 55px;
+    bottom: -8px;
+}
+.airline-title-press-release-date:after{
+    position: absolute;
+    width: 0;
+    height: 0;
+    border-top: 8px solid #fff;
+    border-right: 8px solid transparent;
+    border-left: 8px solid transparent;
+    content: "";
+    left: 55px;
+    bottom: -6px;
+}
+.airline-title-press-release-date p{
+    font-size: 13px;
+    color: #333;
+}
+.airline-logo{
+    height: 45px;
+    margin:40px 0px;
+}
+.airline-logo li{
+    display: inline-block;
+    float: left;
+    width: 400px;
+}
+.airline-logo li:last-child{
+    text-align: right;
+}
+.airline-content-item{
+    width: inherit;
+    border: 1px solid #d0d0d0;
+    padding: 40px 20px;
+}
+.airline-content-item h3{
+    font-size: 28px;
+    color: #000;
+    font-weight: normal;
+    line-height: 1;
+}
+.airline-content-item h4{
+    font-size: 16px;
+    color: #666;
+    padding: 30px 0;
+    font-weight: normal;
+}
+.airline-content-item p{
+    font-size: 13px;
+    color: #000;
+    padding-top: 30px;
+    text-align: justify;
+    line-height: 1.5;
+}
+.airline-content-item strong{
+    font-weight: bold;
+}
+.airline-content-item span{
+    font-weight: bold;
+    font-size: 15px;
+    color: #186db6;
+    line-height: 1;
+}
+p.remark-airline-content{
+    text-align: right;
+    font-size: 13px;
+    font-style: italic;
+    color: #000;
+}
+span.captionairline-content{
+    font-size: 21px;
+    color: #000;
+    font-weight: normal;
+}
+.airline-content-item a{
+    font-size: 13px;
+    color: #186db6 !important;
+}
+.airline-item-about h3{
+    padding-top: 40px;
+}
+.airline-item-about p{
+    padding-top: 0;
+}
+.airline-content .quote{
+    margin-top:50px;  
+}
+.quote blockquote{
+    height: 181px;
+    width: 508px;
+    position: relative;
+    background: url(/design/bundles/awardwalletmain/images/pr/sprite.png) 0 -181px no-repeat;
+    padding: 30px 50px 0 40px;
+}
+.right blockquote{
+    background: url(/design/bundles/awardwalletmain/images/pr/sprite.png) no-repeat;
+}
+.quote blockquote p{
+    font-size: 13px;
+    font-style: italic;
+    color: #000;
+    padding: 0;
+    line-height: 1.5;
+    text-align: justify;
+}
+.quote blockquote:after{
+    position: absolute;
+    content: "";
+    width: 50px;
+    height: 40px;
+    bottom: -5px;
+    right: 10px;
+    background: url(/design/bundles/awardwalletmain/images/pr/sprite.png) -10px -380px;
+}
+.quote blockquote:before{
+    position: absolute;
+    content: "";
+    width: 50px;
+    height: 40px;
+    top:-15px;
+    z-index: 1;
+    left:10px;
+    background:url(/design/bundles/awardwalletmain/images/pr/sprite.png) -7px -430px;
+}
+.quote p{
+    font-size: 13px;
+    color: #000;
+    padding: 0 0 0 50px;
+}
+p.name-blockquote{
+    color: #c81748;
+    font-size: 21px;
+    font-style: italic;
+}
+.airline-content .right{
+    float: right;
+}
+.airline-content .right > p{
+    text-align: right;
+    padding-right: 60px;
+}
+.airline-content .left{
+    float: left;
+}
+.clear {
+  clear: both;
+  display: block;
+  overflow: hidden;
+  visibility: hidden;
+  width: 0;
+  height: 0;
+}
+
+.clearfix:before,
+.clearfix:after {
+  content: '\0020';
+  display: block;
+  overflow: hidden;
+  visibility: hidden;
+  width: 0;
+  height: 0;
+}
+
+.clearfix:after {
+  clear: both;
+}
+
+.clearfix {
+  zoom: 1;
+}
+.press-releases-content{
+	margin: 0;
+    width: 800px;
+	padding: 0;
+}
+.press-releases-content *{
+	box-sizing:border-box;
+	-webkit-box-sizing:border-box;
+	-moz-box-sizing:border-box;
+	margin:0;
+	font-family: "Helvetica Neue";
+	padding: 0;
+}
+.press-releases-title{
+	height: 85px;
+	width: 100%;
+	position: relative;
+}
+.press-releases-title-top{
+	height: 50px;
+	padding-left: 20px;
+	line-height: 50px;
+	background: #FBFBFC;
+	border-top: 1px solid #d0d0d0;
+	border-left: 1px solid #d0d0d0;
+	border-right: 1px solid #d0d0d0;
+	background: -webkit-gradient(linear, 0 0, 0 bottom, from(#FBFBFC), to(#f0f1f2));
+	background: -webkit-linear-gradient(#FBFBFC, #f0f1f2);
+	background: -moz-linear-gradient(#FBFBFC, #f0f1f2);
+	background: -ms-linear-gradient(#FBFBFC, #f0f1f2);
+	background: -o-linear-gradient(#FBFBFC, #f0f1f2);
+    background: linear-gradient(#FBFBFC, #f0f1f2);
+}
+.press-releases-title-top h3{
+	width: inherit;
+	color: #4c4c4c;
+	font-size: 21px;
+	text-shadow:0 1px #fff;
+	font-weight: normal;
+}
+.press-release-date{
+	height: 35px;
+	border: 1px solid #d0d0d0;
+	width: inherit;
+	z-index: 1;
+	line-height: 35px;
+	position: relative;
+	padding-left: 20px;
+	box-shadow: 0 1px 0 #e5e5e5;
+}
+.press-release-date:before{
+	position: absolute;
+	width: 0;
+	height: 0;
+	border-top: 8px solid #d0d0d0;
+	border-right: 8px solid transparent;
+	border-left: 8px solid transparent;
+	content: "";
+	left: 55px;
+	bottom: -8px;
+}
+.press-release-date:after{
+	position: absolute;
+	width: 0;
+	height: 0;
+	border-top: 8px solid #fff;
+	border-right: 8px solid transparent;
+	border-left: 8px solid transparent;
+	content: "";
+	left: 55px;
+	bottom: -6px;
+}
+.press-releases-allnews{
+	/*margin-top: 20px;*/
+}
+.press-release-date p{
+	font-size: 13px;
+	color: #333;
+}
+.press-releases-news{
+	margin-top: 30px;
+	position: relative;
+	padding: 0 0 30px 0;
+	line-height: 1.5;
+	border-bottom: 1px solid #d0d0d0;
+}
+.press-releases-allnews .press-releases-news:last-child{
+	border: none;
+}
+.press-releases-news h3{
+	font-size: 16px;
+	color: #186db6;
+    max-width: 660px;
+}
+.press-releases-news h3 a{
+    text-decoration: none !important;
+}
+.press-releases-news p{
+	font-size: 13px;
+	color: #333;
+    max-width: 660px;
+}
+p.press-releases-news-date{
+	color: #999;
+}
+a.press-releases-news-read-more{
+	display: block;
+	height: 27px;
+	border: 1px solid #ccc;
+	position: absolute;
+	top: 50%;
+    margin-top: -27px;
+	right:0;
+	font-size: 12px;
+	color: #4c4c4c;
+	text-align: center;
+	text-decoration: none;
+	width: 100px;
+	line-height: 27px;
+	background: #F0F0EF;
+	background: -webkit-gradient(linear, 0 0, 0 bottom, from(#F0F0EF), to(#e2e1e0));
+	background: -webkit-linear-gradient(#F0F0EF, #e2e1e0);
+	background: -moz-linear-gradient(#F0F0EF, #e2e1e0);
+	background: -ms-linear-gradient(#F0F0EF, #e2e1e0);
+    background: -o-linear-gradient(#F0F0EF, #e2e1e0);
+    background: linear-gradient(#F0F0EF, #e2e1e0);
+}
+a.press-releases-news-read-more:after{
+	position: absolute;
+	width: 100%;
+	height: 1px;
+	background: #f8f8f8;
+	top:0;
+	left: 0;
+	content: "";
+}
+a.press-releases-news-read-more:hover{
+	opacity: 0.8;
+}
+
+.press-releases-content.center,
+.airline-content.center {
+    margin: 0 auto;
+}

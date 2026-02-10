@@ -1,0 +1,118 @@
+#tripsAjaxDiv {
+  padding: 37px;
+}
+.tripsAjaxTable {
+  width: 100%;
+  border-spacing: 0;
+  border-collapse: collapse;
+}
+.tripsAjaxTable td {
+  border-bottom: 1px solid #d0d0d0;
+  color: #888888;
+  padding: 8px 8px;
+}
+.tripsAjaxTable td:first-child {
+  vertical-align: middle;
+  text-align: center;
+  width: 30px;
+  height: 29px;
+}
+.tripsAjaxTable td .old-icon-user {
+  margin-top: 2px;
+}
+.tripsAjaxTable td:nth-child(3) {
+  color: #000000;
+}
+.tripsAjaxTable td:nth-child(5) {
+  padding-right: 15px;
+}
+.tripsAjaxTable tr {
+  cursor: pointer;
+}
+.tripsAjaxTable tr:nth-child(even) {
+  background-color: #ffffff;
+}
+.tripsAjaxTable tr:nth-child(odd) {
+  background-color: #f7f7f7;
+}
+.tripsAjaxTable tr:first-child td {
+  border-top: 1px solid #d0d0d0;
+}
+.tripsAjaxTable tr:hover td {
+  color: #fff;
+  cursor: pointer;
+  background: #3183c2;
+  background: -moz-linear-gradient(top, #3183c2 0%, #186db6 100%);
+  background: -ms-linear-gradient(top, #3183c2 0%, #186db6 100%);
+  background: -o-linear-gradient(top, #3183c2 0%, #186db6 100%);
+  background: -webkit-linear-gradient(top, #3183c2 0%, #186db6 100%);
+  background: linear-gradient(to bottom, #3183c2 0%, #186db6 100%);
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #3183c2), color-stop(100%, #186db6));
+}
+.tripsAjaxTable tr:hover td i[class^="icon-"] {
+  background-position: -70px -98px;
+  width: 10px;
+  height: 13px;
+}
+.tripsAjaxTable tr:hover td:after {
+  position: absolute;
+  content: "";
+  width: 100%;
+  height: 2px;
+  top: 0px;
+  left: 0;
+  background: #fff;
+}
+.tripsAjaxTable tr:hover td:before {
+  position: absolute;
+  content: "";
+  width: 100%;
+  height: 2px;
+  bottom: 0;
+  left: 0;
+  background: #fff;
+}
+noindex:-o-prefocus,
+.tripsAjaxTable tr:hover td:before {
+  bottom: -1px;
+  border-bottom: 1px solid #d0d0d0;
+}
+noindex:-o-prefocus,
+.tripsAjaxTable tr:hover td:after {
+  top: -1px;
+  border-top: 1px solid #d0d0d0;
+}
+noindex:-o-prefocus,
+.tripsAjaxTable tr:hover td {
+  position: relative;
+}
+@-moz-document url-prefix() {
+  table tr:hover td {
+    background: url(../images/tripsFireFoxFix.png) repeat-x 0 2px !important;
+    box-shadow: inset 0px -2px #ffffff, inset 0px 2px #ffffff;
+    -moz-box-shadow: inset 0px -2px #ffffff, inset 0px 2px #ffffff;
+  }
+}
+@media screen and (-webkit-min-device-pixel-ratio: 0) {
+  .tripsAjaxTable tr:hover td {
+    position: relative;
+  }
+  .tripsAjaxTable tr:hover td i {
+    background-position: -70px -98px;
+  }
+  .tripsAjaxIcon {
+    background-image: url("../images/icon-sprite.png");
+    background-repeat: no-repeat;
+    background-position: -58px -71px;
+    width: 10px;
+    height: 13px;
+    line-height: 13px;
+  }
+}
+.tripsNotFound {
+  text-align: center;
+}
+.tripsAjaxBalance {
+  width: 100%;
+  text-align: center;
+}

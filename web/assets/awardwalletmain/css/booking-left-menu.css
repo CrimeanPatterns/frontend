@@ -1,0 +1,35 @@
+#menu-closer {
+  width: 20px;
+  height: 100%;
+  position: absolute;
+  margin-left: 301px;
+  cursor: pointer;
+  margin-right: 5px;
+}
+.open-menu {
+  background: url(../images/booking/arrow-opened.png) center center no-repeat;
+}
+.close-menu {
+  background: #ffffff;
+  background: -moz-linear-gradient(left, #ffffff 0%, #f1f1f1 50%);
+  background: -ms-linear-gradient(left, #ffffff 0%, #f1f1f1 50%);
+  background: -o-linear-gradient(left, #ffffff 0%, #f1f1f1 50%);
+  background: -webkit-linear-gradient(left, #ffffff 0%, #f1f1f1 50%);
+  background: linear-gradient(to right, #ffffff 0%, #f1f1f1 50%);
+  background: -webkit-gradient(linear, left top, right top, color-stop(0%, #ffffff), color-stop(50%, #f1f1f1));
+  -ms-filter: "progid:DXImageTransform.Microsoft.gradient( startColorstr=#ffffffff, endColorstr=#fff1f1f1,GradientType=1 )";
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr=#ffffffff, endColorstr=#fff1f1f1,GradientType=1 );
+  position: relative;
+  border: 1px solid #cccccc;
+  box-shadow: inset -1px 0 #ffffff;
+  border-radius: 0 4px 4px 0;
+}
+.close-menu:after {
+  width: 10px;
+  height: 14px;
+  content: "";
+  position: absolute;
+  left: 5px;
+  top: 48%;
+  background: url(../images/booking/arrow-closed.png) center center no-repeat;
+}

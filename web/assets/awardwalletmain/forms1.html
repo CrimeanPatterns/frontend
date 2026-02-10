@@ -1,0 +1,557 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Booking form</title>
+    <link rel="stylesheet" href="css/base.css">
+    <link rel="stylesheet" href="css/icons.css">
+    <link rel="stylesheet" href="css/buttons.css">
+    <link rel="stylesheet" href="css/commonForms.css">
+    <script src="js/selectivizr-min.js"></script>
+</head>
+<body>
+<div class="booking-form">
+    <div id="booking-form-tabs">
+    <!-- Это список вкладок, их 4-->
+    <ul class="form-tabs">
+        <li><a href="#" data-id="tab1"><span class="number">1</span>Travelers</a></li>
+        <li><a href="#" data-id="tab2"><span class="number">2</span>Destinations</a></li>
+        <li><a href="#" data-id="tab3"><span class="number">3</span>Miles</a></li>
+        <li><a href="#" data-id="tab4"><span class="number">4</span>Contact</a></li>
+    </ul>
+    <!-- Первый блок -->
+    <div id="tab1" class="tab">
+        <div class="tab-inside"><!-- Этот блок испльзуется, как главный блок, в него вложены все формы и т.п. -->
+                <blockquote>
+                    <p>Thank you for your interest in our booking service! First of all we wanted to make sure you understand what we do, so please read this carefully:</p>
+                    <ul>
+                        <li>The cost of this service is <strong>$150</strong> per person if BookYourAward can meet our mutually agreed upon award parameters.</li>
+                        <li>The booking service is only intended for <strong>international Business</strong> and <strong>First Class</strong> itineraries.</li>
+                    </ul>
+                </blockquote>
+                <div class="row">
+                    <div class="input">
+                        <select name="numbers-of-passemgers" id="numbers-of-passengers" class="numbers-of-passengers">
+                            <option value="0">1</option>
+                            <option value="1">2</option>
+                            <option value="2">3</option>
+                            <option value="3">4</option>
+                            <option value="4">5</option>
+                        </select>
+                        <label>Number of passengers:</label>
+                        <div class="info"></div>
+                    </div>
+                    <div class="message"></div>
+                </div>
+                <fieldset>
+                    <legend>
+                        <h3>Passenger #1</h3>
+                    </legend>
+                    <div class="inner-block">
+	                    
+	                        <div class="row">
+	                            <div class="input">
+	                                <select name="numbers-of-passemgers2" id="numbers-of-passengers2" class="numbers-of-passengers2">
+	                                    <option value="0">Alexi Vereschaga</option>
+	                                    <option value="1">Den</option>
+	                                    <option value="2">John</option>
+	                                </select>
+                                    <label>Passenger:</label>
+                                    <div class="info"></div>
+	                            </div>
+	                            <div class="message"></div>
+	                        </div>
+	                        <div class="row required">
+	                            <div class="input">
+	                                <input type="text">
+                                    <label>First Name:</label>
+                                    <div class="info">Exactly as it appears on your passport</div>
+	                            </div>
+	                            <div class="message"></div>
+	                        </div>
+	                        <div class="row">
+	                            <div class="input">
+	                                <input type="text">
+                                    <label>Middle Name:</label>
+                                    <div class="info">Exactly as it appears on your passport</div>
+	                            </div>
+	                            <div class="message"></div>
+	                        </div>
+	                        <div class="row required">
+	                            <div class="input">
+	                                <input type="text">
+                                    <label>Last Name:</label>
+                                    <div class="info">Exactly as it appears on your passport</div>
+	                            </div>
+	                            <div class="message"></div>
+	                        </div>
+	                        <div class="row">
+	                            <div class="input">
+	                                <input type="text" class="date">
+                                    <label>Birthday:</label>
+                                    <div class="info">Exactly as it appears on your passport</div>
+	                            </div>
+	                            <div class="message"></div>
+	                        </div>
+	                        <div class="row required">
+                                <div class="input">
+                                    <div class="radio">
+                                        <input type="radio"  id="yes" name="citizen"  checked><label>Yes</label>
+                                        <input type="radio"  id="no" name="citizen"><label>No</label>
+                                    </div>
+                                    <input type="text" class="citizenship">
+                                    <label>US Citizen?</label>
+                                    <div class="info ">Enter passenger Citizenship</div>
+	                            </div>
+	                            <div class="message"></div>
+	                        </div>
+	                    
+	                </div>
+                </fieldset>
+                <fieldset>
+                    <legend>
+                        <h3>Passenger #2</h3>
+                    </legend>
+                    <div class="inner-block">
+	                    
+	                        <div class="row">
+	                            <div class="input">
+	                                <select name="numbers-of-passemgers3" id="numbers-of-passengers3" class="numbers-of-passengers2">
+	                                    <option value="0">Alexi Vereschaga</option>
+	                                    <option value="1">Den</option>
+	                                    <option value="2">John</option>
+	                                </select>
+                                    <label>Passenger:</label>
+                                    <div class="info"></div>
+	                            </div>
+	                            <div class="message"></div>
+	                        </div>
+	                        <div class="row required">
+	                            <div class="input">
+	                                <input type="text">
+                                    <label>First Name:</label>
+                                    <div class="info">Exactly as it appears on your passport</div>
+	                            </div>
+	                            <div class="message"></div>
+	                        </div>
+	                        <div class="row">
+	                            <div class="input">
+	                                <input type="text">
+                                    <label>Middle Name:</label>
+                                    <div class="info">Exactly as it appears on your passport</div>
+	                            </div>
+	                            <div class="message"></div>
+	                        </div>
+	                        <div class="row required">
+	                            <div class="input">
+	                                <input type="text">
+                                    <label>Last Name:</label>
+                                    <div class="info">Exactly as it appears on your passport</div>
+	                            </div>
+	                            <div class="message"></div>
+	                        </div>
+	                        <div class="row">
+	                            <div class="input">
+	                                <input type="text" class="date">
+                                    <label>Birthday:</label>
+                                    <div class="info">Exactly as it appears on your passport</div>
+	                            </div>
+	                            <div class="message"></div>
+	                        </div>
+	                        <div class="row required">
+	                            <div class="input">
+	                                <div class="radio">
+                                        <input type="radio"  id="yes1" name="citizen2" checked><label>Yes</label>
+                                        <input type="radio"  id="no1" name="citizen2"><label>No</label>
+                                    </div>
+                                    <input type="text" class="citizenship">
+                                    <label>US Citizen?</label>
+                                    <div class="info ">Enter passenger Citizenship</div>
+	                            </div>
+	                            <div class="message"></div>
+	                        </div>
+	                    
+	                </div>
+                </fieldset>
+                <a href="#" class="next">Next</a>
+            </div>
+    </div>
+    <div id="tab2" class="tab">
+    	<div class="tab-inside">
+			<blockquote>
+				<p>Now please tell us where are you going, you can add as many destinations as you wish.</p>
+            </blockquote>
+			<fieldset class="destination">
+                    <legend>
+                        <h3>Destination #1</h3>
+                    </legend>
+                    <div class="inner-block">
+	                    
+	                        <div class="row">
+	                            <div class="input">
+	                                <input type="text">
+                                    <label>From (Home Airport)</label>
+                                </div>
+	                            <div class="message"></div>
+	                        </div>
+	                        <div class="row required">
+	                            <div class="input">
+	                                <input type="text">
+                                    <label>To (Destination)</label>
+                                </div>
+	                            <div class="message"></div>
+	                        </div>
+	                        <div class="row">
+	                            <div class="input">
+	                                <input type="text" class="date">
+                                    <label>Ideal date to leave</label>
+                                </div>
+	                            <div class="message"></div>
+	                        </div>
+	                        <div class="row way">
+	                            <div class="input">
+	                                <input type="text" class="date">
+                                    <label>Earliest:</label>
+                                </div>
+	                            <div class="input latest">
+	                                <input type="text" class="date">
+                                    <label>Latest:</label>
+                                </div>
+	                            <div class="info"></div>
+	                        </div>
+                            <div class="row">
+                                <div class="info-block">
+                                    <p><i class="icon-information"></i>Please fill out your earliest and latest date flexibility, to maximize award availability.</p>
+                                </div>
+                            </div>
+	                        <div class="row">
+	                            <div class="input">
+	                            	<ul class="destination-sort">
+	                            		<li>
+	                            			 <input type="radio"  id="round-trip" name="destination-sort"  checked><label>Round trip</label>
+	                                    </li>
+	                            		<li>
+	                            			<input type="radio"  id="multiple-destinations" name="destination-sort"><label>Multiple destinations</label>
+		                                </li>
+	                            	</ul>
+		                        </div>
+	                            <div class="message"></div>
+	                        </div>
+	                    
+	                </div>
+            </fieldset>
+    		<div id="destination">
+    			<fieldset class="destination">
+                    <legend>
+                        <h3>Destination #2</h3>
+                    </legend>
+                    <div class="inner-block">
+	                    
+	                        <div class="row required">
+	                            <div class="input">
+	                                <input type="text">
+                                    <label>From (Home Airport)</label>
+                                </div>
+	                            <div class="message"></div>
+	                        </div>
+	                        <div class="row required">
+	                            <div class="input">
+	                                <input type="text">
+                                    <label>To (Destination)</label>
+                                </div>
+	                            <div class="message"></div>
+	                        </div>
+	                        <div class="row">
+	                            <div class="input">
+	                                <input type="text" class="date">
+                                    <label>Ideal date to leave</label>
+                                </div>
+	                            <div class="message"></div>
+	                        </div>
+	                        <div class="row way">
+	                            <div class="input">
+	                                <input type="text" class="date">
+                                    <label>Earliest:</label>
+                                </div>
+	                            <div class="input latest">
+	                                <input type="text" class="date">
+                                    <label>Latest:</label>
+                                </div>
+	                            <div class="info"></div>
+	                            <div class="message"></div>
+	                        </div>
+                            <div class="row">
+                                <div class="info-block">
+                                    <p><i class="icon-information"></i>Please fill out your earliest and latest date flexibility, to maximize award availability.</p>
+                                </div>
+                            </div>
+	                    
+	                </div>
+                    <div class="del-block"><i class="icon-delete-destination"></i>Delete Destination</div>
+            	</fieldset>
+            	<fieldset class="destination">
+                    <legend>
+                        <h3>Destination #3</h3>
+                    </legend>
+                    <div class="add-block">
+                    	<a href="#"><i class="icon-add-another-destination"></i>Add another destination</a>
+                    </div>
+            	</fieldset>
+    		</div>
+    		<a href="#"  class="previous">Previous</a>
+   			<a href="#"  class="next">Next</a>
+   		</div>
+	</div>
+    <div id="tab3" class="tab">
+    	<div class="tab-inside">
+    		<blockquote>
+				<p>Nice! Now we just need to know how many miles you have for this trip!</p>
+            </blockquote>
+			<fieldset class="miles">
+                    <legend>
+                        <h3>Already loyalty programs</h3>
+                    </legend>
+                <div class="inner-block table">
+                    <table class="list">
+                        <tr>
+                            <th></th>
+                            <th>Programs name <i class="icon-show-miles"></i><!--<i class="icon-hide-miles"></i>--></th>
+                            <th>Account holder</th>
+                            <th>Elite Status</th>
+                            <th>Balance</th>
+                        </tr>
+                        <tr>
+                            <td><input type="checkbox"  value="check_miles1" id="check_miles1" name="check_miles" ></td>
+                            <td>Marriott Rewards</td>
+                            <td>Alexi Vereschaga</td>
+                            <td>Memver</td>
+                            <td>18,277</td>
+                        </tr>
+                        <tr>
+                            <td><input type="checkbox"  value="check_miles2" id="check_miles2" name="check_miles" ></td>
+                            <td>Marriott Rewards</td>
+                            <td>Alexi Vereschaga</td>
+                            <td>Memver</td>
+                            <td>18,277</td>
+                        </tr>
+                        <tr>
+                            <td><input type="checkbox"  value="check_miles3" id="check_miles3" name="check_miles" ></td>
+                            <td>Marriott Rewards</td>
+                            <td>Alexi Vereschaga</td>
+                            <td>Memver</td>
+                            <td>18,277</td>
+                        </tr>
+                        <tr>
+                            <td><input type="checkbox"  value="check_miles4" id="check_miles4" name="check_miles" ></td>
+                            <td>Marriott Rewards</td>
+                            <td>Alexi Vereschaga</td>
+                            <td>Memver</td>
+                            <td>18,277</td>
+                        </tr>
+                        <tr class="select-all">
+                            <td><input type="checkbox"  value="check_miles5" id="check_miles5" name="check_miles" ></td>
+                            <td colspan="4">
+                                Select All
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </fieldset>
+            <fieldset class="miles">
+                    <legend>
+                        <h3>Loyalty programs not already listed above</h3>
+                    </legend>
+                    <div class="inner-block pad">
+                        <table class="rows">
+                            <tr>
+                                <td>
+                                    <div class="row required">
+                                        <div class="input">
+                                            <input type="text">
+                                            <label>Program Name:</label>
+                                            <div class="info"></div>
+                                        </div>
+                                        <div class="message"></div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="row">
+                                        <div class="input">
+                                            <select name="owner" id="owner" class="owner">
+                                                <option value="0">Alexi Vereschaga</option>
+                                                <option value="1">Den</option>
+                                                <option value="2">John</option>
+                                            </select>
+                                            <label>Owner:</label>
+                                            <div class="info"></div>
+                                        </div>
+                                        <div class="message"></div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="row">
+                                        <div class="input">
+                                            <input type="text">
+                                            <label>Elite Status:</label>
+                                            <div class="info"></div>
+                                        </div>
+                                        <div class="message"></div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="row">
+                                        <div class="input">
+                                            <input type="text">
+                                            <label>Balanse:</label>
+                                            <div class="info">Numeric value only</div>
+                                        </div>
+                                        <div class="message"></div>
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
+                    	<div class="del-block"><i class="icon-delete-destination"></i>Delete Destination</div>
+                    	<div class="add-block">
+                    		<a href="#"><i class="icon-add-another-destination"></i>Add another program</a>
+                    	</div>
+                    </div>
+            </fieldset>
+            <a href="#" class="previous">Previous</a>
+   			<a href="#" class="next">Next</a>
+    	</div>
+	</div>
+    <div id="tab4" class="tab">
+    	<div class="tab-inside">
+    		<fieldset class="personal">
+                    <legend>
+                        <h3>Contact Info</h3>
+                    </legend>
+                    <div class="inner-block">
+	                    
+	                        <div class="row required">
+	                        	<div class="input">
+	                        		<input type="text">
+                                    <label>First name<span>*</span></label>
+                                    <div class="info"></div>
+	                        	</div>
+	                        	<div class="message"></div>
+	                        </div>
+	                        <div class="row">
+	                        	<div class="input">
+	                        		<input type="text">
+                                    <label>Last name<span>*</span></label>
+                                    <div class="info"></div>
+	                        	</div>
+	                        	<div class="message"></div>
+	                        </div>
+	                        <div class="row">
+	                        	<div class="input">
+	                        		<input type="text">
+                                    <label>Contact Email<span>*</span></label>
+                                    <div class="info"></div>
+	                        	</div>
+	                        	<div class="message"></div>
+	                        </div>
+	                        <div class="row">
+	                        	<div class="input">
+	                        		<input type="text">
+                                    <label>Confirm Email<span>*</span></label>
+                                    <div class="info"></div>
+	                        	</div>
+	                        	<div class="message"></div>
+	                        </div>
+	                        <div class="row">
+	                        	<div class="input">
+	                        		<input type="text">
+                                    <label>Contact Phone<span></span></label>
+                                    <div class="info"></div>
+	                        	</div>
+	                        	<div class="message"></div>
+	                        </div>
+	                </div>
+            </fieldset>
+            <fieldset>
+                <legend>
+                    <h3>Prior Search Results</h3>
+                </legend>
+                <div class="inner-block">
+                	<div class="row">
+                		Have you or any other third party tried to book this award request prior to contacting<input type="radio"  id="no11" name="citizen"><label>No</label>
+	                     <input type="radio"  id="yes11" name="citizen"  checked><label>Yes</label>
+                	</div>
+                	<div class="row">
+                		<div class="input">
+                            <dl>
+                				<dt>Loyalty program:</dt>
+                				<dt>Class of service:</dt>
+                				<dt>Outbound # of stops/layover times:</dt>
+                				<dt>Inbound # of stops/layover times:</dt>
+                				<dt># miles to be redeemed per person:</dt>
+                			</dl>
+                            <label>Details</label>
+                        </div>
+                	</div>
+                </div>
+            </fieldset>
+            <fieldset>
+                <legend>
+                    <h3>Notes</h3>
+                </legend>
+                <div class="inner-block">
+                </div>
+            </fieldset>
+            <fieldset class="personal">
+                <legend>
+                    <h3>Create Login</h3>
+                </legend>
+                <div class="inner-block">
+                	
+	                		<div class="info-block">
+	                			<p><i class="icon-information"></i>For your account security and privacy, please create a new login username and password, or <a href="#">click to login</a></p>
+	                		</div>
+                			<div class="row">
+	                        	<div class="input">
+	                        		<input type="text">
+                                    <label>User name<span>*</span></label>
+                                    <div class="info"></div>
+	                        	</div>
+	                        	<div class="message"></div>
+	                        </div>
+	                        <div class="row">
+	                        	<div class="input">
+	                        		<input type="text">
+                                    <label>Password<span>*</span></label>
+                                    <div class="info"></div>
+	                        	</div>
+	                        	<div class="message"></div>
+	                        </div>
+	                        <div class="row">
+	                        	<div class="input">
+	                        		<input type="text">
+                                    <label>Confirm password<span>*</span></label>
+                                    <div class="info"></div>
+	                        	</div>
+	                        	<div class="message"></div>
+	                        </div>
+	                        <div class="row">
+	                        	<div class="input">
+	                        		<input type="checkbox"  value="check1" id="check1" name="check1"><label>I Agree to <a href="#">Therms of Use</a></label>
+	                        		<div class="info"></div>
+	                        	</div>
+	                        	<div class="message"></div>
+	                        </div>
+	                        
+	               
+                </div>
+            </fieldset>
+            <a href="#" class="next">Submit</a>
+   		</div>
+   	</div>
+    </div>
+</div>
+<link rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css">
+<script src="http://code.jquery.com/jquery-1.9.1.js"></script>
+<script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
+<script src="js/formInputs.js"></script>
+</body>
+</html>

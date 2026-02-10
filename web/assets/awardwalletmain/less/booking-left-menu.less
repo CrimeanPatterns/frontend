@@ -1,0 +1,54 @@
+@import "lib";
+
+#menu-closer {
+  .size(20px, 100%, abs);
+  margin-left: 301px;
+  cursor: pointer;
+  margin-right: 5px;
+}
+
+.open-menu {
+  background: url(../images/booking/arrow-opened.png) center center no-repeat;
+}
+
+.close-menu {
+  .hgradient(#ffffff, 0%, #f1f1f1, 50%);
+  .attr(rel);
+  position: relative;
+  .border(#ccc);
+  box-shadow: inset -1px 0 #fff;
+  border-radius: 0 4px 4px 0;
+  &:after {
+    .size(10px, 14px, "");
+    .apos(left, 48%, 5px);
+    background: url(../images/booking/arrow-closed.png) center center no-repeat;
+  }
+}
+//
+//@media screen and (max-width: 1200px) {
+//  div#leftBar {
+//    display: none;
+//  }
+//
+//  div#content {
+//    padding-left: 25px;
+//  }
+//
+//  #menu-closer {
+//    margin-left: 0;
+//  }
+//
+//  .open-menu {
+//    .hgradient(#ffffff, 0%, #f1f1f1, 50%);
+//    .attr(rel);
+//    position: relative;
+//    .border(#ccc);
+//    box-shadow: inset -1px 0 #fff;
+//    border-radius: 0 4px 4px 0;
+//    &:after {
+//      .size(10px, 14px, "");
+//      .apos(left, 48%, 5px);
+//      background: url(../images/booking/arrow-closed.png) center center no-repeat;
+//    }
+//  }
+//}

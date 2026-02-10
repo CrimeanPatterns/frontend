@@ -1,0 +1,1460 @@
+// Library of mixins to make basic structures
+
+.width(@w) when not (@w = auto){
+  width: @w;
+}
+.height(@w) when not (@w = auto){
+  height: @w;
+}
+.top(@w) when not (@w = auto) and not (@w = inherit){
+  top: @w;
+}
+.left(@w) when not (@w = auto) and not (@w = inherit){
+  left: @w;
+}
+.bottom(@w) when not (@w = auto) and not (@w = inherit){
+  bottom: @w;
+}
+.right(@w) when not (@w = auto) and not (@w = inherit){
+  right: @w;
+}
+.margin(@w,@side1,@side2) when (isnumber(@w)) and not (isnumber(@side1)) and not (@side1 = auto){
+  .margin(@w,@side1);
+  .margin(@w,@side2);
+}
+.margin(@w,@side1,@side2,@side3) when (isnumber(@w)) and not (isnumber(@side1)) and not (@side1 = auto){
+  .margin(@w,@side1);
+  .margin(@w,@side2,@side3);
+}
+.margin(@w,@side1,@side2,@side3,@side4) when (isnumber(@w)) and not (isnumber(@side1)) and not (@side1 = auto){
+  .margin(@w,@side1);
+  .margin(@w,@side2,@side3,@side4);
+}
+.margin(@w,@h,@side1,@side2) when (isnumber(@w)) and (isnumber(@h)) and not (isnumber(@side1)) and not (@side1 = auto) and not (isnumber(@side2)) and not (@side2 = auto){
+  .margin(@w,@side1);
+  .margin(@h,@side2);
+}
+.margin(@w,@h,@side1,@side2,@side3) when (isnumber(@w)) and (isnumber(@h)) and not (isnumber(@side1)) and not (@side1 = auto){
+  .margin(@w,@h,@side1,@side2);
+  .margin(@w,@side3);
+}
+.margin(@w,@h,@side1,@side2,@side3,@side4) when (isnumber(@w)) and (isnumber(@h)) and not (isnumber(@side1)) and not (@side1 = auto){
+  .margin(@w,@h,@side1,@side2);
+  .margin(@w,@h,@side3,@side4);
+}
+.margin(@w) when not (@w = auto) and not (@w = inherit){
+  margin: @w;
+}
+.margin(auto){
+  margin: auto;
+}
+.margin(@w,left) when (isnumber(@w)){
+  margin-left: @w;
+}
+.margin(@w,right) when (isnumber(@w)){
+  margin-right: @w;
+}
+.margin(@w,top) when (isnumber(@w)){
+  margin-top: @w;
+}
+.margin(@w,bottom) when (isnumber(@w)){
+  margin-bottom: @w;
+}
+.margin(auto,left){
+  margin-left: auto;
+}
+.margin(auto,right){
+  margin-right: auto;
+}
+.margin(auto,top){
+  margin-top: auto;
+}
+.margin(auto,bottom){
+  margin-bottom: auto;
+}
+.margin(@w,@h) when (isnumber(@w)) and (isnumber(@h)){
+  margin: @w @h;
+}
+.lmargin(@w)when not (@w = auto) and not (@w = inherit){
+  margin-left: @w;
+}
+.rmargin(@w)when not (@w = auto) and not (@w = inherit){
+  margin-right: @w;
+}
+.tmargin(@w)when not (@w = auto) and not (@w = inherit){
+  margin-top: @w;
+}
+.bmargin(@w)when not (@w = auto) and not (@w = inherit){
+  margin-bottom: @w;
+}
+// block attributes one at a time
+.blk-attr(center){  // to put block in the horizontal center of parent block
+  // works with definite width
+  margin: 0 auto;
+}
+.blk-attr(top){  // to put all inline elements at the top of this block
+  vertical-align: top;
+}
+.blk-attr(middle){ // to put all inline elements at the middle height of this block
+  vertical-align: middle;
+}
+.blk-attr(bottom){ // to put all inline elements at the bottom of this block
+  vertical-align: bottom;
+}
+.blk-attr(base){ // to put all inline elements at the text baseline of this block
+  vertical-align: baseline;
+}
+.blk-attr(rel){ // to put all inline elements flow positions starts from this element
+  position: relative;
+}
+.blk-attr(abs){
+  position: absolute;
+}
+.blk-attr(fix){
+  position: fixed;
+}
+.blk-attr(crop){ // make content crop by block border
+  overflow: hidden;
+}
+.blk-attr(scroll){ // make content crop by block border
+  overflow: auto;
+}
+.blk-attr(scrollx){ // make content crop by block border
+  overflow-x: scroll;
+  overflow-y: hidden;
+}
+.blk-attr(scrolly){ // make content crop by block border
+  overflow-y: scroll;
+  overflow-x: hidden;
+}
+.blk-attr(left){
+  float:left;
+}
+.blk-attr(right){
+  float:right;
+}
+.blk-attr(nofloat){
+  float:none;
+}
+.blk-attr(border){
+  .box(border);
+}
+.blk-attr(clear){
+  background: none;
+}
+.blk-attr(break){
+  clear: both;
+}
+.blk-attr(transparent){
+  background: transparent;
+}
+.blk-attr(collapse){
+  border-collapse: collapse;
+}
+.blk-attr(nospace){
+  border-spacing: 0;
+}
+.blk-attr(hidden){
+  visibility: hidden;
+}
+.blk-attr(@c) when (iscolor(@c)){
+  background-color: @c;
+}
+.blk-attr(@c) when (isurl(@c)){
+  background-url: url(@c);
+}
+.blk-attr(@h) when (isnumber(@h)){
+  .height(@h);
+}
+.blk-attr(@s) when (isstring(@s)){
+  content: @s;
+}
+
+// mixin to set block attributes 1 to 6 values
+.attr(@a1) when (isnumber(@a1)){
+  .blk-attr(@a1);
+}
+.attr(@a1) when not (isnumber(@a1)){
+  .blk-attr(@a1);
+}
+.attr(@a1,@a2)when not (@a1 = bg){
+  .blk-attr(@a1);
+  .blk-attr(@a2);
+}
+.attr(bg,@a2)when (iscolor(@a2)){
+  background: @a2;
+}
+.attr(@a1,@a2,@a3){
+  .blk-attr(@a1);
+  .attr(@a2,@a3);
+}
+.attr(@a1,@a2,@a3,@a4){
+  .blk-attr(@a1);
+  .attr(@a2,@a3,@a4);
+}
+.attr(@a1,@a2,@a3,@a4,@a5){
+  .blk-attr(@a1);
+  .attr(@a2,@a3,@a4,@a5);
+}
+.attr(@a1,@a2,@a3,@a4,@a5,@a6){
+  .blk-attr(@a1);
+  .attr(@a2,@a3,@a4,@a5,@a6);
+}
+// mixin to set block attributes 1 to 6 values and create block element with defined width
+.blk(@w){
+  display: block;
+  .width(@w);
+}
+.blk(none,@w){
+  display: none;
+  .width(@w);
+}
+.blk(run,@w){
+  .run-block();
+  .width(@w);
+}
+.blk(@w,@a1) when not (@w = none) and  not (@w = run){
+  .blk(@w);
+  .blk-attr(@a1);
+}
+.blk(@w,@a1,@a2) when not (iskeyword(@w)){
+  .blk(@w);
+  .attr(@a1,@a2);
+}
+.blk(@w,@a1,@a2,@a3) when not (iskeyword(@w)){
+  .blk(@w);
+  .attr(@a1,@a2,@a3);
+}
+.blk(@w,@a1,@a2,@a3,@a4) when not (iskeyword(@w)){
+  .blk(@w);
+  .attr(@a1,@a2,@a3,@a4);
+}
+.blk(@w,@a1,@a2,@a3,@a4,@a5) when not (iskeyword(@w)){
+  .blk(@w);
+  .attr(@a1,@a2,@a3,@a4,@a5);
+}
+.blk(@w,@a1,@a2,@a3,@a4,@a5,@a6) when not (iskeyword(@w)){
+  .blk(@w);
+  .attr(@a1,@a2,@a3,@a4,@a5,@a6);
+}
+.blk(@w,@a1,@a2) when (iskeyword(@w)){
+  .blk(@w,@a1);
+  .attr(@a2);
+}
+.blk(@w,@a1,@a2,@a3) when (iskeyword(@w)){
+  .blk(@w,@a1);
+  .attr(@a2,@a3);
+}
+.blk(@w,@a1,@a2,@a3,@a4) when (iskeyword(@w)){
+  .blk(@w,@a1);
+  .attr(@a2,@a3,@a4);
+}
+.blk(@w,@a1,@a2,@a3,@a4,@a5) when (iskeyword(@w)){
+  .blk(@w,@a1);
+  .attr(@a2,@a3,@a4,@a5);
+}
+.blk(@w,@a1,@a2,@a3,@a4,@a5,@a6) when (iskeyword(@w)){
+  .blk(@w,@a1);
+  .attr(@a2,@a3,@a4,@a5,@a6);
+}
+// mixin to setblock attributes 1 to 6 values and create  crossplatform inline-block element with defined width
+.run(@w){
+  .run-block();
+  .width(@w);
+}
+.run(@w,@a1){
+  .run(@w);
+  .blk-attr(@a1);
+}
+.run(@w,@a1,@a2){
+  .run(@w);
+  .attr(@a1,@a2);
+}
+.run(@w,@a1,@a2,@a3){
+  .run(@w);
+  .attr(@a1,@a2,@a3);
+}
+.run(@w,@a1,@a2,@a3,@a4){
+  .run(@w);
+  .attr(@a1,@a2,@a3,@a4);
+}
+.run(@w,@a1,@a2,@a3,@a4,@a5){
+  .run(@w);
+  .attr(@a1,@a2,@a3,@a4,@a5);
+}
+.run(@w,@a1,@a2,@a3,@a4,@a5,@a6){
+  .run(@w);
+  .attr(@a1,@a2,@a3,@a4,@a5@a6);
+}
+// mixin to setblock attributes 1 to 6 values and create  crossplatform table element with defined width
+
+.tab(@w){
+  display:table;
+  .width(@w);
+}
+.tab(inline,@w){
+  display:inline-table;
+  .width(@w);
+}
+.tab(row,@w){
+  display:table-row;
+  .width(@w);
+}
+.tab(cell,@w){
+  display:table-cell;
+  .width(@w);
+}
+.tab(body,@w){
+  display:table-row-group;
+  .width(@w);
+}
+.tab(auto,@a1){
+  .tab(auto);
+  .blk-attr(@a1);
+}
+.tab(@w,@a1) when not (iskeyword(@w)){
+  .tab(@w);
+  .blk-attr(@a1);
+}
+.tab(@w,@a1,@a2) when not (iskeyword(@w)){
+  .tab(@w);
+  .attr(@a1,@a2);
+}
+.tab(@w,@a1,@a2,@a3) when not (iskeyword(@w)){
+  .tab(@w);
+  .attr(@a1,@a2,@a3);
+}
+.tab(@w,@a1,@a2,@a3,@a4) when not (iskeyword(@w)){
+  .tab(@w);
+  .attr(@a1,@a2,@a3,@a4);
+}
+.tab(@w,@a1,@a2,@a3,@a4,@a5) when not (iskeyword(@w)){
+  .tab(@w);
+  .attr(@a1,@a2,@a3,@a4,@a5);
+}
+.tab(@w,@a1,@a2,@a3,@a4,@a5,@a6) when not (iskeyword(@w)){
+  .tab(@w);
+  .attr(@a1,@a2,@a3,@a4,@a5,@a6);
+}
+.tab(@w,@a1,@a2) when (iskeyword(@w)){
+  .tab(@w,@a1);
+  .attr(@a2);
+}
+.tab(@w,@a1,@a2,@a3) when (iskeyword(@w)){
+  .tab(@w,@a1);
+  .attr(@a2,@a3);
+}
+.tab(@w,@a1,@a2,@a3,@a4) when (iskeyword(@w)){
+  .tab(@w,@a1);
+  .attr(@a2,@a3,@a4);
+}
+.tab(@w,@a1,@a2,@a3,@a4,@a5) when (iskeyword(@w)){
+  .tab(@w,@a1);
+  .attr(@a2,@a3,@a4,@a5);
+}
+.tab(@w,@a1,@a2,@a3,@a4,@a5,@a6) when (iskeyword(@w)){
+  .tab(@w,@a1);
+  .attr(@a2,@a3,@a4,@a5,@a6);
+}
+
+// text attributes one at a time
+.text-attr(italic){
+  font-style: italic;
+}
+.text-attr(normal){
+  font-style: normal;
+}
+.text-attr(bold){
+  font-weight: bold;
+}
+.text-attr(regular){
+  font-weight: normal;
+}
+.text-attr(upper){
+  text-transform: uppercase;
+}
+.text-attr(lower){
+  text-transform: lowercase;
+}
+.text-attr(auto){
+  line-height: auto;
+}
+.text-attr(left){
+  text-align: left;
+}
+.text-attr(center){
+  text-align: center;
+}
+.text-attr(justify){
+  text-align: justify;
+}
+.text-attr(right){
+  text-align: right;
+}
+.text-attr(nowrap){
+  white-space: nowrap;
+}
+.text-attr(noline){
+  text-decoration: none;
+}
+.text-attr(under){
+  text-decoration: underline;
+}
+.text-attr(strike){
+  text-decoration: line-through;
+}
+.text-attr(@l) when (isnumber(@l)){
+  line-height: @l;
+}
+.text-attr(@c) when (iscolor(@c)){
+  //-webkit-font-smoothing: antialiased;
+  color: @c;
+}
+.text-attr(@c) when (isstring(@c)){
+  font-family: e(@c);
+}
+.text-attr(@a1,@a2){
+  .text-attr(@a1);
+  .text-attr(@a2);
+}
+.text-attr(@a1,@a2,@a3){
+  .text-attr(@a1,@a2);
+  .text-attr(@a3);
+}
+.text-attr(@a1,@a2,@a3,@a4){
+  .text-attr(@a1,@a2,@a3);
+  .text-attr(@a4);
+}
+.text-attr(@a1,@a2,@a3,@a4,@a5){
+  .text-attr(@a1,@a2,@a3,@a4);
+  .text-attr(@a5);
+}
+.text-attr(@a1,@a2,@a3,@a4,@a5,@a6){
+  .text-attr(@a1,@a2,@a3,@a4,@a5);
+  .text-attr(@a6);
+}
+// mixin to set text attributes 1 to 6 values and  define font size
+
+.text(@h) when not (@h = inherit){
+  font-size:@h;
+}
+.text(@h,@a1){
+  .text(@h);
+  .text-attr(@a1);
+}
+.text(@h,@a1,@a2){
+  .text(@h,@a1);
+  .text-attr(@a2);
+}
+.text(@h,@a1,@a2,@a3){
+  .text(@h,@a1,@a2);
+  .text-attr(@a3);
+}
+.text(@h,@a1,@a2,@a3,@a4){
+  .text(@h,@a1,@a2,@a3);
+  .text-attr(@a4);
+}
+.text(@h,@a1,@a2,@a3,@a4,@a5){
+  .text(@h,@a1,@a2,@a3,@a4);
+  .text-attr(@a5);
+}
+.text(@h,@a1,@a2,@a3,@a4,@a5,@a6){
+  .text(@h,@a1,@a2,@a3,@a4,@a5);
+  .text-attr(@a6);
+}
+// mixin to set sizes of an element including 1 to 4 block attributes
+.size(@w:0,@h:0){
+  .width(@w);
+  .height(@h);
+}
+.size(@w,@h,@a1) when not(isnumber(@a1)){
+  .size(@w,@h);
+  .blk-attr(@a1);
+}
+.size(@w,@h,@a1,@a2) when not(isnumber(@a2)){
+  .size(@w,@h,@a1);
+  .blk-attr(@a2);
+}
+.size(@w,@h,@a1,@a2,@a3) when not(isnumber(@a3)){
+  .size(@w,@h,@a1,@a2);
+  .blk-attr(@a3);
+}
+.size(@w,@h,@a1,@a2,@a3,@a4) when not(isnumber(@a4)){
+  .size(@w,@h,@a1,@a2,@a3);
+  .blk-attr(@a4);
+}
+// hiding html input element
+.hide-input(){
+  display: none;
+  * html &{
+    .blk(0,0);
+    //display:block;
+    //width: 0;
+    //height:0;
+  }
+  //*display:inline;
+}
+.pseudo(){
+  .blk(auto,'');
+  //content: "";
+  //display: e(%("%ablock",~''));
+}
+// mixins has no reason to use it directly
+.ms-filter(@s) when (isstring(@s)){
+  -ms-filter: @s;
+  filter: e(@s);
+}
+.prefix-bg(@s) when (isstring(@s)){
+  @l:e(@s);
+  background: e("-moz-@{l}");
+  background: e("-ms-@{l}");
+  background: e("-o-@{l}");
+  background: e("-webkit-@{l}");
+  background: @l;
+}
+.ms-gradient(top,@c1,@c2){
+  @l:%("progid:DXImageTransform.Microsoft.gradient( startColorstr=%a, endColorstr=%a,GradientType=0 )",argb(@c1),argb(@c2));
+  .ms-filter(@l);
+}
+.ms-gradient(left,@c1,@c2){
+  @l:%("progid:DXImageTransform.Microsoft.gradient( startColorstr=%a, endColorstr=%a,GradientType=1 )",argb(@c1),argb(@c2));
+  .ms-filter(@l);
+}
+.ms-gradient(alpha,top,@a1,@a2){
+  @l:%("progid:DXImageTransform.Microsoft.Alpha( Style=1,Opacity=%a, FinishOpacity=%a,StartX=0,StatrY=0,FinishX=0,FinishY=100 )",@a1,@a2);
+  .ms-filter(@l);
+}
+.ms-gradient(alpha,left,@a1,@a2){
+  @l:%("progid:DXImageTransform.Microsoft.Alpha( Style=1,Opacity=%a, FinishOpacity=%a,StartX=0,StatrY=0,FinishX=100,FinishY=0 )",@a1,@a2);
+  .ms-filter(@l);
+}
+.ms-gradient(alpha,radial,@a1,@a2){
+  @l:%("progid:DXImageTransform.Microsoft.Alpha( Style=2,Opacity=%a, FinishOpacity=%a )",@a1,@a2);
+  .ms-filter(@l);
+}
+.ms-gradient(alpha,rect,@a1,@a2){
+  @l:%("progid:DXImageTransform.Microsoft.Alpha( Style=3,Opacity=%a, FinishOpacity=%a )",@a1,@a2);
+  .ms-filter(@l);
+}
+// set specific crossplatform sizing of an element
+.box(@border:border){
+  -moz-box-sizing: ~"@{border}-box";
+  -webkit-box-sizing: ~"@{border}-box";
+  box-sizing: ~"@{border}-box";
+  // *behavior: url(boxsizing.htc);
+}
+// elliptic gradients
+//   @pos is side to set starting point
+//   @len where this gradient stops
+//   @color1{,@pos1} first color and optional position where it starts
+//   @color2{,@pos1} second color to end gradient or middle stop if three colors used
+//   @color3{,@pos1} third color definitly stops gradient and it optional position
+.egrad(@pos,@len,@color1,@color2) when (iscolor(@color1)) and (iscolor(@color2)){
+  .prefix-bg("radial-gradient(@{pos},ellipse @{len},@{color1},@{color2})");
+}
+.egrad(@pos,@len,@color1,@pos1,@color2) when (iscolor(@color1)) and (iscolor(@color2)) and (isnumber(@pos1)){
+  .prefix-bg("radial-gradient(@{pos},ellipse @{len},@{color1} @{pos1},@{color2})");
+}
+.egrad(@pos,@len,@color1,@color2,@pos1) when (iscolor(@color1)) and (iscolor(@color2)) and (isnumber(@pos1)){
+  .prefix-bg("radial-gradient(@{pos},ellipse @{len},@{color1},@{color2} @{pos1})");
+}
+.egrad(@pos,@len,@color1,@color2,@pos1,@color3) when (iscolor(@color1)) and (iscolor(@color2)) and (isnumber(@pos1)) and (iscolor(@color3)){
+  .prefix-bg("radial-gradient(@{pos},ellipse @{len},@{color1},@{color2} @{pos1},@{color3})");
+}
+.ealfa(@color,@a){
+  //background:@color;
+  .egrad(50% 50%,closest-side,fade(@color,@a),fade(@color,0));
+  .ms-gradient(alpha,radial,unit(@a),0);
+}
+.gradient(@startColor,@startPoint,@endColor,@endPoint){
+  background: @startColor;
+  .prefix-bg("linear-gradient(to bottom, @{startColor} @{startPoint}, @{endColor} @{endPoint})");
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(@startPoint,@startColor), color-stop(@endPoint,@endColor));
+  // .ms-gradient(top,@startColor,@endColor);
+}
+.hgradient(@startColor,@startPoint,@endColor,@endPoint){
+  background: @startColor;
+  .prefix-bg("linear-gradient(to right, @{startColor} @{startPoint}, @{endColor} @{endPoint})");
+  background: -webkit-gradient(linear, left top, right top, color-stop(@startPoint,@startColor), color-stop(@endPoint,@endColor));
+  .ms-gradient(left,@startColor,@endColor);
+}
+// linear gradient top to bottom
+// @startColor{,@startPos}
+// {@middleColor,@middlePos}
+// @endColor{,@endPos}
+.gradient(@startColor,@endColor) when (iscolor(@startColor)) and (iscolor(@endColor)){
+  .gradient(@startColor,0%,@endColor,100%);
+}
+.gradient(@startColor,@startPoint,@endColor) when (iscolor(@startColor)) and (isnumber(@startPoint)) and (iscolor(@endColor)){
+  .gradient(@startColor,@startPoint,@endColor,100%);
+}
+.gradient(@startColor,@endColor,@endPoint) when (iscolor(@startColor)) and (isnumber(@endPoint)) and (iscolor(@endColor)){
+  .gradient(@startColor,0%,@endColor,@endPoint);
+}
+.gradient2(@startColor,@midColor,@midPos,@endColor){
+  background: @startColor;
+  .prefix-bg("linear-gradient(to bottom, @{startColor},@{midColor} @{midPos}, @{endColor})");
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,@startColor), color-stop(@midPos,@midColor), color-stop(100%,@endColor));
+  .ms-gradient(top,@startColor,@endColor);
+}
+.gradient2(@startColor,@midColor,@midPos,@endColor,@deg){
+  background: @startColor;
+  .prefix-bg("linear-gradient(@{deg}, @{startColor},@{midColor} @{midPos}, @{endColor})");
+}
+.gradient3(@startColor,@midPos,@endColor,@deg){
+  background: @startColor;
+  .prefix-bg("linear-gradient(@{deg}, @{startColor},@{startColor} @{midPos},@{endColor} @{midPos}, @{endColor})");
+}
+.rgradient2(@startColor,@midColor,@midPos,@endColor){
+  background: @startColor;
+  .prefix-bg("radial-gradient(center, ellipse cover, @{startColor}, @{midColor} @{midPos}, @{endColor})");
+  background: -webkit-gradient(radial, center center, 0px, center center, 100%, color-stop(0%,@startColor), color-stop(@midPos,@midColor), color-stop(100%,@endColor));
+  .ms-filter("progid:DXImageTransform.Microsoft.gradient( startColorstr=@{startColor}, endColorstr=@{endColor},GradientType=1 )");
+}
+.gradient1(@startColor,@endColor,@topColor){
+  .gradient(@startColor,@endColor);
+  box-shadow: 0 1px 0 @topColor inset;
+}
+.alias-color(@color){
+  //background-color: @color;
+  //-webkit-background-clip: text;
+  //-moz-background-clip: text;
+  //background-clip: text;
+  //color: transparent;
+  -webkit-font-smoothing: antialiased;
+  color:@color;
+  background: transparent;
+}
+// crossplatform use of min-height and min-width
+.min-width(@width){
+  min-width: @width;
+  *width :@width ;
+}
+.min-height(@h){
+  min-height: @h;
+  height: auto;
+  *height :@h ;
+}
+.pos-attr(abs){
+  position: absolute;
+}
+// set relative position of an element
+//    @rel absolute, relative or fixed
+//    @side which side offset us used
+//    @x,@y position might be negative
+//    @z if defined and not zero to set z-index
+.set-pos(@rel,left,@x,@y,@z:0){
+  position: @rel;
+  left: @x;
+  top: @y;
+}
+.set-pos(@rel,top,@x,@y,@z:0){
+  position: @rel;
+  left: @x;
+  top: @y;
+}
+.set-pos(@rel,right,@x,@y,@z:0){
+  position: @rel;
+  right: @x;
+  top: @y;
+}
+.set-pos(@rel,bottom,@x,@y,@z:0){
+  position: @rel;
+  left: @x;
+  bottom: @y;
+}
+.set-pos(@rel,far,@x,@y,@z:0){
+  position: @rel;
+  right: @x;
+  bottom: @y;
+}
+.set-pos(@rel,@pos,@x,@y,@z) when not (@z=0) and (isnumber(@z)){
+  z-index: @z;
+}
+// sets only absolute positions
+.pos(@top:0,@left:0,@z-index:0){
+  position: absolute;
+  .top(@top);
+  .left(@left);
+}
+.apos(@side,@top,@left,@z-index:0) when (iskeyword(@side)) and not (@side=rel) and not (@side=abs) and not (@side=fix) and (isnumber(@top)) and (isnumber(@left)){
+  .set-pos(absolute,@side,@left,@top,@z-index);
+}
+.apos(abs,@top,@left,@z-index:0) when (isnumber(@top)) and (isnumber(@left)){
+  .set-pos(absolute,left,@left,@top,@z-index);
+}
+.apos(rel,@top,@left,@z-index:0) when (isnumber(@top)) and (isnumber(@left)){
+  .set-pos(relative,left,@left,@top,@z-index);
+}
+.apos(fix,@top,@left,@z-index:0) when (isnumber(@top)) and (isnumber(@left)){
+  .set-pos(fixed,left,@left,@top,@z-index);
+}
+.apos(abs,@side,@top,@left,@z-index:0) when (iskeyword(@side)) and (isnumber(@top)) and (isnumber(@left)){
+  .set-pos(absolute,@side,@left,@top,@z-index);
+}
+.apos(rel,@side,@top,@left,@z-index:0) when (iskeyword(@side)) and (isnumber(@top)) and (isnumber(@left)){
+  .set-pos(relative,@side,@left,@top,@z-index);
+}
+.apos(fix,@side,@top,@left,@z-index:0) when (iskeyword(@side)) and (isnumber(@top)) and (isnumber(@left)){
+  .set-pos(fixed,@side,@left,@top,@z-index);
+}
+.apos(@side,abs,@top,@left,@z-index:0) when (iskeyword(@side)) and (isnumber(@top)) and (isnumber(@left)){
+  .set-pos(absolute,@side,@left,@top,@z-index);
+}
+.apos(@side,rel,@top,@left,@z-index:0) when (iskeyword(@side)) and (isnumber(@top)) and (isnumber(@left)){
+  .set-pos(relative,@side,@left,@top,@z-index);
+}
+.apos(@side,fix,@top,@left,@z-index:0) when (iskeyword(@side)) and (isnumber(@top)) and (isnumber(@left)){
+  .set-pos(fixed,@side,@left,@top,@z-index);
+}
+.rpos(@top:0,@right:0,@z-index:0){
+  position: absolute;
+  .top(@top);
+  .right(@right);
+}
+.bpos(@bottom:0,@left:0,@z-index:0){
+  position: absolute;
+  .bottom(@bottom);
+  .left(@left);
+}
+.brpos(@bottom:0,@left:0,@z-index:0){
+  position: absolute;
+  .bottom(@bottom);
+  .right(@left);
+}
+.pos(@top:0,@left:0,@z-index:0) when not (@z-index=0) and (isnumber(@z-index)){
+  z-index: @z-index;
+}
+.rpos(@top:0,@right:0,@z-index:0) when not (@z-index=0) and (isnumber(@z-index)){
+  z-index: @z-index;
+}
+.bpos(@top:0,@right:0,@z-index:0) when not (@z-index=0) and (isnumber(@z-index)){
+  z-index: @z-index;
+}
+.rel(@top:0,@left:0){
+  position: relative;
+}
+.shift(@left,@top){
+  .lmargin(@left);
+  .top(@top);
+}
+.square(@w) when (isnumber(@w)){
+  width: @w;
+  height: @w;
+}
+.run-block(@align:baseline){
+  display: inline-block;
+  *display: inline;
+  *zoom: 1;
+}
+.run-block(@align){
+  vertical-align: @align;
+}
+
+// creating a "corner" to point something
+// @len
+//   @side
+//   @offsel is how far it placed on @side
+//   @color1 is border color
+//   @color2 is fill color
+.stem(@len,@side,@offset:50%,@color1,@color2){
+  position: relative;
+  margin:0;
+  &:before,
+  &:after{
+    content:"";
+    .size(0,0);
+    border-style: solid;
+    border-color: transparent;
+    position: absolute;
+    pointer-events: none;
+  }
+  &:before{
+    border-width: @len+1;
+  }
+  &:after{
+    border-width: @len;
+  }
+}
+.stem(@len,@side,@offset:50%,@color1,@color2) when (@side = left){
+  margin-left:@len+2;
+  &:before,
+  &:after{
+    right:100%;
+    top:@offset;
+  }
+  &:before{
+    margin-top: -@len - 1;
+    border-right-color: @color1;
+  }
+  &:after{
+    margin-top: -@len;
+    border-right-color: @color2;
+  }
+}
+.stem(@len,@side,@offset:50%,@color1,@color2) when (@side = right){
+  margin-right:@len+2;
+  &:before,
+  &:after{
+    left:100%;
+    top:@offset;
+  }
+  &:before{
+    margin-top: -@len - 1;
+    border-left-color: @color1;
+  }
+  &:after{
+    margin-top: -@len;
+    border-left-color: @color2;
+  }
+}
+.stem(@len,@side,@offset:50%,@color1,@color2) when (@side = top){
+  margin-top:@len+2;
+  &:before,
+  &:after{
+    bottom:100%;
+    left:@offset;
+  }
+  &:before{
+    margin-left: -@len - 1;
+    border-bottom-color: @color1;
+  }
+  &:after{
+    margin-left: -@len;
+    border-bottom-color: @color2;
+  }
+}
+.stem(@len,@side,@offset:50%,@color1,@color2) when (@side = bottom){
+  margin-bottom:@len+2;
+  &:before,
+  &:after{
+    top:100%;
+    left:@offset;
+  }
+  &:before{
+    margin-left: -@len - 1;
+    border-top-color: @color1;
+  }
+  &:after{
+    margin-left: -@len;
+    border-top-color: @color2;
+  }
+}
+// to change only stem colors in modified elements
+.stem-colors(@side,@color1,@color2) when (@side = left){
+  &:before{
+    border-right-color: @color1;
+  }
+  &:after{
+    border-right-color: @color2;
+  }
+}
+.stem-colors(@side,@color1,@color2) when (@side = right){
+  &:before{
+    border-left-color: @color1;
+  }
+  &:after{
+    border-left-color: @color2;
+  }
+}
+.stem-colors(@side,@color1,@color2) when (@side = top){
+  &:before{
+    border-bottom-color: @color1;
+  }
+  &:after{
+    border-bottom-color: @color2;
+  }
+}
+.stem-colors(@side,@color1,@color2) when (@side = bottom){
+  &:before{
+    border-top-color: @color1;
+  }
+  &:after{
+    border-top-color: @color2;
+  }
+}
+.strict-height(@h){
+  height: @h;
+  overflow-y: hidden;
+}
+
+// to use with floating elements
+.clearfix(@side:both){
+  content: " ";
+  height: 0;
+  display: block;
+  *height: 1%;
+  *zoom: 1;
+  clear: @side;
+}
+.offset(@top,@right,@bottom,@left,in) when (@right = @left) and (@top = @bottom) and (@top = @right){
+  padding: @top;
+}
+.offset(@top,@right,@bottom,@left,in) when (@right = @left) and (@top = @bottom) and not (@top = @right){
+  padding: @top @right;
+}
+.offset(@top,@right,@bottom,@left,in) when (@right = @left) and not (@top = @bottom){
+  padding: @top @right @bottom;
+}
+.offset(@top,@right,@bottom,@left,in) when not (@right = @left) and not (@top = @bottom){
+  padding: @top @right @bottom @left;
+}
+.offset(@top,@right,@bottom,@left,out) when (@right = @left) and (@top = @bottom) and (@top = @right){
+  margin: @top;
+}
+.offset(@top,@right,@bottom,@left,out) when (@right = @left) and (@top = @bottom) and not (@top = @right){
+  margin: @top @right;
+}
+.offset(@top,@right,@bottom,@left,out) when (@right = @left) and not (@top = @bottom){
+  margin: @top @right @bottom;
+}
+.offset(@top,@right,@bottom,@left,out) when not (@right = @left) and not (@top = @bottom){
+  margin: @top @right @bottom @left;
+}
+
+// to make borders of a block
+//  @ln full line of border definition or only color
+//  @w optional if need to set width of the border
+//  @side, @side1, @side2 optional sides which the border applied
+.border(@ln,@side1,@side2) when not (isnumber(@side1)) and not (isnumber(@side2)){
+  .border(@ln,@side1);
+  .border(@ln,@side2);
+}
+.border(@ln,@w,@side1,@side2) when (iscolor(@ln)) and (isnumber(@w)) and not (isnumber(@side1)) and not (isnumber(@side2)){
+  .border(@ln,@w,@side1);
+  .border(@ln,@w,@side2);
+}
+.border(@ln,@w,left) when (iscolor(@ln)) and (isnumber(@w)){
+  border-left: @w solid @ln;
+}
+.border(@ln,@w,right) when (iscolor(@ln)) and (isnumber(@w)){
+  border-right: @w solid @ln;
+}
+.border(@ln,@w,top) when (iscolor(@ln)) and (isnumber(@w)){
+  border-top: @w solid @ln;
+}
+.border(@ln,@w,bottom) when (iscolor(@ln)) and (isnumber(@w)){
+  border-bottom: @w solid @ln;
+}
+.border(@ln,@w) when (iscolor(@ln)) and (isnumber(@w)){
+  border: @w solid @ln;
+}
+.border(@ln,left) when (iscolor(@ln)){
+  border-left: 1px solid @ln;
+}
+.border(@ln,right) when (iscolor(@ln)){
+  border-right: 1px solid @ln;
+}
+.border(@ln,top) when (iscolor(@ln)){
+  border-top: 1px solid @ln;
+}
+.border(@ln,bottom) when (iscolor(@ln)){
+  border-bottom: 1px solid @ln;
+}
+.border(@ln,left) when not (iscolor(@ln)){
+  border-left: @ln;
+}
+.border(@ln,right) when not (iscolor(@ln)){
+  border-right: @ln;
+}
+.border(@ln,top) when not (iscolor(@ln)){
+  border-top: @ln;
+}
+.border(@ln,bottom) when not (iscolor(@ln)){
+  border-bottom: @ln;
+}
+.border(@ln) when (iscolor(@ln)){
+  border: 1px solid @ln;
+}
+.border(@ln) when not (iscolor(@ln)){
+  border: @ln;
+}
+//.border(@ln) when (isstring(@ln)){
+//  border: e(@ln);
+//}
+.radius(@d,@side:all){
+  // behavior:url(border-radius.htc);
+}
+.radius(@d){
+  -webkit-border-radius: @d;
+  -moz-border-radius: @d;
+  border-radius: @d;
+}
+.radius_tl(@d){
+  -webkit-border-top-left-radius: @d;
+  -moz-border-radius-topleft: @d;
+  border-top-left-radius: @d;
+}
+.radius_tr(@d){
+  -webkit-border-top-right-radius: @d;
+  -moz-border-radius-topright: @d;
+  border-top-right-radius: @d;
+}
+.radius_bl(@d){
+  -webkit-border-bottom-left-radius: @d;
+  -moz-border-radius-bottomleft: @d;
+  border-bottom-left-radius: @d;
+}
+.radius_br(@d){
+  -webkit-border-bottom-right-radius: @d;
+  -moz-border-radius-bottomright: @d;
+  border-bottom-right-radius: @d;
+}
+// to set rounded corners
+// @d - diameter
+// @side shows wich side corners are rounded
+.radius(@d,left-top){
+  .radius_tl(@d);
+}
+.radius(@d,right-top){
+  .radius_tr(@d);
+}
+.radius(@d,left-bottom){
+  .radius_bl(@d);
+}
+.radius(@d,right-bottom){
+  .radius_br(@d);
+}
+.radius(@d,left){
+  .radius_tl(@d);
+  .radius_bl(@d);
+}
+.radius(@d,right){
+  .radius_tr(@d);
+  .radius_br(@d);
+}
+.radius(@d,top){
+  .radius_tl(@d);
+  .radius_tr(@d);
+}
+.radius(@d,bottom){
+  .radius_br(@d);
+  .radius_bl(@d);
+}
+.radius(@d,@side1,@side2) when not (isnumber(@side1)) and not (isnumber(@side2)){
+  .radius(@d,@side1);
+  .radius(@d,@side2);
+}
+.radius(@tl,@tr,@br,@bl){
+  @ln:%('%a %a %a %a',@tl,@tr,@br,@bl);
+  .radius(e(@ln));
+}
+.center(){
+  display: table;
+  *:first-child+html &{
+    position: relative;
+    display:block;
+  }
+  * html &{
+    position: relative;
+    display:block;
+  }
+  &>*{
+    display:table-cell;
+    vertical-align: middle;
+    *:first-child+html &{
+      position:absolute;
+      top:50%;
+    }
+    * html &{
+      position:absolute;
+      top:50%;
+    }
+    &>*{
+      *:first-child+html &{
+        position:relative;
+        top:-50%;
+      }
+      * html &{
+        position:relative;
+        top:-50%;
+      }
+    }
+  }
+}
+
+// crossplatform opacity application to an element
+.opacity(@alfa) when (isnumber(@alfa)) and not (@alfa > 1) and not (ispercentage(@alfa)){
+  @palfa:@alfa * 100;
+  .ms-filter("progid:DXImageTransform.Microsoft.Alpha(Opacity=@{palfa})");
+  -moz-opacity: @alfa;
+  -khtml-opacity: @alfa;
+  opacity: @alfa;
+}
+.opacity(@alfa) when (isnumber(@alfa)) and (@alfa > 1){
+  .opacity(unit(@alfa) / 100);
+}
+.opacity(@alfa) when (ispercentage(@alfa)){
+  .opacity(unit(@alfa) / 100);
+}
+// crossplatform transformations
+.rotate(@angle,@xpos:0,@ypos:0){
+  -webkit-transform: rotate(@angle);
+  -webkit-transform-origin: @xpos @ypos;
+  -moz-transform: rotate(@angle);
+  -moz-transform-origin: @xpos @ypos;
+  -o-transform: rotate(@angle);
+  -o-transform-origin: @xpos @ypos;
+  -ms-transform: rotate(@angle);
+  -ms-transform-origin: @xpos @ypos;
+  transform: rotate(@angle);
+  transform-origin: @xpos @ypos;
+}
+.rotate(@angle,@xpos:0,@ypos:0)when (@angle = 30){
+  .ms-filter("progid:DXImageTransform.Microsoft.Matrix(Dx=@{xpos},Dy=@{ypos},FilterType='bilinear',M11='0.866',M12='-0.5',M21='0.5',M22='0.866',sMethod='auto expand')");
+}
+.rotate(@angle,@xpos:0,@ypos:0)when (@angle = 45){
+  .ms-filter("progid:DXImageTransform.Microsoft.Matrix(Dx=@{xpos},Dy=@{ypos},FilterType='bilinear',M11='0.707',M12='-0.707',M21='0.707',M22='0.707',sMethod='auto expand')");
+}
+.rotate(@angle,@xpos:0,@ypos:0)when (@angle = 60){
+  .ms-filter("progid:DXImageTransform.Microsoft.Matrix(Dx=@{xpos},Dy=@{ypos},FilterType='bilinear',M11='0.5',M12='-0.866',M21='0.866',M22='0.5',sMethod='auto expand')");
+}
+.rotate(@angle,@xpos:0,@ypos:0)when (@angle = 120){
+  .ms-filter("progid:DXImageTransform.Microsoft.Matrix(Dx=@{xpos},Dy=@{ypos},FilterType='bilinear',M11='-0.866',M12='-0.5',M21='0.5',M22='-0.866',sMethod='auto expand')");
+}
+.rotate(@angle,@xpos:0,@ypos:0)when (@angle = 135){
+  .ms-filter("progid:DXImageTransform.Microsoft.Matrix(Dx=@{xpos},Dy=@{ypos},FilterType='bilinear',M11='-0.707',M12='-0.707',M21='0.707',M22='-0.707',sMethod='auto expand')");
+}
+.rotate(@angle,@xpos:0,@ypos:0)when (@angle = 150){
+  .ms-filter("progid:DXImageTransform.Microsoft.Matrix(Dx=@{xpos},Dy=@{ypos},FilterType='bilinear',M11='-0.5',M12='-0.866',M21='0.866',M22='-0.5',sMethod='auto expand')");
+}
+.prefix-shadow(@l) when (isstring(@l)){
+  -webkit-box-shadow: e(@l);
+  -moz-box-shadow:    e(@l);
+  box-shadow:         e(@l);
+}
+.make-shadow(@x,@y,@c,@b,@s,@i,box){
+  .prefix-shadow(%('%a %a %a %a %a %a',@x,@y,@b,@s,@c,@i));
+}
+
+// crossplatform box shadow
+//   @l length of the shadow
+//   @c main color of the shadow
+//   @side where to drop the shadow
+//   keyword inset - optional
+//   @b if blurred - size of blur
+//   @s modification of size of the shadow this is delta
+.shadow(@l,@c,right)when (iscolor(@c)) and (isnumber(@l)){
+  .make-shadow(@l,0,@c,0,~'',~'',box);
+}
+.shadow(@l,@c,left)when (iscolor(@c)) and (isnumber(@l)){
+  .make-shadow(-@l,0,@c,0,~'',~'',box);
+}
+.shadow(@l,@c,top)when (iscolor(@c)) and (isnumber(@l)){
+  .make-shadow(0,-@l,@c,0,~'',~'',box);
+}
+.shadow(@l,@c,bottom)when (iscolor(@c)) and (isnumber(@l)){
+  .make-shadow(0,@l,@c,0,~'',~'',box);
+}
+.shadow(@l,@c,right,inset)when (iscolor(@c)) and (isnumber(@l)){
+  .make-shadow(@l,0,@c,0,~'',inset,box);
+}
+.shadow(@l,@c,left,inset)when (iscolor(@c)) and (isnumber(@l)){
+  .make-shadow(-@l,0,@c,0,~'',inset,box);
+}
+.shadow(@l,@c,top,inset)when (iscolor(@c)) and (isnumber(@l)){
+  .make-shadow(0,-@l,@c,0,~'',inset,box);
+}
+.shadow(@l,@c,bottom,inset)when (iscolor(@c)) and (isnumber(@l)){
+  .make-shadow(0,@l,@c,0,~'',inset,box);
+}
+.shadow(@b,@c)when (iscolor(@c)) and (isnumber(@b)){
+  .make-shadow(0,0,@c,@b,~'',~'',box);
+}
+.shadow(@b,@c,left,@l)when (iscolor(@c)) and (isnumber(@b)) and (isnumber(@l)){
+  .make-shadow(-@l,0,@c,@b,~'',~'',box);
+}
+.shadow(@b,@c,right,@l)when (iscolor(@c)) and (isnumber(@b)) and (isnumber(@l)){
+  .make-shadow(@l,0,@c,@b,~'',~'',box);
+}
+.shadow(@b,@c,top,@l)when (iscolor(@c)) and (isnumber(@b)) and (isnumber(@l)){
+  .make-shadow(0,-@l,@c,@b,~'',~'',box);
+}
+.shadow(@b,@c,bottom,@l)when (iscolor(@c)) and (isnumber(@b)) and (isnumber(@l)){
+  .make-shadow(0,@l,@c,@b,~'',~'',box);
+}
+.shadow(@b,@c,@s)when (iscolor(@c)) and (isnumber(@b)) and (isnumber(@s)){
+  .make-shadow(0,0,@c,@b,@s,~'',box);
+}
+.shadow(@b,@c,left,@l,@s)when (iscolor(@c)) and (isnumber(@b)) and (isnumber(@l)) and (isnumber(@s)){
+  .make-shadow(-@l,0,@c,@b,@s,~'',box);
+}
+.shadow(@b,@c,right,@l,@s)when (iscolor(@c)) and (isnumber(@b)) and (isnumber(@l)) and (isnumber(@s)){
+  .make-shadow(@l,0,@c,@b,@s,~'',box);
+}
+.shadow(@b,@c,top,@l,@s)when (iscolor(@c)) and (isnumber(@b)) and (isnumber(@l)) and (isnumber(@s)){
+  .make-shadow(0,-@l,@c,@b,@s,~'',box);
+}
+.shadow(@b,@c,bottom,@l,@s)when (iscolor(@c)) and (isnumber(@b)) and (isnumber(@l)) and (isnumber(@s)){
+  .make-shadow(0,@l,@c,@b,@s,~'',box);
+}
+.shadow(@b,@c,inset)when (iscolor(@c)) and (isnumber(@b)){
+  .make-shadow(0,0,@c,@b,~'',inset,box);
+}
+.shadow(@b,@c,left,inset,@l)when (iscolor(@c)) and (isnumber(@b)) and (isnumber(@l)){
+  .make-shadow(-@l,0,@c,@b,~'',inset,box);
+}
+.shadow(@b,@c,right,inset,@l)when (iscolor(@c)) and (isnumber(@b)) and (isnumber(@l)){
+  .make-shadow(@l,0,@c,@b,~'',inset,box);
+}
+.shadow(@b,@c,top,inset,@l)when (iscolor(@c)) and (isnumber(@b)) and (isnumber(@l)){
+  .make-shadow(0,-@l,@c,@b,~'',inset,box);
+}
+.shadow(@b,@c,bottom,inset,@l)when (iscolor(@c)) and (isnumber(@b)) and (isnumber(@l)){
+  .make-shadow(0,@l,@c,@b,~'',inset,box);
+}
+.shadow(@b,@c,inset,@s)when (iscolor(@c)) and (isnumber(@b)) and (isnumber(@s)){
+  .make-shadow(0,0,@c,@b,@s,inset,box);
+}
+.shadow(@b,@c,left,inset,@l,@s)when (iscolor(@c)) and (isnumber(@b)) and (isnumber(@l)) and (isnumber(@s)){
+  .make-shadow(-@l,0,@c,@b,@s,inset,box);
+}
+.shadow(@b,@c,right,inset,@l,@s)when (iscolor(@c)) and (isnumber(@b)) and (isnumber(@l)) and (isnumber(@s)){
+  .make-shadow(@l,0,@c,@b,@s,inset,box);
+}
+.shadow(@b,@c,top,inset,@l,@s)when (iscolor(@c)) and (isnumber(@b)) and (isnumber(@l)) and (isnumber(@s)){
+  .make-shadow(0,-@l,@c,@b,@s,inset,box);
+}
+.shadow(@b,@c,bottom,inset,@l,@s)when (iscolor(@c)) and (isnumber(@b)) and (isnumber(@l)) and (isnumber(@s)){
+  .make-shadow(0,@l,@c,@b,@s,inset,box);
+}
+.shadow(none){
+  .prefix-shadow('none');
+}
+.shadow(@x,@y,@blur,@color,@opacity:1) when (isnumber(@x)) and (isnumber(@y)) {
+  @c:fade(@color,unit(@opacity * 100,~'%'));
+  //@y:@y;
+  -webkit-box-shadow: @x @y @blur @c;
+  -moz-box-shadow:    @x @y @blur @c;
+  box-shadow:         @x @y @blur @c;
+}
+.shadow(@x,@y,@blur,@color,inset,@opacity:1) when (isnumber(@x)) and (isnumber(@y)){
+  @c:fade(@color,unit(@opacity * 100,~'%'));
+  -webkit-box-shadow: @x @y @blur @c inset;
+  -moz-box-shadow:    @x @y @blur @c inset;
+  box-shadow:         @x @y @blur @c inset;
+}
+.shadow(@x,@y,@blur,@color,@opacity,@size) when (isnumber(@x)) and (isnumber(@y)) and (isnumber(@size)){
+  @c:fade(@color,unit(@opacity * 100,~'%'));
+  -webkit-box-shadow: @x @y @blur @size @c;
+  -moz-box-shadow:    @x @y @blur @size @c;
+  box-shadow:         @x @y @blur @size @c;
+}
+.shadow(@x,@y,@blur,@color,inset,@opacity,@size) when (isnumber(@x)) and (isnumber(@y)) and (isnumber(@size)){
+  @c:fade(@color,unit(@opacity * 100,~'%'));
+  -webkit-box-shadow: @x @y @blur @size @c inset;
+  -moz-box-shadow:    @x @y @blur @size @c inset;
+  box-shadow:         @x @y @blur @size @c inset;
+}
+.round-shadow(top){
+  @startColor:rgba(0,0,0,0.7);
+  @endColor:rgba(0,0,0,0);
+  position: relative;
+  z-index:100;
+  //overflow:hidden;
+  &:before{
+    content: "";
+    display: block;
+    .pos(-10px,10%,-1);
+    .size(80%,100%);
+    .radius(100%);
+    padding:10px 0;
+    .egrad(50% 50%, farthest-side,@startColor,@endColor);
+  }
+}
+.fader(){
+  .set-pos(fixed,left,0,0,9999);
+  .blk(100%,100%,hidden,#000);
+  .opacity(0.5);
+}
+
+.popup(@x,@y){
+  .set-pos(fixed,left,@x,@y,9999);
+  .blk(auto,hidden);
+  .shadow(0, 0, 5px, #000);
+}
+
+.ir() {
+  border: 0;
+  font: 0/0 a;
+  text-shadow: none;
+  color: transparent;
+  background-color: transparent;
+}
+
+// Hide conntent
+.hide-text() {
+  font: 0/0 a;
+  border: 0;
+  color: transparent;
+  background-color: transparent;
+  text-shadow: none;
+  .shadow(none);
+}
+
+//      Transition Tools
+// ====================================
+
+// Transition
+.transition(@transition) {
+  -webkit-transition: @transition;
+  -moz-transition: @transition;
+  -o-transition: @transition;
+  transition: @transition;
+}
+.transition(@transition)when (isstring(@transition)){
+  .transition(e(@transition));
+}
+
+// Transition all
+.transition-all(@duration: 0.2s, @delay: ease) {
+  .transition(%("all %a %a",@duration @delay));
+}
+
+// Transition duration
+.transition-duration(@transition-duration) {
+  -webkit-transition-duration: @transition-duration;
+  -moz-transition-duration: @transition-duration;
+  -o-transition-duration: @transition-duration;
+  transition-duration: @transition-duration;
+}
+// Transition delay
+.transition-delay(@transition-delay) {
+  -webkit-transition-delay: @transition-delay;
+  -moz-transition-delay: @transition-delay;
+  -o-transition-delay: @transition-delay;
+  transition-delay: @transition-delay;
+}
+
+
+//          Transform Tools
+// ==============================================
+
+// Basic transform
+.transform(@transform) {
+  -webkit-transform: @transform;
+  -moz-transform: @transform;
+  -ms-transform: @transform;
+  -o-transform: @transform;
+  transform: @transform;
+}
+
+// Rotate
+.rotate(@deg) {
+  .transform(rotate(@deg));
+}
+
+// Scale
+.scale(@ratio) {
+  .transform(scale(@ratio));
+}
+
+// Translate
+.translate(@x, @y) {
+  .transform(translate(@x, @y));
+}
+
+.placeholder-icon(@url,@w,@h,@l:0,@t:0){
+  &::-webkit-input-placeholder{
+    background: e(%('url(%a)',@url)) no-repeat @l @t;
+    .blk(@w,@h);
+  }
+  &:-moz-placeholder{
+    background: e(%('url(%a)',@url)) no-repeat @l @t;
+    .blk(@w,@h);
+  }
+}
+.checkbox(@bg,@w,@h,@normalx:0,@normaly:0,@checkedx:0,@checkedy:0){
+  @p:@w + 2 * 10;
+  @m:@w + 10;
+  input[type="checkbox"]{
+    .blk(none,auto);
+    & + label{
+      .attr(rel);
+      padding-left: @p;
+      .text-attr(@h);
+      &:before{
+        .blk(@w,@h,"",middle,left);
+        margin-left: -@m;
+        background: e(%('url(%a)',@bg)) no-repeat @normalx @normaly;
+      }
+    }
+    &:checked +label:before{
+      background-position: @checkedx @checkedy;
+    }
+    & +label.checked:before{
+      background-position: @checkedx @checkedy;
+    }
+    //&:disabled +label:before{
+    //  background-position: @checkedx @disabledy;
+    //}
+  }
+}
+
+.grid(@cols,@gutter:10%) when (ispercentage(@gutter)){
+  text-align: justify !important;
+  //text-justify: distribute-all-lines;
+  font-size: 0 !important;
+  @g:unit(@gutter) / 100;
+  @w:(@g + 1) * @cols + @g;
+  @b:100% / @w;
+  @p:round(@b * @g,1);
+  padding-right: @p !important;
+  & > * {
+    .text(medium,left) !important;
+    .blk(run,round(@b,1));
+    margin: 0 0 0 @p;
+    //text-align: left;
+    //font-size: medium;
+
+  }
+  &:after {
+    .blk(run,100%,"");
+  }
+
+}
+
+//* Hide only visually, but have it available for screenreaders: h5bp.com/v */
+.visuallyhidden() {
+  border: 0;
+  clip: rect(0 0 0 0);
+  height: 1px;
+  margin: -1px;
+  overflow: hidden;
+  padding: 0;
+  position: absolute;
+  width: 1px;
+  //* Extends the .visuallyhidden class to allow the element to be focusable when navigated to via the keyboard: h5bp.com/p */
+  &.focusable:active,
+  &.focusable:focus {
+    clip: auto;
+    height: auto;
+    margin: 0;
+    overflow: visible;
+    position: static;
+    width: auto;
+  }
+}
+
+// interesting objects
+
+.circle(@size){
+  content: "";
+  .set-pos(absolute,left,@size / 2,@size / 2);
+  position: absolute;
+  .radius(50%);
+  .square(@size);
+}
+
+
+.cone-gradient(@wheel) {
+.circle(@wheel);
+  background: red;
+  clip: rect(0, @wheel, @wheel, @wheel / 2);
+  &:after {
+  .circle(@wheel);
+    background: blue;
+    clip: rect(0, @wheel / 2, @wheel, 0);
+    transform: rotate(45deg);
+  }
+}

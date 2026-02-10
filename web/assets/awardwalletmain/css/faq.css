@@ -1,0 +1,236 @@
+.faq {
+  display: block;
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+  padding: 20px 20px 0;
+  min-width: 747px;
+  *width: 747px;
+}
+.faq a {
+  color: #3f3e3f;
+  text-decoration: underline;
+}
+.faq a:hover {
+  color: #116cb2;
+}
+.faq h3 > a:first-of-type,
+.faq dt > a:first-of-type {
+  text-decoration: none;
+  display: block;
+}
+.faq h3:hover > .icon-plus-graycircle,
+.faq dt:hover > .icon-plus-graycircle {
+  background-position: -27px -138px;
+  width: 16px;
+  height: 16px;
+  line-height: 16px;
+  margin-top: 0;
+}
+.faq h3.open > .icon-plus-graycircle,
+.faq dt.open > .icon-plus-graycircle {
+  background-position: -76px -138px;
+  width: 16px;
+  height: 16px;
+  line-height: 16px;
+  margin-top: 0;
+}
+.faq h3:target > .icon-plus-graycircle,
+.faq dt:target > .icon-plus-graycircle {
+  background-position: -76px -138px;
+  width: 16px;
+  height: 16px;
+  line-height: 16px;
+  margin-top: 0;
+}
+.faq h3 {
+  display: block;
+  position: relative;
+  height: 39px;
+  overflow: hidden;
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+  font-size: 1em;
+  font-weight: normal;
+  line-height: 17px;
+  text-transform: uppercase;
+  white-space: nowrap;
+  padding: 11px 40px;
+  text-shadow: 0 1px 0 #fff;
+  -webkit-box-shadow: 0 2px 3px  #acacac ;
+  -moz-box-shadow: 0 2px 3px  #acacac ;
+  box-shadow: 0 2px 3px  #acacac ;
+  background: #f5f5f5;
+  background: -moz-linear-gradient(top, #f5f5f5,#f8f8f9 5%, #f0f0f1);
+  background: -ms-linear-gradient(top, #f5f5f5,#f8f8f9 5%, #f0f0f1);
+  background: -o-linear-gradient(top, #f5f5f5,#f8f8f9 5%, #f0f0f1);
+  background: -webkit-linear-gradient(top, #f5f5f5,#f8f8f9 5%, #f0f0f1);
+  background: linear-gradient(to bottom, #f5f5f5,#f8f8f9 5%, #f0f0f1);
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #f5f5f5), color-stop(5%, #f8f8f9), color-stop(100%, #f0f0f1));
+  -ms-filter: "progid:DXImageTransform.Microsoft.gradient( startColorstr=#fff5f5f5, endColorstr=#fff0f0f1,GradientType=0 )";
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr=#fff5f5f5, endColorstr=#fff0f0f1,GradientType=0 );
+}
+.faq h3:not(:first-of-type) {
+  margin-top: 20px;
+}
+.faq h3 > .icon-plus-graycircle {
+  position: absolute;
+  top: 11px;
+  left: 10px;
+}
+.faq h3.open + dl {
+  display: block;
+}
+.faq h3:target + dl {
+  display: block;
+}
+.faq dl {
+  display: none;
+  padding-top: 20px;
+  position: relative;
+  margin: 0;
+  margin-bottom: 9px;
+  margin-bottom: 0;
+}
+.faq dl:before,
+.faq dl:after {
+  content: "";
+  width: 0;
+  height: 0;
+  border-style: solid;
+  border-color: transparent;
+  position: absolute;
+  pointer-events: none;
+}
+.faq dl:before {
+  border-width: 8px;
+}
+.faq dl:after {
+  border-width: 7px;
+}
+.faq dl:before,
+.faq dl:after {
+  top: 100%;
+  left: 33px;
+}
+.faq dl:before {
+  margin-left: -8px;
+  border-top-color: #acacac;
+}
+.faq dl:after {
+  margin-left: -7px;
+  border-top-color: #f0f0f1;
+}
+.faq dl:after,
+.faq dl:before {
+  top: 0;
+}
+.faq dt,
+.faq dd {
+  padding: 9px 40px 9px 80px;
+  position: relative;
+}
+.faq dt > b:first-child,
+.faq dd > b:first-child {
+  position: absolute;
+  top: 0;
+  left: 57px;
+  padding-top: inherit;
+  font-weight: normal;
+}
+.faq dt {
+  border-top: 1px solid #cfcfcf;
+}
+.faq dt.open {
+  background: #f5f5f5;
+  background: -moz-linear-gradient(top, #f5f5f5,#f8f8f9 5%, #f0f0f1);
+  background: -ms-linear-gradient(top, #f5f5f5,#f8f8f9 5%, #f0f0f1);
+  background: -o-linear-gradient(top, #f5f5f5,#f8f8f9 5%, #f0f0f1);
+  background: -webkit-linear-gradient(top, #f5f5f5,#f8f8f9 5%, #f0f0f1);
+  background: linear-gradient(to bottom, #f5f5f5,#f8f8f9 5%, #f0f0f1);
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #f5f5f5), color-stop(5%, #f8f8f9), color-stop(100%, #f0f0f1));
+  -ms-filter: "progid:DXImageTransform.Microsoft.gradient( startColorstr=#fff5f5f5, endColorstr=#fff0f0f1,GradientType=0 )";
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr=#fff5f5f5, endColorstr=#fff0f0f1,GradientType=0 );
+  -webkit-box-shadow: 0 2px 5px -2px #cfcfcf ;
+  -moz-box-shadow: 0 2px 5px -2px #cfcfcf ;
+  box-shadow: 0 2px 5px -2px #cfcfcf ;
+}
+.faq dt:target {
+  background: #f5f5f5;
+  background: -moz-linear-gradient(top, #f5f5f5,#f8f8f9 5%, #f0f0f1);
+  background: -ms-linear-gradient(top, #f5f5f5,#f8f8f9 5%, #f0f0f1);
+  background: -o-linear-gradient(top, #f5f5f5,#f8f8f9 5%, #f0f0f1);
+  background: -webkit-linear-gradient(top, #f5f5f5,#f8f8f9 5%, #f0f0f1);
+  background: linear-gradient(to bottom, #f5f5f5,#f8f8f9 5%, #f0f0f1);
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #f5f5f5), color-stop(5%, #f8f8f9), color-stop(100%, #f0f0f1));
+  -ms-filter: "progid:DXImageTransform.Microsoft.gradient( startColorstr=#fff5f5f5, endColorstr=#fff0f0f1,GradientType=0 )";
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr=#fff5f5f5, endColorstr=#fff0f0f1,GradientType=0 );
+  -webkit-box-shadow: 0 2px 5px -2px #cfcfcf ;
+  -moz-box-shadow: 0 2px 5px -2px #cfcfcf ;
+  box-shadow: 0 2px 5px -2px #cfcfcf ;
+}
+.faq dt > .icon-plus-graycircle {
+  position: absolute;
+  top: 9px;
+  left: 25px;
+}
+.faq dt.open + dd {
+  display: block;
+  width: inherit;
+}
+.faq dt:target + dd {
+  display: block;
+  width: inherit;
+}
+.faq dt > b:first-child:before {
+  content: 'Q:';
+  color: #a6a6a6;
+}
+.faq dd {
+  display: none;
+  -webkit-box-shadow: 0 -2px 5px -2px #e9e9e9 inset;
+  -moz-box-shadow: 0 -2px 5px -2px #e9e9e9 inset;
+  box-shadow: 0 -2px 5px -2px #e9e9e9 inset;
+  position: relative;
+  margin: 0;
+  margin-bottom: 9px;
+  margin-bottom: 0;
+}
+.faq dd:before,
+.faq dd:after {
+  content: "";
+  width: 0;
+  height: 0;
+  border-style: solid;
+  border-color: transparent;
+  position: absolute;
+  pointer-events: none;
+}
+.faq dd:before {
+  border-width: 8px;
+}
+.faq dd:after {
+  border-width: 7px;
+}
+.faq dd:before,
+.faq dd:after {
+  top: 100%;
+  left: 61px;
+}
+.faq dd:before {
+  margin-left: -8px;
+  border-top-color: #cfcfcf;
+}
+.faq dd:after {
+  margin-left: -7px;
+  border-top-color: #f0f0f1;
+}
+.faq dd:after,
+.faq dd:before {
+  top: 0;
+}
+.faq dd > b:first-child:before {
+  content: 'A:';
+  color: #116cb2;
+}
