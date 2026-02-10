@@ -1,0 +1,6154 @@
+/* ************************** global styles ************************** */
+body{
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 14px;
+	color: black;
+	font-weight: normal;
+    margin: 0;
+    padding: 0;
+}
+html body{
+    margin: 0;
+    padding: 0;
+}
+input {
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 14px;
+}
+input.text {
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 12px;
+	border: 1px solid #2a80bd;
+	color: #0b70b7;
+}
+select {
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 14px;
+	font-weight: normal;
+	border: 1px solid #B5B5B5;
+	color: Black;
+}
+li{
+	list-style-position : outside;
+	margin-top: 3px;
+}
+ul li{
+    list-style-type: disc;
+}
+hr{
+	color: #B5B5B5;
+	height: 1px;
+}
+img{
+    border: none;
+}
+a:visited, a:link, a:active {
+	color: #0b70b7;
+	text-decoration: underline;
+}
+a, input[type=submit], button{
+    outline: none;
+}
+div.clear{
+	clear: both;
+	height: 1px;
+	overflow: hidden;
+}
+
+.cBoth{clear:both}
+
+.nowrap {white-space:nowrap !important;}
+span.bold {font-weight: bold;}
+div.noLeftMenuPadd {padding-left:50px !important;}
+/* ------------ first page -------------- */
+body.first{
+	min-width: 900px;
+}
+body.first div.digit{
+	float: left;
+	width: 69px;
+	height: 73px;
+    background-image: url(/images/firstPage.png);
+    background-repeat: no-repeat;
+	margin-right: 5px;
+}
+body.first div.digitText{
+	float: left;
+	width: 210px;
+	padding-top: 33px;
+	font-style: italic;
+}
+body.first div.digitText span.hl{
+	color: #7db5d7;
+}
+body.first div.one{
+    background-position: -329px 0;
+}
+body.first div.two{
+    background-position: -403px 0;
+}
+body.first div.three{
+    background-position: -478px 0;
+}
+#watchButton{
+	color: #d13434;
+	font-size: 16px;
+	display: block;
+	float: right;
+	width: 247px;
+	height: 41px;
+	background-image: url(/images/firstPage.png);
+	background-position: 0 -89px;
+	margin-right: 26px;
+	padding-left: 12px;
+	padding-top: 12px;
+}
+#easyAs{
+	text-shadow: white 1px 1px 2px;
+	height: 54px;
+	background-position: 0 -147px;
+	background-image: url(/images/firstPage.png);
+	padding-top: 8px;
+	text-align: center;
+	font-size: 35px;
+	color: #00548b;
+	font-style: italic;
+}
+
+/* -------------- top bar --------------- */
+div#topBar{
+    height: 156px;
+    background-image: url(/images/hBg.png?v=3);
+    background-repeat: repeat-x;
+	background-position: 0 -951px;
+	min-width: 970px;
+    overflow: hidden;
+}
+body.forum div#topBar{
+	height: 136px;
+	overflow: hidden;
+}
+body.first div#topBar{
+	padding-left: 0;
+	height: 120px;
+    min-width: 960px;
+}
+body.first div#topButtons{
+	min-width: 360px;
+}
+body.first div.fixWidth{
+	width: 864px;
+	margin-left: auto;
+	margin-right: auto;
+}
+div#topBarLeftShadow{
+	float: left;
+    width: 24px;
+    height: 26px;
+    background-image: url(/images/leftShadow.png);
+    background-repeat: no-repeat;
+	margin-top: 49px;
+}
+div#topBarLogo, div#topBarLogoBWR, div#topBarLogoBOOK_YOUR_AWARD{
+    float: left;
+    width: 356px;
+    height: 156px;
+    background-image: url(/images/topBarLeft.png?v=3);
+    background-repeat: no-repeat;
+	position: relative;
+	left: -15px;
+}
+div#topBarLogoCWT{
+    float: left;
+    width: 356px;
+    height: 156px;
+    background-image: url(/images/topBarLeftCWT.png?v=3);
+    background-repeat: no-repeat;
+	position: relative;
+	left: -15px;
+}
+div#topBarLogoBOOK {
+    float: left;
+    width: 356px;
+    height: 156px;
+    background-image: url(/images/topBarLeft.png?v=3);
+    background-repeat: no-repeat;
+    position: relative;
+    left: -15px;
+}
+a#logoBOOK {
+    display: block;
+    width: 270px;
+    height: 120px;
+    background-repeat: no-repeat;
+    background-position: 50% 50%;
+    margin-left: 45px;
+    margin-top: 20px;
+    z-index: 1;
+    padding: 0px;
+}
+body.first div#topBarLogo, body.first div#topBarLogoBWR{
+    height: 120px;
+	width: 401px;
+	background-image: url(/images/topBarLeftFirst.png?v=4);
+	left: 0;
+}
+body.first div#topBarLogoCWT{
+    height: 120px;
+	width: 401px;
+	background-image: url(/images/topBarLeftFirstCWT.png?v=4);
+	left: 0;
+}
+body.first div#topBarLogoBWR {
+    height: 125px;
+}
+a#logo, a#logoBWR{
+	display: block;
+    width: 284px;
+    height: 40px;
+    background-image: url(/images/firstPage.png);
+    background-repeat: no-repeat;
+    margin-left: 56px;
+    margin-top: 60px;
+    padding:0px;
+}
+a#logoCWT{	
+    display: block;
+    width: 111px;
+    height: 88px;
+    background-image: url(/images/logoCWT.png);
+    background-repeat: no-repeat;
+    margin-left: 65px;
+    margin-top: 50px;
+    padding:0px;
+    position:relative;
+    z-index:1;
+}
+a#logoBWR{
+    background-image: url(/images/logoBWR.png);
+    width:262px;
+    height:69px;
+    position:relative;
+    z-index:1;
+    left:-6px;
+    top:-15px;
+}
+body.first a#logoBWR{
+    background-image: url(/images/logoBWR_first.png);
+    width:307px;
+    height:79px;
+    left:-8px;
+    top:-15px;
+}
+div.underLogoLine {position:absolute; width:351px; background:#fff; height:20px; bottom:-19px; left:25px;}
+div.underLogoLineCWT {width:192px;}
+
+a#logo.second{
+    width: 220px;
+	margin-left: 66px;
+}
+/*a#logo.new-year{
+    background: url(/assets/awardwalletnewdesign/img/logo-ny-animate-old.gif) no-repeat;
+    margin: 0;
+    width: 365px;
+    height: 160px;
+}*/
+body.first a#logo{
+    margin-left: 57px;
+}
+body.first a#logo.new-year {
+    margin-left: 15px;
+}
+div#topBarLogoBOOK_BYA{
+    float: left;
+    width: 356px;
+    height: 156px;
+    background-image: url(/images/topBarLeft.png?v=3);
+    background-repeat: no-repeat;
+    position: relative;
+    left: -15px;
+}
+a#logoBOOK_BYA {
+    display: block;
+    width: 284px;
+    height: 40px;
+    background-image: url(/images/firstPage.png);
+    background-repeat: no-repeat;
+    margin-left: 56px;
+    margin-top: 60px;
+    padding:0px;
+}
+a#logoBOOK_BYA{
+    background-image: url(/images/logoBookYourAward.png);
+    width:147px;
+    height:91px;
+    position:relative;
+    z-index:1;
+    left:50px;
+    top:-19px;
+}
+div#topButtons{
+    padding-left: 0px;
+    padding-top: 25px;
+	min-width: 614px;
+	float: left;
+}
+div#topButtons a{
+    color: white;
+    text-decoration: none;
+}
+div#topButtons a div{
+    cursor: pointer;
+}
+div#topButtons a div span{
+    border-bottom: 2px solid white;
+}
+div#topButtons a div span span{
+    border-bottom: none;
+	position: relative;
+	top: 1px;
+}
+div#topButtons a:hover{
+    text-decoration: none;
+}
+div#topButtons div.button{
+    float: left;
+    background-image: url(/images/coreImages.png?v=3);
+    background-repeat: no-repeat;
+    text-align: center;
+    font-size: 17px;
+    font-family: Arial, Helvetica, sans-serif;
+    text-transform: uppercase;
+    padding-top: 7px;
+	height: 29px;
+}
+div#topButtons div.buttonRB {
+    float: left;
+    background-image: url(/images/coreImages.png?v=3);
+    background-position: -146px -404px;
+    background-repeat: no-repeat;
+    padding-top: 7px;
+    width: 7px;
+    height: 29px;
+}
+div#topButtons div.buttonRBactive {
+    float: left;
+    background-image: url(/images/coreImages.png?v=3);
+    background-position: -146px -440px;
+    background-repeat: no-repeat;
+    padding-top: 7px;
+    width: 7px;
+    height: 29px;
+}
+div#topButtons a:hover div span{
+	border: none;
+}
+div#offersButton.active {
+  background-position: -255px -440px;
+  color: #c92323;
+}
+div#tripsButton.active{
+    background-position: -255px -440px;
+	color: #c92323;
+}
+div#balancesButton.active{
+    background-position: 0 -440px;
+	color: #c92323;
+}
+div#balancesButton{
+    width: 100px;
+    padding-left: 7px;
+	background-position: 0px -404px;
+}
+div#tripsButton{
+    width: 136px;
+    padding-left: 7px;
+    background-position: -255px -404px;
+    margin-left: 27px;
+}
+div#offersButton {
+  width: 158px;
+  padding-left: 7px;
+  background-position: -255px -404px;
+  margin-left: 27px;
+}
+div#topButtons div#registerButton{
+    width: 153px;
+    background-position: 0 -53px;
+    background-image: url(/images/firstPage.png);
+	margin-right: 21px;
+}
+div#topButtons div#loginButton{
+    width: 117px;
+    background-position: -153px -53px;
+    background-image: url(/images/firstPage.png);
+}
+div#topButtons div.number{
+    background-position: -153px -404px;
+    width: 56px;
+    color: #cc385c;
+	float: left;
+}
+div#topButtons div.action{
+    background-position: -209px -404px;
+    width: 29px;
+    margin-left: 1px;
+	float: left;
+}
+div#topButtons div.action div{
+    width: 17px;
+    height: 17px;
+    background-image: url(/images/coreImages.png?v=3);
+    background-repeat: no-repeat;
+    background-position: -238px -404px;
+    margin-left: 6px;
+	margin-top: 2px;
+}
+div#secondMenu{
+    margin-top: 14px;
+    font-size: 15px;
+    height: 31px;/*37px;*/
+	min-width: 610px;
+	float: left;
+	clear: both;
+    overflow-y: hidden;
+}
+body.first div#secondMenu{
+	min-width: 340px;
+	width: auto !important;
+}
+div#secondMenu a.link{
+    display: block;
+    background-image: url(/images/coreImages.png?v=3);
+    background-repeat: no-repeat;
+    background-position: -438px -404px;
+    padding: 10px 10px 10px 10px;
+    margin-right: 20px;
+    color: white;
+    text-decoration: underline;
+    font-size: 15px;
+    float: left;
+    height: 17px;
+    clear: right;
+}
+div#secondMenu a.withCount{
+    margin-right: 0px;
+}
+div#secondMenu div.overallReferral{
+	margin-top: 8px;
+}
+div#secondMenu a:hover{
+    text-decoration: none;
+}
+div#blueBg{
+    background-image: url(/images/hBg.png?v=3);
+    background-repeat: repeat-x;
+    background-position: 0 -382px;
+	height: 300px;
+	min-width:960px;
+	overflow: visible;
+}
+div#center{
+    background-image: url(/images/topBarBg.jpg);
+    background-repeat: repeat-x;
+	background-position: 0 -120px;
+	background-color: white;
+}
+div#whiteShadow{
+	background-color: white;
+	margin-left: 24px;
+	width: 351px;
+	height: 45px;
+}
+div#printHeader{
+	display: none;
+}
+/* ------------ buttons -------------- */
+a.button{
+    text-decoration: none;
+    color: black;
+}
+a.button:hover{
+    text-decoration: underline;
+}
+div.button{
+    height: 26px;
+    float: left;
+	text-align: left;
+}
+div.button div.head{
+    height: 26px;
+    width: 13px;
+    float: left;
+    background-image: url(/images/coreImages.png?v=3);
+    background-repeat: no-repeat;
+    background-position: -65px -12px;
+}
+div.button div.foot{
+    height: 26px;
+    width: 13px;
+    float: left;
+    background-image: url(/images/coreImages.png?v=3);
+    background-repeat: no-repeat;
+    background-position: -149px -12px;
+}
+div.button div.caption{
+    height: 21px;
+    float: left;
+    background-image: url(/images/hBg.png?v=3);
+    background-repeat: repeat-x;
+    font-size: 13px;
+    color: black;
+    padding-top: 5px;
+    min-width: 75px;
+}
+div.button div.printer{
+	background-position: -326px -173px;
+    background-image: url(/images/coreImages.png?v=3);
+    background-repeat: no-repeat;
+	width: 16px;
+	height: 16px;
+	float: left;
+	margin-right: 10px;
+	margin-left: 5px;
+}
+/* ------------- left bar ------------ */
+div#leftBar{
+    width: 291px;
+    float: left;
+    padding: 0px 20px 32px 10px;
+}
+div#leftBar div.box{
+    width: 291px;
+    margin-bottom: 20px;
+}
+div#leftBar div.box div.bHead{
+    background-image: url(/images/coreImages.png?v=3);
+    background-repeat: no-repeat;
+}
+div#leftBar div.box div.bContent{
+    background-image: url(/images/leftGrad.png);
+    background-repeat: repeat-y;
+    background-position: -653px 0px;
+}
+div#leftBar div.box div.bPad{
+    padding: 0px 8px 3px;
+}
+div#leftBar div.box div.bContent div.bTopGrad{
+    background-image: url(/images/coreImages.png?v=3);
+    background-repeat: no-repeat;
+    background-position: 0px -580px;
+    min-height: 20px;
+}
+div#leftBar div.box div.bFoot{
+    background-image: url(/images/coreImages.png?v=3);
+    background-repeat: no-repeat;
+    height: 8px;
+	overflow: hidden;
+    background-position: 0px -74px;
+}
+div#leftBar div.box div.buttons{
+    clear: both;
+    background-image: url(/images/leftGrad.png);
+    background-repeat: repeat-y;
+    background-position: -326px 0px;
+    height: 26px;
+    padding-top: 8px;
+    padding-right: 10px;
+    padding-left: 10px;
+}
+div#leftBar div.box div.buttons div.button{
+    float: right;
+    margin-left: 7px;
+}
+/* ------------- leftbar userbox -------------- */
+
+div#leftBar div#userBox div.bContent{
+    background-position: 0px -11px;
+    background-repeat: repeat-y;
+    font-size: 16px;
+    color: #00548c;
+    height: auto !important;
+    padding-top: 8px;
+	min-height: 64px;
+}
+div#userBox div.bHead{
+    background-position: 0px 0px;
+    height: 11px;
+	overflow: hidden;
+}
+div#userBox div.photo{
+    background-image: url(/images/coreImages.png?v=3);
+    background-position: 0px -12px;
+    background-repeat: no-repeat;
+    width: 64px;
+    min-height: 51px;
+	height: 51px;
+    float: left;
+    margin: -2px 10px 0px 10px;
+}
+div#userBox div.name{
+    color: #ed1b23;
+    padding-left: 85px;
+}
+div#userBox div.contentEnd{
+    background-image: url(/images/coreImages.png?v=3);
+    background-position: 0px -66px;
+    background-repeat: no-repeat;
+    height: 5px;
+	overflow: hidden;
+    clear: both;
+}
+div#userBox div.bFoot{
+    background-image: url(/images/coreImages.png?v=3);
+    background-position: 0px -74px;
+    height: 6px;
+	overflow: hidden;
+    clear: both;
+}
+
+/* ------------- leftbar menu -------------- */
+
+div#leftBar div.menu div.bHead{
+    background-position: 0px -82px;
+    height: 8px;
+	overflow: hidden;
+}
+div#leftBar div.menu div.item{
+    height: 25px;
+    background-image: url(/images/coreImages.png?v=3);
+    background-position: 0px -121px;
+    background-repeat: no-repeat;
+    margin-bottom: 4px;
+    padding: 3px 10px 0px 10px;
+    font-size: 14px;
+    overflow: hidden;
+}
+div#leftBar div.menu div.item div.count{
+    min-width:35px;
+    float: left;
+    color: #ed1b23;
+    padding-right:5px;
+	padding-top: 1px;
+}
+div#leftBar div.menu div.selected div.count{
+    color: white;
+}
+div#leftBar div.menu div.item div.caption{
+    float: left;
+    overflow: hidden;
+    white-space: nowrap;
+}
+div#leftBar div.menu div.withact div.caption{
+    width: 162px; /*lw*/
+	padding-top: 2px;
+}
+div#leftBar div.menu div.woact div.caption{
+    width: 207px; /*lw*/
+	padding-top: 2px;
+}
+div#leftBar div.menu div.item a:hover div.caption{
+    text-decoration: underline;
+}
+div#leftBar div.menu div.item div.action{
+    float: right;
+    padding-right: 6px;
+    font-size: 12px;
+	padding-top: 3px;
+}
+div#leftBar div.menu div.item a.action{
+    color: #45b955;
+}
+/*div#leftBar div.menu div.item a:hover{
+    text-decoration: underline;
+}*/
+div#leftBar div.menu div.item div.icon{
+	margin: 3px 0px 0px 0px;
+    float: right;
+    width: 16px;
+    height: 16px;
+    background-image: url(/images/coreImages.png?v=3);
+    background-position: -52px -179px;
+    background-repeat: no-repeat;
+}
+div#leftBar div.menu div.selected div.icon{
+    background-position: -342px -372px;
+	width: 18px;
+    height: 17px;
+	margin: 3px 0px 0px -2px;
+}
+div#leftBar div.menu div.selected div.action{
+	color: #fffbde;
+	margin: 0px 0px 0px 0px;
+	width: 23px;
+}
+div#leftBar div.menu a.normal{
+    color: black;
+    text-decoration: none;
+}
+div#leftBar div.menu a.selected{
+    color: white;
+    text-decoration: none;
+}
+div#leftBar div.menu div.selected{
+    background-position: 0px -91px;
+    color: white;
+}
+
+/* ------------- box title ------------- */
+div.boxTitle{
+	height: 36px;
+}
+div.boxTitle div{
+	float: left;
+	height: 36px;
+}
+div.boxTitle div.head{
+	width: 8px;
+    background-image: url(/images/coreImages.png?v=3);
+    background-position: -183px -13px;
+    background-repeat: no-repeat;
+}
+div.boxTitle div.foot{
+	width: 24px;
+    background-image: url(/images/coreImages.png?v=3);
+    background-position: -193px -13px;
+    background-repeat: no-repeat;
+}
+div.boxTitle div.center{
+    background-image: url(/images/hBg.png?v=3);
+    background-position: 0px -30px;
+    background-repeat: repeat-x;
+	overflow-y: hidden;
+	font-size: 18px;
+	min-width: 205px;
+}
+div.boxTitle div.center div{
+	float: left;
+	min-width: 0px;
+}
+div.boxTitle div.center div.caption{
+	padding: 7px 8px;
+	color: white;
+}
+div.boxTitle div.center div.mark{
+	width: 8px;
+    background-image: url(/images/coreImages.png?v=3);
+    background-position: -170px -11px;
+    background-repeat: no-repeat;
+	margin-top: 3px;
+}
+div#leftBar div.titled div.bHead{
+    background-position: 0px -157px;
+}
+
+/* -------------- Begin Left Invite Box - by Alexi -------------- */
+
+div.emailInvt{
+	height: 36px;
+}
+
+input.emailInvtInput{
+	width: 222px; /*lw*/
+	height: 34px;
+	padding: 0px 15px 0px 15px;
+	border: 1px solid #ababab;
+	color: Black;
+	vertical-align: top;
+	line-height: 34px;
+}
+
+div.emailInvtInput{
+	float: left;
+}
+
+div.inviteEmailBtn{
+	width: 20px;
+	height: 36px;
+    background-image: url(/images/coreImages.png?v=3);
+    background-position: -222px -13px;
+    background-repeat: no-repeat;
+	float: left;
+	cursor: pointer;
+}
+
+div.addressbookInvtLbl{
+	padding: 15px 15px 10px 15px;
+	color: #1d1d1d;
+	height: 20px;
+	font-size: 16px;
+}
+
+div.addressbookInvt{
+	height: 50px;
+}
+
+select.addressbookInvtSelect{
+	width: 273px; /*lw*/
+	height: 34px;
+	padding: 7px 7px 7px 15px;
+	border: 1px solid #ababab;
+	color: Black;
+	vertical-align: middle;
+	margin-top: 0px;
+	line-height: 36px;
+}
+
+option.addressbookInvtOption{
+	padding: 7px 15px 7px 15px;
+}
+
+div.facebookIcon{
+	width: 39px;
+	height: 39px;
+    background-image: url(/images/coreImages.png?v=3);
+    background-position: -244px -171px;
+    background-repeat: no-repeat;
+	float: left;
+	margin-top: 2px;
+}
+
+div.socialInvt{
+	height: 39px;
+	padding: 15px 5px 5px 15px;
+}
+
+div.socialLink{
+	padding: 0px 15px 2px 50px;
+}
+
+a.leftMenuLink{
+	color: #1d1d1d;
+}
+
+a.leftMenuLink:hover{
+	text-decoration: none;
+}
+
+div.twitterIcon{
+	width: 39px;
+	height: 39px;
+    background-image: url(/images/coreImages.png?v=3);
+    background-position: -283px -171px;
+    background-repeat: no-repeat;
+	float: left;
+	margin-top: 2px;
+}
+
+table.stats{
+	margin: 10px 5px 0px 15px;
+}
+
+div.statsNumber{
+	width: 22px;
+	height: 22px;
+    background-image: url(/images/coreImages.png?v=3);
+    background-position: -324px 0px;
+    background-repeat: no-repeat;
+	float: left;
+	margin-left: 3px;
+	text-align: center;
+	padding-top: 1px;
+	color: #e12525;
+}
+
+td.statsNumber{
+	vertical-align: top;
+	padding-right: 5px;
+	padding-top: 2px;
+}
+
+td.statsLable{
+	padding: 4px 0px 0px 8px;
+	color: #1d1d1d;
+	vertical-align: top;
+	height: 29px;
+}
+
+div.dash{
+	width: 12px;
+	color: #e12525;
+	vertical-align: top;
+	border-top: 1px solid #e12525;
+	margin-top: 13px;
+}
+div.remainingColor{
+	color: #38b549;
+}
+div.remainingColorDash{
+	border-top: 1px solid #38b549;
+}
+div.availableColor{
+	color: #37559c;
+}
+div.availableColorDash{
+	border-top: 1px solid #37559c;
+}
+div.usedColor{
+	color: #1d1d1d;
+}
+div.usedColorDash{
+	border-top: 1px solid #1d1d1d;
+}
+table.display{
+	margin: 0px 5px 0px 15px;
+}
+
+table.display td{
+	padding: 6px 10px 6px 0px;
+}
+
+div.excel{
+	width: 16px;
+	height: 16px;
+    background-image: url(/images/coreImages.png?v=3);
+    background-position: -325px -153px;
+    background-repeat: no-repeat;
+	float: left;
+	margin: 0px 0px 0px 3px;
+}
+div.pdf{
+	width: 16px;
+	height: 16px;
+	background-image: url(/images/coreImages.png?v=2);
+	background-position: -309px -153px;
+	background-repeat: no-repeat;
+	float: left;
+	margin: 0px 0px 0px 3px;
+}
+
+.inviteBox{
+	width: 260px; /*lw*/
+}
+
+/* -------------- End Left Invite Box - by Alexi -------------- */
+/* -------------- Begin button - by Alexi -------------- */
+
+div.overallButton{
+	position: relative;
+	height: 35px;
+	float: left;
+	/*float: right;*/
+	margin-right: 10px;
+}
+
+div.buttonLeft{
+	width: 9px;
+	height: 36px;
+    background-image: url(/images/coreImages.png?v=3);
+    background-position: -363px -154px;
+    background-repeat: no-repeat;
+	float: left;
+}
+
+div.buttonRight{
+	width: 9px;
+	height: 36px;
+    background-image: url(/images/coreImages.png?v=3);
+    background-position: -374px -154px;
+    background-repeat: no-repeat;
+	float: left;
+}
+
+input.buttonBg{
+	height: 36px;
+    background-image: url(/images/hBg.png?v=3);
+    background-position: 0px -1314px;
+    background-repeat: repeat-x;
+	float: left;
+	border: none;
+	margin: 0;
+	cursor: pointer;
+	color: Black;
+	font-size: 16px;
+    width: 100%; /*fix width*/
+	padding-bottom: 2px;
+}
+/* -------------- End button - by Alexi -------------- */
+
+/* -------------- Begin referral - by Alexi -------------- */
+
+div.overallReferral{
+	position: relative;
+	height: 23px;
+	float: left;
+	margin-right: 5px;
+	white-space: nowrap;
+	min-width: 1px;
+}
+
+div.referralLeft{
+	width: 6px;
+	height: 23px;
+    background-image: url(/images/coreImages.png?v=3);
+    background-position: -365px -480px;
+    background-repeat: no-repeat;
+	float: left;
+}
+
+div.referralRight{
+	width: 6px;
+	height: 23px;
+    background-image: url(/images/coreImages.png?v=3);
+    background-position: -372px -480px;
+    background-repeat: no-repeat;
+	float: left;
+}
+
+div.referralCenter{
+	height: 23px;
+    background-image: url(/images/hBg.png?v=3);
+    background-position: 0 -1353px;
+    background-repeat: repeat-x;
+	padding: 3px 4px 0px 4px;
+	float: left;
+	border: none;
+	margin: 0;
+	cursor: pointer;
+	color: White;
+	font-size: 14px;
+}
+
+div.referralCenter{
+	width: 100%;
+	box-sizing:border-box;
+	-webkit-box-sizing:border-box;
+	-moz-box-sizing:border-box;
+}
+
+div.liText div.referralCenter{
+    width: auto;
+}
+
+div.referralUnderline{
+	height: 23px;
+    background-image: url(/images/hWhiteDots.png);
+    background-position: left 15px;
+    background-repeat: repeat-x;
+}
+
+div.statsLable{
+	padding: 4px 0px 0px 50px;
+	margin: -3px 0px 0px 0px;
+	color: #1d1d1d;
+	vertical-align: top;
+	height: 23px;
+	width: 200px;
+}
+
+/* -------------- End referral - by Alexi -------------- */
+
+/* ------------- Begin offers - by Andrew -------------- */
+
+div.offersContainer {
+  position: absolute;
+  display: inline-block;
+  left: 750px;
+  top: 2px;
+  height: 23px;
+  width: 95px;
+  white-space: nowrap;
+}
+
+div.offersContainer a.offersLabel {
+  float: left;
+  padding-right: 0.5em;
+  font-size: 18px;
+}
+
+div.offersPopup {
+  min-width: 197px;
+}
+
+div.offersPopup div.content {
+  background-color: white;
+  color: #282828;
+  border-radius: 3px;
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+}
+
+div.offersPopup div.content tr.row {
+  height: 40px;
+}
+
+div.offersPopup div.content td {
+  padding-right: 8px;
+  border-bottom: 1px solid silver;
+}
+
+div.offersPopup div.content td.last {
+  border-bottom: none;
+}
+
+div.offersPopup div.content td.mark {
+  padding-right: 0;
+  width: 29px;
+  text-align: center;
+}
+
+div.offersPopup div.content .city {
+  color: #00548c;
+  font-weight: bold;
+  text-decoration: none;
+}
+
+div.offersPopup div.content div.savings {
+  font-style: italic;
+}
+
+div.offersPopup div.footer {
+  margin-top: 4px;
+  background-image: url(/images/orangeBtn.png);
+  background-position: -5px 0;
+  background-repeat: no-repeat;
+  height: 26px;
+  text-align: center;
+  border-radius: 3px;
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+}
+
+div.offersPopup div.footer a {
+  display: block;
+  padding-top: 5px;
+  font-weight: bold;
+  color: #282828;
+  text-decoration: none;
+  border: none;
+  text-shadow: 1px 1px silver;
+}
+
+div.offersLink {
+  float: left;
+  margin: 5px 6px 5px 0;
+  background-image: url(/images/grayFrame.png);
+  background-repeat: no-repeat;
+  width: 190px;
+  height: 38px;
+  overflow: hidden;
+}
+
+div.offersLink .content {
+  padding: 3px;
+  color: #282828;
+}
+
+div.offersLink .content .city {
+  color: #00548c;
+  font-weight: bold;
+  text-decoration: none;
+}
+
+div.offersLink .content .city:hover {
+  text-decoration: underline;
+}
+
+div.offersLink .content .savings {
+  font-style: italic;
+}
+
+div.offersLink .content .offersButton {
+    margin-top: 7px;
+    font-size: 16px;
+    font-weight: normal;
+    color: #282828;
+    text-align: center;
+}
+
+div.offersLink .content .showAllBtn {
+    background-image: url(/images/coreImages.png?v=3);
+    background-position: -476px -496px;
+    background-repeat: no-repeat;
+    margin-left: 3px;
+    text-indent: 19px;
+}
+
+div.offersLinkBig {
+    float: left;
+    background-image: url(/images/grayFrameBig.png);
+    background-repeat: no-repeat;
+    width: 386px;
+    height: 90px;
+    overflow: hidden;
+}
+
+div.offersLinkBig .contentBig {
+    padding: 7px;
+    color: #282828;
+    font-size: 18px;
+}
+
+div.offersLinkBig .contentBig .city {
+    padding-top: 4px;
+    color: #00548c;
+    font-weight: bold;
+    text-decoration: none;
+}
+
+div.offersLinkBig .contentBig .city:hover {
+    text-decoration: underline;
+}
+
+div.offersLinkBig .contentBig .savings {
+    padding-top: 5px;
+    font-style: italic;
+}
+
+div.offersLinkBig .contentBig .nights {
+    padding-top: 3px;
+    font-size: 14px;
+    color: #6d6d6d;
+}
+/* ------------- End offers - by Andrew -------------- */
+
+/* -------------- Begin top menu selection of active item - by Alexi -------------- */
+
+div.topMenuSelected{
+	position: relative;
+	height: 24px;
+	float: left;
+}
+
+div.topMenuLeft{
+	width: 6px;
+	height: 24px;
+    background-image: url(/images/coreImages.png?v=3);
+    background-position: -344px -153px;
+    background-repeat: no-repeat;
+	float: left;
+}
+
+div.topMenuRight{
+	width: 6px;
+	height: 24px;
+    background-image: url(/images/coreImages.png?v=3);
+    background-position: -353px -153px;
+    background-repeat: no-repeat;
+	float: left;
+}
+
+div.topMenuSelectedBg{
+	height: 24px;
+    background-image: url(/images/coreImages.png?v=3);
+    background-position: 0px -286px;
+    background-repeat: repeat-x;
+	float: left;
+	border: 0px none;
+	color: #c51313;
+	font-size: 15px;
+	padding: 3px 4px 0px 4px;
+}
+
+/* -------------- End top menu selection of active item - by Alexi -------------- */
+
+
+/* -------------- tabs -------------- */
+
+div.tabs{
+	height: 35px;
+}
+body.forum div#content{
+	padding-left: 25px;
+	padding-right: 15px;
+	margin-top: 30px;
+}
+div#content div.tabs a{
+	text-decoration: none;
+}
+div#content div.tabs a:hover{
+	text-decoration: none;
+}
+div#content div.tabs a.active, div#content div.tabs a.active:hover{
+	color: white;
+}
+div#content div.tabs a.normal, div#content div.tabs a.normal:hover{
+	color: #3e3e3e;
+}
+div#content div.tabs a.add, div#content div.tabs a.add:hover{
+	color: #3d9649;
+}
+div.tabs div{
+	float: left;
+	height: 35px;
+	position:relative;
+	z-index:5;
+}
+div.tabs div.caption{
+	height: 23px;
+	padding: 6px 12px;
+	font-size: 18px;
+}
+div.tabs div.normal div.tabIcon{
+	display: none;
+}
+div.tabs div.add div.tabIcon{
+	background-repeat: no-repeat;
+	background-position: -52px -179px;
+	background-image: url(/images/coreImages.png?v=3);
+	margin-top: 10px;
+	width: 15px;
+	margin-right: 10px;
+	display: block;
+	height: 25px;
+}
+div.tabs div.tabIcon{
+	display: none;
+}
+div.tabs div.firstToActive{
+	background-position: -246px -13px;
+	background-repeat: no-repeat;
+	background-image: url(/images/coreImages.png?v=3);
+	width: 8px;
+}
+div.tabs div.firstToNormal{
+	background-position: -265px -13px;
+	background-repeat: no-repeat;
+	background-image: url(/images/coreImages.png?v=3);
+	width: 5px;
+}
+div.tabs div.normalToActive{
+	background-position: 0px -166px;
+	background-repeat: no-repeat;
+	background-image: url(/images/coreImages.png?v=3);
+	width: 8px;
+}
+div.tabs div.active div.tabIcon{
+	background-repeat: no-repeat;
+	background-position: -168px -20px;
+	background-image: url(/images/coreImages.png?v=3);
+	margin-top: 11px;
+	width: 10px;
+	margin-right: 10px;
+	height: 17px;
+	display: block;
+}
+div.tabs div.active{
+	background-repeat: repeat-x;
+	background-position: 0px -70px;
+	background-image: url(/images/hBg.png?v=3);
+}
+div.tabs div.activeToNormal, div.tabs div.activeToAdd{
+	background-position: -255px -13px;
+	background-repeat: no-repeat;
+	background-image: url(/images/coreImages.png?v=3);
+	width: 8px;
+}
+div.tabs div.normal, div.tabs div.add{
+	background-repeat: repeat-x;
+	background-position: 0px -110px;
+	background-image: url(/images/hBg.png?v=3);
+}
+div.tabs div.normal div.caption, div.tabs div.add div.caption{
+	background-repeat: no-repeat;
+	background-position: -385px 0px;
+	background-image: url(/images/coreImages.png?v=3);
+}
+div.tabs div.normal div.caption span{
+	background-repeat: repeat-x;
+	background-position: 0px -201px;
+	background-image: url(/images/coreImages.png?v=3);
+}
+div.tabs div.add div.caption span{
+	background-repeat: repeat-x;
+	background-position: 0px -223px;
+	background-image: url(/images/coreImages.png?v=3);
+}
+div.tabs div.normalToNormal, div.tabs div.normalToAdd{
+	background-position: -272px -13px;
+	background-repeat: no-repeat;
+	background-image: url(/images/coreImages.png?v=3);
+	width: 10px;
+}
+div.tabs div.addToLast, div.tabs div.normalToLast{
+	background-position: -284px -13px;
+	background-repeat: no-repeat;
+	background-image: url(/images/coreImages.png?v=3);
+	width: 20px;
+}
+div.tabs div.activeToLast{
+	background-position: -9px -166px;
+	background-repeat: no-repeat;
+	background-image: url(/images/coreImages.png?v=3);
+	width: 30px;
+}
+
+/* -------------- content -------------- */
+
+div#content{
+    padding-left: 321px;
+    min-height: 625px;
+	padding-bottom: 50px;
+}
+
+/* -------------- Begin footer - added by Alexi -------------- */
+
+div#footer{
+	height: 58px;
+	clear: both;
+	border-top: 1px solid #d8d8d8;
+	margin-top: 10px;
+	background-image: url(/images/coreImages.png?v=3);
+    background-position: 0px -314px;
+    background-repeat: repeat-x;
+    position:relative;
+}
+div#footer div, div#footer a{
+	color: #6a6a6a;
+	font-size: 14px;
+}
+
+div.footerYear{
+	position:absolute; 
+	top:22px; 
+	left: 58px;
+}
+
+div.footerLinks{
+	margin:22px 200px 0 280px;
+	text-align:center;
+}
+
+div.footerMobileLogo{
+	float: right;
+	margin-right: 0px;
+	background-image: url(/images/firstPage.png);
+    background-position: -560px 0px;
+    background-repeat: no-repeat;
+	width: 88px;
+	height: 31px;
+	margin-top: 0px;
+}
+
+div.footerAndroidLogo{
+	float: right;
+	margin-right: 5px;
+	background-image: url(/images/firstPage.png);
+    background-position: -650px 0px;
+    background-repeat: no-repeat;
+	width: 88px;
+	height: 31px;
+	margin-top: 0px;
+}
+
+/* -------------- End footer - added by Alexi -------------- */
+/* --------- accounts table common --------- */
+
+col.manageCol{
+	width: 10px;
+}
+col.cornerCol{
+	width: 10px;
+}
+col.plusCol{
+	width: 20px;
+}
+col.stateCol{
+	width: 8px;
+}
+.roundedTable td{
+	font-size: 100%;
+	padding: 0px;
+	vertical-align: middle;
+}
+.roundedTable{
+	color: #3e3e3e;
+	border-collapse: collapse;
+	width: 100%;
+}
+.roundedTable td.leftDots{
+	background-image: url(/images/vDots.png);
+	background-repeat: repeat-y;
+	border-left: none;
+}
+.roundedTable td.pad{
+	padding: 7px 12px;
+    /*text-align: center;*/
+}
+/*.roundedTable td.pad a.addLink div{
+    float: none !important;
+    display: inline-block !important;
+}*/
+.roundedTable td.pad a.addLink div.addIcon{
+    margin-left: 11px !important;
+}
+/*.roundedTable td.pad .support{
+    display: inline-block !important;
+}*/
+/* --------- accounts table head --------- */
+
+.roundedTable tr.head td{
+	border-top: 1px solid #cccccc;
+	border-bottom: 1px solid #cccccc;
+	height: 18px;
+	padding: 12px 12px;
+}
+.roundedTable tr.head td.manage{
+	padding-left: 19px;
+}
+.roundedTable tr.head td td{
+	padding: 0;
+	border: none;
+	height: auto;
+}
+.roundedTable tr.head td a{
+	color: #3e3e3e;
+	text-decoration: none;
+}
+.roundedTable tr.head td a:hover{
+	text-decoration: underline;
+}
+.roundedTable tr.head td.c1head{
+	vertical-align: top;
+	border-left: 1px solid #cccccc;
+	padding: 0px;
+}
+.roundedTable tr.head td.c2head{
+	border-left: none;
+	border-right: none;
+	padding: 0px;
+}
+#tblAccounts tr.head td.colProgram{
+	border-left: none;
+}
+#tblAccounts tr.head td.colExpiration{
+	text-align: center;
+}
+.roundedTable td.c1head > div.icon{
+	float: left;
+	width: 6px;
+	height: 6px;
+	position: relative;
+	top: -1px;
+	left: -1px;
+	overflow: hidden;
+}
+.roundedTable tr.head td.c1head div.icon div.inner, .roundedTable tr.whiteBg td.c1 div.icon div.inner{
+	background-image: url(/images/coreImages.png?v=3);
+	background-repeat: no-repeat;
+	background-position: -246px -59px;
+	overflow: hidden;
+	width: 6px;
+	height: 6px;
+}
+.roundedTable td.bordered{
+	border-left: 1px solid #cccccc;
+	border-top: 1px solid #cccccc;
+	border-bottom: 1px solid #cccccc;
+}
+.roundedTable td.borderRight{
+    border-bottom: 1px solid #cccccc;
+}
+.roundedTable td.borderTop{
+	border-top: 1px solid #cccccc;
+}
+.roundedTable td.borderBottom{
+	border-bottom: 1px solid #cccccc;
+}
+.roundedTable div.icon div.inner{
+	width: 6px;
+	height: 6px;
+	overflow: hidden;
+}
+.roundedTable td.c1head div.caption{
+	padding: 12px 19px;
+}
+div.left40{
+	position: relative;
+	left: -41px;
+}
+.roundedTable tr.head span.sortArrow, .roundedTable tr.head span.sortArrowDesc{
+	background-image: url(/images/coreImages.png?v=3);
+	background-repeat: no-repeat;
+	background-position: -262px -56px;
+	margin-left: 5px;
+	padding-right: 5px;
+	position: relative;
+	top: 7px;
+}
+.roundedTable tr.head span.sortArrowDesc{
+	background-position: -224px -56px;
+}
+.roundedTable tr.afterHead td div.icon{
+	background-color: white;
+	border-left: 1px solid #cccccc;
+}
+.roundedTable tr.afterActive td div.icon{
+	background-repeat: no-repeat;
+	background-position: -246px -52px;
+	background-image: url(/images/coreImages.png?v=3);
+	background-color: red;
+}
+/*.roundedTable tr.afterActive td div.icon div.inner{
+	background-repeat: no-repeat;
+	background-position: -246px -52px;
+	background-image: url(/images/coreImages.png?v=3);
+}*/
+.roundedTable tr.afterNormal td > div.icon{
+	background-repeat: no-repeat;
+	background-position: -265px -25px;
+	background-image: url(/images/coreImages.png?v=3);
+}
+
+/* --------- accounts table user name --------- */
+
+.roundedTable td.userName{
+	background-color: #fffce1;
+	color: #c91313;
+	font-size: 20px;
+	font-family: Arial;
+	border: 1px solid #cccccc;
+	border-right: none;
+	border-bottom: none;
+}
+.roundedTable tr td.userName div.icon{
+	float: left;
+	width: 6px;
+	height: 6px;
+	background-image: url(/images/coreImages.png?v=3);
+	background-repeat: no-repeat;
+	background-position: -273px -49px;
+	position: relative;
+	top: -1px;
+	left: -1px;
+}
+.roundedTable td.userName div.name{
+	float: left;
+	padding: 12px 19px;
+	position: relative;
+	left: -6px;
+}
+.roundedTable tr.afterName > td{
+	border-top: 1px solid #cccccc;
+}
+.roundedTable tr.afterName td div.icon{
+	background-color: #fffce1;
+	border-left: 1px solid #cccccc;
+}
+
+/* --------- accounts table tab header --------- */
+
+.roundedTable td.topBorder{
+	border-top: 1px solid #cccccc;
+}
+.roundedTable td.tabHeader{
+	border-left: 1px solid #cccccc;
+	background-image: url(/images/hBg.png?v=3);
+	background-repeat: repeat-x;
+	background-position: 0px -147px;
+	font-size: 26px;
+	height: 43px;
+	color: black;
+}
+.roundedTable tr.afterName td.tabHeader{
+	border-top: none;
+}
+.roundedTable td.tabHeader td{
+	font-size: inherit;
+}
+#travelPlans .roundedTable td.tabHeader a{
+	color: black;
+}
+#travelPlans .roundedTable td.tabHeader a:hover{
+	text-decoration: underline;
+}
+.roundedTable td.tabHeader div.icon{
+	width: 9px;
+	float: left;
+	height: 43px;
+	position: relative;
+	left: -1px;
+}
+.roundedTable tr.afterTop td.tabHeader div.icon{
+	background-color: white;
+}
+.roundedTable td.tabHeader div.left{
+	width: 9px;
+	height: 43px;
+	background-image: url(/images/coreImages.png?v=3);
+	background-repeat: no-repeat;
+	background-position: -364px 0px;
+}
+.roundedTable td.tabHeader div.caption{
+	margin: 6px 1px 3px 19px;
+	max-height: 33px;
+	overflow: hidden;
+}
+.roundedTable tr.afterGroup td div.icon{
+	background-image: url(/images/coreImages.png?v=3);
+	background-repeat: no-repeat;
+	background-position: -363px -24px;
+}
+
+/* ------------ gray grad --------------- */
+.roundedTable td.grayGrad{
+	border-left: 1px solid #cccccc;
+	background-image: url(/images/hBg.png?v=3);
+	background-repeat: repeat-x;
+	background-position: 0px -806px;
+	font-size: 18px;
+	height: 57px;
+	color: black;
+	background-color: #f5f5f5;
+	border-bottom: none;
+}
+
+/* --------- accounts table row --------- */
+
+.roundedTable td.c1{
+	border-left: 1px solid #cccccc;
+	vertical-align: top;
+}
+.roundedTable tr.noWrap td, .noWrap{
+	white-space: nowrap;
+}
+.roundedTable td a{
+	color: #2f2f2f;
+	text-decoration: underline;
+}
+#tblAccounts td.c1{
+	width: 6px;
+	padding-right: 4px;
+}
+#tblAccounts td.c1a{
+	width: 20px;
+	vertical-align: middle;
+}
+.roundedTable tr.afterHeader td.c1 img{
+	position: relative;
+	top: -6px;
+}
+.roundedTable td.c1 div.icon{
+	float: left;
+	width: 6px;
+	height: 6px;
+	background-image: url(/images/coreImages.png?v=3);
+	background-repeat: no-repeat;
+	background-position: -282px -49px;
+	position: relative;
+	top: -1px;
+	left: -1px;
+	overflow: hidden;
+	background-color: white;
+}
+.roundedTable td.c1 div.caption{
+	padding: 7px 12px 7px 19px;
+}
+.roundedTable tr.grayHead td div.ca{
+	padding: 12px 19px;
+}
+.roundedTable tr.grayHead td{
+	background-repeat: repeat-x;
+	background-position: 0 -1225px;
+	background-image: url(/images/hBg.png?v=3);
+	height: 44px;
+	overflow: hidden;
+}
+.roundedTable tr.grayHead td div.caption{
+	padding: 12px 19px;
+	font-weight: bold;
+}
+.roundedTable tr.grayHead td div.icon{
+	width: 19px;
+	height: 44px;
+	float: left;
+	background-image: url(/images/coreImages.png?v=3);
+	background-repeat: no-repeat;
+	background-position: -367px -527px;
+}
+.roundedTable tr.grayHead td div.rightIcon{
+	background-position: -389px -527px;
+	float: right;
+}
+.roundedTable td.rightDots{
+	background-image: url(/images/vDots.png);
+	background-repeat: repeat-y;
+	background-position: right top;
+}
+.roundedTable tr.total td{
+	font-weight: bold;
+	color: #00548c;
+}
+.roundedTable tr td div.pad{
+	padding: 12px 19px;
+}
+.roundedTable tr td div.leftBorder{
+	background-image: url(/images/grayPixel.png);
+	background-repeat: repeat-y;
+	background-position: left top;
+}
+.roundedTable tr.lastRow div.rightIcon{
+	width: 6px;
+	height: 6px;
+	float: right;
+	background-image: url(/images/coreImages.png?v=3);
+	background-repeat: no-repeat;
+	background-position: -376px -240px;
+	background-color: white;
+}
+.roundedTable tr.grayBg td.c1 div.icon{
+	background-position: -282px -57px;
+}
+.roundedTable td.borderRight{
+	background-image: url(/images/grayPixel.png);
+	background-repeat: repeat-y;
+	background-position: right top;
+}
+.roundedTable tr.bottomDots td div.caption{
+	background-image: url(/images/hDots.png);
+	background-repeat: repeat-x;
+	background-position: left bottom;
+}
+#tblAccounts td.c1a a.plus,
+#tblAccounts td.subaccountplus a.plus{
+	display: block;
+	width: 30px;
+	height: 30px;
+	background-image: url(/images/coreImages.png?v=3);
+	background-repeat: no-repeat;
+	background-position: -43px -171px;
+	margin: 10px 0;
+    float:left;
+}
+#tblAccounts td.subaccount {
+    padding-left:40px !important;
+}
+#tblAccounts td.subaccountplus a.plus{
+    position:relative;
+    left: 25px;
+}
+#tblAccounts td.subaccountplus {
+    vertical-align:middle;
+}
+#tblAccounts td.c1a a.plus:hover{
+	background-position: -73px -171px;
+}
+#tblAccounts td.c2{
+	width: 8px;
+}
+#tblAccounts td.c2 div.redBar, #tblAccounts td.c2 div.incBar, #tblAccounts td.c2 div.decBar{
+	width: 8px;
+	height: 1px;
+	background-image: url(/images/redBars.png);
+	background-repeat: repeat-y;
+	position: relative;
+	left: -49px;
+}
+#tblAccounts td.c2 div.incBar{
+	background-image: url(/images/arrowUp.png);
+	background-repeat: no-repeat;
+  background-position: left top;
+  background-color: #11ac19;
+}
+#tblAccounts td.c2 div.decBar{
+	background-image: url(/images/arrowDown.png);
+	background-repeat: no-repeat;
+  background-position: left bottom;
+  background-color: #0c80a4;
+}
+#tblAccounts tr.afterHead td.c2 div.redBar, #tblAccounts tr.afterName td.c2 div.redBar{
+	top: 6px;
+	height: 40px;
+}
+
+.topgradient {
+    background-image:url(/images/top_border.png);
+}
+.bottomgradient {
+    background-image:url(/images/bottom_border.png);
+}
+.bottomgradient, .topgradient {
+    background-repeat:repeat-x;
+    height:3px;
+    border-left: #cccccc solid 1px;
+    border-right: #cccccc solid 1px;
+}
+
+.roundedTable .whiteBg{
+	background-color: white;
+	border-top:1px solid #ccc;
+}
+.roundedTable .grayBg{
+	background-color: #f2f2f2;
+}
+.roundedTable tr td.noRight{
+	border-right: none;
+}
+.roundedTable tr.afterGray td div.icon{
+	background-color: #f7f8f8;
+	display: none;
+	border-left: 1px solid #cccccc;
+}
+.roundedTable tr.afterWhite td div.icon{
+	background-color: white;
+	border-left: 1px solid #cccccc;
+	display: none;
+}
+.roundedTable tr.afterWhite td.userName div.icon, .roundedTable tr.afterWhite td.grayGrad div.icon {
+	display: block;
+}
+.roundedTable tr.afterWhite td.lastRow div.icon, .roundedTable tr.afterGray td.lastRow div.icon{
+	border-left: none;
+}
+.roundedTable tr.lastGray > td{
+	background-color: #f7f8f8;
+}
+.roundedTable tr.lastGray > td.c1 > div.icon{
+	background-color: #f7f8f8;
+}
+.roundedTable tr a:hover{
+	color: #0c9f10;
+	text-decoration: underline;
+}
+
+/* --------- accounts table hover row ----------- */
+
+#tblAccounts tr:hover td.c1a a{
+	background-position: -73px -171px;
+}
+#tblAccounts tr:hover td a{
+	text-decoration: underline;
+}
+#tblAccounts a:hover{
+	color: #0c9f10;
+	text-decoration: underline;
+}
+#tblAccounts tr.error td.program a:hover{
+	color: #C91313;
+}
+#tblAccounts tr td a:hover{
+	color: #0c9f10;
+}
+#tblAccounts tr:hover td.expiration a div{
+	text-decoration: underline;
+}
+
+/* --------- accounts table program cell --------- */
+
+#tblAccounts td.program{
+	padding: 7px 12px 7px 0px;
+	color: #3e3e3e;
+	vertical-align: middle;
+}
+#tblAccounts td.program a{
+	text-decoration: none;
+	color: #3e3e3e;
+}
+#tblAccounts td.program a:hover{
+	text-decoration: underline;
+}
+#tblAccounts td.program div.rating{
+	margin-top: 3px;
+	height: 17px;
+}
+div.star{
+	float: left;
+	width: 18px;
+	height: 17px;
+	background-image: url(/images/coreImages.png?v=3);
+	background-repeat: no-repeat;
+	background-position: -73px -42px;
+}
+div.noStar{
+	float: left;
+	width: 18px;
+	height: 17px;
+	background-image: url(/images/coreImages.png?v=3);
+	background-repeat: no-repeat;
+	background-position: -96px -42px;
+}
+div.smallStar{
+	float: left;
+	width: 15px;
+	height: 15px;
+	background-image: url(/images/coreImages.png?v=3);
+	background-repeat: no-repeat;
+	background-position: -281px -558px;
+}
+div.smallNoStar{
+	float: left;
+	width: 15px;
+	height: 15px;
+	background-image: url(/images/coreImages.png?v=3);
+	background-repeat: no-repeat;
+	background-position: -297px -558px;
+}
+
+/* --------- accounts table login cell --------- */
+
+#tblAccounts td.login{
+	color: #3e3e3e;
+	vertical-align: middle;
+	padding: 0px 12px;
+}
+#tblAccounts td.login a{
+    text-decoration: none;
+    color: #3e3e3e;
+}
+#tblAccounts td.login a:hover{
+    text-decoration: underline;
+}
+#tblAccounts td.login div.comment{
+	color: #6c6d6d;
+	font-size: 8pt;
+}
+#tblAccounts span.localPassword{
+	padding: 0px 3px;
+	width: 1px;
+	margin-left: 5px;
+	background-image: url(/images/coreImages.png?v=3);
+	background-repeat: no-repeat;
+	background-position: -115px -45px;
+	position: relative;
+	top: 2px;
+}
+#tblAccounts table.props span.localPassword{
+	top: 1px;
+}
+
+/* --------- accounts table balance cell --------- */
+
+#tblAccounts td.balance{
+	padding: 2px 12px 2px 12px;
+	color: #2f2f2f;
+	width: 1px;
+	white-space: nowrap;
+	vertical-align: middle;
+}
+#tblAccounts td.balance table{
+	width: 100%;
+}
+#tblAccounts td.balance table td.stateCell{
+	width: 1px;
+}
+#tblAccounts td.balance table td.stateCell, #tblAccounts td.balance table td.balanceCell{
+	vertical-align: middle;
+}
+#tblAccounts td.balance table td.changeCell{
+	text-align: right;
+	vertical-align: middle;
+	padding-left: 5px;
+}
+#tblAccounts td.balance div.state{
+	background-image: url(/images/coreImages.png?v=3);
+	background-repeat: no-repeat;
+	width: 20px;
+	height: 20px;
+	margin-left: 5px;
+}
+#tblAccounts td.balance div.error{
+	background-position: -416px -43px;
+}
+#tblAccounts td.balance div.custom{
+	background-position: -439px -43px;
+}
+#tblAccounts td.balance a{
+	color: #2f2f2f;
+	text-decoration: none;
+}
+#tblAccounts td.balance a:hover{
+	text-decoration: underline;
+}
+#tblAccounts div.incBalance, #tblAccounts div.decBalance{
+	font-size: 85%;
+	padding-top: 2px;
+	white-space: nowrap;
+}
+#tblAccounts div.incBalance{
+	color: #0aac0d;
+}
+#tblAccounts div.decBalance{
+	color: #2eabba;
+}
+#tblAccounts div.balance{
+}
+#tblAccounts div.decArrow, #tblAccounts div.incArrow{
+	width: 9px;
+	height: 18px;
+	background-image: url(/images/coreImages.png?v=3);
+	background-repeat: no-repeat;
+	float: right;
+}
+#tblAccounts div.decArrow{
+	background-position: -112px -184px;
+}
+#tblAccounts div.incArrow{
+	background-position: -112px -165px;
+}
+#tblAccounts div.recent{
+	width: 27px;
+	height: 36px;
+	background-image: url(/images/coreImages.png?v=3);
+	background-repeat: no-repeat;
+}
+#tblAccounts div.incArrow div.recent{
+	background-position: -190px -165px;
+	margin-top: 7px;
+	height: 29px;
+}
+#tblAccounts div.decArrow div.recent{
+	background-position: -161px -165px;
+}
+
+/* --------- accounts table expiration cell --------- */
+
+#tblAccounts td.expiration{
+	color: #3e3e3e;
+	text-align: center;
+	vertical-align: middle;
+	width: 1px;
+	padding: 7px 5px 7px 5px;
+}
+#tblAccounts td.expiration a{
+	text-decoration: none;
+}
+#tblAccounts td.expirationCorner{
+	vertical-align: top;
+}
+#tblAccounts td.expirationCorner div.greenCorner{
+	width: 11px;
+	height: 11px;
+	float: right;
+	background-image: url(/images/coreImages.png?v=3);
+	background-repeat: no-repeat;
+	background-position: -125px -45px;
+}
+#tblAccounts table.props td.expiration div.greenCorner{
+	top: -8px;
+	left: 3px;
+}
+#tblAccounts td.expiration a:hover div{
+	text-decoration: underline;
+}
+#tblAccounts td.expiration div.state{
+	background-image: url(/images/coreImages.png?v=3);
+	background-repeat: no-repeat;
+	width: 23px;
+	height: 21px;
+	margin-right: 5px;
+}
+#tblAccounts td.expiration div.warning{
+	background-position: -328px -28px;
+}
+#tblAccounts td.expiration div.success{
+	background-position: -136px -41px;
+}
+#tblAccounts td.expiration div.info{
+	background-position: -136px -41px;
+}
+#tblAccounts td.expiration div.noicon{
+	background-image: none;
+}
+#tblAccounts td.expiration div.error{
+	background-position: -415px -43px;
+	/*background-position: -328px -28px;*/
+}
+#tblAccounts td.expiration div.errorCoupon{
+	background-position: -415px -43px;
+}
+#tblAccounts td.expiration table tr td{
+	vertical-align: middle;
+}
+
+/* --------- accounts table manage cell --------- */
+
+.roundedTable td.manage{
+	padding: 2mm 19px;
+	color: #3e3e3e;
+	text-align: left;
+	vertical-align: middle;
+}
+#tblAccounts td.manage{
+	padding: 7px 1px;
+}
+.roundedTable td.manage a, .roundedTable td.manage span.a{
+	text-decoration: none;
+	float: left;
+	display: block;
+	padding: 2px 2px 4px 2px;
+	height: 15px;
+	overflow: hidden;
+}
+.roundedTable tr:hover td.manage a{
+	text-decoration: underline;
+}
+.roundedTable td.manage div{
+	width: 3px;
+	height: 21px;
+	background-image: url(/images/coreImages.png?v=3);
+	background-repeat: no-repeat;
+}
+.roundedTable td.manage div.left{
+	margin-left: 2px;
+}
+.roundedTable td.manage div.right{
+	margin-right: 2px;
+}
+.roundedTable td.manage a{
+	background-color: #f1f1f1;
+}
+.roundedTable tr.grayBg td.manage a{
+	background-color: white;
+}
+.roundedTable td.manage div.left, .whiteBgRow td.left{
+	background-position: -234px -171px;
+}
+.whiteBgRow{
+	margin-top: 2px;
+	position: relative;
+	left: -5px;
+}
+.whiteBgRow td.left, .whiteBgRow td.right{
+	width: 3px;
+	height: 21px;
+	background-image: url(/images/coreImages.png?v=3);
+	background-repeat: no-repeat;
+}
+.whiteBgRow td.center{
+	background-color: #F1F1F1;
+	height: 21px;
+	vertical-align: middle;
+	padding: 0 2px;
+}
+.grayBg .whiteBgRow td.center{
+	background-color: white;
+}
+.roundedTable td.manage div.right, .whiteBgRow td.right{
+	background-position: -238px -171px;
+}
+.roundedTable tr.grayBg td.manage div.left, .grayBg .whiteBgRow td.left{
+	background-position: -354px 0px;
+}
+.roundedTable tr.grayBg td.manage div.right, .grayBg .whiteBgRow td.right{
+	background-position: -359px 0px;
+}
+.roundedTable td.lastRow{
+	height: 7px;
+	border-bottom: 1px solid #cccccc;
+	vertical-align: bottom;
+}
+.roundedTable td.lastRow div.icon{
+	background-position: -376px -234px;
+	top: 1px;
+}
+
+/* -------------- accounts table totals -------------- */
+#tblAccounts tr.totals td{
+	border-top: 1px solid #cccccc;
+	vertical-align: middle;
+	white-space: nowrap;
+	font-weight: bold;
+}
+#tblAccounts tr.totals td td{
+	font-weight: normal;
+}
+
+#tblAccounts tr.totals td.c1 a.plus{
+	margin-top: 0px;
+}
+#tblAccounts tr.totals td td{
+	border-top: none;
+}
+#tblAccounts tr.totals td.c1{
+	border-left: none;
+}
+#tblAccounts tr.totals td a{
+	color: #3e3e3e;
+	text-decoration: none;
+}
+#tblAccounts tr.totals td a:hover{
+	text-decoration: underline;
+}
+
+/* ---------------- page nav ------------------------ */
+#tblAccounts tr.pageNav td{
+	border-top: 1px solid #cccccc;
+	border-left: none;
+	vertical-align: middle;
+}
+
+
+/* -------------- accounts table popup -------------- */
+
+div.rowPopup{
+	position: absolute;
+	z-index: 40;
+	height: 1px;
+}
+div.roundedBox{
+	overflow-y: hidden;
+}
+div.roundedBox tr.top td.center{
+	font-size: 18px;
+	color: #e21616;
+}
+div.rowPopup div.program{
+	font-size: 26px;
+	color: #e21616;
+	margin-left: 17px;
+	margin-top: 30px;
+	overflow: hidden;
+	height: 32px;
+}
+div.rowPopup div.state{
+	width: 40px;
+	height: 40px;
+	float: left;
+	background-image: url(/images/coreImages.png?v=3);
+	background-repeat: no-repeat;
+	background-position: -152px -510px;
+	margin-right: 15px;
+	margin-top: 25px;
+}
+div.rowPopup div.successState{
+	background-position: -196px -510px;
+}
+div.rowPopup div.name{
+	font-size: 22px;
+	color: #00538b;
+	float: right;
+	margin-right: 15px;
+	margin-top: 30px;
+}
+div.rowPopup div.avatar, td.tabHeader div.avatar{
+	font-size: 22px;
+	color: #00538b;
+	float: right;
+	margin-right: 15px;
+	margin-top: 27px;
+	width: 40px;
+	height: 32px;
+	background-position: -308px -117px;
+	background-image: url(/images/coreImages.png?v=3);
+	background-repeat: no-repeat;
+}
+td.tabHeader div.avatar{
+	margin-top: 0px;
+}
+div.rowPopup img.avatar, td.tabHeader img.avatar{
+	float: right;
+	margin-right: 15px;
+	margin-top: 15px;
+	width: 48px;
+	height: 48px;
+}
+td.tabHeader img.avatar{
+	margin-top: 0px;
+	width: 32px;
+	height: 32px;
+}
+div.roundedBox span.chevron{
+	background-position: -313px -92px;
+	background-image: url(/images/coreImages.png?v=3);
+	background-repeat: no-repeat;
+	padding-right: 5px;
+	margin-left: 8px;
+	position: relative;
+	top: 5px;
+}
+
+/* -------------- accounts table popup props -------------- */
+
+#tblAccounts div.rowPopup div.detHeader{
+	font-size: 18px;
+	color: #006eb7;
+}
+#tblAccounts div.rowPopup div.nextBlock{
+	margin-top: 15px;
+}
+#tblAccounts div.rowPopup div.histHeader{
+	min-width: 370px;
+}
+#tblAccounts table.props{
+	width: 100%;
+}
+#tblAccounts table.props col.icon{
+	width: 27px;
+}
+#tblAccounts table.props col.name{
+	width: 1px;
+}
+#tblAccounts table.props col.value{
+	width: 99%;
+}
+#tblAccounts table.props td.icon, #tblAccounts table.props td.name, #tblAccounts table.props td.value{
+	background-image: url(/images/hDots.png);
+	background-repeat: repeat-x;
+	padding: 5px 3px;
+	font-size: 100%;
+	color: #252525;
+	vertical-align: middle;
+}
+#tblAccounts table.props tr.row1 td{
+	background-image: none;
+}
+#tblAccounts table.props tr.even td{
+	background-color: #f5f5f5;
+}
+#tblAccounts table.props td.icon{
+	width: 27px;
+}
+#tblAccounts table.props td.icon div{
+	width: 15px;
+	height: 20px;
+	background-position: -140px -41px;
+	background-image: url(/images/coreImages.png?v=3);
+	background-repeat: no-repeat;
+}
+#tblAccounts table.props td.name{
+	white-space: nowrap;
+	width: 1%;
+	padding-right: 10px;
+}
+
+/* -------------- accounts table popup frame -------------- */
+
+div.roundedBox table.frame{
+	table-layout: fixed;
+	width: 100%;
+}
+div.roundedBox table.frame tr.top td{
+	height: 88px;
+}
+div.roundedBox table.frame tr.bottom td{
+	height: 23px;
+}
+div.roundedBox table.frame td.left{
+	width: 15px;
+}
+div.roundedBox table.frame td.right{
+	width: 21px;
+}
+div.roundedBox table.frame tr.top td.left{
+	background-image: url(/images/coreImages.png?v=3);
+	background-repeat: no-repeat;
+	background-position: -348px -63px;
+}
+div.roundedBox table.frame tr.top td.right{
+	background-image: url(/images/coreImages.png?v=3);
+	background-repeat: no-repeat;
+	background-position: -364px -63px;
+}
+div.roundedBox table.frame tr.top td.center{
+	background-image: url(/images/hBg.png?v=3);
+	background-repeat: repeat-x;
+	background-position: 0px -209px;
+	vertical-align: top;
+}
+div.roundedBox table.frame tr.top td.center div.header{
+	position: relative;
+	padding-left: 20px;
+	top: -5px;
+	max-height: 52px;
+	overflow: visible;
+}
+div.roundedBox table.frame tr.top td.center a.close{
+	display: block;
+	float: right;
+	width: 21px;
+	height: 21px;
+	background-image: url(/images/coreImages.png?v=3);
+	background-repeat: no-repeat;
+	background-position: -388px -227px;
+	margin-top: 12px;
+}
+div.roundedBox table.notClosable tr.top td.center a.close{
+	visibility: hidden;
+}
+div.roundedBox table.frame tr.middle td.left{
+	background-image: url(/images/leftGrad.png);
+	background-repeat: repeat-y;
+	background-position: -977px 0px;
+	vertical-align: bottom;
+}
+div.roundedBox table.frame tr.middle td.left div.bg, div.roundedBox table.frame tr.middle td.right div.bg{
+	background-image: url(/images/rowPopupBottom.png);
+	background-repeat: repeat-x;
+	background-position: bottom left;
+	height: 60px;
+	width: 11px;
+	margin-left: 4px;
+}
+div.roundedBox table.frame tr.middle td.right div.bg{
+	margin-left: 0px;
+	margin-right: 4px;
+}
+div#rowPopupMarker{
+	background-image: url(/images/coreImages.png?v=3);
+	background-repeat: no-repeat;
+	background-position: -375px -38px;
+	height: 25px;
+	width: 14px;
+	position: absolute;
+	display: none;
+	z-index: 41;
+}
+div.roundedBox table.frame tr.middle td.right{
+	background-image: url(/images/leftGrad.png);
+	background-repeat: repeat-y;
+	background-position: -1013px 0px;
+	vertical-align: bottom;
+}
+div.roundedBox table.frame tr.middle td.center{
+	background-color: white;
+	background-image: url(/images/rowPopupBottom.png);
+	background-repeat: repeat-x;
+	background-position: bottom left;
+}
+div.roundedBox table.frame tr.bottom td.left{
+	background-image: url(/images/coreImages.png?v=3);
+	background-repeat: no-repeat;
+	background-position: -328px -66px;
+}
+div.roundedBox table.frame tr.bottom td.center{
+	background-image: url(/images/hBg.png?v=3);
+	background-repeat: repeat-x;
+	background-position: 0px -301px;
+}
+div.roundedBox table.frame tr.bottom td.right{
+	background-image: url(/images/coreImages.png?v=3);
+	background-repeat: no-repeat;
+	background-position: -327px -91px;
+}
+div.roundedBox table.headerLess tr.top td{
+	height: auto;
+}
+div.roundedBox table.headerLess tr.top td.center div.header{
+	display: none;
+}
+
+/* -------------- accounts table popup history -------------- */
+
+#tblAccounts table.histFrame{
+	width: 100%;
+	table-layout: fixed;
+}
+#tblAccounts div.rowPopup table.histFrame tr.top td{
+	height: 34px;
+}
+#tblAccounts div.rowPopup table.histFrame tr.bottom td{
+	height: 9px;
+}
+#tblAccounts div.rowPopup table.histFrame td.left{
+	width: 9px;
+}
+#tblAccounts div.rowPopup table.histFrame td.right{
+	width: 9px;
+}
+#tblAccounts div.rowPopup table.histFrame tr.top td.left{
+	background-image: url(/images/coreImages.png?v=3);
+	background-repeat: no-repeat;
+	background-position: -305px -13px;
+}
+#tblAccounts div.rowPopup table.histFrame tr.top td.right{
+	background-image: url(/images/coreImages.png?v=3);
+	background-repeat: no-repeat;
+	background-position: -314px -13px;
+}
+#tblAccounts div.rowPopup table.histFrame tr.top td.center{
+	background-image: url(/images/hBg.png?v=3);
+	background-repeat: repeat-x;
+	background-position: 0px -331px;
+	font-size: 18px;
+	color: #e21616;
+	padding-left: 2px;
+	vertical-align: bottom;
+}
+#tblAccounts div.rowPopup table.histFrame tr.middle td.left{
+	background-image: url(/images/leftGrad.png);
+	background-repeat: repeat-y;
+	background-position: -1040px 0px;
+}
+#tblAccounts div.rowPopup table.histFrame tr.middle td.right{
+	background-image: url(/images/leftGrad.png);
+	background-repeat: repeat-y;
+	background-position: -1051px 0px;
+}
+#tblAccounts div.rowPopup table.histFrame tr.middle td.center{
+	padding: 20px 5px 5px 5px;
+	background-color: white;
+	background-image: none;
+	min-width: 410px;
+}
+#tblAccounts div.rowPopup table.histFrame tr.bottom td.left{
+	background-image: url(/images/coreImages.png?v=3);
+	background-repeat: no-repeat;
+	background-position: -290px -49px;
+}
+#tblAccounts div.rowPopup table.histFrame tr.bottom td.right{
+	background-image: url(/images/coreImages.png?v=3);
+	background-repeat: no-repeat;
+	background-position: -300px -49px;
+}
+#tblAccounts div.rowPopup table.histFrame tr.bottom td.center{
+	background-image: url(/images/hBg.png?v=3);
+	background-repeat: repeat-x;
+	background-position: 0px -367px;
+}
+
+/* --------------- autosuggest styles ---------------- */
+div.autosuggest
+{
+	position: absolute;
+/*	background-image: url(img_inquisitor/as_pointer.gif);*/
+	background-image: url(/lib/images/inputBgHover.gif);
+	background-repeat: repeat-x;
+	background-color: white;
+	background-position: top;
+	padding: 0px 0 0 0;
+	z-index: 100;
+}
+
+div.autosuggest div.as_header,
+div.autosuggest div.as_footer
+{
+	position: relative;
+	height: 0px;
+	padding: 0 0px;
+/*	background-image: url(img_inquisitor/ul_corner_tr.gif);*/
+	background-position: top right;
+	background-repeat: no-repeat;
+	overflow: hidden;
+}
+div.autosuggest div.as_footer
+{
+/*	background-image: url(img_inquisitor/ul_corner_br.gif);*/
+}
+
+div.autosuggest div.as_header div.as_corner,
+div.autosuggest div.as_footer div.as_corner
+{
+	position: absolute;
+	top: 0;
+	left: 0;
+	height: 0px;
+	width: 0px;
+/*	background-image: url(img_inquisitor/ul_corner_tl.gif);*/
+	background-position: top left;
+	background-repeat: no-repeat;
+}
+div.autosuggest div.as_footer div.as_corner
+{
+/*	background-image: url(img_inquisitor/ul_corner_bl.gif);*/
+}
+div.autosuggest div.as_header div.as_bar,
+div.autosuggest div.as_footer div.as_bar
+{
+	height: 0px;
+	overflow: hidden;
+/*	background-color: white;*/
+}
+
+
+div.autosuggest ul
+{
+	border: 1px solid #0b70b7;
+	list-style: none;
+	margin: 0 0 0px 0;
+	padding: 0;
+	overflow: hidden;
+/*	background-color: white;*/
+}
+
+div.autosuggest ul li
+{
+	color: #ccc;
+	padding: 0;
+	margin: 0 0px 0px 0px;
+	text-align: left;
+}
+
+div.autosuggest ul li a
+{
+	color: black;
+	display: block;
+	text-decoration: none;
+	background-color: white;
+/*	text-shadow: #000 0px 0px 5px;*/
+	position: relative;
+	padding: 0;
+	width: 100%;
+}
+div.autosuggest ul li a:hover
+{
+	background-color: #eee;
+}
+div.autosuggest ul li.as_highlight a:hover
+{
+	background-color: #1B5CCD;
+}
+
+div.autosuggest ul li a span
+{
+	display: block;
+	padding: 3px 6px;
+	font-weight: bold;
+}
+
+div.autosuggest ul li a span small
+{
+	font-weight: normal;
+	color: #666;
+}
+
+div.autosuggest ul li.as_highlight a span small
+{
+	color: #ccc;
+}
+
+div.autosuggest ul li.as_highlight a
+{
+	color: #fff;
+	background-color: #1B5CCD;
+/*	background-image: url(img_inquisitor/hl_corner_br.gif);*/
+	background-position: bottom right;
+	background-repeat: no-repeat;
+}
+
+div.autosuggest ul li.as_highlight a span
+{
+/*	background-image: url(img_inquisitor/hl_corner_bl.gif);*/
+	background-position: bottom left;
+	background-repeat: no-repeat;
+}
+
+div.autosuggest ul li a .tl,
+div.autosuggest ul li a .tr
+{
+	background-color: transparent;
+	background-repeat: no-repeat;
+	width: 6px;
+	height: 6px;
+	position: absolute;
+	top: 0;
+	padding: 0;
+	margin: 0;
+}
+div.autosuggest ul li a .tr
+{
+	right: 0;
+}
+
+div.autosuggest ul li.as_highlight a .tl
+{
+	left: 0;
+/*	background-image: url(img_inquisitor/hl_corner_tl.gif);*/
+	background-position: bottom left;
+}
+
+div.autosuggest ul li.as_highlight a .tr
+{
+	right: 0;
+/*	background-image: url(img_inquisitor/hl_corner_tr.gif);*/
+	background-position: bottom right;
+}
+
+
+
+div.autosuggest ul li.as_warning
+{
+	font-weight: bold;
+	text-align: center;
+}
+
+div.autosuggest ul em
+{
+	font-style: normal;
+	color: #6EADE7;
+}
+
+/* --------------- inputs ------------- */
+input.inputTxt{
+	padding: 4px;
+	border: 1px solid #ababab;
+}
+/* ------------ add account page -------- */
+.roundedTable a.addLink{
+	color:#45B955;
+}
+a.addLink div{
+	float: left;
+}
+a.addLink div.addIcon{
+	background-image:url("/images/coreImages.png?v=3");
+	background-position:-50px -177px;
+	background-repeat:no-repeat;
+	height:17px;
+	margin-top:2px;
+	width:17px;
+}
+a.addLink div.caption{
+	font-size:14px;
+	padding-right:6px;
+	padding-top:3px;
+}
+
+/* ------------- forms ------------- */
+.successFrm, a.successFrm:link, a.successFrm:active, a.successFrm:visited{
+	color: green;
+	font-size: 15px;
+}
+.errorFrm, a.errorFrm:link, a.errorFrm:active, a.errorFrm:visited, errorFrm a{
+	color: #e5454b;
+	font-family: Tahoma, Verdana, Geneva, Verdana, Geneva, Arial, Helvetica, sans-serif;
+	font-size: 15px;
+}
+
+/* ---------------- travel plans -------------- */
+#planTable div.date{
+	float: left;
+	padding: 13px 20px;
+}
+#planTable div.date div.day{
+	font-size: 30px;
+	color: #00548c;
+}
+#planTable div.date div.month{
+	font-size: 20px;
+	color: #3e3e3e;
+}
+#planTable div.date div.year{
+	font-size: 15px;
+	color: #3e3e3e;
+}
+#planTable div.dateSplitter{
+	width: 41px;
+	height: 114px;
+	background-image: url(/images/coreImages.png?v=3);
+	background-repeat: no-repeat;
+	background-position: -411px -70px;
+	float: left;
+}
+#planTable div.vSplitter{
+	width: 1px;
+	height: 114px;
+	background-image: url(/images/coreImages.png?v=3);
+	background-repeat: no-repeat;
+	background-position: -464px -70px;
+	float: left;
+}
+div.planButtons{
+	padding-left: 21px;
+	width: 393px;
+	float: left;
+	padding-top: 4px;
+}
+div.planButtons div.button{
+	background-image: url(/images/coreImages.png?v=3);
+	background-repeat: no-repeat;
+	background-position: -334px -194px;
+	width: 114px;
+	height: 33px;
+	float: left;
+	overflow: hidden;
+	margin-left: 17px;
+	margin-top: 12px;
+}
+div.planButtons div.button div{
+	background-image: url(/images/coreImages.png?v=3);
+	background-repeat: no-repeat;
+	padding-left: 36px;
+	font-size: 16px;
+	color: #343434;
+	padding-top: 7px;
+}
+div.planButtons div.button div.edit{
+	background-position: -465px -71px;
+}
+div.planButtons div.button div.delete{
+	background-position: -465px -100px;
+}
+div.planButtons div.button div.share{
+	background-position: -465px -126px;
+}
+div.planButtons div.button div.add{
+	background-position: -465px -152px;
+}
+div.planButtons div.button div.print{
+	background-position: -465px -177px;
+}
+div.planButtons div.button div.google{
+	background-position: -465px -205px;
+}
+.roundedTable td.segmentHeader{
+	height: 66px;
+}
+td.segmentHeader a.arrow{
+	float: left;
+	display: block;
+	width: 23px;
+	height: 17px;
+	background-image: url(/images/coreImages.png?v=3);
+	background-position: -387px -170px;
+	margin-top: 12px;
+}
+td.segmentHeader a.closedArrow{
+	background-position: -446px -374px;
+}
+td.segmentHeader div.kindIcon{
+	float: left;
+	width: 30px;
+	height: 30px;
+	background-image: url(/images/coreImages.png?v=3);
+	margin-left: 14px;
+	margin-top: 7px;
+}
+td.segmentHeader div.iconT{
+	background-position: -227px -374px;
+}
+td.segmentHeader div.iconR{
+	background-position: -120px -372px;
+}
+td.segmentHeader div.iconL{
+	background-position: -260px -373px;
+}
+td.segmentHeader div.iconD{
+	background-position: -71px -371px;
+	width: 37px;
+}
+td.segmentHeader div.iconE{
+	background-position: -328px -518px;
+}
+td.segmentHeader div.iconB{
+	background-position: -132px -171px;
+}
+td.segmentHeader div.iconA{
+	background-position: -167px -173px;
+}
+td.segmentHeader div.iconC{
+    width: 38px;
+    height: 15px;
+    margin-top: 12px;
+    background-image: url('/images/cruise.png');
+ 	background-position: 0 0;
+}
+td.segmentHeader div.iconF{
+	width: 40px;
+    height: 13px;
+    margin-top: 14px;
+    background-image: url('/images/ferry-small.png');
+ 	background-position: 0 0;
+}
+td.segmentHeader div.iconU{
+	width: 31px;
+    height: 28px;
+    margin-top: 5px;
+    background-image: url('/images/eventIcon.gif');
+ 	background-position: -11px;
+}
+td.segmentHeader div.iconShare{
+	background-position: -159px -372px;
+	width: 34px;
+}
+td.segmentHeader div.iconComments{
+	background-position: -198px -374px;
+}
+td.segmentHeader div.name{
+	float: left;
+	margin-left: 14px;
+	margin-top: 11px;
+	margin-right: 24px;
+}
+#planTable td.segmentHeader div.vSplitter{
+	height: 39px;
+}
+#planTable td.segmentHeader div.moreInfo{
+	float: left;
+	padding: 0px 30px;
+	color: #00548c;
+}
+#planTable td.segmentHeader div.centerV{
+	margin-top: 9px;
+}
+#planTable td.segmentHeader div.centerV.viewPlan{
+	margin-top: 4px;
+    float: right;
+}
+#planTable td.segmentHeader div.date div.month{
+	font-size: 18px;
+	color: #00548c;
+	padding-bottom: 3px;
+}
+#planTable td.segmentHeader div.date div.year{
+	font-size: 14px;
+	color: #6d6d6d;
+}
+td.segmentInfo div.topLine{
+	height: 3px;
+	background-color: #009cdb;
+	overflow: hidden;
+}
+td.segmentInfo div.topLine div{
+	height: 3px;
+	background-image: url(/images/coreImages.png?v=3);
+	background-position: 0 -505px;
+	background-repeat: no-repeat;
+	position: relative;
+	left: -1px;
+	width: 336px;
+	overflow: hidden;
+}
+td.segmentInfo div.title{
+	font-size: 16px;
+	color: #282828;
+	margin-bottom: 10px;
+}
+td.segmentInfo input.borderLess, textarea.borderLess, table.formTable textarea{
+	outline: none;
+	border: none;
+	background: transparent;
+	font-size: 15px;
+	color: #848484;
+	width: 100%;
+}
+table.formTable textarea{
+	color: black;
+}
+body textarea.borderLess{
+	color: black;
+}
+div.boxToll div.pad{
+	padding: 5px 15px;
+}
+
+/* ------------- segment buttons ----------- */
+div.segmentButtons{
+	float: right;
+}
+div.segmentButtons div.button{
+	background-image: url(/images/coreImages.png?v=3);
+	background-repeat: no-repeat;
+	background-position: -157px -442px;
+	width: 94px;
+	height: 33px;
+	float: left;
+	overflow: hidden;
+	margin-left: 17px;
+}
+div.segmentButtons div.button div{
+	background-image: url(/images/coreImages.png?v=3);
+	background-repeat: no-repeat;
+	padding-left: 30px;
+	margin-left: 3px;
+	font-size: 16px;
+	color: #343434;
+	padding-top: 7px;
+	width: 60px;
+	text-align: center;
+}
+div.segmentButtons div.button div.Login{
+	background-position: -466px -441px;
+}
+div.segmentButtons div.button div.Move{
+	background-position: -466px -464px;
+}
+div.segmentButtons div.button div.Check{
+	background-position: -466px -490px;
+}
+div.segmentButtons div.button div.Edit{
+	background-position: -466px -70px;
+}
+div.segmentButtons div.button div.Delete{
+	background-position: -466px -100px;
+}
+
+/* ----------- airline segment ----------- */
+div.box66{
+	height: 66px;
+	float: left;
+}
+div.box66 div.left{
+	height: 66px;
+	width: 10px;
+	float: left;
+	background-image: url(/images/coreImages.png?v=3);
+	background-position: -388px -69px;
+}
+div.box66 div.center{
+	height: 36px;
+	padding: 15px 8px;
+	background-position: 0 -873px;
+	background-repeat: repeat-x;
+	background-image: url(/images/hBg.png?v=3);
+	overflow: hidden;
+}
+div.box66 div.right{
+	height: 66px;
+	width: 10px;
+	float: right;
+	background-image: url(/images/coreImages.png?v=3);
+	background-position: -399px -69px;
+}
+div.tripDetails div.airLine{
+	color: #d12424;
+	text-align: center;
+}
+table.flightSegment div.airLine div.center{
+	white-space: nowrap;
+	font-weight: bold;
+	padding-left: 0px;
+	padding-right: 0px;
+	overflow: hidden;
+}
+table.flightSegment div.airLine div.center div.limitHeight{
+	height: 36px;
+	overflow: hidden;
+}
+div.tripDetails div.airLine div.center a{
+	font-weight: normal;
+}
+div.line66{
+	height: 9px;
+	width: 39px;
+	overflow: hidden;
+	background-image: url(/images/coreImages.png?v=3);
+	background-position: -332px -234px;
+}
+td.line66{
+	width: 39px;
+	vertical-align: middle;
+}
+table.flightSegment{
+	width: 100%;
+	margin-bottom: 30px;
+}
+table.flightSegment td div.box66{
+	width: 100%;
+}
+tr.propsSpacer td{
+	height: 29px;
+}
+tr.propsSpacer td div{
+	float: right;
+	width: 50%;
+	border-left: 1px solid #cccccc;
+	height: 29px;
+}
+td.downLineCorner div{
+	float: right;
+	width: 50%;
+	overflow: hidden;
+	border-left: 1px solid #cccccc;
+	border-bottom: 1px solid #cccccc;
+	height: 34px;
+}
+div.box66 table.info td, div.boxToll table.info td{
+	font-size: 15px;
+	color: #3b3b3b;
+	padding-bottom: 0px;
+	padding-top: 6px;
+	padding-right: 15px;
+	vertical-align: top;
+}
+div.box66 table.info td{
+	padding-right: 0;
+}
+div.box66 table.info td td, div.boxToll table.info td td{
+	padding: 0;
+}
+div.box66 table.info td.caption, div.boxToll table.info td.caption{
+	text-align: right;
+	color: #00548c;
+	padding-right: 7px;
+	white-space:nowrap;
+}
+div.airDate div.center{
+	padding-top: 4px;
+	padding-bottom: 0px;
+	white-space: nowrap;
+	height: 62px;
+}
+div.airDate div.time{
+	background-position: 0 -377px;
+	background-image: url(/images/coreImages.png?v=3);
+	background-repeat: no-repeat;
+	float: left;
+	width: 66px;
+	height: 18px;
+	overflow-y: hidden;
+	overflow-x:hidden;
+	padding: 2px 1px;
+	font-weight: normal;
+	text-align: center;
+	color: white;
+	position: relative;
+	top: -2px;
+}
+div.airDate div.airDate{
+	float: left;
+	padding-left: 5px;
+}
+/* -------------- box toll ---------------- */
+div.boxToll{
+	background-repeat: repeat-x;
+	background-image: url(/images/boxToll.png);
+	width: 100%;
+}
+div.boxToll div.center{
+	border-left: 1px solid #cccccc;
+	border-right: 1px solid #cccccc;
+	background-color: white;
+	background-repeat: repeat-x;
+	background-image: url(/images/boxToll.png);
+	background-position: 0 -10px;
+	clear: both;
+}
+div.boxToll div.left{
+	height: 10px;
+	width: 10px;
+	float: left;
+	background-image: url(/images/coreImages.png?v=3);
+	background-position: -413px -230px;
+	background-color: white;
+	overflow: hidden;
+}
+div.boxToll div.right{
+	height: 10px;
+	width: 10px;
+	float: right;
+	background-image: url(/images/coreImages.png?v=3);
+	background-position: -425px -230px;
+	background-color: white;
+	overflow: hidden;
+}
+div.boxToll div.bottom{
+	overflow: hidden;
+	height: 10px;
+	/*background-repeat: repeat-x;
+	background-image: url(/images/hBg.png?v=3);
+	background-position: 0 -929px;*/
+    background: url(/images/hBg.png?v=3) 0 -929px repeat-x;
+}
+div.boxToll div.bottom div.left{
+	background-position: -436px -230px;
+	background-color: white;
+}
+div.boxToll div.bottom div.right{
+	background-position: -447px -230px;
+	background-color: white;
+}
+td.segmentInfo td.addConnection a div{
+	float: right;
+	text-decoration: underline;
+	color: #00548c;
+}
+td.segmentInfo td.addConnection a div.addIcon{
+	width: 20px;
+	height: 20px;
+	background-image: url(/images/coreImages.png?v=3);
+	background-position: -387px -144px;
+	background-repeat: no-repeat;
+	margin-right: 5px;
+}
+.roundedTabled td:hover a{
+	color: inherit;
+}
+
+/* ------------- comments -------------- */
+table.comments{
+	width: 100%;
+}
+table.comments td{
+	background-image: url(/images/hDots.png);
+	background-repeat: repeat-x;
+	padding-top: 13px;
+	padding-bottom: 20px;
+}
+table.comments td.photo{
+	width: 100px;
+	vertical-align: top;
+}
+table.comments td.photo div{
+	width: 64px;
+	height: 51px;
+	background-image: url(/images/coreImages.png?v=3);
+	background-position: 0 -509px;
+}
+table.comments td.name{
+	padding-right: 40px;
+	width: 10px;
+	white-space: nowrap;
+	font-weight: bold;
+	vertical-align: top;
+}
+table.comments td.comment{
+	font-weight: bold;
+	vertical-align: top;
+}
+table.comments td.delete{
+	padding-left: 10px;
+}
+table.comments td.delete a{
+	float: right;
+	display: block;
+	background-image: url(/images/coreImages.png?v=3);
+	background-position: -66px -509px;
+	background-repeat: no-repeat;
+	width: 61px;
+	padding-left: 23px;
+	padding-top: 6px;
+	height: 27px;
+	overflow: hidden;
+	text-align: center;
+	color: #adadad;
+	text-decoration: none;
+}
+table.comments td.delete a:hover{
+	background-position: -66px -543px;
+	color: #cf1118;
+	text-decoration: none;
+}
+#travelPlan .roundedTable a, #travelPlans .roundedTable a{
+	color: #ce1414;
+	text-decoration: none;
+}
+
+/* ------------ plan navigator ---------------- */
+div#planNavigator{
+	font-size: 13px;
+	height: 33px;
+	margin-bottom: 22px;
+}
+div#planNavigator div.roundRect{
+	float: left;
+}
+div#planNavigator div.roundRect div{
+	float: left;
+	height: 33px;
+}
+div#planNavigator div.roundRect div.head{
+	width: 7px;
+	background-image: url(/images/coreImages.png?v=3);
+	background-repeat: no-repeat;
+	background-position: -303px -371px;
+}
+div#planNavigator div.roundRect div.caption{
+	padding: 7px 5px;
+	border-top: 1px solid #cccccc;
+	border-bottom: 1px solid #cccccc;
+	overflow: hidden;
+	height: 17px;
+	color: #226b9b;
+	text-decoration: underline;
+	text-transform: uppercase;
+}
+div#planNavigator div.roundRect div.foot{
+	width: 7px;
+	background-image: url(/images/coreImages.png?v=3);
+	background-repeat: no-repeat;
+	background-position: -312px -371px;
+}
+div#planNavigator div.my, div#planNavigator div.other{
+	color: #949494;
+	float: left;
+	margin-left: 15px;
+	margin-right: 15px;
+	text-transform: uppercase;
+	padding: 8px 5px;
+}
+div#planNavigator a div.other{
+	text-decoration: underline;
+}
+div.directionDetails{
+	clear: both;
+}
+#travelPlan .roundedTable td div.directionDetails a{
+	color: #0b70b7;
+}
+
+/* ----------------- forms ---------------- */
+table.inputFrame tr td{
+	height: 36px;
+	vertical-align: middle;
+}
+table.inputFrame tr td table td{
+	height: auto;
+}
+table.inputFrame tr td table td:hover{
+	height: auto;
+}
+table.inputFrame tr td.ifLeft{
+	background-image: url(/images/coreImages.png?v=3);
+	background-position: -348px -478px;
+	width: 7px;
+}
+table.inputFrame tr td.ifRight{
+	background-image: url(/images/coreImages.png?v=3);
+	background-position: -357px -478px;
+	width: 7px;
+}
+table.inputFrame tr td.ifCenter{
+	background-image: url(/images/hBg.png?v=3);
+	background-position: 0 -1117px;
+	background-repeat: repeat-x;
+}
+table.inputFrame tr td.ifCenter input, table.inputFrame tr td.ifCenter select{
+	border: none;
+	background: transparent;
+}
+table.formTable td.input{
+	padding-top: 14px;
+	padding-bottom: 14px;
+	width: 99%;
+}
+table.formTable td.caption{
+	text-align: right;
+	color: #1d1d1d;
+	padding-left: 15px;
+	padding-right: 15px;
+	padding-top: 14px;
+	vertical-align: top;
+}
+table.formTable tr.text td.caption, table.formTable tr.select td.caption, table.formTable tr.password td.caption, table.formTable tr.date td.caption{
+	text-align: right;
+	color: #1d1d1d;
+	padding-top: 23px;
+	white-space: nowrap;
+}
+table.formTable td.caption table{
+	float: right;
+}
+table.formTable td.caption table td{
+	vertical-align: top;
+}
+table.formTable td.caption table td.asterisk{
+	padding-left: 7px;
+}
+table.formTable col.c0, table.formTable col.c3{
+	width: 7px;
+}
+table.formTable td.rowLeft, table.formTable td.rowRight{
+	vertical-align: bottom;
+	width: 7px;
+	overflow: hidden;
+	overflow-x: hidden;
+	padding: 0;
+}
+table.formTable tr td.rowLeft div, table.formTable tr td.rowRight div{
+	width: 7px;
+	height: 7px;
+	float: left;
+}
+textarea{
+	overflow: auto;
+}
+table.formTable textarea{
+	border: none;
+	background: transparent;
+}
+table.formTable div.boxToll div.pad{
+	padding: 0px 7px;
+}
+table.formTable div.redHeader{
+	padding-left: 0;
+}
+td.errorMessage{
+	color: #e5454b;
+	font-family: Tahoma, Verdana, Geneva, Verdana, Geneva, Arial, Helvetica, sans-serif;
+	font-size: 15px;
+	padding: 10px 20px;
+}
+td.errorMessage div.icon{
+	float: left;
+	width: 23px;
+	height: 21px;
+	background-image: url(/images/coreImages.png?v=3);
+	background-position: -327px -28px;
+	margin-right: 13px;
+	position: relative;
+	top: -3px;
+}
+td.errorMessage b.errorPrefix{
+	display: none;
+}
+div.message{
+	font-family: Tahoma, Verdana, Geneva, Verdana, Geneva, Arial, Helvetica, sans-serif;
+	font-size: 15px;
+	padding: 10px 20px;
+}
+div.message div.icon{
+	float: left;
+	width: 23px;
+	height: 21px;
+	background-image: url(/images/coreImages.png?v=3);
+	background-position: -327px -28px;
+	margin-right: 13px;
+	position: relative;
+	top: -3px;
+}
+div.errorMessage{
+	color: #e5454b;
+}
+div.errorMessage div.icon{
+	background-position: -327px -28px;
+}
+div.successMessage{
+	color: #0b9d0e;
+}
+div.successMessage div.icon{
+	background-position: -390px -43px;
+}
+div.infoMessage{
+	color: #0080b8;
+	font-size: 18px;
+}
+div.infoMessage div.icon{
+	background-position: -454px -527px !important;
+	width: 29px;
+	height: 29px;
+}
+div.warningMessage{
+	color: #b86134;
+}
+div.warningMessage div.icon{
+	background-position: -327px -28px;
+}
+/* ------------------- hover form row ----------------- */
+table.formTable tr:hover td.row, table.formTable tr.error td.row, table.formTable tr.focused td.row{
+	color: #4d8cba;
+	background-color: #f0f0f0;
+	background-image: url(/images/hoverField.png);
+	background-repeat: repeat-x;
+}
+table.formTable tr:hover div.boxToll div.left, table.formTable tr:hover div.boxToll div.right, table.formTable tr.focused div.boxToll div.left, table.formTable tr.focused div.boxToll div.right{
+	background-color: #f0f0f0;
+}
+table.formTable tr:hover td.rowLeft, table.formTable tr:hover td.rowRight,
+table.formTable tr.error td.rowLeft, table.formTable tr.error td.rowRight,
+table.formTable tr.focused td.rowLeft, table.formTable tr.focused td.rowRight{
+	background-position: -322px -565px;
+	background-repeat: no-repeat;
+	background-image: url(/images/coreImages.png?v=3);
+}
+table.formTable tr:hover td.rowRight,
+table.formTable tr.error td.rowRight,
+table.formTable tr.focused td.rowRight{
+	background-position: -330px -565px;
+}
+table.formTable tr:hover td.rowLeft div, table.formTable tr:hover td.rowRight div,
+table.formTable tr.error td.rowLeft div, table.formTable tr.error td.rowRight div,
+table.formTable tr.focused td.rowLeft div, table.formTable tr.focused td.rowRight div{
+	background-image: url(/images/coreImages.png?v=3);
+	background-repeat: no-repeat;
+	background-position: -324px -375px;
+}
+table.formTable tr:hover td.rowRight div,
+table.formTable tr.error td.rowRight div,
+table.formTable tr.focused td.rowRight div{
+	background-position: -333px -375px;
+}
+table.formTable tr.focused td.ifCenter, table.ifFocused tr td.ifCenter{
+	background-position: 0 -1158px;
+}
+table.formTable tr.focused td.ifLeft, table.ifFocused tr td.ifLeft{
+	background-position: -306px -512px;
+}
+table.formTable tr.focused td.ifRight, table.ifFocused tr td.ifRight{
+	background-position: -314px -512px;
+}
+table.formTable tr.focused input, table.formTable tr.focused select, table.formTable tr.focused textarea, table.ifFocused input, table.ifFocused select, table.ifFocused textarea{
+	outline: none;
+}
+tr.focused div.boxToll{
+	background-image: url(/images/boxTollFocused.png);
+}
+tr.focused div.boxToll div.left{
+	background-position: -422px -373px;
+}
+tr.focused div.boxToll div.bottom div.left{
+	background-position: -422px -385px;
+}
+tr.focused div.boxToll div.right{
+	background-position: -434px -373px;
+}
+tr.focused div.boxToll div.bottom div.right{
+	background-position: -434px -385px;
+}
+tr.focused div.boxToll div.center{
+	border-left: 2px solid #3990c9;
+	border-right: 2px solid #3990c9;
+}
+tr.focused div.boxToll div.bottom{
+	background-position: 0 -1198px;
+}
+/* ------------------ error form row ------------------ */
+table.formTable tr.error td.row{
+	background-color: #e5454b;
+	background-image: url(/images/errorField.png);
+}
+table.formTable tr.error td, table.formTable tr.error td.input{
+	color: white;
+}
+table.formTable tr.error td.rowLeft div{
+	background-position: -324px -383px;
+}
+table.formTable tr.error td.rowRight div{
+	background-position: -333px -383px;
+}
+table.formTable tr.error td.rowLeft{
+	background-image: url(/images/coreImages.png?v=3);
+	background-position: -338px -565px;
+}
+table.formTable tr.error td.rowRight{
+	background-image: url(/images/coreImages.png?v=3);
+	background-position: -346px -565px;
+}
+
+/* -------------- more info ---------------- */
+div.checkIcon{
+	width: 21px;
+	height: 21px;
+	float: left;
+	margin-left: 8px;
+	background-image: url(/images/coreImages.png?v=3);
+	background-position: -366px -377px;
+	position: relative;
+	top: -4px;
+}
+#tblAccounts div.rowPopup div.incBalance, #tblAccounts div.rowPopup div.decBalance{
+	font-size: inherit;
+	padding-top: 0px;
+}
+#tblAccounts div.rowPopup div.incBalance div, #tblAccounts div.rowPopup div.decBalance div{
+	float: left;
+}
+#tblAccounts div.rowPopup div.incBalance div.incArrow{
+	height: 16px;
+	margin-left: 5px;
+}
+#tblAccounts div.rowPopup div.decBalance div.decArrow{
+	height: 16px;
+    margin-left: 5px;
+}
+#tblAccounts table.props td.expiration div.state{
+	display: none;
+}
+#tblAccounts table.props td.expiration div.date{
+	float: left;
+	text-decoration: none;
+}
+#tblAccounts table.props td.expiration div.successDate{
+	color: #0AAC0D;
+}
+#tblAccounts table.props td.expiration div.warningDate, #tblAccounts table.props td.expiration div.errorDate{
+	color: #C91313;
+}
+#tblAccounts tr:hover td div.rowPopup td.expiration a{
+	text-decoration: none;
+}
+div.redHeader{
+	font-size: 28px;
+	color: #e21616;
+	padding-left: 45px;
+}
+div.fieldhint{
+	font-family: Tahoma;
+	font-size: 13px;
+	color: #a5a5a5;
+	padding-top: 5px;
+}
+div.hLine{
+	height: 1px;
+	background-image: url(/images/hDots.png);
+	background-repeat: repeat-x;
+	overflow: hidden;
+}
+table.formTable td.footer td{
+	vertical-align: top;
+}
+table.formTable td.footer td.icon{
+	width: 27px;
+}
+table.formTable td.footer td.icon div{
+	background-position: -389px -375px;
+	background-image: url(/images/coreImages.png?v=3);
+	width: 27px;
+	height: 27px;
+	float: left;
+}
+table.formTable td.footer td.message{
+	font-family: Tahoma;
+	font-size: 15px;
+	color: #1d1d1d;
+	padding-left: 20px;
+}
+div#messagePopup{
+	color: black;
+}
+.calicon{
+	position: relative;
+	left: -27px;
+	top: 7px;
+}
+.inputDate{
+	width: 140px;
+}
+.inputTime{
+	width: 77px;
+}
+.helpTime{
+	position:relative;
+	font-size:11px;
+	text-align:center;
+	bottom:-2px;
+	left:-1px;
+	color:#aaa;
+    white-space: nowrap;
+}
+/* ================ old design ============ */
+
+/* *********** top menu link on the first page *********** */
+a.topLink:visited, a.topLink:link, a.topLink:active{
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 18px;
+	color: #0b70b7;
+	text-decoration: none;
+}
+a.topLink:hover{
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 18px;
+	color: #0b70b7;
+	text-decoration: underline;
+}
+.topLink{
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 18px;
+	color: #0b70b7;
+}
+div.blueHeader{
+	color: rgb(11, 112, 183);
+	font-size: 20px;
+	margin-bottom: 40px;
+}
+
+div.blueHeader .small{
+	color: #e67512;
+	font-size: 15px;
+}
+/* ----------------------- forms, moved to lib --------------- */
+* input.inputTxt{
+	height: auto;
+}
+/* ------------------- trip plans --------------------- */
+#travelPlans{
+	position: relative;
+	width: 100%;
+}
+
+#travelPlans a:hover div.head{
+	text-decoration: underline;
+}
+
+#travelPlans div.head{
+	font-size: 22px;
+	color: white;
+	padding: 10px 10px;
+	background-color: #0b70b8;
+	position: relative;
+}
+
+#travelPlans div.subHead{
+	color: white;
+	padding: 5px 10px;
+	background-color: #71acd4;
+	position: relative;
+	top: 0px;
+	left: 0px;
+	position: relative;
+}
+
+#travelPlans div.subHead div.dates{
+	position: relative;
+	background-color: #71acd4;
+	font-size: 16px;
+	font-weight: bold;
+	float: left;
+	width: 60%;
+}
+
+#travelPlans div.subHead div.links{
+	position: relative;
+	float: right;
+	width: 40%;
+	text-align: right;
+	background-color: #71acd4;
+}
+
+#travelPlans div.subHead div.links a{
+	color: white;
+}
+
+#travelPlans div.resHead{
+	padding: 5px 10px;
+	background-color: #cccccc;
+	color: black;
+}
+
+#travelPlans div.resBody{
+	padding: 10px 10px;
+	background-color: #f3f3f3;
+	color: black;
+	margin-bottom: 10px;
+}
+
+#travelPlans div.resName{
+	padding: 5px 0px;
+	font-size: 18px;
+}
+#travelPlans table.tripDetail td{
+	font-size: 12px;
+	color: black;
+	vertical-align: top;
+}
+table.editLinks td{
+	font-size: 10px;
+	text-align: center;
+	color: #0970b3;
+	vertical-align: bottom;
+    border: none;
+}
+table.editLinks td img{
+	border: none;
+	width: 13px;
+	height: 17px;
+}
+.popupWindow{
+	width: 500px;
+	height: 255px;
+	top: 0px;
+	left: 0px;
+	position: absolute;
+	visibility: hidden;
+	z-index: 100;
+	color: black;
+}
+.popupWindow .question{
+	padding: 10px 0px;
+}
+.popupWindow table.formRows{
+	padding: 10px 0px;
+	margin: 10px 0px;
+	height: 80px;
+	width: 100%;
+}
+.popupWindow table.formRows td.caption{
+	padding-right: 20px;
+	width: 10px;
+}
+.popupWindow .buttons{
+	padding-top: 10px;
+}
+
+div#fader{
+	z-index: 10;
+	background-color: white;
+	opacity: 0.75 !important;
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	visibility: hidden;
+	filter: progid:DXImageTransform.Microsoft.Alpha( opacity = 75 ) !important;
+}
+/* ------------------ travel plan details ------------------------- */
+#travelPlan{
+	color: #545454;
+	font-size: 12px;
+}
+div.planPicture{
+	float: left; width: 111px; height: 111px; overflow: hidden;
+}
+div.planPicture img{
+	border: none;
+	width: 111px; height: 111px;
+}
+div.planPicture div.roundCorners{
+	width: 111px;
+	height: 111px;
+	position: relative;
+	top: -111px;
+	z-index: 1;
+	background-image: url(/images/corners.png);
+}
+#travelPlan .cellCaption{
+	padding-right: 10px;
+	font-weight: bold;
+	color: #0b70b7;
+}
+#travelPlan div.head img.logo{
+	border: none;
+	width: 54px;
+	height: 50px;
+}
+#travelPlan a{
+	outline: none;
+}
+#travelPlan div.head span.title{
+	font-size: 18px;
+	font-weight: bold;
+}
+#travelPlan div.head span.info{
+	font-size: 14px;
+	padding-left: 40px;
+}
+#travelPlan div.secHead{
+	padding-bottom: 15px;
+	font-size: 14px;
+	font-weight: bold;
+}
+#travelPlan table.detail td.caption{
+	padding-right: 10px;
+	width: 10px;
+	vertical-align: top;
+}
+#travelPlan table.detail td{
+	padding-bottom: 5px;
+	vertical-align: top;
+}
+a.orange{
+	color: #e67817;
+}
+#tabsAddCell a{
+	text-decoration: none;
+	padding-left: 20px;
+	background-image: url(/images/plus.gif);
+	background-position: left bottom;
+	background-repeat: no-repeat;
+	color: #7F7F7F;
+}
+#tabsAddCell a:hover{
+	text-decoration: underline;
+	color: #0B70B7;
+}
+#tblAccounts td#recentlyCell td{
+	color: #7F7F7F;
+}
+#checkHistory::-webkit-scrollbar-thumb {
+	border-radius: 8px;
+	border: 2px solid white;
+	background-color: rgba(0, 0, 0, .5);
+}
+#checkHistory::-webkit-scrollbar {
+	-webkit-appearance: none;
+	width: 11px;
+	height: 11px;
+}
+#checkHistoryText div{
+	height: 16px;
+	padding: 2px 0px;
+	overflow: hidden;
+}
+#checkHistoryText div img{
+	max-height: 16px;
+}
+#checkHistoryText{
+}
+div#itTitle{
+	margin-bottom: 30px;
+}
+
+div.tripDetailsHeader{
+	margin-bottom: 10px;
+	background-color: #71acd5;
+	color: white;
+	font-size: 24px;
+	padding: 10px;
+}
+div.switchBlock{
+	margin-top: 8px;
+}
+table.segInfo td.padLeft{
+	padding-left: 20px;
+}
+table.segInfo td.padRight{
+	padding-right: 20px;
+}
+table.switchTable{
+	height: 50px;
+}
+
+#dividerCol{
+	max-width: 1px;
+	width: 1px;
+	overflow: hidden;
+	background-color: #b0b0b0;
+	background-image: url(/images/deviderBottom.jpg);
+	background-position: bottom left;
+	background-repeat: repeat-x;
+	vertical-align: top;
+}
+#logoTable{
+	height: 51px;
+}
+#logoTable td.menuCell{
+	padding: 7px;
+}
+td#tabsAddCell{
+	height: 37px;
+}
+#tabsTable .notSelected{
+	font-weight: bold; font-size: 12px;
+}
+#tabsTable .selected{
+	color: White; font-weight: bold; text-decoration: none;
+}
+#tblAccounts td.c1head{
+	width: 10px;
+	padding: 0px;
+}
+#tblAccounts .blueBg{
+	background-color: #71acd6;
+}
+#tblAccounts .white{
+	color: white;
+	font-size: 13px;
+}
+#logoTable td.bg{
+	background-color: #dbeaf4;
+}
+#logoTable td.active{
+	background-color: #f1f7fb;
+}
+#tblAccounts .errorBg{
+	background-color: #FAEADA;
+}
+#tblAccounts td.localPass{
+	background-image: url(/images/localPassword.gif);
+	background-position: top right;
+	background-repeat: no-repeat;
+}
+div.planCaption{
+	padding: 19px;
+}
+td.segmentInfo div.blockBodyInner div.bodyCaption{
+	padding: 17px 19px 12px;
+}
+div.clear20{
+	margin-bottom: 20px;
+}
+div.reservationDetails{
+	padding-top: 10px;
+}
+@media print{
+	div.reservationDetails{
+		padding-top: 0;
+	}
+	div#printHeader{
+		display: block;
+		font-size: 20pt;
+		padding: 0 7pt 10pt 7pt;
+		color: black;
+	}
+	div#printHeader img{
+		width: 284px;
+		height: 40px;
+	}
+	span.sortArrow{
+		display: none;
+	}
+	div#content{
+		padding-left: 0px;
+	}
+	div#secondMenu{
+		display: none;
+	}
+	div#topBarLogo{
+		width: 284px;
+		height: 40px;
+	}
+	div#topBarLogo a{
+		margin: 0;
+	}
+	div#topBar{
+		display: none;
+	}
+	#tblAccounts td.c2 div.redBar{
+		display: none;
+	}
+	#tblAccounts td div, #tblAccounts td.expiration div{
+		font-size: 10pt;
+		padding: 0;
+	}
+	#tblAccounts div.incBalance, #tblAccounts div.decBalance{
+		font-size: 8pt;
+		padding: 0;
+	}
+	#tblAccounts tr.head td{
+		border-top: none;
+		border-left: none;
+		border-right: none;
+	}
+	#tblAccounts tr.head td.manageHead{
+		display: none;
+	}
+	#tblAccounts td.userName{
+		border-top: none;
+		border-left: none;
+		border-right: none;
+	}
+	#tblAccounts td div.name{
+		font-size: 10pt;
+		padding: 2px 17px;
+	}
+	#tblAccounts td div.icon{
+		display: none;
+	}
+	#tblAccounts td.tabHeader{
+		color: black;
+		background: none;
+	}
+	#tblAccounts td.balance, #tblAccounts td.login, #tblAccounts td.program, #tblAccounts td.expiration{
+		padding: 1pt;
+		font-size: 10pt;
+	}
+	#tblAccounts td.balance div.state, #tblAccounts td.expiration div.state{
+		display: none;
+	}
+	col.manageCol{
+		display: none;
+		width: 1px;
+		overflow: hidden;
+	}
+	col.plusCol{
+		width: 0px;
+		overflow: hidden;
+	}
+	col.expireCol{
+		width: auto;
+	}
+	.colProgram{
+		width: 50%;
+	}
+	#tblAccounts td{
+		padding: 1px 2px;
+	}
+	#tblAccounts td a{
+		text-decoration: none;
+		color: black;
+	}
+	div.left40{
+		position: relative;
+		left: 0px;
+	}
+	#topTabs{
+		display: none;
+	}
+	#dividerCol{
+		display: none;
+	}
+	.notPrintable{
+		display: none;
+	}
+	.printW0{
+		width: 1px;
+		overflow: hidden;
+	}
+	div#itTitle{
+		margin-bottom: 0px;
+	}
+	div.tripDetailsHeader{
+		display: none;
+	}
+	div.switchBlock{
+		margin-top: 0px;
+	}
+	#travelPlan table.detail td{
+		padding-bottom: 1px;
+		padding-left: 0px;
+		padding-right: 0px;
+	}
+	table.segInfo td.padLeft{
+		padding-left: 5px;
+	}
+	table.segInfo td.padRight{
+		padding-right: 5px;
+	}
+	#travelPlan div.details{
+		padding: 0px 0px;
+	}
+	#travelPlan div.secHead{
+		padding-bottom: 3px;
+	}
+	table.switchTable{
+	}
+	div#footer{
+		height: auto;
+		margin-top: 3px;
+		border-top: none;
+	}
+	body div#footer div, body div#footer a{
+		font-size: 12px;
+		text-decoration: none;
+	}
+	div#footer div.footerYear, div#footer div.footerLinks{
+		margin-top: 5px;
+		margin-left: 5px;
+	}
+	div#footer div.footerMobileLogo{
+		display: none;
+	}
+	.roundedTable td.tabHeader div.caption{
+		margin: 2px 12px;
+
+	}
+	.roundedTable td.tabHeader, #tblAccounts td.tabHeader{
+		height: auto;
+		border: none;
+		font-weight: bold;
+	}
+	.whiteBgRow{
+		margin-top: 0;
+	}
+	.whiteBgRow td.left, .whiteBgRow td.right{
+		display: none;
+	}
+	.whiteBgRow td.center{
+		padding: 0;
+		background-color: transparent;
+		height: auto;
+	}
+	.grayBg .whiteBgRow td.center{
+		background-color: inherit;
+	}
+	div#content{
+		padding-bottom: 0;
+	}
+	div.button, div.planPicture, div.planButtons, td.downLineCorner div, div.segmentButtons, div#planNavigator div.roundRect, tr.propsSpacer td div,
+	td.segmentHeader div.kindIcon,  td.segmentHeader a.arrow, #planTable td.segmentHeader div.vSplitter,
+	div.boxToll div.left, div.boxToll div.right, div.boxToll div.bottom,
+	div.box66 div.left, div.box66 div.right{
+		display: none;
+	}
+	.roundedTable td.c1{
+		border-left: none;
+	}
+	div.boxToll div.center{
+		border-left: none;
+		border-right: none;
+	}
+	#planTable div.date{
+		padding: 0;
+	}
+	#planTable div.date div.day, #planTable div.date div.month, #planTable div.date div.year{
+		display: inline;
+		font-size: 100%;
+	}
+	#planTable div.dateSplitter{
+		height: auto;
+	}
+	#planTable div.vSplitter{
+		height: auto;
+	}
+	.roundedTable td.tabHeader{
+		font-size: 20px;
+	}
+	.roundedTable td div.icon{
+		display: none;
+	}
+	.roundedTable td.segmentHeader{
+		height: auto;
+	}
+	div#planNavigator{
+		margin-bottom: 0;
+	}
+	td.segmentHeader div.name{
+		margin: 0;
+	}
+	#planTable td.segmentHeader div.date div.month{
+		padding-bottom: 0;
+	}
+	.roundedTable td.c1 div.caption{
+		padding-left: 12px;
+	}
+	div.planCaption{
+		padding: 6px 12px;
+	}
+	td.segmentInfo div.blockBodyInner div.bodyCaption{
+		padding: 0px 12px;
+	}
+	div.box66 table.info td, div.boxToll table.info td{
+		font-size: 100%;
+	}
+	div.airDate div.time{
+		height: auto;
+		top: 0;
+		width: auto;
+		padding: 0;
+		color: black;
+	}
+	tr.propsSpacer td{
+		height: 1px;
+	}
+	table.flightSegment{
+		margin-bottom: 0;
+	}
+	body table.roundedTable tr.afterGroup > td{
+		border-top: none;
+		border-bottom: none;
+	}
+	div#planNavigator div.my{
+		padding: 0;
+	}
+	div.tripDetails div.airLine{
+		text-align: left;
+	}
+	div.box66 div.center{
+		height: auto;
+		padding-top: 0;
+		padding-bottom: 0;
+	}
+	div.clear20{
+		margin-bottom: 0;
+	}
+	div.box66{
+		min-height: 50px;
+		height: auto;
+	}
+	div.line66{
+		width: 5px;
+	}
+	div.box66 table.info td.caption, div.boxToll table.info td.caption{
+		white-space: nowrap;
+	}
+	table.flightSegment td div.box66{
+		border: 1px solid gray;
+	}
+	table.flightSegment div.airLine div.center{
+		padding: 5px;
+	}
+	table.comments td{
+		padding-top: 6px;
+		padding-bottom: 10px;
+	}
+	#planTable td.segmentHeader div.date div.year{
+		color: black;
+	}
+	body table.flightSegment div.center div.oneline{
+		height: auto;
+		overflow: visible;
+	}
+}
+
+div.comment{
+	color: #515151;
+	font-size: 16px;
+}
+div.commentSep{
+	margin-top: 10px;
+	border-bottom: 1px dashed gray;
+	margin-bottom: 10px;
+	height: 1px;
+}
+div.comment img.trash{
+	float: right;
+	border: none;
+	width: 11px;
+	height: 12px;
+	margin-left: 5px;
+	margin-bottom: 5px;
+}
+#reviewPopupText{
+	padding: 10px;
+	font-size: 10pt;
+}
+#reviewPopup{
+	border: 1px solid rgb(11, 112, 184);
+	background-color: white;
+}
+body #checkPopup{
+	z-index: 50;
+	width: 565px;
+}
+.tripLeftCol{
+	width: 30%;
+}
+.tripMidCol{
+	width: 40%;
+}
+.tripRightCol{
+	width: 30%;
+}
+.orangeBold{
+	color: #D52E2E;
+	font-size: 110%;
+}
+body.notLoggedIn div#content{
+    padding-left: 25px;
+}
+/* ----------- contact form -------------- */
+div.pageNote{
+	width: auto;
+}
+div.pageNote div.center{
+	border-right: none;
+}
+div.pageNote div.pad{
+	padding: 15px 23px;
+}
+div.formHeader div.pad{
+	padding: 0px 23px;
+}
+div.formHeader div.pad div.redHeader{
+	padding: 0;
+}
+div.pageNote div.right, div.pageNote div.bottom div.right{
+	background-color: inherit;
+	background-image: none;
+}
+div.boxBlue{
+	background-image: url(/images/boxBlue.png);
+	background-color: #0d65a4;
+}
+div.boxBlue div.center{
+	background-color: #0d65a4;
+	background-image: url(/images/boxBlue.png);
+	color: #e1ecf5;
+	border-right: none;
+}
+div.boxBlue div.left{
+	background-position: -154px -565px;
+}
+div.boxBlue div.bottom{
+	background-position: 0 -1213px;
+}
+div.boxBlue div.center div.text a{
+	color: white;
+	text-decoration: none;
+}
+div.boxBlue div.bottom div.left{
+	background-position: -166px -565px;
+	background-color: transparent;
+}
+div.boxBlue div.center > div.centerInner{
+	border-left: 1px solid white;
+	padding: 5px 15px 5px 23px;
+	font-size: 17px;
+}
+div.boxFaq div.center > div > div.q{
+	float: left;
+	font-weight: bold;
+	width: 30px;
+}
+div.boxFaq div.center > div > div.text{
+	margin-left: 30px;
+}
+div.boxBlue div.center > div > a.button{
+	float: right;
+	width: 22px;
+	height: 22px;
+	display: block;
+	background-image: url(/images/coreImages.png?v=3);
+	background-position: -178px -558px;
+}
+div.afterBlue{
+	background-image: url(/images/boxAfterBlue.png);
+}
+div.afterBlue > div.center > div > div.q{
+	color: #146aaa;
+}
+div.afterBlue div.center{
+	background-image: url(/images/boxAfterBlue.png);
+	padding-top: 20px;
+}
+div.afterBlue > div.top > div.left, div.afterBlue > div.left{
+	background-image: none;
+	background-color: transparent;
+	border-left: 1px solid #cccccc;
+}
+div.boxBlueClosed div.center > div > a.button{
+	background-position: -202px -558px;
+}
+div.boxBlueClosed div.bottom div.left{
+	background-position: -226px -558px;
+}
+div.afterBlue > div.downArrow{
+	float: left;
+	position: relative;
+	top: -2px;
+	left: 75px;
+	z-index: 10;
+	background-image: url(/images/coreImages.png?v=3);
+	background-position: -226px -569px;
+	width :13px;
+	height: 7px;
+	overflow: hidden;
+}
+div.afterBlueClosed > div.downArrow{
+	display: none;
+}
+div.qLess > div.center > div > div.text{
+	margin-left: 0;
+}
+div.boxFaq div.center{
+}
+div.boxFaq .row .text{
+	margin-left: 30px;
+}
+div.boxFaq .row .icon{
+	float: left;
+	width: 4px;
+	height: 7px;
+	background-image: url(/images/coreImages.png?v=3);
+	background-position: -242px -569px;
+	position: relative;
+	top: 5px;
+}
+div.boxFaq .row .text a{
+	color: inherit;
+	text-decoration: none;
+}
+div.boxFaq .row{
+	margin-bottom: 20px;
+}
+div.boxFaq .row .text a:hover{
+	text-decoration: underline;
+}
+div.qLess div.pad{
+	padding-bottom: 1px;
+}
+td.rightAlign a.addLink div{
+	float: right;
+}
+div.ratingStars{
+	width: 90px;
+	height: 17px;
+}
+table.sectionDivider{
+	width: 100%;
+}
+table.sectionDivider td{
+	width: 100%;
+	font-family: tahoma;
+	font-size: 18px;
+	border-bottom: 1px solid #d52e2e;
+	color: #d52e2e;
+}
+table.formTable table.sectionDivider{
+	padding-top: 20px;
+}
+table.formTable tr.radio td.input table{
+	margin-bottom: 10px;
+}
+input.fileField{
+	margin-bottom: 10px;
+	float: left;
+}
+#trPicture div.overallButton{
+	clear: both;
+}
+@media screen and (-webkit-min-device-pixel-ratio:0){
+	input.fileField{
+		border: none;
+	}
+}
+div.boxBlue div.message{
+	font-family: inherit;
+	font-size: inherit;
+	padding: 0;
+	color: white;
+}
+div.boxBlue div.center div.message a{
+	text-decoration: underline;
+}
+div.messageBar{
+	margin-bottom: 23px;
+}
+div.messageDownArrow{
+	position: relative;
+	top: -25px;
+	left: 75px;
+	z-index: 10;
+	background-image: url(/images/coreImages.png?v=3);
+	background-position: -226px -569px;
+	width :13px;
+	height: 7px;
+}
+div.compactBarArrow{
+	top: -7px;
+}
+/* ------------ cart ---------- */
+table.cartContent{
+	float: left;
+}
+.cartCenter{
+	text-align: left;
+}
+tr#cardExpiration table.inputFrame{
+	float: left;
+}
+table.borderLess td.c1{
+	background-image: url(/images/grayPixel.png);
+	background-position: left top;
+	background-repeat: repeat-y;
+	border-left: none;
+}
+table.borderLess td.c1 div.icon{
+	left: 0px;
+}
+table.borderLess tr.lastRow td{
+	height: 6px;
+	background-image: url(/images/grayPixel.png);
+	background-position: left bottom;
+	background-repeat: repeat-x;
+	border-bottom: none;
+	overflow: hidden;
+}
+tr.lastRow td div.icon{
+	float: left;
+	width: 6px;
+	height: 6px;
+	background-image: url(/images/coreImages.png?v=3);
+	background-repeat: no-repeat;
+	background-position: -246px -59px;
+	overflow: hidden;
+	background-color: white;
+	position: relative;
+}
+div.topPayers{
+	width: 300px;
+	padding: 15px;
+	margin: 0 auto;
+	background-color: #f9f9f9;
+}
+div.topPayers table{
+	width: 100%;
+}
+div.topPayers table td{
+	background-image: url(/images/hDots.png);
+	background-position: left bottom;
+	background-repeat: repeat-x;
+}
+div.topPayers table td.me{
+	font-weight: bold;
+}
+div.topPayers table td.amount{
+	color: #115f93;
+	text-align: right;
+	font-size: 16px;
+}
+div.topPayers table td.last{
+	background-image: none;
+}
+td.oldContribution{
+	color: #115f93;
+	font-size: 20px;
+}
+td.oldContribution span.plus{
+	color: #ce1414;
+}
+td.totalContribution{
+	color: #ce1414;
+	font-size: 20px;
+}
+td#newContribution input.inputTxt{
+	font-size: 20px;
+}
+table.formTable tr:hover div.boxBlue div.left, table.formTable tr:hover div.boxBlue div.right{
+	background-color: transparent;
+}
+td#amountWarningCell .messageDownArrow{
+	display: none;
+}
+div.boxBlue div.right{
+	background-position: -248px -558px;
+	display: none;
+}
+div.boxBlueRight div.right{
+	display: block;
+}
+div.boxBlue div.bottom div.right{
+	background-position: -248px -568px;
+	background-color: transparent;
+}
+div.boxBlueRight div.center{
+	border-right: 1px solid #ccc;
+}
+div.boxBlueRight div.center > div{
+	border-right: 1px solid white;
+}
+table.formTable tr.error td.row{
+	color: white;
+}
+table.borderLess tr.lastRow td.lastRow div.icon{
+	top: 0px;
+}
+td.dashBottom{
+	background-image: url(/images/hDots.png);
+	background-position: left bottom;
+	background-repeat: repeat-x;
+}
+div.blueNote{
+	color: #0e75b9;
+	padding: 12px;
+}
+/* ----------------- ratings ----------------- */
+.redSubHeader{
+	color: #D52E2E;
+	font-size: 22px;
+	font-family: Tahoma;
+	padding-top: 5px;
+}
+.redSubHeader .subTitle{
+	color: black;
+}
+.rowPopup .redSubHeader{
+	font-size: 18px;
+	padding-bottom: 5px;
+}
+.roundedTable td td.ratingLeft, td.ratingLeft{
+	padding-right: 20px;
+	padding-bottom: 10px;
+	white-space: nowrap;
+}
+.roundedTable td td.ratingLeft a, td.ratingLeft a, .roundedTable td td.ratingLeft span.blue, td.ratingLeft span.blue {
+	color: #1278c8;
+}
+.roundedTable td td.ratingRight, td.ratingRight{
+	padding-bottom: 10px;
+}
+div.ratingBar{
+	height: 20px;
+	overflow: hidden;
+	background-image: url(/images/hBg.png?v=3);
+	background-position: 0 -1270px;
+	background-repeat: repeat-x;
+	width: 210px;
+}
+div.ratingBar div.left, div.ratingBar div.right{
+	height: 20px;
+	width: 7px;
+	overflow: hidden;
+	float: left;
+	background-image: url(/images/coreImages.png?v=3);
+	background-position: -259px -558px;
+}
+div.ratingBar div.right{
+	float: right;
+	background-position: -267px -558px;
+}
+div.ratingBar div.center{
+	height: 20px;
+	overflow: hidden;
+	text-align: center;
+	padding-top: 0px;
+}
+div.ratingBar div.center div.na{
+	position: relative;
+	top: 2px;
+}
+.roundedTable td td.ratingScore, td.ratingScore{
+	color: #1278c8;
+	padding-left: 10px;
+	padding-bottom: 10px;
+}
+div.ratingBar div.progressBar{
+	margin: 5px 0px;
+	height: 10px;
+}
+div.ratingBar div.progressBar div.bar{
+	height: 10px;
+	overflow: hidden;
+	background-image: url(/images/hBg.png?v=3);
+	background-position: 0 -1291px;
+	background-repeat: repeat-x;
+}
+div.ratingBar div.progressBar div.bar div.left, div.ratingBar div.progressBar div.bar div.right{
+	height: 10px;
+	width: 5px;
+	overflow: hidden;
+	float: left;
+	background-image: url(/images/coreImages.png?v=3);
+	background-position: -275px -558px;
+}
+div.ratingBar div.progressBar div.bar div.right{
+	float: right;
+	background-position: -275px -568px;
+}
+table.reviews tr.header td.filter, table.reviews tr.header td.title{
+	border-bottom: 1px solid #d52e2e;
+	vertical-align: bottom;
+	padding-top: 20px;
+	padding-bottom: 5px;
+}
+table.reviews tr.header td.title{
+	font-family: tahoma;
+	font-size: 18px;
+	color: #d52e2e;
+}
+table.reviews tr.header td.filter{
+	text-align: right;
+	padding-right: 10px;
+}
+table.reviews tr.row td.right{
+	padding-top: 20px;
+	padding-bottom: 20px;
+	padding-left: 18px;
+	padding-right: 18px;
+	background-image: url(/images/hDots.png);
+	background-position: left bottom;
+	background-repeat: repeat-x;
+}
+table.reviews tr.row td.left{
+	padding-top: 20px;
+	padding-bottom: 20px;
+	color: #363636;
+	padding-right: 18px;
+	padding-left: 18px;
+	background-image: url(/images/hDots.png);
+	background-position: left bottom;
+	background-repeat: repeat-x;
+}
+a.ratingButtonYes, a.ratingButtonNo{
+	width: 44px;
+	height: 25px;
+	background-image: url(/images/coreImages.png?v=3);
+	background-position: -409px -527px;
+	float: left;
+	margin-right: 6px;
+}
+a.ratingButtonNo{
+	background-position: -409px -554px;
+}
+div.boxGray, div.boxGray div.center{
+	background-color: #efefef;
+	background-image: url(/images/boxGray.png);
+}
+div.boxGray div.bottom{
+	background-position: 0 -1302px;
+}
+div.boxGray div.bottom div.left {
+	background-position: -408px -580px;
+}
+div.boxGray div.bottom div.right {
+	background-position: -419px -580px;
+}
+div.li div.liText{
+	padding-left: 20px;
+	padding-bottom: 5px;
+	padding-top: 5px;
+}
+div.li div.liIcon{
+	float: left;
+	width: 4px;
+	height: 7px;
+	background-image: url(/images/coreImages.png?v=3);
+	background-position: -313px -558px;
+	position: relative;
+	top: 10px;
+	overflow: hidden;
+}
+table.ratingSelectors tr td.ratingLeft, table.ratingSelectors tr td.ratingRight{
+	padding: 5px 40px;
+}
+table.ratingSelectors tr.line td.ratingLeft, table.ratingSelectors tr.line td.ratingRight{
+	background-image: url(/images/hDots.png);
+	background-position: left bottom;
+	background-repeat: repeat-x;
+}
+#frameHeader div.limited, #messageHeader div.limited{
+	font-size: 22px;
+	position: relative;
+	top: -10px;
+	left: -10px;
+	margin-right: 10px;
+}
+.addFrame div.li{
+	clear: both;
+}
+.addFrame div.li div.liText{
+	padding-top: 10px;
+	padding-bottom: 10px;
+}
+div.li div.liIcon{
+	top: 10px;
+}
+.addFrame div.li div.liText label{
+	padding-left: 10px;
+}
+div#markForm table.coupons{
+	padding-left: 20px;
+}
+div#markForm table.coupons td{
+	padding: 5px 15px 5px 0px;
+}
+.bottomDots{
+	background-image: url(/images/hDots.png);
+	background-repeat: repeat-x;
+	background-position: left bottom;
+}
+.addFrame div.overallReferral{
+	margin-left: 10px;
+	position: relative;
+	top: -2px;
+}
+.addFrame div.login{
+	float: left;
+	margin-left: 5px;
+	color: black;
+}
+.addFrame div.overallReferral div.referralCenter{
+	cursor: default;
+}
+.addFrame div.li div.liIcon{
+	top: 15px;
+}
+.addFrame div.liText a{
+	text-decoration: none;
+}
+.addFrame div.liText a:hover{
+	text-decoration: underline;
+}
+div.black > div.liText a{
+	color: black;
+	text-decoration: none;
+}
+div.black > div.liText a:hover{
+	text-decoration: underline;
+}
+div.black > div.liIcon{
+	background-position: -313px -566px;
+}
+.addFrame div.first > div.liText{
+	padding-top: 0px;
+}
+.addFrame div.first > div.liIcon{
+	top: 5px;
+}
+.addFrame div.last > div.liText{
+	padding-bottom: 0px;
+}
+input[disabled]{
+	color: #cccccc;
+}
+.rowPopup .accountErrorMessage{
+	margin-top: 10px;
+	border-top: 4px solid #ed1b23;
+	padding-top: 2px;
+}
+.rowPopup .accountErrorMessage .bg{
+	background-color: #f4f4f4;
+	padding: 10px 20px;
+}
+.rowPopup .accountErrorMessage .redSubHeader{
+	margin-bottom: 5px;
+}
+#tblAccounts td.error a{
+	color: #DE0005;
+}
+td.formButtons{
+	padding-top: 15px;
+	text-align: center;
+}
+/* --------- red box ---------- */
+div.boxRed div.left{
+	background-color: #F4F4F4;
+	background-position: -354px -573px;
+}
+div.boxRed div.right{
+	background-color: #F4F4F4;
+	background-position: -365px -573px;
+}
+div.boxRed div.bottom div.left{
+	background-position: -354px -584px;
+	background-color: transparent;
+}
+div.boxRed div.bottom div.right{
+	background-position: -365px -584px;
+	background-color: transparent;
+}
+.roundedTable tr td div.boxRed div.pad{
+	padding: 0px 19px;
+}
+div.boxRed div.center{
+	border-left: none;
+	border-right: none;
+	color: white;
+	font-size: 110%;
+}
+div.boxRed div.center, div.boxRed{
+	background-image: url(/images/boxRed.png);
+}
+div.boxRed div.bottom{
+	background-image: none;
+}
+div.boxRed a, #tblAccounts tr td div.boxRed a:hover{
+	color: white;
+}
+div.rowPopup div.errorNote{
+	padding-top: 10px;
+	color: #595959;
+}
+#checkAdError .redSubHeader{
+	font-size: 16px;
+	margin-bottom: 5px;
+}
+#checkAdError .errorNote{
+	margin-top: 5px;
+	font-size: 12px;
+}
+input.buttonBg[disabled]{
+	cursor: default;
+}
+#tblAccounts td.error span.error{
+	font-size: 16px;
+	color: #C91313;
+	position: relative;
+	top: 4px;
+}
+#contentTable{
+	width: 100%;
+}
+#tblAccounts td.balance span.smaller{
+	font-size: 16px;
+}
+.roundedTable tr.textarea td div.pad{
+	padding: 0 7px;
+}
+div.marginContentLeft{
+	margin-left: 23px;
+}
+td.segmentHeader div.captonPad{
+	padding: 12px 19px;
+}
+div.boxToll div.top{
+	height: 10px;
+	overflow: hidden;
+}
+div.roundCorners64{
+	width: 64px;
+	height: 64px;
+	position: relative;
+	top: -64px;
+	z-index: 1;
+	background-image: url(/images/corners64.png);
+	overflow: hidden;
+}
+div.roundCorners48{
+	float: right;
+	right: -48px;
+	margin-top: 15px;
+	width: 48px;
+	height: 48px;
+	position: relative;
+	z-index: 1;
+	overflow: hidden;
+	background-image: url(/images/corners48.png);
+}
+div.roundCorners32{
+	float: right;
+	right: -32px;
+	margin-top: 0px;
+	width: 32px;
+	height: 32px;
+	position: relative;
+	z-index: 1;
+	background-image: url(/images/corners32.png);
+}
+div.topWarning{
+	height: 40px;
+	background-image: url(/images/boxRed.png);
+	background-repeat: repeat-x;
+	padding: 10px;
+	color: white;
+	font-size: 16px;
+	display: none;
+}
+div.topWarning .warningIcon{
+	width: 40px;
+	height: 35px;
+	overflow: hidden;
+	float: left;
+	padding-right: 10px;
+	background-image: url(/images/coreImages.png?v=3);
+	background-position: -250px -514px;
+}
+div.topWarning a, div.topWarning a:visited, div.topWarning a:active{
+	color: white;
+}
+div.recentListRow{
+	position: static;
+	z-index: 0;
+	height: auto;
+	padding-top: 20px;
+	padding-bottom: 20px;
+}
+table.overRefTable{
+	float: left;
+}
+table.overRefTable td{
+	vertical-align: top;
+}
+#tblAccounts td.manage .spacer{
+	display: none;
+}
+.roundedTable tr.after td div.icon{
+	background-color: white;
+}
+table.flightSegment div.center div.oneline{
+	white-space: normal;
+	height: 16px;
+	overflow: hidden;
+}
+table.flightSegment div.center div.twolines{
+	white-space: normal;
+	height: 30px;
+	overflow: hidden;
+}
+/*#tblAccounts > tbody > tr.accounts > td > *{
+	border: 1px solid red;
+}*/
+.detailsTable{
+	border: 1px solid #C7C4BF;
+	border-spacing: 0px;
+	border-collapse: collapse;
+}
+.detailsTable td{
+	border: 1px solid #C7C4BF;
+}
+div.normalFont div.redSubHeader{
+	font-size: 120%;
+	padding-top: 10px;
+	padding-bottom: 10px;
+}
+div.normalFont div.errorNote{
+	padding-top: 10px;
+}
+table.roundedTable tr.afterGroup > td{
+  border-top: 1px solid #ccc;
+}
+.roundedTable tr.afterGroup td.userName div.icon div.inner{
+	background-image: url(/images/coreImages.png?v=3);
+	background-position: -273px -49px;
+}
+#tblAccounts td.error div.balance, #tblAccounts tr.error > td, #tblAccounts tr.error > td > a{
+	color: #DE0005;
+}
+#tblAccounts tr.error > td.c1a{
+	color: black;
+}
+div.compactBar{
+	margin-bottom: 5px;
+}
+td.downLineCorner{
+	vertical-align: top;
+}
+table.padded td{
+	padding: 10px;
+}
+.roundedTable td.borderLeft{
+	background-image: url(/images/grayPixel.png);
+	background-repeat: repeat-y;
+	background-position: left top;
+}
+#checkAllTop{
+	position: absolute; z-index: 10; top: 159px; right: 7px;
+}
+.roundedTable div.rowPopup td{
+	vertical-align: top;
+}
+#tblAccounts td.expiration div.date{
+	white-space: nowrap;
+}
+
+div.roundedBox table.frameTabs tr.top td{
+	height: 134px;
+}
+div.roundedBox table.frameTabs tr.top td.left{
+	background-image: url(/images/frames.png);
+	background-position: 0 0;
+}
+div.roundedBox table.frameTabs tr.top td.right{
+	background-image: url(/images/frames.png);
+	background-position: -16px 0;
+}
+div.roundedBox table.frameTabs tr.top td.fCenter {
+	vertical-align: bottom;
+	overflow: hidden;
+	background-position: 0 -1382px;
+	height: 114px;
+	padding-bottom: 20px;
+}
+div.fCenterDiv{
+	margin-top: 15px;
+	margin-bottom: 15px;
+}
+table.frameTabs div.fCenterDiv{
+	margin-top: 0;
+}
+
+div#pageTitle {
+    color:#e63535;
+    font-size:180%;
+    padding-top:5px;
+    padding-bottom:5px;
+}
+
+span.textselection, span.textallocation, p.redcaption{
+    color:#e63535;
+}
+
+p.contentInfo, ul.infolist {
+    line-height:150%;
+	font-size:115%;
+	text-align: justify;
+}
+
+p.sectionCaption, p.redcaption {
+    font-size:150%;
+}
+
+p.sectionCaption {
+    color:#004d80;
+	margin-bottom: 5px;
+}
+
+ul.infolist, ul.infolist li {
+/*    list-style-image:url(/images/listdisc.png);*/
+	list-style-type: disc;
+	color: #005693;
+	margin-top: 0px;
+}
+
+ul.infolist li.listcaption {
+    color:#004d80;
+    font-style:italic;
+	margin-bottom: 0px;
+	margin-top: 5px;
+}
+
+ul.liallocation {
+   font-size:130%;
+   color:#004d80;
+   font-style:italic;
+}
+
+table#bioinfo td {
+    vertical-align:top;
+}
+
+table#bioinfo tr.spacing {
+    height:50px;
+}
+
+table#bioinfo td.info {
+    padding-left:20px;
+	line-height:150%;
+	font-size:110%;
+	text-align: justify;
+}
+
+p.bioname {
+    font-weight:bold;
+    margin-top:-3px;
+	margin-bottom:5px;
+}
+
+p.listsecondlevel {
+    color:#8c8c8c;
+}
+
+div.bioimageborder {
+   padding:3px;background-color:#cccccc;
+}
+div.goal{
+	height: 4px;
+	background-color: #bbbab8;
+	margin-top: 4px;
+}
+div.goal div.progress{
+	float: left;
+	height: 4px;
+	background-image: url(/images/hBg.png?v=3);
+	background-repeat: repeat-x;
+	background-position: 0 -1518px;
+}
+#tblAccounts td.withGoal{
+	padding: 2px 0 0 0;
+	vertical-align: bottom;
+}
+#tblAccounts td.withGoal div.balancePad{
+	padding-left: 12px;
+	padding-right: 12px;
+}
+a.sucessReminder {
+	text-decoration:none !important;
+	width:40px;
+}
+
+a.sucessReminder div.successIcon {
+	float:left;
+	position:relative;
+	top:4px;
+	background-image:url(/images/success.gif);
+	width:10px;
+	padding-right:2px;
+}
+#toPersonal{
+    width: 153px;
+    height: 30px;
+    background-image: url(/images/bgSwitch.png);
+    display: block;
+    background-position: 2px -20px;
+    position: absolute;
+    z-index: 1;
+    top: 0;
+    right: 24px;
+    font-family: 'Arial';
+    font-size: 12px;
+    text-decoration: none;
+    color: #C92323;
+    padding: 7px 0 0 0;
+    text-align: center;
+}
+td.checkboxLeft, td.checkBoxRight{
+	vertical-align: top;
+	width: 20px;
+}
+td.checkboxRight{
+	padding-left: 10px;
+}
+
+#scwSegmentsAddOptionArrDateTable, #scwSegmentsAddOptionDepDateTable {
+	position: relative;
+    top: 1px;
+}
+
+iframe#popupFrame {
+	overflow: hidden;
+}
+
+/* -------------  Begin Hotel Savings Offers details table ---------------*/
+td.segmentInfo div.limitedW {
+    max-width: 800px;
+}
+
+td.segmentInfo small {
+    font-size: 11px;
+    color: #58595b;
+}
+
+a.skooshLink {
+    color: #1278c8 !important;
+    text-decoration: underline !important;
+}
+
+.attention {
+    font-size: 115%;
+    font-style: italic;
+    font-weight: bold;
+    color: #c91313;
+}
+
+.offerDetailsTable {
+    border: none;
+    border-spacing: 0;
+    border-collapse: collapse;
+    min-width: 735px;
+}
+
+.offerDetailsTable a {
+    font-weight: bold;
+    color: #1278c8 !important;
+}
+
+.offerDetailsTable .noteRed {
+    color: #c91313;
+}
+
+.offerDetailsTable td {
+    padding: 4px 8px;
+    border-top: 1px solid #CCCCCC;
+    font-size: 14px;
+    line-height: 20px;
+    color: #282828;
+}
+
+.offerDetailsTable td.tableHeaderL {
+    padding: 0;
+    border: none;
+    background-image: url(/images/coreImages.png?v=3);
+    background-repeat: no-repeat;
+    background-position: -368px -527px;
+    width: 6px;
+    height: 36px;
+    max-height: 36px;
+    overflow: hidden;
+}
+
+.offerDetailsTable td.tableHeaderC {
+    border: none;
+    padding-top: 0;
+    padding-bottom: 0;
+    background-image: url(/images/hBg.png?v=3);
+    background-repeat: repeat-x;
+    background-position: 0 -147px;
+    height: 36px;
+    max-height: 36px;
+    font-size: 18px;
+    color: black;
+    overflow: hidden;
+}
+
+.offerDetailsTable td.tableHeaderR {
+    padding: 0;
+    border: none;
+    background-image: url(/images/coreImages.png?v=3);
+    background-repeat: no-repeat;
+    background-position: -402px -527px;
+    width: 6px;
+    height: 36px;
+    max-height: 36px;
+    overflow: hidden;
+}
+
+.offerDetailsTable td.borderL {
+    border: none;
+    background-image: url(/images/leftGrad.png?v=3);
+    background-repeat: repeat-y;
+    background-position: -1041px 0;
+    vertical-align: top;
+    padding: 0;
+    width: 6px;
+}
+
+.offerDetailsTable div.cornerL {
+    background-color: #E0E0E0;
+    background-image: url(/images/coreImages.png?v=3);
+    background-repeat: no-repeat;
+    background-position: -282px -49px;
+    width: 6px;
+    height: 6px;
+}
+
+.offerDetailsTable td.borderR {
+    border: none;
+    background-image: url(/images/leftGrad.png?v=3);
+    background-repeat: repeat-y;
+    background-position: -1053px 0;
+    vertical-align: top;
+    padding: 0;
+    width: 6px;
+}
+
+.offerDetailsTable div.cornerR {
+    background-color: #CCCCCC;
+    background-image: url(/images/coreImages.png?v=3);
+    background-repeat: no-repeat;
+    background-position: -375px -155px;
+    width: 6px;
+    height: 6px;
+}
+
+.offerDetailsTable td.borderLGray {
+    border: none;
+    background-image: url(/images/leftGrad.png?v=3);
+    background-repeat: repeat-y;
+    background-position: 0 0;
+    vertical-align: top;
+    padding: 0;
+    width: 6px;
+}
+
+.offerDetailsTable div.cornerLGray {
+    border-left: 1px solid #C0C0C0;
+    background-image: url(/images/coreImages.png?v=3);
+    background-repeat: no-repeat;
+    background-position: 0 0;
+    width: 6px;
+    height: 6px;
+}
+
+.offerDetailsTable td.hotelName {
+    border-right: 1px dotted #C0C0C0;
+    width: 275px;
+}
+
+.offerDetailsTable td.hotelName a {
+    color: #282828 !important;
+}
+
+.offerDetailsTable td.amount {
+    border-right: 1px dotted #C0C0C0;
+    width: 135px;
+    text-align: center;
+    vertical-align: top;
+}
+
+.offerDetailsTable td.amount a {
+    text-decoration: underline !important;
+}
+
+.offerDetailsTable td.offers {
+    padding-left: 16px;
+    text-align: left;
+    vertical-align: top;
+}
+
+.offerDetailsTable td.gray {
+    background-color: #EEEEEE;
+    text-align: left;
+}
+
+.offerDetailsTable td.borderT {
+    border-top: 1px solid #C0C0C0;
+}
+
+.offerDetailsTable td.borderRGray {
+    border: none;
+    background-image: url(/images/leftGrad.png?v=3);
+    background-repeat: repeat-y;
+    background-position: -285px 0;
+    vertical-align: top;
+    padding: 0;
+    width: 6px;
+}
+
+.offerDetailsTable div.cornerRGray {
+    border-right: 1px solid #C0C0C0;
+    background-image: url(/images/coreImages.png?v=3);
+    background-repeat: no-repeat;
+    background-position: -285px 0;
+    width: 5px;
+    height: 6px;
+}
+
+.offerDetailsTable td.tableFooterL {
+    border: none;
+    border-top: 1px solid #C0C0C0;
+    background-image: url(/images/leftGrad.png?v=3);
+    background-repeat: repeat-y;
+    background-position: -1041px 0;
+    vertical-align: bottom;
+    padding: 0;
+    width: 6px;
+}
+
+.offerDetailsTable  div.footerCornerL {
+    background-color: white;
+    background-image: url(/images/coreImages.png?v=3);
+    background-repeat: no-repeat;
+    background-position: -376px -234px;
+    width: 6px;
+    height: 6px;
+}
+
+.offerDetailsTable td.tableFooterC {
+    border-bottom: 1px solid #C0C0C0;
+    text-align: center;
+}
+
+.offerDetailsTable td.tableFooterR {
+    border: none;
+    border-top: 1px solid #C0C0C0;
+    background-image: url(/images/leftGrad.png?v=3);
+    background-repeat: repeat-y;
+    background-position: -1053px 0;
+    vertical-align: bottom;
+    padding: 0;
+    width: 6px;
+}
+
+.offerDetailsTable div.footerCornerR {
+    background-color: white;
+    background-image: url(/images/coreImages.png?v=3);
+    background-repeat: no-repeat;
+    background-position: -376px -240px;
+    width: 6px;
+    height: 6px;
+}
+
+.offerDetailsTable .BARtable {
+    border: none;
+    border-spacing: 0;
+    border-collapse: collapse;
+}
+
+.offerDetailsTable .BARtable td {
+    padding: 0;
+    border: none;
+    font-size: 14px;
+    line-height: 20px;
+    color: #282828;
+}
+
+.offerDetailsTable .BARtable a {
+    margin: 4px 10px;
+    border-bottom: 1px solid #1278c8;
+}
+
+.offerDetailsTable .BARtable td.amount {
+    min-width: 50px;
+    width: 50px;
+    text-align: left;
+    vertical-align: top;
+}
+
+.offerDetailsTable .BARtable td.offers {
+    min-width: 220px;
+    width: 220px;
+    max-width: 300px;
+    text-align: left;
+    vertical-align: middle;
+}
+/* -------------  End Hotel Savings Offers details table ---------------- */
+.scwDate1, .scwDate2, .scwDate3, .scwDate4{
+	vertical-align: top;
+	padding: 0;
+}
+.scwDate3{
+	padding-top: 10px;
+}
+.tlCaption{
+	white-space: nowrap;
+	vertical-align: top;
+	padding: 12px 0 0 0;
+	border:  none;
+}
+.tlValue{
+	vertical-align: top;
+	border:  none;
+	padding: 3px 0;
+}
+
+/*-----====== Manage Block Icons ======-----*/
+.roundedTable td.manage div.iconLinksBlock {width:84px; height:auto; margin:0 auto; background:none; padding-left:5px;}
+.roundedTable td.manage div.Short2 {width:56px;}
+.roundedTable td.manage div.Short1 {width:28px;}
+.roundedTable td.manage div.iconLinksBlock .cb {width:auto; height:auto; margin:0; background:none; padding:0; float:left; clear:both;}
+.roundedTable tr.grayBg td.manage .iconLinksBlock a.iconLink{
+	background-color: transparent;
+}
+.roundedTable .whiteBg td .iconLinksBlock a.iconLink, .roundedTable .grayBg td .iconLinksBlock a.iconLink {width:23px; height:23px; float:left; margin-right:5px; padding:0; position:relative; overflow:visible;}
+.roundedTable .whiteBg td .iconLinksBlock a.iconLink:last-child, .roundedTable .grayBg td .iconLinksBlock a.iconLink:last-child {margin-right:0px;}
+
+.roundedTable .whiteBg td .iconLinksBlock a.checkLink {background:url('/images/icons_account_list.png') -46px 0 no-repeat;}
+.roundedTable .grayBg td .iconLinksBlock a.checkLink {background:url('/images/icons_account_list.png') -46px -46px no-repeat;}
+.roundedTable .whiteBg td .iconLinksBlock a.checkLink:hover, .roundedTable .grayBg td .iconLinksBlock a.checkLink:hover {background:url('/images/icons_account_list.png') -46px -23px no-repeat;}
+a.checkLink b b.c b.corn {left:14px;}
+a.checkLink b.title {left:-9px; width:41px;}
+
+.roundedTable .whiteBg td .iconLinksBlock a.editLink {background:url('/images/icons_account_list.png') -69px 0 no-repeat;}
+.roundedTable .grayBg td .iconLinksBlock a.editLink {background:url('/images/icons_account_list.png') -69px -46px no-repeat;}
+.roundedTable .whiteBg td .iconLinksBlock a.editLink:hover, .roundedTable .grayBg td .iconLinksBlock a.editLink:hover {background:url('/images/icons_account_list.png') -69px -23px no-repeat;}
+a.editLink b b.c b.corn {left:7px;}
+a.editLink b.title {left:-2px; width:26px;}
+
+.roundedTable .whiteBg td .iconLinksBlock a.deleteLink {background:url('/images/icons_account_list.png') -92px 0 no-repeat;}
+.roundedTable .grayBg td .iconLinksBlock a.deleteLink {background:url('/images/icons_account_list.png') -92px -46px no-repeat;}
+.roundedTable .whiteBg td .iconLinksBlock a.deleteLink:hover, .roundedTable .grayBg td .iconLinksBlock a.deleteLink:hover {background:url('/images/icons_account_list.png') -92px -23px no-repeat;}
+a.deleteLink b b.c b.corn {left:12px;}
+a.deleteLink b.title {left:-7px; width:38px;}
+
+.roundedTable .whiteBg td .iconLinksBlock a.printLink {background:url('/images/icons_account_list.png') -23px 0 no-repeat;}
+.roundedTable .grayBg td .iconLinksBlock a.printLink {background:url('/images/icons_account_list.png') -23px -46px no-repeat;}
+.roundedTable .whiteBg td .iconLinksBlock a.printLink:hover, .roundedTable .grayBg td .iconLinksBlock a.printLink:hover {background:url('/images/icons_account_list.png') -23px -23px no-repeat;}
+a.printLink b b.c b.corn {left:9px;}
+a.printLink b.title {left:-4px; width:37px;}
+
+.roundedTable .whiteBg td .iconLinksBlock a.usedLink {background:url('/images/icons_account_list.png') 0 0 no-repeat;}
+.roundedTable .grayBg td .iconLinksBlock a.usedLink {background:url('/images/icons_account_list.png') 0 -46px no-repeat;}
+.roundedTable .whiteBg td .iconLinksBlock a.usedLink:hover, .roundedTable .grayBg td .iconLinksBlock a.usedLink:hover {background:url('/images/icons_account_list.png') 0 -23px no-repeat;}
+a.usedLink b b.c b.corn {left:32px;}
+a.usedLink b.title {left:-28px; width:77px;}
+
+.roundedTable .whiteBg td .iconLinksBlock a.checkAllLink {background:url('/images/icons_account_list.png') -46px 0 no-repeat;}
+.roundedTable .grayBg td .iconLinksBlock a.checkAllLink {background:url('/images/icons_account_list.png') -46px -46px no-repeat;}
+.roundedTable .whiteBg td .iconLinksBlock a.checkAllLink:hover, .roundedTable .grayBg td .iconLinksBlock a.checkAllLink:hover {background:url('/images/icons_account_list.png') -46px -23px no-repeat;}
+a.checkAllLink b b.c b.corn {left:19px;}
+a.checkAllLink b.title {left:-14px; width:54px;}
+
+.roundedTable .whiteBg td .iconLinksBlock a.detailsLink {background:url('/images/icons_account_list.png') 0 -69px no-repeat;}
+.roundedTable .grayBg td .iconLinksBlock a.detailsLink {background:url('/images/icons_account_list.png') 0 -115px no-repeat;}
+.roundedTable .whiteBg td .iconLinksBlock a.detailsLink:hover, .roundedTable .grayBg td .iconLinksBlock a.detailsLink:hover {background:url('/images/icons_account_list.png') 0 -92px no-repeat;}
+a.detailsLink b b.c b.corn {left:14px;}
+a.detailsLink b.title {left:-9px; width:42px;}
+
+.iconLinksBlock a.iconLink:hover {text-decoration:none !important;}
+.iconLinksBlock a.iconLink b {display:block; font:bold 10px Arial;}
+	.iconLinksBlock a.iconLink b.title { position:absolute; top:-19px; height:12px; display:none;}
+	.iconLinksBlock a.iconLink b.l, .iconLinksBlock a.iconLink b.r {float:left; width:2px; height:12px;}
+	.iconLinksBlock a.iconLink b b.l {background:url('/images/icons_account_list.png') -115px 0 no-repeat;}
+	.iconLinksBlock a.iconLink b b.r {background:url('/images/icons_account_list.png') -117px 0 no-repeat;}
+	.iconLinksBlock a.iconLink b b.c {height:12px; background:#6c6f71; float:left; padding:0 2px; color:#fff; line-height:11px; position:relative;}
+	body:not([x|x]) .iconLinksBlock a.iconLink b b.c {line-height:10px;}
+	.iconLinksBlock a.usedLink b b.c, .iconLinksBlock a.printLink b b.c {line-height:10px;}
+		.iconLinksBlock a.iconLink b b.c b.corn {position:absolute; bottom:-4px; width:8px; height:4px; background:url('/images/icons_account_list.png') -115px -12px no-repeat;}
+
+#tblAccounts .Status {
+	text-align:center;
+	width: 100px;
+}
+#tblAccounts .Status .cont {
+	margin: 0 2px;
+	padding:5px 5px 6px; 
+	vertical-align: bottom;
+	width: 86px;
+	max-height: 2em;
+	overflow: hidden;
+}
+.botMargin{
+	margin-bottom: 30px;
+}
+/* one card banner*/
+a.oneCardBanner {display:block; width:291px; height:70px; background:url('/images/oneCardAd.png'); text-decoration:none; color:#000; text-align:center; padding:138px 0 0;}
+	a.oneCardBanner b {font:bold 15px Arial;}
+	a.oneCardBanner p {font:normal 13px Arial; margin:3px 0 0; color:#484444;}
+		a.oneCardBanner p span{color:#0483d6;}
+		
+.lastUpdateTime {position:absolute; right:120px; top:154px; font-size:12px; color:#aaa !important; text-decoration:none !important; text-align:right; height: 27px; padding:10px 0 0 10px; background:#fff; z-index:4;}
+	.lastUpdateTime:hover {z-index:20;}
+	
+#listButtons {margin:15px 0 0;}
+.progressImage {position:absolute; top:9px;}
+
+.datepicker {position:relative; margin-right:20px;}
+	.datepicker .ui-datepicker-trigger {position:absolute; top:7px; right:7px; cursor:pointer;} 
+#ui-datepicker-div {display:none;}
+
+.smallButton {padding:0 5px; position:relative; float:left; cursor:pointer;}
+    .smallButton b {display:block; position:absolute; top:0;}
+    .smallButton b.leftBg {width:5px; height:21px; left:0; background: url('/images/promosImages.png') -19px 0px no-repeat;}
+    .smallButton b.rightBg {width:5px; height:21px; right:0; background: url('/images/promosImages.png') -25px 0px no-repeat;}
+    .smallButton .caption {border:0; cursor:pointer; height:21px; position: static; background: url('/images/hBg.png') 0 -1524px repeat-x; font-size: 12px; font-weight: normal; padding: 0px 0px 2px; position: static; text-align: center; width:100%;}
+    .smallButton a.caption {display:block; padding:2px 0 0; color:black;}
+    .smallButton a.caption:hover {color:black;}
+a.buttonLink {
+    background-image: url("/images/hBg.png?v=3");
+    background-position: 0 -1314px;
+    background-repeat: repeat-x;
+    border: medium none;
+    color: Black;
+    cursor: pointer;
+    display: block;
+    font-size: 16px;
+    height: 28px;
+    margin: 0;
+    padding: 8px 6px 0;
+    text-decoration: none;
+    outline: none;
+}
+
+div.overallButton div.ico {display:hidden;}
+
+/*google maps*/
+div.directionDetails table { width: 100%; }
+div.directionDetails table td { padding: 3px; }
+div.directionDetails img { margin: 0 5px; }
+div.directionDetails .adp-summary { text-align: right; }
+
+span.alreadyAccount {color:#999; font-size:12px;}
+    span.alreadyAccount a {color:#0080B8;}
+
+#checkAdContent div.message{
+	text-align: left;
+	padding: 10px;
+	font-size: 120%;
+	color: #DE0005;
+}
+
+/*promotions tab*/
+.listItem {border-bottom:1px dotted #ccd0d4; position:relative;}
+    .listItem .title {padding:8px 0 8px 45px; margin-right:80px; font:bold 14px Arial; cursor:pointer;}
+    .listItem .new {width:19px; height:11px; background:url('/images/promosImages.png') 0 0 no-repeat; display:none; top:10px; left:18px; position:absolute;}
+    .listItem .apply {width:20px; height:19px; background:url('/images/promosImages.png') -66px 0 no-repeat; display:none; top:6px; right:18px; position:absolute;}
+    .listItem .follow {width:18px; height:19px; background:url('/images/promosImages.png') -30px 0 no-repeat; display:none; top:6px; right:38px; position:absolute;}
+    .listItemNew .new {display:block;}
+.regionName {color:#b7b7b7;}
+.listItemApply .apply {display:block;}
+.listItemFollow .follow {display:block;}
+
+/*Credit cards tab*/
+.creditcard {
+    background: url(/images/creditcards/background.gif) right bottom no-repeat;
+    width: 100%;
+    margin: 10px 0;
+    font-size: small;
+    line-height: 20px;
+}
+.creditcard table {
+    width: 100%;
+}
+.creditcard table td{
+    vertical-align: top;
+}
+.creditcard .name .image{
+    text-align: center;
+    margin-right: 10px;
+    padding-bottom: 10px;
+    background: url(/images/creditcards/shadow.gif) center bottom no-repeat;
+}
+.creditcard .name {
+    width: 200px;
+}
+.creditcard .text {
+    color: #A4A4A4;
+    padding-right: 20px;
+}
+.creditcard .text span.bold{
+    color: #0F548A;
+    font-weight: normal;
+}
+.creditcard .info {
+    padding-top: 5px;
+    color: #7198B4;
+    font-size: smaller;
+    border-bottom: 1px grey dotted;
+}
+
+.creditcard .nonAffiliated {
+    padding-top: 5px;
+    color: #7d7d7d;
+    font-size: smaller;
+    line-height: 10px;
+}
+
+/* Elite Level Progress Tab */
+
+table.elite_stats {
+    border-spacing: 7px;
+    width: 100%;
+    color: #747474;
+}
+table.elite_stats td.elite_stats {
+    font-size: 17px;
+}
+div.elite_level_name {
+    text-align: right;
+    vertical-align: bottom;
+    font-size: 8pt;
+    padding-right: 2px;
+    padding-bottom: 2px;
+    white-space: nowrap;
+}
+.eliteLevelInfo{
+    float:right;
+    position: relative;
+    left: 3px;
+}
+.eliteLevelInfo:hover{
+    opacity: 0.5;
+}
+.eliteCommentText{
+    word-wrap: break-word;
+    font-size: 8pt;
+}
+
+table.elite_chart, table.elite_chart table {
+    padding: 0;
+    border-spacing: 1px 0;
+}
+
+td.elite_progress_info {
+    padding-bottom: 10px;
+}
+
+span.elite_p_value {
+    color: #b2d673;
+}
+
+table.elite_chart td{
+    -moz-box-sizing: border-box;
+    -ms-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+}
+
+table.elite_chart td.progress,
+table.elite_chart td.reached,
+table.elite_chart td.delimiter {
+    border: #536379 solid 1px;
+    padding: 0;
+    font-size: 8pt;
+}
+table.elite_chart td.skipped {
+    padding: 1px 1px 0 0;
+    font-size: 8pt;
+}
+table.elite_chart td.reached {
+    position: relative;
+    background-color: #dee6f1;
+    height: 30px;
+}
+table.elite_chart .progress  {background: url('/images/levels/progress.png') no-repeat;  background-size: 100% 100%;}
+table.elite_chart .delimiter {background: url('/images/levels/separator.png') no-repeat; background-size: 100% 100%;}
+table.elite_chart .group     {background: url('/images/levels/triangle.png') no-repeat;  background-size: 100% 100%;}
+
+table.elite_chart td.delimiter {
+    background-color: #708096;
+    padding: 0;
+    width: 9px;
+}
+table.elite_chart td.group {
+    padding: 0;
+    width: 10px;
+}
+table.elite_chart td.group img{
+    margin-left: -1px;
+}
+table.elite_chart td.progress {
+    background-color: #d3dbe6;
+}
+table.elite_chart td.empty {
+    padding: 0;
+    border: #C4C4C4 solid 1px;
+    background-color: #E9EAEA;
+    font-size: 8pt;
+}
+td.space {
+    padding: 0;
+    width: 1px;
+}
+table.elite_chart td.elite_comment {
+    color: #bdbdbd;
+    font-size: 8pt;
+    padding: 0 4px 0 4px;
+    white-space: nowrap;
+}
+.barContainter,
+.eliteComment {
+    width: 100%;
+}
+table.elite_chart .hasGroup {
+    border-color: #C4C4C4;
+    border-style: solid;
+    border-width: 0 1px;
+    padding-right: 2px;
+    padding-left: 2px;
+}
+table.elite_chart td.hasGroup.firstGrouped{
+    padding-top: 2px;
+    border-top: 1px solid #C4C4C4;
+}
+table.elite_chart td.hasGroup.lastGrouped{
+    border-bottom: 1px solid #C4C4C4;
+}
+
+.barContainter div,
+.eliteComment div {
+    -moz-box-sizing: border-box;
+    -ms-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+    font-size: 8pt;
+}
+.internal {
+    padding: 0;
+    float: left;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+}
+.internal.progress {
+    border: #536379 solid 1px;
+    background-color: #d3dbe6;
+    color: white;
+    position: relative;
+    text-align: right;
+}
+.internal.progress .progressValue {
+    padding-left: 1px;
+    display: inline-block;
+    top: 2px;
+}
+.internal.empty {
+    border: #C4C4C4 solid 1px;
+    background-color: #E9EAEA;
+    color: #536379;
+}
+.internal.empty .needed{
+    padding-left: 1px;
+    display: inline-block;
+    height: 100%;
+}
+.internal.empty,
+.internal.progress,
+.reached {
+    min-height: 16px;
+}
+.eliteComment {
+    color: #bdbdbd;
+    display: table;
+}
+.eliteComment div {
+    display: table-cell;
+    width: auto;
+    padding-top: 2px;
+    padding-bottom: 2px;
+}
+.eliteComment .propertyName {
+    text-align: left;
+    padding-left: 4px;
+}
+.eliteComment .levelGoal {
+    padding-right: 4px;
+    text-align: right;
+}
+table.elite_chart .andorContainer{
+    text-align: center;
+}
+table.elite_chart .andorContainer .andor {
+    display: inline-block;
+    border: 1px solid #C4C4C4;
+    background-color: #ECEDED;
+    margin: 3px 0;
+    padding: 1px 4px;
+    font-size: 8pt;
+    color: #89896E;
+}
+/* END  Elite Level Progress Tab */
+@media (max-width: 1120px) {
+    div#secondMenu a.creditcard_link {
+        display: none;
+    }
+}
+div#secondMenu a.creditcard_link {
+	/*display: none;*/
+    margin-right: 0;
+}
+
+ul.profile-icons li.quote-icon,
+ul.profile-icons li {
+    list-style: none;
+}
+
+/*
+@media (min-width: 1120px) {
+	.creditcard_link {
+		display: block !important;
+	}
+	div#secondMenu {
+		min-width: 760px;
+	}
+}*/
+
+.statementNotice .days {
+	background-color: #ffe4e1;
+	padding: 3px;
+	padding-left: 5px;
+	border-radius: 3px;
+	color: white;
+	background-image: url(/images/backgrDays.png);
+	background-repeat: repeat-x;
+}
+.statementNotice {
+	background-image: url(/images/grey.png);
+	background-repeat: repeat-x;
+	border: #c9c9c9 solid 1px;
+	height: 85px;
+	line-height: 19px;;
+}
+.statementNotice.warning {
+	padding-right: 30px;
+	padding-left: 30px;
+}
+.statementNotice.success {
+	padding-left: 27px;
+	padding-right: 27px;
+}
+.statementNotice.success div{
+	background-image: url(/images/iconSuccess.png);
+	background-repeat: no-repeat;
+	width: 29px;
+	height: 28px;
+}
+.statementNotice.warning div{
+	background-image: url(/images/iconWarning.png);
+	background-repeat: no-repeat;
+	width: 29px;
+	height: 26px;
+}
+
+tr.formMessage .topRound {
+	border-top-left-radius: 5px;
+	border-top-right-radius: 5px;
+}
+
+tr.formMessage .nsMessage {
+	padding-right: 10px;
+	padding-left: 15px;
+	padding-top: 10px;
+	padding-bottom: 10px;
+	color: black;
+	line-height: 20px;
+}
+
+tr.formMessage .userEmail {
+	color: #ffffff;
+	padding: 3px;
+	background-image: url(/images/blueGradient.png);
+	background-repeat: repeat;
+	border-radius: 3px;
+}
+
+div#askUserIDBox{
+    width: 340px !important;
+}
+#password-notice *{
+    box-sizing:border-box;
+    -webkit-box-sizing:border-box;
+    -moz-box-sizing:border-box;
+    margin:0;
+    padding: 0;
+}
+#password-notice{
+    display: none;
+    position: absolute;
+    border:1px solid #d6dae6;
+    width: 220px;
+    background: #fff;
+    border: 1px solid #e7e7e7;
+    border-left: 1px solid #d9dadb;
+    border-right:1px solid #d9dadb;
+    border-bottom: 1px solid #bebfc0;
+    box-shadow:0 1 1px rgba(0,0,0,.2);
+}
+#password-notice .title-row{
+    background:#f9f9fa;
+    padding: 0 10px;
+    height: 30px;
+    text-align: left;
+    line-height: 28px;
+    font-size: 13px;
+    color: #535457;
+    border-bottom:1px solid #d6dae6;
+}
+#password-notice .content-row{
+    padding: 15px 10px;
+    text-align: left;
+}
+#password-notice .content-row ul li{
+    list-style: none;
+    display: block;
+    position: relative;
+    font-size: 13px;
+    text-align: left;
+    margin-top: 5px;
+    color: #a1a7b3;
+    line-height: 1.2;
+    padding-left: 20px;
+}
+#password-notice .content-row ul li:before{
+    position: absolute;
+    content: " ";
+    width: 7px;
+    height: 7px;
+    background: url(/assets/awardwalletnewdesign/img/sprite.png) no-repeat;
+    background-position:-237px -123px;
+    top:3px;
+    left: 3px;
+}
+#password-notice .content-row ul li:first-child{
+     margin-top: 0;
+}
+#password-notice .content-row ul li.allowed{
+    color: #4dbfa2;
+}
+#password-notice .content-row ul li.allowed:before{
+    position: absolute;
+    content: " ";
+    width: 13px;
+    height: 13px;
+    background-position: -65px -99px;
+    top:0;
+    left: 0;
+}

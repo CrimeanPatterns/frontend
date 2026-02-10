@@ -1,0 +1,8 @@
+<?
+
+global $topMenu;
+
+$topMenu = array(
+);
+
+?>

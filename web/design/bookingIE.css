@@ -1,0 +1,15 @@
+.invoice_table {border-spacing: 0px;}
+.invoice_table td.linear_gradient_gray, .invoice_table td.linear_gradient_total {
+    position: relative;
+    overflow: hidden;
+    z-index: 1;
+}
+.invoice_table td.linear_gradient_gray:before, .invoice_table td.linear_gradient_total:before {
+    width: 100%;
+    height: 100%;
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+}
