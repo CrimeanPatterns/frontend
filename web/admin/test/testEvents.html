@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <script type="text/javascript" src="/assets/common/vendors/jquery/dist/jquery.min.js"></script>
+    <script type="text/javascript" src="recorder.js"></script>
+
+    <script type="text/javascript">
+
+        var logPos = 0;
+
+        function logEvent(event){
+//            console.log(event);
+            var log = $('#log');
+            logPos++;
+            log.append('<div>' + logPos + ': ' + event.type + '</div>');
+            log.scrollTop(logPos * 50);
+        }
+
+        function squareMove(event){
+            var div = $(event.toElement);
+//            console.log(div);
+            div.text(Math.round(div.text()) + 1);
+//            console.log('square move!');
+        }
+
+        $(document).ready(function(){
+            var body = $('body');
+
+            body.on('mousemove mouseleave mouseenter click mouseclick mousedown mouseup keypress keydown keyup', '*', null, logEvent);
+
+            body.on('mousemove', '.square', null, squareMove);
+
+            var squares = $('#squares');
+            for(n = 0; n < 800; n++){
+                squares.append('<div class="square">0</div>');
+            }
+        });
+
+    </script>
+
+    <style type="text/css">
+
+        .square{
+            border: 1px solid gray;
+            width: 30px;
+            height: 30px;
+            float: left;
+        }
+
+    </style>
+</head>
+
+<body>
+    <div id="squares"></div>
+
+    <form method="post" style="position:absolute; left: 400px; top: 300px; width: 200px; height: 100px; z-index: 100; border: 1px solid red; background-color: yellow;">
+        <div>
+            <label for="login">Login:</label>
+            <input id="login" type="text"/>
+        </div>
+        <div>
+            <label for="password">Password:</label>
+            <input id="password" type="text"/>
+        </div>
+        <div>
+            <button value="Submit"></button>
+        </div>
+    </form>
+
+    <div id="log" style="clear: both; border: 1px solid black; height: 300px; overflow: scroll;">
+        <div>Log here</div>
+    </div>
+</body>
+
+</html>

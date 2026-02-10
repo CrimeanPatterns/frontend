@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<wsdl:definitions xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
+	xmlns:tns="https://service.awardwallet.com/wsdl/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+	xmlns:xsd="http://www.w3.org/2001/XMLSchema" name="services"
+	xmlns:spec="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd"
+	targetNamespace="https://service.awardwallet.com/wsdl/">
+
+	<wsdl:types>
+		<xsd:schema targetNamespace="https://service.awardwallet.com/wsdl/">
+
+			<xsd:complexType name="SavePasswordRequest">
+				<xsd:sequence>
+					<xsd:element name="Partner" type="xsd:string">
+						<xsd:annotation>
+							<xsd:documentation>Partner code, like "awardwallet"</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
+					<xsd:element name="Provider" type="xsd:string">
+						<xsd:annotation>
+							<xsd:documentation>Provider code, like "marriott"</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
+					<xsd:element name="Login" type="xsd:string">
+						<xsd:annotation>
+							<xsd:documentation>User login for provider site</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
+					<xsd:element name="Login2" type="xsd:string">
+						<xsd:annotation>
+							<xsd:documentation>Second part of login. Should be empty in most cases</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
+					<xsd:element name="Login3" type="xsd:string">
+						<xsd:annotation>
+							<xsd:documentation>Third part of login. Should be empty in most cases</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
+					<xsd:element name="Password" type="xsd:string">
+						<xsd:annotation>
+							<xsd:documentation>Password</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
+					<xsd:element name="Answers" type="xsd:string">
+						<xsd:annotation>
+							<xsd:documentation>Answers for security questions, JSON</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
+				</xsd:sequence>
+			</xsd:complexType>
+			<xsd:element name="SavePasswordRequest" type="tns:SavePasswordRequest" />
+
+			<xsd:complexType name="SavePasswordResponse">
+				<xsd:sequence>
+					<xsd:element name="Saved" type="xsd:boolean">
+					</xsd:element>
+				</xsd:sequence>
+			</xsd:complexType>
+			<xsd:element name="SavePasswordResponse" type="tns:SavePasswordResponse" />
+
+		</xsd:schema>
+	</wsdl:types>
+
+	<wsdl:message name="SavePasswordRequest">
+		<wsdl:part name="body" element="tns:SavePasswordRequest"/>
+	</wsdl:message>
+
+	<wsdl:message name="SavePasswordResponse">
+		<wsdl:part name="body" element="tns:SavePasswordResponse"/>
+	</wsdl:message>
+
+	<wsdl:portType name="AwardWalletDebugService">
+		<wsdl:operation name="SavePassword">
+			<wsdl:documentation>Save password to vault</wsdl:documentation>
+			<wsdl:input message="tns:SavePasswordRequest" />
+			<wsdl:output message="tns:SavePasswordResponse" />
+		</wsdl:operation>
+	</wsdl:portType>
+
+	<wsdl:binding name="servicesSOAP" type="tns:AwardWalletDebugService">
+		<soap:binding style="document"
+			transport="http://schemas.xmlsoap.org/soap/http" />
+		<spec:SecuritySpec spec:Namespace="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd" spec:Id="default-spec">
+			<spec:UsernameTokenSpec PasswordType="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-username-token-profile-1.0#PasswordText">
+		   </spec:UsernameTokenSpec>
+		</spec:SecuritySpec>
+		<wsdl:operation name="SavePassword">
+			<soap:operation soapAction="SavePassword" />
+			<wsdl:input>
+				<spec:SecuritySpecRef RefId="default-spec"/>
+				<soap:body use="literal" />
+			</wsdl:input>
+			<wsdl:output>
+				<spec:SecuritySpecRef RefId="default-spec"/>
+				<soap:body use="literal" />
+			</wsdl:output>
+		</wsdl:operation>
+	</wsdl:binding>
+
+	<wsdl:service name="AwardWalletDebugService">
+		<wsdl:documentation>AwardWallet debug interface</wsdl:documentation>
+		<wsdl:port binding="tns:servicesSOAP" name="servicesSOAP">
+			<soap:address location="https://awardwallet.com/api//awardwallet/debug/debug.php" />
+		</wsdl:port>
+	</wsdl:service>
+
+</wsdl:definitions>

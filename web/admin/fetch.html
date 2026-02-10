@@ -1,0 +1,26 @@
+<html>
+<body>
+Fetch test
+<script>
+    setTimeout(function() {
+        fetch('/apis.json')
+            .then((response) => response.json())
+            .then((data) => document.getElementById('output-fetch').innerHTML = JSON.stringify(data));
+
+        const oReq = new XMLHttpRequest();
+        oReq.addEventListener("load", function() {
+            document.getElementById('output-ajax').innerHTML = this.responseText;
+        });
+        oReq.open("GET", "/apis.json");
+        oReq.send();
+
+    }, 5000)
+</script>
+<pre id="output-fetch">
+
+</pre>
+<pre id="output-ajax">
+
+</pre>
+</body>
+</html>

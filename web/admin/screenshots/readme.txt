@@ -1,0 +1,1 @@
+used by Selenium2testCase, to write screenshots
