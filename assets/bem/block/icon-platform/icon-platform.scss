@@ -1,0 +1,42 @@
+@font-face {
+  font-family: 'icon-platform';
+  src:
+    url('./font/font.ttf?36w0d8') format('truetype'),
+    url('./font/font.woff?36w0d8') format('woff'),
+    url('./font/font.svg?36w0d8#icon-platform') format('svg');
+  font-weight: normal;
+  font-style: normal;
+  font-display: block;
+}
+
+.icon-platform {
+  /* use !important to prevent issues with browser extensions that change fonts */
+  font-family: 'icon-platform' !important;
+  speak: never;
+  font-style: normal;
+  font-weight: normal;
+  font-variant: normal;
+  text-transform: none;
+  line-height: 1;
+
+  /* Better Font Rendering =========== */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+
+  $block: &;
+  $icons: (
+    "ios": "\e900",
+    "google-play": "\e901",
+    "twitter": "\e902",
+    "facebook": "\e903",
+    "youtube": "\e904",
+    "instagram": "\e905",
+    "linkedin": "\e906",
+  );
+
+  @each $name, $glyph in $icons {
+    @at-root #{$block}--#{$name}:before {
+      content: $glyph;
+    }
+  }
+}

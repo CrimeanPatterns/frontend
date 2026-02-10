@@ -1,0 +1,134 @@
+@use '../../scss/functions' as f;
+@use '../../scss/mixins' as m;
+@use '../../scss/vars' as v;
+
+.button {
+  display: inline-flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  font-family: 'Inter', sans-serif;
+  font-weight: 700;
+  font-size: f.fluid(15px, 18px, sm, lg);
+  border-radius: f.fluid(5px, 6px, sm, lg);
+  height: f.fluid(50px, 60px, sm, lg);
+  min-width: f.fluid(148px, 177px, sm, lg);
+  padding: f.fluid(17px, 21px, sm, lg) f.fluid(43px, 52px, sm, lg);
+  text-decoration: none;
+  white-space: nowrap;
+  transition: all 0.2s ease;
+
+  @include m.theme(light) {
+    background: v.$color-science-blue;
+    color: v.$color-white;
+
+    &:hover {
+      background: v.$color-azure-radiance;
+    }
+    &:active {
+      background: v.$color-endeavour;
+    }
+  }
+
+  &--type_login {
+    @include m.theme(light) {
+      border: 1px solid v.$color-fiord--20;
+      background-color: v.$color-white;
+      color: v.$color-science-blue;
+
+      &:hover {
+        border: 1px solid v.$color-azure-radiance;
+        color: v.$color-white;
+      }
+      &:active {
+        border: 1px solid v.$color-endeavour;
+      }
+    }
+    @include m.theme(dark) {
+      border: 2px solid v.$color-azure-radiance;
+      background-color: v.$color-black;
+      color: v.$color-white;
+
+      &:hover {
+        background-color: v.$color-azure-radiance;
+      }
+      &:active {
+        background-color: v.$color-endeavour;
+      }
+    }
+  }
+
+  &--type_platform {
+    border-radius: f.fluid(6px, 8px, sm, lg);
+    height: f.fluid(38px, 52px, xsm, lg);
+    min-width: f.fluid(118px, 177px, xsm, lg);
+
+    @include m.theme(light) {
+      background: v.$color-pickled-bluewood;
+
+      &:hover {
+        background: v.$color-fiord;
+      }
+      &:active {
+        background: v.$color-mirage;
+      }
+    }
+
+    @include m.theme(dark) {
+      background: v.$color-shark;
+
+      &:hover {
+        background: v.$color-fiord;
+      }
+      &:active {
+        background: v.$color-mirage;
+      }
+    }
+
+    img {
+      width: f.fluid(80px, 132px, xsm, lg);
+      height: auto;
+    }
+  }
+
+  &--align_left {
+    padding: f.px2rem(8px) f.fluid(25px, 40px, xsm, sm) f.px2rem(8px) f.px2rem(15px);
+    justify-content: start;
+  }
+
+  &--wide {
+    display: flex;
+  }
+
+  &--arrow {
+    position: relative;
+
+    &:after {
+      content: "";
+      position: absolute;
+      top: 50%;
+      right: f.px2rem(16px);
+      transform: translateY(-50%) rotate(-45deg);
+      border: solid v.$color-white;
+      border-width: 0 f.px2rem(2px) f.px2rem(2px) 0;
+      padding: f.px2rem(2px);
+
+      @include m.theme(light) {
+        border-color: v.$color-white;
+      }
+    }
+  }
+
+  &--medium {
+    padding: 12px 27px;
+    height: auto;
+  }
+
+  &--transparent-bg{
+    background-color: transparent;
+
+    @include m.theme(dark) {
+      background-color: transparent;
+    }
+  }
+}

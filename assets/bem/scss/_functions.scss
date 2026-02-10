@@ -1,0 +1,53 @@
+@use 'sass:math';
+@use 'vars' as v;
+
+@function _round($number, $decimals: 0) {
+  $n: 1;
+  @if $decimals > 0 {
+    @for $i from 1 through $decimals {
+      $n: $n * 10;
+    }
+  }
+  @return math.div(math.round($number * $n), $n);
+}
+
+@function _toPx($var) {
+  @if type-of($var) == 'string' and map-has-key(v.$screen-breakpoints, $var) {
+    @return rem2px(map-get(v.$screen-breakpoints, $var));
+  }
+
+  @if type-of($var) != 'number' {
+    @error 'Invalid unit for #{$var}';
+  }
+
+  @if unit($var) == 'rem' {
+    @return rem2px($var);
+  } @else if unit($var) != 'px' {
+    @error 'Invalid unit for #{$var}';
+  }
+
+  @return $var;
+}
+
+@function px2rem($px) {
+  $rems: math.div($px, 16px) * 1rem;
+  @return $rems;
+}
+
+@function rem2px($rem) {
+  $pxs: math.div($rem, 1rem) * 16px;
+  @return $pxs;
+}
+
+@function fluid($min-size, $max-size, $min-breakpoint, $max-breakpoint, $unit: vw) {
+  $min-size: _toPx($min-size);
+  $max-size: _toPx($max-size);
+  $min-breakpoint: _toPx($min-breakpoint);
+  $max-breakpoint: _toPx($max-breakpoint);
+  $slope: math.div($max-size - $min-size, $max-breakpoint - $min-breakpoint);
+  $slope-to-unit: _round($slope * 100, 2);
+  $intercept-rem: _round(px2rem($min-size - $slope * $min-breakpoint), 2);
+  $min-size-rem: _round(px2rem($min-size), 2);
+  $max-size-rem: _round(px2rem($max-size), 2);
+  @return clamp(#{$min-size-rem}, #{$slope-to-unit}#{$unit} + #{$intercept-rem}, #{$max-size-rem});
+}

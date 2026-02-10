@@ -1,0 +1,118 @@
+@use '../../../../scss/functions' as f;
+@use '../../../../scss/mixins' as m;
+
+.connected-post {
+    &__item {
+        list-style: none;
+    }
+
+    &__link {
+        display: block;
+        text-decoration: none;
+        color: inherit;
+    }
+
+    &__header {
+        position: relative;
+        padding-left: f.px2rem(35px);
+    }
+
+    &__plus {
+        position: absolute;
+        background-color: transparent;
+        border: none;
+        left: f.px2rem(7px);
+        top: 50%;
+        left: 0;
+        width: 24px;
+        height: 24px;
+        transform: translateY(-50%);
+        color: var(--text-blue-color);
+        transition: color 0.2s;
+
+        &::after {
+            content: '';
+            position: absolute;
+            width: 2px;
+            height: 10px;
+            background-color: currentColor;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            border-radius: 2px;
+            transition: transform 0.3s ease;
+        }
+
+        &::before {
+            content: '';
+            position: absolute;
+            width: 10px;
+            height: 2px;
+            background-color: currentColor;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            border-radius: 2px;
+            transition: transform 0.3s ease;
+        }
+
+        @media (pointer: fine) {
+            &:hover {
+                color: var(--primary-hover-color);
+            }
+        }
+
+        &--active {
+            &::after {
+                transform: translate(-50%, -50%) rotate(90deg) scaleY(0);
+            }
+
+            &::before {
+                transform: translate(-50%, -50%) scaleX(1.2);
+            }
+        }
+    }
+
+    &__title {
+        display: flex;
+        font-weight: 800;
+        font-size: f.px2rem(16px);
+        line-height: 100%;
+        color: var(--text-blue-color);
+        margin-bottom: f.px2rem(5px);
+        transition: color 0.5s;
+        align-items: center;
+        min-height: 24px;
+
+        @media (pointer: fine) {
+            &:hover {
+                color: var(--primary-hover-color);
+            }
+        }
+
+        @include m.media('<=sm') {
+            font-size: f.px2rem(14px);
+            line-height: 140%;
+        }
+    }
+
+    &__content {
+        font-size: f.px2rem(14px);
+        line-height: 150%;
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 0.5s ease;
+        padding-left: f.px2rem(35px);
+        color: var(--text-primary-color);
+
+        &--visible {
+            max-height: 300px;
+        }
+    }
+
+    &__description {
+        font-size: 14px;
+        line-height: 150%;
+        color: var(--text-primary-color);
+    }
+}

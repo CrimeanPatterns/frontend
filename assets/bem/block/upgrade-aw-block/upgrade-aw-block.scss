@@ -1,0 +1,63 @@
+@use '../../scss/functions' as f;
+@use '../../scss/mixins' as m;
+@use '../../scss/vars' as v;
+
+.upgrade-aw-block {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+
+    &__title {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-size: f.px2rem(16px);
+        font-weight: 700;
+        line-height: 100%;
+        color: v.$color-science-blue;
+    }
+
+    &__price {
+        display: flex;
+        align-items: flex-end;
+        flex-wrap: wrap;
+        gap: 5px;
+        font-size: f.px2rem(26px);
+        font-weight: 400;
+        line-height: 100%;
+
+        @include m.theme(light) {
+            color: v.$color-pickled-bluewood;
+        }
+
+        @include m.theme(dark) {
+            color: v.$color-white;
+        }
+    }
+
+    &__price-currency {
+        font-size: f.px2rem(12px);
+        font-weight: 400;
+        line-height: 100%;
+    }
+
+    &__additional-info {
+        display: flex;
+        font-size: f.px2rem(12px);
+        font-weight: 500;
+        line-height: 100%;
+        opacity: 0.5;
+
+        @include m.theme(light) {
+            color: v.$color-pickled-bluewood;
+        }
+
+        @include m.theme(dark) {
+            color: v.$color-white;
+        }
+    }
+
+    &__button {
+        max-width: 160px;
+    }
+}

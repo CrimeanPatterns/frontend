@@ -1,0 +1,54 @@
+@use '../../../../scss/functions' as f;
+@use '../../../../scss/mixins' as m;
+
+.connected-provider {
+    display: flex;
+    align-items: center;
+    gap: f.px2rem(15px);
+    background-color: var(--gray-light-color);
+    border-radius: f.px2rem(6px);
+    padding: f.px2rem(6px) f.px2rem(6px) f.px2rem(6px) f.px2rem(12px);
+
+    @include m.media('<=sm') {
+        padding: f.px2rem(10px);
+        gap: f.px2rem(12px);
+    }
+
+    &__logo {
+        width: f.px2rem(34px);
+        height: f.px2rem(34px);
+        flex-shrink: 0;
+        object-fit: cover;
+        border-radius: f.px2rem(6px);
+    }
+
+    &__name {
+        font-weight: 800;
+        font-size: f.px2rem(16px);
+        line-height: 150%;
+        color: var(--text-primary-color);
+
+        @include m.media('<=sm') {
+            font-size: f.px2rem(14px);
+        }
+    }
+
+    &__button {
+        margin-left: auto;
+        line-height: 150%;
+        font-size: f.px2rem(16px);
+        padding: f.px2rem(8px) f.px2rem(20px);
+        background-color: var(--primary-color);
+
+        @include m.media('<=sm') {
+            font-size: f.px2rem(14px);
+            max-width: f.px2rem(97px);
+            justify-content: center;
+            white-space: unset;
+            text-align: center;
+            line-height: 100%;
+            padding: f.px2rem(6px) f.px2rem(20px);
+            min-width: unset;
+        }
+    }
+}

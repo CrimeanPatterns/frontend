@@ -1,0 +1,1586 @@
+@import '../../../web/assets/awardwalletnewdesign/less/main.less';
+@import '../../less-deprecated/variables';
+@import '../../less-deprecated/utilites/utilites';
+
+.transactions-wrap {
+    padding-bottom: 55px;
+
+    font-size: .8125rem;
+
+    .mode({
+        color: #5b6373;
+    }, {
+        color: #eee;
+    });
+
+    * {
+        box-sizing: border-box;
+    }
+}
+
+.transactions-head,
+.transactions-bottom {
+    display: flex;
+
+    > div {
+        max-width: 100%;
+        padding-top: 10px;
+        padding-bottom: 10px;
+
+        opacity: .5;
+
+        .mode({
+            color: #50597c;
+        }, {
+            color: #fff;
+        });
+    }
+}
+
+.transactions-date {
+    width: 75px;
+
+    opacity: .4;
+
+    order: 1;
+    .mode({
+        color: #50597c;
+    }, {
+        color: #eee;
+    });
+}
+
+.transactions-description {
+    width: 33.5%;
+
+    line-height: 1rem;
+
+    order: 2;
+
+    a {
+        text-decoration: none;
+
+        .mode({
+            color: #5b6373;
+        }, {
+            color: #eee;
+        });
+
+        &:hover {
+            .mode({
+                color: #4684c4;
+            }, {
+                color: #0984ff;
+            });
+        }
+    }
+
+    a:first-child {
+        padding-bottom: 1px;
+    }
+
+    a:last-child {
+        opacity: .6;
+    }
+}
+
+.transactions-card {
+    width: 24%;
+
+    order: 3;
+
+    a {
+        text-decoration: none;
+
+        font-weight: 600;
+
+        .mode({
+            color: #5b6373;
+        }, {
+            color: #eee;
+        });
+
+        &:hover {
+            .mode({
+                color: #4684c4;
+            }, {
+                color: #0984ff;
+            });
+        }
+    }
+}
+
+.transactions-amount {
+    width: 130px;
+
+    text-align: right;
+
+    font-weight: 600;
+
+    order: 4;
+}
+
+.transactions-points {
+    position: relative;
+
+    width: calc(42.5% - 75px - 100px - 65px);
+    padding-right: 18px;
+
+    order: 5;
+}
+
+.transactions-eq {
+    width: 65px;
+    padding-top: 10px;
+
+    order: 6;
+}
+
+@media (@tablet-max) {
+    .transactions-row {
+        flex-wrap: wrap;
+    }
+
+    .transactions-description {
+        width: 57%;
+        padding-bottom: 0 !important;
+    }
+
+    .transactions-card {
+        width: 100%;
+        padding: 0 0 10px 75px !important;
+
+        order: 7;
+    }
+
+    .transactions-head .transactions-card {
+        display: none;
+    }
+}
+
+.transactions-row {
+    .transactions-eq {
+        padding-left: 5px;
+    }
+}
+
+.transactions-head {
+    .transactions-points {
+        text-align: right;
+    }
+}
+
+.transactions-row {
+    position: relative;
+
+    display: flex;
+
+    transition: all .3s linear;
+
+    border-bottom-width: 1px;
+    border-bottom-style: solid;
+
+    .mode({
+        border-bottom-color: #efeff1;
+        background: #fff;
+    }, {
+        border-bottom-color: #2e2e31;
+        background: #141414;
+    });
+    align-items: center;
+
+    &.transactions-row--fixed {
+        z-index: 999;
+    }
+
+    > div {
+        position: relative;
+        z-index: 5;
+
+        padding-top: 7px;
+        padding-bottom: 7px;
+    }
+
+    &:before {
+        position: absolute;
+        z-index: 1 !important;
+        top: 0;
+        left: 0;
+
+        width: 100%;
+        height: 100%;
+
+        content: '';
+        transition: all .3s ease-in;
+
+        opacity: 0;
+        border-width: 2px;
+        border-style: solid;
+
+        .mode({
+            border-color: #fff;
+            background: #fff;
+        }, {
+            border-color: #141414;
+            background: #141414;
+        });
+    }
+
+    &.transactions-row--fixed:before,
+    &:hover:before {
+        top: -5px;
+        left: -25px;
+
+        width: calc(100% + 46px);
+        height: calc(100% + 7px);
+
+        opacity: 1;
+
+        .mode({
+            box-shadow: 3px 6px 30px 6px rgba(222, 222, 222, .5);
+        }, {
+            box-shadow: 3px 6px 30px 6px rgba(50, 50, 50, .4);
+        });
+    }
+}
+
+.main-body.business {
+    .main-blk-actions {
+        right: 0;
+
+        .search-box {
+            position: relative;
+            top: 5px;
+
+            input {
+                padding-right: 25px !important;
+            }
+        }
+    }
+
+    .transactions-row {
+        &:hover:before {
+            width: calc(100% + 30px);
+        }
+    }
+
+    .tabs-content {
+        min-height: 0;
+    }
+}
+@media (max-width: 1920px) {
+    .transactions-row {
+        &:hover:before {
+            width: calc(100% + 30px);
+        }
+    }
+}
+
+.transactions-points-earned {
+    //float: right;
+    //display: flex;
+
+    .transactions-points-numbers {
+        display: flex;
+        //padding-top: 6px;
+
+
+        //text-align: right;
+
+        span {
+            margin-left: auto;
+        }
+    }
+
+    /*
+    .transactions-points-chart {
+        width: 55px;
+    }
+    */
+}
+
+.total-transactions {
+    .transactions-points-numbers {
+        display: block;
+
+        text-align: right;
+    }
+
+    .transactions-total-earned {
+        color: #d3d6de;
+    }
+
+    .transactions-eq {
+        padding-left: 6px;
+
+        .transactions-points-chart {
+            top: -4px;
+        }
+    }
+}
+
+
+.transactions-points-multiplier {
+    display: inline-block;
+
+    margin-left: 6px !important;
+    padding: 2px 4px;
+
+    color: #fff;
+
+    .mode({
+        background-color: #eee;
+    }, {
+        background-color: #454548;
+    });
+}
+
+
+.transactions-points-chart {
+    position: relative;
+
+    height: 40px;
+
+    &:hover {
+        cursor: pointer;
+    }
+}
+
+.bestcards-circle,
+.transactions-chart-circle {
+    position: absolute;
+    top: -2px;
+
+    display: flex;
+
+    width: 40px;
+    height: 40px;
+    padding: 5px;
+
+    transform: rotate(-95deg);
+
+    justify-content: center;
+    align-items: center;
+}
+
+.bestcards-chart-inner,
+.transactions-chart-inner {
+    position: absolute;
+    z-index: 10;
+    top: 0;
+    left: 0;
+
+    width: 40px;
+    height: 40px;
+
+    border-width: 2px;
+    border-style: solid;
+    border-radius: 50%;
+
+    .mode({
+        border-color: #eaebef;
+    }, {
+        border-color: #454548;
+    });
+}
+
+.bestcards-circle svg,
+.transactions-chart-circle svg {
+    z-index: 20;
+
+    transform: rotate(5deg);
+
+    &:not(:root) {
+        overflow: visible;
+    }
+
+    circle {
+        transition: all 1.5s ease-in-out;
+
+        stroke-dasharray: 119;
+        stroke-dashoffset: 119;
+        fill: transparent;
+        stroke-width: 2;
+        //stroke: #ffbc11;
+        stroke: #ddd;
+    }
+}
+
+.transactions-points-miles {
+    display: block;
+
+    padding-top: 2px;
+
+    text-align: right;
+
+    font-weight: 600;
+
+    .mode({
+        color: #50597c;
+    }, {
+        color: #fff;
+    });
+    flex: 1;
+}
+
+.transactions-points-value {
+    position: relative;
+    top: -2px;
+
+    font-size: .75rem;
+    //display: block;
+    font-weight: 600;
+
+    .mode({
+        color: #50597c;
+    }, {
+        color: #fff;
+    });
+}
+
+.transactions-point-name {
+    padding-top: 4px;
+
+    text-align: right;
+
+    font-size: .75rem;
+
+    .mode({
+        color: #b9bdcb;
+    }, {
+        color: #aaa;
+    });
+}
+
+.transactions-popup-earning {
+    position: absolute;
+    z-index: 30;
+    top: -1000px;
+    left: 0;
+
+    display: none;
+
+    width: 200px;
+    height: 110px;
+
+    transition: all .3s linear;
+
+    opacity: 0;
+    border-radius: 4px;
+
+    .mode({
+        background: #fff;
+        box-shadow: 3px 4px 12px 3px #ccc;
+    }, {
+        background: #141414;
+        box-shadow: 3px 4px 12px 3px #222;
+    });
+
+    &:after {
+        position: absolute;
+        top: 100%;
+        right: 29px;
+
+        content: '';
+
+        border-top: 11px solid #fff;
+        border-left: 8px solid transparent;
+    }
+
+    &:hover,
+    &--showed {
+        //left: -14px;
+        display: block;
+
+        opacity: 1;
+    }
+}
+
+.transactions-popup-inner {
+    position: relative;
+
+    height: 100%;
+    padding: 15px 50px 10px 20px;
+
+    .mode({
+        background: url('/assets/awardwalletnewdesign/img/spinner.gif') center no-repeat;
+    }, {
+        background: url('/assets/awardwalletnewdesign/img/spinner-dark.gif') center no-repeat;
+    });
+
+    &.offers-loaded {
+        background: none;
+    }
+
+    b {
+        font-weight: 800;
+    }
+
+    a {
+        transition: background-size 400ms;
+        text-decoration: none;
+
+        color: #4684c4;
+        background: linear-gradient(to right, rgba(115, 165, 210, 1), rgba(70, 130, 195, 1));
+        background-repeat: no-repeat;
+        background-position: 100% 100%, 0 100%;
+        background-size: 0 1px, 100% 1px;
+
+        font-size: .75rem;
+        font-weight: 800;
+
+        &:hover {
+            background-size: 100% 1px, 0 1px;
+        }
+    }
+}
+
+.transactions-popup-off {
+    .transactions-popup-earning {
+        display: none !important;
+    }
+}
+
+
+.transactions-earning-multiplier {
+    display: inline-block;
+
+    width: 100%;
+    padding: 5px 0 5px 0;
+
+    > div {
+        position: relative;
+
+        float: left;
+    }
+
+    > div:first-child {
+        padding-right: 6px;
+
+        text-transform: uppercase;
+
+        color: #27a887;
+
+        font-size: 1.375rem;
+        font-weight: 800;
+    }
+
+    > div:last-child {
+        margin-top: 1px;
+    }
+}
+
+/*
+.transactions-popup-inner:after {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+
+    display: inline-block;
+
+    width: 28px;
+    height: 28px;
+
+    content: '';
+
+    border-radius: 50%;
+    background: #e9ebef url('/assets/awardwalletnewdesign/img/media/logo_just.png') center no-repeat;
+    background-size: 70%;
+}
+*/
+
+.transactions-earning-arrow-up {
+    position: absolute;
+    top: 5px;
+    left: 0;
+
+    display: inline-block;
+
+    padding: 2px;
+
+    transform: rotate(-135deg);
+
+    border: solid #27a887;
+    border-width: 0 2px 2px 0;
+
+    &--2 {
+        top: 10px;
+
+        opacity: .6;
+    }
+
+    &--3 {
+        top: 15px;
+
+        opacity: .3;
+    }
+}
+
+.transactions-miles-range {
+    padding: 0 0 8px 0;
+
+    color: #b9bdcb;
+
+    font-size: .875rem;
+    font-weight: 600;
+}
+
+.transactions-row:hover {
+    .transactions-popup-earning {
+        display: block;
+    }
+}
+
+/**
+----
+*/
+
+.transactions-status-positive {
+    .transactions-amount {
+        .mode({
+            color: #27a887;
+        }, {
+            color: lighten(#27a887, 15%);
+        });
+    }
+}
+
+.transactions-status-negative {
+    .transactions-amount {
+        .mode({
+            color: #4684c4;
+        }, {
+            color: lighten(#4684c4, 15%);
+        });
+    }
+
+    .transactions-points-earned {
+        .transactions-points-chart {
+            opacity: 0;
+        }
+    }
+}
+
+
+/**
+----
+*/
+
+.transactions-multiplier {
+    position: absolute;
+
+    display: flex;
+    //top: 6px;
+    //left: 5px;
+
+    width: 40px;
+    height: 40px;
+
+    text-align: center;
+
+    align-items: center;
+
+    > div {
+        margin: auto;
+
+        font-weight: 800;
+    }
+}
+
+/**
+----
+*/
+
+.transactions-potential--profit {
+    .mode({
+        background: rgb(255, 255, 255);
+        background: linear-gradient(90deg, rgba(255, 255, 255, 1) 70%, rgba(234, 246, 243, 1) 100%);
+
+        &:before {
+            background: rgb(255, 255, 255);
+            background: linear-gradient(90deg, rgba(255, 255, 255, 1) 70%, rgba(234, 246, 243, 1) 100%);
+        }
+    }, {
+        background: rgb(20, 20, 20);
+        background: linear-gradient(90deg, rgba(20, 20, 20, 1) 70%, rgba(31, 63, 47, 1) 100%);
+
+        &:before {
+            background: rgb(20, 20, 20);
+            background: linear-gradient(90deg, rgba(20, 20, 20, 1) 70%, rgba(31, 63, 47, 1) 100%);
+        }
+    });
+
+    svg circle {
+        .mode({
+            stroke: #27a887;
+        }, {
+            stroke: #30d178;
+        });
+    }
+
+    .transactions-chart-checkmark {
+        display: inline-block;
+
+        .mode({
+            background-color: #27a887;
+        }, {
+            background-color: #30d178;
+        });
+    }
+
+    .transactions-points-multiplier {
+        .mode({
+            background-color: #27a887;
+        }, {
+            background-color: darken(#27a887, 15%);
+        });
+    }
+}
+
+.transactions-potential--red:not(.transactions-diff-eq--medium):not(.transactions-status-empty) {
+    .mode({
+        background: rgb(255, 255, 255);
+        background: linear-gradient(90deg, rgba(255, 255, 255, 1) 70%, rgba(255, 235, 235, 1) 100%);
+
+        &:before {
+            background: rgb(255, 255, 255);
+            background: linear-gradient(90deg, rgba(255, 255, 255, 1) 70%, rgba(255, 235, 235, 1) 100%);
+        }
+
+        svg circle {
+            stroke: #ff3434;
+        }
+
+        .transactions-points-multiplier {
+            background-color: #ff3434;
+        }
+    }, {
+        background: rgb(20, 20, 20);
+        background: linear-gradient(90deg, rgba(20, 20, 20, 1) 70%, rgba(90, 38, 43, 1) 100%);
+
+        &:before {
+            background: rgb(20, 20, 20);
+            background: linear-gradient(90deg, rgba(20, 20, 20, 1) 70%, rgba(90, 38, 43, 1) 100%);
+        }
+
+        svg circle {
+            stroke: #e63f41;
+        }
+
+        .transactions-points-multiplier {
+            background-color: #e63f41;
+        }
+
+        .transactions-chart-inner {
+            .mode({
+                border-color: #eadfe3 !important;
+            }, {
+                border-color: #eadfe3 !important;
+            });
+        }
+    });
+}
+
+.transactions-status-empty,
+.transactions-status-negative {
+    .mode({
+        background: rgb(230, 230, 230);
+        background: linear-gradient(90deg, rgba(255, 255, 255, 1) 70%, rgba(250, 250, 250, 1) 100%);
+
+        &:before {
+            background: rgb(230, 230, 230);
+            background: linear-gradient(90deg, rgba(255, 255, 255, 1) 70%, rgba(250, 250, 250, 1) 100%);
+        }
+    }, {
+        background: rgb(20, 20, 20);
+        background: linear-gradient(90deg, rgba(20, 20, 20, 1) 70%, rgba(15, 15, 15, 1) 100%);
+
+        &:before {
+            background: rgb(20, 20, 20);
+            background: linear-gradient(90deg, rgba(20, 20, 20, 1) 70%, rgba(15, 15, 15, 1) 100%);
+        }
+    });
+}
+
+/*
+.transactions-potential--orangedark {
+    svg circle {
+        //stroke: #ff6400;
+        .mode({
+            stroke: #ff6400;
+        }, {
+            stroke: darken(#ff6400, 15%);
+        });
+    }
+
+    .transactions-points-multiplier {
+        .mode({
+            background-color: #ff6400;
+        }, {
+            background-color: darken(#ff6400, 15%);
+        });
+    }
+}
+
+.transactions-potential--orange {
+    .transactions-points-multiplier {
+        .mode({
+            background-color: orange;
+        }, {
+            background-color: darken(orange, 15%);
+        });
+    }
+}
+
+.transactions-potential--yellow {
+    svg circle {
+        .mode({
+            stroke: #fa0;
+        }, {
+            stroke: darken(#fa0, 15%);
+        });
+    }
+
+    .transactions-points-multiplier {
+        .mode({
+            background-color: #fa0;
+        }, {
+            background-color: darken(#fa0, 15%);
+        });
+    }
+}
+
+.transactions-potential--yellow {
+    svg circle {
+        //stroke: black;
+        //stroke: #ff6400;
+        .mode({
+            stroke: darken(#f5e58c, 15%);
+        }, {
+            stroke: darken(#f5e58c, 35%);
+        });
+    }
+
+    .transactions-points-multiplier {
+        .mode({
+            background-color: darken(#f5e58c, 15%);
+        }, {
+            background-color: darken(#f5e58c, 35%);
+        });
+    }
+}
+*/
+
+.bestcards-diff-eq--low,
+.bestcards-diff-eq--small,
+.transactions-diff-eq--low,
+.transactions-diff-eq--small {
+    svg circle {
+        .mode({
+            stroke: #27a887;
+        }, {
+            stroke: #27a887;
+        });
+    }
+
+    .transactions-points-multiplier {
+        .mode({
+            background-color: #27a887;
+        }, {
+            background-color: #27a887;
+        });
+    }
+}
+
+.bestcards-diff-eq--medium,
+.transactions-diff-eq--medium {
+    svg circle {
+        .mode({
+            stroke: #ffbc11;
+        }, {
+            stroke: #ffbc11;
+        });
+    }
+
+    .transactions-points-multiplier {
+        .mode({
+            background-color: #ffbc11;
+        }, {
+            background-color: #ffbc11;
+        });
+    }
+}
+
+.bestcards-diff-eq--high,
+.transactions-diff-eq--high {
+    svg circle {
+        .mode({
+            stroke: #ff3434;
+        }, {
+            stroke: #ff3434;
+        });
+    }
+
+    .transactions-points-multiplier {
+        .mode({
+            background-color: #ff3434;
+        }, {
+            background-color: #ff3434;
+        });
+    }
+}
+
+/*
+.transactions-status-empty {
+    background: none !important;
+
+    &:before {
+        background: none !important;
+    }
+}
+ */
+
+/**
+----
+*/
+
+.transactions-chart-checkmark {
+    position: absolute;
+    top: 1px;
+    left: 26px;
+
+    display: none;
+
+    width: 12px;
+    height: 12px;
+
+    border-radius: 50%;
+
+    .mode({
+        outline: 2px solid #fff;
+    }, {
+        outline: 2px solid #141414;
+    });
+}
+
+.transactions-chart-checkmark::before {
+    position: absolute;
+    top: 45%;
+    left: -5px;
+
+    width: 2px;
+    height: 30%;
+
+    content: '';
+    transform: translateX(10px) rotate(-45deg);
+    transform-origin: left bottom;
+
+    .mode({
+        background-color: #fff;
+    }, {
+        background-color: #000;
+    });
+}
+
+.transactions-chart-checkmark::after {
+    position: absolute;
+    bottom: 3px;
+    left: -5px;
+
+    width: 50%;
+    height: 2px;
+
+    content: '';
+    transform: translateX(10px) rotate(-45deg);
+    transform-origin: left bottom;
+
+    .mode({
+        background-color: #fff;
+    }, {
+        background-color: #000;
+    });
+}
+
+
+/**
+----
+*/
+
+/*
+#transactionsWrap .transactions-row:nth-child(0),
+#transactionsWrap .transactions-row:nth-child(1),
+#transactionsWrap .transactions-row:nth-child(2) {
+    .transactions-popup-earning {
+        display: block;
+
+        opacity: 1;
+    }
+}
+*/
+
+.transactions-totals {
+    margin-top: -2px;
+
+    .transactions-eq-value {
+        padding-top: 5px;
+    }
+}
+
+.main-body:not(.business) .total-transactions {
+    max-width: 1663px;
+}
+.total-transactions {
+    z-index: 100;
+
+    height: 56px;
+
+    .mode({
+        color: #5b6373;
+        background: #fff;
+    }, {
+        color: #eee;
+        background: #141414;
+    });
+}
+
+.hide-menu:not(.business) {
+    .total-transactions {
+        max-width: 1900px;
+    }
+}
+
+
+.transactions-bottom {
+    > div {
+        opacity: 1;
+
+        line-height: 17px;
+    }
+
+    .transactions-date {
+        > div {
+            position: relative;
+
+            display: inline-block;
+
+            width: 28px;
+            margin-top: 17px;
+            margin-left: 6px;
+
+            border-bottom: 2px solid #5b6373;
+
+            &:before,
+            &:after {
+                position: absolute;
+
+                width: 28px;
+                margin-top: -8px;
+
+                content: '';
+
+                border-bottom: 2px solid #5b6373;
+            }
+
+            &:after {
+                margin-top: 8px;
+            }
+        }
+    }
+
+    .transactions-description {
+        .mode({
+            color: #5b6373;
+        }, {
+            color: #eee;
+        });
+
+        b {
+            text-transform: uppercase;
+
+            font-weight: 800;
+        }
+
+        > span {
+            opacity: .6;
+        }
+    }
+
+    .transactions-points {
+        margin-top: -6px;
+    }
+}
+
+.transactions-status-negative,
+.transactions-status-amount-empty,
+.transactions-row--empty,
+.transactions-status-casheq-empty {
+    min-height: 54px;
+
+    .transactions-points-chart {
+        display: none;
+    }
+}
+
+.transactions-status-negative,
+.transactions-status-amount-empty,
+.transactions-status-empty {
+    .transactions-points-earned,
+    .transactions-point-name {
+        display: none;
+    }
+}
+
+.transactions-status-empty {
+    .transactions-chart-circle {
+        display: none;
+    }
+}
+
+
+.bestcards-popup.loading {
+    .bestcards-popup-content {
+        .mode({
+            background: #fff url('/assets/awardwalletnewdesign/img/spinner.gif') center no-repeat;
+        }, {
+            background: #141414 url('/assets/awardwalletnewdesign/img/spinner-dark.gif') center no-repeat;
+        });
+    }
+}
+
+.bestcards-error {
+    margin: 1rem 5px;
+    padding: 1rem;
+    text-align: center;
+    color: #fff;
+    background-color: #ff3434;
+
+    strong {
+        display: block;
+    }
+
+    span {
+        display: block;
+        margin-top: 1rem;
+    }
+}
+
+.bestcards-row {
+    display: flex;
+
+    padding: 20px 25px;
+
+    border: 4px solid transparent;
+
+    border-bottom-width: 3px;
+    border-bottom-style: solid;
+
+    .mode({
+        border-bottom-color: #f3f3f8;
+    }, {
+        border-bottom-color: #2e2e31;
+    });
+}
+
+.bestcards-popup {
+    position: absolute;
+    z-index: 999;
+
+    display: none;
+
+    width: 685px;
+    min-width: 100px;
+    max-width: 685px;
+    min-height: 172px;
+    padding-bottom: 21px;
+
+    .mode({
+        color: #5b6373;
+    }, {
+        color: #eee;
+    });
+}
+
+.bestcards-popup-content {
+    position: relative;
+
+    min-width: 100px;
+    min-height: 233px;
+
+    .mode({
+        background: #fff;
+        box-shadow: 0 0 20px 5px #ddd;
+    }, {
+        background: #141414;
+        box-shadow: 0 0 20px 5px #333;
+    });
+}
+
+.bestcards-popup--showed,
+.bestcards-popup--fix-showed {
+    display: block !important;
+}
+
+
+.bestcards-popup-content:after {
+    position: absolute;
+    top: 100%;
+    right: 29px;
+
+    content: '';
+
+    border-top-width: 21px;
+    border-top-style: solid;
+    border-left: 8px solid transparent;
+
+    .mode({
+        border-top-color: #fff;
+    }, {
+        border-top-color: #141414;
+    });
+}
+
+.bestcards-thumb {
+    width: 110px;
+    padding-right: 15px;
+}
+
+.bestcards-thumb img {
+    max-width: 95px;
+    height: auto;
+
+    border-radius: 5px;
+    box-shadow: 0 6px 25px 5px rgba(25, 25, 25, .2);
+}
+
+.bestcards-info {
+    width: calc(100% - 110px - 150px - 130px);
+    padding-top: 5px;
+    padding-right: 1rem;
+
+    line-height: .9375rem;
+}
+
+.bestcards-info strong {
+    display: block;
+
+    padding-bottom: 5px;
+
+    font-size: .875rem;
+
+    .mode({
+        color: #3d424d;
+    }, {
+        color: #fff;
+    });
+}
+
+.bestcards-points {
+    width: 150px;
+    min-width: 150px;
+    margin-left: auto;
+}
+
+.bestcards-cash-eq {
+    width: 130px;
+    min-width: 130px;
+    margin-left: auto;
+    padding-left: 15px;
+}
+
+.bestcards-state {
+    display: flex;
+
+    padding-top: 8px;
+    padding-bottom: 2px;
+}
+
+.bestcards-miles {
+    padding-top: 2px;
+    padding-right: 6px;
+
+    text-align: right;
+
+    flex: 1;
+    .mode({
+        color: #50597c;
+    }, {
+        color: #fff;
+    });
+}
+
+.bestcards-state > div {
+    margin-left: auto;
+}
+
+.bestcards-multiplier {
+    padding: 2px 4px;
+
+    color: #fff;
+    border-radius: 3px;
+
+    .mode({
+        background-color: #27a887;
+    }, {
+        background-color: darken(#27a887, 15%);
+    });
+    /*
+        &--red {
+            .mode({
+                background-color: #ff3434;
+            }, {
+                background-color: #e63f41;
+            });
+        }
+
+        &--orangedark {
+            .mode({
+                background-color: #ff6400;
+            }, {
+                background-color: darken(#ff6400, 15%);
+            });
+        }
+
+        &--orange {
+            .mode({
+                background-color: orange;
+            }, {
+                background-color: darken(orange, 15%);
+            });
+        }
+
+        &--yellow {
+            .mode({
+                background-color: #fa0;
+            }, {
+                background-color: darken(#fa0, 15%);
+            });
+        }
+    */
+}
+
+.bestcards-points,
+.bestcards-cash-eq {
+    font-size: .8125rem;
+}
+
+.bestcards-point-name {
+    text-align: right;
+}
+
+.bestcards-point-name,
+.bestcards-cash-eq span {
+    color: #c2c5d2 !important;
+
+    font-size: .75rem;
+}
+
+.bestcards-cash-box {
+    padding: 10px 12px;
+
+    border-radius: 5px;
+
+    .mode({
+        background: #f7f7f8;
+    }, {
+        background: #2e2e31;
+    });
+}
+
+.bestcards-cash-box strong {
+    display: block;
+
+    padding-bottom: 3px;
+
+    font-weight: normal;
+
+    .mode({
+        color: #50597c;
+    }, {
+        color: #eee;
+    });
+}
+
+.bestcards-footer {
+    padding: 20px;
+
+    text-align: center;
+}
+
+.bestcards-footer a {
+    position: relative;
+
+    text-decoration: none;
+
+    font-size: .8125rem;
+    font-weight: bold;
+
+    .mode({
+        color: #4684c4;
+    }, {
+        color: #0984ff;
+    });
+}
+
+.bestcards-footer a:hover {
+    text-decoration: underline;
+}
+
+.bestcards-footer a:after {
+    position: absolute;
+    top: 1px;
+    right: -13px;
+
+    content: '›';
+
+    font-size: 17px;
+    font-weight: bold;
+}
+
+.ico-dollar-svg {
+    display: inline-block;
+
+    width: 14px;
+    height: 14px;
+
+    mask: url('data:image/svg+xml,<svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M6.44531 11.1518H7.51475V10.4713C8.05272 10.4032 8.49508 10.2217 8.84184 9.92681C9.1886 9.6319 9.36198 9.19764 9.36198 8.62404C9.36198 8.14116 9.22468 7.72716 8.95007 7.38202C8.67548 7.03688 8.18462 6.7282 7.47749 6.45598C6.919 6.2356 6.52633 6.03954 6.29948 5.86777C6.07262 5.69602 5.95919 5.47565 5.95919 5.20667C5.95919 4.97333 6.04993 4.7878 6.23142 4.65007C6.4129 4.51233 6.65596 4.44346 6.96059 4.44346C7.24578 4.44346 7.49289 4.51395 7.70191 4.65492C7.91094 4.79589 8.07703 5.00573 8.20018 5.28444L9.15296 4.86638C8.98666 4.45355 8.77089 4.13969 8.50566 3.92481C8.24043 3.70994 7.91985 3.57477 7.54392 3.51932V2.85875H6.47448V3.51986C5.94948 3.62033 5.55411 3.83121 5.28837 4.1525C5.02263 4.4738 4.88975 4.84499 4.88975 5.26607C4.88975 5.77091 5.04693 6.17727 5.36129 6.48514C5.67564 6.79301 6.17309 7.07495 6.85365 7.33098C7.38513 7.54162 7.75782 7.7411 7.97171 7.92942C8.1856 8.11773 8.29254 8.34927 8.29254 8.62404C8.29254 8.91246 8.18803 9.13526 7.979 9.29244C7.76997 9.44962 7.47425 9.5282 7.09184 9.5282C6.73536 9.5282 6.42506 9.4245 6.16094 9.21708C5.89681 9.00968 5.71128 8.70343 5.60434 8.29833L4.61267 8.65806C4.78119 9.16685 5.0283 9.5679 5.354 9.86119C5.67969 10.1545 6.04346 10.3492 6.44531 10.4455V11.1518ZM7.00082 13.2421C6.13465 13.2421 5.3224 13.08 4.56406 12.756C3.80573 12.4319 3.14381 11.9871 2.57829 11.4216C2.01279 10.8561 1.568 10.1946 1.24392 9.43718C0.919848 8.67974 0.757812 7.86793 0.757812 7.00176C0.757812 6.1291 0.919853 5.31361 1.24393 4.55527C1.568 3.79694 2.01229 3.13647 2.57678 2.57387C3.14127 2.01126 3.80247 1.56647 4.56039 1.23949C5.3183 0.912513 6.13061 0.749023 6.99732 0.749023C7.87052 0.749023 8.68667 0.91226 9.44576 1.23873C10.2049 1.5652 10.8655 2.00932 11.4276 2.57107C11.9897 3.13282 12.4341 3.79299 12.7608 4.55158C13.0875 5.31018 13.2509 6.12646 13.2509 7.00042C13.2509 7.86748 13.0874 8.68013 12.7604 9.43836C12.4334 10.1966 11.9886 10.8581 11.426 11.4228C10.8634 11.9875 10.2034 12.4319 9.44595 12.756C8.68851 13.08 7.87347 13.2421 7.00082 13.2421ZM6.99948 11.7157C8.31522 11.7157 9.43003 11.2592 10.3439 10.3461C11.2578 9.43305 11.7148 8.31782 11.7148 7.00042C11.7148 5.68468 11.2578 4.56986 10.3439 3.65596C9.43003 2.74207 8.3136 2.28513 6.99462 2.28513C5.68212 2.28513 4.56892 2.74207 3.65503 3.65596C2.74114 4.56986 2.28419 5.6863 2.28419 7.00527C2.28419 8.31777 2.74072 9.43097 3.65379 10.3449C4.56685 11.2588 5.68208 11.7157 6.99948 11.7157Z" fill="%2327A887"/></svg>') no-repeat 100% 100%;
+    mask-size: cover;
+    -webkit-mask-image: url('data:image/svg+xml,<svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M6.44531 11.1518H7.51475V10.4713C8.05272 10.4032 8.49508 10.2217 8.84184 9.92681C9.1886 9.6319 9.36198 9.19764 9.36198 8.62404C9.36198 8.14116 9.22468 7.72716 8.95007 7.38202C8.67548 7.03688 8.18462 6.7282 7.47749 6.45598C6.919 6.2356 6.52633 6.03954 6.29948 5.86777C6.07262 5.69602 5.95919 5.47565 5.95919 5.20667C5.95919 4.97333 6.04993 4.7878 6.23142 4.65007C6.4129 4.51233 6.65596 4.44346 6.96059 4.44346C7.24578 4.44346 7.49289 4.51395 7.70191 4.65492C7.91094 4.79589 8.07703 5.00573 8.20018 5.28444L9.15296 4.86638C8.98666 4.45355 8.77089 4.13969 8.50566 3.92481C8.24043 3.70994 7.91985 3.57477 7.54392 3.51932V2.85875H6.47448V3.51986C5.94948 3.62033 5.55411 3.83121 5.28837 4.1525C5.02263 4.4738 4.88975 4.84499 4.88975 5.26607C4.88975 5.77091 5.04693 6.17727 5.36129 6.48514C5.67564 6.79301 6.17309 7.07495 6.85365 7.33098C7.38513 7.54162 7.75782 7.7411 7.97171 7.92942C8.1856 8.11773 8.29254 8.34927 8.29254 8.62404C8.29254 8.91246 8.18803 9.13526 7.979 9.29244C7.76997 9.44962 7.47425 9.5282 7.09184 9.5282C6.73536 9.5282 6.42506 9.4245 6.16094 9.21708C5.89681 9.00968 5.71128 8.70343 5.60434 8.29833L4.61267 8.65806C4.78119 9.16685 5.0283 9.5679 5.354 9.86119C5.67969 10.1545 6.04346 10.3492 6.44531 10.4455V11.1518ZM7.00082 13.2421C6.13465 13.2421 5.3224 13.08 4.56406 12.756C3.80573 12.4319 3.14381 11.9871 2.57829 11.4216C2.01279 10.8561 1.568 10.1946 1.24392 9.43718C0.919848 8.67974 0.757812 7.86793 0.757812 7.00176C0.757812 6.1291 0.919853 5.31361 1.24393 4.55527C1.568 3.79694 2.01229 3.13647 2.57678 2.57387C3.14127 2.01126 3.80247 1.56647 4.56039 1.23949C5.3183 0.912513 6.13061 0.749023 6.99732 0.749023C7.87052 0.749023 8.68667 0.91226 9.44576 1.23873C10.2049 1.5652 10.8655 2.00932 11.4276 2.57107C11.9897 3.13282 12.4341 3.79299 12.7608 4.55158C13.0875 5.31018 13.2509 6.12646 13.2509 7.00042C13.2509 7.86748 13.0874 8.68013 12.7604 9.43836C12.4334 10.1966 11.9886 10.8581 11.426 11.4228C10.8634 11.9875 10.2034 12.4319 9.44595 12.756C8.68851 13.08 7.87347 13.2421 7.00082 13.2421ZM6.99948 11.7157C8.31522 11.7157 9.43003 11.2592 10.3439 10.3461C11.2578 9.43305 11.7148 8.31782 11.7148 7.00042C11.7148 5.68468 11.2578 4.56986 10.3439 3.65596C9.43003 2.74207 8.3136 2.28513 6.99462 2.28513C5.68212 2.28513 4.56892 2.74207 3.65503 3.65596C2.74114 4.56986 2.28419 5.6863 2.28419 7.00527C2.28419 8.31777 2.74072 9.43097 3.65379 10.3449C4.56685 11.2588 5.68208 11.7157 6.99948 11.7157Z" fill="%2327A887"/></svg>');
+    -webkit-mask-position: center;
+    -webkit-mask-size: contain;
+    -webkit-mask-size: 100% 100%;
+    .mode({
+        background-color: #27a887;
+    }, {
+        background-color: lighten(#27a887, 15%);
+    });
+}
+
+.ico-wallet-svg {
+    display: inline-block;
+
+    width: 14px;
+    height: 11px;
+
+    mask: url('data:image/svg+xml,%3Csvg width=\'14\' height=\'11\' viewBox=\'0 0 14 11\' fill=\'none\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cpath d=\'M3.49948 10.4283C2.73791 10.4283 2.09057 10.1617 1.55746 9.62863C1.02436 9.09553 0.757812 8.44819 0.757812 7.68661V3.01995C0.757812 2.25838 1.02436 1.60942 1.55746 1.07307C2.09057 0.536727 2.73791 0.268555 3.49948 0.268555H10.4995C11.2611 0.268555 11.91 0.536727 12.4464 1.07307C12.9827 1.60942 13.2509 2.25838 13.2509 3.01995V7.68661C13.2509 8.44819 12.9827 9.09553 12.4464 9.62863C11.91 10.1617 11.2611 10.4283 10.4995 10.4283H3.49948ZM3.90296 2.95676H10.1738C10.459 2.95676 10.7328 2.99889 10.9953 3.08315C11.2578 3.16741 11.4976 3.28245 11.7148 3.4283V3.01995C11.7148 2.67967 11.5973 2.39205 11.3623 2.1571C11.1274 1.92214 10.8398 1.80466 10.4995 1.80466H3.49948C3.1592 1.80466 2.87158 1.92214 2.63663 2.1571C2.40167 2.39205 2.28419 2.67967 2.28419 3.01995V3.46232C2.51429 3.30352 2.76545 3.17956 3.03767 3.09044C3.30989 3.00132 3.59832 2.95676 3.90296 2.95676ZM2.63419 5.38245L8.83212 6.87968C8.95203 6.91208 9.07112 6.91451 9.18941 6.88697C9.3077 6.85942 9.41383 6.80676 9.50781 6.72899L11.355 5.17343C11.2416 4.96277 11.0788 4.79668 10.8665 4.67516C10.6542 4.55363 10.4233 4.49287 10.1738 4.49287H3.90296C3.60804 4.49287 3.34554 4.57632 3.11544 4.74322C2.88535 4.91011 2.72493 5.12319 2.63419 5.38245Z\' fill=\'%230168CA\'/%3E%3C/svg%3E%0A') no-repeat 100% 100%;
+    mask-size: contain;
+    -webkit-mask-image: url('data:image/svg+xml,%3Csvg width=\'14\' height=\'11\' viewBox=\'0 0 14 11\' fill=\'none\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cpath d=\'M3.49948 10.4283C2.73791 10.4283 2.09057 10.1617 1.55746 9.62863C1.02436 9.09553 0.757812 8.44819 0.757812 7.68661V3.01995C0.757812 2.25838 1.02436 1.60942 1.55746 1.07307C2.09057 0.536727 2.73791 0.268555 3.49948 0.268555H10.4995C11.2611 0.268555 11.91 0.536727 12.4464 1.07307C12.9827 1.60942 13.2509 2.25838 13.2509 3.01995V7.68661C13.2509 8.44819 12.9827 9.09553 12.4464 9.62863C11.91 10.1617 11.2611 10.4283 10.4995 10.4283H3.49948ZM3.90296 2.95676H10.1738C10.459 2.95676 10.7328 2.99889 10.9953 3.08315C11.2578 3.16741 11.4976 3.28245 11.7148 3.4283V3.01995C11.7148 2.67967 11.5973 2.39205 11.3623 2.1571C11.1274 1.92214 10.8398 1.80466 10.4995 1.80466H3.49948C3.1592 1.80466 2.87158 1.92214 2.63663 2.1571C2.40167 2.39205 2.28419 2.67967 2.28419 3.01995V3.46232C2.51429 3.30352 2.76545 3.17956 3.03767 3.09044C3.30989 3.00132 3.59832 2.95676 3.90296 2.95676ZM2.63419 5.38245L8.83212 6.87968C8.95203 6.91208 9.07112 6.91451 9.18941 6.88697C9.3077 6.85942 9.41383 6.80676 9.50781 6.72899L11.355 5.17343C11.2416 4.96277 11.0788 4.79668 10.8665 4.67516C10.6542 4.55363 10.4233 4.49287 10.1738 4.49287H3.90296C3.60804 4.49287 3.34554 4.57632 3.11544 4.74322C2.88535 4.91011 2.72493 5.12319 2.63419 5.38245Z\' fill=\'%230168CA\'/%3E%3C/svg%3E%0A');
+    -webkit-mask-position: center;
+    -webkit-mask-size: contain;
+    -webkit-mask-size: 100% 100%;
+    .mode({
+        background-color: #0168ca;
+    }, {
+        background-color: lighten(#0168ca, 15%);
+    });
+}
+
+.bestcards-info div {
+    font-size: .75rem;
+}
+
+.bestcards-info div i {
+    position: relative;
+
+    margin-right: 7px;
+}
+
+.bestcard-best-value {
+    .mode({
+        color: #27a887;
+    }, {
+        color: lighten(#27a887, 15%);
+    });
+}
+
+.bestcard-best-value i {
+    top: 2px;
+}
+
+.bestcard-best-have {
+    padding-top: 3px;
+
+    .mode({
+        color: #0168ca;
+    }, {
+        color: lighten(#0168ca, 15%);
+    });
+}
+
+.bestcard-best-have i {
+    top: 1px;
+}
+
+.bestcard-best-aw {
+    color: #3d4761;
+}
+
+.bestcard-best-aw i {
+    top: 3px;
+
+    display: inline-block;
+
+    width: 15px;
+    height: 15px;
+
+    background: url('/assets/awardwalletnewdesign/img/media/JustLogos/logo_tiny.png') center no-repeat;
+    background-size: contain;
+}
+
+#bestCardsOverlay {
+    position: fixed;
+    z-index: 990;
+    top: 0;
+    left: 0;
+
+    width: 100%;
+    height: 100%;
+
+    .mode({
+        opacity: .6;
+        background: #eee;
+    }, {
+        opacity: .7;
+        background: #000;
+    });
+}
+
+.bestcards-head {
+    height: 62px;
+    padding-top: 2px;
+    padding-bottom: 2px;
+
+    .mode({
+        background: #f7f7f8;
+        border: 4px solid #fff !important;
+    }, {
+        background: #2e2e31;
+        border: 4px solid #141414 !important;
+    });
+
+    .transactions-points-multiplier {
+        margin-left: 0 !important;
+    }
+}
+.bestcards-head-loading {
+    opacity: 0 !important;
+}
+
+
+.bestcards-points-chart {
+    width: 55px;
+
+    background: url('/assets/awardwalletnewdesign/img/media/JustLogos/logo_tiny.png') 9px 14px no-repeat;
+    background-size: 40%;
+
+    .bestcards-circle {
+        top: 10px;
+    }
+}
+
+.bestcards-label {
+    width: calc(100% - 55px - 150px - 130px);
+    padding-top: 18px;
+
+    font-size: 14px;
+    font-weight: 600;
+}

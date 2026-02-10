@@ -1,0 +1,54 @@
+@keyframes moveIconHover {
+    0% {
+        transform: translate(0, 0);
+        opacity: 1;
+    }
+    30% {
+        transform: translate(50%, -50%);
+        opacity: 0;
+    }
+    50% {
+        transform: translate(-50%, 50%);
+        opacity: 0;
+    }
+    80% {
+        opacity: 1;
+    }
+    100% {
+        transform: translate(0, 0);
+        opacity: 1;
+    }
+}
+
+@keyframes moveIconLeave {
+    0% {
+        transform: translate(0, 0);
+        opacity: 1;
+    }
+    30% {
+        transform: translate(-50%, 50%);
+        opacity: 0;
+    }
+    50% {
+        transform: translate(50%, -50%);
+        opacity: 0;
+    }
+    80% {
+        opacity: 1;
+    }
+    100% {
+        transform: translate(0, 0);
+        opacity: 1;
+    }
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(150px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}

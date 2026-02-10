@@ -1,0 +1,224 @@
+@use '../../../../scss/functions' as f;
+@use '../../../../scss/mixins' as m;
+@use '../../../../scss/vars' as v;
+
+.credit-card-account {
+    display: grid;
+    grid-template-areas: 'logo name balance status' 'logo owner balance status';
+    grid-template-columns: f.px2rem(34px) 2fr 0.5fr 0.9fr;
+    grid-column: 2 / 4;
+    gap: 0 f.px2rem(10px);
+    position: relative;
+    align-items: center;
+    background-color: var(--gray-light-color);
+    text-decoration: none;
+    padding: f.px2rem(12px);
+    padding-right: f.px2rem(38px);
+    border-radius: f.px2rem(6px);
+    transition: background-color 0.2s ease-in-out;
+
+    @media (pointer: fine) {
+        &:hover {
+            background-color: v.$color-athens-gray;
+
+            .credit-card-account__arrow-icon path {
+                fill: v.$color-ebony-clay;
+            }
+        }
+    }
+
+    @include m.media('<=632px') {
+        grid-template-areas: 'logo name balance' 'logo owner status';
+        grid-template-columns: f.px2rem(34px) 3fr 1fr;
+        padding: f.px2rem(9px) f.px2rem(12px);
+        padding-right: f.px2rem(32px);
+    }
+
+    @include m.media('<=sm') {
+        grid-template-areas: 'logo name name name' 'logo balance status owner';
+        grid-template-columns: f.px2rem(34px) auto auto 1fr;
+        padding: f.px2rem(13px) f.px2rem(16px);
+        gap: f.px2rem(8px);
+    }
+
+    @include m.theme('dark') {
+        @media (pointer: fine) {
+            &:hover {
+                background-color: #212225;
+
+                .expiring-account__arrow-icon path {
+                    fill: v.$color-white;
+                }
+            }
+        }
+    }
+
+    &__arrow-icon {
+        position: absolute;
+        right: f.px2rem(20px);
+        top: 50%;
+        transform: translateY(-50%);
+
+        @include m.media('<=980px') {
+            right: f.px2rem(23px);
+        }
+
+        @include m.media('<=627px') {
+            right: f.px2rem(10px);
+        }
+
+        @include m.media('<=sm') {
+            display: none;
+        }
+
+        & path {
+            transition: fill 0.2s ease-in-out;
+
+            @include m.theme('dark') {
+                fill: v.$color-aluminium;
+            }
+        }
+    }
+
+    &__logo {
+        grid-area: logo;
+        overflow: hidden;
+        flex-shrink: 0;
+        width: f.px2rem(34px);
+        height: f.px2rem(34px);
+        border-radius: f.px2rem(6px);
+
+        @include m.media('<=sm') {
+            align-self: flex-start;
+        }
+    }
+
+    &__name {
+        grid-area: name;
+        color: var(--text-primary-color);
+        font-size: f.px2rem(16px);
+        line-height: 120%;
+        font-weight: 400;
+
+        @include m.media('<=1491px') {
+            font-size: f.px2rem(14px);
+        }
+
+        @include m.media('<=sm') {
+            font-weight: 600;
+            font-size: f.px2rem(13px);
+        }
+    }
+
+    &__owner {
+        grid-area: owner;
+        font-size: f.px2rem(13px);
+        line-height: 120%;
+        font-weight: 600;
+        color: var(--text-secondary-color);
+
+        @include m.media('<=632px') {
+            font-size: f.px2rem(12px);
+        }
+
+        @include m.media('<=sm') {
+            font-size: f.px2rem(11px);
+            line-height: 150%;
+            color: var(--text-primary-color);
+            opacity: 0.5;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+    }
+
+    &__balance {
+        grid-area: balance;
+        font-size: f.px2rem(16px);
+        line-height: 130%;
+        font-weight: 600;
+        color: var(--text-primary-color);
+        justify-self: center;
+
+        @include m.media('<=1410px') {
+            font-size: f.px2rem(14px);
+        }
+
+        @include m.media('<=632px') {
+            justify-self: flex-start;
+        }
+
+        @include m.media('<=sm') {
+            font-weight: 700;
+            line-height: 150%;
+        }
+    }
+
+    &__status-block {
+        grid-area: status;
+        display: flex;
+        justify-self: flex-end;
+        align-items: center;
+        gap: f.px2rem(9px);
+        color: var(--text-primary-color);
+        font-size: f.px2rem(14px);
+        line-height: 130%;
+        font-weight: 600;
+
+        @include m.media('<=632px') {
+            justify-self: flex-start;
+        }
+
+        @include m.media('<=sm') {
+            gap: f.px2rem(5px);
+            font-size: f.px2rem(12px);
+        }
+
+        &--far {
+            color: var(--orange-color);
+            & path {
+                fill: var(--orange-color);
+            }
+        }
+
+        &--soon {
+            color: var(--red-color);
+            & path {
+                fill: var(--red-color);
+            }
+        }
+
+        &--expired {
+            color: var(--red-color);
+            & path {
+                fill: var(--red-color);
+            }
+        }
+    }
+
+    &__status-icon {
+        flex-shrink: 0;
+        width: f.px2rem(18px);
+        height: f.px2rem(18px);
+
+        @include m.media('<=1410px') {
+            width: f.px2rem(14px);
+            height: f.px2rem(14px);
+        }
+    }
+
+    &__expiration-date {
+        &--desktop {
+            @include m.media('<=sm') {
+                display: none;
+            }
+        }
+
+        &--mobile {
+            display: none;
+            @include m.media('<=sm') {
+                display: inline;
+            }
+        }
+    }
+}

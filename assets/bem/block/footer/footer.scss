@@ -1,0 +1,183 @@
+@use '../../scss/functions' as f;
+@use '../../scss/mixins' as m;
+@use '../../scss/vars' as v;
+
+$h_padding: f.fluid(18px, 44px, sm, lg);
+
+.footer {
+    display: flex;
+    flex-direction: column;
+    padding: f.fluid(32px, 56px, xsm, lg) $h_padding;
+    @include m.theme(light) {
+        background-color: v.$color-alabaster;
+    }
+
+    @include m.theme(dark) {
+        background-color: v.$color-cod-gray;
+    }
+
+    &__container {
+        width: 100%;
+        max-width: 1486px;
+        margin: 0 auto;
+        padding: 0 18px;
+    }
+
+    &__list {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        gap: f.px2rem(42px);
+
+        @include m.media('>=lg') {
+            flex-direction: row;
+            gap: 0;
+        }
+    }
+
+    &__links {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        gap: f.fluid(10px, 30px, xsm, lg);
+
+        @include m.media('>=lg') {
+            flex-basis: 43%;
+            max-width: f.px2rem(528px);
+        }
+    }
+
+    &__links-list {
+        display: flex;
+        flex: 1;
+        flex-direction: column;
+        gap: f.px2rem(15px);
+    }
+
+    &__link {
+        font-family: Inter, Inter-fallback, sans-serif;
+        font-size: f.fluid(14px, 16px, xsm, xl);
+        font-weight: 400;
+        line-height: 130%;
+        text-decoration: none;
+        transition: all 0.2s ease;
+
+        @include m.theme(dark) {
+            color: v.$color-white;
+
+            &:hover {
+                color: v.$color-science-blue;
+            }
+            &:active {
+                color: v.$color-science-blue;
+                opacity: 0.5;
+            }
+        }
+
+        @include m.theme(light) {
+            color: v.$color-pickled-bluewood;
+
+            &:hover {
+                color: v.$color-science-blue;
+            }
+            &:active {
+                color: v.$color-science-blue;
+                opacity: 0.5;
+            }
+        }
+    }
+
+    &__locales {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        gap: f.fluid(10px, 30px, xsm, lg);
+
+        @include m.media('>=lg') {
+            flex-basis: 20%;
+            max-width: f.px2rem(272px);
+        }
+    }
+
+    &__mobile-apps {
+        display: none;
+
+        @include m.media('>=lg') {
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            align-items: center;
+            gap: f.px2rem(6px);
+        }
+    }
+
+    &__mobile-apps-compact {
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+        align-items: stretch;
+        gap: f.px2rem(6px);
+
+        @include m.media('>=lg') {
+            display: none;
+        }
+    }
+
+    &__border {
+        height: 2px;
+        margin: f.px2rem(42px) 0 f.px2rem(22px);
+
+        @include m.media('>=lg') {
+            margin: f.px2rem(48px) 0 f.px2rem(34px);
+        }
+
+        @include m.theme(dark) {
+            background-color: v.$color-white;
+            opacity: 0.1;
+        }
+
+        @include m.theme(light) {
+            background-color: v.$color-pickled-bluewood;
+            opacity: 0.1;
+        }
+    }
+
+    &__copyright-section {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        align-items: flex-start;
+        gap: f.px2rem(22px);
+
+        @include m.media('>=lg') {
+            flex-direction: row;
+            align-items: center;
+            gap: 0;
+        }
+    }
+
+    &__copyright {
+        display: flex;
+        flex-direction: column;
+        font-family: Inter, Inter-fallback, sans-serif;
+        font-size: f.fluid(14px, 16px, xsm, xl);
+        font-weight: 400;
+        gap: f.px2rem(19px);
+        line-height: 130%;
+
+        @include m.theme(dark) {
+            color: v.$color-white;
+        }
+
+        @include m.theme(light) {
+            color: v.$color-pickled-bluewood;
+        }
+    }
+
+    &__social-media {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        gap: f.fluid(6px, 11px, xsm, lg);
+    }
+}

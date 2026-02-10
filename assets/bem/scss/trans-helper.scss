@@ -1,0 +1,40 @@
+mark[data-title], input[data-title] {
+  background-color: #FEF1B5 !important;
+}
+
+mark[data-title] mark[data-title] {
+  background-color: #61fe42 !important;
+}
+
+mark[data-title]:hover {
+  opacity: 0.8;
+}
+
+#trans-note {
+  width: 400px;
+  height: auto;
+  background: grey;
+  position: fixed;
+  top: 200px;
+  padding: 10px;
+  display: none;
+  z-index: 9999;
+}
+
+#trans-note div {
+  margin-bottom: 10px;
+}
+
+@keyframes nodeInserted {
+  from {
+    outline-color: #fff;
+  }
+  to {
+    outline-color: #000;
+  }
+}
+
+* {
+  animation-duration: 0.01s;
+  animation-name: nodeInserted;
+}

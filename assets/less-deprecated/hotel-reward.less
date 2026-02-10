@@ -1,0 +1,209 @@
+@import '../../web/assets/awardwalletnewdesign/less/main.less';
+@import 'variables';
+@import 'utilites/utilites';
+
+.hotel-reward-page {
+    position: relative;
+
+    h1 {
+        margin: 0 0 9px;
+
+        font-size: 25px;
+    }
+
+    .clear-search {
+        position: relative;
+
+        display: none;
+
+        width: 32px;
+        height: 30px;
+        margin: 1px 0 0 -33px;
+        padding-top: 5px;
+
+        text-align: center;
+    }
+
+    .search-input.search-input-fill {
+        background-image: none !important;
+    }
+    .search-input-fill:not(.ui-autocomplete-loading) ~ .clear-search {
+        display: inline-block !important;
+    }
+    .search-input-fill.ui-autocomplete-loading {
+        background-repeat: no-repeat;
+        background-position: center right 8px !important;
+        background-size: 16px 16px !important;
+
+        .mode({
+            background-color: @white-color !important;
+            background-image: url('@{default-folder-web}spinner@2x.gif') !important;
+        }, {
+                background-color: @_dark-bg !important;
+                background-image: url('@{default-folder-web}spinner-dark@2x.gif') !important;
+            });
+    }
+
+    .ajax-loader {
+        position: absolute;
+        top: 0;
+
+        display: none;
+
+        width: 100%;
+        height: 100%;
+        min-height: 550px;
+        margin-left: -15px;
+
+        .mode({
+            background: rgba(255, 255, 255, .7);
+        }, {
+                background: rgba(28, 28, 30, .8);
+            });
+
+        .loading {
+            top: 0;
+
+            padding-top: 500px;
+
+            &::before,
+            &::after {
+                color: #fff !important;
+            }
+        }
+
+        &.ajax-loader-process {
+            display: block;
+        }
+    }
+
+    .above-positive td {
+        .mode({
+            color: #00a67c !important;
+        }, {
+                color: #30d178 !important;
+            });
+    }
+    .above-negative td {
+        .mode({
+            color: #4684c4 !important;
+        }, {
+                color: #0984ff !important;
+            });
+    }
+    .first-neutral td,
+    .first-negative td {
+        border-top: solid 2px #bec2cc !important;
+    }
+
+    .no-result .icon-warning-small {
+        top: 2px;
+    }
+
+    #mileValueBox {
+        .mode({
+            border: solid 1px #dfe1e6;
+        }, {
+            border: solid 1px #5a5a5f;
+        });
+    }
+}
+
+.hotel-reward-place {
+    .main-table.brand-hotels {
+        border-top: solid 2px #bec2cc;
+    }
+    .styled-select {
+        max-width: 170px;
+    }
+}
+
+.header-data {
+    padding: 8px 0;
+
+    .mode({
+        border-bottom: solid 2px #bec2cc;
+    }, {
+        });
+
+    h3 {
+        font-size: 25px;
+
+        .mode({
+            color: @text-gray;
+        }, {
+                color: #fff;
+            });
+    }
+}
+
+.hotel-reward {
+    padding-top: 28px;
+    h1 {
+        .mode({
+            color: #5c6373;
+        }, {
+                color: #fff;
+            });
+    }
+}
+
+.brand-hotels {
+    &.main-table tr td {
+        padding-top: 6px;
+        padding-bottom: 6px;
+    }
+    tr > th:first-child,
+    tr > td:first-child {
+        padding-left: 0;
+    }
+
+    .hotel-name {
+        span.silver-text {
+            display: block;
+
+            padding-top: 5px;
+
+            font-size: 10px;
+        }
+    }
+
+    a.blue-link {
+        position: relative;
+        display: inline-block;
+        padding-right: 12px;
+
+        &:after {
+            position: absolute;
+            top: 50%;
+            right: 0;
+            transform: translateY(-50%);
+
+            content: '»';
+        }
+    }
+
+    .hotel-name {
+        width: 30%;
+    }
+
+    .hotel-check-link {
+        width: 150px;
+
+        white-space: nowrap;
+    }
+}
+
+.hotel-brand-value-avg {
+    display: inline-block;
+
+    padding-top: 11px;
+
+    font-size: 13px;
+
+    .mode({
+        color: @text-gray;
+    }, {
+            color: @_dark-text;
+        });
+}

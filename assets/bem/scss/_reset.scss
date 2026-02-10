@@ -1,0 +1,32 @@
+@use 'mixins' as m;
+@use 'vars' as v;
+@use 'font/inter';
+@use 'font/open-sans';
+
+$page-font-family: v.$font-family-base !default;
+$page-font-size: v.$font-size-base !default;
+$page-background--light: v.$color-concrete !default;
+$page-background--dark: v.$color-cod-gray !default;
+
+body,
+html {
+  margin: 0;
+  height: 100%;
+  width: 100%;
+  line-height: 1;
+  font-family: $page-font-family;
+  font-size: $page-font-size;
+
+  @include m.theme(light) {
+    background: $page-background--light;
+  }
+  @include m.theme(dark) {
+    background: $page-background--dark;
+  }
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}

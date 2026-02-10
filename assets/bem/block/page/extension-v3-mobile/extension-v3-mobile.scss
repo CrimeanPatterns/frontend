@@ -1,0 +1,349 @@
+@use '../../../scss/font/open-sans';
+@use '../../../scss/functions' as f;
+@use '../../../scss/vars' as vars;
+
+$favicons-dir: "../../../images/favicons/";
+
+@mixin faviconPath($providerCode) {
+  .image_logo {
+    &.#{$providerCode} {
+      background-image: url(#{$favicons-dir}#{$providerCode}.png);
+      background-size: contain;
+    }
+  }
+}
+
+@each $providerCode in vars.$provider-list {
+  @include faviconPath($providerCode);
+}
+
+html {
+  height: 100%;
+  touch-action: manipulation;
+}
+
+body {
+  font-family: 'Open Sans', sans-serif;
+  position: relative;
+  height: 100%;
+  width: 100%;
+  margin: 0;
+  overflow-y: hidden;
+}
+
+.flex {
+  display: flex;
+}
+
+.content_wrap {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  text-align: center;
+  background: #fff;
+}
+
+.background_image {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  opacity: 0.5;
+  background-image: url("./assets/background-lines.svg");
+  background-repeat: no-repeat;
+  background-size: cover;
+  object-fit: cover;
+  pointer-events: none;
+}
+
+.icon_container {
+  display: flex;
+  justify-content: center;
+  margin-top: 8vh;
+  margin-bottom: 30px;
+  flex: 1;
+
+  .icon-logo {
+    background-image: url("../../logo/logo.svg");
+    width: 215px;
+    height: 26px;
+  }
+}
+
+.info_container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-left: 11vw;
+  margin-right: 11vw;
+  margin-bottom: 30px;
+  flex: 1;
+  justify-content: center;
+}
+
+.status_block_container {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  flex: 1;
+  margin-bottom: 4.4vh;
+  width: 80%;
+  max-width: 370px;
+
+  .status_wrap {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 18px;
+    align-items: center;
+  }
+
+  .account_update_result {
+    flex-direction: row;
+    display: flex;
+
+    .update_result_status_text {
+      flex: 1;
+      display: flex;
+      justify-items: center;
+      align-items: center;
+
+      color: #313745;
+      font-size: 13px;
+      font-style: normal;
+      font-weight: 400;
+      line-height: 18px;
+
+      .update_result_status_icon {
+        padding-right: 7px;
+      }
+    }
+    .update_result_value {
+      flex-direction: column;
+      justify-content: end;
+      display: flex;
+
+      .update_result_amount_changed {
+        color: #4684C4;
+        text-align: right;
+        font-size: 13px;
+        font-style: normal;
+        font-weight: 400;
+        line-height: 18px;
+
+        .update_result_amount_changed_icon {
+          padding-left: 6px;
+        }
+      }
+    }
+  }
+  .divider {
+    height: 1px;
+    background-color: #e0e0e0;
+    margin: 0 0 21px 0;
+  }
+}
+
+.provider_wrap {
+  position: relative;
+}
+
+.image_logo {
+  height: 50px;
+  width: 50px;
+  border-radius: 16px;
+  border: 1px solid rgba(204, 204, 204, .3)
+}
+
+.spinner_wrap {
+  display: flex;
+  width: 20px;
+  height: 20px;
+}
+
+.spinner_wrap_absolute {
+  position: absolute;
+  bottom: -8px;
+  right: -10px;
+  border-radius: 26px;
+  width: 26px;
+  height: 26px;
+  background: #fff;
+  box-shadow: 3px 3px 4px rgba(46, 56, 83, 0.10);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.spinner {
+  border: 2px solid #5C637319; /* last 2 digit === opacity: 0.1*/
+  width: 14px;
+  height: 14px;
+  border-radius: 18px;
+  border-bottom-color: #4684C4;
+  animation: rotation 2s linear infinite;
+
+  @keyframes rotation {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+}
+
+.error {
+  background-color: rgba(243, 65, 65, 0.1);
+  border-radius: 10px;
+  padding: 16px 20px;
+
+  p {
+    color: #F34141;
+    white-space: pre-wrap;
+  }
+}
+
+.user_info_wrap {
+  display: flex;
+  flex: 1;
+  flex-direction: row;
+  border: 1px solid #EFF2F4;
+  border-radius: 100px;
+  padding: 4px 10px;
+  align-items: center;
+}
+
+.info_text_wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.large_text {
+  font-size: 20px;
+  line-height: 18px;
+  font-weight: 700;
+  color: #5C6373;
+  margin: 0;
+}
+
+.middle_text {
+  font-size: 17px;
+  line-height: 18px;
+  font-weight: 700;
+  color: #5C6373;
+  margin: 0;
+}
+
+.small_text {
+  font-size: 14px;
+  font-weight: 500;
+  color: #5C6373;
+  line-height: 18px;
+  opacity: 0.5;
+  margin: 0;
+}
+
+.user_text {
+  font-size: 14px;
+  color: #5C6373;
+  font-weight: 400;
+  margin: 0;
+  line-height: 18px;
+}
+
+.mr-6 {
+  margin-right: 6px !important;;
+}
+
+.mr-16 {
+  margin-right: 16px !important;;
+}
+
+.mb-20 {
+  margin-bottom: 20px !important;;
+}
+
+.mb-26 {
+  margin-bottom: 26px !important;;
+}
+
+.mb-30 {
+  margin-bottom: 30px !important;
+}
+
+.home_aw {
+  background-color: #144579;
+  color: #FFF;
+  text-align: center;
+  font-family: 'Open Sans', sans-serif;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 18px; /* 128.571% */
+  padding: 21px 0;
+  width: 80%;
+  max-width: 370px;
+  align-items: center;
+  justify-content: center;
+  display: flex;
+  margin-bottom: 50px;
+  cursor: pointer;
+  outline: none;
+  border: none;
+  border-radius: 6px;
+
+  &:active {
+    opacity: .5;
+  }
+
+  .aw_app_icon {
+    background-image: url("./assets/awardwallet_app_icon.svg");
+    width: 24px;
+    height: 24px;
+    display: inline-block;
+    margin-right: 8px;
+  }
+
+  .external_icon {
+    background-image: url("./assets/external_link.svg");
+    width: 14px;
+    height: 14px;
+    display: inline-block;
+    margin-left: 8px;
+  }
+}
+
+.skeleton-box {
+  display: inline-block;
+  height: 1em;
+  position: relative;
+  overflow: hidden;
+  background-color: #DDDBDD;
+
+  &::after {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    transform: translateX(-100%);
+    background-image: linear-gradient(
+                    90deg,
+                    rgba(#fff, 0) 0,
+                    rgba(#fff, 0.2) 20%,
+                    rgba(#fff, 0.5) 60%,
+                    rgba(#fff, 0)
+    );
+    animation: shimmer 5s infinite;
+    content: '';
+  }
+
+  @keyframes shimmer {
+    100% {
+      transform: translateX(100%);
+    }
+  }
+}

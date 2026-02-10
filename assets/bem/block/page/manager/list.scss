@@ -1,0 +1,32 @@
+table thead th a {
+  color: #fff !important;
+  text-decoration: none !important;
+  font-weight: inherit !important;
+}
+
+.sort-icon::before {
+  content: '\25B2';
+  display: inline-block;
+  transform: translateY(-25%);
+  margin-right: 4px;
+}
+
+.sort-icon.desc::before {
+  content: '\25BC';
+}
+
+.sort-icon::before {
+  content: '\25B2';
+  display: inline-block;
+  transform: translateY(-10%);
+  font-size: 0.8em;
+  margin-right: 4px;
+}
+
+.sort-icon.desc::before {
+  content: '\25BC';
+}
+
+a[data-sort-field] {
+  white-space: nowrap;
+}

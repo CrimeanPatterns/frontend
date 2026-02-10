@@ -1,0 +1,59 @@
+#popup-root {
+    .popup-content {
+        padding: 10px;
+
+        font-size: 14px;
+        line-height: 15px;
+
+        .mode({
+            color: #666c7b;
+        }, {
+            color: #666c7b;
+        });
+
+        .popup-arrow {
+            filter: none;
+        }
+
+        .popup-btns {
+            position: relative;
+
+            padding-top: 15px;
+
+            text-align: center;
+
+            .btn-silver:not(:disabled):not(.loader)::after,
+            .btn-blue:not(:disabled):not(.loader):not(.btn-add)::after,
+            .btn-silver,
+            .btn-blue {
+                position: static !important;
+
+                content: none !important;
+
+                outline-color: transparent !important;
+                //border-color: transparent !important;
+            }
+
+            button {
+                min-width: 70px;
+                height: auto !important;
+                margin: 0 5px;
+                padding: 4px 12px !important;
+
+                line-height: 20px;
+
+                &.btn-blue {
+                    border: solid 1px #125da3;
+                }
+            }
+        }
+
+        .popup-btns--confirm {
+            text-align: center;
+
+            button:last-child {
+                right: 0;
+            }
+        }
+    }
+}

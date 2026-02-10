@@ -1,0 +1,50 @@
+@use '../../scss/mixins' as m;
+@use '../../scss/vars' as v;
+
+.global-loader {
+    --main-circle-color: #{v.$color-science-blue};
+    --secondary-circle-color: #{v.$color-concrete};
+    
+
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: v.$color-white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+    transition:
+        opacity 0.5s ease-out,
+        visibility 0.5s ease-out;
+
+    @include m.theme('dark') {
+        --main-circle-color: #{v.$color-dodger-blue};
+        --secondary-circle-color: #{v.$color-concrete--20};
+        background-color: v.$color-shark;
+    }
+
+    &--loaded {
+        opacity: 0;
+        visibility: hidden;
+        pointer-events: none;
+    }
+
+    &__animation{
+        max-width: 7.5%;
+        max-height: 7.5%;
+    }
+
+    &__circle{
+        &--main{
+            fill: var(--main-circle-color)
+        }
+
+        &--secondary{
+            fill: var(--secondary-circle-color)
+        }
+    }
+    
+}

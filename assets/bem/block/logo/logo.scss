@@ -1,0 +1,37 @@
+@use '../../scss/functions' as f;
+@use '../../scss/mixins' as m;
+
+.logo {
+    @include m.theme(light) {
+        & .logo__dark {
+            display: none;
+        }
+
+        & .logo__light {
+            display: block;
+        }
+    }
+    @include m.theme(dark) {
+        & .logo__dark {
+            display: block;
+        }
+
+        & .logo__light {
+            display: none;
+        }
+    }
+
+    img {
+        aspect-ratio: 215 / 26;
+        width: f.fluid(150px, 215px, sm, lg);
+        height: auto;
+    }
+
+    &--small {
+        img {
+            aspect-ratio: 178 / 21;
+            width: f.px2rem(178px);
+            height: f.px2rem(21px);
+        }
+    }
+}

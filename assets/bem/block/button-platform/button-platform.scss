@@ -1,0 +1,79 @@
+@use '../../scss/functions' as f;
+@use '../../scss/mixins' as m;
+@use '../../scss/vars' as v;
+
+.button-platform {
+  text-decoration: none;
+  transition: all 0.2s ease;
+
+  @include m.theme(light) {
+    color: v.$color-pickled-bluewood;
+    opacity: 0.2;
+
+    &:hover {
+      opacity: 1;
+    }
+    &:active {
+      opacity: 0.5;
+    }
+  }
+
+  @include m.theme(dark) {
+    color: v.$color-white;
+    opacity: 0.3;
+
+    &:hover {
+      opacity: 1;
+    }
+    &:active {
+      opacity: 0.5;
+    }
+  }
+
+  &--size_medium {
+    font-size: f.fluid(26px, 30px, sm, lg);
+  }
+
+  &--size_small {
+    font-size: f.px2rem(18px);
+    width: f.px2rem(44px);
+    height: f.px2rem(44px);
+    line-height: f.px2rem(44px);
+  }
+
+  &--social-network {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 50%;
+
+    @include m.theme(light) {
+      color: v.$color-pickled-bluewood;
+      opacity: 1;
+      border: 1px solid v.$color-pickled-bluewood;
+
+      &:hover {
+        border: 1px solid v.$color-science-blue;
+      }
+      &:active {
+        border: 1px solid v.$color-science-blue;
+        opacity: 0.5;
+      }
+    }
+
+    @include m.theme(dark) {
+      color: v.$color-white;
+      opacity: 1;
+      border: 1px solid v.$color-pickled-bluewood;
+
+      &:hover {
+        opacity: 1;
+        border: 1px solid v.$color-science-blue;
+      }
+      &:active {
+        border: 1px solid v.$color-science-blue;
+        opacity: 0.5;
+      }
+    }
+  }
+}

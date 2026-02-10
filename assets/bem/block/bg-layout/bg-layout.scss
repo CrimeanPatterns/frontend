@@ -1,0 +1,33 @@
+.bg-layout {
+    position: fixed;
+    inset: 0;
+    background-color: rgba(39, 47, 63, 0.3);
+    z-index: 1000;
+    opacity: 0;
+    visibility: hidden;
+    transition:
+        opacity 0.3s ease,
+        visibility 0.3s ease;
+
+    &--visible {
+        opacity: 1;
+        visibility: visible;
+    }
+
+    &--light {
+        background-color: rgba(39, 47, 63, 0.1);
+    }
+
+    &--medium {
+        background-color: rgba(39, 47, 63, 0.3);
+    }
+
+    &--dark {
+        background-color: rgba(39, 47, 63, 0.6);
+    }
+
+    &--blur {
+        backdrop-filter: blur(4px);
+        -webkit-backdrop-filter: blur(4px);
+    }
+}

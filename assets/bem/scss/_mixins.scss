@@ -1,0 +1,106 @@
+@use 'sass:string';
+@use 'sass:selector';
+@use 'sass:math';
+@use 'vars' as v;
+@forward 'include-media' with (
+  $breakpoints: v.$screen-breakpoints,
+  $media-expressions: v.$media-expressions
+);
+
+@function _str-split($str, $substr) {
+  $nList: ();
+
+  @while str-index("#{$str}", "#{$substr}") != null {
+    @if (str-index("#{$str}", "#{$substr}") > 1) {
+      $nList: append(
+        $nList,
+        str-slice("#{$str}", 1, str-index("#{$str}", "#{$substr}") - 1)
+      );
+    }
+
+    $str: str-slice(
+      "#{$str}",
+      str-index("#{$str}", "#{$substr}") + 1,
+      str-length("#{$str}")
+    );
+  }
+
+  @if (str-slice("#{$str}", 1, str-length("#{$str}")) != "") {
+    $nList: append($nList, str-slice("#{$str}", 1, str-length("#{$str}")));
+  }
+
+  @return $nList;
+}
+
+@function _parse-bem-class($selector) {
+  @if string.index($selector, '.') == null or string.index($selector, ':') != null {
+    @return null;
+  }
+  $classes: _str-split($selector, '.');
+  @return nth($classes, -1);
+}
+
+@function _is-bem-modifier($selector) {
+  $class: _parse-bem-class($selector);
+
+  @if $class == null {
+    @error 'Invalid BEM selector: #{$selector}';
+  }
+
+  @return str-index($class, '--') != null;
+}
+
+@function _get-bem-block-or-element($selector) {
+  $class: _parse-bem-class($selector);
+
+  @if $class == null {
+    @return null;
+  }
+
+  $parts: _str-split($class, '--');
+  $length: length($parts);
+
+  @if $length == 1 {
+    @return $class;
+  } @else if $length == 2 {
+    @return nth($parts, 1)
+  } @else {
+    @error 'Invalid BEM selector: #{$selector}';
+  }
+}
+
+@mixin theme($name) {
+  @if $name == 'light' {
+    @content;
+  } @else if $name == 'dark' {
+    html.dark-mode & {
+      @content;
+    }
+    @media (prefers-color-scheme: dark) {
+      html:not(.light-mode) & {              
+        @content;
+      }
+    }
+  } @else {
+    @error 'Invalid theme name: #{$name}';
+  }
+
+  @each $selector in & {
+    $last: nth($selector, -1);
+    $blockOrElement: _get-bem-block-or-element($last);
+
+    @if $blockOrElement != null {
+      $class: ".#{$blockOrElement}--#{$name}";
+
+      @if _is-bem-modifier($last) {
+        @at-root #{selector-unify($selector, $class)} {
+          @content;
+        }
+      } @else {
+        @at-root #{$class} {
+          @content;
+        }
+      }
+    }
+  }
+}

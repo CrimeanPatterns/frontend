@@ -1,0 +1,475 @@
+@use 'sass:math';
+
+@function _toRem($px) {
+    $rems: math.div($px, 16px) * 1rem;
+    @return $rems;
+}
+
+$screen-breakpoints: (
+    xsm: _toRem(320px),
+    sm: _toRem(576px),
+    md: _toRem(768px),
+    lg: _toRem(1024px),
+    xl: _toRem(1200px),
+    xxl: _toRem(1400px),
+    xxxl: _toRem(1600px),
+    xxxxl: _toRem(1920px),
+);
+
+$media-expressions: (
+    'screen': 'screen',
+    'print': 'print',
+    'handheld': 'handheld',
+    'landscape': '(orientation: landscape)',
+    'portrait': '(orientation: portrait)',
+    'retina2x': '(-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi), (min-resolution: 2dppx)',
+    'retina3x': '(-webkit-min-device-pixel-ratio: 3), (min-resolution: 350dpi), (min-resolution: 3dppx)',
+    'touchscreen': '(pointer: coarse)',
+    'desktop':
+        '(pointer: fine), (pointer: none), (pointer: fine) and (any-pointer: coarse), (min-width: #{_toRem(1024px)})',
+);
+
+$font-size-base: 16px;
+$font-family-base: ('Open Sans', sans-serif);
+
+// use for naming colors
+// https://chir.ag/projects/name-that-color/
+// if name is already exist then better use it
+// colors with opacity > 0 and < 1 should be named with --20, --40, --60, --80
+$color-white: #ffffff;
+$color-white--0: rgba(255, 255, 255, 0);
+$color-white--40: rgba(255, 255, 255, 0.4);
+$color-white--50: rgba(255, 255, 255, 0.5);
+$color-white--60: rgba(255, 255, 255, 0.6);
+$color-white--70: rgba(255, 255, 255, 0.7);
+$color-black: #000000;
+$color-black--0: rgba(0, 0, 0, 0);
+$color-cod-gray: #141414;
+$color-science-blue: #0168ca;
+$color-science-blue--80: rgba(1, 104, 202, 0.8);
+$color-science-blue--10: rgba(1, 104, 202, 0.1);
+$color-azure-radiance: #017bee;
+$color-azure-radiance--80: rgba(1, 123, 238, 0.8);
+$color-endeavour: #025aad;
+$color-fiord: #3d4761;
+$color-fiord--20: rgba(61, 71, 97, 0.2);
+$color-pickled-bluewood: #2e3853;
+$color-pickled-bluewood--10: rgba(46, 56, 83, 0.1);
+$color-pickled-bluewood--20: rgba(46, 56, 83, 0.2);
+$color-pickled-bluewood--50: rgba(46, 56, 83, 0.5);
+$color-shark: #292a2d;
+$color-mirage: #1f2639;
+$color-concrete: #f2f2f2;
+$color-concrete--20: rgba(242, 242, 242, 0.2);
+$color-alabaster: #f8f8f8;
+$color-navy-blue: #1077d9;
+$color-black-coral: #5b6373;
+$color-dark-cerulean: #0a4e8f;
+$color-brandeis-blue: #0070eb;
+$color-muted-blue: #3768a9;
+$color-mountain-meadow: #1cc79c;
+$color-black-haze: #f8f9f9;
+$color-wild-sand: #f5f5f5;
+$color-atlantis: #6ac32f;
+$color-athens-gray: #eff2f4;
+$color-alizarin-crimson: #eb3131;
+$color-sunglow: #fccf2f;
+$color-mischka: #dbdde5;
+$color-shark: #1a1b1d;
+$color-egg-sour: #fff5db;
+$color-golden-bell: #d78d15;
+$color-lightning-yellow: #ffbc11;
+$color-lightning-yellow--20: rgba(255, 188, 17, 0.2);
+$color-sunshade: #ffaa33;
+$color-deep-bronze: #4c3805;
+$color-raw-umber: #745915;
+$color-flamingo: #f34141;
+$color-flamingo--50: rgba(243, 65, 65, 0.5);
+$color-ebony-clay: #272f3f;
+$color-ebony-clay--60: rgba(39, 47, 63, 0.6);
+$color-ebony-clay--50: rgba(39, 47, 63, 0.5);
+$color-ebony-clay--40: rgba(39, 47, 63, 0.4);
+$color-ebony-clay--20: rgba(39, 47, 63, 0.2);
+$color-arsenic--10: rgba(61, 66, 77, 0.1);
+$color-metallic-blue: #2e5583;
+$color-cultured: #f5f6f8;
+$color-gallery: #f0f0f0;
+$color-alto: #d9d9d9;
+$color-black-squeeze: #dde8f2;
+$color-bright-gray: #3d424d;
+$color-bright-gray--50: rgba(61, 66, 77, 0.5);
+$color-dodger-blue: #108bff;
+$color-ship-gray: #424245;
+$color-woodsmoke: #17181a;
+$color-dusty-gray: #969696;
+$color-porcelain: #f6f7f8;
+$color-aluminium: #a6a9b3;
+$color-red-orange: #ff3333;
+$color-abbey: #4b4c4d;
+
+$provider-list:
+    [ 'aa',
+    'ace',
+    'acmoore',
+    'aegean',
+    'aerlingus',
+    'aeroflot',
+    'aerolineas',
+    'aeromexico',
+    'aeroplan',
+    'agoda',
+    'airasia',
+    'airbnb',
+    'airchina',
+    'aireuropa',
+    'airfrance',
+    'airindia',
+    'airmaroc',
+    'airmiles',
+    'airmilesca',
+    'airnewzealand',
+    'alamo',
+    'alaskaair',
+    'alitalia',
+    'allegiant',
+    'amazongift',
+    'amc',
+    'americaneagle',
+    'amex',
+    'amexbb',
+    'amtrak',
+    'ana',
+    'ap',
+    'aplus',
+    'aquire',
+    'asia',
+    'asiana',
+    'auchan',
+    'austinreed',
+    'austrian',
+    'autozone',
+    'aveda',
+    'aviancataca',
+    'avis',
+    'azul',
+    'bahn',
+    'bananarepublic',
+    'bankofamerica',
+    'barclaycard',
+    'bashneft',
+    'befrugal',
+    'bestbuy',
+    'bevmo',
+    'biglots',
+    'bing',
+    'bjspremier',
+    'blooming',
+    'booking',
+    'boots',
+    'bradesco',
+    'british',
+    'brussels',
+    'buildabear',
+    'calvinklein',
+    'capitalcards',
+    'caprabo',
+    'carlson',
+    'carnival',
+    'carrefour',
+    'cartwheel',
+    'celebritycruises',
+    'changi',
+    'chase',
+    'cheapoair',
+    'checkout',
+    'chickfil',
+    'china',
+    'chinaeastern',
+    'chinasouthern',
+    'chipotle',
+    'choice',
+    'citybank',
+    'columbia',
+    'coop',
+    'cooperative',
+    'copaair',
+    'costco',
+    'costravel',
+    'croatia',
+    'ctrip',
+    'cvs',
+    'czech',
+    'debenhams',
+    'dell',
+    'delta',
+    'deltacorp',
+    'dicks',
+    'dischem',
+    'discover',
+    'disney',
+    'disneyresort',
+    'disneyvacation',
+    'dollar',
+    'dominos',
+    'dotz',
+    'drury',
+    'dsw',
+    'dunkin',
+    'easyjet',
+    'ebates',
+    'ebay',
+    'eddiebauer',
+    'egyptair',
+    'eldorado',
+    'eni',
+    'erewards',
+    'ethiopian',
+    'etihad',
+    'eurobonus',
+    'europcar',
+    'eurostar',
+    'eva',
+    'expedia',
+    'express',
+    'famousfootwear',
+    'fandango',
+    'fiji',
+    'finishline',
+    'finnair',
+    'flybuys',
+    'flyerbonus',
+    'flysaa',
+    'foodlion',
+    'foyles',
+    'fredmeyer',
+    'freebees',
+    'frontierairlines',
+    'fuelrewards',
+    'gamestop',
+    'gap',
+    'garuda',
+    'gha',
+    'gnc',
+    'golair',
+    'goldcrown',
+    'goldpassport',
+    'groupon',
+    'guess',
+    'gymboree',
+    'hainan',
+    'hallmark',
+    'harrah',
+    'harristeeter',
+    'harrods',
+    'hawaiian',
+    'heb',
+    'heinemann',
+    'hertz',
+    'hhonors',
+    'hollandamerica',
+    'honeygold',
+    'hotels',
+    'hottopic',
+    'hotwire',
+    'hsbc',
+    'hyvee',
+    'iberia',
+    'icelandair',
+    'ichotelsgroup',
+    'ikea',
+    'ipiranga',
+    'israel',
+    'iupp',
+    'izod',
+    'japanair',
+    'jetairways',
+    'jetblue',
+    'jordanian',
+    'karusel',
+    'kayak',
+    'kingsoopers',
+    'klm',
+    'korean',
+    'kroger',
+    'landrys',
+    'lanpass',
+    'legovip',
+    'letoile',
+    'lids',
+    'livingsocial',
+    'livrariacultura',
+    'localiza',
+    'loews',
+    'londondrugs',
+    'longos',
+    'lotpair',
+    'loves',
+    'lowes',
+    'lufthansa',
+    'lukoil',
+    'mabuhay',
+    'macy',
+    'malaysia',
+    'marketexplorer',
+    'marriott',
+    'marsh',
+    'mea',
+    'mediamarkt',
+    'menswearhouse',
+    'metro',
+    'michaels',
+    'migros',
+    'mileageplus',
+    'milleniumnclc',
+    'milliplein',
+    'mirage',
+    'moneyback',
+    'monsoon',
+    'morrisons',
+    'multiplus',
+    'mvideo',
+    'mycoke',
+    'mypoints',
+    'national',
+    'navy',
+    'nectar',
+    'nhhotels',
+    'nordic',
+    'nordstrom',
+    'norwegian',
+    'norwegiancruise',
+    'officedepot',
+    'officemax',
+    'omnihotels',
+    'opentable',
+    'orbitz',
+    'panera',
+    'panvel',
+    'papajohns',
+    'parkingspot',
+    'paybackgerman',
+    'pcpoints',
+    'penfed',
+    'pepboys',
+    'perekrestok',
+    'perfectdrive',
+    'petco',
+    'petperks',
+    'petrobras',
+    'petrocanada',
+    'picknpay',
+    'plenti',
+    'porter',
+    'preferred',
+    'priceline',
+    'princess',
+    'purehmv',
+    'qantas',
+    'qdoba',
+    'qmiles',
+    'quidco',
+    'raleys',
+    'ralphs',
+    'rapidrewards',
+    'rbcbank',
+    'rebates',
+    'redcard',
+    'redcube',
+    'redroof',
+    'regal',
+    'rei',
+    'rentacar',
+    'restaurant',
+    'retailmenot',
+    'rewardsnet',
+    'riteaid',
+    'rivegauche',
+    'royalcaribbean',
+    'ryanair',
+    's7',
+    'safeway',
+    'samsclub',
+    'santander',
+    'saraiva',
+    'sas',
+    'saudisrabianairlin',
+    'scandichotels',
+    'scene',
+    'searsshop',
+    'sephora',
+    'shangrila',
+    'shell',
+    'shenzhenairlines',
+    'shoppersdrugmart',
+    'shoprite',
+    'showpoints',
+    'silpo',
+    'singaporeair',
+    'singaporecorp',
+    'sixt',
+    'skywards',
+    'slh',
+    'smiles',
+    'sobeys',
+    'solmelia',
+    'sony',
+    'speedway',
+    'spirit',
+    'sportmaster',
+    'srilankan',
+    'stadium',
+    'staples',
+    'starbucks',
+    'stash',
+    'subway',
+    'sunoco',
+    'superdrug',
+    'swagbucks',
+    'swissair',
+    'tahitinui',
+    'taj',
+    'tapportugal',
+    'target',
+    'tarom',
+    'tcase',
+    'tesco',
+    'texaco',
+    'tgifridays',
+    'thaiair',
+    'thankyou',
+    'thrifty',
+    'topcashback',
+    'tops',
+    'totalerg',
+    'toysrus',
+    'travelocity',
+    'travelzoo',
+    'tripadvisor',
+    'triprewards',
+    'trumf',
+    'turkish',
+    'ufly',
+    'ulta',
+    'upromise',
+    'usaa',
+    'usbank',
+    'velocity',
+    'viarail',
+    'viator',
+    'vietnam',
+    'virgin',
+    'voila',
+    'vons',
+    'vueling',
+    'waitrose',
+    'walgreens',
+    'waterstones',
+    'wayfair',
+    'wellsfargo',
+    'wendys',
+    'westjet',
+    'westmarine',
+    'woolworths',
+    'worldpoints',
+    'xiamen',
+    'yougov'];

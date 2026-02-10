@@ -1,0 +1,57 @@
+@use '../../../../scss/functions' as f;
+@use '../../../../scss/mixins' as m;
+@use '../../../../scss/vars' as v;
+
+.page-learn {
+    &__recommended-offer {
+        display: flex;
+        flex-direction: column;
+        padding-bottom: f.px2rem(94px);
+        transition-property: max-height, opacity, padding-bottom, visibility;
+        transition-duration: 0.5s;
+        transition-timing-function: ease;
+        overflow: hidden;
+        max-height: f.px2rem(1000px);
+
+        @include m.media('<=xxl') {
+            padding-bottom: f.px2rem(36px);
+        }
+        @include m.media('<=md') {
+            padding-bottom: f.px2rem(25px);
+            max-height: f.px2rem(2000px);
+        }
+
+        &--removed {
+            max-height: 0;
+            opacity: 0;
+            visibility: hidden;
+            padding-bottom: 0;
+        }
+    }
+
+    &__recommended-offer-title-block {
+        display: flex;
+        align-items: center;
+        gap: 50px;
+
+        @include m.media('<=xxl') {
+            gap: 30px;
+        }
+
+        @include m.media('<=md') {
+            justify-content: space-between;
+        }
+    }
+
+    &__recommended-posts {
+        .post__action-tooltip {
+            left: -100%;
+        }
+
+        .post__action-tooltip--favorite {
+            left: unset;
+            right: 0;
+            transform: unset;
+        }
+    }
+}

@@ -1,0 +1,128 @@
+@use '../../../../scss/functions' as f;
+@use '../../../../scss/mixins' as m;
+@use '../../../../scss/vars' as v;
+
+.page-learn {
+    &__latest-news {
+        display: flex;
+        flex-direction: column;
+        gap: f.px2rem(9px);
+        padding-bottom: f.px2rem(94px);
+        transition-property: max-height, opacity, padding-bottom, visibility;
+        transition-duration: 0.5s;
+        transition-timing-function: ease;
+        overflow: hidden;
+        max-height: f.px2rem(1000px);
+
+        @include m.media('<=xxl') {
+            gap: 0px;
+            padding-bottom: f.px2rem(36px);
+        }
+        @include m.media('<=md') {
+            padding-bottom: f.px2rem(25px);
+        }
+
+        &--removed {
+            max-height: 0;
+            opacity: 0;
+            visibility: hidden;
+            padding-bottom: 0;
+        }
+    }
+
+    &__latest-news-title-block {
+        display: flex;
+        align-items: center;
+        gap: 50px;
+
+        @include m.media('<=xxl') {
+            gap: 30px;
+        }
+
+        @include m.media('<=md') {
+            justify-content: space-between;
+        }
+    }
+
+    &__latest-news-link {
+        display: flex;
+        gap: f.px2rem(7px);
+        align-items: center;
+        text-decoration: none;
+        color: var(--primary-color);
+        font-size: f.px2rem(16px);
+        line-height: 120%;
+        font-weight: 800;
+        transition: color 0.2s ease-in-out;
+        overflow: hidden;
+
+        & svg {
+            animation-play-state: paused;
+            transition:
+                transform 0.4s ease-in-out,
+                opacity 0.2s ease-in-out;
+            path {
+                transition: fill 0.2s ease-in-out;
+            }
+        }
+
+        @media (pointer: fine) {
+            &:hover {
+                color: var(--primary-hover-color);
+
+                & svg {
+                    animation: moveIconHover 0.5s ease-in-out forwards running;
+                }
+            }
+
+            &:not(:hover) svg {
+                animation: moveIconLeave 0.5s ease-in-out forwards running;
+            }
+        }
+
+        @include m.media('<=xxl') {
+            font-size: f.px2rem(14px);
+        }
+
+        @include m.media('<=sm') {
+            display: none;
+        }
+    }
+
+    &__latest-news-swiper {
+        overflow: visible;
+        width: 100%;
+    }
+
+    &__latest-news-swiper-slide {
+        max-width: f.px2rem(623px);
+        transition:
+            max-width 0.2s ease,
+            opacity 0.2s ease;
+        padding-top: f.px2rem(39px);
+        opacity: 1;
+
+        @include m.media('<=xxl') {
+            max-width: f.px2rem(556px);
+        }
+
+        @include m.media('<=md') {
+            max-width: f.px2rem(520px);
+        }
+
+        @include m.media('<=sm') {
+            max-width: f.px2rem(246px);
+            padding-top: f.px2rem(23px);
+            display: flex;
+            height: auto;
+        }
+
+        &--hidden {
+            max-width: 0;
+            margin-right: 0 !important;
+            opacity: 0;
+            overflow: hidden;
+            max-height: 100%;
+        }
+    }
+}

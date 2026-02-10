@@ -1,0 +1,161 @@
+@use '../../scss/functions' as f;
+@use '../../scss/mixins' as m;
+@use '../../scss/vars' as v;
+@use '../../scss/font/inter';
+
+.awardwallet-plus-subscription-offer {
+    position: relative;
+    max-width: 1160px;
+    max-height: 100vh;
+    overflow: auto;
+    border-radius: 12px;
+    font-family: Inter, Inter-fallback, sans-serif;
+
+    @include m.theme(light) {
+        background-color: v.$color-white;
+    }
+
+    @include m.theme(dark) {
+        background-color: v.$color-cod-gray;
+    }
+
+    &__title-block {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        padding-bottom: 25px;
+        padding: 35px 60px 25px 60px;
+
+        @include m.theme(light) {
+            background-color: v.$color-alabaster;
+        }
+
+        @include m.theme(dark) {
+            background-color: v.$color-shark;
+        }
+    }
+
+    &__title {
+        font-size: 26px;
+        font-weight: 700;
+        line-height: 100%;
+
+        @include m.theme(light) {
+            color: v.$color-pickled-bluewood;
+        }
+
+        @include m.theme(dark) {
+            color: v.$color-white;
+        }
+    }
+
+    &__subtitle {
+        font-size: 14px;
+        font-weight: 400;
+        line-height: 120%;
+
+        @include m.theme(light) {
+            color: v.$color-pickled-bluewood;
+        }
+
+        @include m.theme(dark) {
+            color: v.$color-white;
+        }
+    }
+
+    &__cross-button {
+        border: none;
+        background-color: transparent;
+        width: 16px;
+        height: 16px;
+        position: absolute;
+        top: 10px;
+        right: 10px;
+    }
+
+    &__content-container {
+        display: flex;
+        flex-direction: column;
+        gap: 34px;
+        padding: 20px 60px 25px 60px;
+    }
+
+    &__table-title {
+        font-size: 14px;
+        font-weight: 600;
+        line-height: 120%;
+        text-align: left;
+
+        @include m.theme(light) {
+            color: v.$color-black;
+        }
+
+        @include m.theme(dark) {
+            color: v.$color-white;
+        }
+    }
+
+    &__table-column-title {
+        font-size: 16px !important;
+        line-height: 22px;
+
+        @include m.theme(light) {
+            color: v.$color-pickled-bluewood !important;
+        }
+
+        @include m.theme(dark) {
+            color: v.$color-black-coral !important;
+        }
+
+        &--blue {
+            @include m.theme(light) {
+                color: v.$color-science-blue !important;
+            }
+
+            @include m.theme(dark) {
+                color: v.$color-science-blue !important;
+            }
+        }
+
+        &--free {
+            font-size: 26px !important;
+        }
+    }
+
+    &__table-header-cell {
+        padding-top: 0 !important;
+        padding-bottom: 0 !important;
+        gap: 10px;
+    }
+
+    &__table-reset-margin {
+        margin: 0 !important;
+    }
+
+    &__action_buttons {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 10px;
+    }
+
+    &__secondary-button {
+        border: none;
+        background-color: transparent;
+        font-size: 14px;
+        font-weight: 700;
+        line-height: 100%;
+        color: v.$color-science-blue;
+    }
+
+    &__upgrade-button {
+        gap: 12px;
+        padding: 13px 34px;
+        width: 100%;
+        max-width: 326px;
+        font-size: 16px !important;
+        height: unset;
+        color: v.$color-white !important;
+        text-decoration: none !important;
+    }
+}

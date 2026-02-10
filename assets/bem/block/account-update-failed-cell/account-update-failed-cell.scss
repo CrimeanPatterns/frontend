@@ -1,0 +1,47 @@
+@use '../../scss/vars' as v;
+
+.account-update-failed-cell {
+    height: 36px;
+    text-align: right;
+    display: table-cell;
+    vertical-align: middle;
+
+    &__cell-wrapper {
+        display: inline-flex;
+        height: 100%;
+        align-items: center;
+        gap: 18px;
+        background: linear-gradient(270deg, rgba(255, 52, 52, 0.1) 0%, rgba(255, 52, 52, 0) 100%);
+        padding-right: 10px;
+    }
+
+    &__message-wrapper {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+    }
+
+    &__message {
+        font-size: 12px !important;
+        color: v.$color-flamingo !important;
+        max-width: unset !important;
+        font-weight: 600;
+        line-height: 120%;
+    }
+
+    &__icon {
+        width: 24px;
+        height: 24px;
+        background-image: url('./warning-icon.svg');
+        background-size: 24px;
+    }
+
+    &__button {
+        font-size: 12px;
+        line-height: 120%;
+        padding: 5px 12px;
+        height: unset;
+        min-width: unset;
+        cursor: pointer;
+    }
+}
