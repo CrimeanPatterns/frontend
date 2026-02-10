@@ -1,0 +1,171 @@
+@use '../../../UI/Styles/Variables.module.scss' as v;
+@use '../../../UI/Styles/Mixin.scss' as m;
+@use '../../../UI/Styles/Functions.scss' as f;
+
+body {
+    display: flex;
+    flex-direction: column;
+}
+
+:global(#content) {
+    flex-grow: 1;
+}
+
+.appleSubscriptionCancellationPage {
+    display: flex;
+    align-items: center;
+    height: 100%;
+    padding-top: 232px;
+    padding-bottom: 183px;
+    background: url('./Assets/bg-lines.svg');
+    background-position: right bottom;
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-color: var(--background-color-main);
+
+    @include m.media('<=md') {
+        padding: 101px 0 31px 0;
+    }
+
+    @include m.theme('dark') {
+        background: url('./Assets/bg-lines-dark.svg');
+        background-position: right bottom;
+        background-repeat: no-repeat;
+        background-size: cover;
+        background-color: var(--background-color-main);
+        @include m.media('<=md') {
+            background-image: none;
+        }
+    }
+
+    &Mobile {
+        padding-top: env(safe-area-inset-top);
+        padding-right: env(safe-area-inset-right);
+        padding-bottom: env(safe-area-inset-bottom);
+        padding-left: env(safe-area-inset-left);
+
+        @include m.media('<=md') {
+            padding-top: env(safe-area-inset-top);
+            padding-right: env(safe-area-inset-right);
+            padding-bottom: env(safe-area-inset-bottom);
+            padding-left: env(safe-area-inset-left);
+        }
+    }
+
+    &Container {
+        width: 100%;
+        max-width: 1486px;
+        padding: 0 18px;
+        margin: 0 auto;
+
+        @include m.media('<=md') {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+    }
+
+    &Title {
+        margin: 0;
+        margin-bottom: 52px;
+        max-width: 575px;
+        color: var(--text-color-hover);
+        @include m.font(f.px2rem(58px), 800, 100%);
+
+        @include m.media('<=md') {
+            text-align: center;
+            font-size: f.px2rem(26px);
+            margin-bottom: 28px;
+            max-width: unset;
+        }
+    }
+
+    &Description {
+        max-width: 635px;
+        color: var(--text-color-secondary);
+        @include m.font(f.px2rem(v.$text-font-size-l), 500, 120%);
+
+        @include m.media('<=md') {
+            text-align: center;
+            font-size: f.px2rem(v.$text-font-size-s);
+            max-width: unset;
+        }
+    }
+
+    &Description {
+        max-width: 635px;
+        color: var(--text-color-secondary);
+        @include m.font(f.px2rem(v.$text-font-size-l), 500, 120%);
+
+        @include m.media('<=md') {
+            text-align: center;
+            font-size: f.px2rem(v.$text-font-size-s);
+            max-width: unset;
+        }
+    }
+
+    &Apology {
+        color: var(--text-color-secondary);
+        @include m.font(f.px2rem(v.$text-font-size-s), 400, 160%);
+        margin-bottom: 32px;
+
+        @include m.media('<=md') {
+            text-align: center;
+            font-size: f.px2rem(v.$text-font-size-s);
+            line-height: 200%;
+            margin-bottom: 18px;
+        }
+    }
+
+    &Separator {
+        width: 36px;
+        padding: 27px 0 31px 0;
+
+        &::after {
+            content: '';
+            display: block;
+            width: 100%;
+            background-color: var(--background-color-primary);
+            height: 3px;
+        }
+
+        @include m.media('<=md') {
+            margin: 0 auto;
+            padding: 23px 0 21px 0;
+        }
+
+        @include m.theme('dark') {
+            &::after {
+                content: '';
+                display: block;
+                width: 100%;
+                background-color: #fff;
+                height: 3px;
+            }
+        }
+    }
+
+    &Button {
+        & svg {
+            fill: var(--icon-color-disabled);
+        }
+        &:hover {
+            & svg {
+                fill: var(--icon-color-active);
+            }
+        }
+    }
+
+    &ButtonText {
+        display: flex;
+        gap: 12px;
+        align-items: center;
+    }
+
+    &AppleIcon {
+        width: 16px;
+        height: 18px;
+
+        transition: fill 0.2s ease-in-out;
+    }
+}

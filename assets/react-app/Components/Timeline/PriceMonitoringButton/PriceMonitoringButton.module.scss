@@ -1,0 +1,85 @@
+@use '../../../UI/Styles/Mixin' as m;
+@use '../../../UI/Styles/Functions.scss' as f;
+@use '../../../UI/Styles/Variables.module.scss' as v;
+
+.priceMonitoringButton {
+    display: flex !important;
+    align-items: center;
+    cursor: auto !important;
+    padding: 0 10px !important;
+
+    &:hover {
+        @include m.theme('light') {
+            background-image: linear-gradient(to bottom, #f8f9fa, #f0f1f2) !important;
+        }
+        @include m.theme('dark') {
+            background: #141414 !important;
+        }
+    }
+
+    &Radar {
+        width: 18px;
+        height: 18px;
+        flex-shrink: 0;
+        overflow: hidden;
+        position: relative;
+        border-radius: 100%;
+        background-color: #013e5b;
+
+        &::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            height: 100%;
+            width: 100%;
+            border-radius: 100%;
+            z-index: 0;
+            animation: rotate 5000ms linear infinite;
+            background: radial-gradient(
+                    circle at center,
+                    transparent 3px,
+                    rgba(255, 255, 255, 0.15) 3.5px,
+                    transparent 4px,
+                    transparent 6px,
+                    rgba(255, 255, 255, 0.15) 6.5px,
+                    transparent 7px
+                ),
+                conic-gradient(from 30deg at 50% 50%, #13304b 0deg, #2276c5 360deg);
+        }
+    }
+
+    &Popover {
+        display: grid;
+        align-items: center;
+        padding: 19px 30px;
+        grid-template-areas: 'logo title' 'description description';
+        gap: 15px 12px;
+
+        &Logo {
+            grid-area: logo;
+            width: 28px;
+            height: 28px;
+        }
+
+        &Title {
+            @include m.font(f.px2rem(v.$title-font-size-xs), 800, 100%, true);
+            grid-area: title;
+            max-width: 330px;
+        }
+
+        &Description {
+            @include m.font(f.px2rem(v.$text-font-size-s), 400, 120%);
+            grid-area: description;
+            max-width: 390px;
+        }
+    }
+}
+
+@keyframes rotate {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}

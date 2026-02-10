@@ -1,0 +1,91 @@
+@use '../../../../UI/Styles/Mixin.scss' as m;
+@use '../../../../UI/Styles/Functions.scss' as f;
+@use '../../../../UI/Styles/Variables.module.scss' as v;
+
+.podcastMenuButton {
+    padding: 9px 12px;
+    border-radius: 6px;
+    transition-property: color, background-color;
+    transition-duration: 0.2s;
+    transition-timing-function: ease-in-out;
+    min-width: 190px;
+    justify-content: flex-start;
+
+    @media (pointer: fine) {
+        &:hover {
+            color: var(--text-color-hover);
+            background-color: var(--background-color-secondary);
+
+            & *::before {
+                background-color: var(--icon-color-active);
+            }
+
+            & *::after {
+                background-color: var(--icon-color-active);
+            }
+        }
+    }
+
+    &:active {
+        color: var(--text-color-hover);
+        background-color: var(--background-color-secondary);
+
+        & *::before {
+            background-color: var(--icon-color-active);
+        }
+
+        & *::after {
+            background-color: var(--icon-color-active);
+        }
+    }
+
+    @include m.media('<=md') {
+        padding: 9px;
+        min-width: unset;
+    }
+
+    &Icon {
+        flex-shrink: 0;
+        position: relative;
+        width: 16px;
+        height: 9px;
+
+        @include m.media('<=md') {
+            width: 14px;
+        }
+
+        &::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background-color: var(--icon-color-secondary);
+            transition: background-color 0.2s ease-in-out;
+        }
+
+        &::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background-color: var(--icon-color-secondary);
+            transition: background-color 0.2s ease-in-out;
+        }
+    }
+
+    &Text {
+        display: flex;
+        gap: 9px;
+        align-items: center;
+        @include m.font(f.px2rem(20px), 700, 100%);
+
+        @include m.media('<=md') {
+            font-size: v.$text-font-size-s;
+            gap: 7px;
+        }
+    }
+}

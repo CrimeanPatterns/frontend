@@ -1,0 +1,87 @@
+@use '../../../../../../../UI/Styles/Mixin.scss' as m;
+@use '../../../../../../../UI/Styles/Functions.scss' as f;
+@use '../../../../../../../UI/Styles/Variables.module.scss' as v;
+
+.circle {
+    align-self: flex-start;
+    width: 209px;
+    height: 209px;
+    padding: 10px;
+    border-radius: 50%;
+    position: absolute;
+    background:
+        radial-gradient(#fff 0 0) content-box,
+        conic-gradient(
+            from -90deg,
+            #ff3434 44.5deg,
+            white 0 45.5deg,
+            #ffaa33 0 89.5deg,
+            white 0 90.5deg,
+            #96c35c 0 134.5deg,
+            white 0 135.5deg,
+            #27a887 0 180deg,
+            rgba(0, 0, 0, 0) 0
+        );
+}
+
+.grayCircle {
+    width: 138px;
+    height: 69px;
+    background: rgba(233, 235, 239, 0.4);
+    border-radius: 100px 100px 0 0;
+    position: absolute;
+    left: 50%;
+    transform: translate(-50%, 0px);
+    bottom: 0;
+}
+
+.speedometerBase {
+    width: 210px;
+    height: 104px;
+    border-radius: 105px 105px 0 0;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.speedometer {
+    width: 210px;
+    height: 104px;
+    position: absolute;
+    top: 29px;
+    left: 75px;
+}
+
+.arrow {
+    width: 15px;
+    height: 104px;
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform-origin: 50% 100%;
+    transition: transform 1s ease-in-out;
+}
+
+.redemptionValue {
+    color: #ff3434;
+    text-align: center;
+    @include m.font(f.px2rem(v.$text-font-size-xs), 800, 100%);
+}
+
+.redemptionAssessment {
+    @include m.font(f.px2rem(v.$text-font-size-xs), 600, 100%);
+}
+
+.textAssessment {
+    @include m.font(f.px2rem(v.$text-font-size-m), 800, 100%);
+    color: #27a887;
+    text-align: center;
+    margin-bottom: 7px;
+}
+
+.reviewer {
+    @include m.font(f.px2rem(v.$text-font-size-s), 600, 100%);
+    color: #5b6373;
+}

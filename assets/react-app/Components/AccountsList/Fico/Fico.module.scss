@@ -1,0 +1,16 @@
+@use '../../../UI/Styles/Mixin.scss' as m;
+
+.ficoAccounts {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px;
+    background-color: #f8f9fa;
+    overflow-x: auto;
+    border-radius: 12px;
+    margin: 10px 0;
+
+    @include m.theme('dark') {
+        background-color: #1c1c1e;
+    }
+}

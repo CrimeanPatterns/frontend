@@ -1,0 +1,47 @@
+@use '../../Styles/Mixin' as m;
+@use '../../Styles/Functions.scss' as f;
+@use '../../Styles/Variables.module.scss' as v;
+
+.secondaryButton {
+    display: flex;
+    position: relative;
+    gap: 9px;
+    align-items: center;
+    justify-content: center;
+    @include m.font(f.px2rem(v.$text-font-size-s), 800, 100%, true);
+    background-color: var(--background-color-main);
+    color: var(--text-color-secondary);
+    padding: 18px;
+    border-radius: 6px;
+    transition-property: color, border-color;
+    transition-duration: 0.2s;
+    transition-timing-function: ease-in-out;
+    border: 1.5px solid var(--border-color-secondary);
+
+    &:hover {
+        color: var(--text-color-hover);
+        border-color: var(--border-color-active);
+    }
+
+    &:focus {
+        color: var(--text-color-hover);
+        border-color: var(--border-color-active);
+    }
+
+    &:disabled {
+        opacity: var(--disabled-opacity);
+        cursor: default;
+
+        &:hover {
+            color: var(--text-color-secondary);
+            border-color: var(--border-color-secondary);
+        }
+    }
+
+    &Loader {
+        position: absolute;
+        top: 50%;
+        left: 17px;
+        transform: translateY(-50%);
+    }
+}

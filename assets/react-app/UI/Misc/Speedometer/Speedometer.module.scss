@@ -1,0 +1,16 @@
+@use '../../Styles/Mixin.scss' as m;
+
+.backgroundCircle {
+    fill: rgba(233, 235, 239, 0.4);
+
+    @include m.theme('dark') {
+        fill: rgba(38, 38, 40, 0.4);
+    }
+}
+
+.speedometer {
+    overflow: visible;
+    -webkit-font-smoothing: antialiased;
+    -webkit-transform-style: preserve-3d;
+    transform-style: preserve-3d;
+}

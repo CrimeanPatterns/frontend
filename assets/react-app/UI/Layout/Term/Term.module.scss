@@ -1,0 +1,40 @@
+@use '../../Styles/Variables.module.scss' as v;
+@use '../../Styles/Mixin' as m;
+@use '../../Styles/Functions' as f;
+
+.termContainer {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+
+    @include m.media('<=md') {
+        gap: 12px;
+        align-items: flex-start;
+    }
+}
+
+.termIconContainer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-shrink: 0;
+    width: 44px;
+    height: 44px;
+    border: 1px solid var(--border-color-secondary);
+    border-radius: 50%;
+
+    @include m.media('<=md') {
+        width: 36px;
+        height: 36px;
+    }
+}
+
+.termTitle {
+    font-weight: 800;
+    text-transform: uppercase;
+}
+
+.termDescription {
+    @include m.font(f.px2rem(v.$text-font-size-s), 400, 150%);
+    color: var(--text-color-secondary);
+}

@@ -1,0 +1,45 @@
+@use '../../../../../../UI/Styles/Mixin' as m;
+@use '../../../../../../UI/Styles/Functions.scss' as f;
+@use '../../../../../../UI/Styles/Variables.module.scss' as v;
+
+.container {
+    display: flex;
+    justify-content: space-between;
+    gap: 5px;
+    min-width: 328px;
+}
+.label {
+    @include m.font(f.px2rem(v.$text-font-size-s), 700, 130%);
+    color: var(--text-color-secondary);
+    &::first-letter {
+        text-transform: uppercase;
+    }
+    align-self: center;
+}
+
+.buttonsContainer {
+    display: flex;
+    align-items: center;
+    border-radius: 6px;
+    border: 1px solid var(--border-color-secondary);
+    min-width: 160px;
+}
+
+.counter {
+    width: 100%;
+    text-align: center;
+}
+
+.decreaseButton {
+    border-top: none;
+    border-left: none;
+    border-bottom: none;
+    padding-right: 16px;
+}
+
+.increaseButton {
+    border-top: none;
+    border-right: none;
+    border-bottom: none;
+    padding-left: 16px;
+}

@@ -1,0 +1,78 @@
+@use '../../Styles/Variables.module.scss' as v;
+@use '../../Styles/Mixin.scss' as m;
+@use '../../Styles/Functions.scss' as f;
+
+.dropdown {
+    &Anchor {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 11px;
+        border: 1px solid var(--border-color-secondary);
+        padding: 12px 18px;
+        @include m.font(f.px2rem(v.$text-font-size-s), 400, 100%);
+        color: var(--text-color-secondary);
+        cursor: pointer;
+        width: 100%;
+        background-color: var(--background-color-main);
+        min-height: 50px;
+        overflow: hidden;
+
+        &WithDescription {
+            padding-top: 6px;
+            padding-bottom: 6px;
+        }
+
+        &LabelBlock {
+            display: flex;
+            flex-direction: column;
+            max-width: calc(100% - 11px - 14px);
+            align-items: flex-start;
+        }
+
+        &LabelText {
+            @include m.font(f.px2rem(v.$text-font-size-s), 400, 130%);
+            color: var(--text-color-disabled);
+        }
+
+        &Text {
+            max-width: 100%;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        &Description {
+            @include m.font(f.px2rem(v.$text-font-size-xs), 400, 100%);
+            color: var(--text-color-disabled);
+        }
+
+        &StaticInfoBlock {
+            display: flex;
+            align-items: center;
+            gap: 25px;
+        }
+
+        &StaticInfo {
+            @include m.font(f.px2rem(v.$text-font-size-m), 600, 100%, true);
+            color: var(--text-color-disabled);
+        }
+
+        &Icon {
+            transition: transform 0.2s ease-in-out;
+
+            &Active {
+                transform: rotate(180deg);
+            }
+        }
+    }
+
+    &Container {
+        border-radius: 6px;
+        box-shadow: 15px 15px 40px 0px rgba(16, 25, 57, 0.15);
+
+        @include m.theme('dark') {
+            box-shadow: 15px 15px 40px 0px rgba(0, 0, 0, 0.45);
+        }
+    }
+}

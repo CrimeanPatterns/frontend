@@ -1,0 +1,199 @@
+@use '../../../../../UI/Styles/Mixin.scss' as m;
+@use '../../../../../UI/Styles/Functions.scss' as f;
+@use '../../../../../UI/Styles/Variables.module.scss' as v;
+
+.podcastCard {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 0 clamp(20px, calc((100vw - 1100px) / 4), 60px);
+    grid-template-areas:
+        'preview meta'
+        'preview title'
+        'preview description'
+        'preview player';
+    padding: 30px 60px;
+    background-color: var(--background-color-main);
+    max-width: 100%;
+
+    @media (max-width: 774px) {
+        grid-template-columns: 1fr;
+        gap: 14px;
+        grid-template-areas:
+            'preview'
+            'meta'
+            'title'
+            'description'
+            'player';
+        padding: 12px 14px;
+        overflow: hidden;
+    }
+
+    &Preview {
+        &Container {
+            grid-area: preview;
+            align-self: flex-start;
+            justify-self: center;
+            width: clamp(138px, calc((100vw - 1150px)), 411px);
+            aspect-ratio: 1;
+            height: auto;
+
+            @media (max-width: 774px) {
+                width: clamp(150px, 22vw, 170px);
+                justify-self: flex-start;
+            }
+        }
+        max-height: 100%;
+        max-width: 100%;
+        width: auto;
+        height: auto;
+        object-fit: fill;
+    }
+
+    &Image {
+        &Loader {
+            &Circle {
+                stroke: var(--icon-color-active);
+            }
+            &Background {
+                stroke: rgba(82, 87, 102, 0.5);
+            }
+        }
+        &ActionIcon {
+            width: 18px;
+            height: 18px;
+
+            &Container {
+                padding: 0px;
+                width: 70px;
+                height: 70px;
+
+                @media (max-width: 774px) {
+                    width: 60px;
+                    height: 60px;
+                }
+            }
+
+            &Play {
+                position: relative;
+                left: 1px;
+            }
+        }
+    }
+
+    &MetaInfoContainer {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    &MetaInfoWrapper {
+        grid-area: meta;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 5px;
+    }
+
+    &Season {
+        @include m.font(f.px2rem(v.$text-font-size-s), 700, 100%);
+        color: var(--text-color-hover);
+    }
+
+    &ReleaseDate {
+        @include m.font(f.px2rem(v.$text-font-size-s), 400, 100%);
+        color: var(--text-color-secondary);
+        opacity: 0.5;
+    }
+
+    &Title {
+        grid-area: title;
+        @include m.font(f.px2rem(v.$title-font-size-s), 700, 100%);
+        color: var(--text-color-secondary);
+        padding-top: 13px;
+
+        @media (max-width: 774px) {
+            padding-top: 0;
+        }
+    }
+
+    &Description {
+        grid-area: description;
+        @include m.font(f.px2rem(v.$text-font-size-s), 400, 170%);
+        color: var(--text-color-secondary);
+        overflow: hidden;
+
+        > p:first-of-type {
+            padding-top: 10px;
+        }
+
+        & a {
+            color: var(--text-color-hover);
+            @include m.font(f.px2rem(v.$text-font-size-s), 600, 170%);
+            text-decoration: none;
+            transition: opacity 0.1s ease-in-out;
+
+            &:hover {
+                opacity: 0.6;
+            }
+        }
+
+        & p {
+            padding-bottom: 10px;
+            text-overflow: ellipsis;
+            overflow: hidden;
+
+            &:has(b:empty) {
+                display: none;
+            }
+        }
+
+        & > ul {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            padding-bottom: 10px;
+        }
+
+        & ul {
+            padding-left: 20px;
+        }
+
+        & ol {
+            padding-left: 20px;
+        }
+
+        & li {
+            position: relative;
+            list-style: none;
+
+            &:before {
+                content: '';
+                position: absolute;
+                top: 8px;
+                left: -18px;
+                width: 7px;
+                height: 7px;
+                background-color: var(--background-color-primary);
+                border-radius: 1px;
+                transform: rotate(-45deg);
+            }
+
+            &:has(a:empty) {
+                display: none;
+            }
+        }
+
+        & b {
+            @include m.font(f.px2rem(v.$text-font-size-m), 700, 100%);
+        }
+    }
+
+    &PlayerContainer {
+        grid-area: player;
+        max-width: 554px;
+
+        @media (max-width: 774px) {
+            max-width: unset;
+        }
+    }
+}

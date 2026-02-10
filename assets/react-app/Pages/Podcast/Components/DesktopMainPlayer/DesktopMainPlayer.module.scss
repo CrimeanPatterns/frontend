@@ -1,0 +1,124 @@
+@use '../../../../UI/Styles/Mixin.scss' as m;
+@use '../../../../UI/Styles/Functions.scss' as f;
+@use '../../../../UI/Styles/Variables.module.scss' as v;
+
+.mainPlayer {
+    display: flex;
+    background-color: var(--background-color-main);
+    position: fixed;
+    bottom: 30px;
+    width: calc(100% - 38px - 38px);
+    right: 38px;
+    box-shadow: 5px 5px 40px 0px #5b637340;
+    border-radius: 12px;
+    padding: 18px 33px;
+    height: 74px;
+    transition:
+        width 0.4s ease-in-out,
+        border-radius 0.2s ease-in-out;
+
+    @include m.media('<=md') {
+        display: none;
+    }
+
+    &Expanded {
+        transition-delay: 0s, 0s;
+    }
+
+    &Collapsed {
+        transition-delay: 0s, 0.2s;
+    }
+
+    &Collapsed {
+        align-items: center;
+        justify-content: center;
+        width: 74px;
+
+        padding: 0;
+        border-radius: 50%;
+    }
+
+    &WrapButton {
+        position: absolute;
+        top: 0;
+        right: 8px;
+        width: 20px;
+        height: 20px;
+
+        &::after {
+            content: '';
+            position: absolute;
+            height: 3px;
+            width: 13px;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: var(--icon-color-disabled);
+            transition: background-color 0.2s ease-in-out;
+        }
+
+        &:hover {
+            &::after {
+                background-color: var(--icon-color-active);
+            }
+        }
+    }
+
+    &AudioPlayerContainer {
+        flex-grow: 1;
+        padding: 0;
+        background-color: transparent;
+    }
+
+    &ControlButtons {
+        display: flex;
+    }
+
+    &ControlButton {
+        border: none;
+        background-color: transparent;
+        padding: 5px;
+
+        &:hover {
+            & svg {
+                fill: var(--icon-color-active) !important;
+            }
+        }
+    }
+
+    &ContentWrapper {
+        display: flex;
+        align-self: center;
+        justify-content: center;
+        gap: 24px;
+        width: 100%;
+        animation: FadeIn 0.4s ease-in-out;
+    }
+
+    &PlayButton {
+        background-color: transparent;
+        padding: 0;
+        border: none;
+        width: 100%;
+        height: 100%;
+    }
+
+    &CircularProgress {
+        width: 70px;
+        height: 70px;
+    }
+
+    &CircularProgressSvg {
+        width: 70px;
+        height: 70px;
+    }
+}
+
+@keyframes FadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}

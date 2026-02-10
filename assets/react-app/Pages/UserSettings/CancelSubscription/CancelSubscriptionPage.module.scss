@@ -1,0 +1,108 @@
+@use '../../../UI/Styles/Variables.module.scss' as v;
+@use '../../../UI/Styles/Mixin.scss' as m;
+@use '../../../UI/Styles/Functions.scss' as f;
+
+:global(.header-site) {
+    @include m.media('<=lg') {
+        display: none;
+    }
+}
+
+:global(.page) {
+    @include m.media('<=lg') {
+        padding: 0;
+        min-width: unset;
+        height: 100vh;
+    }
+}
+
+:global(#contentTable) {
+    @include m.media('<=lg') {
+        height: 100%;
+    }
+}
+
+:global(.content) {
+    height: 100%;
+    @include m.media('<=lg') {
+        padding: 0;
+    }
+}
+
+:global(.active-sessions) {
+    @include m.media('<=lg') {
+       display: none;
+    }
+}
+
+
+
+:global(.menu-close) {
+    @include m.media('<=lg') {
+        display: none;
+    }
+}
+
+:global(.footer-site) {
+    @include m.media('<=lg') {
+        display: none;
+    }
+}
+
+:global(.main-body) {
+    @include m.media('<=lg') {
+        padding: 0;
+        min-width: unset;
+    }
+}
+
+:global(.switch-container) {
+    @include m.media('<=lg') {
+        display: none !important;
+    }
+}
+
+:global(.main-body.hide-menu .page) {
+    @include m.media('<=lg') {
+        padding: 0;
+    }
+}
+
+:global(.main-body.hide-menu .content) {
+    padding-left: 0px;
+}
+
+.cancelSubscriptionPage {
+    //100vh - header height - footer height - active session block
+    height: calc(100vh - 64px - 53px - 44px);
+    max-height: 800px;
+    padding-left: clamp(50px, 11vw, 235px);
+    background: url('./Assets/bg-lines.svg');
+    background-position: 170% 50%;
+    background-repeat: no-repeat;
+    background-color: var(--background-color-main);
+
+    @media screen and (max-width: 1500px) {
+        background-position: 300px 50%;
+    }
+
+    @include m.media('<=lg') {
+        height: 100vh;
+        max-height: unset;
+    }
+
+    @include m.media('<=md') {
+        padding: 32px 18px;
+    }
+
+    @include m.theme('dark') {
+        background: url('./Assets/bg-lines-dark.svg');
+        background-size: 1067px 787px;
+        background-position: 100% 0%;
+        background-repeat: no-repeat;
+        background-color: var(--background-color-main);
+        @include m.media('<=md') {
+            background-image: none;
+        }
+    }
+}

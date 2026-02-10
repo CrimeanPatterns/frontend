@@ -1,0 +1,10 @@
+@use '../../Styles/Mixin' as m;
+@use '../../Styles/Functions.scss' as f;
+@use '../../Styles/Variables.module.scss' as v;
+
+.container {
+    @include m.font(f.px2rem(v.$text-font-size-l), 800, 100%);
+    color: var(--text-color-secondary);
+    text-align: center;
+    padding: 17px 0;
+}

@@ -1,0 +1,115 @@
+//Font related variables
+$regular-text-font-family: 'Open Sans', sans-serif;
+$title-text-font-family: 'Mulish', sans-serif;
+
+$title-font-size-xs: 16px;
+$title-font-size-s: 20px;
+$title-font-size-m: 22px;
+$title-font-size-l: 36px;
+
+$text-font-size-xs: 12px;
+$text-font-size-s: 14px;
+$text-font-size-m: 16px;
+$text-font-size-l: 18px;
+
+//Light theme
+$text-color-primary: #fff;
+$text-color-secondary: #515767;
+$text-color-disabled: rgba(82, 87, 102, 0.5);
+$text-color-hover: #0168ca;
+
+$icon-color-primary: #fff;
+$icon-color-secondary: #515767;
+$icon-color-active: #0168ca;
+$icon-color-disabled: rgba(82, 87, 102, 0.5);
+
+$background-color-primary: #0168ca;
+$background-color-primary-hover: #017bee;
+$background-color-primary-active: #025aad;
+$background-color-secondary: #f5f6f7;
+$background-color-main: #fff;
+
+$border-color-primary: #fff;
+$border-color-secondary: #d6dae6;
+$border-color-active: #0168ca;
+
+$switcher-color-default: #e6e8eb;
+$switcher-color-default-hover: #cdd2d9;
+$switcher-color-active: #1cc789;
+$switcher-color-active-hover: #22ac7a;
+
+$popover-background-color: #fff;
+
+$divider-color: rgba(90, 98, 114, 0.05);
+$shadow-color: rgba(90, 98, 114, 0.2);
+
+$error-color: #ff3434;
+$warning-color: #ffaa33;
+
+//Dark theme
+$text-color-dark-primary: #fff;
+$text-color-dark-secondary: #fff;
+$text-color-dark-disabled: rgba(255, 255, 255, 0.5);
+$text-color-dark-hover: #108bff;
+
+$icon-color-dark-primary: #fff;
+$icon-color-dark-secondary: #fff;
+$icon-color-dark-active: #108bff;
+$icon-color-dark-disabled: rgba(91, 99, 115, 1);
+
+$background-color-dark-primary: #108bff;
+$background-color-dark-primary-hover: #017bee; //Need to check it out
+$background-color-dark-primary-active: #025aad; //Need to check it out
+$background-color-dark-secondary: #141414;
+$background-color-dark-main: #1c1c1e;
+
+$border-color-dark-primary: #000;
+$border-color-dark-secondary: #5a5a5f;
+$border-color-dark-active: #0168ca;
+
+$switcher-color-dark-default: #363637;
+$switcher-color-dark-default-hover: #363637;
+$switcher-color-dark-active: #1cc789;
+$switcher-color-dark-active-hover: #1cc789;
+
+$popover-background-color-dark: #1c1c1e;
+
+$divider-color-dark: rgba(90, 98, 114, 0.05); //Need to check it out
+$shadow-color-dark: rgba(90, 98, 114, 0.2); //Need to check it out
+
+$error-color-dark: #ff3434; //Need to check it out
+$warning-color: #ffaa33; //Need to check it out
+
+//Common variable
+
+$disabled-opacity: 0.3;
+
+$variables: (
+    'regularTextFontFamily': $regular-text-font-family,
+    'titleTextFontFamily': $title-text-font-family,
+    'textColorPrimary': var(--text-color-primary),
+    'textColorSecondary': var(--text-color-secondary),
+    'textColorDisabled': var(--text-color-disabled),
+    'textColorHover': var(--text-color-hover),
+    'iconColorPrimary': var(--icon-color-primary),
+    'iconColorSecondary': var(--icon-color-secondary),
+    'iconColorActive': var(--icon-color-active),
+    'iconColorDisabled': var(--icon-color-disabled),
+    'backgroundColorPrimary': var(--background-color-primary),
+    'backgroundColorSecondary': var(--background-color-secondary),
+    'backgroundColorMain': var(--background-color-main),
+    'backgroundColorPrimaryHover': var(--background-color-primary-hover),
+    'backgroundColorPrimaryActive': var(--background-color-primary-active),
+    'borderColorSecondary': var(--border-color-secondary),
+    'borderColorActive': var(--border-color-active),
+    'dividerColor': var(--divider-color),
+    'errorColor': var(--error-color),
+    'disabledOpacity': $disabled-opacity,
+    'warningColor': var(--warning-color),
+);
+
+:export {
+    @each $key, $value in $variables {
+        #{unquote($key)}: $value;
+    }
+}

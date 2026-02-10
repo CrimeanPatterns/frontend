@@ -1,0 +1,15 @@
+@use '../../../../../../../UI/Styles/Variables.module.scss' as v;
+@use '../../../../../../../UI/Styles/Mixin.scss' as m;
+@use '../../../../../../../UI/Styles/Functions.scss' as f;
+
+.filterTag {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    border: 1px solid var(--border-color-secondary);
+    border-radius: 4px;
+    padding: 10px 16px;
+    background-color: var(--background-color-main);
+    color: var(--text-color-secondary);
+    @include m.font(f.px2rem(v.$text-font-size-m), 600, 100%);
+}

@@ -1,0 +1,11 @@
+@use '../../Styles/Mixin.scss' as m;
+
+.container {
+    display: inline-flex;
+    width: 100%;
+    gap: 8px;
+
+    @include m.media('<=xl') {
+        gap: 6px;
+    }
+}

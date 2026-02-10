@@ -1,0 +1,47 @@
+@use '../../Styles/Variables.module.scss';
+@use '../../Styles/Mixin.scss' as m;
+
+$modal-padding: 20px;
+
+.container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: fixed;
+    padding: 15vh 15vw;
+    height: 100%;
+    width: 100%;
+
+    &Mobile {
+        padding: 5vh 5vw;
+    }
+}
+
+.modal {
+    background-color: var(--popover-background-color);
+    color: var(--text-color-secondary);
+    padding: $modal-padding;
+    border-radius: 8px;
+    box-shadow: 15px 15px 40px 0px rgba(16, 25, 57, 0.15);
+
+    @include m.theme('dark') {
+        box-shadow: 15px 15px 40px 0px rgba(0, 0, 0, 0.45);
+    }
+}
+
+.modalHeader {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+}
+
+.modalContent {
+    //80vh - ModalHeader height - modal padding top - modal padding bottom
+    max-height: calc(80vh - 12px - $modal-padding - $modal-padding);
+    min-height: auto;
+    padding: 7px 5px 7px 22px;
+    overflow: hidden;
+    &FullScreen {
+        max-height: calc(100vh - 12px - $modal-padding - $modal-padding);
+    }
+}

@@ -1,0 +1,38 @@
+@use '../../Styles/Mixin' as m;
+@use '../../../UI/Styles/Functions.scss' as f;
+@use '../../Styles/Variables.module.scss' as v;
+
+.primaryButton {
+    position: relative;
+    display: flex;
+    gap: 9px;
+    align-items: center;
+    justify-content: center;
+    @include m.font(f.px2rem(v.$text-font-size-s), 800, 100%, true);
+    background-color: var(--background-color-primary);
+    color: var(--text-color-primary);
+    padding: 18px;
+    border-radius: 6px;
+    transition: background-color ease-in-out 0.2s;
+
+    &:not(:disabled):hover {
+        background-color: var(--background-color-primary-hover);
+    }
+    &:not(:disabled):focus {
+        background-color: var(--background-color-primary-hover);
+    }
+    &:not(:disabled):active {
+        background-color: var(--background-color-primary-active);
+    }
+    &:disabled {
+        opacity: var(--disabled-opacity);
+        cursor: default;
+    }
+
+    &Loader {
+        position: absolute;
+        top: 50%;
+        left: 17px;
+        transform: translateY(-50%);
+    }
+}

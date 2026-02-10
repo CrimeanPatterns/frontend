@@ -1,0 +1,42 @@
+@use '../../../../../../../../../UI/Styles/Variables.module.scss' as v;
+@use '../../../../../../../../../UI//Styles/Mixin' as m;
+@use '../../../../../../../../../UI/Styles/Functions.scss' as f;
+
+.newBalance {
+    @include m.font(f.px2rem(v.$text-font-size-xs), 600, 100%);
+    color: var(--text-color-disabled);
+}
+
+.currentBalance {
+    @include m.font(f.px2rem(v.$text-font-size-xs), 600, 100%);
+    color: var(--text-color-secondary);
+}
+
+.countPointsExchanging {
+    @include m.font(f.px2rem(v.$text-font-size-l), 600, 100%);
+    color: var(--text-color-secondary);
+}
+
+.logoExchanging {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 85px;
+    height: 45px;
+
+    background-color: white;
+    border: 1px solid var(--border-color-secondary);
+    border-radius: 4px;
+
+    &Svg {
+        max-width: 100%;
+        max-height: 100%;
+    }
+}
+
+.exchangeInfo {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    flex: 1 1;
+}

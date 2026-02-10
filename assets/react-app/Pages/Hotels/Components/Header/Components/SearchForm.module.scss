@@ -1,0 +1,56 @@
+@use '../../../../../UI/Styles/Mixin.scss' as m;
+@use '../../../../../UI/Styles/Functions.scss' as f;
+@use '../../../../../UI/Styles/Variables.module.scss' as v;
+
+.form {
+    display: grid;
+    gap: 8px;
+    grid-template-columns: 51fr 37fr 12fr;
+    align-items: flex-start;
+    @include m.media('<xxl') {
+        grid-template-columns: 41fr 47fr 12fr;
+    }
+
+    @include m.media('<=xl') {
+        grid-template-columns: 2.4fr 2.9fr 1fr;
+        gap: 6px;
+    }
+}
+
+.searchButton {
+    font-size: f.px2rem(v.$text-font-size-l);
+    background-color: #017bee;
+    padding: 15px;
+    &:not(:disabled):hover {
+        background-color: #025aad;
+    }
+    &:not(:disabled):active {
+        background-color: #0168ca;
+    }
+    &:disabled {
+        opacity: 1;
+
+        & .searchButtonContent {
+            opacity: 0.5;
+        }
+    }
+}
+
+.autocompleteInput {
+    box-shadow: 8px 8px 34px 0px #10193926;
+    border-radius: 6px;
+    border-width: 2px;
+    border-color: var(--border-color-primary);
+}
+
+.dateInput {
+    box-shadow: 8px 8px 34px 0px #10193926;
+    border-radius: 6px;
+    border-width: 2px;
+    border-color: var(--border-color-primary);
+}
+.brandAndGuestsRow {
+    grid-column: 1/4;
+    display: flex;
+    gap: 35px;
+}

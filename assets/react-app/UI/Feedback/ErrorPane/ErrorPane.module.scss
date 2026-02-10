@@ -1,0 +1,58 @@
+@use '../../Styles/Variables.module.scss' as v;
+@use '../../Styles/Mixin.scss' as m;
+@use '../../Styles/Functions.scss' as f;
+
+.errorPage {
+    min-height: 80vh;
+    background-color: var(--background-color-main);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    gap: 38px;
+
+    &ImageContainer {
+        display: flex;
+        justify-content: center;
+        position: relative;
+        width: 100%;
+
+        &::before {
+            content: '';
+            position: absolute;
+            display: block;
+            width: 100%;
+            top: 47%;
+            left: 0;
+            height: 4px;
+            background: linear-gradient(
+                to right,
+                #d8dadf calc(50% - 80px),
+                transparent calc(50% - 80px),
+                transparent calc(50% + 79px),
+                #d8dadf calc(50% + 79px)
+            );
+        }
+    }
+
+    &TextContainer {
+        display: flex;
+        gap: 17px;
+        flex-direction: column;
+    }
+
+    &Title {
+        text-align: center;
+        @include m.font(f.px2rem(v.$title-font-size-m), 700, 100%);
+        color: var(--text-color-secondary);
+    }
+
+    &Description {
+        @include m.font(f.px2rem(v.$text-font-size-s), 400, 150%);
+        color: var(--text-color-secondary);
+    }
+
+    &Button {
+        padding: 18px 43px;
+    }
+}

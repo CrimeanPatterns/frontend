@@ -1,0 +1,83 @@
+@use '../../../../../../UI/Styles/Variables.module.scss' as v;
+@use '../../../../../../UI/Styles/Mixin' as m;
+@use '../../../../../../UI/Styles/Functions.scss' as f;
+
+.container {
+    display: flex;
+    flex-direction: column;
+    gap: 13px;
+    &:hover {
+        .logoContainer {
+            border-color: var(--border-color-active);
+        }
+    }
+    cursor: pointer;
+}
+
+.logoContainer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    width: 175px;
+    height: 112px;
+    border-radius: 4px;
+    border: 1.5px solid var(--border-color-secondary);
+    transition: border-color 0.2s ease-in-out;
+    background-color: white;
+
+    &::before {
+        content: '';
+        position: absolute;
+        top: 6px;
+        left: 6px;
+        width: 16px;
+        height: 16px;
+        border-radius: 50%;
+        border: 1.5px solid var(--border-color-secondary);
+        transition-property: border-color, background-color;
+        transition-duration: 0.2s;
+        transition-timing-function: ease-in-out;
+    }
+    &::after {
+        content: '';
+        position: absolute;
+        top: 12px;
+        left: 10px;
+        width: 8px;
+        height: 3px;
+        border: 2.5px solid var(--background-color-main);
+        border-top: none;
+        border-right: none;
+        transform: rotate(-45deg);
+        opacity: 0;
+        transition: opacity 0.2s ease-in-out;
+    }
+
+    &Active {
+        border-color: var(--border-color-active);
+        &::before {
+            border-color: var(--border-color-active);
+            background-color: var(--background-color-primary);
+        }
+        &::after {
+            opacity: 1;
+        }
+    }
+}
+
+.descriptionContainer {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+}
+
+.cardTitle {
+    color: var(--text-color-secondary);
+    @include m.font(f.px2rem(v.$text-font-size-m), 600, 100%);
+}
+
+.points {
+    color: var(--text-color-disabled);
+    @include m.font(f.px2rem(v.$text-font-size-s), 600, 130%);
+}

@@ -1,0 +1,41 @@
+{
+    "compilerOptions": {
+        "target": "ES2021",
+        "outDir": "build",
+        "noEmit": false,
+        "jsx": "react",
+        "module": "ES2020",
+        "allowSyntheticDefaultImports": true,
+        "esModuleInterop": true,
+        "allowJs": true,
+        "forceConsistentCasingInFileNames": true,
+        "strict": true,
+        "allowUnreachableCode": false,
+        "allowUnusedLabels": false,
+        "noFallthroughCasesInSwitch": true,
+        "noImplicitReturns": true,
+        "noUncheckedIndexedAccess": true,
+        "noUnusedParameters": false,
+        "moduleResolution": "Bundler",
+        "checkJs": false,
+        "plugins": [{ "name": "typescript-plugin-css-modules" }],
+        "baseUrl": "../",
+        "paths": {
+            "@UI/*": ["assets/react-app/UI/*"],
+            "@Bem/*": ["assets/bem/*"],
+            "@Utilities/*": ["assets/react-app/Utilities/*"],
+            "@Services/*": ["assets/react-app/Services/*"],
+            "@Root/*": ["assets/react-app/*"]
+        },
+        "types": ["node", "jest", "@testing-library/jest-dom"]
+    },
+
+    "include": [
+        "bem/**/*",
+        "entry-point-deprecated/**/*",
+        "js-deprecated/**/*",
+        "react-app/**/**.*",
+        "../jest.setup.js"
+    ],
+    "exclude": ["js-deprecated/component-deprecated/timeline/_Notes.tsx"]
+}

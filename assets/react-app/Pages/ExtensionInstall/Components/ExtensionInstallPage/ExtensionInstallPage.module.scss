@@ -1,0 +1,44 @@
+@use '../../../../UI/Styles/Mixin.scss' as m;
+@use '../../../../UI/Styles/Variables.module.scss' as v;
+@use '../../../../UI/Styles/Functions.scss' as f;
+
+.extensionInstallPage {
+    background-color: var(--background-color-main);
+    padding: 55px 70px 70px 70px;
+
+    &Hero {
+        display: grid;
+        gap: 30px;
+        padding-bottom: 35px;
+        background-size: 390px 245px;
+        background-repeat: no-repeat;
+        background-position: right 0 top 50%;
+        background-image: url('../../Assets/background-image.png');
+
+        @media (-webkit-min-device-pixel-ratio: 2) {
+            background-image: url('../../Assets/background-image@2x.png');
+        }
+
+        @include m.media('<=1745px') {
+            background-image: unset;
+        }
+    }
+
+    &Title {
+        @include m.font(f.px2rem(44px), 800, 100%, true);
+        color: var(--text-color-hover);
+        margin: 0;
+    }
+
+    &InfoBlock {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 14px 81px;
+    }
+
+    &Description {
+        grid-column: 1/-1;
+        @include m.font(f.px2rem(v.$text-font-size-s), 700, 140%);
+        color: var(--text-color-secondary);
+    }
+}

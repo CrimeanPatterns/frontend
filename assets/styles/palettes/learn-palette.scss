@@ -1,0 +1,95 @@
+$light-colors: (
+    body-color: #ffffff,
+
+    background-color: #f5f6f8,
+
+    primary-color: #0168ca,
+    primary-hover-color: #017bee,
+
+    blue-light: #dde8f2,
+
+    text-primary-color: #272f3f,
+    text-secondary-color: rgba(39, 47, 63, 0.6),
+    text-blue-color: #2e5583,
+
+    gray-color: #272f3f80,
+    gray-light-color: #f5f6f8,
+
+    border-color: #d4d5d9,
+    scroll-body-color: #eaebee,
+    scroll-slider-color: #272f3f33,
+
+    'red-color': #f34141,
+    'orange-color': #ffaa33,
+    'green-color': #05be7b,
+
+    toast-bg-color: #ffffff,
+    toast-text-color: #272f3f,
+    toast-info-color: #0168ca,
+    toast-error-color: #f34141,
+    toast-separator-color: #f5f6f8,
+);
+
+$dark-colors: (
+    body-color: #17181a,
+
+    background-color: #0c0d0f,
+
+    primary-color: #017bee,
+    primary-hover-color: #1f92ff,
+
+    blue-light: #dde8f2,
+
+    text-primary-color: #fff,
+    text-secondary-color: rgba(255, 255, 255, 0.5),
+    text-blue-color: #fff,
+
+    gray-color: rgba(255, 255, 255, 0.5),
+    gray-light-color: #212225,
+
+    border-color: #2d2e2f,
+    scroll-body-color: #2a2a2a,
+    scroll-slider-color: #434343,
+
+    'red': #f34141,
+    'orange': #ffaa33,
+    'green': #05be7b,
+
+    toast-bg-color: #17181a,
+    toast-text-color: #fff,
+    toast-info-color: #017bee,
+    toast-error-color: #f34141,
+    toast-separator-color: #212225,
+);
+
+@mixin set-theme-colors($colors) {
+    @each $name, $value in $colors {
+        --#{$name}: #{$value};
+    }
+}
+
+:root {
+    @include set-theme-colors($light-colors);
+
+    --white-body-shadow: box-shadow: 5px 5px 40px 0px #272f3f08;
+
+    --hover-drop-shadow: box-shadow: 7px 7px 25px 0px #272f3f40;
+}
+
+@media (prefers-color-scheme: dark) {
+    :root:not(.light-mode) {
+        @include set-theme-colors($dark-colors);
+
+        --hover-drop-shadow: box-shadow: box-shadow: 7px 7px 25px 0px #00000040;
+    }
+}
+
+:root.light-mode {
+    @include set-theme-colors($light-colors);
+    --hover-drop-shadow: box-shadow: 7px 7px 25px 0px #272f3f40;
+}
+
+:root.dark-mode {
+    @include set-theme-colors($dark-colors);
+    --hover-drop-shadow: box-shadow: 7px 7px 25px 0px #00000040;
+}

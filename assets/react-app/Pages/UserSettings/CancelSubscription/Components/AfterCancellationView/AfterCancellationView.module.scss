@@ -1,0 +1,119 @@
+@use '../../../../../UI/Styles/Mixin.scss' as m;
+@use '../../../../../UI/Styles/Functions.scss' as f;
+@use '../../../../../UI/Styles/Variables.module.scss' as v;
+
+.afterCancellation {
+    &Container {
+        height: 100%;
+        display: flex;
+        justify-content: center;
+        flex-direction: column;
+
+        @include m.media('<=md') {
+            align-items: center;
+        }
+    }
+    &Icon {
+        width: 75px;
+        margin-bottom: 30px;
+        @include m.media('<=md') {
+            margin-bottom: 13px;
+        }
+    }
+    &Title {
+        margin: 0;
+        margin-bottom: 44px;
+        max-width: 686px;
+        color: var(--text-color-hover);
+        @include m.font(f.px2rem(58px), 700, 100%);
+
+        @include m.media('<=md') {
+            font-size: 26px;
+            margin-bottom: 20px;
+            max-width: 284px;
+            text-align: center;
+        }
+    }
+
+    &Description {
+        color: var(--text-color-secondary);
+        @include m.font(f.px2rem(18px), 400, 150%);
+        & > a {
+            color: var(--text-color-hover);
+            font-weight: 700;
+            text-decoration: none;
+        }
+
+        @include m.media('<=md') {
+            font-size: f.px2rem(v.$text-font-size-s);
+        }
+    }
+    &Apple {
+        &Container {
+            padding-top: 83px;
+            padding-bottom: 30px;
+            height: 100%;
+            max-width: 652px;
+
+            @include m.media('<=md') {
+                padding-top: 0;
+                padding-bottom: 10px;
+            }
+        }
+        &Img {
+            border-radius: 12px;
+        }
+
+        &Wrapper {
+            height: 100%;
+            padding-bottom: 30px;
+            overflow: hidden;
+
+            @include m.media('<=md') {
+                display: flex;
+                flex-direction: column;
+            }
+        }
+        &Icon {
+            flex-shrink: 0;
+            width: 29px;
+            height: 34px;
+            margin-bottom: 17px;
+
+            @include m.media('<=md') {
+                align-self: center;
+                width: 19px;
+                height: 24px;
+                margin-bottom: 12px;
+            }
+        }
+        &Instruction {
+            &Container {
+                display: grid;
+                gap: 15px;
+                overflow: auto;
+                max-height: 75%;
+                padding-bottom: 50px;
+
+                @include m.media('<=md') {
+                    max-height: unset;
+                    padding-bottom: 20px;
+                }
+            }
+            &Title {
+                margin: 0;
+                margin-bottom: 45px;
+                max-width: 443px;
+                color: var(--text-color-secondary);
+                @include m.font(f.px2rem(44px), 800, 100%);
+
+                @include m.media('<=md') {
+                    text-align: center;
+                    font-size: f.px2rem(26px);
+                    margin-bottom: 27px;
+                    max-width: unset;
+                }
+            }
+        }
+    }
+}

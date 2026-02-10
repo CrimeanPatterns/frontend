@@ -1,0 +1,33 @@
+@use '../../Styles/Variables.module.scss' as v;
+@use '../../Styles/Mixin' as m;
+@use '../../Styles/Functions.scss' as f;
+
+.textButton {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    @include m.font(f.px2rem(v.$text-font-size-s), 600, 100%, true);
+    color: var(--text-color-secondary);
+    transition: color 0.2s ease-in-out;
+    & svg {
+        transition: fill 0.2s ease-in-out;
+    }
+
+    @media (pointer: fine) {
+        &:hover {
+            color: var(--text-color-hover);
+            & svg {
+                fill: var(--icon-color-active);
+            }
+        }
+    }
+
+    &:disabled {
+        &:hover {
+            color: var(--text-color-secondary);
+            & svg {
+                fill: var(--icon-color-disabled);
+            }
+        }
+    }
+}

@@ -1,0 +1,78 @@
+@use '../../../../../UI/Styles/Mixin.scss' as m;
+@use '../../../../../UI/Styles/Functions.scss' as f;
+@use '../../../../../UI/Styles/Variables.module.scss' as v;
+
+.cancellation {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    max-width: 607px;
+    @include m.media('<=md') {
+        margin: 0 auto;
+        justify-content: flex-start;
+    }
+
+    &Title {
+        margin: 0;
+        color: var(--text-color-hover);
+        @include m.font(f.px2rem(44px), 800, 100%, true);
+        margin-bottom: 35px;
+
+        @include m.media('<=md') {
+            font-size: 26px;
+            margin-bottom: 16px;
+            text-align: center;
+        }
+    }
+
+    &Description {
+        color: var(--text-color-secondary);
+        @include m.font(f.px2rem(v.$text-font-size-s), 400, 170%);
+        margin-bottom: 17px;
+
+        @include m.media('<=md') {
+            margin-bottom: 12px;
+        }
+
+        & a {
+            text-decoration: none;
+            color: var(--text-color-hover);
+        }
+    }
+
+    &Button {
+        align-self: flex-start;
+    }
+
+    &BenefitsList {
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+        list-style: none;
+        padding-left: 20px;
+        margin-bottom: 20px;
+
+        @include m.media('<=md') {
+            margin-bottom: 12px;
+        }
+    }
+
+    &BenefitsItem {
+        position: relative;
+        color: var(--text-color-hover);
+        @include m.font(f.px2rem(v.$text-font-size-s), 400, 120%);
+
+        &:before {
+            content: '';
+            position: absolute;
+            top: 5px;
+            left: -18px;
+            width: 7px;
+            height: 7px;
+            background-color: var(--background-color-primary);
+            border-radius: 1px;
+            transform: rotate(-45deg);
+        }
+    }
+}

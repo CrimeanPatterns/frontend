@@ -1,0 +1,38 @@
+@use '../../../../UI/Styles/Mixin.scss' as m;
+@use '../../../../UI/Styles/Functions.scss' as f;
+@use '../../../../UI/Styles/Variables.module.scss' as v;
+
+.safariInstruction {
+    &InstallationLink {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 4px;
+        border-radius: 6px;
+        background-color: var(--background-color-primary);
+        color: var(--text-color-primary);
+        text-decoration: none;
+        @include m.font(f.px2rem(v.$text-font-size-s), 700, 100%);
+        padding: 13px 38px;
+        max-width: 187px;
+    }
+
+    &ReloadButton {
+        padding: 13px 42px;
+        max-width: 131px;
+    }
+
+    &ImagesContainer {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 14px;
+    }
+
+    &ImageWrapper {
+        width: 100%;
+    }
+
+    &ReloadButton {
+        display: inline-flex;
+    }
+}

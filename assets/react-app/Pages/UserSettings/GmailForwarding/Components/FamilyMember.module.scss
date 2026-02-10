@@ -1,0 +1,118 @@
+@use '../../../../UI/Styles/Variables.module.scss' as v;
+@use '../../../../UI/Styles/Mixin.scss' as m;
+@use '../../../../UI/Styles/Functions.scss' as f;
+
+.familyMembers {
+    display: grid;
+    grid-template-columns: 1.1fr 1fr;
+    align-items: center;
+    gap: 28px;
+    padding: 10px 60px;
+    background-color: var(--background-color-secondary);
+    scroll-margin-top: 65px;
+
+    @include m.media('<=xxl') {
+        padding: 10px 20px;
+    }
+
+    &UserSelection {
+        display: flex;
+        align-items: center;
+        flex-grow: 1;
+        max-width: 785px;
+        gap: 15px;
+
+        &Label {
+            @include m.font(f.px2rem(v.$text-font-size-s), 700, 100%);
+            color: var(--text-color-secondary);
+
+            &Block {
+                display: flex;
+                flex-direction: column;
+                gap: 4px;
+            }
+        }
+
+        &Description {
+            @include m.font(f.px2rem(v.$text-font-size-xs), 600, 100%);
+            color: var(--text-color-disabled);
+        }
+    }
+
+    &Alternative {
+        display: flex;
+        gap: 15px;
+
+        &Label {
+            @include m.font(f.px2rem(v.$text-font-size-s), 700, 100%);
+            color: var(--text-color-secondary);
+
+            &Block {
+                display: flex;
+                flex-direction: column;
+                gap: 4px;
+                cursor: pointer;
+            }
+        }
+
+        &Description {
+            @include m.font(f.px2rem(v.$text-font-size-xs), 600, 100%);
+            color: var(--text-color-disabled);
+        }
+    }
+
+    &ExtraSettingsBlock {
+        display: flex;
+        flex-direction: column;
+        gap: 3px;
+        margin-bottom: 30px;
+    }
+
+    &DropdownAnchor {
+        max-width: 341px;
+
+        @include m.media('<=xxl') {
+            max-width: 219px;
+        }
+    }
+}
+
+.alternativeAddress {
+    display: grid;
+    grid-template-rows: 0fr;
+    transition: grid-template-rows 0.2s ease-in-out;
+    background-color: var(--background-color-secondary);
+    padding: 0;
+
+    &Wrapper {
+        overflow: hidden;
+    }
+
+    &Inner {
+        display: flex;
+        align-items: center;
+        gap: 28px;
+        padding: 10px 60px;
+
+        @include m.media('<=xxl') {
+            padding: 10px 20px;
+        }
+    }
+
+    &Open {
+        grid-template-rows: 1fr;
+    }
+
+    &Label {
+        @include m.font(f.px2rem(v.$text-font-size-s), 700, 110%);
+        color: var(--text-color-secondary);
+    }
+
+    &Input {
+        max-width: 610px;
+
+        @include m.media('<=xxl') {
+            max-width: 319px;
+        }
+    }
+}

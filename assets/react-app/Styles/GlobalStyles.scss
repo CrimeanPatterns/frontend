@@ -1,0 +1,150 @@
+@use './FontMulish.scss';
+@use '../UI/Styles/Variables.module.scss' as v;
+
+#content {
+    font-family: v.$regular-text-font-family;
+}
+
+:root {
+    --text-color-primary: #{v.$text-color-primary};
+    --text-color-secondary: #{v.$text-color-secondary};
+    --text-color-disabled: #{v.$text-color-disabled};
+    --text-color-hover: #{v.$text-color-hover};
+
+    --icon-color-primary: #{v.$icon-color-primary};
+    --icon-color-secondary: #{v.$icon-color-secondary};
+    --icon-color-active: #{v.$icon-color-active};
+    --icon-color-disabled: #{v.$icon-color-disabled};
+
+    --background-color-primary: #{v.$background-color-primary};
+    --background-color-primary-hover: #{v.$background-color-primary-hover};
+    --background-color-primary-active: #{v.$background-color-primary-active};
+    --background-color-secondary: #{v.$background-color-secondary};
+    --background-color-main: #{v.$background-color-main};
+
+    --border-color-primary: #{v.$border-color-primary};
+    --border-color-secondary: #{v.$border-color-secondary};
+    --border-color-active: #{v.$border-color-active};
+
+    --switcher-color-default: #{v.$switcher-color-default};
+    --switcher-color-default-hover: #{v.$switcher-color-default-hover};
+    --switcher-color-active: #{v.$switcher-color-active};
+    --switcher-color-active-hover: #{v.$switcher-color-active-hover};
+
+    --popover-background-color: #{v.$popover-background-color};
+
+    --divider-color: #{v.$divider-color};
+    --shadow-color: #{v.$shadow-color};
+
+    --error-color: #{v.$error-color};
+    --warning-color: #{v.$warning-color};
+
+    --disabled-opacity: #{v.$disabled-opacity};
+}
+
+@media (prefers-color-scheme: dark) {
+    :root {
+        --text-color-primary: #{v.$text-color-dark-primary};
+        --text-color-secondary: #{v.$text-color-dark-secondary};
+        --text-color-disabled: #{v.$text-color-dark-disabled};
+        --text-color-hover: #{v.$text-color-dark-hover};
+
+        --icon-color-primary: #{v.$icon-color-dark-primary};
+        --icon-color-secondary: #{v.$icon-color-dark-secondary};
+        --icon-color-active: #{v.$icon-color-dark-active};
+        --icon-color-disabled: #{v.$icon-color-dark-disabled};
+
+        --background-color-primary: #{v.$background-color-dark-primary};
+        --background-color-primary-hover: #{v.$background-color-dark-primary-hover};
+        --background-color-primary-active: #{v.$background-color-dark-primary-active};
+        --background-color-secondary: #{v.$background-color-dark-secondary};
+        --background-color-main: #{v.$background-color-dark-main};
+
+        --border-color-primary: #{v.$border-color-dark-primary};
+        --border-color-secondary: #{v.$border-color-dark-secondary};
+        --border-color-active: #{v.$border-color-dark-active};
+
+        --switcher-color-default: #{v.$switcher-color-dark-default};
+        --switcher-color-default-hover: #{v.$switcher-color-dark-default-hover};
+        --switcher-color-active: #{v.$switcher-color-dark-active};
+        --switcher-color-active-hover: #{v.$switcher-color-dark-active-hover};
+
+        --popover-background-color: #{v.$popover-background-color-dark};
+
+        --divider-color: #{v.$divider-color-dark};
+        --shadow-color: #{v.$shadow-color-dark};
+
+        --error-color: #{v.$error-color-dark};
+        --warning-color: #{v.$warning-color};
+    }
+}
+
+html.light-mode {
+    --text-color-primary: #{v.$text-color-primary};
+    --text-color-secondary: #{v.$text-color-secondary};
+    --text-color-disabled: #{v.$text-color-disabled};
+    --text-color-hover: #{v.$text-color-hover};
+
+    --icon-color-primary: #{v.$icon-color-primary};
+    --icon-color-secondary: #{v.$icon-color-secondary};
+    --icon-color-active: #{v.$icon-color-active};
+    --icon-color-disabled: #{v.$icon-color-disabled};
+
+    --background-color-primary: #{v.$background-color-primary};
+    --background-color-primary-hover: #{v.$background-color-primary-hover};
+    --background-color-primary-active: #{v.$background-color-primary-active};
+    --background-color-secondary: #{v.$background-color-secondary};
+    --background-color-main: #{v.$background-color-main};
+
+    --border-color-primary: #{v.$border-color-primary};
+    --border-color-secondary: #{v.$border-color-secondary};
+    --border-color-active: #{v.$border-color-active};
+
+    --switcher-color-default: #{v.$switcher-color-default};
+    --switcher-color-default-hover: #{v.$switcher-color-default-hover};
+    --switcher-color-active: #{v.$switcher-color-active};
+    --switcher-color-active-hover: #{v.$switcher-color-active-hover};
+
+    --popover-background-color: #{v.$popover-background-color};
+
+    --divider-color: #{v.$divider-color};
+    --shadow-color: #{v.$shadow-color};
+
+    --error-color: #{v.$error-color};
+    --warning-color: #{v.$warning-color};
+}
+
+html.dark-mode {
+    --text-color-primary: #{v.$text-color-dark-primary};
+    --text-color-secondary: #{v.$text-color-dark-secondary};
+    --text-color-disabled: #{v.$text-color-dark-disabled};
+    --text-color-hover: #{v.$text-color-dark-hover};
+
+    --icon-color-primary: #{v.$icon-color-dark-primary};
+    --icon-color-secondary: #{v.$icon-color-dark-secondary};
+    --icon-color-active: #{v.$icon-color-dark-active};
+    --icon-color-disabled: #{v.$icon-color-dark-disabled};
+
+    --background-color-primary: #{v.$background-color-dark-primary};
+    --background-color-primary-hover: #{v.$background-color-dark-primary-hover};
+    --background-color-primary-active: #{v.$background-color-dark-primary-active};
+    --background-color-secondary: #{v.$background-color-dark-secondary};
+    --background-color-main: #{v.$background-color-dark-main};
+
+    --border-color-primary: #{v.$border-color-dark-primary};
+    --border-color-secondary: #{v.$border-color-dark-secondary};
+    --border-color-active: #{v.$border-color-dark-active};
+
+    --switcher-color-default: #{v.$switcher-color-dark-default};
+    --switcher-color-default-hover: #{v.$switcher-color-dark-default-hover};
+    --switcher-color-active: #{v.$switcher-color-dark-active};
+    --switcher-color-active-hover: #{v.$switcher-color-dark-active-hover};
+
+    --popover-background-color: #{v.$popover-background-color-dark};
+
+    --divider-color: #{v.$divider-color-dark};
+    --shadow-color: #{v.$shadow-color-dark};
+
+    --error-color: #{v.$error-color-dark};
+    --warning-color: #{v.$warning-color};
+}

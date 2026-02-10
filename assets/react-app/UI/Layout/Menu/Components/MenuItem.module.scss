@@ -1,0 +1,22 @@
+@use '../../../Styles/Variables.module.scss' as v;
+@use '../../../Styles/Mixin.scss' as m;
+@use '../../../Styles/Functions.scss' as f;
+
+.menuItem {
+    display: flex;
+    flex-direction: column;
+
+    &Label {
+        @include m.font(f.px2rem(v.$text-font-size-s), 400, 150%);
+        color: var(--text-color-secondary);
+        max-width: 100%;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    &Description {
+        @include m.font(f.px2rem(v.$text-font-size-xs), 400, 100%);
+        color: var(--text-color-disabled);
+    }
+}

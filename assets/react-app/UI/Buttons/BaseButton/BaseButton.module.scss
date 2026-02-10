@@ -1,0 +1,35 @@
+@use '../../Styles/Mixin' as m;
+@use '../../../UI/Styles/Functions.scss' as f;
+@use '../../../UI/Styles/Variables.module.scss' as v;
+
+.button {
+    position: relative;
+    display: flex;
+    gap: 9px;
+    align-items: center;
+    justify-content: center;
+    @include m.font(f.px2rem(v.$text-font-size-m), 800, 100%);
+    background-color: transparent;
+    color: inherit;
+    border: none;
+    padding: 0;
+
+    &Loader {
+        position: absolute;
+        top: 50%;
+        left: 17px;
+        transform: translateY(-50%);
+    }
+
+    &Text {
+        &WithLoader {
+            display: flex;
+            align-items: center;
+
+            &WithoutIcon {
+                padding-left: 30px;
+                padding-right: 30px;
+            }
+        }
+    }
+}

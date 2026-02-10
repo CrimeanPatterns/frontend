@@ -1,0 +1,65 @@
+@use '../../Styles/Variables.module.scss' as v;
+@use '../../Styles/Mixin.scss' as m;
+@use '../../Styles/Functions.scss' as f;
+
+.checkbox {
+    &Label {
+        display: inline-flex;
+        align-items: center;
+        position: relative;
+        cursor: pointer;
+
+        @media (pointer: fine) {
+            &:hover .checkboxCustom::after {
+                border-color: var(--background-color-primary);
+            }
+        }
+    }
+
+    &Input {
+        position: absolute;
+        opacity: 0;
+        &:checked + .checkboxCustom {
+            background-color: var(--background-color-primary);
+            border-color: var(--border-color-active);
+            &::after {
+                border-color: var(--background-color-main);
+            }
+        }
+    }
+
+    &Custom {
+        position: absolute;
+        top: 50%;
+        left: 0;
+        width: 18px;
+        height: 18px;
+        border: 1.5px solid var(--border-color-secondary);
+        background-color: transparent;
+        border-radius: 4px;
+        transition-property: border-color, background-color;
+        transition-duration: 0.2s;
+        transition-timing-function: ease-in-out;
+        transform: translateY(-50%);
+
+        &:after {
+            content: '';
+            position: absolute;
+            top: 3.5px;
+            left: 3px;
+            border: 3px solid transparent;
+            border-right: none;
+            border-top: none;
+            width: 7px;
+            height: 3px;
+            transform: rotate(-45deg);
+            transition: border-color 0.2s ease-in-out;
+        }
+    }
+
+    &Text {
+        @include m.font(f.px2rem(v.$text-font-size-m), 400, 110%);
+        color: var(--text-color-secondary);
+        margin-left: 28px;
+    }
+}

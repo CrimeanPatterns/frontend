@@ -1,0 +1,236 @@
+@use '../../../UI/Styles/Mixin.scss' as m;
+
+.ficoAccount {
+    display: flex;
+    gap: 18px;
+    align-items: center;
+    padding: 6px 10px;
+    background-color: #ffffff;
+    box-shadow: 2px 2px 16px 0px #3d47610a;
+    border: 2px solid #ffffff;
+    border-radius: 8px;
+    cursor: pointer;
+    flex-shrink: 0;
+    transition:
+        background-color 0.2s,
+        border-color 0.2s;
+
+    &:hover {
+        background-color: #e9f2fb;
+    }
+
+    @include m.theme('dark') {
+        background-color: #262628;
+        border-color: #262628;
+
+        &:hover {
+            background-color: #303032;
+            border-color: #303032;
+        }
+    }
+}
+
+.balance {
+    font-size: 13px;
+    line-height: 100%;
+    font-weight: 700;
+    color: #5b6373;
+
+    @include m.theme('dark') {
+        color: white;
+    }
+
+    &Container {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        height: 100%;
+    }
+
+    &ChangeCountContainer {
+        display: flex;
+        align-items: center;
+        gap: 1px;
+    }
+
+    &ChangeCount {
+        font-size: 10px;
+        line-height: 100%;
+        font-weight: 400;
+
+        &Positive {
+            color: #27a887;
+
+            @include m.theme('dark') {
+                color: #30d178;
+            }
+        }
+
+        &Negative {
+            color: #f34141;
+        }
+    }
+
+    &Icon {
+        position: absolute;
+        flex-shrink: 0;
+        opacity: 0;
+        visibility: hidden;
+
+        &Visible {
+            position: relative;
+            opacity: 1;
+            visibility: visible;
+        }
+    }
+}
+
+.title {
+    font-size: 13px;
+    line-height: 100%;
+    font-weight: 500;
+    color: #5b6373;
+
+    @include m.theme('dark') {
+        color: white;
+    }
+
+    &Container {
+        display: flex;
+        flex-direction: column;
+        gap: 7px;
+    }
+
+    &Description {
+        font-weight: 500;
+        font-size: 12px;
+        line-height: 100%;
+        color: rgba(91, 99, 115, 0.5);
+
+        &::first-letter {
+            text-transform: uppercase;
+        }
+
+        @include m.theme('dark') {
+            color: rgba(255, 255, 255, 0.5);
+        }
+    }
+}
+
+.updateButton {
+    border: none;
+    padding: 6px;
+    transition: color 0.2s;
+    color: rgba(46, 56, 83, 0.6);
+
+    @media (pointer: fine) {
+        &:hover {
+            color: rgba(46, 56, 83, 1);
+        }
+    }
+
+    @include m.theme('dark') {
+        color: rgba(255, 255, 255, 0.4);
+
+        @media (pointer: fine) {
+            &:hover {
+                color: rgba(255, 255, 255, 1);
+            }
+        }
+    }
+
+    &Icon {
+        fill: currentColor;
+    }
+}
+
+.popoverContent {
+    display: flex;
+    flex-direction: column;
+    gap: 28px;
+    padding: 25px;
+    position: relative;
+}
+
+.popoverCross {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+}
+
+.speedometerContainer {
+    padding: 25px;
+    padding-bottom: 0;
+}
+
+.popoverBalance {
+    font-size: 16px;
+    font-weight: 700;
+    line-height: 100%;
+    color: #5b6373;
+
+    @include m.theme('dark') {
+        color: white;
+    }
+}
+
+.popoverInfo {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    align-items: center;
+}
+
+.popoverBalanceContainer {
+    display: flex;
+    gap: 4px;
+}
+
+.popoverBalanceChangeCount {
+    font-size: 12px;
+    line-height: 100%;
+    font-weight: 400;
+}
+
+.speedometerSegments {
+    &Excellent {
+        color: #05be7b;
+
+        @include m.theme('dark') {
+            color: #30d178;
+        }
+    }
+
+    &VeryGood {
+        color: #71c35c;
+
+        @include m.theme('dark') {
+            color: #8fe07b;
+        }
+    }
+
+    &Good {
+        color: #bbcf26;
+
+        @include m.theme('dark') {
+            color: #d9f028;
+        }
+    }
+
+    &Fair {
+        color: #ffaa33;
+    }
+
+    &Bad {
+        color: #ff3434;
+    }
+}
+
+.circleProgressTrack {
+    border-color: #b4cad8;
+
+    @include m.theme('dark') {
+        border-color: #4d4d50;
+    }
+}

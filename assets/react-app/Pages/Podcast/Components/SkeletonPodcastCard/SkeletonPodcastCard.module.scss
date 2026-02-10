@@ -1,0 +1,56 @@
+.skeletonPodcastCard {
+    display: grid;
+    grid-template-columns: 1fr 1.5fr;
+    grid-template-areas:
+        'preview meta'
+        'preview title'
+        'preview description'
+        'preview player';
+    gap: 0 15px;
+    background-color: var(--background-color-main);
+    padding: 20px;
+
+    @media (max-width: 774px) {
+        grid-template-columns: 1fr;
+        grid-template-areas:
+            'preview'
+            'meta'
+            'title'
+            'description'
+            'player';
+        gap: 14px;
+    }
+
+    &Meta {
+        grid-area: meta;
+        display: flex;
+        gap: 12px;
+    }
+
+    &Title {
+        grid-area: title;
+    }
+
+    &Description {
+        grid-area: description;
+    }
+
+    &Player {
+        grid-area: player;
+        width: 70%;
+
+        @media (max-width: 774px) {
+            width: 100%;
+        }
+    }
+
+    &Preview {
+        grid-area: preview;
+        height: 253px;
+        @media (max-width: 774px) {
+            justify-self: flex-start;
+            height: 77px;
+            max-width: 138px;
+        }
+    }
+}

@@ -1,0 +1,38 @@
+.playButton {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    border: none;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    flex-shrink: 0;
+
+    &Primary {
+        background-color: var(--background-color-primary);
+
+        & svg {
+            fill: var(--icon-color-primary);
+        }
+    }
+
+    &Secondary {
+        background-color: white;
+
+        & svg {
+            fill: var(--icon-color-active);
+        }
+    }
+
+    &Icon {
+        width: 12px;
+        height: 13px;
+
+        &Play {
+            position: relative;
+            left: 1px;
+        }
+    }
+}

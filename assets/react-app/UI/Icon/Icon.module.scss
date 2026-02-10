@@ -1,0 +1,57 @@
+@use '../Styles/Mixin.scss' as m;
+@use '../Styles/Variables.module.scss';
+
+.icon {
+    flex-shrink: 0;
+    transition: fill 0.2s ease-in-out;
+}
+
+.smallSize {
+    width: 16px;
+    height: 16px;
+
+    @include m.media('<=xl') {
+        width: 14px;
+        height: 14px;
+    }
+}
+
+.mediumSize {
+    width: 24px;
+    height: 24px;
+
+    @include m.media('<=xl') {
+        width: 22px;
+        height: 22px;
+    }
+}
+
+.bigSize {
+    width: 36px;
+    height: 36px;
+
+    @include m.media('<=xl') {
+        width: 32px;
+        height: 32px;
+    }
+}
+
+.primary {
+    fill: var(--icon-color-primary);
+}
+
+.active {
+    fill: var(--icon-color-active);
+}
+
+.secondary {
+    fill: var(--icon-color-secondary);
+}
+
+.disabled {
+    fill: var(--icon-color-disabled);
+}
+
+.warning {
+    fill: var(--warning-color);
+}

@@ -1,0 +1,53 @@
+@use '../../../Styles/Variables.module.scss';
+
+.button {
+    position: absolute;
+    top: 0;
+    right: 0;
+    background-color: #28292f;
+    border: none;
+    width: 60px;
+    height: 60px;
+    z-index: 1072;
+}
+
+.cross {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    transition: transform 0.2s ease-in-out;
+
+    &::before {
+        content: '';
+        position: absolute;
+        width: 12px;
+        height: 3px;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%) rotate(-45deg);
+        background-color: #515767;
+        transition: background-color 0.2s ease-in-out;
+    }
+
+    &::after {
+        content: '';
+        position: absolute;
+        width: 12px;
+        height: 3px;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%) rotate(45deg);
+        background-color: #515767;
+        transition: background-color 0.2s ease-in-out;
+    }
+
+    &:hover {
+        transform: rotate(90deg);
+        &::after {
+            background-color: var(--icon-color-primary);
+        }
+        &::before {
+            background-color: var(--icon-color-primary);
+        }
+    }
+}

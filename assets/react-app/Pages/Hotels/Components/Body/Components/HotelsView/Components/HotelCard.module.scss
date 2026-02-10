@@ -1,0 +1,362 @@
+@use '../../../../../../../UI/Styles/Mixin' as m;
+@use '../../../../../../../UI/Styles/Functions.scss' as f;
+@use '../../../../../../../UI/Styles/Variables.module.scss' as v;
+@use '../../../../../../../UI/Styles/UtilityStyles.scss';
+
+.cardContainer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    list-style: none;
+    gap: 47px;
+    padding-left: 36px;
+    padding-right: 44px;
+
+    @include m.media('<=xxxl') {
+        gap: 31px;
+    }
+}
+
+.leftContentContainer {
+    display: flex;
+    align-items: center;
+    flex: 1 1 auto;
+    gap: 46px;
+
+    @include m.media('<=xxxl') {
+        gap: 31px;
+    }
+}
+
+.rightContentContainer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    flex-grow: 1;
+    max-width: 263px;
+    gap: 10px;
+
+    @include m.media('<=xxl') {
+        max-width: 161px;
+    }
+}
+
+.image {
+    width: 314px;
+    height: 202px;
+    border-radius: 7px;
+
+    @include m.media('<=xxxl') {
+        width: 216px;
+        height: 140px;
+    }
+}
+
+.mainInfoContainer {
+    flex: 1 1 auto;
+}
+
+.hotelName {
+    @include m.font(f.px2rem(v.$text-font-size-l), 800, 100%);
+    color: var(--text-color-secondary);
+    margin-bottom: 10px;
+
+    &Skeleton {
+        max-width: 41%;
+        height: 20px;
+        margin-bottom: 8px;
+    }
+}
+
+.hotelAddress {
+    @include m.font(f.px2rem(v.$text-font-size-s), 600, 100%);
+    color: var(--text-color-secondary);
+    margin-bottom: 19px;
+
+    &Skeleton {
+        max-width: 66%;
+        height: 10px;
+        margin-bottom: 17px;
+    }
+}
+
+.hotelAdditionalInfoContainer {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 25px;
+
+    @include m.media('<=xxxl') {
+        margin-bottom: 15px;
+    }
+}
+
+.redemptionBlock {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 0;
+    gap: 6px;
+    cursor: pointer;
+
+    @include m.media('<=xxxl') {
+        gap: 6px;
+    }
+
+    &Skeleton {
+        display: flex;
+        flex-direction: column;
+        flex: 1 1 auto;
+        max-width: 14%;
+        gap: 8px;
+
+        &Big {
+            display: flex;
+            flex-direction: column;
+            flex: 1 1 auto;
+            max-width: 26%;
+            gap: 8px;
+        }
+    }
+}
+
+.dateInfo {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    @include m.font(f.px2rem(v.$text-font-size-s), 700, 100%);
+    padding: 6px 10px 6px 8px;
+    background-color: var(--background-color-secondary);
+    color: var(--text-color-secondary);
+    border-radius: 4px;
+    &Skeleton {
+        max-width: 12%;
+        flex: 1 1 auto;
+        height: 26px;
+    }
+
+    @include m.media('<=xxxl') {
+        font-size: f.px2rem(v.$text-font-size-xs);
+        padding: 3px 3px 3px 5px;
+    }
+}
+
+.rate {
+    display: flex;
+    align-items: center;
+    gap: 3px;
+    padding: 6px 7px;
+    @include m.font(f.px2rem(v.$text-font-size-s), 700, 100%);
+    background-color: var(--background-color-primary);
+    color: var(--text-color-primary);
+    border-radius: 4px;
+    &Skeleton {
+        flex: 1 1 auto;
+        max-width: 9%;
+        height: 10px;
+        background-color: transparent;
+    }
+
+    @include m.media('<=xxxl') {
+        font-size: f.px2rem(v.$text-font-size-xs);
+        padding: 3px 5px;
+    }
+}
+
+.distanceInfo {
+    @include m.font(f.px2rem(v.$text-font-size-s), 600, 100%);
+    color: var(--text-color-secondary);
+
+    @include m.media('<=xxxl') {
+        font-size: f.px2rem(v.$text-font-size-xs);
+    }
+}
+
+.assessmentsContainer {
+    display: flex;
+    gap: 32px;
+
+    &Skeleton {
+        display: flex;
+        gap: 66px;
+    }
+}
+
+.redemptionValue {
+    @include m.font(f.px2rem(v.$text-font-size-l), 600, 100%);
+    color: #27a887;
+    &Skeleton {
+        height: 26px;
+    }
+}
+
+.redemptionDescription {
+    @include m.font(f.px2rem(v.$text-font-size-s), 600, 100%);
+    color: var(--text-color-secondary);
+    &Skeleton {
+        max-width: 56%;
+        height: 10px;
+    }
+
+    @include m.media('<=xxxl') {
+        font-size: f.px2rem(v.$text-font-size-xs);
+    }
+}
+
+.averagePrice {
+    @include m.font(f.px2rem(v.$text-font-size-l), 600, 100%);
+    color: var(--text-color-disabled);
+}
+
+.separator {
+    flex-shrink: 0;
+    width: 2px;
+    align-self: stretch;
+    background-color: var(--background-color-secondary);
+}
+
+.bookContainer {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    flex-grow: 1;
+    padding: 14px 20px 20px 25px;
+    border-radius: 6px;
+    background-color: var(--background-color-secondary);
+    &Skeleton {
+        flex: 1 1 auto;
+        max-width: 16%;
+    }
+
+    @include m.media('<=1625px') {
+        padding: 9px 16px;
+        gap: 7px;
+    }
+}
+
+.brandAndCostContainer {
+    display: flex;
+    gap: 23px;
+
+    @include m.media('<=1625px') {
+        flex-direction: column;
+        align-items: center;
+        gap: 5px;
+    }
+}
+
+.logoContainer {
+    border-radius: 6px;
+    max-width: 94px;
+    max-height: 50px;
+
+    // @include m.media('<=xxxl') {
+    //     padding: 10px;
+    // }
+}
+
+.exchangeLogoContainer {
+    position: relative;
+    width: 100%;
+    max-width: 94px;
+    height: 50px;
+}
+
+.exchangeLogo {
+    position: absolute;
+    max-width: 54px;
+    max-height: 28px;
+    border: 1px solid var(--background-color-secondary);
+    border-radius: 6px;
+    overflow: hidden;
+
+    &From {
+        left: 0;
+        top: 0;
+    }
+
+    &To {
+        right: 0;
+        bottom: 0;
+    }
+    // display: flex;
+    // align-items: center;
+    // background-color: var(--background-color-main);
+    // padding: 14px;
+    // border-radius: 6px;
+    // max-width: 94px;
+    // max-height: 50px;
+
+    // @include m.media('<=xxxl') {
+    //     padding: 10px;
+    // }
+}
+
+.logo {
+    border-radius: 6px;
+}
+
+.exchangeArrow {
+    position: absolute;
+    left: 100%;
+    top: calc(50% - 6px);
+}
+
+.logo {
+    width: 63px;
+    height: 15px;
+
+    @include m.media('<=xxxl') {
+        width: 37px;
+        height: 9px;
+    }
+}
+
+.amountPoints {
+    display: block;
+    text-align: right;
+    @include m.font(f.px2rem(20px), 600, 100%);
+    color: #27a887;
+
+    @include m.media('<=1625px') {
+        text-align: center;
+    }
+}
+
+.amountPointsDescription {
+    display: block;
+    text-align: right;
+    @include m.font(f.px2rem(v.$text-font-size-s), 600, 100%);
+    color: var(--text-color-secondary);
+
+    @include m.media('<=xxxl') {
+        font-size: f.px2rem(v.$text-font-size-xs);
+    }
+}
+
+.transferPointsDescription {
+    @include m.font(f.px2rem(v.$text-font-size-xs), 600, 100%);
+
+    color: var(--text-color-secondary);
+    opacity: 0.6;
+}
+
+.otherChoiceButton {
+    @include m.font(f.px2rem(v.$text-font-size-s), 600, 100%);
+
+    color: #0168ca;
+    display: inline-block;
+    position: relative;
+
+    &::after {
+        content: '';
+        position: absolute;
+        bottom: -0.1em;
+        left: 0;
+        width: 100%;
+        height: 0.2em;
+        background: radial-gradient(circle, rgba(1, 104, 202, 0.5) 50%, transparent 50%, transparent 100%);
+        background-size: 5.5px 0.2em;
+        background-repeat: repeat-x;
+    }
+}

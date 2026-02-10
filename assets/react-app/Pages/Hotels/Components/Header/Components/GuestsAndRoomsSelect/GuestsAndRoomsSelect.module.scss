@@ -1,0 +1,24 @@
+@use '../../../../../../UI/Styles/Mixin' as m;
+@use '../../../../../../UI/Styles/Functions.scss' as f;
+@use '../../../../../../UI/Styles/Variables.module.scss' as v;
+
+.container {
+    grid-column: span 2;
+}
+.breadcrumbContainer {
+    cursor: pointer;
+}
+
+.popoverContentContainer {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    padding: 20px 30px;
+    box-shadow: 15px 15px 40px 0px rgba(16, 25, 57, 0.25);
+    border-radius: 6px;
+}
+
+.description {
+    @include m.font(f.px2rem(v.$text-font-size-s), 600, 100%);
+    color: var(--text-color-secondary);
+}

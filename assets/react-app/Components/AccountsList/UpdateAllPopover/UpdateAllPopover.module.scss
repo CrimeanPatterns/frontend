@@ -1,0 +1,93 @@
+@use '../../../UI/Styles/Mixin.scss' as m;
+@use '../../../UI/Styles/Functions.scss' as f;
+@use '../../../UI/Styles/Variables.module.scss' as v;
+
+.UpdateAllPopover {
+    &CircleProgressContainer {
+        display: flex;
+        justify-content: center;
+    }
+
+    &IconContainer {
+        width: 76px;
+        height: 76px;
+        padding: 22px 18px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background-color: #f8f9fa;
+        border-radius: 50%;
+    }
+
+    &ContentContainer {
+        display: grid;
+        justify-content: center;
+        max-width: 400px;
+        padding: 21px 8px 0 8px;
+
+        &Small {
+            padding-bottom: 18px;
+        }
+    }
+
+    &Title {
+        @include m.font(f.px2rem(v.$title-font-size-s), 800, 100%, true);
+        margin-bottom: 20px;
+        text-align: center;
+        text-transform: capitalize;
+    }
+
+    &Description {
+        @include m.font(f.px2rem(v.$text-font-size-s), 400, 130%);
+        margin-bottom: 20px;
+        text-align: center;
+
+        &Small {
+            margin-bottom: 30px;
+        }
+    }
+
+    &AccountsCountersContainer {
+        display: grid;
+        gap: 9px;
+        grid-template-columns: 1fr 1fr;
+        grid-template-rows: auto;
+        margin-bottom: 30px;
+    }
+
+    &AccountsCounter {
+        display: grid;
+        background-color: var(--background-color-secondary);
+        grid-template-rows: subgrid;
+        grid-row: span 2;
+        padding: 22px 20px;
+        border-radius: 8px;
+        text-align: center;
+        gap: 10px;
+
+        &Number {
+            @include m.font(f.px2rem(v.$title-font-size-s), 700, 100%);
+            color: var(--text-color-secondary);
+        }
+        &Name {
+            @include m.font(f.px2rem(v.$text-font-size-s), 400, 130%);
+            color: var(--text-color-secondary);
+            opacity: 0.5;
+
+            &Short {
+                max-width: 90px;
+                justify-self: center;
+            }
+        }
+    }
+
+    &ButtonsContainer {
+        display: grid;
+        justify-content: stretch;
+        gap: 8px;
+    }
+
+    &CancelButton {
+        padding: 15px;
+    }
+}

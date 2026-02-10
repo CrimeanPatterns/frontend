@@ -1,0 +1,86 @@
+@use '../../Styles/Variables.module.scss' as v;
+@use '../../Styles/Mixin' as m;
+@use '../../Styles/Functions.scss' as f;
+
+.switcher {
+    position: relative;
+    display: inline-block;
+    width: 48px;
+    height: 28px;
+    flex-shrink: 0;
+}
+
+.inputCheckbox {
+    opacity: 0;
+    width: 0;
+    height: 0;
+    z-index: -1;
+    &:checked + .slider {
+        background-color: var(--switcher-color-active);
+        &::before {
+            height: 12px;
+            width: 2px;
+            background-color: white;
+            top: 8px;
+            left: 12px;
+            border-radius: 0;
+        }
+        &::after {
+            transform: translateX(20px);
+        }
+        &:hover {
+            background-color: var(--switcher-color-active-hover);
+        }
+    }
+}
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: var(--switcher-color-default);
+    border-radius: 34px;
+    transition: background-color 0.2s ease-in-out;
+    &::before {
+        position: absolute;
+        content: '';
+        top: 12px;
+        right: 11px;
+        width: 4px;
+        height: 4px;
+        border-radius: 50%;
+        background-color: white;
+        transition: opacity 0.2s ease-in-out;
+
+        @include m.theme('dark') {
+            background-color: #5a5a5f;
+        }
+    }
+    &::after {
+        position: absolute;
+        content: '';
+        top: 4px;
+        left: 4px;
+        height: 20px;
+        width: 20px;
+        background-color: white;
+        border-radius: 50%;
+        transition-property: left, right, transform;
+        transition-timing-function: ease-in-out;
+        transition-duration: 0.2s;
+    }
+
+    &:hover {
+        background-color: var(--switcher-color-default-hover);
+    }
+}
+
+.label {
+    display: inline-flex;
+    align-items: center;
+    gap: 19px;
+    @include m.font(f.px2rem(v.$text-font-size-s), 600, 100%);
+}

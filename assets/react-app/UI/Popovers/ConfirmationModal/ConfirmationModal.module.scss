@@ -1,0 +1,41 @@
+@use '../../Styles/Mixin.scss' as m;
+@use '../../Styles/Functions.scss' as f;
+@use '../../Styles/Variables.module.scss' as v;
+
+.conformationModal {
+    display: flex;
+    flex-direction: column;
+    gap: 26px;
+
+    @include m.media('<=md') {
+        gap: 18px;
+    }
+
+    &Title {
+        @include m.font(f.px2rem(26px), 800, 100%, true);
+
+        @include m.media('<=md') {
+            font-size: f.px2rem(v.$title-font-size-m);
+        }
+    }
+
+    &Description {
+        @include m.font(f.px2rem(v.$text-font-size-m), 600, 130%);
+        max-width: 444px;
+    }
+
+    &Button {
+        width: 100%;
+
+        @include m.media('<=md') {
+            padding-top: 13px;
+            padding-bottom: 13px;
+        }
+
+        &Container {
+            display: flex;
+            justify-content: stretch;
+            gap: 8px;
+        }
+    }
+}

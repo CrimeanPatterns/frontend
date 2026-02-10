@@ -1,0 +1,58 @@
+.skeletonPage {
+    &Header {
+        display: grid;
+        grid-template-columns: 1.5fr 1fr;
+        gap: 0 20px;
+        grid-template-areas:
+            'meta preview'
+            'title preview'
+            'description preview'
+            'player preview';
+        justify-content: space-between;
+        align-items: center;
+        background-color: #d3d4d7;
+        padding: 20px;
+
+        @media (max-width: 774px) {
+            grid-template-columns: 1fr;
+            grid-template-areas:
+                'meta'
+                'title'
+                'preview'
+                'description'
+                'player';
+            gap: 14px;
+        }
+
+        &Meta {
+            display: flex;
+            gap: 12px;
+            grid-area: meta;
+            align-self: flex-end;
+        }
+        &Preview {
+            grid-area: preview;
+            height: 324px;
+
+            @media (max-width: 774px) {
+                justify-self: center;
+                height: 159px;
+                max-width: 284px;
+            }
+        }
+        &Title {
+            grid-area: title;
+        }
+        &Description {
+            grid-area: description;
+        }
+        &Player {
+            grid-area: player;
+        }
+    }
+
+    &Content {
+        display: grid;
+        gap: 5px;
+    }
+}

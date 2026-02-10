@@ -1,0 +1,46 @@
+@use '../../../../UI/Styles/Mixin' as m;
+@use '../../../../UI/Styles/Functions.scss' as f;
+@use '../../../../UI/Styles/Variables.module.scss' as v;
+
+.deletionForm {
+    &Label {
+        display: block;
+        margin-bottom: 7px;
+
+        &Text {
+            display: block;
+            @include m.font(f.px2rem(v.$text-font-size-s), 700, 150%);
+            color: var(--text-color-secondary);
+            margin-bottom: 13px;
+
+            @include m.media('<=md') {
+                font-size: f.px2rem(v.$text-font-size-xs);
+                margin-bottom: 9px;
+            }
+        }
+    }
+
+    &Button {
+        @include m.media('<=md') {
+            width: 100%;
+            padding: 14px;
+            font-size: f.px2rem(v.$text-font-size-s);
+            line-height: 100%;
+        }
+
+        &Description {
+            max-width: 732px;
+            @include m.font(f.px2rem(v.$text-font-size-s), 400, 150%);
+            color: var(--text-color-secondary);
+            margin-bottom: 17px;
+
+            @include m.media('<=md') {
+                margin-bottom: 20px;
+            }
+        }
+    }
+
+    &ReasonTextInput {
+        max-width: 911px;
+    }
+}

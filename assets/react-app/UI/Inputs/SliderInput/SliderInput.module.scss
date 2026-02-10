@@ -1,0 +1,41 @@
+@use '../../Styles/Variables.module.scss' as v;
+
+.sliderInput {
+    &Container {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+        padding: 12px;
+    }
+
+    &Input {
+        &Container {
+            display: flex;
+            gap: 5px;
+            align-items: center;
+
+            input[type='text'] {
+                width: 100%;
+                height: auto;
+                background-color: var(--background-color-secondary) !important;
+                color: var(text-color-secondary) !important;
+                border: none;
+                padding: 12px !important;
+                font-size: v.$text-font-size-m;
+                border-radius: 6px !important;
+                &:focus {
+                    box-shadow: none !important;
+                    border: none !important;
+                }
+            }
+        }
+
+        &Separator {
+            width: 10px;
+            height: 2px;
+            flex-grow: 0;
+            flex-shrink: 0;
+            background-color: rgba(81, 87, 103, 0.2);
+        }
+    }
+}

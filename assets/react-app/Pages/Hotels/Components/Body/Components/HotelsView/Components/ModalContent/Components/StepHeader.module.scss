@@ -1,0 +1,38 @@
+@use '../../../../../../../../../UI/Styles/Variables.module.scss' as v;
+@use '../../../../../../../../../UI//Styles/Mixin' as m;
+@use '../../../../../../../../../UI/Styles/Functions.scss' as f;
+
+.iconContainer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    background-color: var(--background-color-primary);
+}
+
+.titleAndDescribeContainer {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    align-self: center;
+}
+
+.titleContainer {
+    @include m.font(f.px2rem(v.$text-font-size-l), 800, 100%);
+    display: flex;
+    gap: 5px;
+    color: var(--text-color-secondary);
+}
+
+.stepCount {
+    color: var(--text-color-hover);
+}
+
+.description {
+    @include m.font(f.px2rem(v.$text-font-size-xs), 600, 100%);
+    color: var(--text-color-disabled);
+    max-width: 564px;
+}

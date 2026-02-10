@@ -1,0 +1,43 @@
+@use '../Styles/Variables.module.scss' as v;
+@use '../../../bem/scss/vars' as ov;
+@forward '../../../bem/scss/include-media' with (
+    $breakpoints: ov.$screen-breakpoints,
+    $media-expressions: ov.$media-expressions
+);
+
+@mixin font($size: false, $weight: false, $lh: false, $isTitle: false) {
+    @if $isTitle {
+        font-family: v.$title-text-font-family;
+    } @else {
+        font-family: v.$regular-text-font-family;
+    }
+    font-style: normal;
+    @if $size {
+        font-size: $size;
+    }
+    @if $weight {
+        font-weight: $weight;
+    }
+    @if $lh {
+        line-height: $lh;
+    }
+}
+
+@mixin theme($name) {
+    @if $name == 'light' {
+        html:not(:global(.dark-mode)) & {
+            @content;
+        }
+    } @else if $name == 'dark' {
+        @media (prefers-color-scheme: dark) {
+            html:not(:global(.light-mode)) & {
+                @content;
+            }
+        }
+        :global(html.dark-mode) & {
+            @content;
+        }
+    } @else {
+        @error 'Invalid theme name: #{$name}';
+    }
+}

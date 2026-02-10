@@ -1,0 +1,20 @@
+@use '../../../../../../../UI/Styles/Mixin' as m;
+@use '../../../../../../../UI/Styles/Functions.scss' as f;
+@use '../../../../../../../UI/Styles/Variables.module.scss' as v;
+
+.popoverContentContainer {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    @include m.font(f.px2rem(v.$text-font-size-m), 600, 100%);
+    padding: 27px 32px;
+    background-color: var(--background-color-main);
+    color: var(--text-color-secondary);
+    border-radius: 6px;
+    box-shadow: 7px 7px 24px 0px rgba(16, 25, 57, 0.15);
+}
+
+.anchorButton {
+    justify-self: left;
+    min-width: 190px;
+}

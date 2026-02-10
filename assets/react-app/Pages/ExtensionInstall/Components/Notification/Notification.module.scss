@@ -1,0 +1,22 @@
+@use '../../../../UI/Styles/Variables.module.scss' as v;
+@use '../../../../UI/Styles/Mixin.scss' as m;
+@use '../../../../UI/Styles/Functions.scss' as f;
+
+.notification {
+    display: grid;
+    gap: 6px;
+    padding: 15px 28px;
+    max-width: 959px;
+    background-color: rgba(70, 132, 196, 0.1);
+    border-radius: 6px;
+
+    &Title {
+        @include m.font(f.px2rem(14px), 700, 140%);
+        color: #4684c4;
+    }
+
+    &Description {
+        @include m.font(f.px2rem(13px), 500, 140%);
+        color: var(--text-color-secondary);
+    }
+}

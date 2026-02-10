@@ -1,0 +1,98 @@
+@use '../../../../UI/Styles/Mixin.scss' as m;
+@use '../../../../UI/Styles/Functions.scss' as f;
+@use '../../../../UI/Styles/Variables.module.scss' as v;
+
+.podcastMenu {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    width: 774px;
+    height: 424px;
+
+    &TabsWrapper {
+        padding: 33px 0;
+        border-right: 2px solid rgba(91, 99, 115, 0.05);
+        overflow: hidden;
+    }
+
+    &Tabs {
+        display: flex;
+        flex-direction: column;
+        padding: 0 33px;
+        gap: 18px;
+    }
+
+    &Tab {
+        @include m.font(f.px2rem(v.$text-font-size-m), 700, 100%);
+        color: var(--text-color-secondary);
+        &Active {
+            color: var(--text-color-hover);
+        }
+    }
+
+    &PodcastsWrapper {
+        padding: 33px;
+        overflow: hidden;
+    }
+
+    &PodcastsContainer {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+    }
+
+    &Podcast {
+        display: grid;
+        grid-template-columns: 1fr 5.3fr;
+        align-items: center;
+        gap: 25px;
+        max-width: 470px;
+        cursor: pointer;
+        padding: 12px;
+        border-radius: 8px;
+        transition: background-color 0.2s ease-in-out;
+
+        @media (pointer: fine) {
+            &:hover {
+                background-color: var(--background-color-secondary);
+            }
+        }
+    }
+
+    &PodcastImg {
+        height: 83px;
+        width: 83px;
+    }
+
+    &PodcastInfo {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    &PodcastInfoMeta {
+        display: flex;
+        align-items: center;
+        gap: 7px;
+    }
+
+    &PodcastSeason {
+        @include m.font(f.px2rem(v.$text-font-size-xs), 700, 100%);
+        color: var(--text-color-hover);
+    }
+
+    &PodcastDate {
+        @include m.font(f.px2rem(v.$text-font-size-xs), 400, 100%);
+        color: var(--text-color-disabled);
+    }
+
+    &PodcastTitle {
+        @include m.font(f.px2rem(v.$text-font-size-m), 700, 100%);
+        color: var(--text-color-secondary);
+    }
+
+    &PodcastPlayingButton {
+        border: none;
+        background-color: transparent;
+        padding: 0;
+    }
+}

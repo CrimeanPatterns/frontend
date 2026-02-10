@@ -1,0 +1,57 @@
+@use '../../UI/Styles/Mixin.scss' as m;
+
+.header-site {
+    @include m.media('<=lg') {
+        display: none;
+    }
+}
+
+.user-blk {
+    @include m.media('<=lg') {
+        display: none;
+    }
+}
+
+.page {
+    @include m.media('<=lg') {
+        padding: 0;
+        min-width: unset;
+    }
+}
+
+.footer-site {
+    display: none;
+}
+
+.main-body {
+    @include m.media('<=lg') {
+        padding: 0;
+        min-width: unset;
+    }
+}
+
+.active-sessions {
+    display: none;
+}
+
+.main-body.hide-menu .page {
+    @include m.media('<=lg') {
+        padding: 0;
+    }
+}
+
+.main-body.not-logged .content {
+    @include m.media('<=lg') {
+        padding: 0 !important;
+    }
+}
+
+.main-body.from-app .page {
+    @include m.media('<=lg') {
+        padding-top: 0px !important;
+    }
+}
+
+#ng-app {
+    padding-left: 0 !important;
+}

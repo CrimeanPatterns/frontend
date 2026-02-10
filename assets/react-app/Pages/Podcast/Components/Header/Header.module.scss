@@ -1,0 +1,343 @@
+@use '../../../../UI/Styles/Mixin.scss' as m;
+@use '../../../../UI/Styles/Functions.scss' as f;
+@use '../../../../UI/Styles/Variables.module.scss' as v;
+
+.header {
+    position: relative;
+    padding: 50px 0 33px 0;
+    background: linear-gradient(180deg, #1d202b 10%, #0f60bf 100%);
+
+    @media (max-width: 774px) {
+        padding: 48px 0 0 0;
+    }
+
+    &Tag {
+        display: flex;
+        align-items: center;
+        gap: 7px;
+        @include m.font(f.px2rem(v.$text-font-size-s), 800, 170%, true);
+        color: var(--text-color-primary);
+        position: absolute;
+        top: 0;
+        left: 60px;
+        background-color: var(--background-color-primary);
+        padding: 6px 9px;
+        border-bottom-left-radius: 2px;
+        border-bottom-right-radius: 2px;
+
+        @media (max-width: 774px) {
+            left: 18px;
+        }
+    }
+
+    &AdvertiserDiscloserLink {
+        @include m.font(f.px2rem(v.$text-font-size-s), 500, 170%);
+        color: #0787ff;
+        text-decoration: none;
+        position: absolute;
+        top: 13px;
+        right: 60px;
+
+        @media (max-width: 774px) {
+            font-size: v.$text-font-size-xs;
+            top: 6px;
+            right: 18px;
+        }
+    }
+
+    &Content {
+        &Container {
+            display: grid;
+            grid-template-areas:
+                'meta preview'
+                'title preview'
+                'description preview'
+                'player preview';
+            grid-template-columns: 1.8fr 1fr;
+            gap: 0 clamp(30px, calc((100vw - 1100px) / 4), 156px);
+            padding: 0px 60px;
+
+            @media (max-width: 774px) {
+                grid-template-columns: auto;
+                grid-template-areas:
+                    'preview'
+                    'meta'
+                    'title'
+                    'description'
+                    'player';
+                gap: 14px;
+                padding: 0px 18px;
+            }
+        }
+    }
+
+    &Img {
+        &Container {
+            grid-area: preview;
+            align-self: flex-start;
+
+            @media (max-width: 774px) {
+                justify-self: flex-start;
+            }
+        }
+
+        &StateContainer {
+            width: clamp(284px, calc((100vw - 1200px)), 576px);
+            height: 324px;
+            @media (max-width: 774px) {
+                height: 159px;
+            }
+        }
+
+        &ActionIcon {
+            width: 18px;
+            height: 18px;
+
+            &Loader {
+                &Circle {
+                    stroke: var(--icon-color-active);
+                }
+                &Background {
+                    stroke: rgba(82, 87, 102, 0.5);
+                }
+            }
+
+            &Container {
+                padding: 0px;
+                width: 70px;
+                height: 70px;
+
+                @media (max-width: 774px) {
+                    width: 60px;
+                    height: 60px;
+                }
+            }
+
+            &Play {
+                position: relative;
+                left: 1px;
+            }
+        }
+
+        max-height: 100%;
+        max-width: 100%;
+
+        width: auto;
+        height: auto;
+        object-fit: contain;
+
+        @media (max-width: 774px) {
+            max-width: clamp(180px, 30vw, 200px);
+            justify-self: center;
+        }
+    }
+
+    &Podcast {
+        &Title {
+            display: flex;
+            align-items: center;
+            grid-area: title;
+            @include m.font(f.px2rem(30px), 700, 100%, true);
+            color: var(--text-color-primary);
+            max-width: 700px;
+            padding-top: 13px;
+
+            @media (max-width: 774px) {
+                font-size: f.px2rem(v.$title-font-size-s);
+                padding-top: 0;
+            }
+        }
+
+        &Description {
+            grid-area: description;
+            @include m.font(f.px2rem(v.$text-font-size-s), 400, 170%);
+            color: var(--text-color-primary);
+            max-width: 788px;
+
+            > p:first-of-type {
+                padding-top: 10px;
+            }
+
+            & b {
+                @include m.font(f.px2rem(v.$text-font-size-m), 700, 100%);
+            }
+
+            & a {
+                color: var(--text-color-primary);
+                @include m.font(f.px2rem(v.$text-font-size-s), 600, 170%);
+                text-decoration-thickness: 1px;
+                text-decoration-color: #0787ff;
+                text-underline-offset: 2px;
+                transition: opacity 0.1s ease-in-out;
+
+                &:hover {
+                    opacity: 0.6;
+                }
+            }
+
+            & p {
+                padding-bottom: 10px;
+            }
+
+            & > ul {
+                display: flex;
+                flex-direction: column;
+                gap: 5px;
+                padding-bottom: 10px;
+            }
+
+            & li {
+                position: relative;
+                list-style: none;
+                padding-left: 20px;
+
+                &:before {
+                    content: '';
+                    position: absolute;
+                    top: 8px;
+                    left: 0;
+                    width: 7px;
+                    height: 7px;
+                    background-color: #0787ff;
+                    border-radius: 1px;
+                    transform: rotate(-45deg);
+                }
+
+                &:has(a:empty) {
+                    display: none;
+                }
+            }
+        }
+
+        &AudioPlayer {
+            grid-area: player;
+            max-width: 788px;
+        }
+
+        &Meta {
+            &Wrapper {
+                grid-area: meta;
+                display: flex;
+                gap: 5px;
+                align-items: center;
+                justify-content: space-between;
+            }
+
+            &Container {
+                display: flex;
+                gap: 12px;
+            }
+
+            &Season {
+                @include m.font(f.px2rem(v.$text-font-size-s), 700, 100%);
+                color: #0787ff;
+            }
+
+            &Date {
+                @include m.font(f.px2rem(v.$text-font-size-s), 400, 100%);
+                color: var(--text-color-primary);
+                opacity: 0.5;
+            }
+        }
+    }
+
+    &Conclusion {
+        padding: 0 60px;
+
+        @include m.media('<=md') {
+            padding: 0;
+        }
+
+        &Container {
+            margin-top: 20px;
+            padding: 22px 48px 23px 22px;
+            background: rgba(29, 32, 43, 0.2);
+            border-radius: 6px;
+
+            @include m.media('<=md') {
+                padding: 11px 13px;
+                border-radius: 0;
+            }
+        }
+
+        &MainBlock {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+
+            @include m.media('<=md') {
+                cursor: pointer;
+            }
+        }
+
+        &MobileIconsContainer {
+            display: none;
+            margin-left: auto;
+            align-items: center;
+
+            @include m.media('<=md') {
+                display: flex;
+                gap: 13px;
+            }
+        }
+
+        &MobileIconIndicator {
+            width: 6px;
+            height: 6px;
+            background-color: var(--error-color);
+            border-radius: 50%;
+
+            &Watched {
+                background-color: transparent;
+            }
+        }
+
+        &MobileArrow {
+            transition: transform 0.4s ease-in-out;
+
+            &Shown {
+                transform: rotate(180deg);
+            }
+        }
+
+        &Img {
+            width: 48px;
+            aspect-ratio: 1/1;
+        }
+
+        &Title {
+            @include m.font(f.px2rem(v.$text-font-size-m), 700, 100%);
+            color: var(--text-color-primary);
+        }
+
+        &Content {
+            @include m.font(f.px2rem(v.$text-font-size-xs), 400, 170%);
+            color: var(--text-color-primary);
+            padding-left: 60px;
+            transition-property: height, padding;
+            transition-duration: 0.4s;
+            transition-timing-function: ease-in-out;
+
+            @include m.media('<=md') {
+                padding-left: 4px;
+                height: 0;
+                overflow: hidden;
+            }
+
+            & ol {
+                padding-left: 14px;
+            }
+
+            & a {
+                font-weight: 700;
+                text-decoration: underline;
+                color: var(--text-color-primary);
+            }
+
+            &Shown {
+                padding-top: 11px;
+                padding-bottom: 11px;
+            }
+        }
+    }
+}

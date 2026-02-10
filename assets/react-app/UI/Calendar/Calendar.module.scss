@@ -1,0 +1,155 @@
+@use '../Styles/Mixin' as m;
+@use '../Styles/Functions.scss' as f;
+@use '../Styles/Variables.module.scss' as v;
+
+.rdp {
+    @include m.font(f.px2rem(v.$text-font-size-s), 600, 100%);
+    margin: 0;
+}
+
+.rdpCaption {
+    display: flex;
+    align-items: center;
+    gap: 40px;
+    background: var(--background-color-secondary);
+    border: 4px solid white;
+}
+
+.rdpCaptionStart {
+    .rdpTable {
+        border-left: solid transparent 40px;
+        border-right: solid transparent 23px;
+    }
+    .rdpCaption {
+        justify-content: flex-end;
+        flex-direction: row-reverse;
+        border-right: none;
+        border-top-left-radius: 6px;
+        border-bottom-left-radius: 6px;
+        padding-left: 32px;
+    }
+}
+
+.rdpCaptionEnd {
+    .rdpTable {
+        border-left: solid transparent 23px;
+        border-right: solid transparent 40px;
+    }
+    .rdpCaption {
+        justify-content: flex-end;
+        border-left: none;
+        border-top-right-radius: 6px;
+        border-bottom-right-radius: 6px;
+        padding-right: 32px;
+    }
+}
+
+.rdpMonths {
+    display: flex;
+    margin: 0;
+}
+
+.rdpMonth {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    min-width: 315px;
+}
+
+.rdpHeaderSell {
+    width: 36px;
+    height: 42px;
+    vertical-align: middle;
+    font-weight: 800;
+    text-align: center;
+    color: var(--text-color-secondary);
+    padding: 0;
+}
+
+.rdpSell {
+    width: 36px;
+    height: 42px;
+    padding: 0;
+    text-align: center;
+    color: var(--text-color-secondary);
+}
+
+.rdpDay {
+    display: flex;
+    overflow: hidden;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    border-radius: 0;
+}
+
+.rdpButton {
+    border: none;
+    background-color: transparent;
+    appearance: none;
+    position: relative;
+    margin: 0;
+    padding: 0;
+    cursor: default;
+    color: inherit;
+    background: none;
+    font: inherit;
+    -moz-appearance: none;
+    -webkit-appearance: none;
+
+    &:disabled {
+        opacity: var(--disabled-opacity);
+    }
+
+    &:not([disabled]) {
+        cursor: pointer;
+    }
+
+    &:hover:not([disabled]):not(.rangeStart):not(.rangeEnd) {
+        color: var(--text-color-hover);
+    }
+}
+
+.selectedDay {
+    background-color: var(--background-color-secondary);
+}
+
+.rdpToday {
+    font-weight: 600;
+}
+
+.rangeEnd {
+    background-color: var(--background-color-primary);
+    border-top-right-radius: 3px;
+    border-bottom-right-radius: 3px;
+    color: var(--text-color-primary);
+}
+
+.rangeStart {
+    background-color: var(--background-color-primary);
+    border-top-left-radius: 3px;
+    border-bottom-left-radius: 3px;
+    color: var(--text-color-primary);
+}
+
+.rdpTable {
+    border-collapse: separate;
+    border-bottom: solid transparent 26px;
+}
+
+.rdpButtonNav {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    padding: 0.25em;
+
+    &:hover:not([disabled])svg {
+        transition: fill 0.2 ease-in-out;
+        fill: var(--icon-color-active);
+    }
+}

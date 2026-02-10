@@ -1,0 +1,26 @@
+@use '../../../Styles/Mixin' as m;
+@use '../../../Styles/Functions.scss' as f;
+@use '../../../Styles/Variables.module.scss' as v;
+
+.hint {
+    &Container {
+        display: flex;
+        align-items: center;
+        height: 32px;
+        color: var(--text-color-secondary);
+        background-color: var(--background-color-main);
+        padding: 5px 12px;
+        border-radius: 4px;
+        transition: background-color 0.2s ease-in-out;
+        cursor: pointer;
+        &:hover {
+            background-color: var(--background-color-secondary);
+        }
+    }
+    &Text {
+        @include m.font(f.px2rem(v.$text-font-size-s), 400, 120%);
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        overflow: hidden;
+    }
+}

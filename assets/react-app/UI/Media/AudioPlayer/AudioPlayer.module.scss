@@ -1,0 +1,101 @@
+@use '../../Styles/Mixin.scss' as m;
+@use '../../Styles/Functions.scss' as f;
+@use '../../Styles/Variables.module.scss' as v;
+
+.audioPlayer {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 8px 12px;
+    border-radius: 6px;
+    min-width: 284px;
+
+    &Primary {
+        background-color: rgba(29, 32, 43, 0.2);
+    }
+
+    &Secondary {
+        background-color: var(--background-color-secondary);
+    }
+
+    &Time {
+        @include m.font(f.px2rem(v.$text-font-size-xs), 700, 220%);
+
+        &Primary {
+            color: var(--text-color-primary);
+        }
+
+        &Secondary {
+            color: var(--text-color-secondary);
+        }
+    }
+
+    &VolumeButton {
+        position: relative;
+        background: none;
+        border: none;
+        @media (pointer: fine) {
+            &:hover svg {
+                fill: var(--icon-color-active);
+            }
+        }
+
+        &:active svg {
+            fill: var(--icon-color-active);
+        }
+    }
+
+    &VolumeSlider {
+        position: absolute;
+        top: -76px;
+        left: -3px;
+        height: 74px;
+        border-radius: 40px;
+        background-color: rgba(25, 33, 43, 0.9);
+        padding: 9px 5px;
+
+        &::before {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 2px;
+            bottom: -2px;
+            left: 0;
+        }
+
+        &Rail {
+            background-color: rgba(255, 255, 255, 0.2);
+            border-radius: 40px;
+        }
+
+        &Track {
+            background-color: #0787ff;
+        }
+
+        &Handle {
+            width: 12px;
+            height: 12px;
+            border: none;
+            opacity: 1;
+            box-shadow: none !important;
+            margin-left: -4px !important;
+        }
+    }
+    &DurationSlider {
+        cursor: pointer;
+
+        &Rail {
+            background-color: rgba(91, 99, 115, 0.2);
+            border-radius: 0;
+        }
+
+        &Track {
+            background-color: #0787ff;
+            border-radius: 0;
+        }
+
+        &Handle {
+            display: none;
+        }
+    }
+}

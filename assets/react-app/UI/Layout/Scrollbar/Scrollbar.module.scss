@@ -1,0 +1,39 @@
+.scrollbar {
+    display: grid;
+    height: 100%;
+    grid-template: auto / 1fr 3px;
+    overflow: hidden;
+    position: relative;
+
+    &Content {
+        overflow: auto;
+        scrollbar-width: none;
+        -ms-overflow-style: none;
+
+        &::-webkit-scrollbar {
+            display: none;
+        }
+    }
+
+    &TrackAndThumb {
+        display: block;
+        align-self: center;
+        position: relative;
+        width: 3px;
+    }
+
+    &Track {
+        width: 100%;
+        position: absolute;
+        bottom: 0;
+        top: 0;
+        cursor: pointer;
+        background-color: #eeeff0;
+    }
+
+    &Thumb {
+        width: 100%;
+        position: absolute;
+        background-color: #0168ca;
+    }
+}

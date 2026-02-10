@@ -1,0 +1,69 @@
+@use '../../UI/Styles/Mixin.scss' as m;
+
+.container {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+
+    #ng-app {
+        @include m.media('<=xl') {
+            padding-left: 0px;
+        }
+    }
+}
+
+:global(.header-site) {
+    @include m.media('<=xl') {
+        display: none;
+    }
+}
+
+:global(.user-blk) {
+    @include m.media('<=xl') {
+        display: none;
+    }
+}
+
+:global(.menu-close) {
+    @include m.media('<=xl') {
+        display: none;
+    }
+}
+
+:global(.page) {
+    @include m.media('<=xl') {
+        padding: 0;
+        min-width: unset;
+    }
+}
+
+:global(.content) {
+    @include m.media('<=xl') {
+        padding: 0;
+    }
+}
+
+:global(.footer-site) {
+    @include m.media('<=xl') {
+        display: none;
+    }
+}
+
+:global(.main-body) {
+    @include m.media('<=xl') {
+        padding: 0;
+        min-width: unset;
+    }
+}
+
+:global(.switch-container) {
+    @include m.media('<=xl') {
+        display: none !important;
+    }
+}
+
+:global(.main-body.hide-menu .page) {
+    @include m.media('<=xl') {
+        padding: 0;
+    }
+}

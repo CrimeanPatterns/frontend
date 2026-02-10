@@ -1,0 +1,32 @@
+@use '../../Styles/Variables.module.scss' as v;
+@use '../../Styles/Mixin.scss' as m;
+@use '../../Styles/Functions.scss' as f;
+
+.menu {
+    &-root {
+        list-style: none;
+        background-color: var(--background-color-main);
+        border-radius: 6px;
+        padding: 3px;
+    }
+    &-item {
+        display: flex;
+        align-items: center;
+        @include m.font(f.px2rem(v.$text-font-size-s), 400, 100%);
+        min-height: 32px;
+        color: var(--text-color-secondary);
+        background-color: transparent;
+        padding: 5px 12px;
+        border-radius: 4px;
+        transition: background-color 0.2s ease-in-out;
+        cursor: pointer;
+
+        &-active {
+            background-color: var(--background-color-secondary);
+        }
+
+        &-selected {
+            background-color: var(--background-color-secondary);
+        }
+    }
+}

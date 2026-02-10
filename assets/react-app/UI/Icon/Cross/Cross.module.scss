@@ -1,0 +1,54 @@
+@use '../../Styles/Variables.module.scss';
+
+.cross {
+    background-color: transparent;
+    border: none;
+    position: relative;
+    width: 12px;
+    height: 12px;
+    flex: 0 0 12px;
+
+    &::before {
+        content: '';
+        position: absolute;
+        width: 80%;
+        height: 25%;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%) rotate(-45deg);
+        background-color: #d9d9d9;
+        transition: background-color 0.2s ease-in-out;
+    }
+
+    &::after {
+        content: '';
+        position: absolute;
+        width: 80%;
+        height: 25%;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%) rotate(45deg);
+        background-color: #d9d9d9;
+        transition: background-color 0.2s ease-in-out;
+    }
+
+    &:hover {
+        &::before {
+            background-color: var(--icon-color-active);
+        }
+
+        &::after {
+            background-color: var(--icon-color-active);
+        }
+    }
+
+    &:focus {
+        &::before {
+            background-color: var(--icon-color-active);
+        }
+
+        &::after {
+            background-color: var(--icon-color-active);
+        }
+    }
+}

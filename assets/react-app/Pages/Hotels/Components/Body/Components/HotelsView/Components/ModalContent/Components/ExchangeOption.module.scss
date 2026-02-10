@@ -1,0 +1,46 @@
+@use '../../../../../../../../../UI/Styles/Variables.module.scss';
+@use '../../../../../../../../../UI//Styles/Mixin' as m;
+@use '../../../../../../../../../UI/Styles/Functions.scss' as f;
+
+.option {
+    position: relative;
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0;
+    border-radius: 50%;
+    border: 2px solid var(--border-color-secondary);
+
+    &::after {
+        content: '';
+        position: absolute;
+        width: 10px;
+        height: 10px;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        border-radius: 50%;
+        background-color: var(--background-color-primary);
+        opacity: 0;
+        transition: opacity 0.2s ease-in-out;
+    }
+
+    &Active {
+        &::after {
+            opacity: 1;
+        }
+    }
+}
+
+.exchangePointsContainer {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+.exchangeContainer {
+    display: flex;
+    align-items: center;
+    gap: 30px;
+    grid-column: 2 / 3;
+    cursor: pointer;
+}

@@ -1,0 +1,47 @@
+@use '../../../../../../UI/Styles/Mixin' as m;
+@use '../../../../../../UI/Styles/Functions.scss' as f;
+@use '../../../../../../UI/Styles/Variables.module.scss' as v;
+
+.hotelsViewSettings {
+    display: flex;
+    flex-direction: column;
+
+    &Wrapper {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 26px 53px 25px 36px;
+    }
+
+    &Title {
+        @include m.font(f.px2rem(v.$text-font-size-l), 400, 100%);
+        color: var(--text-color-secondary);
+    }
+
+    &ActionButtonWrapper {
+        display: flex;
+        align-items: center;
+        gap: 36px;
+    }
+
+    &FiltersTag {
+        &Container {
+            display: flex;
+            gap: 8px;
+            justify-content: space-between;
+            background-color: var(--background-color-secondary);
+            padding: 12px 44px 12px 36px;
+            border-radius: 6px;
+        }
+
+        &Wrapper {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        &CrossButton {
+            margin-top: 12px;
+        }
+    }
+}

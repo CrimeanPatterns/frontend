@@ -1,0 +1,30 @@
+@use '../../../../UI/Styles/Mixin.scss' as m;
+@use '../../../../UI/Styles/Functions.scss' as f;
+@use '../../../../UI/Styles/Variables.module.scss' as v;
+
+.browserInfoPane {
+    display: grid;
+    grid-template-columns: 30px auto;
+    gap: 0 16px;
+
+    &Icon {
+        width: 30px;
+        height: 30px;
+        grid-column: 1/2;
+        grid-row: 1/3;
+        align-self: center;
+    }
+
+    &Description {
+        @include m.font(f.px2rem(v.$text-font-size-s), 500, 150%);
+        color: var(--text-color-secondary);
+        opacity: 0.5;
+        align-self: flex-end;
+    }
+
+    &BrowserInfo {
+        @include m.font(f.px2rem(v.$text-font-size-s), 600, 150%);
+        color: var(--text-color-secondary);
+        align-self: flex-start;
+    }
+}

@@ -1,0 +1,46 @@
+@use '../../Styles/Variables.module.scss';
+
+.container {
+    display: inline-block;
+    animation: circular-rotate 1.4s linear infinite;
+    flex-shrink: 0;
+}
+
+.svg {
+    display: block;
+}
+
+.circle {
+    animation: circular-dash 1.4s ease-in-out infinite;
+    stroke-dasharray: 80px, 200px;
+    stroke-dashoffset: 0px;
+}
+
+.backgroundCircle {
+    stroke: var(--icon-color-secondary);
+    opacity: var(--disabled-opacity);
+}
+
+@keyframes circular-rotate {
+    0% {
+        transform-origin: 50% 50%;
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes circular-dash {
+    0% {
+        stroke-dasharray: 1px, 200px;
+        stroke-dashoffset: 0px;
+    }
+    50% {
+        stroke-dasharray: 100px, 200px;
+        stroke-dashoffset: -15px;
+    }
+    100% {
+        stroke-dasharray: 100px, 200px;
+        stroke-dashoffset: -125px;
+    }
+}

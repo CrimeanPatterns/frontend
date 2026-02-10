@@ -1,0 +1,43 @@
+@use '../../../../../../UI/Styles/Mixin' as m;
+@use '../../../../../../UI/Styles/Functions.scss' as f;
+@use '../../../../../../UI/Styles/Variables.module.scss' as v;
+
+.modalTitle {
+    @include m.font(f.px2rem(v.$title-font-size-m), 800, 100%);
+    color: var(--text-color-secondary);
+}
+
+.hotelBrandsPopover {
+    padding: 40px 44px;
+}
+
+.modalContentContainer {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+    overflow: auto;
+}
+
+.hotelBrandsContainer {
+    display: flex;
+    gap: 8px;
+}
+
+.buttonsContainer {
+    display: flex;
+    gap: 8px;
+}
+
+.button {
+    flex-grow: 1;
+}
+
+.anchorButton {
+    justify-self: flex-start;
+
+    &Text {
+        &::first-letter {
+            text-transform: uppercase;
+        }
+    }
+}

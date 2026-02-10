@@ -1,0 +1,35 @@
+@use '../../Styles/Variables.module.scss';
+
+.popoverContainer {
+    position: absolute;
+    z-index: 989;
+}
+
+.popover {
+    background: var(--background-color-main);
+    color: var(--text-color-secondary);
+    border-radius: 6px;
+    box-shadow: 15px 15px 40px 0px rgba(16, 25, 57, 0.15);
+    overflow: hidden;
+    max-width: 100%;
+    max-height: 100%;
+}
+
+.shadow {
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    background-color: var(--shadow-color);
+    z-index: 988;
+}
+
+.spacer {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    z-index: -1;
+}

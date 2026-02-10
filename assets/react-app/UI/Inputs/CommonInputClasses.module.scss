@@ -1,0 +1,149 @@
+@use '../Styles/Mixin' as m;
+@use '../Styles/Variables.module.scss' as v;
+@use '../Styles/Functions.scss' as f;
+
+.container {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    width: 100%;
+}
+
+.textInputContainer {
+    display: flex;
+    gap: 13px;
+    align-items: center;
+    flex-grow: 1;
+    position: relative;
+    @include m.font(f.px2rem(v.$text-font-size-m), 600, 100%);
+    padding: 0 18px;
+    background-color: var(--background-color-main);
+    border: 1px solid var(--border-color-secondary);
+    transition: border-color ease-in-out 0.2s;
+    cursor: pointer;
+    // TODO: Remove !important after clear global styles
+    input[type='text'],
+    input[type='tel'],
+    input[type='password'] {
+        z-index: 1;
+        padding: 14px 0 !important;
+        @include m.font(f.px2rem(v.$text-font-size-m), 600, 130%);
+        height: auto !important;
+        color: var(--text-color-secondary) !important;
+        border: none;
+        background-color: transparent !important;
+        &:focus {
+            box-shadow: none !important;
+            border: none !important;
+        }
+
+        &::placeholder {
+            @include m.font(f.px2rem(v.$text-font-size-s), 400, 150%);
+            color: var(--text-color-disabled);
+        }
+    }
+    &:hover {
+        background-color: var(--background-color-main) !important;
+        border-color: var(--border-color-active);
+    }
+    &:focus-within {
+        border-color: var(--border-color-active);
+        .placeholder {
+            top: 31%;
+            font-size: f.px2rem(v.$text-font-size-xs);
+        }
+    }
+
+    input:not([value='']) + .placeholder {
+        top: 31%;
+        font-size: f.px2rem(v.$text-font-size-xs);
+    }
+
+    &WithPlaceHolder {
+        input[type='text'],
+        input[type='tel'],
+        input[type='password'] {
+            padding: 22px 0 6px 0 !important;
+        }
+    }
+
+    &Error {
+        border-color: var(--error-color) !important;
+        &:hover {
+            border-color: var(--error-color);
+        }
+        &:focus-within {
+            border-color: var(--error-color);
+        }
+    }
+
+    // @include m.media('<=xl') {
+    //     gap: 7px;
+    // }
+}
+
+.inputWrapper {
+    position: relative;
+}
+
+.placeholder {
+    position: absolute;
+    top: 50%;
+    @include m.font(f.px2rem(v.$text-font-size-s), 600, 100%);
+    transform: translateY(-50%);
+    color: var(--text-color-disabled);
+    transition-property: font-size, top;
+    transition-duration: 0.2s;
+    transition-timing-function: ease-in-out;
+    z-index: 0;
+
+    &WithIcon {
+        left: 54px;
+    }
+
+    &WithValue {
+        top: 31%;
+        font-size: f.px2rem(v.$text-font-size-xs);
+    }
+
+    // @include m.media('<=xl') {
+    //     font-size: 14px;
+    // }
+}
+
+.error {
+    @include m.font(f.px2rem(v.$text-font-size-xs), 600, 100%);
+    color: var(--error-color);
+    min-height: 19px;
+    pointer-events: none;
+    cursor: auto;
+
+    @include m.media('<=md') {
+        font-size: f.px2rem(10px);
+        min-height: 14px;
+    }
+}
+
+.inputWithoutPlaceholderPadding {
+    input[type='text'],
+    input[type='tel'],
+    input[type='password'] {
+        padding: 14px 0 !important;
+
+        @include m.media('<=lg') {
+            padding: 9px 0 !important;
+        }
+    }
+}
+
+.inputWithPlaceholderPadding {
+    input[type='text'],
+    input[type='tel'],
+    input[type='password'] {
+        padding: 28px 0 12px 0 !important;
+
+        @include m.media('<=lg') {
+            padding: 23px 0 7px 0 !important;
+        }
+    }
+}

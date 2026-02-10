@@ -1,0 +1,59 @@
+@use '../../../UI/Styles/Mixin.scss' as m;
+@use '../../../UI/Styles/Functions.scss' as f;
+@use '../../../UI/Styles/Variables.module.scss' as v;
+
+.conformationModal {
+    display: flex;
+    flex-direction: column;
+    gap: 26px;
+
+    @include m.media('<=md') {
+        gap: 0;
+    }
+
+    &Title {
+        @include m.font(f.px2rem(28px), 800, 100%, true);
+
+        @include m.media('<=md') {
+            font-size: f.px2rem(v.$title-font-size-m);
+            margin-bottom: 22px;
+        }
+    }
+
+    &InputContainer {
+        display: flex;
+        flex-direction: column;
+        gap: 13px;
+    }
+
+    &Label {
+        @include m.font(f.px2rem(v.$text-font-size-s), 700, 100%);
+
+        @include m.media('<=md') {
+            font-size: f.px2rem(v.$text-font-size-xs);
+        }
+    }
+
+    &Input {
+        width: 444px;
+
+        @include m.media('<=md') {
+            width: f.fluid(238px, 500px, xsm, md);
+        }
+    }
+
+    &Button {
+        max-width: 159px;
+        flex-grow: 1;
+
+        @include m.media('<=md') {
+            max-width: unset;
+            padding: 13px;
+        }
+
+        &Container {
+            display: flex;
+            gap: 8px;
+        }
+    }
+}

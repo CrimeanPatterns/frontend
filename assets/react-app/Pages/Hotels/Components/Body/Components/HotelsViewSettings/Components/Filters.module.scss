@@ -1,0 +1,124 @@
+@use '../../../../../../../UI/Styles/Variables.module.scss' as v;
+@use '../../../../../../../UI/Styles/Mixin.scss' as m;
+@use '../../../../../../../UI/Styles/Functions.scss' as f;
+
+.filters {
+    background-color: var(--background-color-secondary);
+    padding-right: 5px;
+
+    &Wrapper {
+        background-color: var(--background-color-main);
+    }
+
+    &Title {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 17px;
+        text-transform: uppercase;
+        @include m.font(f.px2rem(v.$text-font-size-m), 600, 100%);
+        background-color: var(--background-color-secondary);
+        color: var(--text-color-secondary);
+
+        &Rating {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 5px 6px;
+            background-color: var(--background-color-primary);
+            @include m.font(f.px2rem(v.$text-font-size-m), 700, 100%);
+            color: var(--text-color-primary);
+            border-radius: 4px;
+        }
+    }
+    &SlideInputContainer {
+        padding: 22px 17px 20px 19px;
+    }
+    &CheckboxesContainer {
+        display: inline-flex;
+        flex-direction: column;
+        gap: 14px;
+        padding: 15px 19px 20px 19px;
+    }
+
+    &Rating {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 17px 19px;
+        &Container {
+            display: flex;
+            gap: 8px;
+
+            label {
+                cursor: pointer;
+                svg {
+                    transition-property: opacity fill;
+                    transition-duration: 0.2s;
+                    transition-timing-function: ease-in-out;
+                }
+            }
+
+            &:not(:hover) {
+                input:checked + label ~ label svg {
+                    fill: var(--icon-color-secondary);
+                    opacity: 0.2;
+                }
+            }
+
+            &:hover {
+                label {
+                    svg {
+                        opacity: 0.3;
+                        fill: var(--icon-color-active);
+                    }
+                    &:hover {
+                        svg {
+                            opacity: 0.3;
+                            fill: var(--icon-color-active);
+                        }
+                        & ~ label svg {
+                            opacity: 0.2;
+                            fill: var(--icon-color-secondary);
+                        }
+                    }
+                }
+            }
+        }
+
+        &Input {
+            opacity: 0;
+            position: absolute;
+        }
+    }
+
+    &Divider {
+        background-color: var(--background-color-secondary);
+        width: 100%;
+        height: 4px;
+    }
+
+    &Switcher {
+        &Label {
+            padding: 14px 18px;
+            border-right: none;
+            border-left: none;
+            width: 100%;
+            justify-content: space-between;
+        }
+
+        &Text {
+            max-width: 192px;
+        }
+    }
+
+    &Button {
+        &::first-letter {
+            text-transform: uppercase;
+        }
+
+        &Active {
+            color: var(--text-color-hover);
+        }
+    }
+}

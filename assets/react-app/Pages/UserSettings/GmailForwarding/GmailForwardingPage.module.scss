@@ -1,0 +1,80 @@
+@use '../../../UI/Styles/Variables.module.scss' as v;
+@use '../../../UI/Styles/Mixin.scss' as m;
+@use '../../../UI/Styles/Functions.scss' as f;
+
+.gmailForwardingPage {
+    background-color: var(--background-color-main);
+
+    a {
+        color: var(--text-color-hover);
+        font-weight: 700;
+        text-decoration-line: underline;
+    }
+
+    &Title {
+        @include m.font(f.px2rem(v.$title-font-size-l), 800, 100%, true);
+        color: var(--text-color-hover);
+        max-width: 747px;
+        padding: 40px 60px 23px 60px;
+        @include m.media('<=xxl') {
+            padding: 20px;
+        }
+    }
+
+    &Description {
+        @include m.font(f.px2rem(v.$text-font-size-s), 450, 150%);
+        color: var(--text-color-secondary);
+        max-width: 1615px;
+        padding: 0 60px 30px 60px;
+        @include m.media('<=xxl') {
+            padding: 0 20px 33px 20px;
+        }
+    }
+
+    &Notice {
+        @include m.font(f.px2rem(v.$text-font-size-s), 700, 130%);
+        color: var(--text-color-secondary);
+        padding: 15px 23px;
+        border-radius: 6px;
+
+        @include m.theme('light') {
+            background-color: rgba(1, 104, 202, 0.1);
+            color: var(--text-color-secondary);
+        }
+
+        @include m.theme('dark') {
+            background-color: rgba(1, 104, 202, 0.2);
+            color: var(--text-color-hover);
+        }
+
+        @include m.media('<=xxl') {
+            padding: 15px 20px;
+        }
+
+        a {
+            @include m.theme('dark') {
+                color: white;
+                text-decoration-color: white;
+            }
+        }
+
+        &Wrapper {
+            padding: 0 60px 40px 60px;
+            @include m.media('<=xxl') {
+                padding: 0 20px 20px 20px;
+            }
+        }
+    }
+
+    &Grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        grid-template-rows: auto;
+        gap: 50px;
+        padding: 0 60px 50px 60px;
+        @include m.media('<=xxl') {
+            gap: 37px;
+            padding: 0 20px 37px 20px;
+        }
+    }
+}
